@@ -1,0 +1,25 @@
+{
+  "name": "LRH OB Emergencies (beta)",
+  "short_name": "OB Emergencies",
+  "description": "Cognitive aids for OB and neonatal emergencies. Beta — practice and feedback only.",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#fffefb",
+  "theme_color": "#16324f",
+  "icons": [
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

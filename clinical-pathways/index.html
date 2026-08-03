@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#005596">
+<title>Clinical Pathways &middot; LRH Emergency Manual</title>
+<style>
+  /* Shared skeleton — same variables/classes as the landing page and tools. */
+  :root{
+    --brand-primary:#005596; --brand-primary-dark:#003e6e; --brand-secondary:#6cb33f;
+    --ink:#1f2933; --muted:#5b6672; --line:#e2e7ec; --panel:#fff; --page:#eef2f5;
+    --section:#2f7a3f; /* Clinical Pathways = green */
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--page); color:var(--ink); line-height:1.45; font-size:16px; min-height:100vh}
+  .wrap{max-width:840px; margin:0 auto; padding:0 16px 56px}
+
+  header.top{background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-dark));
+    color:#fff; padding:26px 16px; border-bottom:5px solid var(--section)}
+  header.top .inner{max-width:840px; margin:0 auto; display:flex; align-items:center; gap:16px}
+  .logo{width:56px;height:56px;border-radius:11px;background:#fff;flex:0 0 auto;display:flex;
+    align-items:center;justify-content:center;font-weight:800;color:var(--brand-primary);
+    font-size:20px;letter-spacing:.5px;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+  header.top h1{font-size:1.4rem; margin:0 0 3px}
+  header.top p{margin:0; opacity:.9; font-size:.88rem}
+
+  .crumb{margin:18px 2px 4px; font-size:.85rem}
+  .crumb a{color:var(--brand-primary); text-decoration:none}
+  .crumb a:hover{text-decoration:underline}
+  .intro{color:var(--muted); font-size:.9rem; margin:8px 2px 18px}
+
+  .grid{display:grid; gap:14px; grid-template-columns:1fr}
+  @media(min-width:600px){.grid{grid-template-columns:1fr 1fr}}
+
+  a.tool{display:flex; flex-direction:column; text-decoration:none; color:inherit;
+    background:var(--panel); border:1px solid var(--line); border-left:5px solid var(--brand-primary);
+    border-radius:12px; padding:17px 18px; box-shadow:0 1px 2px rgba(16,42,67,.05); transition:.14s}
+  a.tool:hover{transform:translateY(-2px); box-shadow:0 6px 18px rgba(16,42,67,.10); border-left-color:var(--brand-secondary)}
+  a.tool .name{font-weight:700; font-size:1.02rem; color:var(--brand-primary-dark); margin-bottom:4px}
+  a.tool .desc{font-size:.85rem; color:var(--muted); flex:1}
+  a.tool .go{margin-top:12px; font-size:.82rem; font-weight:600; color:var(--brand-primary)}
+  a.tool .go::after{content:" \2192"}
+
+  .note{background:#fff8e1; border:1px solid #f2d999; color:#6d4c00; font-size:.8rem;
+    border-radius:9px; padding:12px 15px; margin-top:26px}
+  footer{text-align:center; color:var(--muted); font-size:.76rem; margin-top:22px}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="inner">
+    <div class="logo">LRH</div>
+    <div>
+      <h1>Clinical Pathways</h1>
+      <p>Littleton Regional Hospital Emergency Manual</p>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <p class="crumb"><a href="../">&larr; Emergency Manual</a></p>
+  <p class="intro">Accelerated diagnostic and treatment pathways. Tap a pathway to open it.</p>
+
+  <div class="grid">
+
+    <!-- ===== HEART pathway (live) -> /clinical-pathways/heart/ ===== -->
+    <a class="tool" href="heart/">
+      <div class="name">Chest Pain &middot; hs-Troponin HEART Pathway</div>
+      <div class="desc">ED 0/1-hour accelerated diagnostic pathway for suspected ACS, with HEART score and disposition.</div>
+      <div class="go">Open</div>
+    </a>
+
+    <!-- ===== Add a pathway: create clinical-pathways/<tool>/index.html, copy a
+         card above with href "<tool>/", and add it to the home search index. ===== -->
+
+  </div>
+
+  <div class="note">
+    <strong>Personal decision-support aids &mdash; not part of the LRH IT system / EHR.</strong>
+    Beta: content is unverified. These tools do not replace clinical judgment. Verify all values and thresholds against local protocols and assays.
+  </div>
+
+  <footer>Littleton Regional Hospital Emergency Manual &mdash; personal, unofficial reference &middot; Beta</footer>
+</div>
+</body>
+</html>

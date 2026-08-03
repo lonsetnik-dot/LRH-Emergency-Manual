@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>LRH Chest Pain / hs-Troponin ADP + HEART Pathway</title>
+<style>
+  /* =====================================================================
+     LRH BRAND COLORS  --  edit these to match exactly.
+     (Best approximation of Littleton Regional Healthcare blue + green.)
+     ===================================================================== */
+  :root{
+    --brand-primary:      #005596;
+    --brand-primary-dark: #003e6e;
+    --brand-secondary:    #6cb33f;
+    --section:            #2f7a3f; /* Clinical Pathways = green */
+
+    /* functional colors mirroring the posted protocol flowchart */
+    --in:  #c62828; --in-bg: #fdecea; --in-br:#f4b8b0;   /* RED   rule in / STEMI      */
+    --dc:  #1565c0; --dc-bg: #e7f0fb; --dc-br:#b3ceee;   /* BLUE  discharge            */
+    --ref: #b26a00; --ref-bg:#fff5e0; --ref-br:#f2d999;  /* ORANGE reflex / gray zone  */
+    --out: #2e7d32; --out-bg:#e8f5e9; --out-br:#b6dab9;  /* GREEN AMI ruled out        */
+
+    --ink:#1f2933; --muted:#5b6672; --line:#e2e7ec; --panel:#fff; --page:#eef2f5;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--page); color:var(--ink); line-height:1.45; font-size:16px}
+  .wrap{max-width:900px; margin:0 auto; padding:0 16px 64px}
+
+  header.top{background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-dark));
+    color:#fff; padding:22px 16px; border-bottom:5px solid var(--section)}
+  header.top .inner{max-width:900px; margin:0 auto; display:flex; align-items:center; gap:16px}
+  .logo{width:52px;height:52px;border-radius:10px;background:#fff;flex:0 0 auto;display:flex;
+    align-items:center;justify-content:center;font-weight:800;color:var(--brand-primary);
+    font-size:19px;letter-spacing:.5px;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+  header.top h1{font-size:1.25rem; margin:0 0 2px}
+  header.top p{margin:0; opacity:.9; font-size:.84rem}
+
+  .disclaimer{background:#fff8e1; border:1px solid #f2d999; color:#6d4c00; font-size:.82rem;
+    border-radius:8px; padding:11px 14px; margin:18px 0 10px}
+  .disclaimer ul{margin:6px 0 0; padding-left:18px}
+  .disclaimer li{margin:2px 0}
+  .disclaimer strong{color:#5c3a00}
+  .esrd-warn{display:none; background:var(--in-bg); border:1.5px solid var(--in-br); color:var(--in);
+    font-weight:600; font-size:.85rem; border-radius:8px; padding:10px 14px; margin:0 0 16px}
+  .esrd-warn.show{display:block}
+
+  .card{background:var(--panel); border:1px solid var(--line); border-radius:12px;
+    padding:18px 18px 20px; margin-bottom:18px; box-shadow:0 1px 2px rgba(16,42,67,.04)}
+  .card h2{font-size:1.02rem; margin:0 0 4px; color:var(--brand-primary-dark); display:flex; align-items:center; gap:8px}
+  .card h2 .num{background:var(--brand-primary); color:#fff; width:24px;height:24px;border-radius:50%;
+    font-size:.8rem; display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto}
+  .card .sub{color:var(--muted); font-size:.83rem; margin:0 0 14px}
+
+  .q{margin-bottom:15px}
+  .q:last-child{margin-bottom:0}
+  .q .label{font-weight:600; font-size:.92rem; margin-bottom:7px; display:block}
+  .q .hint{font-weight:400; color:var(--muted); font-size:.8rem}
+  .opts{display:grid; gap:8px}
+  .opts.two{grid-template-columns:1fr 1fr}
+  @media(min-width:560px){.opts.three{grid-template-columns:1fr 1fr 1fr}}
+  label.opt{display:flex; align-items:flex-start; gap:9px; border:1.5px solid var(--line); border-radius:9px;
+    padding:9px 11px; cursor:pointer; font-size:.87rem; background:#fff; transition:.12s}
+  label.opt:hover{border-color:var(--brand-secondary)}
+  label.opt input{margin-top:2px; accent-color:var(--brand-primary); flex:0 0 auto}
+  label.opt.sel{border-color:var(--brand-primary); background:#f1f7fc; box-shadow:inset 0 0 0 1px var(--brand-primary)}
+  label.opt .pts{margin-left:auto; font-weight:700; color:var(--brand-primary); font-size:.8rem; padding-left:6px}
+
+  .troprow{display:grid; gap:12px; grid-template-columns:1fr 1fr}
+  @media(min-width:620px){.troprow{grid-template-columns:1fr 1fr 1fr auto}}
+  .field label{display:block; font-weight:600; font-size:.84rem; margin-bottom:5px}
+  .field input[type=number]{width:100%; font-size:1.1rem; padding:10px 12px; border:1.5px solid var(--line);
+    border-radius:9px; text-align:center; font-weight:700; color:var(--brand-primary-dark)}
+  .field input[type=number]:focus{outline:none; border-color:var(--brand-primary)}
+  .field.hot input[type=number]{border-color:var(--ref); box-shadow:0 0 0 2px var(--ref-bg)}
+  .field .unit{font-weight:400; color:var(--muted); font-size:.76rem}
+  .field .opt3{font-weight:400;color:var(--muted);font-size:.72rem}
+  .delta-box{display:flex; flex-direction:column; align-items:center; justify-content:center; background:#f5f8fb;
+    border:1.5px dashed var(--line); border-radius:9px; padding:8px 14px; min-width:96px}
+  .delta-box .dv{font-size:1.35rem; font-weight:800; color:var(--brand-primary-dark); line-height:1.1}
+  .delta-box .dl{font-size:.68rem; color:var(--muted); text-transform:uppercase; letter-spacing:.5px}
+
+  .resultcard{margin-top:16px; border-radius:10px; padding:13px 15px; font-size:.9rem; border:1.5px solid}
+  .resultcard .tag{font-weight:800; font-size:.95rem; letter-spacing:.3px; display:block; margin-bottom:2px}
+  .resultcard.pending{background:#f5f8fb;border-color:var(--line);color:var(--muted)}
+  .r-in{background:var(--in-bg); border-color:var(--in-br); color:var(--in)}
+  .r-dc{background:var(--dc-bg); border-color:var(--dc-br); color:var(--dc)}
+  .r-ref{background:var(--ref-bg); border-color:var(--ref-br); color:var(--ref)}
+  .r-out{background:var(--out-bg); border-color:var(--out-br); color:var(--out)}
+
+  .scorebar{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    background:#f5f8fb; border:1px solid var(--line); border-radius:9px; padding:11px 15px; margin-top:4px}
+  .scorebar .big{font-size:1.7rem; font-weight:800; color:var(--brand-primary-dark)}
+  .scorebar .risk{font-weight:700; font-size:.9rem; padding:4px 12px; border-radius:20px}
+
+  .final{border-radius:12px; padding:18px; border:2px solid; margin-top:2px}
+  .final .head{font-size:.76rem; text-transform:uppercase; letter-spacing:.6px; font-weight:700; opacity:.85}
+  .final .verdict{font-size:1.3rem; font-weight:800; margin:3px 0 7px}
+  .final .detail{font-size:.92rem}
+  .final .detail b{font-weight:700}
+  .final.pending{background:#f5f8fb; border-color:var(--line); color:var(--muted)}
+
+  .btnrow{display:flex; gap:10px; margin-top:14px}
+  button.btn{background:#fff; border:1.5px solid var(--brand-primary); color:var(--brand-primary);
+    font-weight:600; font-size:.85rem; padding:9px 18px; border-radius:8px; cursor:pointer}
+  button.btn:hover{background:#f1f7fc}
+
+  details.ref{margin-top:10px; font-size:.85rem}
+  details.ref summary{cursor:pointer; font-weight:600; color:var(--brand-primary); padding:6px 0}
+  details.ref table{width:100%; border-collapse:collapse; margin-top:6px; font-size:.8rem}
+  details.ref th,details.ref td{border:1px solid var(--line); padding:6px 9px; text-align:left; vertical-align:top}
+  details.ref th{background:#f5f8fb}
+  details.ref ul{margin:6px 0 0; padding-left:20px}
+
+  footer{text-align:center; color:var(--muted); font-size:.76rem; margin-top:26px}
+  @media print{
+    body{background:#fff}
+    header.top{-webkit-print-color-adjust:exact; print-color-adjust:exact}
+    .btnrow,details.ref{display:none}
+    .card{break-inside:avoid; box-shadow:none}
+  }
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="inner">
+    <div class="logo">LRH</div>
+    <div>
+      <h1>Chest Pain &middot; hs-Troponin 0/1-hr ADP + HEART Pathway</h1>
+      <p>Littleton Regional Hospital &mdash; ED accelerated diagnostic pathway for suspected ACS</p>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="disclaimer">
+    <strong>Not a substitute for clinical judgment.</strong>
+    <ul>
+      <li>If clinical suspicion is high, consider keeping the patient for observation.</li>
+      <li>This algorithm is <strong>not applicable to patients with ESRD</strong>.</li>
+      <li>HEART-score troponin points use sex-based normal limits (Male 0&ndash;19.8, Female 0&ndash;14.9 ng/L).</li>
+      <li>FYI: hs-troponin 50 ng/L &asymp; 0.05 ng/mL on the prior assay.</li>
+      <li>Personal decision-support aid &mdash; <strong>not part of the LRH IT system / EHR</strong>. Verify all values independently.</li>
+    </ul>
+  </div>
+  <div class="esrd-warn" id="esrdWarn">&#9888; ESRD selected &mdash; this algorithm is not applicable to ESRD patients. Use clinical judgment.</div>
+
+  <!-- ============ SECTION 1: PRESENTATION ============ -->
+  <div class="card">
+    <h2><span class="num">1</span> Presentation</h2>
+    <p class="sub">Patient presenting to the ED with symptoms suggestive of acute coronary syndrome &mdash; obtain EKG.</p>
+
+    <div class="q">
+      <span class="label">Evidence of STEMI on EKG?</span>
+      <div class="opts two" data-group="stemi">
+        <label class="opt"><input type="radio" name="stemi" value="no"><span>No</span></label>
+        <label class="opt"><input type="radio" name="stemi" value="yes"><span>Yes &rarr; STEMI Alert</span></label>
+      </div>
+    </div>
+
+    <div class="q">
+      <span class="label">Sex assigned at birth <span class="hint">&mdash; sets HEART troponin normal limit</span></span>
+      <div class="opts two" data-group="sex">
+        <label class="opt"><input type="radio" name="sex" value="male"><span>Male <span class="hint">(0&ndash;19.8)</span></span></label>
+        <label class="opt"><input type="radio" name="sex" value="female"><span>Female <span class="hint">(0&ndash;14.9)</span></span></label>
+      </div>
+    </div>
+
+    <div class="q">
+      <span class="label">Chest pain duration &gt; 3 hours?</span>
+      <div class="opts two" data-group="pain">
+        <label class="opt"><input type="radio" name="pain" value="no"><span>No / uncertain</span></label>
+        <label class="opt"><input type="radio" name="pain" value="yes"><span>Yes, &gt; 3 hours</span></label>
+      </div>
+    </div>
+
+    <div class="q" style="margin-bottom:0">
+      <label class="opt" style="max-width:280px"><input type="checkbox" id="esrd"><span>Patient has ESRD</span></label>
+    </div>
+  </div>
+
+  <!-- ============ SECTION 2: hs-TROPONIN ============ -->
+  <div class="card">
+    <h2><span class="num">2</span> hs-Troponin &mdash; 0 / 1-hour (&plusmn; 3-hr reflex)</h2>
+    <p class="sub">Enter the 0-hr and 1-hr values. A 3-hr value is only needed if the pathway reflexes.</p>
+
+    <div class="troprow">
+      <div class="field"><label>0-hr <span class="unit">(ng/L)</span></label>
+        <input type="number" id="t0" min="0" step="1" inputmode="numeric" placeholder="0"></div>
+      <div class="field"><label>1-hr <span class="unit">(ng/L)</span></label>
+        <input type="number" id="t1" min="0" step="1" inputmode="numeric" placeholder="1"></div>
+      <div class="field" id="t3field"><label>3-hr <span class="opt3">(if reflexed)</span></label>
+        <input type="number" id="t3" min="0" step="1" inputmode="numeric" placeholder="&ndash;"></div>
+      <div class="delta-box"><div class="dv" id="deltaVal">&ndash;</div><div class="dl">1-hr &Delta;</div></div>
+    </div>
+
+    <div class="resultcard pending" id="tropResult">Enter 0-hr and 1-hr troponin (and complete Section 1) to classify.</div>
+
+    <details class="ref">
+      <summary>Troponin pathway logic (per posted protocol)</summary>
+      <table>
+        <tr><th>Condition</th><th>Result</th></tr>
+        <tr><td>Evidence of STEMI on EKG</td><td><b>STEMI Alert</b></td></tr>
+        <tr><td>Any hs-troponin &ge; 50 ng/L, <em>or</em> &Delta; &ge; 15 ng/L</td><td><b>Rule-in zone</b> &rarr; consider cardiology consult</td></tr>
+        <tr><td>&lt; 4 ng/L &amp; chest pain &gt; 3 h, <em>or</em> &lt; 5 ng/L &amp; &Delta; &lt; 4</td><td><b>D/C home</b>, outpatient follow-up as needed</td></tr>
+        <tr><td>5&ndash;49 ng/L &amp; 0/1-hr &Delta; &lt; 4</td><td><b>AMI ruled out</b> &rarr; HEART score vs discharge w/ PCP</td></tr>
+        <tr><td>5&ndash;49 ng/L &amp; 0/1-hr &Delta; 4&ndash;14</td><td><b>Reflex to 3 h</b>; then &Delta; &lt; 15 &rarr; HEART score, &Delta; &ge; 15 &rarr; rules in</td></tr>
+      </table>
+      <p style="color:var(--muted);margin:8px 0 0">&Delta; is the absolute change between serial values. Not applicable to ESRD.</p>
+    </details>
+  </div>
+
+  <!-- ============ SECTION 3: HEART SCORE ============ -->
+  <div class="card">
+    <h2><span class="num">3</span> HEART Score</h2>
+    <p class="sub">Used once AMI is ruled out to guide stress-testing vs discharge. Troponin points auto-fill from the 0-hr value and sex.</p>
+
+    <div class="q">
+      <span class="label">History</span>
+      <div class="opts three" data-group="history">
+        <label class="opt"><input type="radio" name="history" value="0"><span>Slightly suspicious</span><span class="pts">0</span></label>
+        <label class="opt"><input type="radio" name="history" value="1"><span>Moderately suspicious</span><span class="pts">+1</span></label>
+        <label class="opt"><input type="radio" name="history" value="2"><span>Highly suspicious</span><span class="pts">+2</span></label>
+      </div>
+    </div>
+    <div class="q">
+      <span class="label">ECG</span>
+      <div class="opts three" data-group="ecg">
+        <label class="opt"><input type="radio" name="ecg" value="0"><span>Normal</span><span class="pts">0</span></label>
+        <label class="opt"><input type="radio" name="ecg" value="1"><span>Non-specific repolarization</span><span class="pts">+1</span></label>
+        <label class="opt"><input type="radio" name="ecg" value="2"><span>Significant ST deviation</span><span class="pts">+2</span></label>
+      </div>
+    </div>
+    <div class="q">
+      <span class="label">Age</span>
+      <div class="opts three" data-group="age">
+        <label class="opt"><input type="radio" name="age" value="0"><span>&lt; 45 yrs</span><span class="pts">0</span></label>
+        <label class="opt"><input type="radio" name="age" value="1"><span>45&ndash;64 yrs</span><span class="pts">+1</span></label>
+        <label class="opt"><input type="radio" name="age" value="2"><span>&ge; 65 yrs</span><span class="pts">+2</span></label>
+      </div>
+    </div>
+    <div class="q">
+      <span class="label">Risk factors
+        <span class="hint">&mdash; HTN, hyperlipidemia, diabetes, obesity (BMI&gt;30), smoking (current/quit &le;3 mo), family history of CAD</span></span>
+      <div class="opts three" data-group="risk">
+        <label class="opt"><input type="radio" name="risk" value="0"><span>No known risk factors</span><span class="pts">0</span></label>
+        <label class="opt"><input type="radio" name="risk" value="1"><span>1&ndash;2 risk factors</span><span class="pts">+1</span></label>
+        <label class="opt"><input type="radio" name="risk" value="2"><span>&ge;3 RF or known atherosclerotic disease</span><span class="pts">+2</span></label>
+      </div>
+    </div>
+    <div class="q">
+      <span class="label">Troponin <span class="hint" id="tropHint">&mdash; auto-fills from 0-hr value &amp; sex; you can also tap it</span></span>
+      <div class="opts three" data-group="trop">
+        <label class="opt" id="tropOpt0"><input type="radio" name="trop" value="0"><span>&le; normal limit</span><span class="pts">0</span></label>
+        <label class="opt" id="tropOpt1"><input type="radio" name="trop" value="1"><span>1&ndash;3&times; normal</span><span class="pts">+1</span></label>
+        <label class="opt" id="tropOpt2"><input type="radio" name="trop" value="2"><span>&gt; 3&times; normal</span><span class="pts">+2</span></label>
+      </div>
+    </div>
+
+    <div class="scorebar">
+      <div><span class="big" id="heartScore">&ndash;</span> <span style="color:var(--muted);font-size:.85rem">/ 10 points</span></div>
+      <div class="risk" id="heartRisk" style="background:#eef2f5;color:var(--muted)">Incomplete</div>
+    </div>
+  </div>
+
+  <!-- ============ SECTION 4: DISPOSITION ============ -->
+  <div class="card">
+    <h2><span class="num">4</span> Disposition</h2>
+    <div class="final pending" id="finalBox">
+      <div class="head">Recommendation</div>
+      <div class="verdict">Complete the sections above</div>
+      <div class="detail">Answer Section 1, enter the troponins, and (if AMI is ruled out) complete the HEART score.</div>
+    </div>
+    <div class="btnrow">
+      <button class="btn" onclick="resetAll()">Reset</button>
+      <button class="btn" onclick="window.print()">Print</button>
+    </div>
+
+    <details class="ref">
+      <summary>Disposition logic (per posted protocol)</summary>
+      <ul>
+        <li><b>STEMI on EKG</b> &rarr; STEMI Alert (activate STEMI protocol).</li>
+        <li><b>Rule-in zone</b> (any hs-Trop &ge;50 or &Delta;&ge;15) &rarr; consider cardiology consult if clinically appropriate.</li>
+        <li><b>D/C home</b> (&lt;4 &amp; pain&gt;3h, or &lt;5 &amp; &Delta;&lt;4) &rarr; discharge, outpatient follow-up as needed.</li>
+        <li><b>Reflex to 3 h</b> (5&ndash;49 &amp; &Delta; 4&ndash;14) &rarr; repeat troponin; &Delta;&ge;15 rules in, else AMI ruled out.</li>
+        <li><b>AMI ruled out</b> &rarr; apply HEART score:
+          <ul>
+            <li>0&ndash;3 (low) &rarr; D/C, no stress test, F/U PCP</li>
+            <li>4&ndash;6 (medium) &rarr; ASAP outpatient stress test</li>
+            <li>7&ndash;10 (high) &rarr; consider stress test prior to d/c &rarr; D/C w/ PCP F/U or cardiology consult</li>
+          </ul>
+        </li>
+      </ul>
+    </details>
+  </div>
+
+  <footer>
+    LRH Chest Pain hs-Troponin ADP + HEART Pathway &mdash; personal decision-support aid, not part of the LRH IT system.
+    Thresholds are assay-specific; verify against your local hs-cTn assay.
+    <div id="verStamp" style="margin-top:6px;font-weight:600"></div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ===== SITE CONFIG (LRH) — edit these to adapt this tool to another site =====
+  // The universal HEART-pathway logic below reads every clinical number from here.
+  // A site adopting this tool should only need to change values in this block.
+  // NOTE: the on-page reference tables/labels mirror these numbers as plain text —
+  // if you change a value here, update the matching text in the page to match.
+  var SITE = {
+    hospital: "Littleton Regional Hospital",
+    hospitalShort: "LRH",
+    units: "ng/L",
+    version: "1.1",
+    lastReviewed: "2026-08-03",
+    trop: {
+      ruleInValue:      50,   // any hs-Trop >= this            -> rules in
+      ruleInDelta:      15,   // 0/1-hr or 3-hr delta >= this    -> rules in
+      ruleOutPainValue:  4,   // < this WITH chest pain > painHours -> rule out
+      ruleOutValue:      5,   // < this AND delta < ruleOutDelta -> rule out
+      ruleOutDelta:      4,   // delta < this (with value < ruleOutValue, or gray zone) -> rule out
+      painHours:         3,   // chest-pain duration threshold (hours)
+      grayLow:           5,   // gray-zone lower bound (display)
+      grayHigh:         49,   // gray-zone upper bound (display)
+      heartNormalLimit: { male: 19.8, female: 14.9 }, // HEART troponin normal limit by sex
+      heartMultiplier:   3    // >1x..3x normal = 1 pt, >3x normal = 2 pts
+    }
+  };
+  // ============================================================================
+
+  var $=function(id){return document.getElementById(id);};
+  var t0El=$('t0'), t1El=$('t1'), t3El=$('t3');
+
+  function num(el){ if(el.value===''||el.value===null) return null; var v=Number(el.value); return isNaN(v)?null:v; }
+  function sel(name){ var el=document.querySelector('input[name="'+name+'"]:checked'); return el?el.value:null; }
+
+  function normalLimit(sex){ return sex==='female'?SITE.trop.heartNormalLimit.female:SITE.trop.heartNormalLimit.male; }
+
+  // HEART troponin points from 0-hr value + sex (standard 0 / 1-3x / >3x)
+  function tropPoints(t0,sex){
+    if(t0===null||!sex) return null;
+    var nl=normalLimit(sex);
+    if(t0<=nl) return 0;
+    if(t0<=SITE.trop.heartMultiplier*nl) return 1;
+    return 2;
+  }
+
+  // Core pathway decision -> {code, ...}
+  function decide(){
+    var stemi=sel('stemi'), pain=sel('pain'), sex=sel('sex');
+    var t0=num(t0El), t1=num(t1El), t3=num(t3El);
+
+    if(stemi==='yes') return {code:'stemi'};
+    if(stemi===null)  return {code:'incomplete', why:'Answer the STEMI question.'};
+    if(t0===null||t1===null) return {code:'incomplete', why:'Enter both 0-hr and 1-hr troponin.'};
+
+    var T=SITE.trop;
+    var d01=Math.abs(t1-t0);
+    var measured=[t0,t1]; if(t3!==null) measured.push(t3);
+    var anyRuleIn=measured.some(function(v){return v>=T.ruleInValue;});
+    var d3=null;
+    if(t3!==null) d3=Math.max(Math.abs(t3-t0),Math.abs(t3-t1));
+
+    // RULE IN
+    if(anyRuleIn || d01>=T.ruleInDelta || (d3!==null && d3>=T.ruleInDelta)){
+      var r=[];
+      if(anyRuleIn) r.push('a troponin &ge; '+T.ruleInValue+' '+SITE.units);
+      if(d01>=T.ruleInDelta) r.push('0/1-hr &Delta; &ge; '+T.ruleInDelta);
+      if(d3!==null && d3>=T.ruleInDelta) r.push('3-hr &Delta; &ge; '+T.ruleInDelta);
+      return {code:'in', why:r.join(' and ')};
+    }
+    // RULE OUT -> straight D/C home
+    if((t0<T.ruleOutPainValue && pain==='yes') || (t0<T.ruleOutValue && d01<T.ruleOutDelta)){
+      var w = (t0<T.ruleOutPainValue&&pain==='yes')
+        ? '0-hr &lt; '+T.ruleOutPainValue+' '+SITE.units+' with chest pain &gt; '+T.painHours+' h'
+        : '0-hr &lt; '+T.ruleOutValue+' '+SITE.units+' with 0/1-hr &Delta; &lt; '+T.ruleOutDelta;
+      return {code:'dchome', why:w};
+    }
+    // GRAY ZONE
+    if(d01<T.ruleOutDelta) return {code:'ruledout', via:'0/1-hr &Delta; &lt; '+T.ruleOutDelta+' in the '+T.grayLow+'&ndash;'+T.grayHigh+' gray zone'};
+    // gray-zone delta above rule-out but below rule-in
+    if(t3===null) return {code:'reflex'};
+    // 3-hr entered and not ruled in -> ruled out
+    return {code:'ruledout', via:'3-hr &Delta; &lt; '+T.ruleInDelta+' after reflex'};
+  }
+
+  function heartData(){
+    var sex=sel('sex'), t0=num(t0El);
+    // Prefer the auto-computed sub-score (value + sex); otherwise fall back to a manual tap.
+    var sub;
+    if(t0!==null && sex){ sub=tropPoints(t0,sex); }
+    else { var mv=sel('trop'); sub = (mv===null)?null:Number(mv); }
+    var parts=['history','ecg','age','risk'], total=0, complete=true;
+    for(var i=0;i<parts.length;i++){ var v=sel(parts[i]); if(v===null){complete=false;} else {total+=Number(v);} }
+    if(sub===null){complete=false;} else {total+=sub;}
+    return {total:total, complete:complete, sub:sub};
+  }
+  function tier(s){ if(s<=3) return {t:'low',label:'Low risk (0–3)',cls:'out'};
+                    if(s<=6) return {t:'med',label:'Medium risk (4–6)',cls:'ref'};
+                    return {t:'high',label:'High risk (7–10)',cls:'in'}; }
+  function heartDispo(s){
+    if(s<=3) return 'D/C, no stress test, follow up with PCP.';
+    if(s<=6) return 'ASAP outpatient stress test.';
+    return 'Consider stress test prior to discharge — then D/C with PCP follow-up or cardiology consultation.';
+  }
+
+  function paint(box,cls){
+    box.className='final';
+    box.classList.add(cls==='in'?'r-in':cls==='dc'?'r-dc':cls==='ref'?'r-ref':'r-out');
+    box.style.borderColor='var(--'+cls+'-br)';
+    box.style.background='var(--'+cls+'-bg)';
+    box.style.color='var(--'+cls+')';
+  }
+
+  function recalc(){
+    // ESRD warning
+    $('esrdWarn').classList.toggle('show', $('esrd').checked);
+
+    var t0=num(t0El), t1=num(t1El), t3=num(t3El);
+    // delta display
+    if(t0!==null&&t1!==null){ var d=t1-t0; $('deltaVal').textContent=(d>0?'+':'')+d; }
+    else { $('deltaVal').innerHTML='&ndash;'; }
+
+    // HEART troponin sub-score option display.
+    // If value + sex are present -> auto-fill (authoritative). Otherwise leave the row
+    // manually selectable and just reflect whatever is currently tapped.
+    var sex=sel('sex');
+    var autoSub = (t0!==null && sex) ? tropPoints(t0,sex) : null;
+    for(var i=0;i<3;i++){
+      var opt=$('tropOpt'+i), inp=opt.querySelector('input');
+      if(autoSub!==null){ var on=(i===autoSub); inp.checked=on; opt.classList.toggle('sel',on); }
+      else { opt.classList.toggle('sel', inp.checked); }
+    }
+    if(t0!==null && sex){ var nl=normalLimit(sex);
+      $('tropHint').innerHTML='&mdash; auto-set: normal &le; '+nl+' '+SITE.units+' ('+(sex==='female'?'female':'male')+'), '+SITE.trop.heartMultiplier+'&times; = '+(SITE.trop.heartMultiplier*nl).toFixed(1); }
+    else if(sex){ $('tropHint').innerHTML='&mdash; enter a 0-hr value to auto-set, or tap the points'; }
+    else { $('tropHint').innerHTML='&mdash; select sex to auto-set, or tap the points manually'; }
+
+    var d=decide();
+
+    // troponin result card
+    var tr=$('tropResult'); tr.className='resultcard';
+    var t3field=$('t3field'); t3field.classList.remove('hot');
+    if(d.code==='incomplete'){ tr.classList.add('pending'); tr.innerHTML=d.why||'Complete Section 1 and enter troponins.'; }
+    else if(d.code==='stemi'){ tr.classList.add('r-in'); tr.innerHTML='<span class="tag">STEMI ALERT</span> Evidence of STEMI on EKG — activate STEMI protocol.'; }
+    else if(d.code==='in'){ tr.classList.add('r-in'); tr.innerHTML='<span class="tag">RULE-IN ZONE</span> '+d.why+'.'; }
+    else if(d.code==='dchome'){ tr.classList.add('r-dc'); tr.innerHTML='<span class="tag">D/C HOME</span> '+d.why+' — AMI ruled out.'; }
+    else if(d.code==='reflex'){ tr.classList.add('r-ref'); tr.innerHTML='<span class="tag">REFLEX TO 3 HOURS</span> 5–49 ng/L with 0/1-hr Δ 4–14 — obtain a 3-hr troponin and enter it above.'; t3field.classList.add('hot'); }
+    else if(d.code==='ruledout'){ tr.classList.add('r-out'); tr.innerHTML='<span class="tag">AMI RULED OUT</span> '+d.via+' — apply HEART score.'; }
+
+    // HEART score bar
+    var h=heartData();
+    var scoreEl=$('heartScore'), riskEl=$('heartRisk');
+    if(!h.complete){ scoreEl.textContent=(h.total>0?h.total:'–'); riskEl.textContent='Incomplete';
+      riskEl.style.background='#eef2f5'; riskEl.style.color='var(--muted)'; }
+    else { scoreEl.textContent=h.total; var rt=tier(h.total); riskEl.textContent=rt.label;
+      riskEl.style.background='var(--'+rt.cls+'-bg)'; riskEl.style.color='var(--'+rt.cls+')'; }
+
+    renderFinal(d,h);
+  }
+
+  function renderFinal(d,h){
+    var box=$('finalBox');
+    function pending(msg){ box.className='final pending'; box.style.cssText='';
+      box.innerHTML='<div class="head">Recommendation</div><div class="verdict">Complete the sections above</div><div class="detail">'+msg+'</div>'; }
+    function show(cls,head,verdict,detail){ paint(box,cls);
+      box.innerHTML='<div class="head">'+head+'</div><div class="verdict">'+verdict+'</div><div class="detail">'+detail+'</div>'; }
+
+    if(d.code==='incomplete'){ pending(d.why||'Answer Section 1 and enter the troponins.'); return; }
+    if(d.code==='stemi'){ show('in','STEMI','STEMI Alert — activate STEMI protocol','Evidence of STEMI on EKG. Proceed directly to STEMI activation; the troponin pathway does not apply.'); return; }
+    if(d.code==='in'){ show('in','Rule-in zone','Rule in — consider cardiology consult','Rule-in criteria met ('+d.why+'). Consider cardiology consultation if clinically appropriate. Manage as ACS.'); return; }
+    if(d.code==='reflex'){ show('ref','Reflex','Observe — repeat hs-troponin at 3 hours','Gray zone (5–49 ng/L) with a 0/1-hr Δ of 4–14. Obtain a 3-hr troponin: Δ ≥ 15 rules in; Δ < 15 rules AMI out (then apply HEART score).'); return; }
+
+    // dchome or ruledout -> AMI ruled out; HEART decides stress-test disposition
+    if(d.code==='dchome' || d.code==='ruledout'){
+      var lead = d.code==='dchome'
+        ? 'AMI ruled out ('+d.why+'). Discharge home with outpatient follow-up as needed.'
+        : 'AMI ruled out ('+d.via+').';
+      if(!h.complete){
+        // still give the ruled-out disposition; note HEART incomplete
+        var cls = d.code==='dchome' ? 'dc' : 'out';
+        show(cls, d.code==='dchome'?'D/C home':'AMI ruled out',
+          d.code==='dchome'?'Discharge home, outpatient follow-up':'AMI ruled out — complete HEART score',
+          lead+' Complete the HEART score for the stress-test vs discharge decision.');
+        return;
+      }
+      var rt=tier(h.total);
+      show(rt.cls, 'AMI ruled out · HEART '+h.total+'/10 ('+rt.t+')',
+        heartVerdict(h.total),
+        lead+' <b>HEART '+h.total+'/10 — '+rt.label+':</b> '+heartDispo(h.total));
+      return;
+    }
+  }
+  function heartVerdict(s){
+    if(s<=3) return 'D/C, no stress test, PCP follow-up';
+    if(s<=6) return 'ASAP outpatient stress test';
+    return 'Stress test prior to d/c (or cardiology)';
+  }
+
+  // wire up radio highlighting + recalc
+  document.querySelectorAll('.opts[data-group]').forEach(function(grp){
+    grp.addEventListener('change',function(){
+      grp.querySelectorAll('label.opt').forEach(function(l){ l.classList.toggle('sel', l.querySelector('input').checked); });
+      recalc();
+    });
+  });
+  t0El.addEventListener('input',recalc);
+  t1El.addEventListener('input',recalc);
+  t3El.addEventListener('input',recalc);
+  $('esrd').addEventListener('change',recalc);
+
+  window.resetAll=function(){
+    [t0El,t1El,t3El].forEach(function(e){e.value='';});
+    document.querySelectorAll('input[type=radio]').forEach(function(r){r.checked=false;});
+    $('esrd').checked=false;
+    document.querySelectorAll('label.opt').forEach(function(l){l.classList.remove('sel');});
+    recalc();
+  };
+  // version / last-reviewed stamp (from SITE CONFIG)
+  var vs=$('verStamp'); if(vs){ vs.innerHTML='v'+SITE.version+' &middot; last reviewed '+SITE.lastReviewed+' &middot; '+SITE.hospitalShort; }
+  recalc();
+})();
+</script>
+</body>
+</html>

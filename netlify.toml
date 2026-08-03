@@ -1,0 +1,50 @@
+# Netlify config for a plain static site (no build step).
+# Publishes the repository root, where the landing index.html lives.
+[build]
+  publish = "."
+  command = ""
+
+# --- OB & neonatal app: never let a phone hold a stale shell or worker ---
+[[headers]]
+  for = "/ob-neonatal/index.html"
+  [headers.values]
+    Cache-Control = "no-cache"
+
+[[headers]]
+  for = "/ob-neonatal/sw.js"
+  [headers.values]
+    Cache-Control = "no-cache"
+    Service-Worker-Allowed = "/ob-neonatal/"
+
+[[headers]]
+  for = "/ob-neonatal/manifest.webmanifest"
+  [headers.values]
+    Content-Type = "application/manifest+json"
+    Cache-Control = "no-cache"
+
+# --- Preserve the old URLs so existing bookmarks keep working ---
+# HEART pathway moved to /clinical-pathways/heart/
+[[redirects]]
+  from = "/heart"
+  to = "/clinical-pathways/heart/"
+  status = 301
+[[redirects]]
+  from = "/heart/*"
+  to = "/clinical-pathways/heart/"
+  status = 301
+
+# OB app moved to /ob-neonatal/
+[[redirects]]
+  from = "/ob"
+  to = "/ob-neonatal/"
+  status = 301
+[[redirects]]
+  from = "/ob/*"
+  to = "/ob-neonatal/"
+  status = 301
+
+# /ob-neonatal (no trailing slash) also lands on the app.
+[[redirects]]
+  from = "/ob-neonatal"
+  to = "/ob-neonatal/index.html"
+  status = 200

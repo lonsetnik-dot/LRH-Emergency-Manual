@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="theme-color" content="#005596">
+<title>LRH Emergency Manual</title>
+<style>
+  /* =====================================================================
+     LRH BRAND COLORS -- edit to match exactly (same variables as the tools)
+     ===================================================================== */
+  :root{
+    --brand-primary:#005596; --brand-primary-dark:#003e6e; --brand-secondary:#6cb33f;
+    --ink:#1f2933; --muted:#5b6672; --line:#e2e7ec; --panel:#fff; --page:#eef2f5;
+    --section:var(--brand-secondary); /* header stripe = which part of the manual; home = brand green */
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--page); color:var(--ink); line-height:1.45; font-size:16px; min-height:100vh}
+  .wrap{max-width:840px; margin:0 auto; padding:0 16px 56px}
+
+  header.top{background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-dark));
+    color:#fff; padding:26px 16px; border-bottom:5px solid var(--section)}
+  header.top .inner{max-width:840px; margin:0 auto; display:flex; align-items:center; gap:16px}
+  .logo{width:56px;height:56px;border-radius:11px;background:#fff;flex:0 0 auto;display:flex;
+    align-items:center;justify-content:center;font-weight:800;color:var(--brand-primary);
+    font-size:20px;letter-spacing:.5px;box-shadow:0 1px 3px rgba(0,0,0,.25)}
+  header.top h1{font-size:1.4rem; margin:0 0 3px}
+  header.top p{margin:0; opacity:.9; font-size:.88rem}
+
+  .intro{color:var(--muted); font-size:.9rem; margin:22px 2px 14px}
+
+  /* ---- Search ---- */
+  .search{position:relative; margin:0 0 20px}
+  .search input{width:100%; font-size:1rem; padding:13px 42px 13px 15px; border:1px solid var(--line);
+    border-radius:11px; background:var(--panel); color:var(--ink); box-shadow:0 1px 2px rgba(16,42,67,.05)}
+  .search input:focus{outline:none; border-color:var(--brand-primary); box-shadow:0 0 0 3px rgba(0,85,150,.12)}
+  .search .ico{position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:1.05rem; pointer-events:none}
+  .results{list-style:none; margin:8px 0 0; padding:0; border:1px solid var(--line); border-radius:11px;
+    overflow:hidden; background:var(--panel); box-shadow:0 4px 14px rgba(16,42,67,.08)}
+  .results[hidden]{display:none}
+  .results li{margin:0}
+  .results a{display:flex; align-items:baseline; gap:10px; justify-content:space-between; text-decoration:none;
+    color:inherit; padding:11px 14px; border-top:1px solid var(--line)}
+  .results li:first-child a{border-top:none}
+  .results a:hover,.results a:focus{background:#f2f7fb; outline:none}
+  .results .r-title{font-weight:600; color:var(--brand-primary-dark); font-size:.95rem}
+  .results .r-cat{font-size:.72rem; color:var(--muted); white-space:nowrap; text-transform:uppercase; letter-spacing:.4px}
+  .results .r-none{padding:12px 14px; color:var(--muted); font-size:.88rem}
+
+  .grid{display:grid; gap:14px; grid-template-columns:1fr}
+  @media(min-width:600px){.grid{grid-template-columns:1fr 1fr}}
+
+  /* ---- AREA COLORS — one per category; edit here to recolor an area ----
+     (selectors are qualified with a.tool so they override the default below) */
+  a.tool.cat-pathways{--c:#2f7a3f}   /* green  · flow charts / clinical pathways */
+  a.tool.cat-ob{--c:#9b1c2e}         /* red    · OB & neonatal */
+  a.tool.cat-codes{--c:#2f62a8}      /* blue   · codes / resuscitation */
+  a.tool.cat-trauma{--c:#c26a1b}     /* orange · trauma */
+
+  a.tool{--c:var(--brand-primary); display:flex; flex-direction:column; text-decoration:none; color:inherit;
+    background:var(--panel); border:1px solid var(--line); border-left:6px solid var(--c);
+    border-radius:12px; padding:16px 18px; box-shadow:0 1px 2px rgba(16,42,67,.05); transition:.14s}
+  a.tool:hover{transform:translateY(-2px); box-shadow:0 6px 18px rgba(16,42,67,.10)}
+  .cardhead{display:flex; align-items:center; gap:13px; margin-bottom:9px}
+  .ic{flex:0 0 auto; width:46px; height:46px; border-radius:11px; background:var(--c);
+    display:flex; align-items:center; justify-content:center}
+  .ic svg{width:30px; height:30px; display:block}
+  a.tool .name{font-weight:700; font-size:1.06rem; color:var(--brand-primary-dark); margin:0}
+  a.tool .desc{font-size:.85rem; color:var(--muted); flex:1}
+  a.tool .go{margin-top:12px; font-size:.82rem; font-weight:700; color:var(--c)}
+  a.tool .go::after{content:" \2192"}
+
+  /* Coming-soon: entire button grayed out (its area color returns when it goes live) */
+  .tool.soon{pointer-events:none; cursor:default; background:#eef1f4; border-left-color:#c3ccd4; box-shadow:none}
+  .tool.soon .ic{background:#aeb7c0}
+  .tool.soon .name{color:#8a949d}
+  .tool.soon .desc{color:#a3acb4}
+  .badge{display:inline-block; font-size:.66rem; font-weight:700; text-transform:uppercase;
+    letter-spacing:.5px; background:#e2e7ec; color:var(--muted); padding:2px 8px; border-radius:20px; margin-left:8px; vertical-align:middle}
+
+  .note{background:#fff8e1; border:1px solid #f2d999; color:#6d4c00; font-size:.8rem;
+    border-radius:9px; padding:12px 15px; margin-top:26px}
+  footer{text-align:center; color:var(--muted); font-size:.76rem; margin-top:22px}
+
+  /* ---- Beta splash (site front door; shown every visit, stores nothing) ---- */
+  #betasplash{position:fixed; inset:0; z-index:999; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; gap:18px; text-align:center; padding:32px 26px;
+    background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-dark)); color:#fff}
+  #betasplash .eyebrow{font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:#bcd6ec}
+  #betasplash .title{font-size:2rem; font-weight:800; line-height:1.05; letter-spacing:-.01em}
+  #betasplash .beta{display:inline-block; padding:5px 14px; border:2px solid var(--brand-secondary);
+    color:#dff0c9; font-weight:700; letter-spacing:.16em; font-size:.8rem; border-radius:6px}
+  #betasplash .lead{max-width:480px; font-size:1.02rem; line-height:1.45; color:#eaf2f9}
+  #betasplash .fine{max-width:480px; font-size:.86rem; line-height:1.4; color:#bcd6ec}
+  #betasplash button{margin-top:6px; min-height:54px; padding:0 26px; border-radius:10px; cursor:pointer;
+    background:#fff; color:var(--brand-primary-dark); border:2px solid #fff; font-weight:700;
+    letter-spacing:.06em; font-size:.92rem}
+  #betasplash button:hover{background:#eaf2f9}
+</style>
+</head>
+<body>
+
+<!-- ===== SITE BETA SPLASH — first thing you see; dismiss to reveal the menu ===== -->
+<div id="betasplash" role="dialog" aria-modal="true" aria-label="Beta notice">
+  <div class="eyebrow">Littleton Regional Hospital &middot; Emergency Department</div>
+  <div class="title">Emergency Manual</div>
+  <div class="beta">BETA</div>
+  <div class="lead">Not yet ready for clinical use. Shared for feedback and practice only &mdash; do not use it to direct the care of a patient.</div>
+  <div class="fine">A personal, unofficial reference &mdash; not part of the LRH IT system / EHR, and not a substitute for clinical judgment. Content is unverified; verify every value against local protocols and assays.</div>
+  <button type="button" id="betago">I UNDERSTAND &mdash; CONTINUE</button>
+</div>
+
+<header class="top">
+  <div class="inner">
+    <div class="logo">LRH</div>
+    <div>
+      <h1>Emergency Manual</h1>
+      <p>Littleton Regional Hospital &mdash; bedside decision-support aids</p>
+    </div>
+  </div>
+</header>
+
+<div class="wrap">
+  <p class="intro">Choose a category, or search for a topic. Each tool has its own direct link you can bookmark or share.</p>
+
+  <!-- ===== SEARCH ===== -->
+  <div class="search">
+    <input type="search" id="q" autocomplete="off" spellcheck="false"
+      placeholder="Search topics&hellip; e.g. HEART, shoulder dystocia, PPH, cord prolapse"
+      aria-label="Search topics" aria-controls="results">
+    <span class="ico" aria-hidden="true">&#128269;</span>
+    <ul class="results" id="results" hidden></ul>
+  </div>
+
+  <div class="grid">
+
+    <!-- ===== CATEGORY: Clinical Pathways (live · GREEN) -> /clinical-pathways/ ===== -->
+    <a class="tool cat-pathways" href="clinical-pathways/">
+      <div class="cardhead">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+          <rect x="11" y="3" width="10" height="6" rx="1.5"/>
+          <line x1="16" y1="9" x2="16" y2="11.5"/>
+          <path d="M16 11.5 L21 16.5 L16 21.5 L11 16.5 Z"/>
+          <path d="M11 16.5 H6 V26"/><path d="M21 16.5 H26 V26"/>
+          <circle cx="6" cy="27.6" r="2.4" fill="#fff" stroke="none"/>
+          <circle cx="26" cy="27.6" r="2.4" fill="#fff" stroke="none"/>
+        </svg></span>
+        <div class="name">Clinical Pathways</div>
+      </div>
+      <div class="desc">Accelerated diagnostic and treatment pathways. Includes the Chest Pain / hs-Troponin HEART pathway.</div>
+      <div class="go">Open</div>
+    </a>
+
+    <!-- ===== CATEGORY: OB &amp; Neonatal (live · RED) -> /ob-neonatal/ ===== -->
+    <a class="tool cat-ob" href="ob-neonatal/?from=home">
+      <div class="cardhead">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 32 32">
+          <circle cx="16" cy="11" r="6.5" fill="#fff"/>
+          <path d="M7.5 29 C 7.5 20.5 24.5 20.5 24.5 29 Z" fill="#fff"/>
+          <circle cx="13.4" cy="11" r="1.1" fill="#9b1c2e"/>
+          <circle cx="18.6" cy="11" r="1.1" fill="#9b1c2e"/>
+          <path d="M13.5 14 Q16 16 18.5 14" fill="none" stroke="#9b1c2e" stroke-width="1.3" stroke-linecap="round"/>
+        </svg></span>
+        <div class="name">OB &amp; Neonatal Emergencies</div>
+      </div>
+      <div class="desc">Obstetric and neonatal emergency manual with timers, checklists, and cart-drawer reference.</div>
+      <div class="go">Open</div>
+    </a>
+
+    <!-- ===== CATEGORY: Codes (coming soon · BLUE) -> /codes/ ===== -->
+    <a class="tool soon cat-codes" aria-disabled="true">
+      <div class="cardhead">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 32 32">
+          <path d="M16 27 C 4 18 7 7 16 12 C 25 7 28 18 16 27 Z" fill="#fff"/>
+          <polyline points="7,17 12,17 14.5,12.5 17.5,21 20,17 25,17" fill="none" stroke="#2f62a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg></span>
+        <div class="name">Codes<span class="badge">Coming soon</span></div>
+      </div>
+      <div class="desc">Code / resuscitation reference, including the ED code-cart drawer contents.</div>
+    </a>
+
+    <!-- ===== CATEGORY: Trauma (coming soon · ORANGE) -> /trauma/ ===== -->
+    <a class="tool soon cat-trauma" aria-disabled="true">
+      <div class="cardhead">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 32 32">
+          <rect x="13" y="5" width="6" height="22" rx="2" fill="#fff"/>
+          <rect x="5" y="13" width="22" height="6" rx="2" fill="#fff"/>
+        </svg></span>
+        <div class="name">Trauma<span class="badge">Coming soon</span></div>
+      </div>
+      <div class="desc">Trauma resuscitation pathways and quick-reference aids.</div>
+    </a>
+
+    <!-- ===== Add a category/tool: create a lowercase, hyphenated folder with an
+         index.html, add a card above (href to that folder), and add matching
+         entries to the SEARCH INDEX in the script below. ===== -->
+
+  </div>
+
+  <div class="note">
+    <strong>Personal decision-support aids &mdash; not part of the LRH IT system / EHR.</strong>
+    Beta: content is unverified. These tools do not replace clinical judgment. Verify all values and thresholds against local protocols and assays.
+  </div>
+
+  <footer>Littleton Regional Hospital Emergency Manual &mdash; personal, unofficial reference &middot; Beta</footer>
+</div>
+
+<script>
+/* ---- Beta splash: dismiss on tap. Stores nothing (shows every visit). ---- */
+(function(){
+  function boot(){
+    var s=document.getElementById('betasplash'), b=document.getElementById('betago');
+    if(!s||!b) return;
+    function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s);
+      var q=document.getElementById('q'); if(q) q.focus(); }
+    b.addEventListener('click', go, false);
+    b.addEventListener('touchend', go, false);
+  }
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
+})();
+
+/* ---- Site search over a curated index. Extend SEARCH_INDEX when you add tools.
+   OB entries deep-link to a card (#c0x) and pass from=home so the OB app's own
+   splash is skipped. Everything is client-side; no query is stored or sent. ---- */
+(function(){
+  var SEARCH_INDEX=[
+    {t:"Chest Pain · HEART Pathway", c:"Clinical Pathways", k:"heart score acs acute coronary syndrome troponin hs-troponin chest pain risk disposition 0/1 hour accelerated", u:"clinical-pathways/heart/"},
+    {t:"OB & Neonatal — overview / index", c:"OB & Neonatal", k:"obstetric neonatal childbirth delivery index", u:"ob-neonatal/?from=home"},
+    {t:"Imminent normal delivery", c:"OB & Neonatal", k:"labor birth precipitous apgar nuchal cord crowning", u:"ob-neonatal/?from=home#c02"},
+    {t:"Neonatal resuscitation (NRP)", c:"OB & Neonatal", k:"nrp newborn resus ppv chest compressions heart rate metronome apgar", u:"ob-neonatal/?from=home#c03"},
+    {t:"Umbilical vein catheterization (UVC)", c:"OB & Neonatal", k:"uvc umbilical vein line venous access emergency", u:"ob-neonatal/?from=home#c04"},
+    {t:"ED C-section", c:"OB & Neonatal", k:"cesarean c-section section operative", u:"ob-neonatal/?from=home#c05"},
+    {t:"Postpartum hemorrhage (PPH)", c:"OB & Neonatal", k:"pph bleeding hemorrhage uterotonics oxytocin tranexamic txa uterine massage atony", u:"ob-neonatal/?from=home#c06"},
+    {t:"Shoulder dystocia (HELPERR)", c:"OB & Neonatal", k:"shoulder dystocia helperr mcroberts suprapubic pressure maneuvers", u:"ob-neonatal/?from=home#c07"},
+    {t:"Breech delivery", c:"OB & Neonatal", k:"breech buttocks footling frank complete", u:"ob-neonatal/?from=home#c08"},
+    {t:"Umbilical cord prolapse", c:"OB & Neonatal", k:"cord prolapse presenting", u:"ob-neonatal/?from=home#c09"},
+    {t:"Resuscitative (perimortem) hysterotomy", c:"OB & Neonatal", k:"perimortem resuscitative hysterotomy maternal cardiac arrest", u:"ob-neonatal/?from=home#c10"},
+    {t:"OB / neonatal cart — drawer contents", c:"OB & Neonatal", k:"cart drawer equipment supplies where is", u:"ob-neonatal/?from=home#cart"}
+  ];
+  var q=document.getElementById('q'), box=document.getElementById('results');
+  if(!q||!box) return;
+  function esc(s){ return s.replace(/[&<>"]/g,function(ch){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[ch]; }); }
+  function render(items){
+    if(!items.length){ box.innerHTML='<li class="r-none">No matches. Try HEART, PPH, breech, cord&hellip;</li>'; box.hidden=false; return; }
+    box.innerHTML=items.map(function(it){
+      return '<li><a href="'+it.u+'"><span class="r-title">'+esc(it.t)+'</span><span class="r-cat">'+esc(it.c)+'</span></a></li>';
+    }).join('');
+    box.hidden=false;
+  }
+  function search(){
+    var term=q.value.trim().toLowerCase();
+    if(!term){ box.hidden=true; box.innerHTML=''; return; }
+    var hits=SEARCH_INDEX.filter(function(it){
+      return (it.t+' '+it.k+' '+it.c).toLowerCase().indexOf(term)!==-1;
+    }).sort(function(a,b){
+      var ai=a.t.toLowerCase().indexOf(term), bi=b.t.toLowerCase().indexOf(term);
+      ai=ai===-1?99:ai; bi=bi===-1?99:bi; return ai-bi;
+    });
+    render(hits);
+  }
+  q.addEventListener('input', search);
+  q.addEventListener('keydown', function(e){
+    if(e.key==='Enter'){ var a=box.querySelector('a'); if(a){ window.location.href=a.getAttribute('href'); } }
+    else if(e.key==='Escape'){ q.value=''; box.hidden=true; box.innerHTML=''; }
+  });
+})();
+</script>
+</body>
+</html>
