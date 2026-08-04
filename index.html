@@ -58,6 +58,7 @@
   a.tool.cat-ob{--c:#9b1c2e}         /* red    · OB & neonatal */
   a.tool.cat-codes{--c:#2f62a8}      /* blue   · codes / resuscitation */
   a.tool.cat-trauma{--c:#c26a1b}     /* orange · trauma */
+  a.tool.cat-peds{--c:#7a3fa0}       /* purple · pediatrics */
 
   a.tool{--c:var(--brand-primary); display:flex; flex-direction:column; text-decoration:none; color:inherit;
     background:var(--panel); border:1px solid var(--line); border-left:6px solid var(--c);
@@ -176,9 +177,26 @@
           <path d="M16 27 C 4 18 7 7 16 12 C 25 7 28 18 16 27 Z" fill="#fff"/>
           <polyline points="7,17 12,17 14.5,12.5 17.5,21 20,17 25,17" fill="none" stroke="#2f62a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg></span>
-        <div class="name">Codes<span class="badge">Beta — 1 of 13 built</span></div>
+        <div class="name">Codes<span class="badge">Beta — 17 cards</span></div>
       </div>
       <div class="desc">Code / resuscitation reference, including the ED code-cart drawer contents.</div>
+      <div class="go">Open</div>
+    </a>
+
+    <!-- ===== CATEGORY: Pediatric Emergencies (beta · PURPLE) -> /peds/ ===== -->
+    <a class="tool cat-peds" href="peds/?from=home">
+      <div class="cardhead">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 32 32">
+          <circle cx="16" cy="9" r="5.4" fill="#fff"/>
+          <circle cx="14" cy="9" r="1" fill="#7a3fa0"/>
+          <circle cx="18" cy="9" r="1" fill="#7a3fa0"/>
+          <path d="M13.6 11.4 Q16 13 18.4 11.4" fill="none" stroke="#7a3fa0" stroke-width="1.1" stroke-linecap="round"/>
+          <rect x="14.4" y="13.6" width="3.2" height="4" rx="1.4" fill="#fff"/>
+          <path d="M9 27 C 9 19 23 19 23 27 Z" fill="#fff"/>
+        </svg></span>
+        <div class="name">Pediatric Emergencies<span class="badge">Beta — 14 cards</span></div>
+      </div>
+      <div class="desc">Shared weight/age-based dosing engine plus 14 pediatric ED topics — PALS, anaphylaxis, status epilepticus, DKA, and more.</div>
       <div class="go">Open</div>
     </a>
 
@@ -239,7 +257,22 @@
     {t:"Umbilical cord prolapse", c:"OB & Neonatal", k:"cord prolapse presenting", u:"ob-neonatal/?from=home#c09"},
     {t:"Resuscitative (perimortem) hysterotomy", c:"OB & Neonatal", k:"perimortem resuscitative hysterotomy maternal cardiac arrest", u:"ob-neonatal/?from=home#c10"},
     {t:"OB / neonatal cart — drawer contents", c:"OB & Neonatal", k:"cart drawer equipment supplies where is", u:"ob-neonatal/?from=home#cart"},
-    {t:"Pulseless VF / VT", c:"Codes", k:"code cart cardiac arrest ventricular fibrillation tachycardia defibrillation shock epinephrine amiodarone lidocaine cpr acls", u:"codes/?from=home#c01"}
+    {t:"Pulseless VF / VT", c:"Codes", k:"code cart cardiac arrest ventricular fibrillation tachycardia defibrillation shock epinephrine amiodarone lidocaine cpr acls", u:"codes/?from=home#c01"},
+    {t:"Pediatric Emergencies — overview / index", c:"Pediatric Emergencies", k:"pediatric peds children kids weight dosing index", u:"peds/?from=home"},
+    {t:"Pediatric Cardiac Arrest / PALS", c:"Pediatric Emergencies", k:"pals pediatric cardiac arrest resuscitation defibrillation epinephrine cpr shockable", u:"peds/?from=home#p01"},
+    {t:"Pediatric Anaphylaxis", c:"Pediatric Emergencies", k:"anaphylaxis epinephrine allergic reaction pediatric angioedema", u:"peds/?from=home#p02"},
+    {t:"Pediatric Asthma Exacerbation", c:"Pediatric Emergencies", k:"asthma albuterol ipratropium wheeze pediatric pass severity dexamethasone magnesium terbutaline", u:"peds/?from=home#p03"},
+    {t:"Pediatric Airway Obstruction (Choking)", c:"Pediatric Emergencies", k:"choking foreign body airway obstruction back blows abdominal thrusts", u:"peds/?from=home#p04"},
+    {t:"Epiglottitis / Upper Airway", c:"Pediatric Emergencies", k:"epiglottitis stridor upper airway croup drooling tripod", u:"peds/?from=home#p05"},
+    {t:"Bronchiolitis", c:"Pediatric Emergencies", k:"bronchiolitis rsv wheeze infant respiratory", u:"peds/?from=home#p06"},
+    {t:"Pediatric Diabetic Ketoacidosis (DKA)", c:"Pediatric Emergencies", k:"dka diabetic ketoacidosis insulin pediatric fluids cerebral edema", u:"peds/?from=home#p07"},
+    {t:"Pediatric Altered Mental Status", c:"Pediatric Emergencies", k:"altered mental status ams pediatric coma glucose", u:"peds/?from=home#p08"},
+    {t:"Pediatric Behavioral Agitation", c:"Pediatric Emergencies", k:"agitation behavioral psychiatric restraint pediatric sedation", u:"peds/?from=home#p09"},
+    {t:"Pediatric Status Epilepticus", c:"Pediatric Emergencies", k:"status epilepticus seizure benzodiazepine pediatric levetiracetam fosphenytoin", u:"peds/?from=home#p10"},
+    {t:"Neonatal Fever", c:"Pediatric Emergencies", k:"neonatal fever infant sepsis workup rule out lumbar puncture", u:"peds/?from=home#p11"},
+    {t:"Non-Accidental Trauma", c:"Pediatric Emergencies", k:"nat non-accidental trauma child abuse suspected", u:"peds/?from=home#p12"},
+    {t:"Death of a Child in the ED", c:"Pediatric Emergencies", k:"pediatric death bereavement family termination of resuscitation", u:"peds/?from=home#p13"},
+    {t:"Pediatric Procedural Sedation", c:"Pediatric Emergencies", k:"procedural sedation ketamine propofol etomidate fasting pediatric", u:"peds/?from=home#p14"}
   ];
   var q=document.getElementById('q'), box=document.getElementById('results');
   if(!q||!box) return;
