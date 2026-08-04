@@ -1329,6 +1329,20 @@
       See card 06 (Intubation/RSI) for the pre-airway and induction phases. This card is Plan D — what to do when the patient is paralyzed and you can't intubate AND can't oxygenate by mask or supraglottic device (LMA/iGel).
     </div>
 
+    <!-- ---- FONA TIMER: CICO declared -> ETCO2 confirmed ---- -->
+    <div style="margin:14px 14px 0; border:2px solid #9b1c2e;">
+      <div style="padding:10px 14px; background:#fbeaec;">
+        <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#9b1c2e;">FONA TIMER</div>
+        <div id="fonaclock" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:38px; font-weight:700; line-height:1.1; color:#9b1c2e;">0:00</div>
+        <div id="fonacue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:#5a6a78;">Tap DECLARE CICO to start the clock.</div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
+        <button type="button" id="fonacico" style="min-height:52px; background:#9b1c2e; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">DECLARE CICO</button>
+        <button type="button" id="fonaetco2" style="min-height:52px; background:#2f7a3f; color:#fffefb; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">CONFIRM ETCO₂</button>
+      </div>
+      <button type="button" id="fonareset" style="width:100%; min-height:44px; background:#fffefb; color:#16324f; border:none; border-top:1px solid #e7eaef; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">CLEAR TIMER</button>
+    </div>
+
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid #9b1c2e;">
         <summary style="background:#9b1c2e; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">WHEN TO DECLARE CICO</summary>
@@ -1345,14 +1359,17 @@
         </ul>
       </details>
       <details open style="border:2px solid #9b1c2e;">
-        <summary style="background:#9b1c2e; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">SCALPEL–BOUGIE–TUBE TECHNIQUE (DAS 2025 preferred method)</summary>
+        <summary style="background:#9b1c2e; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">SCALPEL–BOUGIE–TUBE TECHNIQUE</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>1.</b> Stabilize the larynx with your non-dominant hand (laryngeal handshake grip).</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>2.</b> Horizontal stab incision through skin and cricothyroid membrane with a #10 scalpel blade.</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>3.</b> Rotate the blade (or handle) 90° to open the tract and keep it open.</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>4.</b> Slide a bougie along the blade into the trachea, angled caudally — confirm tracheal placement by feeling for hold-up against the tracheal rings.</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>5.</b> Railroad a lubricated cuffed 6.0mm ID endotracheal tube (or dedicated cricothyroidotomy tube) over the bougie into the trachea.</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>6.</b> Inflate the cuff, connect the circuit, confirm placement with waveform capnography, and secure the tube.</li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>1.</b> Stabilize the larynx with your non-dominant hand (laryngeal handshake grip).</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>2.</b> Vertical incision through skin with a #10 scalpel blade.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>3.</b> Blunt dissection down to the cricothyroid membrane.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>4.</b> Horizontal incision back and forth across the cricothyroid membrane.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>5.</b> Insert a finger into the hole to confirm the tract and hold it open.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>6.</b> Slide a bougie alongside your finger into the trachea, angled caudally — confirm tracheal placement by feeling for hold-up against the tracheal rings.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>7.</b> Railroad a lubricated cuffed 6.0mm ID endotracheal tube (or dedicated cricothyroidotomy tube) over the bougie — only far enough to clear the cuff past the membrane; don't overinsert.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>8.</b> Inflate the cuff, connect ETCO₂ and the BVM, confirm placement with waveform capnography — tap CONFIRM ETCO₂ above the moment you see a sustained waveform.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>9.</b> Secure the tube with sutures.</span></label></li>
         </ul>
       </details>
       <details style="border:2px solid #8a6d1f;">
@@ -1365,7 +1382,7 @@
     </div>
 
     <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
-      <b>Sources:</b> Difficult Airway Society (DAS) 2025 guidelines for management of unanticipated difficult tracheal intubation in adults, <i>Br J Anaesth</i> 2026;136:283–307 (scalpel-bougie-tube technique, CICO/"Plan D" trigger, and the emphasis on confirming anatomical endpoints before incision — a change from the 2015 DAS guidance). Laryngeal-handshake landmark technique — widely taught airway-literature convention (Levitan RM et al.). This card is also linked from the Trauma tool.
+      <b>Sources:</b> Difficult Airway Society (DAS) 2025 guidelines for management of unanticipated difficult tracheal intubation in adults, <i>Br J Anaesth</i> 2026;136:283–307 (CICO/"Plan D" trigger, and the emphasis on confirming anatomical endpoints before incision — a change from the 2015 DAS guidance). Laryngeal-handshake landmark technique — widely taught airway-literature convention (Levitan RM et al.). The 9-step scalpel-finger-bougie sequence (vertical incision → blunt dissection → horizontal membrane incision → finger confirmation of the tract → bougie → tube "only far enough" → ETCO₂/BVM confirmation → suture) reflects departmental clinical review and correction of an earlier draft of this card — verify against your current credentialed technique. This card is also linked from the Trauma tool.
     </div>
     <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -1376,7 +1393,7 @@
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "0.7",
+  version: "0.8",
   lastReviewed: "2026-08-04",
   cpr: { cycleSec: 120, rateLow: 100, rateHigh: 120, depthCm: "5–6", rotateMin: 2 },
   defib: { mfr: "ZOLL Rectilinear Biphasic", shock1: "120 J", shock2: "150 J", shock3plus: "200 J" },
@@ -1902,6 +1919,65 @@ var SITEAUDIO = (function(){
   var rb=document.getElementById('resetbtn');
   if(rb) rb.addEventListener('click', function(){ t0=null; try{ localStorage.removeItem(K); }catch(e){} if(tick){ clearInterval(tick); tick=null; } paint(); });
   if(t0!==null) tick=setInterval(paint,1000);
+  paint();
+})();
+
+/* ---- Card 18: FONA timer — CICO declared -> ETCO2 confirmed ---- */
+(function(){
+  var K1='lrh-codes-fonacico', K2='lrh-codes-fonaetco2';
+  var clock=document.getElementById('fonaclock'), cue=document.getElementById('fonacue'),
+      cicoBtn=document.getElementById('fonacico'), etco2Btn=document.getElementById('fonaetco2'), resetBtn=document.getElementById('fonareset');
+  if(!cicoBtn) return;
+  var t0=null, t1=null, tick=null;
+  try{ var s=localStorage.getItem(K1); if(s) t0=+s||null; }catch(e){}
+  try{ var s2=localStorage.getItem(K2); if(s2) t1=+s2||null; }catch(e){}
+  function pad(n){ return (n<10?'0':'')+n; }
+  function mmss(sec){ return Math.floor(sec/60)+':'+pad(sec%60); }
+  function save(){
+    try{
+      if(t0) localStorage.setItem(K1,String(t0)); else localStorage.removeItem(K1);
+      if(t1) localStorage.setItem(K2,String(t1)); else localStorage.removeItem(K2);
+    }catch(e){}
+  }
+  function paint(){
+    if(t0===null){
+      clock.textContent='0:00'; clock.style.color='#9b1c2e';
+      cue.textContent='Tap DECLARE CICO to start the clock.';
+      return;
+    }
+    if(t1===null){
+      var s=Math.max(0,Math.floor((Date.now()-t0)/1000));
+      clock.textContent=mmss(s);
+      clock.style.color='#9b1c2e';
+      cue.textContent='CICO declared — clock running. Tap CONFIRM ETCO₂ the moment you see a sustained waveform.';
+    } else {
+      var s=Math.max(0,Math.floor((t1-t0)/1000));
+      clock.textContent=mmss(s);
+      clock.style.color='#2f7a3f';
+      cue.textContent='Airway secured '+mmss(s)+' after CICO was declared (ETCO₂ confirmed).';
+    }
+  }
+  cicoBtn.addEventListener('click', function(){
+    t0=Date.now(); t1=null; save();
+    if(tick) clearInterval(tick); tick=setInterval(paint,1000); paint();
+    if(window.__codeslog) window.__codeslog.add('18','CICO DECLARED');
+  });
+  etco2Btn.addEventListener('click', function(){
+    if(t0===null || t1!==null) return;
+    t1=Date.now(); save();
+    if(tick){ clearInterval(tick); tick=null; }
+    paint();
+    var s=Math.max(0,Math.floor((t1-t0)/1000));
+    if(window.__codeslog) window.__codeslog.add('18','ETCO2 CONFIRMED (airway in '+mmss(s)+')');
+  });
+  resetBtn.addEventListener('click', function(){ t0=null; t1=null; save(); if(tick){ clearInterval(tick); tick=null; } paint(); });
+  var rb=document.getElementById('resetbtn');
+  if(rb) rb.addEventListener('click', function(){
+    t0=null; t1=null; try{ localStorage.removeItem(K1); localStorage.removeItem(K2); }catch(e){}
+    if(tick){ clearInterval(tick); tick=null; }
+    paint();
+  });
+  if(t0!==null && t1===null) tick=setInterval(paint,1000);
   paint();
 })();
 
