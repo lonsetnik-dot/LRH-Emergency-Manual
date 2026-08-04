@@ -200,16 +200,17 @@
       <div class="go">Open</div>
     </a>
 
-    <!-- ===== CATEGORY: Trauma (coming soon · ORANGE) -> /trauma/ ===== -->
-    <a class="tool soon cat-trauma" aria-disabled="true">
+    <!-- ===== CATEGORY: Trauma (beta · ORANGE) -> /trauma/ ===== -->
+    <a class="tool cat-trauma" href="trauma/?from=home">
       <div class="cardhead">
         <span class="ic" aria-hidden="true"><svg viewBox="0 0 32 32">
           <rect x="13" y="5" width="6" height="22" rx="2" fill="#fff"/>
           <rect x="5" y="13" width="22" height="6" rx="2" fill="#fff"/>
         </svg></span>
-        <div class="name">Trauma<span class="badge">Coming soon</span></div>
+        <div class="name">Trauma<span class="badge">Beta — 3 cards</span></div>
       </div>
-      <div class="desc">Trauma resuscitation pathways and quick-reference aids.</div>
+      <div class="desc">Brain Injury Guidelines (BIG) for minor TBI, plus quick links to the Massive Transfusion Protocol and Front of Neck Access (FONA).</div>
+      <div class="go">Open</div>
     </a>
 
     <!-- ===== Add a category/tool: create a lowercase, hyphenated folder with an
@@ -232,6 +233,8 @@
   function boot(){
     var s=document.getElementById('betasplash'), b=document.getElementById('betago');
     if(!s||!b) return;
+    var params=new URLSearchParams(location.search);
+    if(params.get('from')==='tool'){ if(s.parentNode) s.parentNode.removeChild(s); return; }
     function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s);
       var q=document.getElementById('q'); if(q) q.focus(); }
     b.addEventListener('click', go, false);
@@ -272,7 +275,13 @@
     {t:"Neonatal Fever", c:"Pediatric Emergencies", k:"neonatal fever infant sepsis workup rule out lumbar puncture", u:"peds/?from=home#p11"},
     {t:"Non-Accidental Trauma", c:"Pediatric Emergencies", k:"nat non-accidental trauma child abuse suspected", u:"peds/?from=home#p12"},
     {t:"Death of a Child in the ED", c:"Pediatric Emergencies", k:"pediatric death bereavement family termination of resuscitation", u:"peds/?from=home#p13"},
-    {t:"Pediatric Procedural Sedation", c:"Pediatric Emergencies", k:"procedural sedation ketamine propofol etomidate fasting pediatric", u:"peds/?from=home#p14"}
+    {t:"Pediatric Procedural Sedation", c:"Pediatric Emergencies", k:"procedural sedation ketamine propofol etomidate fasting pediatric", u:"peds/?from=home#p14"},
+    {t:"Trauma — overview / index", c:"Trauma", k:"trauma resuscitation index", u:"trauma/?from=home"},
+    {t:"Brain Injury Guidelines (BIG)", c:"Trauma", k:"big brain injury guidelines mbig modified traumatic brain injury tbi minor head injury mtbi intracranial hemorrhage ich concussion", u:"trauma/?from=home#c01"},
+    {t:"Massive Transfusion Protocol (MTP)", c:"Trauma", k:"mtp massive transfusion protocol blood products prbc plasma platelets cryo hemorrhagic shock", u:"codes/?from=home#c12"},
+    {t:"Front of Neck Access (FONA)", c:"Trauma", k:"fona cricothyroidotomy cico front of neck access surgical airway difficult airway das", u:"codes/?from=home#c18"},
+    {t:"Massive Transfusion Protocol (MTP)", c:"Codes", k:"mtp massive transfusion protocol blood products prbc plasma platelets cryo hemorrhagic shock trauma", u:"codes/?from=home#c12"},
+    {t:"Front of Neck Access (FONA)", c:"Codes", k:"fona cricothyroidotomy cico front of neck access surgical airway difficult airway das trauma", u:"codes/?from=home#c18"}
   ];
   var q=document.getElementById('q'), box=document.getElementById('results');
   if(!q||!box) return;

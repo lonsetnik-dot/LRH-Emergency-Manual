@@ -72,7 +72,7 @@
   <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
 </div>
 <div id="stickytop">
-<nav class="bar"><a href="../" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a><button id="summarybtn" type="button" style="color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center;">SUMMARY</button><button id="resetbtn" type="button" style="display:none;">RESET FOR NEXT CASE</button><span id="resetnote"></span></nav>
+<nav class="bar"><a href="../?from=tool" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a><button id="summarybtn" type="button" style="color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center;">SUMMARY</button><button id="resetbtn" type="button" style="display:none;">RESET FOR NEXT CASE</button><span id="resetnote"></span></nav>
 <div class="section-stripe"></div>
 <div id="headsup">
   <div class="hurow">
@@ -123,6 +123,7 @@
     <a href="#c15" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">15</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Status Asthmaticus</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,26 12,26 16,10 20,34 24,26 40,26 44,14 48,30 52,26 68,26 72,10 76,34 80,26 92,26" fill="none" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
     <a href="#c16" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">16</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Angioedema</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,32 20,32 30,8 40,32 52,32 62,4 72,32 92,32" fill="none" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
     <a href="#c17" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">17</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Tracheostomy Emergency</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,20 26,20 26,4 26,36 26,20 66,20 66,4 66,36 66,20 92,20" fill="none" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
+    <a href="#c18" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">18</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Front of Neck Access (FONA)</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><circle cx="46" cy="20" r="15" fill="none" stroke="#9b1c2e" stroke-width="3"/><line x1="36" y1="20" x2="56" y2="20" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/></svg></span></a>
   </div>
 
   <!-- ============ CARD 01 · PULSELESS VF / VT ============ -->
@@ -1304,12 +1305,74 @@
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
     </div>
   </article>
+
+  <!-- ============ CARD 18 · FRONT OF NECK ACCESS (FONA) ============ -->
+  <article id="c18">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#9b1c2e; font-size:16px; margin-right:8px;">18</span>Front of Neck Access (FONA)</h2>
+        <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#5a6a78; text-align:right;">AKA CRICOTHYROIDOTOMY · CICO</span>
+      </div>
+      <div style="margin-top:2px; font-size:12.5px; color:#8a8578;">Also known as: <b>FONA</b> &middot; <b>Cricothyroidotomy</b> &middot; <b>CICO</b> (can't intubate, can't oxygenate)</div>
+    </div>
+    <div class="nca" style="padding:12px 14px 0;">
+      <div style="border:2px solid #9b1c2e; background:#fbeaec; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#9b1c2e;">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"CICO — declaring front-of-neck access now." Say it out loud.</div></div>
+      <div style="border:2px solid #16324f; background:#eef3f6; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#16324f;">CLAIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">FONA kit opener/operator · continued oxygenation attempts in parallel · capnography/tube-securing once placed — assign aloud.</div></div>
+      <div style="border:2px solid #2f62a8; background:#eaf1fa; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#2f62a8;">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Recognize CICO early and move to scalpel-bougie-tube front-of-neck access without delay — don't fixate on repeated intubation attempts.</div></div>
+    </div>
+
+    <div style="margin:14px 14px 0; border:2px solid #8a6d1f; background:#fdf3cf; color:#6b5410; padding:11px 14px; font-size:13px; line-height:1.4;">
+      See card 06 (Intubation/RSI) for the pre-airway and induction phases. This card is Plan D — what to do when the patient is paralyzed and you can't intubate AND can't oxygenate by mask or supraglottic device (LMA/iGel).
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open style="border:2px solid #9b1c2e;">
+        <summary style="background:#9b1c2e; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">WHEN TO DECLARE CICO</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Patient is paralyzed/anesthetized, <b>cannot be intubated</b>, and <b>cannot be oxygenated</b> by face mask or supraglottic device (LMA/iGel) — this is CICO, DAS 2025's "Plan D" trigger.</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Don't delay for repeated intubation attempts.</b> Once CICO is declared, move directly to front-of-neck access — call it out loud so the team moves together.</li>
+        </ul>
+      </details>
+      <details open style="border:2px solid #16324f;">
+        <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">CONFIRM THE LANDMARK FIRST — "LARYNGEAL HANDSHAKE"</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Maximal neck extension if no C-spine concern. Palpate to identify the thyroid cartilage, cricothyroid membrane, and cricoid cartilage by feel before you cut — the DAS 2025 update specifically emphasizes confirming this anatomical endpoint, since misidentifying the membrane (especially in obese or edematous necks) is a recognized cause of failed FONA.</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Bedside ultrasound can help confirm the membrane if immediately available — but don't let it delay the incision once CICO is declared.</li>
+        </ul>
+      </details>
+      <details open style="border:2px solid #9b1c2e;">
+        <summary style="background:#9b1c2e; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">SCALPEL–BOUGIE–TUBE TECHNIQUE (DAS 2025 preferred method)</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>1.</b> Stabilize the larynx with your non-dominant hand (laryngeal handshake grip).</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>2.</b> Horizontal stab incision through skin and cricothyroid membrane with a #10 scalpel blade.</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>3.</b> Rotate the blade (or handle) 90° to open the tract and keep it open.</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>4.</b> Slide a bougie along the blade into the trachea, angled caudally — confirm tracheal placement by feeling for hold-up against the tracheal rings.</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>5.</b> Railroad a lubricated cuffed 6.0mm ID endotracheal tube (or dedicated cricothyroidotomy tube) over the bougie into the trachea.</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>6.</b> Inflate the cuff, connect the circuit, confirm placement with waveform capnography, and secure the tube.</li>
+        </ul>
+      </details>
+      <details style="border:2px solid #8a6d1f;">
+        <summary style="background:#8a6d1f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">IF SCALPEL TECHNIQUE ISN'T AVAILABLE / EQUIPMENT NOTE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Needle cricothyroidotomy with jet ventilation is a temporizing alternative in select situations (e.g. very young pediatric patients where a surgical airway is higher-risk) — but scalpel-bougie-tube is DAS 2025's preferred first-line technique in adults.</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Keep a pre-packaged FONA/surgical-airway kit immediately available on the airway cart — confirm its exact location and contents locally.</li>
+        </ul>
+      </details>
+    </div>
+
+    <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
+      <b>Sources:</b> Difficult Airway Society (DAS) 2025 guidelines for management of unanticipated difficult tracheal intubation in adults, <i>Br J Anaesth</i> 2026;136:283–307 (scalpel-bougie-tube technique, CICO/"Plan D" trigger, and the emphasis on confirming anatomical endpoints before incision — a change from the 2015 DAS guidance). Laryngeal-handshake landmark technique — widely taught airway-literature convention (Levitan RM et al.). This card is also linked from the Trauma tool.
+    </div>
+    <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
+      <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
+    </div>
+  </article>
 </main>
 
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "0.5",
+  version: "0.6",
   lastReviewed: "2026-08-04",
   cpr: { cycleSec: 120, rateLow: 100, rateHigh: 120, depthCm: "5–6", rotateMin: 2 },
   defib: { mfr: "ZOLL Rectilinear Biphasic", shock1: "120 J", shock2: "150 J", shock3plus: "200 J" },

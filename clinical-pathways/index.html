@@ -43,6 +43,8 @@
   a.tool .desc{font-size:.85rem; color:var(--muted); flex:1}
   a.tool .go{margin-top:12px; font-size:.82rem; font-weight:600; color:var(--brand-primary)}
   a.tool .go::after{content:" \2192"}
+  .badge{display:inline-block; font-size:.68rem; font-weight:700; text-transform:uppercase;
+    letter-spacing:.5px; background:#eef2f5; color:var(--muted); padding:2px 8px; border-radius:20px; margin-left:8px; vertical-align:middle}
 
   .note{background:#fff8e1; border:1px solid #f2d999; color:#6d4c00; font-size:.8rem;
     border-radius:9px; padding:12px 15px; margin-top:26px}
@@ -61,7 +63,7 @@
 </header>
 
 <div class="wrap">
-  <p class="crumb"><a href="../">&larr; Emergency Manual</a></p>
+  <p class="crumb"><a href="../?from=tool">&larr; Emergency Manual</a></p>
   <p class="intro">Accelerated diagnostic and treatment pathways. Tap a pathway to open it.</p>
 
   <div class="grid">
@@ -70,6 +72,22 @@
     <a class="tool" href="heart/">
       <div class="name">Chest Pain &middot; hs-Troponin HEART Pathway</div>
       <div class="desc">ED 0/1-hour accelerated diagnostic pathway for suspected ACS, with HEART score and disposition.</div>
+      <div class="go">Open</div>
+    </a>
+
+    <!-- ===== CROSS-LINK: Brain Injury Guidelines — lives in /trauma/, linked here so it
+         shows up as a pathway too. Not duplicated; same source, same card. ===== -->
+    <a class="tool" href="../trauma/?from=home#c01">
+      <div class="name">Brain Injury Guidelines (BIG) <span class="badge">Trauma tool</span></div>
+      <div class="desc">Minor-TBI risk stratification (mBIG-1/2/3) — neurosurgery consult, repeat-CT, and admission-level pathway. Opens in the Trauma tool.</div>
+      <div class="go">Open</div>
+    </a>
+
+    <!-- ===== CROSS-LINK: Massive Transfusion Protocol — lives in /codes/ card 12,
+         linked here so it shows up as a pathway too. Not duplicated. ===== -->
+    <a class="tool" href="../codes/?from=home#c12">
+      <div class="name">Massive Transfusion Protocol (MTP) <span class="badge">Codes tool</span></div>
+      <div class="desc">Activation criteria and a live product-tally counter for balanced blood-product resuscitation. Opens in the Codes tool.</div>
       <div class="go">Open</div>
     </a>
 
