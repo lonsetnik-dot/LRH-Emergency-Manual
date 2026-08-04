@@ -543,6 +543,10 @@
       <div style="border:2px solid #2f62a8; background:#eaf1fa; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#2f62a8;">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">First-pass success. Pre-oxygenate, have a backup plan, and confirm placement with waveform capnography every time.</div></div>
     </div>
 
+    <div style="margin:14px 14px 0; border:2px solid #9b1c2e; background:#fbeaec; color:#9b1c2e; padding:11px 14px; font-size:13px; line-height:1.4;">
+      ⚠ <b>CAN'T INTUBATE, CAN'T OXYGENATE?</b> If you cannot intubate <b>and</b> cannot oxygenate despite your best bag-mask-ventilation and iGel attempts — and SpO₂ is below 70% and falling — stop attempting and declare CICO now. Don't fixate on repeated intubation attempts; move straight to front-of-neck access. → <a href="#c18" style="color:#9b1c2e; font-weight:700;">Card 18: Front of Neck Access (FONA)</a>
+    </div>
+
     <div style="padding:14px 14px 0;">
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">1 · PRE-AIRWAY PREPARATION</summary>
@@ -560,7 +564,7 @@
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Medications ready:</b> induction agent + paralytic selected, prepared, and confirmed; post-tube sedation/analgesia planned; push-dose pressors ready if needed.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>First-pass attempt:</b> laryngoscope choice confirmed (VL vs. DL); team member identified to call out SpO₂; external laryngeal manipulation (ELM) optimized if needed.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>If first attempt fails:</b> backup plan verbalized (bougie vs. second intubator); iGel size out and ready; cricothyrotomy plan discussed and equipment ready.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>If first attempt fails:</b> backup plan verbalized (bougie vs. second intubator); iGel size out and ready; cricothyrotomy plan discussed and equipment ready. If oxygenation can't be maintained by any method — declare CICO and go to <a href="#c18">card 18 (FONA)</a> without delay.</span></label></li>
         </ul>
       </details>
     </div>
@@ -586,7 +590,7 @@
     </div>
 
     <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
-      <b>Sources:</b> Littleton Regional Hospital Adult Airway Guide — the Pre-Airway Preparation / Induction &amp; Airway Attempt / Post-Tube Confirmation structure and every checklist item above (denitrogenation/ApOx targets, ear-to-sternal-notch positioning, VL vs. DL call, ELM, bougie/2nd-intubator/iGel/cric backup plan, capnography+breath-sounds+OG+CXR confirmation) are drawn directly from it; it does not specify an induction/paralytic combination or pressor recipe. RSI induction/paralytic dose ranges are standard EM references (LITFL and similar) pending an LRH-specific order set; waveform capnography as the gold-standard confirmation method also aligns with AHA/ASA airway guidance. Ventilator settings are institution-specific — confirm against LRH's own RT protocols.
+      <b>Sources:</b> Littleton Regional Hospital Adult Airway Guide — the Pre-Airway Preparation / Induction &amp; Airway Attempt / Post-Tube Confirmation structure and every checklist item above (denitrogenation/ApOx targets, ear-to-sternal-notch positioning, VL vs. DL call, ELM, bougie/2nd-intubator/iGel/cric backup plan, capnography+breath-sounds+OG+CXR confirmation) are drawn directly from it; it does not specify an induction/paralytic combination or pressor recipe. RSI induction/paralytic dose ranges are standard EM references (LITFL and similar) pending an LRH-specific order set; waveform capnography as the gold-standard confirmation method also aligns with AHA/ASA airway guidance. Ventilator settings are institution-specific — confirm against LRH's own RT protocols. CICO trigger criteria (can't intubate, can't oxygenate despite BVM/iGel, SpO₂ &lt;70% and falling) per DAS 2025 — see card 18.
     </div>
     <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -1372,7 +1376,7 @@
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "0.6",
+  version: "0.7",
   lastReviewed: "2026-08-04",
   cpr: { cycleSec: 120, rateLow: 100, rateHigh: 120, depthCm: "5–6", rotateMin: 2 },
   defib: { mfr: "ZOLL Rectilinear Biphasic", shock1: "120 J", shock2: "150 J", shock3plus: "200 J" },
