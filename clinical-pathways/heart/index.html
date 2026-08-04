@@ -187,7 +187,7 @@
   <!-- ============ SECTION 2: hs-TROPONIN ============ -->
   <div class="card">
     <h2><span class="num">2</span> hs-Troponin &mdash; 0 / 1-hour (&plusmn; 3-hr reflex)</h2>
-    <p class="sub">Enter the 0-hr and 1-hr values. A 3-hr value is only needed if the pathway reflexes.</p>
+    <p class="sub">Enter the 0-hr and 1-hr values. A 0-hr alone can complete the pathway (&ge; 50 rules in; &lt; 3, or &lt; 4 with pain &gt; 3 h, rules out). A 3-hr value is only needed if the pathway reflexes.</p>
 
     <div class="troprow">
       <div class="field"><label>0-hr <span class="unit">(ng/L)</span></label>
@@ -208,6 +208,7 @@
         <tr><td>Evidence of STEMI on EKG</td><td><b>STEMI Alert</b></td></tr>
         <tr><td>Any hs-troponin &ge; 50 ng/L, <em>or</em> &Delta; &ge; 15 ng/L</td><td><b>Rule-in zone</b> &rarr; consider cardiology consult</td></tr>
         <tr><td>&lt; 4 ng/L &amp; chest pain &gt; 3 h, <em>or</em> &lt; 5 ng/L &amp; &Delta; &lt; 4</td><td><b>D/C home</b>, outpatient follow-up as needed</td></tr>
+        <tr><td>Single 0-hr troponin: &ge; 50 <em>(rules in)</em> · &lt; 3 <em>(below detection)</em> · &lt; 4 with pain &gt; 3 h</td><td><b>Pathway completes without the 1-hr draw</b></td></tr>
         <tr><td>5&ndash;49 ng/L &amp; 0/1-hr &Delta; &lt; 4</td><td><b>AMI ruled out</b> &rarr; HEART score vs discharge w/ PCP</td></tr>
         <tr><td>&lt; 50 ng/L &amp; 0/1-hr &Delta; 4&ndash;14</td><td><b>Reflex to 3 h</b>; then &Delta; &lt; 15 &rarr; HEART score, &Delta; &ge; 15 &rarr; rules in</td></tr>
       </table>
@@ -286,7 +287,7 @@
       <ul>
         <li><b>STEMI on EKG</b> &rarr; STEMI Alert (activate STEMI protocol).</li>
         <li><b>Rule-in zone</b> (any hs-Trop &ge;50 or &Delta;&ge;15) &rarr; consider cardiology consult if clinically appropriate.</li>
-        <li><b>D/C home</b> (&lt;4 &amp; pain&gt;3h, or &lt;5 &amp; &Delta;&lt;4) &rarr; discharge, outpatient follow-up as needed.</li>
+        <li><b>D/C home</b> (&lt;4 &amp; pain&gt;3h, or &lt;5 &amp; &Delta;&lt;4, or a single 0-hr &lt;3) &rarr; discharge, outpatient follow-up as needed.</li>
         <li><b>Reflex to 3 h</b> (&lt; 50 &amp; &Delta; 4&ndash;14) &rarr; repeat troponin; &Delta;&ge;15 rules in, else AMI ruled out.</li>
         <li><b>AMI ruled out</b> &rarr; apply HEART score:
           <ul>
@@ -319,14 +320,15 @@
     hospital: "Littleton Regional Hospital",
     hospitalShort: "LRH",
     units: "ng/L",
-    version: "1.1",
-    lastReviewed: "2026-08-03",
+    version: "1.2",
+    lastReviewed: "2026-08-04",
     trop: {
       ruleInValue:      50,   // any hs-Trop >= this            -> rules in
       ruleInDelta:      15,   // 0/1-hr or 3-hr delta >= this    -> rules in
       ruleOutPainValue:  4,   // < this WITH chest pain > painHours -> rule out
       ruleOutValue:      5,   // < this AND delta < ruleOutDelta -> rule out
       ruleOutDelta:      4,   // delta < this (with value < ruleOutValue, or gray zone) -> rule out
+      singleLoD:         3,   // 0-hr < this (below assay detection) -> rule out on a single troponin
       painHours:         3,   // chest-pain duration threshold (hours)
       grayLow:           5,   // gray-zone lower bound (display)
       grayHigh:         49,   // gray-zone upper bound (display)
@@ -360,9 +362,16 @@
 
     if(stemi==='yes') return {code:'stemi'};
     if(stemi===null)  return {code:'incomplete', why:'Answer the STEMI question.'};
-    if(t0===null||t1===null) return {code:'incomplete', why:'Enter both 0-hr and 1-hr troponin.'};
 
     var T=SITE.trop;
+
+    // ---- single-troponin completions: the 0-hr alone can finish the pathway ----
+    if(t0!==null && t1===null){
+      if(t0>=T.ruleInValue) return {code:'in', why:'0-hr troponin &ge; '+T.ruleInValue+' '+SITE.units+' (single troponin)'};
+      if(t0<T.singleLoD) return {code:'dchome', why:'0-hr &lt; '+T.singleLoD+' '+SITE.units+' (below detection) — single troponin, 1-hr not required'};
+      if(t0<T.ruleOutPainValue && pain==='yes') return {code:'dchome', why:'0-hr &lt; '+T.ruleOutPainValue+' '+SITE.units+' with chest pain &gt; '+T.painHours+' h — single troponin, 1-hr not required'};
+    }
+    if(t0===null||t1===null) return {code:'incomplete', why:'Enter both 0-hr and 1-hr troponin.'};
     var d01=Math.abs(t1-t0);
     var measured=[t0,t1]; if(t3!==null) measured.push(t3);
     var anyRuleIn=measured.some(function(v){return v>=T.ruleInValue;});
