@@ -72,7 +72,7 @@
   <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
 </div>
 <div id="stickytop">
-<nav class="bar"><a href="../?from=tool" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a><button id="summarybtn" type="button" style="color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center;">SUMMARY</button><button id="resetbtn" type="button" style="display:none;">RESET FOR NEXT CASE</button><span id="resetnote"></span></nav>
+<nav class="bar"><a href="../?from=tool" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a><button id="backbtn" type="button" style="display:none; color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px;">◀ BACK</button><button id="summarybtn" type="button" style="color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center;">SUMMARY</button><button id="resetbtn" type="button" style="display:none;">RESET FOR NEXT CASE</button><span id="resetnote"></span></nav>
 <div class="section-stripe"></div>
 <div id="headsup">
   <div class="hurow">
@@ -328,9 +328,9 @@
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Hypoxia</b> — confirm airway, 100% O₂, waveform capnography.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Hypovolemia</b> — IV/IO fluid bolus if suspected.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Hydrogen ion (acidosis)</b> — consider bicarb if severe/known.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Hypo-/hyperkalemia</b> — check point-of-care K⁺; treat if deranged (see card 11).</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Hypo-/hyperkalemia</b> — check point-of-care K⁺; treat if deranged (<a href="#c11">see card 11</a>).</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Hypothermia</b> — check core temp; active rewarming if low.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Tension pneumothorax</b> — assess breath sounds; needle/finger thoracostomy (see DOPE, card 14, if ventilated).</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Tension pneumothorax</b> — assess breath sounds; needle/finger thoracostomy (<a href="#c14">see DOPE, card 14</a>, if ventilated).</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Tamponade (cardiac)</b> — bedside echo/FAST if available; consider pericardiocentesis.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Toxins</b> — ask about ingestion/overdose; consider specific antidotes.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Thrombosis — coronary</b> — consider ACS; cath lab if ROSC achieved.</span></label></li>
@@ -390,7 +390,7 @@
       <details style="border:2px solid #8a6d1f;">
         <summary style="background:#8a6d1f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">SEARCH FOR A CAUSE — "BRADI"</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>B</b>RASH / hyperkalemia — Bradycardia + Renal failure + AV-nodal blocker + Shock + Hyperkalemia; check K⁺ (see card 11).</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>B</b>RASH / hyperkalemia — Bradycardia + Renal failure + AV-nodal blocker + Shock + Hyperkalemia; check K⁺ (<a href="#c11">see card 11</a>).</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>R</b>educed vitals — hypoxia, hypoglycemia, hypothermia, hypothyroidism.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>A</b>cute coronary occlusion — inferior MI (often transient nodal ischemia) vs. anterior MI (infranodal, often needs pacing).</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>D</b>rugs — beta-blocker, calcium-channel blocker, digoxin. Beta-blocker/CCB OD: calcium, glucagon 5 mg IV (rebolus at 10 min if needed), high-dose insulin-euglycemia. Digoxin toxicity: DigiFab (weight/level-based, not a fixed dose).</span></label></li>
@@ -498,6 +498,9 @@
       <div style="border:2px solid #2f62a8; background:#eaf1fa; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#2f62a8;">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Ventilate now, find a reversible cause, and watch the pulse — if it's lost, this becomes a cardiac arrest immediately.</div></div>
     </div>
 
+    <!-- ---- ACTION CAPTURE — timestamps to case timeline ---- -->
+    <div style="margin:14px 14px 0; display:grid; grid-template-columns:1fr 1fr; gap:8px;"><button type="button" data-logevent="BAGGING STARTED" data-logcard="05" style="min-height:50px; background:#16324f; color:#fffefb; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.05em; cursor:pointer;">BAGGING STARTED — LOG IT</button><button type="button" data-logevent="NALOXONE GIVEN" data-logcard="05" style="min-height:50px; background:#9b1c2e; color:#fffefb; border:2px solid #9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.05em; cursor:pointer;">NALOXONE GIVEN — LOG IT</button></div>
+
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">IMMEDIATE SEQUENCE</summary>
@@ -505,7 +508,7 @@
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Open the airway; bag-valve-mask with 100% O₂.</li>
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Rate: <b>1 breath every 6 seconds (10/min)</b> for a patient with a pulse who isn't breathing — over-ventilating raises intrathoracic pressure and drops cardiac output.</li>
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Recheck pulse roughly every 2 minutes. <b>If pulse is lost at any point, start compressions immediately</b> and move to the cardiac-arrest card (01/02).</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Escalate to an advanced airway if BVM is ineffective, ventilation needs to continue for a prolonged period, or the airway needs protecting — see the Intubation Checklist (card 06).</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Escalate to an advanced airway if BVM is ineffective, ventilation needs to continue for a prolonged period, or the airway needs protecting — see the <a href="#c06">Intubation Checklist (card 06)</a>.</li>
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Suspect opioid overdose?</b> Give naloxone while continuing to bag — don't let it delay ventilation. IV/IM/IN 0.4–2 mg, may repeat every 2–3 min; higher doses may be needed for potent synthetic opioids. Ventilation is the priority — naloxone is an adjunct, not a substitute for bagging.</li>
         </ul>
       </details>
@@ -517,7 +520,7 @@
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Opioid / CNS depressant overdose</b> — naloxone (see above).</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Airway obstruction / foreign body</b> — look, suction, consider Heimlich/direct laryngoscopy removal.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Anaphylaxis</b> — see card 08.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Anaphylaxis</b> — <a href="#c08">see card 08</a>.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Severe asthma / status asthmaticus</b> — bronchodilators, consider breath-stacking/auto-PEEP if bagging feels tight.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Neuromuscular weakness / high spinal cord injury</b> — may need prolonged ventilatory support.</span></label></li>
         </ul>
@@ -554,49 +557,11 @@
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">1 · PRE-AIRWAY PREPARATION</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Equipment:</b> BVM with PEEP valve, O₂, and waveform capnography attached; video &amp; backup (direct) laryngoscope available and functional; OPA, bougie, SGA, and scalpel within reach; two suction devices tested and positioned.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Preoxygenation:</b> denitrogenate ≥3 min; apneic oxygenation via NC @ 15 L/min through the attempt; target SpO₂ ≥95% (consider CPAP if needed).</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Patient &amp; access:</b> oral cavity/airway examined (dentures, secretions, neck mobility); optimal head positioning confirmed (ear-to-sternal-notch); reliable IV access confirmed and tested; BP cycling every 3 min; team leader verbalizes the airway plan out loud.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Physiology optimized first:</b> address hypotension, oxygenation, and pH/acidosis before you push — the peri-intubation "HOp killers" that cause post-intubation arrest (EMCrit resuscitation-sequence concept).</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Equipment on a large table:</b> BVM with PEEP valve on flush-rate O₂, and waveform capnography attached; video &amp; backup (direct) laryngoscope available, functional, and recording if equipped; OPA, bougie, SGA, and scalpel within reach; two suction devices tested and positioned — one large-bore rigid (e.g. DuCanto-style) for a contaminated airway; eye/face protection on.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Preoxygenation:</b> denitrogenate ≥3 min; apneic oxygenation via NC through the attempt (LRH's guide specifies 15 L/min — EMCrit's card lists 20 L/min, confirm your flowmeter actually delivers that rate before relying on it); target SpO₂ ≥95% per LRH, aiming for 100% or adding CPAP when achievable.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Patient &amp; access:</b> oral cavity/airway examined (dentures, secretions, neck mobility); cricothyroid membrane evaluated/marked; optimal head positioning confirmed (ear-to-sternal-notch); pulse ox visible to the whole team and not on the BP-cuff arm; reliable IV access confirmed and tested; BP cycling every 3 min; team leader verbalizes the airway plan out loud.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>Say your CICO cutoff out loud:</b> "If we can't oxygenate and SpO₂ drops below ___% and is falling, we declare CICO." Pick and state the number now, before you start — don't decide it mid-attempt (card 18's default trigger is &lt;70% and falling, per DAS 2025).</span></label></li>
-        </ul>
-      </details>
-    </div>
-
-    <!-- ---- SUPPLEMENTAL: EMCRIT PERI-INTUBATION CHECKLIST ---- -->
-    <div style="padding:14px 14px 0;">
-      <details style="border:2px solid #5a6a78;">
-        <summary style="background:#5a6a78; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">SUPPLEMENTAL — EMCRIT PERI-INTUBATION CHECKLIST (PLAN · PATIENT · EQUIPMENT)</summary>
-        <div style="padding:10px 12px 4px; font-size:13px; line-height:1.35; color:#5a6a78;">A second, independently-sourced check to run right before you push — not a replacement for the LRH checklist above.</div>
-        <div style="padding:2px 12px 4px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.1em; color:#16324f; font-weight:700;">PLAN</div>
-        <ul style="margin:0; padding:0 12px 8px; list-style:none;">
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>Physiologic issues considered — hemodynamics, oxygenation, and pH/acidosis optimized before you push (EMCrit's peri-intubation "HOp killers": hypotension, hypoxemia, acidosis).</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>Induction agent / muscle relaxant selected and drawn up.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>Post-tube analgesia/sedation planned.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>Post-tube norepinephrine (or institutional pressor) ready.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>Push-dose epinephrine drawn up and within reach.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>Confirm your 3 backups out loud: repeat laryngoscopy, supraglottic airway (SGA), and cricothyroidotomy kit.</span></label></li>
-        </ul>
-        <div style="padding:2px 12px 4px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.1em; color:#16324f; font-weight:700;">PATIENT</div>
-        <ul style="margin:0; padding:0 12px 8px; list-style:none;">
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>Denitrogenated ≥3 minutes.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>Apneic oxygenation running via nasal cannula @ 20 L/min.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>SpO₂ 100%, or add CPAP for preoxygenation if it isn't.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>Mouth examined — dentures out, range of neck motion checked.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>Cricothyroid membrane evaluated/marked.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>Positioning optimized (ear-to-sternal-notch/ramped).</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>Pulse ox visible to the whole team, and not on the BP-cuff arm.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>IV access reliable and tested (flushes without infiltration).</span></label></li>
-        </ul>
-        <div style="padding:2px 12px 4px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.1em; color:#16324f; font-weight:700;">EQUIPMENT</div>
-        <ul style="margin:0; padding:0 12px 12px; list-style:none;">
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>Equipment laid out on a large table.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>BVM + PEEP valve connected to flush-rate O₂.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>Waveform capnograph attached to the BVM.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>Video laryngoscope set up and checked.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>Bougie, SGA, and scalpel in the room.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>Suction ×2, one rigid large-bore (e.g. DuCanto-style) for a contaminated airway.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>Eye/face protection on before you start.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#5a6a78; flex:none;"><span>Recording started on the video laryngoscope, if equipped.</span></label></li>
         </ul>
       </details>
     </div>
@@ -605,9 +570,9 @@
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">2 · INDUCTION &amp; AIRWAY ATTEMPT</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Medications ready:</b> induction agent + paralytic selected, prepared, and confirmed; post-tube sedation/analgesia planned; push-dose pressors ready if needed.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Medications ready:</b> induction agent + paralytic selected, prepared, and confirmed; post-tube sedation/analgesia planned; push-dose epinephrine drawn up and within reach; post-tube norepinephrine (or your institutional pressor) ready for ongoing post-intubation hypotension.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>First-pass attempt:</b> laryngoscope choice confirmed (VL vs. DL); team member identified to call out SpO₂; external laryngeal manipulation (ELM) optimized if needed.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>If first attempt fails:</b> backup plan verbalized (bougie vs. second intubator); iGel size out and ready; cricothyrotomy plan discussed and equipment ready. If oxygenation can't be maintained by any method — <a href="#declare-cico">declare CICO now (card 18, FONA)</a> without delay.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>If first attempt fails:</b> confirm your 3 backups out loud — repeat laryngoscopy (bougie/2nd intubator), supraglottic airway (iGel) sized and ready, and cricothyrotomy plan/equipment ready. If oxygenation can't be maintained by any method — <a href="#declare-cico">declare CICO now (card 18, FONA)</a> without delay.</span></label></li>
         </ul>
       </details>
     </div>
@@ -649,16 +614,20 @@
       </details>
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">3 · POST-TUBE CONFIRMATION &amp; SAFETY</summary>
+        <div style="padding:10px 12px 0;">
+          <button type="button" id="c06etco2btn" style="width:100%; min-height:52px; background:#16324f; color:#fffefb; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">CONFIRM ETCO₂ / TUBE PLACEMENT — TIME-STAMP</button>
+          <div id="c06etco2cue" style="padding:8px 2px 0; font-size:12.5px; line-height:1.35; color:#5a6a78;">Tap once waveform capnography confirms placement.</div>
+        </div>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Confirm tube placement:</b> capnography waveform present and sustained; bilateral breath sounds confirmed; tube secured at proper depth; OG tube placed and taped at depth; CXR ordered and checked.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Secure &amp; confirm:</b> bilateral breath sounds confirmed; tube secured at proper depth; OG tube placed and taped at depth; CXR ordered and checked.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Post-airway management:</b> analgesia/sedation initiated; ventilator settings confirmed and documented; team leader calls for a debrief and learning points.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>If the patient decompensates on the vent later → see card 14 (DOPE).</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>If the patient decompensates on the vent later → <a href="#c14">see card 14 (DOPE)</a>.</span></label></li>
         </ul>
       </details>
     </div>
 
     <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
-      <b>Sources:</b> Littleton Regional Hospital Adult Airway Guide — the Pre-Airway Preparation / Induction &amp; Airway Attempt / Post-Tube Confirmation structure and every checklist item above (denitrogenation/ApOx targets, ear-to-sternal-notch positioning, VL vs. DL call, ELM, bougie/2nd-intubator/iGel/cric backup plan, capnography+breath-sounds+OG+CXR confirmation) are drawn directly from it; it does not specify an induction/paralytic combination or pressor recipe. RSI induction/paralytic dose ranges are standard EM references (LITFL and similar) pending an LRH-specific order set; waveform capnography as the gold-standard confirmation method also aligns with AHA/ASA airway guidance. Ventilator settings are institution-specific — confirm against LRH's own RT protocols. CICO trigger criteria (can't intubate, can't oxygenate despite BVM/iGel, SpO₂ &lt;70% and falling) per DAS 2025 — see card 18. The supplemental PLAN/PATIENT/EQUIPMENT checklist is transcribed from Weingart S, "Checkboxed Checklist" (rev. 2020-12-21), EMCrit Blog, <a href="https://emcrit.org/" style="color:inherit;">emcrit.org</a> — cross-check against the current version there, since EMCrit has since updated to a v2.5 checklist. The "HOp killers" (hypotension/hypoxemia/pH) framing of its physiologic-optimization item is EMCrit's peri-intubation resuscitation-sequence concept, not a verbatim quote from the printed card.
+      <b>Sources:</b> Littleton Regional Hospital Adult Airway Guide — the Pre-Airway Preparation / Induction &amp; Airway Attempt / Post-Tube Confirmation structure and most checklist items (denitrogenation/ApOx targets, ear-to-sternal-notch positioning, VL vs. DL call, ELM, bougie/2nd-intubator/iGel/cric backup plan, capnography+breath-sounds+OG+CXR confirmation) are drawn directly from it; it does not specify an induction/paralytic combination or pressor recipe. Merged into the checklist above: Weingart S, "Checkboxed Checklist" (rev. 2020-12-21), EMCrit Blog, <a href="https://emcrit.org/" style="color:inherit;">emcrit.org</a> — physiologic-optimization ("HOp killers": hypotension/hypoxemia/pH — EMCrit's peri-intubation resuscitation-sequence concept, not a verbatim quote from the printed card), push-dose epinephrine/post-tube norepinephrine, cricothyroid-membrane marking, pulse-ox placement, large-bore rigid suction, eye/face protection, and video-laryngoscope recording items were added from it; redundant items already covered by the LRH checklist were not duplicated. Two numeric items differ between the sources and are flagged rather than silently merged: apneic-oxygenation flow (LRH 15 L/min vs. EMCrit's 20 L/min) and the preoxygenation SpO₂ target (LRH ≥95% vs. EMCrit's 100%/CPAP) — LRH's figures are used as the primary checklist values. Cross-check the EMCrit item against the current version there, since EMCrit has since updated to a v2.5 checklist. RSI induction/paralytic dose ranges are standard EM references (LITFL and similar) pending an LRH-specific order set; waveform capnography as the gold-standard confirmation method also aligns with AHA/ASA airway guidance. Ventilator settings are institution-specific — confirm against LRH's own RT protocols. CICO trigger criteria (can't intubate, can't oxygenate despite BVM/iGel, SpO₂ &lt;70% and falling) per DAS 2025 — see card 18.
     </div>
     <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -679,14 +648,17 @@
       <div style="border:2px solid #2f62a8; background:#eaf1fa; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#2f62a8;">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Protect the airway if needed, control BP, reverse anticoagulation fast, and call neurosurgery early.</div></div>
     </div>
 
+    <!-- ---- ACTION CAPTURE — timestamps to case timeline ---- -->
+    <div style="margin:14px 14px 0; display:grid; grid-template-columns:1fr 1fr; gap:8px;"><button type="button" data-logevent="BP AGENT STARTED" data-logcard="07" style="min-height:50px; background:#16324f; color:#fffefb; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.05em; cursor:pointer;">BP AGENT STARTED — LOG IT</button><button type="button" data-logevent="ANTICOAG REVERSAL INITIATED" data-logcard="07" style="min-height:50px; background:#9b1c2e; color:#fffefb; border:2px solid #9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.05em; cursor:pointer;">REVERSAL INITIATED — LOG IT</button></div>
+
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">IMMEDIATE PRIORITIES</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">IV access ×2 large-bore; continuous BP monitoring q5min; repeat neuro checks/GCS q5min.</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Protect the airway if GCS is low (see card 06 if intubation is needed).</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Protect the airway if GCS is low (<a href="#c06">see card 06</a> if intubation is needed).</li>
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Acute BP target: SBP &lt;140 mmHg</b> (AHA/ASA-endorsed range 130–150; avoid driving SBP below ~130 — too aggressive a target hasn't shown benefit and may cause harm). <b>Labetalol 10–20 mg IV q10min PRN</b>, or <b>nicardipine infusion 5 mg/hr</b>, titrate to goal BP.</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">On anticoagulation? Reverse it immediately in parallel — see card 10 (warfarin → PCC/Kcentra or FFP + vitamin K; DOACs → PCC, andexanet alfa no longer commercially available in the US as of Dec 2025; heparin → protamine).</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">On anticoagulation? Reverse it immediately in parallel — <a href="#c10">see card 10</a> (warfarin → PCC/Kcentra or FFP + vitamin K; DOACs → PCC, andexanet alfa no longer commercially available in the US as of Dec 2025; heparin → protamine).</li>
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">STAT non-contrast CT head; coags/platelets/glucose; call neurosurgery early — don't wait for a "final" read.</li>
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Seizure prophylaxis is not routinely recommended</b> — treat a seizure if one actually occurs, don't pre-load an anticonvulsant "just in case."</li>
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Signs of herniation/rising ICP:</b> elevate head of bed 30°, consider hyperosmolar therapy (mannitol or hypertonic saline per your institutional protocol/ENLS reference) as a bridge, and brief hyperventilation only as a temporizing measure while arranging definitive care.</li>
@@ -729,6 +701,28 @@
       <div id="anacue" style="padding:11px 14px; font-size:13.5px; line-height:1.35; color:#16324f; background:#fdf3cf; border-top:2px solid #8a6d1f; display:none;"></div>
     </div>
 
+    <!-- ---- EPI ESCALATION LADDER: IM -> IV PUSH-DOSE -> DRIP ---- -->
+    <div style="margin:8px 14px 0; border:2px solid #8a6d1f;">
+      <div style="padding:10px 14px; background:#fdf3cf;">
+        <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#8a6d1f; font-weight:700;">ESCALATION STEP 2 — EPI IV PUSH-DOSE (refractory to IM epi)</div>
+        <div style="margin-top:6px; font-size:13.5px; line-height:1.4; color:#16324f;"><b>Mix:</b> 1 mL of cardiac epi (0.1 mg/mL, "1:10,000") + 9 mL NS in a 10 mL syringe → <b>10 mcg/mL</b>. <b>Dose: 5–20 mcg (0.5–2 mL) IV q2–5 min</b>, titrated to response. Standard EM push-dose recipe (Weingart/EMCrit convention) — confirm your pharmacy's approved recipe.</div>
+        <div style="display:flex; align-items:center; gap:8px; margin-top:9px; flex-wrap:wrap;">
+          <label for="anapdmcg" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:#8a6d1f;">DESIRED DOSE (mcg)</label>
+          <input id="anapdmcg" type="number" inputmode="numeric" min="0" max="100" step="5" value="10" style="width:76px; min-height:36px; padding:4px 8px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; border:2px solid #8a6d1f; text-align:center; color:#16324f;">
+          <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; color:#16324f;">= <b id="anapdvol">1.0 mL</b> of the 10 mcg/mL mix</span>
+        </div>
+      </div>
+      <button type="button" id="anaivgive" style="width:100%; min-height:52px; background:#8a6d1f; color:#fffefb; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">EPI IV PUSH GIVEN — LOG IT</button>
+      <div id="anaivcue" style="display:none; padding:10px 14px; font-size:13px; line-height:1.35; color:#16324f; background:#fffefb; border-top:1px solid #e7eaef;"></div>
+    </div>
+    <div style="margin:8px 14px 0; border:2px solid #9b1c2e;">
+      <div style="padding:10px 14px; background:#fbeaec;">
+        <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#9b1c2e; font-weight:700;">ESCALATION STEP 3 — EPI DRIP (still refractory)</div>
+        <div style="margin-top:6px; font-size:13.5px; line-height:1.4; color:#16324f;">Start a continuous epinephrine infusion, <b>~2–10 mcg/min</b>, titrated to perfusion — experienced personnel, continuous monitoring, and your pharmacy's approved concentration/rate (the range is a commonly cited EM starting point, not a fixed guideline number). Push-dose epi is a bridge, not a destination — if you've needed more than 2–3 pushes, the patient needs the drip.</div>
+      </div>
+      <button type="button" id="anadripbtn" data-logevent="EPI DRIP STARTED" data-logcard="08" style="width:100%; min-height:52px; background:#9b1c2e; color:#fffefb; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">EPI DRIP STARTED — LOG IT</button>
+    </div>
+
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">IF NOT RESPONDING TO IM EPI</summary>
@@ -737,7 +731,7 @@
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Refractory shock:</b> IV epinephrine infusion, low-dose, by experienced personnel with continuous monitoring — confirm your pharmacy's approved concentration/rate before mixing (~2–10 mcg/min is a commonly cited EM starting range, not a fixed guideline number).</li>
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>On a beta-blocker and not responding to epi?</b> Glucagon 1–5 mg IV slow push (watch for vomiting/aspiration).</li>
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Positioning:</b> supine with legs elevated if tolerated; sitting if respiratory distress predominates; left-lateral if pregnant.</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Angioedema/stridor progressing?</b> Low threshold for early, elective, definitive airway — don't wait for severe stridor (see card 06).</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Angioedema/stridor progressing?</b> Low threshold for early, elective, definitive airway — don't wait for severe stridor (<a href="#c06">see card 06</a>).</li>
         </ul>
       </details>
       <details style="border:2px solid #16324f;">
@@ -783,7 +777,7 @@
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Control external hemorrhage</b> — direct pressure first, then a tourniquet for extremity bleeding not controlled by pressure; wound packing + pressure dressing for junctional wounds.</li>
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Permissive hypotension</b> (penetrating trauma, no TBI): target SBP ~80–90 mmHg until the source is controlled — don't chase a normal pressure with crystalloid, it dilutes clotting factors and dislodges clot.</li>
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Concurrent TBI changes the target</b> — do NOT permissively hypotend; keep MAP ≥80 (age-based SBP floor: ~110 for ages 15–49/70+, ~100 for ages 50–69) to protect cerebral perfusion.</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Resuscitate with balanced blood products, not crystalloid</b> — activate MTP early if massive hemorrhage is anticipated (see card 12).</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Resuscitate with balanced blood products, not crystalloid</b> — activate MTP early if massive hemorrhage is anticipated (<a href="#c12">see card 12</a>).</li>
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Beat the lethal triad:</b> active warming (warmed fluids/blood, blankets), avoid excess crystalloid (acidosis), correct coagulopathy with balanced products + calcium + TXA.</li>
         </ul>
       </details>
@@ -825,6 +819,9 @@
       <div style="border:2px solid #16324f; background:#eef3f6; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#16324f;">CLAIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Identify agent/last dose · pharmacy/hematology call · local hemostasis · recorder — assign aloud.</div></div>
       <div style="border:2px solid #2f62a8; background:#eaf1fa; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#2f62a8;">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Identify the exact agent and last-dose time, involve pharmacy immediately, and reverse — precise dosing is pharmacy-guided.</div></div>
     </div>
+
+    <!-- ---- ACTION CAPTURE — timestamps to case timeline ---- -->
+    <div style="margin:14px 14px 0; display:grid; grid-template-columns:1fr 1fr; gap:8px;"><button type="button" data-logevent="PHARMACY CALLED" data-logcard="10" style="min-height:50px; background:#16324f; color:#fffefb; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.05em; cursor:pointer;">PHARMACY CALLED — LOG IT</button><button type="button" data-logevent="REVERSAL AGENT GIVEN" data-logcard="10" style="min-height:50px; background:#9b1c2e; color:#fffefb; border:2px solid #9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.05em; cursor:pointer;">REVERSAL AGENT GIVEN — LOG IT</button></div>
 
     <div style="padding:14px 14px 0; font-size:13px; line-height:1.4; color:#6b5410; background:#fdf3cf; border:2px solid #8a6d1f; padding:12px 14px;">
       ⚠ <b>Andexanet alfa (Andexxa) was voluntarily withdrawn from the US market in December 2025</b> after ANNEXA-I showed roughly double the thrombosis rate vs. usual care. <b>4-factor PCC is now the primary reversal strategy for factor Xa inhibitors</b> — confirm with pharmacy whether any institutional stock remains before considering it.
@@ -895,6 +892,9 @@
       <div style="border:2px solid #16324f; background:#eef3f6; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#16324f;">CLAIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Calcium push · insulin/dextrose · repeat glucose checks · nephrology/dialysis call — assign aloud.</div></div>
       <div style="border:2px solid #2f62a8; background:#eaf1fa; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#2f62a8;">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Stabilize the membrane, shift K⁺ intracellularly, then eliminate it — and get nephrology moving in parallel, not after.</div></div>
     </div>
+
+    <!-- ---- ACTION CAPTURE — timestamps to case timeline ---- -->
+    <div style="margin:14px 14px 0; display:grid; grid-template-columns:1fr 1fr; gap:8px;"><button type="button" data-logevent="CALCIUM GIVEN" data-logcard="11" style="min-height:50px; background:#9b1c2e; color:#fffefb; border:2px solid #9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.05em; cursor:pointer;">CALCIUM GIVEN — LOG IT</button><button type="button" data-logevent="INSULIN + D50 GIVEN" data-logcard="11" style="min-height:50px; background:#16324f; color:#fffefb; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.05em; cursor:pointer;">INSULIN + D50 GIVEN — LOG IT</button></div>
 
     <div style="padding:14px 14px 0; font-size:13px; line-height:1.4; color:#16324f; background:#eef3f6; border:2px solid #16324f; padding:12px 14px;">
       <b>EKG progression:</b> peaked T waves → PR prolongation/P-wave flattening → QRS widening → sine wave (usually K⁺ &gt;9) → VF/asystole. A normal-looking EKG does <b>not</b> exclude imminent arrest — serum K⁺ doesn't correlate tightly with ECG findings.
@@ -1066,7 +1066,7 @@
         <summary style="background:#9b1c2e; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">30–40+ MIN — REFRACTORY STATUS / PREPARE FOR INTUBATION</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Prepare for intubation if:</b> seizure &gt;30 min despite meds, OR GCS &lt;8 post-ictal, OR persistent airway compromise.</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Use RSI with ketamine if available</b> — its bronchodilator effect makes it LRH's preferred induction agent here (see card 06 for the airway checklist).</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Use RSI with ketamine if available</b> — its bronchodilator effect makes it LRH's preferred induction agent here (<a href="#c06">see card 06</a> for the airway checklist).</li>
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Still seizing after intubation? Repeat the second-line agent, OR start an <b>anesthetic infusion</b> — midazolam, propofol, pentobarbital, or ketamine — with continuous EEG monitoring.</li>
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>STAT transfer to a Neuro ICU center</b> — arrange as soon as refractory status is recognized; don't wait for cEEG availability to start the call if LRH can't provide it in-house.</li>
         </ul>
@@ -1183,6 +1183,9 @@
       <div style="border:2px solid #2f62a8; background:#eaf1fa; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#2f62a8;">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Bronchodilators and steroids first, escalate early to BiPAP if failing — but don't delay intubation once it's truly indicated.</div></div>
     </div>
 
+    <!-- ---- ACTION CAPTURE — timestamps to case timeline ---- -->
+    <div style="margin:14px 14px 0; display:grid; grid-template-columns:1fr 1fr; gap:8px;"><button type="button" data-logevent="CONTINUOUS NEB STARTED" data-logcard="15" style="min-height:50px; background:#16324f; color:#fffefb; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.05em; cursor:pointer;">CONTINUOUS NEB STARTED — LOG IT</button><button type="button" data-logevent="MAGNESIUM STARTED" data-logcard="15" style="min-height:50px; background:#9b1c2e; color:#fffefb; border:2px solid #9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.05em; cursor:pointer;">MAGNESIUM STARTED — LOG IT</button></div>
+
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">SEVERITY — ASSESS FIRST</summary>
@@ -1215,9 +1218,9 @@
         <summary style="background:#9b1c2e; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">INTUBATION — INDICATIONS &amp; APPROACH</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Indications:</b> persistent hypoxia/hypercapnia despite BiPAP; altered mental status or fatigue; severe acidosis (pH &lt;7.25) or silent chest.</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Ketamine is the preferred induction agent</b> — bronchodilator effect. 1–2 mg/kg IV bolus for induction; 0.5 mg/kg/hr drip if post-intubation bronchospasm persists (see card 06 for the full airway checklist).</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Ketamine is the preferred induction agent</b> — bronchodilator effect. 1–2 mg/kg IV bolus for induction; 0.5 mg/kg/hr drip if post-intubation bronchospasm persists (<a href="#c06">see card 06</a> for the full airway checklist).</li>
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Avoid</b> midazolam (can worsen hypercapnia) and propofol alone (can cause hypotension) as the primary sedative here.</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Watch for breath-stacking/auto-PEEP once vented — if the patient suddenly decompensates on the vent, see card 14 (DOPE).</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Watch for breath-stacking/auto-PEEP once vented — if the patient suddenly decompensates on the vent, <a href="#c14">see card 14 (DOPE)</a>.</li>
         </ul>
       </details>
       <details style="border:2px solid #8a6d1f;">
@@ -1253,6 +1256,9 @@
       <div style="border:2px solid #2f62a8; background:#eaf1fa; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#2f62a8;">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Protect the airway early — swelling can progress unpredictably. Histaminergic vs. bradykinin-mediated completely changes which drugs work.</div></div>
     </div>
 
+    <!-- ---- ACTION CAPTURE — timestamps to case timeline ---- -->
+    <div style="margin:14px 14px 0; display:grid; grid-template-columns:1fr 1fr; gap:8px;"><button type="button" data-logevent="EPI IM GIVEN" data-logcard="16" style="min-height:50px; background:#9b1c2e; color:#fffefb; border:2px solid #9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.05em; cursor:pointer;">EPI IM GIVEN — LOG IT</button><button type="button" data-logevent="DECISION: INTUBATE" data-logcard="16" style="min-height:50px; background:#16324f; color:#fffefb; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.05em; cursor:pointer;">DECISION: INTUBATE — LOG IT</button></div>
+
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">ASSESS SEVERITY &amp; TYPE</summary>
@@ -1275,7 +1281,7 @@
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Epinephrine IM 0.3–0.5 mg</b> (1:1000) — repeat q5–15min if needed.</li>
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Diphenhydramine 50 mg IV. Famotidine 20 mg IV. Methylprednisolone 125 mg IV.</b></li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">If there's systemic involvement (hypotension, urticaria, GI symptoms) this may be anaphylaxis rather than isolated angioedema — see card 08.</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">If there's systemic involvement (hypotension, urticaria, GI symptoms) this may be anaphylaxis rather than isolated angioedema — <a href="#c08">see card 08</a>.</li>
         </ul>
       </details>
       <details open style="border:2px solid #16324f;">
@@ -1626,7 +1632,7 @@
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "1.1",
+  version: "1.2",
   lastReviewed: "2026-08-04",
   cpr: { cycleSec: 120, rateLow: 100, rateHigh: 120, depthCm: "5–6", rotateMin: 2 },
   defib: { mfr: "ZOLL Rectilinear Biphasic", shock1: "120 J", shock2: "150 J", shock3plus: "200 J" },
@@ -2021,6 +2027,8 @@ var SITEAUDIO = (function(){
     if(!giveBtn) return;
     var t0=null, tick=null;
     try{ var s=localStorage.getItem(opts.key); if(s) t0=+s||null; }catch(e){}
+    function expose(){ if(opts.exposeGlobal) window[opts.exposeGlobal]=t0; }
+    expose();
     function save(){ try{ if(t0) localStorage.setItem(opts.key,String(t0)); else localStorage.removeItem(opts.key); }catch(e){} }
     function paint(){
       if(t0===null){ clock.textContent='0:00'; clock.style.color=opts.color; cue.textContent=opts.idleText; return; }
@@ -2029,19 +2037,84 @@ var SITEAUDIO = (function(){
       cue.textContent=opts.label+' pushed '+mmss(s)+' ago.';
     }
     giveBtn.addEventListener('click', function(){
-      t0=Date.now(); save(); if(tick) clearInterval(tick); tick=setInterval(paint,1000); paint();
+      t0=Date.now(); save(); expose(); if(tick) clearInterval(tick); tick=setInterval(paint,1000); paint();
       if(window.__codeslog) window.__codeslog.add('06', opts.label.toUpperCase()+' PUSHED');
     });
-    resetBtn.addEventListener('click', function(){ t0=null; save(); if(tick){ clearInterval(tick); tick=null; } paint(); });
+    resetBtn.addEventListener('click', function(){ t0=null; save(); expose(); if(tick){ clearInterval(tick); tick=null; } paint(); });
     var rb=document.getElementById('resetbtn');
-    if(rb) rb.addEventListener('click', function(){ t0=null; try{ localStorage.removeItem(opts.key); }catch(e){} if(tick){ clearInterval(tick); tick=null; } paint(); });
+    if(rb) rb.addEventListener('click', function(){ t0=null; try{ localStorage.removeItem(opts.key); }catch(e){} expose(); if(tick){ clearInterval(tick); tick=null; } paint(); });
     if(t0!==null) tick=setInterval(paint,1000);
     paint();
   }
   makeTimer({ clockId:'rsiinductclock', cueId:'rsiinductcue', giveId:'rsiinductgive', resetId:'rsiinductreset',
-    key:'lrh-codes-rsiinduct', color:'#16324f', label:'Sedation/induction agent', idleText:'Tap when the induction agent/sedative is pushed.' });
+    key:'lrh-codes-rsiinduct', color:'#16324f', label:'Sedation/induction agent', idleText:'Tap when the induction agent/sedative is pushed.', exposeGlobal:'__rsiInductT0' });
   makeTimer({ clockId:'rsiparalyticclock', cueId:'rsiparalyticcue', giveId:'rsiparalyticgive', resetId:'rsiparalyticreset',
     key:'lrh-codes-rsiparalytic', color:'#9b1c2e', label:'Paralytic', idleText:'Tap when the paralytic is pushed.' });
+})();
+
+/* ---- Card 06: ETCO2 / tube-placement confirm — one-time timestamp, cross-referenced to induction push ---- */
+(function(){
+  var K='lrh-codes-c06etco2';
+  var btn=document.getElementById('c06etco2btn'), cue=document.getElementById('c06etco2cue');
+  if(!btn) return;
+  var t=null;
+  try{ var s=localStorage.getItem(K); if(s) t=+s||null; }catch(e){}
+  function pad(n){ return (n<10?'0':'')+n; }
+  function wall(d){ return pad(d.getHours())+':'+pad(d.getMinutes()); }
+  function save(){ try{ if(t) localStorage.setItem(K,String(t)); else localStorage.removeItem(K); }catch(e){} }
+  function paint(){
+    if(t===null){
+      btn.textContent='CONFIRM ETCO₂ / TUBE PLACEMENT — TIME-STAMP';
+      btn.style.background='#16324f'; btn.style.borderColor='#16324f'; btn.style.color='#fffefb';
+      cue.textContent='Tap once waveform capnography confirms placement.'; cue.style.color='#5a6a78';
+      return;
+    }
+    var when=wall(new Date(t));
+    var extra='';
+    if(window.__rsiInductT0){ var mins=Math.round((t-window.__rsiInductT0)/60000*10)/10; extra=' — '+mins+' min after the induction agent was pushed'; }
+    btn.textContent='✓ ETCO₂ CONFIRMED AT '+when;
+    btn.style.background='#e8f5e9'; btn.style.borderColor='#2f7a3f'; btn.style.color='#2f7a3f';
+    cue.textContent='Logged to the case timeline'+extra+'.'; cue.style.color='#2f7a3f';
+  }
+  btn.addEventListener('click', function(){
+    if(t!==null) return; // idempotent — CLEAR/RESET is the only way to re-arm
+    t=Date.now(); save(); paint();
+    if(window.__codeslog) window.__codeslog.add('06','ETCO2 CONFIRMED');
+  });
+  var rb=document.getElementById('resetbtn');
+  if(rb) rb.addEventListener('click', function(){ t=null; try{ localStorage.removeItem(K); }catch(e){} paint(); });
+  paint();
+})();
+
+/* ---- Card 08: Epi IV push-dose calculator + push counter (escalation ladder) ---- */
+(function(){
+  var K='lrh-codes-anaivpushes';
+  var mcgEl=document.getElementById('anapdmcg'), volEl=document.getElementById('anapdvol'),
+      giveBtn=document.getElementById('anaivgive'), cue=document.getElementById('anaivcue');
+  if(!giveBtn) return;
+  var pushes=0;
+  try{ pushes=+localStorage.getItem(K)||0; }catch(e){}
+  function calc(){
+    var mcg=parseFloat(mcgEl.value);
+    if(isNaN(mcg)||mcg<=0){ volEl.textContent='— mL'; return; }
+    volEl.textContent=(Math.round(mcg/10*10)/10).toFixed(1)+' mL';
+  }
+  function paint(){
+    if(pushes<1){ cue.style.display='none'; return; }
+    cue.style.display='block';
+    cue.innerHTML='<b>'+pushes+'</b> IV push'+(pushes===1?'':'es')+' logged.'+(pushes>=3?' <b style="color:#9b1c2e;">3+ pushes — start the drip (step 3 below).</b>':'');
+  }
+  mcgEl.addEventListener('input', calc);
+  giveBtn.addEventListener('click', function(){
+    pushes++;
+    try{ localStorage.setItem(K,String(pushes)); }catch(e){}
+    var mcg=parseFloat(mcgEl.value);
+    if(window.__codeslog) window.__codeslog.add('08','EPI IV PUSH'+(isNaN(mcg)||mcg<=0?'':' '+mcg+' mcg'));
+    paint();
+  });
+  var rb=document.getElementById('resetbtn');
+  if(rb) rb.addEventListener('click', function(){ pushes=0; try{ localStorage.removeItem(K); }catch(e){} paint(); });
+  calc(); paint();
 })();
 
 /* ---- Card 08: Epinephrine IM dose counter + redose timer (anaphylaxis) ---- */
@@ -2355,6 +2428,18 @@ var SITEAUDIO = (function(){
   var rb=document.getElementById('resetbtn');
   if(!rb) return;
   rb.style.display='inline-flex';
+})();
+
+/* ---- BACK button: returns to the previous card/tool (browser history). Shows
+   only once there is somewhere to go back to — a within-page card jump or an
+   arrival from another tool. ---- */
+(function(){
+  var b=document.getElementById('backbtn');
+  if(!b) return;
+  function maybeShow(){ if(history.length>1) b.style.display='inline-flex'; }
+  window.addEventListener('hashchange', maybeShow, false);
+  maybeShow();
+  b.addEventListener('click', function(){ history.back(); }, false);
 })();
 </script>
 </body>

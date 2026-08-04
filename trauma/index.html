@@ -64,7 +64,7 @@
   <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
 </div>
 <div id="stickytop">
-<nav class="bar"><a href="../?from=tool" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a></nav>
+<nav class="bar"><a href="../?from=tool" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a><button id="backbtn" type="button" style="display:none; color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px;">◀ BACK</button></nav>
 <div class="section-stripe"></div>
 </div>
 
@@ -163,6 +163,18 @@ var SITE = {
     b.addEventListener('touchend', go, false);
   }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
+})();
+
+/* ---- BACK button: returns to the previous card/tool (browser history). Shows
+   only once there is somewhere to go back to — a within-page card jump or an
+   arrival from another tool. ---- */
+(function(){
+  var b=document.getElementById('backbtn');
+  if(!b) return;
+  function maybeShow(){ if(history.length>1) b.style.display='inline-flex'; }
+  window.addEventListener('hashchange', maybeShow, false);
+  maybeShow();
+  b.addEventListener('click', function(){ history.back(); }, false);
 })();
 </script>
 </body>

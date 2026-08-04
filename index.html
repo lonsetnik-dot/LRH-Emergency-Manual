@@ -59,6 +59,7 @@
   a.tool.cat-codes{--c:#2f62a8}      /* blue   · codes / resuscitation */
   a.tool.cat-trauma{--c:#c26a1b}     /* orange · trauma */
   a.tool.cat-peds{--c:#7a3fa0}       /* purple · pediatrics */
+  a.tool.cat-debrief{--c:#5a6a78}    /* slate  · debrief / team reflection */
 
   a.tool{--c:var(--brand-primary); display:flex; flex-direction:column; text-decoration:none; color:inherit;
     background:var(--panel); border:1px solid var(--line); border-left:6px solid var(--c);
@@ -213,6 +214,21 @@
       <div class="go">Open</div>
     </a>
 
+    <!-- ===== CATEGORY: Debrief (beta · SLATE) -> /debrief/ ===== -->
+    <a class="tool cat-debrief" href="debrief/?from=home">
+      <div class="cardhead">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 32 32">
+          <path d="M5 7 h22 v14 h-13 l-5 5 v-5 h-4 z" fill="#fff"/>
+          <circle cx="12" cy="14" r="1.8" fill="#5a6a78"/>
+          <circle cx="16" cy="14" r="1.8" fill="#5a6a78"/>
+          <circle cx="20" cy="14" r="1.8" fill="#5a6a78"/>
+        </svg></span>
+        <div class="name">Debrief</div>
+      </div>
+      <div class="desc">A short structure for the team conversation after a code or critical event — basic assumption, what did you see, plus/delta/plus.</div>
+      <div class="go">Open</div>
+    </a>
+
     <!-- ===== Add a category/tool: create a lowercase, hyphenated folder with an
          index.html, add a card above (href to that folder), and add matching
          entries to the SEARCH INDEX in the script below. ===== -->
@@ -297,7 +313,8 @@
     {t:"Massive Transfusion Protocol (MTP)", c:"Trauma", k:"mtp massive transfusion protocol blood products prbc plasma platelets cryo hemorrhagic shock", u:"codes/?from=home#c12"},
     {t:"Front of Neck Access (FONA)", c:"Trauma", k:"fona cricothyroidotomy cico front of neck access surgical airway difficult airway das", u:"codes/?from=home#c18"},
     {t:"Massive Transfusion Protocol (MTP)", c:"Codes", k:"mtp massive transfusion protocol blood products prbc plasma platelets cryo hemorrhagic shock trauma", u:"codes/?from=home#c12"},
-    {t:"Front of Neck Access (FONA)", c:"Codes", k:"fona cricothyroidotomy cico front of neck access surgical airway difficult airway das trauma", u:"codes/?from=home#c18"}
+    {t:"Front of Neck Access (FONA)", c:"Codes", k:"fona cricothyroidotomy cico front of neck access surgical airway difficult airway das trauma", u:"codes/?from=home#c18"},
+    {t:"Debrief — after a code or critical event", c:"Debrief", k:"debrief hot debrief team reflection basic assumption plus delta enabled inhibited center for medical simulation", u:"debrief/?from=home"}
   ];
   var q=document.getElementById('q'), box=document.getElementById('results');
   if(!q||!box) return;
