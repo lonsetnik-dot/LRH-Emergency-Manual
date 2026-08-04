@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#005596">
+<title>LRH Procedures</title>
+<meta name="apple-mobile-web-app-title" content="Procedures">
+<meta name="description" content="Beta cognitive aids for rare, high-stakes ED procedures. Practice and feedback only.">
+<link rel="canonical" href="https://lrhemergencymanual.net/procedures/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="LRH Emergency Manual">
+<meta property="og:title" content="LRH Procedures (beta)">
+<meta property="og:description" content="Cognitive aids for rare, high-stakes ED procedures. Beta — practice and feedback only.">
+<meta property="og:url" content="https://lrhemergencymanual.net/procedures/">
+<meta name="twitter:card" content="summary">
+<style>
+  html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
+  body { margin:0; background:#eceff3; color:#16324f; font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; font-size:16.5px; line-height:1.4; text-wrap:pretty; }
+  main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
+  article { scroll-margin-top:54px; margin-top:12px; }
+  a { color:#2f62a8; }
+  a:hover { color:#16324f; }
+  a[href^="#"] { -webkit-tap-highlight-color:rgba(47,98,168,0.2); }
+  summary::-webkit-details-marker { display:none; }
+  details > summary .om-close { display:none; }
+  details[open] > summary .om-open { display:none; }
+  details[open] > summary .om-close { display:inline; }
+  button { -webkit-appearance:none; appearance:none; border-radius:0; touch-action:manipulation; -webkit-tap-highlight-color:rgba(22,50,79,0.15); }
+  input[type=checkbox]:checked + span { color:#8a8578; }
+  .steps { display:grid; grid-template-columns:1fr; gap:12px; align-items:start; }
+  .figs { display:grid; grid-template-columns:1fr; gap:12px; align-items:start; }
+  .menu { display:grid; grid-template-columns:1fr; gap:10px; padding:0 14px; }
+  @media (min-width:600px) { .menu { grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); } }
+  @media (min-width:760px) {
+    .steps { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
+    .figs { grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); }
+  }
+  nav.bar { position:relative; display:flex; align-items:center; gap:10px; padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px; background:#005596; color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.1em; }
+  nav.bar a { color:#fffefb; background:none; text-decoration:none; border:1px solid rgba(255,255,255,0.4); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center; }
+  .section-stripe { height:5px; background:#0f7a86; }
+  #stickytop { position:sticky; top:0; z-index:5; }
+  @media print {
+    body { background:#fffefb; }
+    nav.bar, #betasplash, a[href="#top"] { display:none; }
+    article { break-before:page; }
+    .steps { grid-template-columns:repeat(3,1fr); }
+    .figs { grid-template-columns:repeat(3,1fr); }
+  }
+</style>
+</head>
+<body>
+<div id="betasplash" style="position:fixed; inset:0; z-index:999; background:linear-gradient(135deg,#005596,#003e6e); color:#fffefb; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
+  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:#a9c2dc;">LRH · EMERGENCY DEPARTMENT</div>
+  <div style="font-size:30px; line-height:1.06; letter-spacing:-0.02em; font-weight:700;">Procedures</div>
+  <div style="display:inline-block; padding:6px 14px; border:2px solid #e0b93c; color:#f7d97a; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.16em;">BETA</div>
+  <div style="max-width:460px; font-size:17px; line-height:1.4; color:#dbe4ee;">Not yet ready for clinical use. Shared for feedback and practice only — do not use it to direct the care of a patient.</div>
+  <div style="max-width:460px; font-size:14.5px; line-height:1.35; color:#a9c2dc;">Content is unverified and unapproved. Every situation requires nuance; use your professional judgment and your department's policies.</div>
+  <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
+</div>
+<div id="stickytop">
+<nav class="bar"><a href="../?from=tool" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a><button id="backbtn" type="button" style="display:none; color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px;">◀ BACK</button></nav>
+<div class="section-stripe"></div>
+</div>
+
+<main id="top">
+  <div style="padding:16px 14px 6px;">
+    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:#0f7a86; font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
+    <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Procedures</h1>
+    <p style="margin:0; color:#5a6a78; font-size:14.5px;">Rare, high-stakes procedures — high-level checklists with anatomy figures. Procedures that already live in another tool link straight there; nothing is duplicated.</p>
+  </div>
+
+  <!-- ============ CARD MENU ============ -->
+  <div id="menu" class="menu" style="margin:14px 0 24px;">
+    <a href="#c01" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">01</span><span style="font-size:17px; font-weight:700; line-height:1.15;">Chest Tube (Tube Thoracostomy)</span></a>
+    <a href="#c02" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">02</span><span style="font-size:17px; font-weight:700; line-height:1.15;">Resuscitative Thoracotomy</span></a>
+    <a href="#c03" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">03</span><span style="font-size:17px; font-weight:700; line-height:1.15;">Resuscitative Hysterotomy</span></a>
+    <a href="#c04" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">04</span><span style="font-size:17px; font-weight:700; line-height:1.15;">Emergency Burr Hole (Craniotomy)</span></a>
+    <a href="#c05" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">05</span><span style="font-size:17px; font-weight:700; line-height:1.15;">Lateral Canthotomy &amp; Cantholysis</span></a>
+    <a href="#c06" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">06</span><span style="font-size:17px; font-weight:700; line-height:1.15;">Central Venous Catheter (CVC)</span></a>
+    <a href="#c07" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">07</span><span style="font-size:17px; font-weight:700; line-height:1.15;">Transvenous Pacing (TVP)</span></a>
+    <a href="#c08" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">08</span><span style="font-size:17px; font-weight:700; line-height:1.15;">Escharotomy</span></a>
+    <a href="../codes/?from=home#c06" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">→</span><span style="font-size:17px; font-weight:700; line-height:1.15;">Intubation / RSI Checklist<br><span style="font-size:11px; font-weight:400; color:#8a8578; letter-spacing:0.04em;">opens in Codes</span></span></a>
+    <a href="../codes/?from=home#c18" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">→</span><span style="font-size:17px; font-weight:700; line-height:1.15;">Front of Neck Access (FONA)<br><span style="font-size:11px; font-weight:400; color:#8a8578; letter-spacing:0.04em;">opens in Codes</span></span></a>
+    <a href="../ob-neonatal/?from=home#c05" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">→</span><span style="font-size:17px; font-weight:700; line-height:1.15;">ED C-Section<br><span style="font-size:11px; font-weight:400; color:#8a8578; letter-spacing:0.04em;">opens in OB / Neonatal</span></span></a>
+    <a href="../ob-neonatal/?from=home#c04" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #2f62a8; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#2f62a8;">→</span><span style="font-size:17px; font-weight:700; line-height:1.15;">Umbilical Vein Catheterization<br><span style="font-size:11px; font-weight:400; color:#8a8578; letter-spacing:0.04em;">opens in OB / Neonatal</span></span></a>
+    <a href="../peds/?from=home#p14" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">→</span><span style="font-size:17px; font-weight:700; line-height:1.15;">Procedural Sedation<br><span style="font-size:11px; font-weight:400; color:#8a8578; letter-spacing:0.04em;">opens in Pediatric Emergencies</span></span></a>
+  </div>
+
+  <!-- ============ CARD 01 · CHEST TUBE ============ -->
+  <article id="c01">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#16324f; font-size:16px; margin-right:8px;">01</span>Chest Tube (Tube Thoracostomy)</h2>
+        <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#5a6a78; text-align:right;">FINGER FIRST · SAFE TRIANGLE</span>
+      </div>
+    </div>
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open style="border:2px solid #16324f;">
+        <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">INDICATIONS</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Drain air or fluid</b> from the pleural cavity — pneumothorax, hemothorax, effusion/empyema.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Pleural lavage</b> — active internal rewarming in severe hypothermia.</span></label></li>
+        </ul>
+      </details>
+      <details open style="border:2px solid #16324f;">
+        <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">TECHNIQUE — HIGH LEVEL</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Safe triangle:</b> 4th–5th intercostal space, anterior-to-mid axillary line — anterior border of latissimus dorsi, lateral border of pectoralis major, above the 5th ICS (nipple line).</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Blunt dissection over the rib below</b> — avoid the neurovascular bundle under each rib. Finger thoracostomy first: sweep to confirm the pleural space and clear adhesions.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Insert the tube directed posteriorly and apically,</b> connect to an underwater-seal drain, confirm fogging/swing/output, suture and secure, then CXR.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>Massive hemothorax on insertion</b> → activate <a href="../codes/?from=home#c12">MTP (Codes card 12)</a> and prepare for possible transfer/operative management.</span></label></li>
+        </ul>
+      </details>
+    </div>
+    <div class="figs" style="padding:14px 14px 0;">
+      <figure style="margin:0; background:#fffefb; border:1px solid #e4e0d6;">
+        <div style="padding:10px 12px 0; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.1em; color:#0f7a86;">FIG · SAFE TRIANGLE (RIGHT LATERAL CHEST)</div>
+        <div style="padding:8px 12px;"><svg viewBox="0 0 360 220" style="width:100%; height:auto; display:block;" role="img" aria-label="Safe triangle for chest tube insertion">
+          <rect x="0" y="0" width="360" height="220" fill="#fffefb"/>
+          <path d="M 60 10 C 30 60 28 150 55 210" fill="none" stroke="#5a6a78" stroke-width="2"/>
+          <path d="M 300 10 C 330 60 332 150 305 210" fill="none" stroke="#5a6a78" stroke-width="2"/>
+          <g stroke="#c9d2da" stroke-width="8" stroke-linecap="round">
+            <line x1="70" y1="50" x2="290" y2="42"/><line x1="66" y1="85" x2="294" y2="77"/>
+            <line x1="64" y1="120" x2="296" y2="112"/><line x1="66" y1="155" x2="294" y2="147"/>
+          </g>
+          <polygon points="130,55 235,70 165,150" fill="rgba(15,122,134,0.22)" stroke="#0f7a86" stroke-width="2.5"/>
+          <circle cx="175" cy="95" r="6" fill="#9b1c2e"/>
+          <text x="120" y="40" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" fill="#16324f">PECTORALIS MAJOR (ANT.)</text>
+          <text x="216" y="180" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" fill="#16324f">LATISSIMUS (POST.)</text>
+          <text x="60" y="205" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" fill="#16324f">5TH ICS / NIPPLE LINE = FLOOR</text>
+          <text x="190" y="99" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#9b1c2e">4–5TH ICS ENTRY</text>
+        </svg></div>
+        <figcaption style="padding:0 12px 12px; font-size:13.5px; line-height:1.35; color:#5a6a78;">Go in over the top of the rib, inside the triangle — never below the nipple line without imaging.</figcaption>
+      </figure>
+    </div>
+    <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
+      <b>Sources:</b> The Procedures Course, Chest Tube Reference — The Alfred STAR Program (Alfred Health, Melbourne): indications (pleural drainage; pleural lavage in severe hypothermia), thoracic-trauma epidemiology, tube thoracostomy required in ~25% of major trauma. Technique steps condensed from standard trauma references (ATLS 10e convention) where the STAR reference page was not fully captured — verify against the full STAR course material.
+    </div>
+    <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
+      <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
+    </div>
+  </article>
+
+  <!-- ============ CARD 02 · RESUSCITATIVE THORACOTOMY ============ -->
+  <article id="c02">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#9b1c2e; font-size:16px; margin-right:8px;">02</span>Resuscitative Thoracotomy</h2>
+        <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#5a6a78; text-align:right;">TAMPONADE ON ULTRASOUND · IN EXTREMIS</span>
+      </div>
+    </div>
+    <div style="margin:14px 14px 0; border:2px solid #8a6d1f; background:#fdf3cf; color:#6b5410; padding:11px 14px; font-size:13px; line-height:1.4;">
+      ⚠ <b>LOCALIZE THIS CARD:</b> confirm whether ED thoracotomy is within your facility's scope, who is credentialed, and your surgical-backup/transfer reality before an event — a rural ED without immediate surgical backup must decide this in advance, not at the bedside.
+    </div>
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open style="border:2px solid #16324f;">
+        <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">PATIENT SELECTION — THE DECISION IS THE PROCEDURE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Reserved for:</b> unstable patients in extremis with deteriorating physiology and <b>proven cardiac tamponade on ultrasound</b> — the main reversible pathology, usually a low-pressure cardiac-chamber laceration.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>Consistently poor outcome:</b> no signs of life + PEA at hospital arrival — even in a trauma centre. Don't start what physiology has already decided.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Tamponade may hide:</b> no external injury signs, normal ECG, no classic exam findings — ultrasound in the primary survey is what finds it.</span></label></li>
+        </ul>
+      </details>
+      <details open style="border:2px solid #16324f;">
+        <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">SEQUENCE — HIGH LEVEL</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>In parallel:</b> secure the airway (<a href="../codes/?from=home#c06">Codes card 06</a>), bilateral finger thoracostomies, activate <a href="../codes/?from=home#c12">MTP</a>.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Clamshell:</b> bilateral 4th–5th ICS incisions joined across the sternum — best exposure for the non-surgeon. Open the pericardium longitudinally <i>anterior to the phrenic nerve</i>, deliver the heart, relieve tamponade.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Control the cardiac wound:</b> finger/foley/staples — not deep sutures near coronaries. Then internal massage ± internal defibrillation and get definitive surgical help moving.</span></label></li>
+        </ul>
+      </details>
+    </div>
+    <div class="figs" style="padding:14px 14px 0;">
+      <figure style="margin:0; background:#fffefb; border:1px solid #e4e0d6;">
+        <div style="padding:10px 12px 0; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.1em; color:#0f7a86;">FIG · CLAMSHELL INCISION</div>
+        <div style="padding:8px 12px;"><svg viewBox="0 0 360 200" style="width:100%; height:auto; display:block;" role="img" aria-label="Clamshell thoracotomy incision line">
+          <rect x="0" y="0" width="360" height="200" fill="#fffefb"/>
+          <path d="M 40 15 C 20 70 24 150 50 195" fill="none" stroke="#5a6a78" stroke-width="2"/>
+          <path d="M 320 15 C 340 70 336 150 310 195" fill="none" stroke="#5a6a78" stroke-width="2"/>
+          <line x1="180" y1="20" x2="180" y2="120" stroke="#c9d2da" stroke-width="10" stroke-linecap="round"/>
+          <circle cx="130" cy="90" r="5" fill="#c9d2da"/><circle cx="230" cy="90" r="5" fill="#c9d2da"/>
+          <path d="M 45 120 C 110 150 250 150 315 120" fill="none" stroke="#9b1c2e" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round"/>
+          <text x="86" y="178" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#9b1c2e">4TH–5TH ICS, AXILLA TO AXILLA</text>
+          <text x="150" y="40" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" fill="#5a6a78">STERNUM</text>
+        </svg></div>
+        <figcaption style="padding:0 12px 12px; font-size:13.5px; line-height:1.35; color:#5a6a78;">Follow the infra-mammary crease bilaterally and cut the sternum transversely — pericardium opened vertically, in front of the phrenic nerve.</figcaption>
+      </figure>
+    </div>
+    <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
+      <b>Sources:</b> The Procedures Course, Thoracotomy Reference — The Alfred STAR Program (Alfred Health, Melbourne): reversible-pathology framing (tamponade from low-pressure chamber laceration, occult without external signs/ECG changes), ultrasound-driven selection, poor outcome with no signs of life + PEA at arrival (Alfred Trauma Registry 2008–2013: 9 survivors of 27 ED thoracotomies), reserve for in-extremis patients with proven tamponade. Clamshell/pericardiotomy sequence condensed from standard references (EMCrit/Alfred clamshell convention) where the STAR page was not fully captured — verify against the full STAR course.
+    </div>
+    <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
+      <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
+    </div>
+  </article>
+
+  <!-- ============ CARD 03 · RESUSCITATIVE HYSTEROTOMY ============ -->
+  <article id="c03">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#9b1c2e; font-size:16px; margin-right:8px;">03</span>Resuscitative Hysterotomy</h2>
+        <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#5a6a78; text-align:right;">MATERNAL ARREST · FUNDUS ≥ UMBILICUS</span>
+      </div>
+    </div>
+    <div style="margin:14px 14px 0; border:2px solid #9b1c2e; background:#fbeaec; color:#9b1c2e; padding:11px 14px; font-size:13px; line-height:1.4;">
+      ⚠ The full step-by-step procedure card lives in the OB / Neonatal tool → <a href="../ob-neonatal/?from=home#c10" style="color:#9b1c2e; font-weight:700;">Resuscitative Hysterotomy (OB card 10)</a>. This card is the decision summary.
+    </div>
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open style="border:2px solid #16324f;">
+        <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">DECISION</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Indication:</b> maternal cardiac arrest with gestation &gt;20 weeks — practically, fundus at or above the umbilicus. Improves outcomes for <b>both</b> mother and fetus (relieves aortocaval compression).</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>Timing:</b> classic teaching is delivery within 5 minutes of arrest — start the decision clock at arrest recognition, not at equipment arrival. Don't delay for fetal heart tones, consent, or transport.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Continue CPR throughout</b> with manual left uterine displacement until delivery; prepare the neonatal team in parallel (<a href="../ob-neonatal/?from=home#c03">neonatal resuscitation</a>).</span></label></li>
+        </ul>
+      </details>
+    </div>
+    <div class="figs" style="padding:14px 14px 0;">
+      <figure style="margin:0; background:#fffefb; border:1px solid #e4e0d6;">
+        <div style="padding:10px 12px 0; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.1em; color:#0f7a86;">FIG · FUNDAL HEIGHT BY GESTATION</div>
+        <div style="padding:8px 12px;"><svg viewBox="0 0 360 230" style="width:100%; height:auto; display:block;" role="img" aria-label="Fundal height landmarks by gestational age">
+          <rect x="0" y="0" width="360" height="230" fill="#fffefb"/>
+          <path d="M 100 10 C 70 60 60 170 95 225 M 260 10 C 290 60 300 170 265 225" fill="none" stroke="#5a6a78" stroke-width="2"/>
+          <path d="M 105 60 A 92 42 0 0 1 255 60" fill="none" stroke="#16324f" stroke-width="2.5"/>
+          <path d="M 100 95 A 100 48 0 0 1 260 95" fill="none" stroke="#16324f" stroke-width="2.5" stroke-dasharray="7 5"/>
+          <path d="M 96 135 A 106 52 0 0 1 264 135" fill="none" stroke="#9b1c2e" stroke-width="3"/>
+          <circle cx="180" cy="140" r="5" fill="#9b1c2e"/>
+          <text x="167" y="52" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="11" fill="#16324f">36–40</text>
+          <text x="172" y="88" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="11" fill="#16324f">32</text>
+          <text x="150" y="160" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="11" font-weight="700" fill="#9b1c2e">20 = UMBILICUS</text>
+          <text x="52" y="212" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" fill="#5a6a78">FUNDUS ≥ UMBILICUS → PROCEED</text>
+        </svg></div>
+        <figcaption style="padding:0 12px 12px; font-size:13.5px; line-height:1.35; color:#5a6a78;">20 weeks reaches the umbilicus; each week ≈ 1 cm above it. If the fundus is at or above the umbilicus during maternal arrest, the procedure is indicated.</figcaption>
+      </figure>
+    </div>
+    <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
+      <b>Sources:</b> The Procedures Course, Resuscitative Hysterotomy Reference — The Alfred STAR Program (Alfred Health, Melbourne): definition (emergent delivery in maternal arrest to improve outcomes of both mother and fetus), indication (maternal arrest, gestation &gt;20 weeks, classic 5-minute teaching), fundal-height figure adapted from the STAR reference. Full technique: see the OB / Neonatal tool card 10 and its cited sources.
+    </div>
+    <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
+      <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
+    </div>
+  </article>
+
+  <!-- ============ CARD 04 · EMERGENCY BURR HOLE ============ -->
+  <article id="c04">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#16324f; font-size:16px; margin-right:8px;">04</span>Emergency Burr Hole (Craniotomy)</h2>
+        <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#5a6a78; text-align:right;">HERNIATING + NEUROSURGERY FAR AWAY</span>
+      </div>
+    </div>
+    <div style="margin:14px 14px 0; border:2px solid #8a6d1f; background:#fdf3cf; color:#6b5410; padding:11px 14px; font-size:13px; line-height:1.4;">
+      ⚠ <b>LOCALIZE THIS CARD:</b> a last-resort temporizing procedure for a herniating patient with a CT-proven extra-axial hematoma when neurosurgical care is hours away. Agree in advance with your referral neurosurgeons whether, when, and how this would ever be done here — ideally with them on the phone in the moment.
+    </div>
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open style="border:2px solid #16324f;">
+        <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">DECISION &amp; SITE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Candidate:</b> CT-localized epidural/subdural hematoma + active herniation (blown pupil, deteriorating GCS) despite maximal medical therapy (<a href="../codes/?from=home#c07">Codes card 07 — ICH</a>), and definitive neurosurgery is not reachable in time.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Temporal site (commonest):</b> ~2 fingerbreadths above the zygomatic arch, anterior to the ear — over the middle meningeal artery territory, on the side of the blown pupil / CT lesion.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Frontal site:</b> ~3 cm lateral to midline, behind the coronal suture — stay off the sagittal midline (venous sinus).</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>This buys transport time, not definitive care</b> — the transfer should already be rolling while it's done.</span></label></li>
+        </ul>
+      </details>
+    </div>
+    <div class="figs" style="padding:14px 14px 0;">
+      <figure style="margin:0; background:#fffefb; border:1px solid #e4e0d6;">
+        <div style="padding:10px 12px 0; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.1em; color:#0f7a86;">FIG · BURR HOLE LANDMARKS (LATERAL SKULL)</div>
+        <div style="padding:8px 12px;"><svg viewBox="0 0 360 230" style="width:100%; height:auto; display:block;" role="img" aria-label="Temporal and frontal burr hole landmarks">
+          <rect x="0" y="0" width="360" height="230" fill="#fffefb"/>
+          <path d="M 40 150 C 30 60 120 15 200 20 C 290 25 330 80 325 130 C 322 165 300 185 275 190 L 250 195 C 235 200 225 205 210 200" fill="none" stroke="#5a6a78" stroke-width="2.5"/>
+          <path d="M 205 175 C 225 168 250 168 268 175" fill="none" stroke="#5a6a78" stroke-width="3"/>
+          <ellipse cx="192" cy="150" rx="10" ry="16" fill="none" stroke="#5a6a78" stroke-width="2"/>
+          <path d="M 150 22 C 148 60 150 100 158 140" fill="none" stroke="#c9d2da" stroke-width="2" stroke-dasharray="4 4"/>
+          <circle cx="215" cy="118" r="8" fill="#9b1c2e"/>
+          <circle cx="140" cy="55" r="8" fill="#9b1c2e"/>
+          <line x1="215" y1="170" x2="215" y2="130" stroke="#16324f" stroke-width="2" stroke-dasharray="5 4"/>
+          <text x="18" y="215" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#9b1c2e">TEMPORAL: 2 FINGERS ABOVE ZYGOMATIC ARCH, ANTERIOR TO EAR</text>
+          <text x="35" y="35" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#9b1c2e">FRONTAL: 3 CM OFF MIDLINE,</text>
+          <text x="35" y="48" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#9b1c2e">BEHIND CORONAL SUTURE</text>
+          <text x="238" y="188" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10" fill="#5a6a78">ZYGOMATIC ARCH</text>
+        </svg></div>
+        <figcaption style="padding:0 12px 12px; font-size:13.5px; line-height:1.35; color:#5a6a78;">Temporal hole sits over the middle meningeal artery — the classic epidural source. Match the side to the pupil and the CT.</figcaption>
+      </figure>
+    </div>
+    <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
+      <b>Sources:</b> The Procedures Course, Craniotomy Reference — The Alfred STAR Program (Alfred Health, Melbourne): burr-hole landmark figure (frontal hole 3 cm off midline near the coronal suture; temporal hole above the zygomatic arch over the middle meningeal artery; external landmarks — external auditory meatus, mastoid, sigmoid sinus) — the figure above is a redrawn schematic of that diagram. Decision framing condensed from standard emergency-neurosurgery references where the STAR page was not fully captured — verify against the full STAR course.
+    </div>
+    <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
+      <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
+    </div>
+  </article>
+
+  <!-- ============ CARD 05 · LATERAL CANTHOTOMY ============ -->
+  <article id="c05">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#16324f; font-size:16px; margin-right:8px;">05</span>Lateral Canthotomy &amp; Cantholysis</h2>
+        <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#5a6a78; text-align:right;">ORBITAL COMPARTMENT SYNDROME · 60–90 MIN</span>
+      </div>
+    </div>
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open style="border:2px solid #16324f;">
+        <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">DECISION &amp; TECHNIQUE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Indication:</b> orbital compartment syndrome (usually retrobulbar hematoma after trauma) — tense proptotic eye, falling vision/RAPD, elevated IOP. <b>60–90 min is the critical ischemia time</b> for the optic nerve and retina — treat on clinical grounds, don't wait.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Canthotomy, then cantholysis:</b> anesthetize, clamp, and cut the lateral canthus, then <b>expose and cut the inferior canthal tendon (crus)</b>. Tension should be lost and yellow orbital fat visible — that's decompression. Re-assess the eye.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>Commonest pitfall: failing to actually expose and cut the inferior canthal tendon.</b> If IOP stays up, check it — the lower lid should be freely evertable. Direct all instruments away from the globe; iatrogenic globe injury is the most serious complication.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>After:</b> leave the eye exposed for repeat exams (a trimmed polystyrene cup for transport), antibiotic ointment, and urgent ophthalmology consultation.</span></label></li>
+        </ul>
+      </details>
+    </div>
+    <div class="figs" style="padding:14px 14px 0;">
+      <figure style="margin:0; background:#fffefb; border:1px solid #e4e0d6;">
+        <div style="padding:10px 12px 0; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.1em; color:#0f7a86;">FIG · CANTHOTOMY + INFERIOR CANTHOLYSIS (RIGHT EYE)</div>
+        <div style="padding:8px 12px;"><svg viewBox="0 0 360 190" style="width:100%; height:auto; display:block;" role="img" aria-label="Lateral canthotomy and inferior cantholysis">
+          <rect x="0" y="0" width="360" height="190" fill="#fffefb"/>
+          <path d="M 60 95 C 110 40 220 40 285 95 C 220 150 110 150 60 95 Z" fill="none" stroke="#5a6a78" stroke-width="2.5"/>
+          <circle cx="172" cy="95" r="30" fill="none" stroke="#5a6a78" stroke-width="2"/>
+          <circle cx="172" cy="95" r="12" fill="#5a6a78"/>
+          <line x1="285" y1="95" x2="330" y2="95" stroke="#9b1c2e" stroke-width="4" stroke-dasharray="8 5" stroke-linecap="round"/>
+          <path d="M 285 95 L 315 130" stroke="#9b1c2e" stroke-width="4" stroke-linecap="round"/>
+          <text x="222" y="26" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#9b1c2e">1 · CANTHOTOMY —</text>
+          <text x="222" y="39" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#9b1c2e">CUT LATERAL CANTHUS</text>
+          <text x="205" y="172" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#9b1c2e">2 · CUT INFERIOR CRUS</text>
+          <text x="205" y="185" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#9b1c2e">(CANTHOLYSIS)</text>
+        </svg></div>
+        <figcaption style="padding:0 12px 12px; font-size:13.5px; line-height:1.35; color:#5a6a78;">The cantholysis — cutting the inferior crus of the canthal tendon — is the step that decompresses the orbit; the canthotomy alone is just the exposure.</figcaption>
+      </figure>
+    </div>
+    <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
+      <b>Sources:</b> The Procedures Course, Quick Reference (lateral canthotomy content) — The Alfred STAR Program (Alfred Health, Melbourne): loss-of-tension + visible orbital fat as the decompression endpoint, re-assessment, post-procedure care (eye left exposed, trimmed polystyrene cup for transport, antibiotic ointment, urgent ophthalmology), pitfalls (failure to expose/cut the inferior canthal tendon as the commonest pitfall; iatrogenic globe injury as the most serious complication; freely evertable lower lid as the completeness check; 60–90 min optic nerve/retina ischemia time). Indication framing condensed from standard EM references where the STAR page was not fully captured.
+    </div>
+    <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
+      <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
+    </div>
+  </article>
+
+  <!-- ============ CARD 06 · CVC ============ -->
+  <article id="c06">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#16324f; font-size:16px; margin-right:8px;">06</span>Central Venous Catheter (CVC)</h2>
+        <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#5a6a78; text-align:right;">ULTRASOUND-GUIDED · FULL STERILE PREP</span>
+      </div>
+    </div>
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open style="border:2px solid #16324f;">
+        <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">SETUP &amp; TECHNIQUE — HIGH LEVEL</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Position:</b> supine, head neutral (collar on if trauma); Trendelenburg for IJ/subclavian. Full barrier precautions, chlorhexidine 2%/70% alcohol prep.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Kit check before draping:</b> sutures (3/0 non-absorbable), 10/11 scalpel, syringes/needles, gauze, Biopatch, Tegaderm, non-return caps for every lumen — lay it out, count it.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Ultrasound-guided Seldinger:</b> confirm the vein (compressible, wire seen in-plane before dilating), never lose the wire, flush and cap all lumens, suture, Biopatch + dressing, CXR for IJ/subclavian tip position.</span></label></li>
+        </ul>
+      </details>
+    </div>
+    <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
+      <b>Sources:</b> The Procedures Course, CVC Reference — The Alfred STAR Program (Alfred Health, Melbourne): equipment list (chlorhexidine 2%/70% alcohol or povidone prep, foam applicators, suture kit with 3/0 non-absorbable, 10/11 scalpel, syringes/needles by gauge, Biopatch, Tegaderm 10×12 + 6×7, non-return caps ×4) and positioning (supine, head neutral, cervical collar applied when relevant). Seldinger/ultrasound convention condensed from standard vascular-access references where the STAR page was not fully captured — verify against the full STAR course.
+    </div>
+    <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
+      <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
+    </div>
+  </article>
+
+  <!-- ============ CARD 07 · TVP ============ -->
+  <article id="c07">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#16324f; font-size:16px; margin-right:8px;">07</span>Transvenous Pacing (TVP)</h2>
+        <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#5a6a78; text-align:right;">AFTER DRUGS + TRANSCUTANEOUS FAIL</span>
+      </div>
+    </div>
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open style="border:2px solid #16324f;">
+        <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">DECISION &amp; SEQUENCE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Indication:</b> symptomatic arrhythmia with cardiovascular compromise unresponsive to drugs and transcutaneous pacing — most commonly bradyarrhythmias (sinus bradycardia/arrest, sick sinus, AF with slow ventricular response, high-grade block). Work the escalation ladder on <a href="../codes/?from=home#c03">Codes card 03</a> first.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Sequence:</b> right IJ introducer sheath (sterile, ultrasound-guided — see <a href="#c06">CVC card</a>) → balloon-tipped pacing wire in the sterile sleeve → advance to ~20 cm, inflate balloon, float to the RV → capture on the monitor → deflate, secure at depth.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Settings:</b> start rate 70–80, max output, confirm electrical + mechanical capture (pulse!), then dial output down to find threshold and set at 2–3× threshold. Verify position/complications with CXR.</span></label></li>
+        </ul>
+      </details>
+    </div>
+    <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
+      <b>Sources:</b> The Procedures Course, TVP Reference — The Alfred STAR Program (Alfred Health, Melbourne): definition (pacing-wire electrode into the right ventricle for electrical stimulation), place in the escalation ladder (after pharmacotherapy and transcutaneous pacing fail), bradyarrhythmia indication list. Wire-floating sequence and 2–3× threshold convention condensed from standard EM/critical-care references where the STAR page was not fully captured — verify against the full STAR course.
+    </div>
+    <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
+      <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
+    </div>
+  </article>
+
+  <!-- ============ CARD 08 · ESCHAROTOMY ============ -->
+  <article id="c08">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#9b1c2e; font-size:16px; margin-right:8px;">08</span>Escharotomy</h2>
+        <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#5a6a78; text-align:right;">BURNS · PERFUSION OR VENTILATION FAILING</span>
+      </div>
+    </div>
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open style="border:2px solid #16324f;">
+        <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">DECISION &amp; TECHNIQUE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Indications:</b> limb hypoperfusion or ventilation restriction from inelastic burned tissue (eschar). Limb hypoperfusion can occur with circumferential <b>and</b> non-circumferential burns.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>No test decides this for you</b> — there is insufficient evidence for any specific standard or test; it's a serial-examination clinical call. Talk to your burn center early — they will usually guide (or receive) the procedure.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Technique:</b> incise along mid-lateral/mid-medial limb lines (chest: anterior axillary lines ± clavicular/costal connectors) through the full thickness of eschar until it springs apart and perfusion/ventilation improves — into subcutaneous fat, not fascia (that's a fasciotomy).</span></label></li>
+        </ul>
+      </details>
+    </div>
+    <div class="figs" style="padding:14px 14px 0;">
+      <figure style="margin:0; background:#fffefb; border:1px solid #e4e0d6;">
+        <div style="padding:10px 12px 0; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.1em; color:#0f7a86;">FIG · ESCHAROTOMY LINES</div>
+        <div style="padding:8px 12px;"><svg viewBox="0 0 360 210" style="width:100%; height:auto; display:block;" role="img" aria-label="Escharotomy incision lines on chest and arm">
+          <rect x="0" y="0" width="360" height="210" fill="#fffefb"/>
+          <path d="M 60 30 L 170 30 L 170 190 L 60 190 Z" fill="none" stroke="#5a6a78" stroke-width="2" rx="8"/>
+          <line x1="85" y1="45" x2="85" y2="175" stroke="#9b1c2e" stroke-width="3.5" stroke-dasharray="9 6" stroke-linecap="round"/>
+          <line x1="145" y1="45" x2="145" y2="175" stroke="#9b1c2e" stroke-width="3.5" stroke-dasharray="9 6" stroke-linecap="round"/>
+          <line x1="85" y1="60" x2="145" y2="60" stroke="#9b1c2e" stroke-width="3" stroke-dasharray="7 5" stroke-linecap="round"/>
+          <text x="62" y="205" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#9b1c2e">CHEST: ANT. AXILLARY LINES</text>
+          <path d="M 235 25 C 225 80 225 150 238 195 M 295 25 C 305 80 305 150 292 195" fill="none" stroke="#5a6a78" stroke-width="2"/>
+          <line x1="232" y1="45" x2="240" y2="180" stroke="#9b1c2e" stroke-width="3.5" stroke-dasharray="9 6" stroke-linecap="round"/>
+          <line x1="298" y1="45" x2="290" y2="180" stroke="#9b1c2e" stroke-width="3.5" stroke-dasharray="9 6" stroke-linecap="round"/>
+          <text x="218" y="205" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#9b1c2e">LIMB: MID-LATERAL + MID-MEDIAL</text>
+        </svg></div>
+        <figcaption style="padding:0 12px 12px; font-size:13.5px; line-height:1.35; color:#5a6a78;">Cut through eschar only, until it gapes and distal perfusion (or chest excursion) returns — avoid named nerves at the elbow/wrist/fibular head.</figcaption>
+      </figure>
+    </div>
+    <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
+      <b>Sources:</b> The Procedures Course, Escharotomy Reference — The Alfred STAR Program (Alfred Health, Melbourne): definition (incision of inelastic eschar impairing extremity perfusion or restricting chest-wall movement/ventilation), the two indications, limb hypoperfusion occurring with circumferential AND non-circumferential burns, and the explicit note that no specific standard or test decides the need for escharotomy. Incision-line conventions condensed from standard burn-surgery references where the STAR page was not fully captured — verify against the full STAR course and your burn center.
+    </div>
+    <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
+      <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
+    </div>
+  </article>
+
+  <div style="margin:14px 18px 0;"><a href="#top" style="display:flex; align-items:center; justify-content:center; min-height:46px; border:1px solid #d8d3c7; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.12em; color:#8a8578; text-decoration:none;">↑ INDEX</a></div>
+</main>
+
+<script>
+/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
+var SITE = {
+  version: "0.2",
+  lastReviewed: "2026-08-04"
+};
+(function(){
+  var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
+  Array.prototype.forEach.call(document.querySelectorAll('.verstamp'), function(vs){ vs.textContent=stampText; });
+})();
+
+/* ---- Beta splash: skip if arriving from the site search (?from=home) ---- */
+(function(){
+  function boot(){
+    var s=document.getElementById('betasplash'), b=document.getElementById('betago');
+    if(!s||!b) return;
+    try{
+      var params=new URLSearchParams(location.search);
+      if(params.get('from')==='home'){ if(s.parentNode) s.parentNode.removeChild(s); return; }
+    }catch(e){}
+    function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); }
+    b.addEventListener('click', go, false);
+    b.addEventListener('touchend', go, false);
+  }
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
+})();
+
+/* ---- BACK button: returns to the previous card/tool (browser history). Shows
+   only once there is somewhere to go back to — a within-page card jump or an
+   arrival from another tool. ---- */
+(function(){
+  var b=document.getElementById('backbtn');
+  if(!b) return;
+  function maybeShow(){ if(history.length>1) b.style.display='inline-flex'; }
+  window.addEventListener('hashchange', maybeShow, false);
+  maybeShow();
+  b.addEventListener('click', function(){ history.back(); }, false);
+})();
+</script>
+</body>
+</html>

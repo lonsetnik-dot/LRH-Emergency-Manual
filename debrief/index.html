@@ -33,11 +33,11 @@
   @media (min-width:760px) { .steps { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); } }
   nav.bar { position:relative; display:flex; align-items:center; gap:10px; padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px; background:#005596; color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.1em; }
   nav.bar a { color:#fffefb; background:none; text-decoration:none; border:1px solid rgba(255,255,255,0.4); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center; }
-  .section-stripe { height:5px; background:#2f62a8; }
+  .section-stripe { height:5px; background:#5a6a78; } /* Debrief = slate (matches the landing-page area color) */
   #stickytop { position:sticky; top:0; z-index:5; }
   @media print {
     body { background:#fffefb; }
-    nav.bar, a[href="#top"] { display:none; }
+    nav.bar, #betasplash { display:none; }
     article { break-before:page; }
     .steps { grid-template-columns:repeat(3,1fr); }
   }
@@ -59,7 +59,7 @@
 
 <main>
   <div style="padding:16px 14px 6px;">
-    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:#2f62a8; font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
+    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:#5a6a78; font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
     <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Debrief</h1>
     <p style="margin:0; color:#5a6a78; font-size:14.5px;">A short, structured team conversation after a code or critical event — a few minutes, at the bedside or in a quiet corner, before everyone scatters.</p>
   </div>
@@ -67,8 +67,8 @@
   <article id="c01">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#16324f; font-size:16px; margin-right:8px;">01</span>Hot Debrief — After the Event</h2>
-        <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#5a6a78; text-align:right;">PLACEHOLDER · v0.1 DRAFT</span>
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#16324f; font-size:16px; margin-right:8px;">01</span>Debrief — Same Shift as the Event</h2>
+        <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#5a6a78; text-align:right;">PLACEHOLDER · DRAFT</span>
       </div>
     </div>
 
@@ -103,7 +103,7 @@
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>PLUS — what enabled us?</b> Name the specific things (behaviors, tools, communication, environment) that enabled the team's performance.</li>
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>DELTA — what inhibited us?</b> Name what inhibited performance — framed as conditions and systems, not blame. "The pulse ox was on the BP-cuff arm" invites a fix; "you missed the sat drop" invites defensiveness.</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>PLUS — end on what enabled us.</b> Close with one more enabling factor to protect, so the team leaves with what to keep doing, not only what to change.</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>PLUS — what do we take away from this?</b> Close on the takeaway: anything to communicate or escalate? Key saves or key learning? Missing or broken equipment to report? The team leaves with what to keep doing and who's carrying each item forward.</li>
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Pick <b>one or two deltas at most</b> to actually act on, name who owns each, and stop there.</li>
         </ul>
       </details>
@@ -119,16 +119,17 @@
 </main>
 
 <script>
-var SITE = { version: "0.1", lastReviewed: "2026-08-04" };
+/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
+var SITE = { version: "0.3", lastReviewed: "2026-08-04" };
 (function(){
   document.querySelectorAll('.verstamp').forEach(function(el){ el.textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH'; });
   var s=document.getElementById('betasplash'), b=document.getElementById('betago');
   if(!s||!b) return;
-  var params=new URLSearchParams(location.search);
-  if(params.get('from')==='home'||params.get('from')==='tool'){ if(s.parentNode) s.parentNode.removeChild(s); return; }
   function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); }
   b.addEventListener('click', go, false);
   b.addEventListener('touchend', go, false);
+  /* handlers attach first so a parse failure can never leave the splash stuck */
+  try{ if(/(^|[?&])from=(home|tool)(&|$)/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); } }catch(err){}
 })();
 
 /* ---- BACK button: returns to the previous card/tool (browser history). Shows

@@ -13,7 +13,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="LRH Emergency Manual">
 <meta property="og:title" content="LRH Pediatric Emergencies (beta)">
-<meta property="og:description" content="Cognitive aids for pediatric emergencies in the ED — shared weight-based dosing engine plus 14 topic cards. Beta — practice and feedback only.">
+<meta property="og:description" content="Cognitive aids for pediatric emergencies in the ED — shared weight-based dosing engine plus 15 topic cards. Beta — practice and feedback only.">
 <meta property="og:url" content="https://lrhemergencymanual.net/peds/">
 <meta name="twitter:card" content="summary">
 <style>
@@ -109,7 +109,7 @@
   <div style="padding:16px 14px 6px;">
     <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:#2f62a8; font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
     <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Pediatric Emergencies</h1>
-    <p style="margin:0; color:#5a6a78; font-size:14.5px;">Enter a weight once above — every card below calculates its doses live from it. No patient data is stored; the weight clears on RESET or when you leave the page.</p>
+    <p style="margin:0; color:#5a6a78; font-size:14.5px;">Enter a weight once above — every card below calculates its doses live from it. Weight and timers live only on this device, clear on RESET FOR NEXT CASE, and auto-clear after an hour of inactivity — still, always tap RESET between patients.</p>
   </div>
 
   <!-- ============ CARD MENU ============ -->
@@ -128,6 +128,7 @@
     <a href="#p12" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #8a6d1f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#8a6d1f;">12</span><span style="font-size:17px; font-weight:700; line-height:1.15;">Non-Accidental Trauma</span></a>
     <a href="#p13" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #8a6d1f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#8a6d1f;">13</span><span style="font-size:17px; font-weight:700; line-height:1.15;">Death of a Child in the ED</span></a>
     <a href="#p14" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">14</span><span style="font-size:17px; font-weight:700; line-height:1.15;">Procedural Sedation</span></a>
+  <a href="#p15" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">15</span><span style="font-size:17px; font-weight:700; line-height:1.15;">Croup</span></a>
   </div>
 
   <!-- ============ CARD 01 · CARDIAC ARREST / PALS ============ -->
@@ -148,6 +149,20 @@
       <b>Enter the patient's weight in the bar at the top of the page</b> — it stays set as you move between cards and every calculated dose on this page updates from it live. If weight is genuinely unknown, use the age-based estimate button, understanding it's an estimate, not a substitute for an actual weight/length measurement when one can be obtained. (2025 FDA Class I recall of the Broselow Pediatric Emergency Tape's 2025 edition — incorrect drug/energy values printed in three color zones — is part of why this tool computes directly from an entered weight rather than a printed length-tape lookup.) The page's accent color and the ZONE badge at top match the weight to the standard Broselow-Luten color band — pointing at the same colored drawer on the pediatric cart — <b>but every dose below is still calculated from the exact kg you entered, never read off a color zone.</b>
     </div>
 
+    <!-- ---- CPR CYCLE + EPI TIMER (2-min rhythm check · epi q3–5 min) ---- -->
+    <div style="margin:14px 14px 0; border:2px solid #16324f;">
+      <div style="padding:10px 14px; background:#f4f7fa;">
+        <div id="pcaclock" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:38px; font-weight:700; line-height:1; color:#16324f;">0:00</div>
+        <div id="pcacue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em; color:#5a6a78;">CPR CYCLE — CHECK RHYTHM/PULSE AT 2:00</div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
+        <button type="button" id="pcastart" style="min-height:52px; background:#16324f; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">START CPR CLOCK</button>
+        <button type="button" id="pcacycle" style="min-height:52px; background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">RHYTHM CHECKED — RESTART CYCLE</button>
+      </div>
+      <button type="button" id="pcaepi" style="width:100%; min-height:52px; background:#9b1c2e; color:#fffefb; border:none; border-top:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">EPI GIVEN — LOG IT</button>
+      <div id="pcaepicue" style="display:none; padding:11px 14px; font-size:13.5px; line-height:1.35; color:#16324f; background:#fdf3cf; border-top:2px solid #8a6d1f;"></div>
+    </div>
+
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">COMPRESSIONS &amp; VENTILATION</summary>
@@ -164,7 +179,7 @@
           <tr><th>Shock</th><th>Energy</th></tr>
           <tr><td>First shock</td><td>2 J/kg = <span class="wdose" data-perkg="2" data-unit="J" data-decimals="0">enter weight above</span></td></tr>
           <tr><td>Second shock</td><td>4 J/kg = <span class="wdose" data-perkg="4" data-unit="J" data-decimals="0">enter weight above</span></td></tr>
-          <tr><td>Subsequent shocks</td><td>≥4 J/kg, may increase — max 10 J/kg (<span class="wdose" data-perkg="10" data-unit="J" data-decimals="0">enter weight above</span>) or the adult max, whichever is lower</td></tr>
+          <tr><td>Subsequent shocks</td><td>≥4 J/kg, may increase — max 10 J/kg (<span class="wdose" data-perkg="10" data-max="200" data-unit="J" data-decimals="0">enter weight above</span>) or the adult max, whichever is lower (200 J on LRH's ZOLL — verify against your defibrillator)</td></tr>
         </table>
         <div style="padding:8px 0; font-size:13.5px; line-height:1.35;">Shock, then resume CPR immediately — don't pause to reassess rhythm right after a shock.</div>
       </details>
@@ -232,13 +247,29 @@
           <tr><th>Route</th><th>Dose</th><th>Max</th><th>Repeat</th></tr>
           <tr class="hl"><td>IM (1:1000), anterolateral thigh</td><td>0.01 mg/kg = <span class="wdose" data-perkg="0.01" data-max="0.5" data-unit="mg" data-decimals="2">enter weight above</span></td><td>0.5 mg (WAO 2020)</td><td>q5–15min</td></tr>
         </table>
+        <div style="margin:10px 0 4px; border:2px solid #9b1c2e;">
+          <div style="padding:9px 12px; background:#fbeaec;">
+            <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#9b1c2e;">SINCE LAST EPI DOSE</div>
+            <div id="pepclock" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:30px; font-weight:700; line-height:1.1; color:#9b1c2e;">—</div>
+            <div id="pepcue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:#5a6a78;">Tap each button when that dose is given — each is time-stamped to the case timeline.</div>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0; border-top:1px solid #fbeaec;">
+            <button type="button" id="pep1" class="pepbtn" style="min-height:50px; background:#9b1c2e; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.04em; cursor:pointer;">EPI IM · DOSE 1</button>
+            <button type="button" id="pep2" class="pepbtn" style="min-height:50px; background:#9b1c2e; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.04em; cursor:pointer;">EPI IM · DOSE 2</button>
+            <button type="button" id="pep3" class="pepbtn" style="min-height:50px; background:#9b1c2e; color:#fffefb; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.04em; cursor:pointer;">EPI IM · DOSE 3</button>
+          </div>
+          <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border-top:1px solid #fffefb;">
+            <button type="button" id="pepbolus" class="pepbtn" style="min-height:50px; background:#16324f; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.04em; cursor:pointer;">EPI IV BOLUS</button>
+            <button type="button" id="pepdrip" class="pepbtn" style="min-height:50px; background:#16324f; color:#fffefb; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.04em; cursor:pointer;">EPI DRIP STARTED</button>
+          </div>
+        </div>
         <div style="padding:8px 0 0; font-size:12.5px; line-height:1.35; color:#5a6a78;">The 2023 AAAAI/ACAAI update caps the pediatric/teen dose at 0.3 mg instead of 0.5 mg — the two major sources disagree on the ceiling; this tool uses the WAO 2020 figure (0.5 mg) but confirm which cap your pharmacy/EMS protocol uses. Auto-injector fixed doses (for reference, not a substitute for a weight-based calculation when you can draw one up): 0.1 mg for 7.5–15 kg, 0.15 mg for 15–30 kg, 0.3 mg for ≥30 kg — some bodies now favor switching to the 0.3 mg device closer to 25 kg to avoid underdosing.</div>
       </details>
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">IF NOT RESPONDING TO IM EPI</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>IV fluids:</b> 20 mL/kg crystalloid bolus = <span class="wdose" data-perkg="20" data-max="1000" data-unit="mL" data-decimals="0">enter weight above</span> (max 1 L/dose) — repeat as needed for persistent hypotension.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Refractory shock:</b> IV epinephrine infusion, low-dose, by experienced personnel with continuous monitoring — confirm your pharmacy's concentration/rate before mixing.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Refractory shock:</b> epinephrine IV bolus 1 mcg/kg slow push = <span class="wdose" data-perkg="1" data-max="50" data-unit="mcg" data-decimals="0">enter weight above</span> (max 50 mcg/dose), then infusion 0.1–1 mcg/kg/min titrated — experienced personnel, continuous monitoring; confirm your pharmacy's concentration/rate before mixing. Tap the IV BOLUS / DRIP buttons above to time-stamp.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Angioedema/stridor progressing?</b> Low threshold for early, elective, definitive airway — don't wait for severe stridor.</span></label></li>
         </ul>
       </details>
@@ -248,9 +279,11 @@
           <tr><th>Drug</th><th>Dose</th><th>Max</th></tr>
           <tr><td>Diphenhydramine IV/IM</td><td>1 mg/kg = <span class="wdose" data-perkg="1" data-max="50" data-unit="mg" data-decimals="0">enter weight above</span></td><td>50 mg</td></tr>
           <tr><td>Famotidine IV</td><td>1 mg/kg = <span class="wdose" data-perkg="1" data-max="20" data-unit="mg" data-decimals="0">enter weight above</span></td><td>20 mg</td></tr>
-          <tr><td>Dexamethasone IV/PO</td><td>0.5 mg/kg = <span class="wdose" data-perkg="0.5" data-max="16" data-unit="mg" data-decimals="1">enter weight above</span></td><td>16 mg</td></tr>
+          <tr><td>Dexamethasone IV/IM/PO</td><td>0.6 mg/kg = <span class="wdose" data-perkg="0.6" data-max="10" data-unit="mg" data-decimals="1">enter weight above</span></td><td>10 mg (PowerPlan)</td></tr>
+          <tr><td>Albuterol nebulizer (bronchospasm/wheeze)</td><td>unit-dose neb, may repeat q20min ×3</td><td>— (PowerPlan)</td></tr>
+          <tr><td>Racemic epinephrine 2.25% neb (stridor/upper-airway edema)</td><td>0.5 mL in 3 mL NS (0.25 mL if &lt;5 kg)</td><td>— (PowerPlan)</td></tr>
         </table>
-        <div style="padding:8px 0 0; font-size:12.5px; line-height:1.35; color:#5a6a78;">These relieve itch/hives (antihistamine) or are traditionally given to blunt a biphasic reaction (steroid) — none of them treat the airway/hemodynamic compromise. They come from institutional pediatric ED pathways, not a single graded national-guideline dosing table.</div>
+        <div style="padding:8px 0 0; font-size:12.5px; line-height:1.35; color:#5a6a78;">These relieve itch/hives (antihistamine), blunt a biphasic reaction (steroid), or treat bronchospasm/stridor (albuterol, racemic epi) — none replace IM epinephrine for the airway/hemodynamic compromise. Doses per the LRH Pediatric General PowerPlan (Cerner order set) where marked; otherwise institutional pediatric ED pathways.</div>
       </details>
     </div>
 
@@ -259,7 +292,7 @@
     </div>
 
     <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
-      <b>Sources:</b> World Allergy Organization Anaphylaxis Guidance 2020 (epinephrine 0.01 mg/kg IM, max 0.5 mg, repeat q5–15min; 20 mL/kg fluid bolus); AAAAI/ACAAI Anaphylaxis: A 2023 Practice Parameter Update (0.3 mg pediatric epinephrine cap — conflicts with WAO's 0.5 mg, noted above); Johns Hopkins All Children's Hospital Anaphylaxis Clinical Pathway 2023 (adjunct dosing); Dribin TE, et al., "Timing of repeat epinephrine to inform paediatric anaphylaxis observation periods," <i>Lancet Child Adolesc Health</i> 2025;9(7):484-496.
+      <b>Sources:</b> World Allergy Organization Anaphylaxis Guidance 2020 (epinephrine 0.01 mg/kg IM, max 0.5 mg, repeat q5–15min; 20 mL/kg fluid bolus); AAAAI/ACAAI Anaphylaxis: A 2023 Practice Parameter Update (0.3 mg pediatric epinephrine cap — conflicts with WAO's 0.5 mg, noted above); Johns Hopkins All Children's Hospital Anaphylaxis Clinical Pathway 2023 (adjunct dosing); Dribin TE, et al., "Timing of repeat epinephrine to inform paediatric anaphylaxis observation periods," <i>Lancet Child Adolesc Health</i> 2025;9(7):484-496. LRH Pediatric General PowerPlan (Cerner order set) — dexamethasone 0.6 mg/kg (max 10 mg), albuterol nebulizer q20min ×3, racemic epinephrine 2.25% 0.5 mL neb (0.25 mL if &lt;5 kg, dilute in 3 mL NS), and the epinephrine IM 0.01 mg/kg &lt;15 kg / EpiPen Jr 15–29.9 kg / EpiPen ≥30 kg tiering. IV-epinephrine bolus/infusion figures are standard pediatric-resuscitation references, not PowerPlan values — confirm with pharmacy.
     </div>
     <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -323,7 +356,7 @@
     </div>
 
     <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
-      <b>Sources:</b> Children's Hospital of Philadelphia, <i>Emergency Department Clinical Pathway for Evaluation/Treatment of Children with Asthma</i>, last revised May 2026 — PASS severity triage, weight-tiered albuterol/ipratropium dosing, dexamethasone weight-band dosing, magnesium/terbutaline escalation dosing, and the overall dexamethasone-first pathway structure.
+      <b>Sources:</b> Children's Hospital of Philadelphia, <i>Emergency Department Clinical Pathway for Evaluation/Treatment of Children with Asthma</i>, last revised May 2026 — PASS severity triage, weight-tiered albuterol/ipratropium dosing, dexamethasone weight-band dosing, magnesium/terbutaline escalation dosing, and the overall dexamethasone-first pathway structure. LRH Pediatric General PowerPlan (Cerner order set) — albuterol nebulizer/DuoNeb q20min ×3, albuterol HFA 4 puffs, dexamethasone 0.6 mg/kg (max 10 mg) and prednisolone 2 mg/kg (max 60 mg) as the LRH-ordered equivalents of the CHOP weight bands.
     </div>
     <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -414,6 +447,13 @@
         </ul>
       </details>
       <details open style="border:2px solid #16324f;">
+        <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">MEDICAL ADJUNCTS — ONLY IF GIVABLE WITHOUT AGITATING THE CHILD</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Racemic epinephrine 2.25% nebulized:</b> 0.5 mL in 3 mL NS (0.25 mL if &lt;5 kg) as blow-by — may temporize airway edema while awaiting transfer. Evidence in epiglottitis is limited; abandon it if the mask/mist upsets the child.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Dexamethasone 0.6 mg/kg IV/IM (max 10 mg) = <span class="wdose" data-perkg="0.6" data-max="10" data-unit="mg" data-decimals="1">enter weight above</span>:</b> commonly given to reduce airway edema — but do not place an IV or give an IM shot in a compensating child if the poke risks precipitating obstruction; give after the airway is secured, or IM at the moment of induction.</span></label></li>
+        </ul>
+      </details>
+      <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">ANTIBIOTICS ONCE AIRWAY IS SECURED</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Immunocompetent:</b> ceftriaxone 50–100 mg/kg/day IV (max 2 g/day); alternatives cefotaxime or ampicillin-sulbactam. Add vancomycin 15 mg/kg IV q6h if MRSA is a concern.</span></label></li>
@@ -438,7 +478,7 @@
     </div>
 
     <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
-      <b>Sources:</b> StatPearls, <i>Epiglottitis</i> (NBK430960); WikEM, "Epiglottitis" and antibiotic dosing template; EMCrit IBCC, "Epiglottitis" (Farkas); RCEMLearning, croup/epiglottitis/tracheitis comparison. Post-Hib epidemiology per PubMed 23076559 and PMC2870429. No rural-specific stabilize-and-transfer guideline exists for this condition — that section is a synthesis of general principles, not a direct quote from a named protocol.
+      <b>Sources:</b> StatPearls, <i>Epiglottitis</i> (NBK430960); WikEM, "Epiglottitis" and antibiotic dosing template; EMCrit IBCC, "Epiglottitis" (Farkas); RCEMLearning, croup/epiglottitis/tracheitis comparison. Post-Hib epidemiology per PubMed 23076559 and PMC2870429. No rural-specific stabilize-and-transfer guideline exists for this condition — that section is a synthesis of general principles, not a direct quote from a named protocol. Racemic epinephrine and dexamethasone doses per the LRH Pediatric General PowerPlan (Cerner order set); their use in epiglottitis specifically is temporizing/low-evidence — the do-not-agitate principle overrides both.
     </div>
     <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -689,7 +729,7 @@
     </div>
 
     <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
-      <b>Sources:</b> Gerson R, et al., "Best Practices for Evaluation and Treatment of Agitated Children and Adolescents (BETA) in the Emergency Department," American Association for Emergency Psychiatry consensus statement, <i>West J Emerg Med</i> 2019; Foster AA, et al., "Standardizing and Improving Care for Pediatric Agitation Management in the Emergency Department," <i>Pediatrics</i> 2023;152(1):e2022059586 — de-escalation framework, medication choices/cautions, and restraint principles. Weight/age-banded dosing cross-checked against Children's Minnesota and Children's Hospital of Richmond institutional pediatric agitation guidelines. Restraint time limits per 42 CFR §482.13, CMS Hospital Conditions of Participation.
+      <b>Sources:</b> Gerson R, et al., "Best Practices for Evaluation and Treatment of Agitated Children and Adolescents (BETA) in the Emergency Department," American Association for Emergency Psychiatry consensus statement, <i>West J Emerg Med</i> 2019; Foster AA, et al., "Standardizing and Improving Care for Pediatric Agitation Management in the Emergency Department," <i>Pediatrics</i> 2023;152(1):e2022059586 — de-escalation framework, medication choices/cautions, and restraint principles. Weight/age-banded dosing cross-checked against Children's Minnesota and Children's Hospital of Richmond institutional pediatric agitation guidelines. LRH Pediatric General PowerPlan (Cerner order set) — lorazepam 0.05 mg/kg PO (max 2 mg; avoid in autism spectrum disorder), olanzapine 2.5 mg (&lt;30 kg)/5 mg (≥30 kg) PO, midazolam 0.3 mg/kg IN, droperidol or haloperidol 0.05 mg/kg IM (max 5 mg; continuous EKG/SpO₂ after), diphenhydramine 1 mg/kg IV (max 50 mg) PRN dystonia. Restraint time limits per 42 CFR §482.13, CMS Hospital Conditions of Participation.
     </div>
     <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -839,7 +879,7 @@
     </div>
 
     <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
-      <b>Sources:</b> Pantell RH, et al., "Evaluation and Management of Well-Appearing Febrile Infants 8 to 60 Days Old," AAP Clinical Practice Guideline, <i>Pediatrics</i> 2021;148(2):e2021052228 — age bands, workup requirements, inflammatory-marker thresholds, and the "treat as CSF-positive if LP unobtainable" principle. Kuppermann N, et al. (PECARN Febrile Infant Rule), 2019, for reference on the 29–60/61–90 day rules outside this guideline's scope. Neonatal antibiotic dosing per standard neonatal formulary references (e.g. UW NICU dosing guide) — gentamicin dosing intentionally not reduced to a single number here; confirm with pharmacy/NICU.
+      <b>Sources:</b> Pantell RH, et al., "Evaluation and Management of Well-Appearing Febrile Infants 8 to 60 Days Old," AAP Clinical Practice Guideline, <i>Pediatrics</i> 2021;148(2):e2021052228 — age bands, workup requirements, inflammatory-marker thresholds, and the "treat as CSF-positive if LP unobtainable" principle. Kuppermann N, et al. (PECARN Febrile Infant Rule), 2019, for reference on the 29–60/61–90 day rules outside this guideline's scope. Neonatal antibiotic dosing per standard neonatal formulary references (e.g. UW NICU dosing guide) — gentamicin dosing intentionally not reduced to a single number here; confirm with pharmacy/NICU. LRH ED Infant Care &lt;90 Days PowerPlan (Cerner order set) — ampicillin 100 mg/kg + gentamicin 4 mg/kg IV (0–28 d; + acyclovir 20 mg/kg if HSV risk), ceftriaxone 50 mg/kg IV (non-meningitis) or 100 mg/kg + vancomycin 20 mg/kg (meningitis dosing), PECARN-based 29–60 d low-risk pathway (negative UA, ANC &lt;4000, procalcitonin ≤0.5 ng/mL), acetaminophen IV 12.5 mg/kg (&lt;29 d) / 15 mg/kg (≥29 d), D10W 2 mL/kg for hypoglycemia, NS 10–20 mL/kg boluses.
     </div>
     <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -943,7 +983,7 @@
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Organ Procurement Organization notification — required for every death, not contingent on family wishes or your own suitability judgment</b> (42 CFR §482.45, a federal CMS Condition of Participation). The OPO decides suitability, not the hospital. Confirm your regional OPO's (e.g. New England Donor Services) call protocol.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>CPS/law enforcement notification</b> if abuse/neglect is suspected — see card 12.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Forensic evidence preservation</b> if death may be non-natural — photograph before cleaning, don't remove lines/tubes unless the ME says it's fine, preserve clothing unwashed/unfolded in paper (not plastic) bags. Coordinate specifics with your state ME's office.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Staff debrief and support</b> — offer a structured hot debrief for the ED/EMS/ME team and referral to employee support resources; involve chaplaincy at the time of notification.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Staff debrief and support</b> — offer a structured team debrief, same shift as the event, for the ED/EMS/ME team and referral to employee support resources; involve chaplaincy at the time of notification.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span>Bereavement/memory-making (handprints, lock of hair) if culturally appropriate and the ME permits it before evidence collection; hospital risk-management notification.</span></label></li>
         </ul>
       </details>
@@ -985,8 +1025,8 @@
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">AGENT DOSING — CALCULATED FROM WEIGHT ABOVE</summary>
         <table class="dt">
           <tr><th>Agent</th><th>Route/dose</th><th>Onset / duration</th></tr>
-          <tr class="hl"><td>Ketamine</td><td>IV: 1–2 mg/kg = <span class="wdose" data-perkg="1" data-unit="mg" data-decimals="1">enter weight above</span>–<span class="wdose" data-perkg="2" data-unit="mg" data-decimals="1">enter weight above</span>, repeat 0.5–1 mg/kg q5–15min</td><td>&lt;30 sec / 5–10 min</td></tr>
-          <tr><td>Ketamine IM</td><td>4–5 mg/kg = <span class="wdose" data-perkg="4" data-unit="mg" data-decimals="0">enter weight above</span>–<span class="wdose" data-perkg="5" data-unit="mg" data-decimals="0">enter weight above</span></td><td>3–5 min / 15–25 min</td></tr>
+          <tr class="hl"><td>Ketamine</td><td>IV: 1–2 mg/kg = <span class="wdose" data-perkg="1" data-max="100" data-unit="mg" data-decimals="1">enter weight above</span>–<span class="wdose" data-perkg="2" data-max="100" data-unit="mg" data-decimals="1">enter weight above</span> (max 100 mg), repeat 0.5–1 mg/kg q5–15min</td><td>&lt;30 sec / 5–10 min</td></tr>
+          <tr><td>Ketamine IM</td><td>4–5 mg/kg = <span class="wdose" data-perkg="4" data-max="200" data-unit="mg" data-decimals="0">enter weight above</span>–<span class="wdose" data-perkg="5" data-max="200" data-unit="mg" data-decimals="0">enter weight above</span> (max 200 mg)</td><td>3–5 min / 15–25 min</td></tr>
           <tr><td>Propofol</td><td>1–2 mg/kg = <span class="wdose" data-perkg="1" data-unit="mg" data-decimals="1">enter weight above</span>–<span class="wdose" data-perkg="2" data-unit="mg" data-decimals="1">enter weight above</span>, then 0.5–1 mg/kg q3–5min</td><td>&lt;50 sec / 3–10 min</td></tr>
           <tr><td>Etomidate (≥6mo)</td><td>0.2–0.3 mg/kg = <span class="wdose" data-perkg="0.2" data-unit="mg" data-decimals="2">enter weight above</span>–<span class="wdose" data-perkg="0.3" data-unit="mg" data-decimals="2">enter weight above</span></td><td>30–60 sec / 2–5 min</td></tr>
           <tr><td>Fentanyl</td><td>1–2 mcg/kg = <span class="wdose" data-perkg="1" data-max="50" data-unit="mcg" data-decimals="0">enter weight above</span>–<span class="wdose" data-perkg="2" data-max="50" data-unit="mcg" data-decimals="0">enter weight above</span> (max 50 mcg), repeat q3–5min</td><td>2–4 min / 30–60 min</td></tr>
@@ -1015,7 +1055,48 @@
     </div>
 
     <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
-      <b>Sources:</b> American College of Emergency Physicians, <i>Clinical Policy: Procedural Sedation and Analgesia in the Emergency Department</i>, <i>Ann Emerg Med</i> 2014;63(2):247-258 (current standing ACEP policy — NPO-status finding). Bhatt M, et al., "Unscheduled Procedural Sedation: A Multidisciplinary Consensus Practice Guideline" (11-society consensus incl. Society for Pediatric Sedation), <i>Ann Emerg Med</i> 2019;73(5):e51-e65. Coté CJ, Wilson S; AAP/AAPD, "Guidelines for Monitoring and Management of Pediatric Patients Before, During, and After Sedation," <i>Pediatrics</i> 2019;143(6):e20191000 (2016 update, reaffirmed 2025). StatPearls, <i>Pediatric Procedural Sedation</i> (NBK572100). Sherwin TS, et al., ketamine/midazolam emergence-reaction trial, <i>Ann Emerg Med</i> 2000.
+      <b>Sources:</b> American College of Emergency Physicians, <i>Clinical Policy: Procedural Sedation and Analgesia in the Emergency Department</i>, <i>Ann Emerg Med</i> 2014;63(2):247-258 (current standing ACEP policy — NPO-status finding). Bhatt M, et al., "Unscheduled Procedural Sedation: A Multidisciplinary Consensus Practice Guideline" (11-society consensus incl. Society for Pediatric Sedation), <i>Ann Emerg Med</i> 2019;73(5):e51-e65. Coté CJ, Wilson S; AAP/AAPD, "Guidelines for Monitoring and Management of Pediatric Patients Before, During, and After Sedation," <i>Pediatrics</i> 2019;143(6):e20191000 (2016 update, reaffirmed 2025). StatPearls, <i>Pediatric Procedural Sedation</i> (NBK572100). Sherwin TS, et al., ketamine/midazolam emergence-reaction trial, <i>Ann Emerg Med</i> 2000. LRH Pediatric General PowerPlan (Cerner order set) — ketamine 2 mg/kg IV (max 100 mg) / 4 mg/kg IM (max 200 mg) initial procedural-sedation dosing, ondansetron 0.15 mg/kg IV 20 min pre-ketamine, midazolam 0.3 mg/kg IN (max 10 mg) / 0.5 mg/kg PO (max 20 mg) anxiolysis.
+    </div>
+    <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
+      <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
+    </div>
+  </article>
+
+  <!-- ============ CARD 15 · CROUP ============ -->
+  <article id="p15">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#16324f; font-size:16px; margin-right:8px;">15</span>Croup</h2>
+        <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#5a6a78; text-align:right;">DEX FOR ALL · RACEMIC EPI IF STRIDOR AT REST</span>
+      </div>
+    </div>
+    <div class="nca" style="padding:12px 14px 0;">
+      <div style="border:2px solid #16324f; background:#eef3f6; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#16324f;">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">&quot;This looks like croup — barky cough, [no] stridor at rest.&quot; Say it out loud.</div></div>
+      <div style="border:2px solid #16324f; background:#eef3f6; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#16324f;">CLAIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Dexamethasone · nebulizer setup if stridor at rest · keep child calm with parent — assign aloud.</div></div>
+      <div style="border:2px solid #2f62a8; background:#eaf1fa; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#2f62a8;">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Dexamethasone for every croup. Stridor at rest → racemic epi and observe 3–4 h after the last neb. Agitation worsens everything.</div></div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open style="border:2px solid #16324f;">
+        <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">SEVERITY &amp; TREATMENT — CALCULATED FROM WEIGHT ABOVE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>All croup — dexamethasone 0.6 mg/kg PO/IV/IM, max 10 mg = <span class="wdose" data-perkg="0.6" data-max="10" data-unit="mg" data-decimals="1">enter weight above</span>.</b> One dose. Oral solution first-line if tolerated (PowerPlan also lists 0.3 mg/kg PO as a lower-dose oral option — evidence supports either).</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Stridor at rest / moderate-severe — add racemic epinephrine 2.25% nebulized:</b> 0.5 mL in 3 mL NS (0.25 mL if &lt;5 kg). May repeat. Effect wanes in ~2 h — observe 3–4 h after the last neb before discharge.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Keep the child calm</b> — on a parent&rsquo;s lap, blow-by if needed. No tongue-blade exams, no IV unless truly needed; agitation worsens obstruction.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Escalate if:</b> repeated racemic epi doses needed, hypoxia, worsening fatigue/retractions, toxic appearance, or drooling/tripoding — think epiglottitis/tracheitis instead (<a href="#p05">card 05 comparison table</a>). Discuss transfer.</span></label></li>
+        </ul>
+      </details>
+      <details style="border:2px solid #16324f;">
+        <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">DISPOSITION</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Home if:</b> no stridor at rest ≥3–4 h after the last racemic epi (or never had it), tolerating PO, reliable caregivers, reassuring appearance. Symptoms typically worst on nights 2–3 — counsel on return precautions.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Admit/transfer if:</b> recurrent stridor at rest after epi, more than 1–2 racemic epi doses needed, hypoxia, poor PO, or diagnostic uncertainty.</span></label></li>
+        </ul>
+      </details>
+    </div>
+
+    <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
+      <b>Sources:</b> LRH Pediatric General PowerPlan (Cerner order set) — dexamethasone 0.6 mg/kg PO/IV/IM max 10 mg (0.3 mg/kg PO listed as an alternative), racemic epinephrine 2.25% 0.5 mL nebulized (0.25 mL if &lt;5 kg, dilute in 3 mL NS). General croup framework (dex-for-all, racemic epi for stridor at rest, 3–4 h post-epi observation, night-2–3 natural history) per standard pediatric EM references (WikEM/StatPearls croup; Bjornson &amp; Johnson, <i>Lancet</i> croup reviews). Westley score intentionally omitted — severity here is the practical stridor-at-rest split, not a formal score.
     </div>
     <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -1025,7 +1106,7 @@
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "0.3",
+  version: "0.5",
   lastReviewed: "2026-08-04"
 };
 (function(){
@@ -1033,24 +1114,41 @@ var SITE = {
   Array.prototype.forEach.call(document.querySelectorAll('.verstamp'), function(vs){ vs.textContent=stampText; });
 })();
 
+/* ---- Stale-case guard (runs before anything reads storage): if this device hasn't
+   touched the peds tool in >60 minutes, clear all case state — weight, seizure clock,
+   epi times, log — so a previous patient's weight can never silently drive doses for
+   the next one. Mirrors the OB tool's 1-hour checklist TTL. RESET FOR NEXT CASE is
+   still the right habit between patients. ---- */
+(function(){
+  var TS='lrh-peds-lastactive', TTL=60*60*1000;
+  var KEYS=['lrh-peds-wtkg','lrh-peds-wtsrc','lrh-peds-seizure','lrh-peds-epidoses','lrh-peds-log',
+            'lrh-peds-cprstart','lrh-peds-cprepims','lrh-peds-cprepicount'];
+  try{
+    var t=+localStorage.getItem(TS)||0;
+    if(t && (Date.now()-t)>TTL){ KEYS.forEach(function(k){ localStorage.removeItem(k); }); }
+    localStorage.setItem(TS,String(Date.now()));
+    document.addEventListener('click', function(){ try{ localStorage.setItem(TS,String(Date.now())); }catch(e){} }, true);
+  }catch(e){}
+})();
+
 /* ---- Beta splash: skip if arriving from the site search (?from=home) ---- */
 (function(){
   function boot(){
     var s=document.getElementById('betasplash'), b=document.getElementById('betago');
     if(!s||!b) return;
-    var params=new URLSearchParams(location.search);
-    if(params.get('from')==='home'){ if(s.parentNode) s.parentNode.removeChild(s); return; }
     function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); }
     b.addEventListener('click', go, false);
     b.addEventListener('touchend', go, false);
+    /* handlers attach first so a parse failure can never leave the splash stuck */
+    try{ if(/(^|[?&])from=home(&|$)/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); } }catch(err){}
   }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
 })();
 
 /* ---- Shared weight/age engine — drives every .wdose span on the page -----
    Device-local only (kg value + its source flag); PHI-free; cleared on RESET
-   or on tab close is NOT guaranteed (localStorage persists), so RESET FOR
-   NEXT CASE is the only backstop — always tap it between patients. */
+   FOR NEXT CASE and auto-cleared by the 60-min stale-case guard above. Still —
+   always tap RESET between patients; the TTL is a backstop, not a habit. */
 var PEDS_WT = (function(){
   var KKG='lrh-peds-wtkg', KSRC='lrh-peds-wtsrc';
   var kgEl=document.getElementById('wtkg'), ageEl=document.getElementById('wtage'),
@@ -1079,9 +1177,16 @@ var PEDS_WT = (function(){
   var zoneEl=document.getElementById('wtzone'), root=document.documentElement,
       themeMeta=document.querySelector('meta[name="theme-color"]');
   function bandFor(kg){
+    /* Contiguous lookup: the printed zone labels have 1-kg gaps (…5 | 6…), but a real
+       weight of e.g. 5.5 kg must still land in a zone — it belongs to the lower zone's
+       drawer range until the next zone's lower bound. Only <3 or >36 kg is out of range. */
     if(kg===null||isNaN(kg)) return null;
-    for(var i=0;i<BANDS.length;i++){ if(kg>=BANDS[i].lo && kg<=BANDS[i].hi) return BANDS[i]; }
-    return null;
+    if(kg<BANDS[0].lo || kg>BANDS[BANDS.length-1].hi) return null;
+    for(var i=0;i<BANDS.length;i++){
+      var upper = (i<BANDS.length-1) ? BANDS[i+1].lo : BANDS[i].hi;
+      if(kg<upper) return BANDS[i];
+    }
+    return BANDS[BANDS.length-1]; /* kg === top of range */
   }
   function paintZone(){
     var b=bandFor(wtKg);
@@ -1115,17 +1220,18 @@ var PEDS_WT = (function(){
   }
   /* Age→weight estimate: APLS-style bands, for reference only when an actual
      weight/length measurement cannot be obtained. Always prefer a measured
-     weight. Not valid beyond ~12 years — flagged to the user below. */
+     weight. Not valid beyond 12 years — the tool refuses rather than guessing
+     (the old >12 fallback was non-monotonic: 12 y → 43 kg but 12.5 y → 37.5 kg). */
   function estimateFromAge(ageVal, unit){
-    if(ageVal===null || ageVal===undefined || isNaN(ageVal) || ageVal<0) return null;
+    if(ageVal===null || ageVal===undefined || isNaN(ageVal) || ageVal<0) return {err:'ENTER A VALID AGE FIRST'};
     var months = unit==='mo' ? ageVal : ageVal*12;
     var years = months/12;
+    if(years > 12) return {err:'AGE ESTIMATE VALID TO 12 y — USE A MEASURED WEIGHT'};
     var kg;
     if(months < 12){ kg = (0.5*months) + 4; }
     else if(years <= 5){ kg = (2*years) + 8; }
-    else if(years <= 12){ kg = (3*years) + 7; }
-    else { kg = 3*years; }
-    return Math.round(kg*10)/10;
+    else { kg = (3*years) + 7; }
+    return {kg: Math.round(kg*10)/10};
   }
   function recompute(){ if(window.PEDSDOSE) window.PEDSDOSE.recompute(wtKg); paintDisplay(); }
   if(kgEl){
@@ -1140,10 +1246,10 @@ var PEDS_WT = (function(){
     estBtn.addEventListener('click', function(){
       var a = parseFloat(ageEl ? ageEl.value : NaN);
       var u = unitEl ? unitEl.value : 'yr';
-      var k = estimateFromAge(a, u);
-      if(k===null){ if(dispEl){ dispEl.textContent='ENTER A VALID AGE FIRST'; dispEl.style.color='#e07a7a'; } return; }
-      wtKg=k; src='estimated';
-      if(kgEl) kgEl.value=k;
+      var r = estimateFromAge(a, u);
+      if(r.err){ if(dispEl){ dispEl.textContent=r.err; dispEl.style.color='#e07a7a'; } return; }
+      wtKg=r.kg; src='estimated';
+      if(kgEl) kgEl.value=r.kg;
       save(); recompute();
     });
   }
@@ -1183,6 +1289,61 @@ var PEDSDOSE = (function(){
   }
   recompute(PEDS_WT.getKg());
   return { recompute:recompute };
+})();
+
+/* ---- Card 01: CPR cycle clock + epi timer (PALS) — 2-min rhythm check, epi q3–5 min.
+   Wall-clock anchored; persisted; cleared on RESET. Same keys pattern as the rest. ---- */
+(function(){
+  var K='lrh-peds-cprstart', KE='lrh-peds-cprepims', KEC='lrh-peds-cprepicount';
+  var clock=document.getElementById('pcaclock'), cue=document.getElementById('pcacue'),
+      startBtn=document.getElementById('pcastart'), cycleBtn=document.getElementById('pcacycle'),
+      epiBtn=document.getElementById('pcaepi'), epicue=document.getElementById('pcaepicue');
+  if(!startBtn) return;
+  var t0=null, epiMs=null, epiCount=0, tick=null;
+  try{ var s=localStorage.getItem(K); if(s) t0=+s||null; }catch(e){}
+  try{ var e2=localStorage.getItem(KE); if(e2) epiMs=+e2||null; }catch(e){}
+  try{ epiCount=+localStorage.getItem(KEC)||0; }catch(e){}
+  function pad(n){ return (n<10?'0':'')+n; }
+  function mmss(sec){ return Math.floor(sec/60)+':'+pad(sec%60); }
+  function save(){ try{
+    if(t0) localStorage.setItem(K,String(t0)); else localStorage.removeItem(K);
+    if(epiMs) localStorage.setItem(KE,String(epiMs)); else localStorage.removeItem(KE);
+    localStorage.setItem(KEC,String(epiCount));
+  }catch(e){} }
+  function paint(){
+    if(t0===null){
+      clock.textContent='0:00'; clock.style.color='#16324f';
+      cue.textContent='CPR CYCLE — CHECK RHYTHM/PULSE AT 2:00'; cue.style.color='#5a6a78';
+    } else {
+      var s=Math.max(0,Math.floor((Date.now()-t0)/1000));
+      clock.textContent=mmss(s);
+      if(s>=120){ clock.style.color='#9b1c2e'; cue.textContent='CHECK RHYTHM / PULSE NOW'; cue.style.color='#9b1c2e'; }
+      else if(s>=110){ clock.style.color='#8a6d1f'; cue.textContent='RHYTHM CHECK IN '+(120-s)+'s — GET READY'; cue.style.color='#8a6d1f'; }
+      else { clock.style.color='#16324f'; cue.textContent='CPR CYCLE — CHECK RHYTHM/PULSE AT 2:00'; cue.style.color='#5a6a78'; }
+    }
+    if(epiMs===null){ epicue.style.display='none'; }
+    else {
+      var es=Math.max(0,Math.floor((Date.now()-epiMs)/1000));
+      epicue.style.display='block';
+      if(es>=180){ epicue.style.background='#f6d8dc'; epicue.style.borderTopColor='#9b1c2e'; epicue.textContent='EPI #'+epiCount+' was '+mmss(es)+' ago — next dose window (q3–5 min) is open.'; }
+      else { epicue.style.background='#fdf3cf'; epicue.style.borderTopColor='#8a6d1f'; epicue.textContent='EPI #'+epiCount+' given '+mmss(es)+' ago (repeat q3–5 min).'; }
+    }
+  }
+  function ensureTicking(){ if(!tick) tick=setInterval(paint,1000); }
+  startBtn.addEventListener('click', function(){ t0=Date.now(); save(); ensureTicking(); paint();
+    if(window.__pedslog) window.__pedslog.add('p01','CPR CLOCK STARTED'); });
+  cycleBtn.addEventListener('click', function(){ if(t0===null){ t0=Date.now(); } else { t0=Date.now(); if(window.__pedslog) window.__pedslog.add('p01','RHYTHM CHECK'); } save(); ensureTicking(); paint(); });
+  epiBtn.addEventListener('click', function(){ epiCount++; epiMs=Date.now(); save(); ensureTicking(); paint();
+    if(window.__pedslog) window.__pedslog.add('p01','EPI 0.01 mg/kg (dose #'+epiCount+')'); });
+  var rb=document.getElementById('resetbtn');
+  if(rb) rb.addEventListener('click', function(){
+    t0=null; epiMs=null; epiCount=0;
+    try{ localStorage.removeItem(K); localStorage.removeItem(KE); localStorage.removeItem(KEC); }catch(e){}
+    if(tick){ clearInterval(tick); tick=null; }
+    paint();
+  });
+  if(t0!==null || epiMs!==null) tick=setInterval(paint,1000);
+  paint();
 })();
 
 /* ---- Card 10: Seizure clock + timed-phase engine (status epilepticus) ---- */
@@ -1235,6 +1396,62 @@ var PEDSDOSE = (function(){
   paint();
 })();
 
+/* ---- Card 02: anaphylaxis epi dose tracker — IM x3, IV bolus, IV drip ---- */
+(function(){
+  var K='lrh-peds-epidoses';
+  var DEFS=[
+    {id:'pep1',   label:'EPI IM \u00b7 DOSE 1', log:'EPI IM DOSE 1', last:true},
+    {id:'pep2',   label:'EPI IM \u00b7 DOSE 2', log:'EPI IM DOSE 2', last:true},
+    {id:'pep3',   label:'EPI IM \u00b7 DOSE 3', log:'EPI IM DOSE 3', last:true},
+    {id:'pepbolus', label:'EPI IV BOLUS', log:'EPI IV BOLUS', last:true},
+    {id:'pepdrip',  label:'EPI DRIP STARTED', log:'EPI IV DRIP STARTED', last:false}
+  ];
+  var clock=document.getElementById('pepclock'), cue=document.getElementById('pepcue');
+  if(!clock) return;
+  var times={};
+  try{ times=JSON.parse(localStorage.getItem(K)||'{}')||{}; }catch(e){}
+  var tick=null;
+  function pad(n){ return (n<10?'0':'')+n; }
+  function wall(ms){ var d=new Date(ms); return pad(d.getHours())+':'+pad(d.getMinutes()); }
+  function save(){ try{ localStorage.setItem(K, JSON.stringify(times)); }catch(e){} }
+  function lastDose(){
+    var t=null;
+    DEFS.forEach(function(d){ if(d.last && times[d.id] && (t===null||times[d.id]>t)) t=times[d.id]; });
+    return t;
+  }
+  function paint(){
+    DEFS.forEach(function(d){
+      var b=document.getElementById(d.id); if(!b) return;
+      if(times[d.id]){ b.textContent='\u2713 '+wall(times[d.id]); b.style.background='#e8f5e9'; b.style.color='#2f7a3f'; }
+      else { b.textContent=d.label; b.style.background=(d.id==='pepbolus'||d.id==='pepdrip')?'#16324f':'#9b1c2e'; b.style.color='#fffefb'; }
+    });
+    var t=lastDose();
+    if(t===null){
+      clock.textContent='\u2014'; clock.style.color='#9b1c2e';
+      cue.textContent='Tap each button when that dose is given \u2014 each is time-stamped to the case timeline.'; cue.style.color='#5a6a78';
+      if(times.pepdrip) cue.textContent='Drip running since '+wall(times.pepdrip)+'.';
+      return;
+    }
+    var s=Math.max(0,Math.floor((Date.now()-t)/1000));
+    clock.textContent=Math.floor(s/60)+':'+pad(s%60);
+    var drip=times.pepdrip ? ' \u00b7 Drip running since '+wall(times.pepdrip)+'.' : '';
+    if(s>=300){ clock.style.color='#9b1c2e'; cue.style.color='#9b1c2e'; cue.textContent='Repeat-dose window open (q5\u201315 min) if still symptomatic.'+drip; }
+    else { clock.style.color='#16324f'; cue.style.color='#5a6a78'; cue.textContent='Next-dose window opens at 5 min (q5\u201315 min).'+drip; }
+  }
+  DEFS.forEach(function(d){
+    var b=document.getElementById(d.id); if(!b) return;
+    b.addEventListener('click', function(){
+      if(times[d.id]) return; /* one-shot; RESET re-arms */
+      times[d.id]=Date.now(); save(); paint();
+      if(window.__pedslog) window.__pedslog.add('p02', d.log);
+    });
+  });
+  var rb=document.getElementById('resetbtn');
+  if(rb) rb.addEventListener('click', function(){ times={}; try{ localStorage.removeItem(K); }catch(e){} paint(); });
+  if(!tick) tick=setInterval(paint,1000);
+  paint();
+})();
+
 /* ---- Event log (times/labels only, no identifiers, no weight) ---- */
 (function(){
   var LK='lrh-peds-log';
@@ -1243,7 +1460,7 @@ var PEDSDOSE = (function(){
   function save(){ try{ localStorage.setItem(LK, JSON.stringify(data)); }catch(e){} }
   function pad(n){ return (n<10?'0':'')+n; }
   function wall(){ var d=new Date(); return pad(d.getHours())+':'+pad(d.getMinutes()); }
-  function add(card,label){ data[card]=(data[card]||[]).concat([{label:label,wall:wall()}]).slice(-40); save(); }
+  function add(card,label){ data[card]=(data[card]||[]).concat([{label:label,wall:wall(),t:Date.now()}]).slice(-40); save(); }
   document.addEventListener('click', function(ev){
     var t=ev.target.closest ? ev.target.closest('[data-logevent]') : null;
     if(!t) return;
@@ -1265,6 +1482,7 @@ var PEDSDOSE = (function(){
   function render(){
     var log=rd('lrh-peds-log')||{}, ev=[];
     Object.keys(log).forEach(function(card){ (log[card]||[]).forEach(function(it){ if(it&&it.label) ev.push(it); }); });
+    ev.sort(function(a,b){ return (a.t||0)-(b.t||0); }); /* one chronological timeline across all cards */
     if(!ev.length){ body.innerHTML='<div style="color:#5a6a78; padding:16px 0; text-align:center;">Nothing logged yet.</div>'; return ''; }
     var rows='', text='LRH Pediatric Emergencies — case timeline (times only, no identifiers, no weight)\n\n';
     ev.forEach(function(e){
@@ -1292,6 +1510,16 @@ var PEDSDOSE = (function(){
   window.addEventListener('hashchange', maybeShow, false);
   maybeShow();
   b.addEventListener('click', function(){ history.back(); }, false);
+})();
+
+/* ---- RESET FOR NEXT CASE also clears the checklists — checked boxes are case state
+   just like the weight and timers, and must not carry over to the next patient. ---- */
+(function(){
+  var rb=document.getElementById('resetbtn');
+  if(!rb) return;
+  rb.addEventListener('click', function(){
+    Array.prototype.forEach.call(document.querySelectorAll('main input[type=checkbox]'), function(c){ c.checked=false; });
+  });
 })();
 </script>
 </body>

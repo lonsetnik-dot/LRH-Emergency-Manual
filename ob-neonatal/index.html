@@ -46,7 +46,7 @@
   nav.bar #resetnote { flex:1; text-align:right; font-size:10.5px; color:#a9c2dc; letter-spacing:0.08em; }
   @media print {
     body { background:#fffefb; }
-    nav.bar, a[href="#top"] { display:none; }
+    nav.bar, #betasplash, a[href="#top"] { display:none; }
     article { break-before:page; }
     .nca { grid-template-columns:1.05fr 1fr 1fr; }
     .steps { grid-template-columns:repeat(3,1fr); }
@@ -91,6 +91,7 @@
       </div>
     </div>
     <div style="margin-top:10px; font-size:14px; line-height:1.35; color:#bcd6ec;">A reference to assist professional decision-making — not a policy or protocol. Every situation requires nuance; use your professional judgment to vary from this source.</div>
+    <div style="margin-top:8px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:#8fb3d4;"><span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.</div>
   </div>
   <div style="padding:18px 18px 0;">
     <div style="display:flex; align-items:center; gap:8px; margin-bottom:9px;"><span style="width:11px; height:11px; background:#8a8578;"></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:#8a8578;">EQUIPMENT</span></div>
@@ -1303,6 +1304,20 @@
       <div style="margin-top:4px;">CPR never stops. Deliver to save both.</div>
     </div>
   </div>
+
+  <!-- ---- MATERNAL ARREST CLOCK — incision by 4:00, baby out by 5:00 ---- -->
+  <div style="margin:14px 18px 0; border:2px solid #9b1c2e; background:#fffefb;">
+    <div style="padding:10px 14px; background:#fbeaec;">
+      <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#9b1c2e;">TIME SINCE MATERNAL ARREST</div>
+      <div id="rhtime" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:38px; font-weight:700; line-height:1; color:#16324f;">0:00</div>
+      <div id="rhcue" style="margin-top:2px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.05em; color:#5a6a78;">TAP START AT ARREST RECOGNITION — CALL THE TIME EVERY MINUTE</div>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border-top:1px solid #e7eaef;">
+      <button type="button" id="rhstart" style="min-height:52px; background:#9b1c2e; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">START — ARREST NOW</button>
+      <button type="button" id="rhclear" style="min-height:52px; background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">CLEAR</button>
+    </div>
+    <button type="button" id="rhbaby" style="width:100%; min-height:52px; background:#16324f; color:#fffefb; border:none; border-top:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">BABY OUT — LOG IT</button>
+  </div>
   <div class="steps" style="padding:14px 18px 0;">
     <details open style="border:2px solid #16324f; align-self:start;">
       <summary style="background:#16324f; color:#fffefb; padding:11px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><span>1 · IMMEDIATE (WITH CPR)</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:400; opacity:0.8; text-align:right;"></span></summary>
@@ -1782,20 +1797,11 @@
 })();
 </script>
 <script>
+/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
+var SITE = { version: "1.1", lastReviewed: "2026-08-04" };
 (function(){
-  function boot(){
-    var t=document.getElementById('c05to');
-    if(!t){ var nc0=document.getElementById('c02nc');
-      if(nc0){ var n0=document.querySelectorAll('a[href="#c02nc"]');
-        for(var q=0;q<n0.length;q++){ n0[q].addEventListener('click', function(){ nc0.open=true; }, false); } }
-      return; }
-    var links=document.querySelectorAll('a[href="#c05to"]');
-    var nc=document.getElementById('c02nc');
-    if(nc){ var nl=document.querySelectorAll('a[href="#c02nc"]');
-      for(var j=0;j<nl.length;j++){ nl[j].addEventListener('click', function(){ nc.open=true; }, false); } }
-    for(var i=0;i<links.length;i++){ links[i].addEventListener('click', function(){ t.open=true; }, false); }
-  }
-  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
+  var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
+  Array.prototype.forEach.call(document.querySelectorAll('.verstamp'), function(vs){ vs.textContent=stampText; });
 })();
 </script>
 <script>
@@ -1846,6 +1852,58 @@
   sb.addEventListener('click', function(){ if(!t0){ t0=Date.now(); try{ localStorage.setItem(K,String(t0)); }catch(e){} if(window.__oblog&&window.__oblog.add) window.__oblog.add('06','PPH DECLARED','0:00'); run(); } });
   function reset(){ t0=null; if(tick){ clearInterval(tick); tick=null; } try{ localStorage.removeItem(K); }catch(e){} paint(); }
   rb.addEventListener('click', reset);
+  var g=document.getElementById('resetbtn'); if(g) g.addEventListener('click', reset);
+  run();
+})();</script>
+<script>(function(){
+  /* Card 10: maternal-arrest clock — the card's own words: "incision by 4 minutes of
+     arrest, baby out by 5. Call the elapsed time every minute." Same wall-clock-anchored
+     pattern as the PPH clock; persisted; cleared by CLEAR or RESET. */
+  var K='lrh-ob-rhclock', BK='lrh-ob-rhbaby', t0=null, babyMs=null, tick=null;
+  var el=document.getElementById('rhtime'), cue=document.getElementById('rhcue'),
+      sb=document.getElementById('rhstart'), cb=document.getElementById('rhclear'), bb=document.getElementById('rhbaby');
+  if(!el||!sb||!cb) return;
+  try{ var v=localStorage.getItem(K); if(v) t0=+v||null; }catch(e){}
+  try{ var b=localStorage.getItem(BK); if(b) babyMs=+b||null; }catch(e){}
+  function pad(n){ return (n<10?'0':'')+n; }
+  function fmt(s){ return Math.floor(s/60)+':'+pad(s%60); }
+  function paint(){
+    if(t0===null){
+      el.textContent='0:00'; el.style.color='#16324f';
+      cue.textContent='TAP START AT ARREST RECOGNITION — CALL THE TIME EVERY MINUTE'; cue.style.color='#5a6a78';
+      sb.textContent='START — ARREST NOW'; sb.style.background='#9b1c2e'; sb.style.color='#fffefb';
+      if(bb){ bb.disabled=false; bb.style.opacity=''; bb.textContent='BABY OUT — LOG IT'; }
+      return;
+    }
+    sb.textContent='RUNNING'; sb.style.background='#fffefb'; sb.style.color='#9b1c2e';
+    if(babyMs!==null){
+      var sOut=Math.max(0,Math.floor((babyMs-t0)/1000));
+      el.textContent=fmt(sOut); el.style.color='#2f7a3f';
+      cue.textContent='BABY OUT AT +'+fmt(sOut)+' — CONTINUE MATERNAL ACLS'; cue.style.color='#2f7a3f';
+      if(bb){ bb.disabled=true; bb.style.opacity='0.75'; bb.textContent='BABY OUT ✓'; }
+      return;
+    }
+    var s=Math.max(0,Math.floor((Date.now()-t0)/1000));
+    el.textContent=fmt(s);
+    if(s<240){ el.style.color = s>=180 ? '#8a6d1f' : '#16324f'; cue.textContent='INCISION BY 4:00 · BABY OUT BY 5:00'; cue.style.color = s>=180 ? '#8a6d1f' : '#5a6a78'; }
+    else if(s<300){ el.style.color='#9b1c2e'; cue.textContent='CUT NOW — BABY OUT BY 5:00'; cue.style.color='#9b1c2e'; }
+    else { el.style.color='#9b1c2e'; cue.textContent='PAST 5:00 — DELIVER NOW. CPR NEVER STOPS.'; cue.style.color='#9b1c2e'; }
+  }
+  function run(){ if(tick){ clearInterval(tick); tick=null; } if(t0!==null && babyMs===null) tick=setInterval(paint,1000); paint(); }
+  sb.addEventListener('click', function(){
+    if(t0!==null) return; /* one-way while running; CLEAR/RESET re-arms */
+    t0=Date.now(); try{ localStorage.setItem(K,String(t0)); }catch(e){}
+    if(window.__oblog&&window.__oblog.add) window.__oblog.add('10','MATERNAL ARREST — CLOCK STARTED','0:00');
+    run();
+  });
+  if(bb) bb.addEventListener('click', function(){
+    if(t0===null||babyMs!==null) return;
+    babyMs=Date.now(); try{ localStorage.setItem(BK,String(babyMs)); }catch(e){}
+    if(window.__oblog&&window.__oblog.add) window.__oblog.add('10','BABY OUT (HYSTEROTOMY)', fmt(Math.max(0,Math.floor((babyMs-t0)/1000))));
+    run();
+  });
+  function reset(){ t0=null; babyMs=null; if(tick){ clearInterval(tick); tick=null; } try{ localStorage.removeItem(K); localStorage.removeItem(BK); }catch(e){} paint(); }
+  cb.addEventListener('click', reset);
   var g=document.getElementById('resetbtn'); if(g) g.addEventListener('click', reset);
   run();
 })();</script>
@@ -2078,11 +2136,10 @@
     placed=true; if(watch){ clearInterval(watch); watch=null; }
     if(cue) cue.textContent='LMA IN PLACE ✓';
     if(lma){ lma.style.boxShadow='none'; lma.open=false; }
-    done.textContent='LOGGED ✓';
-    setTimeout(function(){ done.textContent='LMA PLACED — LOG IT'; }, 2500);
+    done.textContent='LOGGED ✓'; done.disabled=true; done.style.opacity='0.75'; /* one-shot: no duplicate LMA PLACED log entries; RESET re-arms */
   });
   var g=document.getElementById('resetbtn');
-  if(g) g.addEventListener('click', function(){ cprAt=null; placed=false; if(watch){ clearInterval(watch); watch=null; } if(lma){ lma.open=false; lma.style.boxShadow='none'; } if(cue) cue.textContent='SIZE BY WEIGHT'; });
+  if(g) g.addEventListener('click', function(){ cprAt=null; placed=false; if(watch){ clearInterval(watch); watch=null; } if(lma){ lma.open=false; lma.style.boxShadow='none'; } if(cue) cue.textContent='SIZE BY WEIGHT'; if(done){ done.disabled=false; done.style.opacity=''; done.textContent='LMA PLACED — LOG IT'; } });
 })();</script>
 <script>(function(){
   var tob=document.getElementById('tob'), marks=document.getElementById('tobmarks');
@@ -2255,6 +2312,16 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
       nb.addEventListener('touchend', exact, false);
       nb.addEventListener('click', exact, false);
     })();
+    /* Manually correcting the TIME OF BIRTH banner re-anchors the ms birth time too,
+       so the clamp timer and log-lane +m:ss offsets follow the corrected time instead
+       of staying pinned to the first (wrong) stamp. */
+    if(tob){
+      tob.addEventListener('change', function(){
+        var m=tobMs(); if(m==null) return;
+        try{ localStorage.setItem('lrh-ob-birthms', String(m)); }catch(e){}
+        if(!clamped && t0!==null) startTimer(m);
+      });
+    }
     Array.prototype.forEach.call(document.querySelectorAll('.babyout'), function(bo){
       bo.addEventListener('click', function(){
         if(!birthT() && tob){ tob.value=nowHM(); tob.dispatchEvent(new Event('input',{bubbles:true})); }
