@@ -209,7 +209,7 @@
         <tr><td>Any hs-troponin &ge; 50 ng/L, <em>or</em> &Delta; &ge; 15 ng/L</td><td><b>Rule-in zone</b> &rarr; consider cardiology consult</td></tr>
         <tr><td>&lt; 4 ng/L &amp; chest pain &gt; 3 h, <em>or</em> &lt; 5 ng/L &amp; &Delta; &lt; 4</td><td><b>D/C home</b>, outpatient follow-up as needed</td></tr>
         <tr><td>5&ndash;49 ng/L &amp; 0/1-hr &Delta; &lt; 4</td><td><b>AMI ruled out</b> &rarr; HEART score vs discharge w/ PCP</td></tr>
-        <tr><td>5&ndash;49 ng/L &amp; 0/1-hr &Delta; 4&ndash;14</td><td><b>Reflex to 3 h</b>; then &Delta; &lt; 15 &rarr; HEART score, &Delta; &ge; 15 &rarr; rules in</td></tr>
+        <tr><td>&lt; 50 ng/L &amp; 0/1-hr &Delta; 4&ndash;14</td><td><b>Reflex to 3 h</b>; then &Delta; &lt; 15 &rarr; HEART score, &Delta; &ge; 15 &rarr; rules in</td></tr>
       </table>
       <p style="color:var(--muted);margin:8px 0 0">&Delta; is the absolute change between serial values. Not applicable to ESRD.</p>
     </details>
@@ -287,7 +287,7 @@
         <li><b>STEMI on EKG</b> &rarr; STEMI Alert (activate STEMI protocol).</li>
         <li><b>Rule-in zone</b> (any hs-Trop &ge;50 or &Delta;&ge;15) &rarr; consider cardiology consult if clinically appropriate.</li>
         <li><b>D/C home</b> (&lt;4 &amp; pain&gt;3h, or &lt;5 &amp; &Delta;&lt;4) &rarr; discharge, outpatient follow-up as needed.</li>
-        <li><b>Reflex to 3 h</b> (5&ndash;49 &amp; &Delta; 4&ndash;14) &rarr; repeat troponin; &Delta;&ge;15 rules in, else AMI ruled out.</li>
+        <li><b>Reflex to 3 h</b> (&lt; 50 &amp; &Delta; 4&ndash;14) &rarr; repeat troponin; &Delta;&ge;15 rules in, else AMI ruled out.</li>
         <li><b>AMI ruled out</b> &rarr; apply HEART score:
           <ul>
             <li>0&ndash;3 (low) &rarr; D/C, no stress test, F/U PCP</li>
@@ -453,7 +453,7 @@
     else if(d.code==='stemi'){ tr.classList.add('r-in'); tr.innerHTML='<span class="tag">STEMI ALERT</span> Evidence of STEMI on EKG — activate STEMI protocol.'; }
     else if(d.code==='in'){ tr.classList.add('r-in'); tr.innerHTML='<span class="tag">RULE-IN ZONE</span> '+d.why+'.'; }
     else if(d.code==='dchome'){ tr.classList.add('r-dc'); tr.innerHTML='<span class="tag">D/C HOME</span> '+d.why+' — AMI ruled out.'; }
-    else if(d.code==='reflex'){ tr.classList.add('r-ref'); tr.innerHTML='<span class="tag">REFLEX TO 3 HOURS</span> 5–49 ng/L with 0/1-hr Δ 4–14 — obtain a 3-hr troponin and enter it above.'; t3field.classList.add('hot'); }
+    else if(d.code==='reflex'){ tr.classList.add('r-ref'); tr.innerHTML='<span class="tag">REFLEX TO 3 HOURS</span> troponin under 50 ng/L with 0/1-hr Δ 4–14 — obtain a 3-hr troponin and enter it above.'; t3field.classList.add('hot'); }
     else if(d.code==='ruledout'){ tr.classList.add('r-out'); tr.innerHTML='<span class="tag">AMI RULED OUT</span> '+d.via+' — apply HEART score.'; }
 
     // HEART score bar
@@ -477,7 +477,7 @@
     if(d.code==='incomplete'){ pending(d.why||'Answer Section 1 and enter the troponins.'); return; }
     if(d.code==='stemi'){ show('in','STEMI','STEMI Alert — activate STEMI protocol','Evidence of STEMI on EKG. Proceed directly to STEMI activation; the troponin pathway does not apply.'); return; }
     if(d.code==='in'){ show('in','Rule-in zone','Rule in — consider cardiology consult','Rule-in criteria met ('+d.why+'). Consider cardiology consultation if clinically appropriate. Manage as ACS.'); return; }
-    if(d.code==='reflex'){ show('ref','Reflex','Observe — repeat hs-troponin at 3 hours','Gray zone (5–49 ng/L) with a 0/1-hr Δ of 4–14. Obtain a 3-hr troponin: Δ ≥ 15 rules in; Δ < 15 rules AMI out (then apply HEART score).'); return; }
+    if(d.code==='reflex'){ show('ref','Reflex','Observe — repeat hs-troponin at 3 hours','Troponin under 50 ng/L with a 0/1-hr Δ of 4–14. Obtain a 3-hr troponin: Δ ≥ 15 rules in; Δ < 15 rules AMI out (then apply HEART score).'); return; }
 
     // dchome or ruledout -> AMI ruled out; HEART decides stress-test disposition
     if(d.code==='dchome' || d.code==='ruledout'){
