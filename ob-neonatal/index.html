@@ -41,7 +41,7 @@
     .steps { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
     .figs { grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); }
   }
-  nav.bar { position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:10px; padding:9px 14px; background:#005596; color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.1em; }
+  nav.bar { position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:10px; padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px; background:#005596; color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.1em; }
   nav.bar a, nav.bar button { color:#fffefb; background:none; text-decoration:none; border:1px solid rgba(255,255,255,0.4); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center; }
   nav.bar #resetnote { flex:1; text-align:right; font-size:10.5px; color:#a9c2dc; letter-spacing:0.08em; }
   @media print {
@@ -64,7 +64,7 @@
   <div style="max-width:460px; font-size:14.5px; line-height:1.35; color:#a9c2dc;">Content is unverified and unapproved. Every situation requires nuance; use your professional judgment and your department's policies.</div>
   <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
 </div>
-<nav class="bar"><a href="#top">INDEX</a><button id="summarybtn" type="button" style="color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center;">SUMMARY</button><button id="resetbtn" type="button" style="display:none;">RESET FOR NEXT CASE</button><span id="resetnote"></span></nav>
+<nav class="bar"><a href="../" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a><a href="#top">INDEX</a><button id="summarybtn" type="button" style="color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center;">SUMMARY</button><button id="resetbtn" type="button" style="display:none;">RESET FOR NEXT CASE</button><span id="resetnote"></span></nav>
 <div id="summarymodal" style="display:none; position:fixed; inset:0; z-index:20; background:rgba(15,28,44,0.55); padding:14px; overflow:auto;">
   <div style="max-width:560px; margin:22px auto; background:#fffefb; border:2px solid #16324f; box-shadow:0 12px 44px rgba(0,0,0,0.32);">
     <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; background:linear-gradient(135deg,#005596,#003e6e); color:#fffefb; border-bottom:5px solid #9b1c2e;">
@@ -131,13 +131,18 @@
     <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:#16324f;">Imminent normal delivery</h2>
     <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:11px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:#8a8578;">CART</span><a href="#d6" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:#e8f2ea; border:1px solid #2f7a3f; text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:#2f7a3f; flex:none;"><span style="display:flex; flex-direction:column; gap:2.7px;"><span style="display:block; width:12.6px; height:2.7px; background:#fffefb;"></span><span style="display:block; width:12.6px; height:2.7px; background:#fffefb;"></span></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:#2f7a3f;">6 · VAGINAL DELIVERY</span></a><a href="#d1" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:#e6f2f3; border:1px solid #0f7a86; text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:#0f7a86; flex:none;"><span style="display:block; width:9.9px; height:9.9px; border:2.16px solid #fffefb; border-radius:50%; box-sizing:border-box;"></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:#0f7a86;">1 · AIRWAY / BREATHING</span></a></div>
   </header>
-  <div style="position:sticky; top:76px; z-index:4; padding:10px 18px; background:#fdf3cf; border-top:2px solid #8a6d1f; border-bottom:2px solid #8a6d1f;">
+  <div style="position:sticky; top:calc(76px + env(safe-area-inset-top,0px)); z-index:4; padding:10px 18px; background:#fdf3cf; border-top:2px solid #8a6d1f; border-bottom:2px solid #8a6d1f;">
     <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.1em; color:#8a6d1f;">TIME OF BIRTH — STAMP IT AS THE BABY DELIVERS</div>
     <div style="margin-top:8px; display:flex; gap:8px; align-items:stretch; flex-wrap:wrap;">
       <input type="time" id="tob" step="60" style="flex:1; min-width:130px; min-height:48px; padding:6px 10px; border:2px solid #8a6d1f; background:#fffefb; color:#16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:19px;">
       <button type="button" id="tobnow" style="min-height:48px; padding:0 18px; background:#8a6d1f; color:#fffefb; border:2px solid #8a6d1f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">NOW</button>
     </div>
     <div id="tobmarks" style="margin-top:7px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.04em; color:#8a6d1f; line-height:1.35;">Set the time — the 1 and 5 minute marks appear here.</div>
+    <div style="margin-top:8px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+      <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.08em; color:#8a6d1f;">WEIGHT</span>
+      <input type="number" id="babyweight" inputmode="decimal" step="0.1" min="0" placeholder="kg" style="width:96px; min-height:44px; padding:6px 10px; border:2px solid #8a6d1f; background:#fffefb; color:#16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px;">
+      <span style="font-size:12.5px; color:#8a6d1f;">kg &middot; sets equipment &amp; epi sizes</span>
+    </div>
     <div data-loglane="02" style="margin-top:8px; display:flex; gap:6px; align-items:center; overflow-x:auto; -webkit-overflow-scrolling:touch; min-height:28px; scrollbar-width:none;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:#8a6d1f; opacity:0.7; white-space:nowrap;">NOTHING LOGGED YET</span></div>
   </div>
 
@@ -158,6 +163,21 @@
   <div class="steps" style="padding:14px 18px 0;">
     <details open style="border:2px solid #16324f; align-self:start;">
       <summary style="background:#16324f; color:#fffefb; padding:11px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><span>STEP 1 · PREPARE</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:400; opacity:0.85; text-align:right;">DRAWER 6 · VAGINAL DELIVERY</span></summary>
+      <div style="margin:11px 14px 0; padding:11px 12px; background:#eef3f9; border:2px solid #16324f;">
+        <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.1em; color:#16324f;">ASK THE MOTHER — QUICK</div>
+        <div style="margin-top:8px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+          <span style="font-weight:700;">Weeks gestation</span>
+          <input type="number" id="gaweeks" inputmode="numeric" step="1" min="20" max="44" placeholder="wk" style="width:84px; min-height:44px; padding:6px 10px; border:2px solid #16324f; background:#fffefb; color:#16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px;">
+          <span style="font-size:12.5px; color:#5a6a78;">drives equipment sizes</span>
+        </div>
+        <div style="margin-top:9px; font-size:13.5px; line-height:1.55; color:#16324f;">
+          &middot; Singleton or <b>multiple</b>? (a team per baby)<br>
+          &middot; <b>Prenatal care?</b> Yes / No / Unknown<br>
+          &middot; <b>Complications?</b> HTN / pre-eclampsia &middot; diabetes &middot; bleeding / placenta &middot; fever / infection<br>
+          &middot; <b>Membranes / fluid:</b> time ruptured &middot; clear / meconium / bloody<br>
+          &middot; <b>Opioids</b> in labor?
+        </div>
+      </div>
       <div style="padding:11px 14px 0; display:flex; align-items:center; gap:9px; flex-wrap:wrap; background:#e8f2ea;"><a href="#d6" style="display:inline-flex; align-items:center; gap:6px; padding:3px 8px 3px 3px; background:#e8f2ea; border:1px solid #2f7a3f; text-decoration:none; flex:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; background:#2f7a3f;"><span style="display:flex; flex-direction:column; gap:2px;"><span style="display:block; width:11px; height:2.5px; background:#fffefb;"></span><span style="display:block; width:11px; height:2.5px; background:#fffefb;"></span></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; font-weight:700; letter-spacing:0.06em; color:#2f7a3f;">DRAWER 6</span></a><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:#2f7a3f;">STERILE OB KIT · WARMING PAD · BLANKETS</span></div>
       <ul style="margin:0; padding:4px 14px 13px; list-style:none;">
         <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="02-0-0" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><span style="display:inline-block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:#2b5c93; background:#e9eff6; padding:2px 6px; border-radius:3px; margin-right:7px; vertical-align:1px;">RN</span>Activate the chemical warming pad; place it under the receiving blankets.</span></label></li>
@@ -320,7 +340,7 @@
     <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:#16324f;">Neonatal resuscitation</h2>
     <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:11px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:#8a8578;">CART</span><a href="#d1" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:#e6f2f3; border:1px solid #0f7a86; text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:#0f7a86; flex:none;"><span style="display:block; width:9.9px; height:9.9px; border:2.16px solid #fffefb; border-radius:50%; box-sizing:border-box;"></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:#0f7a86;">1 · AIRWAY / BREATHING</span></a><a href="#d2" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:#e9eff8; border:1px solid #2f62a8; text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:#2f62a8; flex:none;"><span style="display:block; width:8.1px; height:8.1px; background:#fffefb; transform:rotate(45deg);"></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:#2f62a8;">2 · CIRCULATION</span></a></div>
   </header>
-  <div style="position:sticky; top:76px; z-index:4; padding:10px 18px; background:#f4f7fa; border-top:2px solid #16324f; border-bottom:2px solid #16324f;">
+  <div style="position:sticky; top:calc(76px + env(safe-area-inset-top,0px)); z-index:4; padding:10px 18px; background:#f4f7fa; border-top:2px solid #16324f; border-bottom:2px solid #16324f;">
     <div style="display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center;">
       <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:34px; font-weight:700; line-height:1; color:#16324f;" id="pctime">0:00</div>
       <div id="pccue" style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11px; font-weight:700; letter-spacing:0.08em; color:#5a6a78; text-align:right; line-height:1.3;">REASSESS<br>EVERY 30 S</div>
@@ -332,6 +352,8 @@
     </div>
     <div data-loglane="03" style="margin-top:8px; display:flex; gap:6px; align-items:center; overflow-x:auto; -webkit-overflow-scrolling:touch; min-height:28px; scrollbar-width:none;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:#16324f; opacity:0.7; white-space:nowrap;">NOTHING LOGGED YET</span></div>
   </div>
+
+  <div class="eqpanel" style="margin:12px 18px 0;"></div>
 
   <div class="nca" style="padding:0 18px;">
     <div style="padding:11px 14px; background:#fbeaec; border-left:4px solid #9b1c2e;">
@@ -483,6 +505,7 @@
     <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:#16324f;">Umbilical vein catheterization</h2>
     <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:11px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:#8a8578;">CART</span><a href="#d2" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:#e9eff8; border:1px solid #2f62a8; text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:#2f62a8; flex:none;"><span style="display:block; width:8.1px; height:8.1px; background:#fffefb; transform:rotate(45deg);"></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:#2f62a8;">2 · CIRCULATION</span></a><a href="#d3" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:#efeaf8; border:1px solid #6f4fa8; text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:#6f4fa8; flex:none;"><span style="display:block; width:9px; height:9px; background:#fffefb;"></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:#6f4fa8;">3 · LABS / MISC.</span></a></div>
   </header>
+  <div class="eqpanel" style="margin:12px 18px 0;"></div>
   <div class="nca" style="padding:0 18px;">
     <div style="padding:11px 14px; background:#fbeaec; border-left:4px solid #9b1c2e;">
       <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.14em; color:#9b1c2e;">NAME</div>
@@ -727,7 +750,7 @@
     <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:#16324f;">Postpartum hemorrhage</h2>
     <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:11px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:#8a8578;">CART</span><a href="#d4" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:#fbeaec; border:1px solid #9b1c2e; text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:#9b1c2e; flex:none;"><span style="display:block; width:0; height:0; border-left:5.4px solid transparent; border-right:5.4px solid transparent; border-bottom:9px solid #fffefb;"></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:#9b1c2e;">4 · POSTPARTUM HEMORRHAGE</span></a></div>
   </header>
-  <div style="position:sticky; top:76px; z-index:4; padding:10px 18px; background:#fbeaec; border-top:2px solid #9b1c2e; border-bottom:2px solid #9b1c2e;">
+  <div style="position:sticky; top:calc(76px + env(safe-area-inset-top,0px)); z-index:4; padding:10px 18px; background:#fbeaec; border-top:2px solid #9b1c2e; border-bottom:2px solid #9b1c2e;">
     <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
       <div id="pphtime" style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:34px; font-weight:700; line-height:1; color:#9b1c2e; letter-spacing:0.02em; min-width:104px;">00:00</div>
       <div style="display:flex; gap:8px; flex:1; min-width:170px;">
@@ -819,7 +842,7 @@
     <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:#16324f;">Shoulder dystocia</h2>
     <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:11px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:#8a8578;">CART</span><a href="#d6" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:#e8f2ea; border:1px solid #2f7a3f; text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:#2f7a3f; flex:none;"><span style="display:flex; flex-direction:column; gap:2.7px;"><span style="display:block; width:12.6px; height:2.7px; background:#fffefb;"></span><span style="display:block; width:12.6px; height:2.7px; background:#fffefb;"></span></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:#2f7a3f;">6 · VAGINAL DELIVERY</span></a></div>
   </header>
-  <div style="position:sticky; top:76px; z-index:4; margin:0 0 2px; padding:10px 18px; background:#fdf3cf; border-top:2px solid #8a6d1f; border-bottom:2px solid #8a6d1f; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+  <div style="position:sticky; top:calc(76px + env(safe-area-inset-top,0px)); z-index:4; margin:0 0 2px; padding:10px 18px; background:#fdf3cf; border-top:2px solid #8a6d1f; border-bottom:2px solid #8a6d1f; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
     <div id="sdtime" style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:32px; font-weight:700; line-height:1; color:#8a6d1f; letter-spacing:0.02em; min-width:96px;">00:00</div>
     <div style="display:flex; gap:8px; flex:1; min-width:170px;">
       <button type="button" id="sdstart" style="flex:1; min-height:44px; padding:0 12px; background:#8a6d1f; color:#fffefb; border:2px solid #8a6d1f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">START</button>
@@ -2247,6 +2270,75 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
     if(rb) rb.addEventListener('click', function(){
       try{ localStorage.removeItem('lrh-ob-birthms'); localStorage.removeItem('lrh-ob-clampms'); }catch(e){}
     });
+  }
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
+})();</script>
+<script>(function(){
+  /* Equipment + code-dose engine. Weight (birth banner) preferred over gestation
+     (PREPARE). Device-local, no identifiers. Sizes: Merck/NRP. */
+  var WK='lrh-ob-weight', GK='lrh-ob-ga';
+  function boot(){
+    function num(k){ var v=parseFloat(localStorage.getItem(k)||''); return isNaN(v)?null:v; }
+    function bW(w){ return w<1?0:(w<2?1:(w<3?2:3)); }
+    function bG(g){ return g<28?0:(g<34?1:(g<38?2:3)); }
+    function calc(){
+      var w=num(WK), g=num(GK), haveW=w!=null&&w>0, haveG=g!=null&&g>0;
+      if(!haveW&&!haveG) return null;
+      var band=haveW?bW(w):bG(g), conflict=haveW&&haveG&&bW(w)!==bG(g);
+      var lmaOK=haveW?w>=2:g>=34, refW=haveW?w:[0.8,1.5,2.5,3.5][band];
+      return { w:w, g:g, haveW:haveW, haveG:haveG, band:band, conflict:conflict, lmaOK:lmaOK,
+        ETT:['2.5','3.0','3.5','3.5–4.0'][band],
+        blade:['00','0','0–1','1'][band],
+        depth: haveW ? ((Math.round((6+w)*10)/10)+' cm') : ['~6 cm','~7 cm','~8 cm','~9 cm'][band],
+        LMA: lmaOK ? 'Size 1' : 'use ETT',
+        UVC: refW<1.5 ? '3.5 Fr' : '5 Fr',
+        epi: haveW ? { mg:+(0.02*w).toFixed(3), ml:+(0.2*w).toFixed(2) } : null };
+    }
+    function tile(l,b,s){ return '<div style="background:#fffefb; border:1px solid #cfe0e2; padding:7px 9px;"><div style="font-family:ui-monospace,Menlo,monospace; font-size:10px; letter-spacing:0.06em; color:#0e7c86; font-weight:700;">'+l+'</div><div style="font-size:18px; font-weight:800; color:#16324f; line-height:1.12;">'+b+'</div>'+(s?'<div style="font-size:11px; color:#5a6a78; margin-top:1px;">'+s+'</div>':'')+'</div>'; }
+    var SVG='<svg viewBox="0 0 262 84" style="width:100%; max-width:262px; height:auto; display:block;" xmlns="http://www.w3.org/2000/svg">'
+      +'<rect x="34" y="16" width="20" height="46" rx="4" fill="#e3e7ec" stroke="#5a6a78" stroke-width="2"/>'
+      +'<rect x="40" y="62" width="8" height="9" fill="#5a6a78"/><rect x="37" y="9" width="14" height="9" rx="2" fill="#8a94a0"/>'
+      +'<circle cx="44" cy="40" r="29" fill="none" stroke="#9b1c2e" stroke-width="5"/><line x1="24" y1="20" x2="64" y2="60" stroke="#9b1c2e" stroke-width="5"/>'
+      +'<text x="44" y="81" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="9" font-weight="700" fill="#9b1c2e">AUTO-INJECTOR</text>'
+      +'<text x="99" y="44" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="12" font-weight="700" fill="#5a6a78">use &#8594;</text>'
+      +'<rect x="127" y="30" width="5" height="14" rx="2" fill="#0e7c86"/><rect x="132" y="34" width="16" height="6" fill="#0e7c86"/>'
+      +'<rect x="148" y="30" width="6" height="14" fill="#0e7c86"/>'
+      +'<rect x="154" y="30" width="72" height="16" rx="3" fill="#e6f2f3" stroke="#0e7c86" stroke-width="2.5"/>'
+      +'<rect x="158" y="33" width="46" height="10" fill="#bfe0e3"/>'
+      +'<line x1="226" y1="38" x2="250" y2="38" stroke="#5a6a78" stroke-width="2"/>'
+      +'<text x="182" y="70" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="9" font-weight="700" fill="#0e7c86">CODE-CART 0.1 mg/mL</text></svg>';
+    function html(){
+      var c=calc();
+      if(!c){ return '<div style="border:2px dashed #b7c7ca; background:#f2f8f9; padding:11px 12px; font-size:13.5px; color:#16324f;">Enter <b>weight</b> (birth banner) or <b>weeks gestation</b> (PREPARE) for ETT / LMA / UVC / blade sizes and the code-dose epi.</div>'; }
+      var basis=c.haveW?('weight '+c.w+' kg'+(c.haveG?(' · '+c.g+' wk'):'')):(c.g+' wk (no weight)');
+      var warn=c.conflict?'<div style="margin:0 10px 6px; padding:6px 9px; background:#fbeaec; border:1px solid #9b1c2e; color:#9b1c2e; font-size:12px; font-weight:700;">&#9888; WEIGHT AND DATES DISAGREE — USING WEIGHT</div>':'';
+      var epiLine=c.epi
+        ? '<div style="margin-top:3px; font-size:15px; color:#16324f;"><b>'+c.epi.mg+' mg</b> = <b>'+c.epi.ml+' mL</b> of 0.1 mg/mL (1:10,000) IV/UVC · 0.02 mg/kg</div>'
+        : '<div style="margin-top:3px; font-size:13.5px; color:#16324f;">Enter <b>weight</b> for the mL dose (0.02 mg/kg IV).</div>';
+      return '<div style="border:2px solid #0e7c86; background:#f2f8f9;">'
+        +'<div style="background:#0e7c86; color:#fffefb; padding:8px 12px; font-family:ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.09em;">EQUIPMENT &amp; CODE-DOSE · '+basis+'</div>'
+        + warn
+        +'<div style="padding:10px 12px; display:grid; grid-template-columns:1fr 1fr; gap:8px;">'
+          + tile('ETT (mm)', c.ETT, 'depth '+c.depth)
+          + tile('LMA', c.LMA, c.lmaOK?'size 1':'&lt;2 kg / &lt;34 wk')
+          + tile('UVC', c.UVC, 'insert 2–4 cm to blood')
+          + tile('BLADE', c.blade, 'laryngoscope')
+        +'</div>'
+        +'<div style="padding:0 12px 10px;"><div style="background:#fbeaec; border:2px solid #9b1c2e; padding:9px 11px;">'
+          +'<div style="font-family:ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.08em; color:#9b1c2e;">EPINEPHRINE · CODE DOSE</div>'
+          + epiLine
+          +'<div style="margin-top:8px;">'+SVG+'</div>'
+          +'<div style="margin-top:4px; font-size:12px; color:#9b1c2e;"><b>Not the auto-injector.</b> Use the <b>code-cart epinephrine, 0.1 mg/mL (1:10,000)</b> — the prefilled one in the box; give 0.2 mL/kg IV/UVC. Only a 1 mg/mL ampoule? Dilute 1 mL + 9 mL NS. ETT if no access: 0.05–0.1 mg/kg.</div>'
+        +'</div></div>'
+        +'<div style="padding:2px 12px 10px; font-size:11px; color:#5a6a78;">Sizes: Merck / NRP. Weight preferred over dates. Beta — verify locally.</div>'
+      +'</div>';
+    }
+    function render(){ var els=document.querySelectorAll('.eqpanel'), h=html(), i; for(i=0;i<els.length;i++){ els[i].innerHTML=h; } }
+    var wIn=document.getElementById('babyweight'), gIn=document.getElementById('gaweeks');
+    if(wIn){ wIn.value=localStorage.getItem(WK)||''; wIn.addEventListener('input', function(){ if(wIn.value==='') localStorage.removeItem(WK); else localStorage.setItem(WK, wIn.value); render(); }); }
+    if(gIn){ gIn.value=localStorage.getItem(GK)||''; gIn.addEventListener('input', function(){ if(gIn.value==='') localStorage.removeItem(GK); else localStorage.setItem(GK, gIn.value); render(); }); }
+    var rb=document.getElementById('resetbtn'); if(rb) rb.addEventListener('click', function(){ try{ localStorage.removeItem(WK); localStorage.removeItem(GK); }catch(e){} if(wIn)wIn.value=''; if(gIn)gIn.value=''; render(); });
+    render();
   }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
 })();</script>

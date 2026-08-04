@@ -1,5 +1,5 @@
 /* LRH OB Emergencies — offline shell. Bump CACHE on every deploy. */
-var CACHE = 'lrh-ob-2026-08-03';
+var CACHE = 'lrh-ob-2026-08-04';
 var ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'icon.svg'];
 self.addEventListener('install', function(e){
   e.waitUntil(caches.open(CACHE).then(function(c){ return c.addAll(ASSETS); }).then(function(){ return self.skipWaiting(); }));
