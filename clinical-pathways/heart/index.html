@@ -187,7 +187,7 @@
   <!-- ============ SECTION 2: hs-TROPONIN ============ -->
   <div class="card">
     <h2><span class="num">2</span> hs-Troponin &mdash; 0 / 1-hour (&plusmn; 3-hr reflex)</h2>
-    <p class="sub">Enter the 0-hr and 1-hr values. A 0-hr alone can complete the pathway (&ge; 50 rules in; &lt; 3, or &lt; 4 with pain &gt; 3 h, rules out). A 3-hr value is only needed if the pathway reflexes.</p>
+    <p class="sub">Enter the 0-hr and 1-hr values. A 0-hr alone can complete the pathway (&ge; 50 rules in; &le; 3, or &lt; 4 with pain &gt; 3 h, rules out). A 3-hr value is only needed if the pathway reflexes.</p>
 
     <div class="troprow">
       <div class="field"><label>0-hr <span class="unit">(ng/L)</span></label>
@@ -208,7 +208,7 @@
         <tr><td>Evidence of STEMI on EKG</td><td><b>STEMI Alert</b></td></tr>
         <tr><td>Any hs-troponin &ge; 50 ng/L, <em>or</em> &Delta; &ge; 15 ng/L</td><td><b>Rule-in zone</b> &rarr; consider cardiology consult</td></tr>
         <tr><td>&lt; 4 ng/L &amp; chest pain &gt; 3 h, <em>or</em> &lt; 5 ng/L &amp; &Delta; &lt; 4</td><td><b>D/C home</b>, outpatient follow-up as needed</td></tr>
-        <tr><td>Single 0-hr troponin: &ge; 50 <em>(rules in)</em> · &lt; 3 <em>(below detection)</em> · &lt; 4 with pain &gt; 3 h</td><td><b>Pathway completes without the 1-hr draw</b></td></tr>
+        <tr><td>Single 0-hr troponin: &ge; 50 <em>(rules in)</em> · &le; 3 <em>(below detection)</em> · &lt; 4 with pain &gt; 3 h</td><td><b>Pathway completes without the 1-hr draw</b></td></tr>
         <tr><td>5&ndash;49 ng/L &amp; 0/1-hr &Delta; &lt; 4</td><td><b>AMI ruled out</b> &rarr; HEART score vs discharge w/ PCP</td></tr>
         <tr><td>&lt; 50 ng/L &amp; 0/1-hr &Delta; 4&ndash;14</td><td><b>Reflex to 3 h</b>; then &Delta; &lt; 15 &rarr; HEART score, &Delta; &ge; 15 &rarr; rules in</td></tr>
       </table>
@@ -287,7 +287,7 @@
       <ul>
         <li><b>STEMI on EKG</b> &rarr; STEMI Alert (activate STEMI protocol).</li>
         <li><b>Rule-in zone</b> (any hs-Trop &ge;50 or &Delta;&ge;15) &rarr; consider cardiology consult if clinically appropriate.</li>
-        <li><b>D/C home</b> (&lt;4 &amp; pain&gt;3h, or &lt;5 &amp; &Delta;&lt;4, or a single 0-hr &lt;3) &rarr; discharge, outpatient follow-up as needed.</li>
+        <li><b>D/C home</b> (&lt;4 &amp; pain&gt;3h, or &lt;5 &amp; &Delta;&lt;4, or a single 0-hr &le;3) &rarr; discharge, outpatient follow-up as needed.</li>
         <li><b>Reflex to 3 h</b> (&lt; 50 &amp; &Delta; 4&ndash;14) &rarr; repeat troponin; &Delta;&ge;15 rules in, else AMI ruled out.</li>
         <li><b>AMI ruled out</b> &rarr; apply HEART score:
           <ul>
@@ -320,7 +320,7 @@
     hospital: "Littleton Regional Hospital",
     hospitalShort: "LRH",
     units: "ng/L",
-    version: "1.2",
+    version: "1.4",
     lastReviewed: "2026-08-04",
     trop: {
       ruleInValue:      50,   // any hs-Trop >= this            -> rules in
@@ -328,7 +328,7 @@
       ruleOutPainValue:  4,   // < this WITH chest pain > painHours -> rule out
       ruleOutValue:      5,   // < this AND delta < ruleOutDelta -> rule out
       ruleOutDelta:      4,   // delta < this (with value < ruleOutValue, or gray zone) -> rule out
-      singleLoD:         3,   // 0-hr < this (below assay detection) -> rule out on a single troponin
+      singleLoD:         3,   // 0-hr <= this (below assay detection) -> rule out on a single troponin
       painHours:         3,   // chest-pain duration threshold (hours)
       grayLow:           5,   // gray-zone lower bound (display)
       grayHigh:         49,   // gray-zone upper bound (display)
@@ -341,7 +341,7 @@
   var $=function(id){return document.getElementById(id);};
   var t0El=$('t0'), t1El=$('t1'), t3El=$('t3');
 
-  function num(el){ if(el.value===''||el.value===null) return null; var v=Number(el.value); return isNaN(v)?null:v; }
+  function num(el){ if(el.value===''||el.value===null) return null; var v=Number(el.value); return (isNaN(v)||v<0)?null:v; }
   function sel(name){ var el=document.querySelector('input[name="'+name+'"]:checked'); return el?el.value:null; }
 
   function normalLimit(sex){ return sex==='female'?SITE.trop.heartNormalLimit.female:SITE.trop.heartNormalLimit.male; }
@@ -362,13 +362,15 @@
 
     if(stemi==='yes') return {code:'stemi'};
     if(stemi===null)  return {code:'incomplete', why:'Answer the STEMI question.'};
+    // ESRD is excluded from this accelerated algorithm — don't render pathway recommendations for it.
+    if($('esrd').checked) return {code:'esrd'};
 
     var T=SITE.trop;
 
     // ---- single-troponin completions: the 0-hr alone can finish the pathway ----
     if(t0!==null && t1===null){
       if(t0>=T.ruleInValue) return {code:'in', why:'0-hr troponin &ge; '+T.ruleInValue+' '+SITE.units+' (single troponin)'};
-      if(t0<T.singleLoD) return {code:'dchome', why:'0-hr &lt; '+T.singleLoD+' '+SITE.units+' (below detection) — single troponin, 1-hr not required'};
+      if(t0<=T.singleLoD) return {code:'dchome', why:'0-hr &le; '+T.singleLoD+' '+SITE.units+' (below detection) — single troponin, 1-hr not required'};
       if(t0<T.ruleOutPainValue && pain==='yes') return {code:'dchome', why:'0-hr &lt; '+T.ruleOutPainValue+' '+SITE.units+' with chest pain &gt; '+T.painHours+' h — single troponin, 1-hr not required'};
     }
     if(t0===null||t1===null) return {code:'incomplete', why:'Enter both 0-hr and 1-hr troponin.'};
@@ -445,8 +447,10 @@
     var autoSub = (t0!==null && sex) ? tropPoints(t0,sex) : null;
     for(var i=0;i<3;i++){
       var opt=$('tropOpt'+i), inp=opt.querySelector('input');
-      if(autoSub!==null){ var on=(i===autoSub); inp.checked=on; opt.classList.toggle('sel',on); }
-      else { opt.classList.toggle('sel', inp.checked); }
+      if(autoSub!==null){ var on=(i===autoSub); inp.checked=on; inp.setAttribute('data-auto', on?'1':''); opt.classList.toggle('sel',on); }
+      else { // clear a previously auto-set selection so a stale sub-score can't linger after t0/sex is cleared
+        if(inp.getAttribute('data-auto')==='1'){ inp.checked=false; inp.setAttribute('data-auto',''); }
+        opt.classList.toggle('sel', inp.checked); }
     }
     if(t0!==null && sex){ var nl=normalLimit(sex);
       $('tropHint').innerHTML='&mdash; auto-set: normal &le; '+nl+' '+SITE.units+' ('+(sex==='female'?'female':'male')+'), '+SITE.trop.heartMultiplier+'&times; = '+(SITE.trop.heartMultiplier*nl).toFixed(1); }
@@ -462,7 +466,8 @@
     else if(d.code==='stemi'){ tr.classList.add('r-in'); tr.innerHTML='<span class="tag">STEMI ALERT</span> Evidence of STEMI on EKG — activate STEMI protocol.'; }
     else if(d.code==='in'){ tr.classList.add('r-in'); tr.innerHTML='<span class="tag">RULE-IN ZONE</span> '+d.why+'.'; }
     else if(d.code==='dchome'){ tr.classList.add('r-dc'); tr.innerHTML='<span class="tag">D/C HOME</span> '+d.why+' — AMI ruled out.'; }
-    else if(d.code==='reflex'){ tr.classList.add('r-ref'); tr.innerHTML='<span class="tag">REFLEX TO 3 HOURS</span> troponin under 50 ng/L with 0/1-hr Δ 4–14 — obtain a 3-hr troponin and enter it above.'; t3field.classList.add('hot'); }
+    else if(d.code==='esrd'){ tr.classList.add('r-ref'); tr.innerHTML='<span class="tag">NOT APPLICABLE</span> ESRD — this accelerated hs-troponin algorithm does not apply. Use serial troponins and clinical judgment.'; }
+    else if(d.code==='reflex'){ tr.classList.add('r-ref'); tr.innerHTML='<span class="tag">REFLEX TO 3 HOURS</span> troponin under '+SITE.trop.ruleInValue+' '+SITE.units+' with 0/1-hr Δ &ge; '+SITE.trop.ruleOutDelta+' but &lt; '+SITE.trop.ruleInDelta+' — obtain a 3-hr troponin and enter it above.'; t3field.classList.add('hot'); }
     else if(d.code==='ruledout'){ tr.classList.add('r-out'); tr.innerHTML='<span class="tag">AMI RULED OUT</span> '+d.via+' — apply HEART score.'; }
 
     // HEART score bar
@@ -484,9 +489,10 @@
       box.innerHTML='<div class="head">'+head+'</div><div class="verdict">'+verdict+'</div><div class="detail">'+detail+'</div>'; }
 
     if(d.code==='incomplete'){ pending(d.why||'Answer Section 1 and enter the troponins.'); return; }
-    if(d.code==='stemi'){ show('in','STEMI','STEMI Alert — activate STEMI protocol','Evidence of STEMI on EKG. Proceed directly to STEMI activation; the troponin pathway does not apply.'); return; }
+    if(d.code==='esrd'){ show('ref','ESRD','Algorithm not applicable — use clinical judgment','This accelerated hs-troponin pathway excludes ESRD (chronically elevated hs-troponin). Use serial troponins, serial EKGs, and clinical judgment; the HEART score may still help frame risk.'); return; }
+    if(d.code==='stemi'){ show('in','STEMI','STEMI Alert — activate STEMI protocol','Evidence of STEMI on EKG. Proceed directly to STEMI activation; the troponin pathway does not apply. The STEMI/Chest Pain response bundle is a premade box pulled from the Omnicell, not stocked on the code cart — confirm current contents against the physical box. <a href="../../codes/?from=home#cart" style="color:inherit; text-decoration:underline;">Code cart drawer reference →</a>'); return; }
     if(d.code==='in'){ show('in','Rule-in zone','Rule in — consider cardiology consult','Rule-in criteria met ('+d.why+'). Consider cardiology consultation if clinically appropriate. Manage as ACS.'); return; }
-    if(d.code==='reflex'){ show('ref','Reflex','Observe — repeat hs-troponin at 3 hours','Troponin under 50 ng/L with a 0/1-hr Δ of 4–14. Obtain a 3-hr troponin: Δ ≥ 15 rules in; Δ < 15 rules AMI out (then apply HEART score).'); return; }
+    if(d.code==='reflex'){ var T=SITE.trop; show('ref','Reflex','Observe — repeat hs-troponin at 3 hours','Troponin under '+T.ruleInValue+' '+SITE.units+' with a 0/1-hr Δ ≥ '+T.ruleOutDelta+' but < '+T.ruleInDelta+'. Obtain a 3-hr troponin: Δ ≥ '+T.ruleInDelta+' rules in; Δ < '+T.ruleInDelta+' rules AMI out (then apply HEART score).'); return; }
 
     // dchome or ruledout -> AMI ruled out; HEART decides stress-test disposition
     if(d.code==='dchome' || d.code==='ruledout'){
@@ -502,6 +508,15 @@
         return;
       }
       var rt=tier(h.total);
+      if(d.code==='dchome'){
+        // Straight rule-out branch: the pathway's disposition is discharge — keep that as the
+        // verdict and show the HEART result as context, so the box never says "discharge" and
+        // "don't discharge yet" at the same time.
+        show('dc', 'D/C home · HEART '+h.total+'/10 ('+rt.t+')',
+          'Discharge home, outpatient follow-up',
+          lead+' <b>HEART '+h.total+'/10 — '+rt.label+':</b> '+heartDispo(h.total));
+        return;
+      }
       show(rt.cls, 'AMI ruled out · HEART '+h.total+'/10 ('+rt.t+')',
         heartVerdict(h.total),
         lead+' <b>HEART '+h.total+'/10 — '+rt.label+':</b> '+heartDispo(h.total));

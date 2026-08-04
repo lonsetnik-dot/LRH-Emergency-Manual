@@ -21,7 +21,6 @@
   body { margin:0; background:#eceff3; color:#16324f; font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; font-size:16.5px; line-height:1.4; text-wrap:pretty; }
   main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
   article { scroll-margin-top:54px; margin-top:12px; }
-  section#top { scroll-margin-top:0; }
   a { color:#2f62a8; }
   a:hover { color:#16324f; }
   a[href^="#"] { -webkit-tap-highlight-color:rgba(47,98,168,0.2); }
@@ -29,28 +28,23 @@
   details > summary .om-close { display:none; }
   details[open] > summary .om-open { display:none; }
   details[open] > summary .om-close { display:inline; }
-  button, .apbtn, .aptab { -webkit-appearance:none; appearance:none; border-radius:0; touch-action:manipulation; -webkit-tap-highlight-color:rgba(22,50,79,0.15); }
-  .nca { display:grid; grid-template-columns:1fr; gap:9px; align-items:start; }
+  button { -webkit-appearance:none; appearance:none; border-radius:0; touch-action:manipulation; -webkit-tap-highlight-color:rgba(22,50,79,0.15); }
+  input[type=checkbox]:checked + span { color:#8a8578; }
   .steps { display:grid; grid-template-columns:1fr; gap:12px; align-items:start; }
-  .figs { display:grid; grid-template-columns:1fr; gap:12px; align-items:start; }
   .menu { display:grid; grid-template-columns:1fr; gap:10px; padding:0 14px; }
   @media (min-width:600px) { .menu { grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); } }
   @media (min-width:760px) {
-    .nca { grid-template-columns:1.05fr 1fr 1fr; }
     .steps { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
-    .figs { grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); }
   }
   nav.bar { position:relative; display:flex; align-items:center; gap:10px; padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px; background:#005596; color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.1em; }
   nav.bar a, nav.bar button { color:#fffefb; background:none; text-decoration:none; border:1px solid rgba(255,255,255,0.4); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center; }
-  .section-stripe { height:5px; background:#2f62a8; }
+  .section-stripe { height:5px; background:#c26a1b; } /* Trauma = orange (matches the landing-page area color) */
   #stickytop { position:sticky; top:0; z-index:5; }
   @media print {
     body { background:#fffefb; }
-    nav.bar, a[href="#top"] { display:none; }
+    nav.bar, #betasplash { display:none; }
     article { break-before:page; }
-    .nca { grid-template-columns:1.05fr 1fr 1fr; }
     .steps { grid-template-columns:repeat(3,1fr); }
-    .figs { grid-template-columns:repeat(3,1fr); }
   }
 </style>
 </head>
@@ -64,13 +58,13 @@
   <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
 </div>
 <div id="stickytop">
-<nav class="bar"><a href="../?from=tool" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a></nav>
+<nav class="bar"><a href="../?from=tool" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a><button id="backbtn" type="button" style="display:none; color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px;">◀ BACK</button></nav>
 <div class="section-stripe"></div>
 </div>
 
 <main>
   <div style="padding:16px 14px 6px;">
-    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:#2f62a8; font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
+    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:#c26a1b; font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
     <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Trauma</h1>
     <p style="margin:0; color:#5a6a78; font-size:14.5px;">Tap a card to open. Massive Transfusion Protocol and Front of Neck Access live in the Codes tool — the cards below link straight there so nothing is duplicated.</p>
   </div>
@@ -100,32 +94,32 @@
       <details open style="border:2px solid #2f62a8;">
         <summary style="background:#2f62a8; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">mBIG-1 — LOWEST RISK</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>All of:</b> GCS 13–15 or at neurologic baseline · normal neuro exam · no intoxication · no anticoagulant/antiplatelet use.</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>CT:</b> subdural (SDH) or intraparenchymal hemorrhage (IPH) ≤4mm · localized subarachnoid hemorrhage (SAH) ≤3 sulci and &lt;1mm · <b>no</b> skull fracture, intraventricular hemorrhage (IVH), or epidural hemorrhage (EDH).</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Management:</b> 6-hour ED observation with neuro checks every 2 hours. No repeat head CT. No neurosurgical consultation. If stable at 6 hours, discharge home from the ED.</li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>All of:</b> GCS 13–15 or at neurologic baseline · normal neuro exam · no intoxication · no anticoagulant/antiplatelet use.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>CT:</b> subdural (SDH) or intraparenchymal hemorrhage (IPH) ≤4mm · localized subarachnoid hemorrhage (SAH) ≤3 sulci and &lt;1mm · <b>no</b> skull fracture, intraventricular hemorrhage (IVH), or epidural hemorrhage (EDH).</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Management:</b> 6-hour ED observation with neuro checks every 2 hours. No repeat head CT. No neurosurgical consultation. If stable at 6 hours, discharge home from the ED.</span></label></li>
         </ul>
       </details>
       <details open style="border:2px solid #8a6d1f;">
         <summary style="background:#8a6d1f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">mBIG-2 — MODERATE RISK</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>All of:</b> GCS 13–15 or at neurologic baseline · normal neuro exam · no anticoagulant/antiplatelet use. <b>May</b> be intoxicated (blood alcohol &gt;80 mg/dL).</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>CT:</b> SDH or IPH 5–7.9mm · SAH involving one hemisphere or 1–3mm · non-displaced skull fracture · <b>no</b> IVH, EDH, midline shift, or herniation.</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Management:</b> admit 24–48 hours to a trauma/monitored service. Neuro checks q2h ×6 hours, then q4h. No routine repeat CT. No neurosurgical consultation required by the guideline — follow your local pathway.</li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>All of:</b> GCS 13–15 or at neurologic baseline · normal neuro exam · no anticoagulant/antiplatelet use. <b>May</b> be intoxicated (blood alcohol &gt;80 mg/dL).</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>CT:</b> SDH or IPH &gt;4–7.9mm · SAH involving one hemisphere or 1–3mm · non-displaced skull fracture · <b>no</b> IVH, EDH, midline shift, or herniation.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Management:</b> admit 24–48 hours to a trauma/monitored service. Neuro checks q2h ×6 hours, then q4h. No routine repeat CT. No neurosurgical consultation required by the guideline — follow your local pathway.</span></label></li>
         </ul>
       </details>
       <details open style="border:2px solid #9b1c2e;">
         <summary style="background:#9b1c2e; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">mBIG-3 — HIGHEST RISK (any one qualifies)</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Abnormal neuro exam (GCS &lt;13, focal findings, abnormal pupils) · intoxication (BAC &gt;80 mg/dL) · <b>any</b> use of anticoagulants or antiplatelet agents.</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>CT:</b> SDH or IPH ≥8mm · <b>any</b> IVH · bi-hemispheric SAH &gt;3mm · <b>any</b> EDH · multiple concurrent hemorrhages or midline shift · displaced skull fracture.</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Management:</b> admit to a monitored setting (ICU/neuro-ICU). Neurosurgical consultation. Repeat head CT per neurosurgical guidance.</li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Abnormal neuro exam (GCS &lt;13, focal findings, abnormal pupils) · intoxication (BAC &gt;80 mg/dL) · <b>any</b> use of anticoagulants or antiplatelet agents.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>CT:</b> SDH or IPH ≥8mm · <b>any</b> IVH · bi-hemispheric SAH &gt;3mm · <b>any</b> EDH · multiple concurrent hemorrhages or midline shift · displaced skull fracture.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Management:</b> admit to a monitored setting (ICU/neuro-ICU). Neurosurgical consultation. Repeat head CT per neurosurgical guidance.</span></label></li>
         </ul>
       </details>
       <details style="border:2px solid #5a6a78;">
         <summary style="background:#5a6a78; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">WHY THIS MATTERS</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">The point of BIG/mBIG is to safely reduce unnecessary repeat CT scans and reflexive neurosurgery consults in low-risk minor TBI (mBIG-1/2), while still escalating appropriately for the patients who actually need it (mBIG-3). It does not replace clinical judgment — any neurologic decline at any point escalates management regardless of category.</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Anticoagulated/antiplatelet patients and those with thrombocytopenia are automatically escalated — reverse coagulopathy per card 10 (Reversal of Anticoagulants) in the Codes tool as indicated.</li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>The point of BIG/mBIG is to safely reduce unnecessary repeat CT scans and reflexive neurosurgery consults in low-risk minor TBI (mBIG-1/2), while still escalating appropriately for the patients who actually need it (mBIG-3). It does not replace clinical judgment — any neurologic decline at any point escalates management regardless of category.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Anticoagulated/antiplatelet patients and those with thrombocytopenia are automatically escalated — reverse coagulopathy per card 10 (Reversal of Anticoagulants) in the Codes tool as indicated.</span></label></li>
         </ul>
       </details>
     </div>
@@ -142,7 +136,7 @@
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "0.1",
+  version: "0.3",
   lastReviewed: "2026-08-04"
 };
 (function(){
@@ -156,13 +150,25 @@ var SITE = {
   function boot(){
     var s=document.getElementById('betasplash'), b=document.getElementById('betago');
     if(!s||!b) return;
-    var params=new URLSearchParams(location.search);
-    if(params.get('from')==='home'){ if(s.parentNode) s.parentNode.removeChild(s); return; }
     function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); }
     b.addEventListener('click', go, false);
     b.addEventListener('touchend', go, false);
+    /* handlers attach first so a parse failure can never leave the splash stuck */
+    try{ if(/(^|[?&])from=home(&|$)/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); } }catch(err){}
   }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
+})();
+
+/* ---- BACK button: returns to the previous card/tool (browser history). Shows
+   only once there is somewhere to go back to — a within-page card jump or an
+   arrival from another tool. ---- */
+(function(){
+  var b=document.getElementById('backbtn');
+  if(!b) return;
+  function maybeShow(){ if(history.length>1) b.style.display='inline-flex'; }
+  window.addEventListener('hashchange', maybeShow, false);
+  maybeShow();
+  b.addEventListener('click', function(){ history.back(); }, false);
 })();
 </script>
 </body>

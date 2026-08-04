@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#005596">
+<title>LRH Debrief</title>
+<meta name="apple-mobile-web-app-title" content="Debrief">
+<meta name="description" content="Beta cognitive aid for post-event team debriefing in the Emergency Department. Practice and feedback only.">
+<link rel="canonical" href="https://lrhemergencymanual.net/debrief/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="LRH Emergency Manual">
+<meta property="og:title" content="LRH Debrief (beta)">
+<meta property="og:description" content="A short structure for debriefing after a code or critical event. Beta — practice and feedback only.">
+<meta property="og:url" content="https://lrhemergencymanual.net/debrief/">
+<meta name="twitter:card" content="summary">
+<style>
+  html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
+  body { margin:0; background:#eceff3; color:#16324f; font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; font-size:16.5px; line-height:1.4; text-wrap:pretty; }
+  main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
+  article { scroll-margin-top:54px; margin-top:12px; }
+  a { color:#2f62a8; }
+  a:hover { color:#16324f; }
+  a[href^="#"] { -webkit-tap-highlight-color:rgba(47,98,168,0.2); }
+  summary::-webkit-details-marker { display:none; }
+  details > summary .om-close { display:none; }
+  details[open] > summary .om-open { display:none; }
+  details[open] > summary .om-close { display:inline; }
+  button { -webkit-appearance:none; appearance:none; border-radius:0; touch-action:manipulation; -webkit-tap-highlight-color:rgba(22,50,79,0.15); }
+  .steps { display:grid; grid-template-columns:1fr; gap:12px; align-items:start; }
+  @media (min-width:760px) { .steps { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); } }
+  nav.bar { position:relative; display:flex; align-items:center; gap:10px; padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px; background:#005596; color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.1em; }
+  nav.bar a { color:#fffefb; background:none; text-decoration:none; border:1px solid rgba(255,255,255,0.4); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center; }
+  .section-stripe { height:5px; background:#5a6a78; } /* Debrief = slate (matches the landing-page area color) */
+  #stickytop { position:sticky; top:0; z-index:5; }
+  @media print {
+    body { background:#fffefb; }
+    nav.bar, #betasplash { display:none; }
+    article { break-before:page; }
+    .steps { grid-template-columns:repeat(3,1fr); }
+  }
+</style>
+</head>
+<body>
+<div id="betasplash" style="position:fixed; inset:0; z-index:999; background:linear-gradient(135deg,#005596,#003e6e); color:#fffefb; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
+  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:#a9c2dc;">LRH · EMERGENCY DEPARTMENT</div>
+  <div style="font-size:30px; line-height:1.06; letter-spacing:-0.02em; font-weight:700;">Debrief</div>
+  <div style="display:inline-block; padding:6px 14px; border:2px solid #e0b93c; color:#f7d97a; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.16em;">BETA</div>
+  <div style="max-width:460px; font-size:17px; line-height:1.4; color:#dbe4ee;">Not yet ready for clinical use. Shared for feedback and practice only.</div>
+  <div style="max-width:460px; font-size:14.5px; line-height:1.35; color:#a9c2dc;">Content is unverified and unapproved. Every situation requires nuance; use your professional judgment and your department's policies.</div>
+  <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
+</div>
+<div id="stickytop">
+<nav class="bar"><a href="../?from=tool" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a><button id="backbtn" type="button" style="display:none; color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px;">◀ BACK</button></nav>
+<div class="section-stripe"></div>
+</div>
+
+<main>
+  <div style="padding:16px 14px 6px;">
+    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:#5a6a78; font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
+    <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Debrief</h1>
+    <p style="margin:0; color:#5a6a78; font-size:14.5px;">A short, structured team conversation after a code or critical event — a few minutes, at the bedside or in a quiet corner, before everyone scatters.</p>
+  </div>
+
+  <article id="c01">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#16324f; font-size:16px; margin-right:8px;">01</span>Debrief — Same Shift as the Event</h2>
+        <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#5a6a78; text-align:right;">PLACEHOLDER · DRAFT</span>
+      </div>
+    </div>
+
+    <div style="margin:14px 14px 0; border:2px solid #8a6d1f; background:#fdf3cf; color:#6b5410; padding:11px 14px; font-size:13px; line-height:1.4;">
+      ⚠ <b>PLACEHOLDER CARD:</b> this is a first-draft structure for departmental review — refine the prompts, timing, and facilitation guidance with your simulation/education leads before clinical use.
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open style="border:2px solid #16324f;">
+        <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">1 · WHY DEBRIEF — PURPOSE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">A debrief is not a performance review and not an incident investigation. It's a few protected minutes for the team to compare what each person saw, surface what the system enabled and inhibited, and carry one or two concrete things into the next case.</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Anyone on the team can call for one. Short beats perfect — five focused minutes now is worth more than a perfect session next week.</li>
+        </ul>
+      </details>
+      <details open style="border:2px solid #2f62a8;">
+        <summary style="background:#2f62a8; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">2 · STATE THE BASIC ASSUMPTION</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Open by saying it out loud: <b>we start from the assumption that everyone here is intelligent, capable, cares about doing their best, and wants to improve.</b> (Adapted from the Center for Medical Simulation's Basic Assumption.)</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Saying it first changes the conversation that follows — curiosity about <i>why</i> things happened, instead of judgment about <i>who</i> did them.</li>
+        </ul>
+      </details>
+      <details open style="border:2px solid #16324f;">
+        <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">3 · REVIEW THE CASE — WHAT DID YOU SEE?</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Review the case timeline together — if the team ran a card in this manual, open its <b>SUMMARY</b> (case timeline) and read the timestamps aloud as the shared record of what happened when.</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Then go around: <b>"What did you see?"</b> — each role saw a different case. Let everyone add to the shared picture before anyone evaluates anything.</li>
+        </ul>
+      </details>
+      <details open style="border:2px solid #2f7a3f;">
+        <summary style="background:#2f7a3f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">4 · PLUS / DELTA / PLUS — ENABLED &amp; INHIBITED</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>PLUS — what enabled us?</b> Name the specific things (behaviors, tools, communication, environment) that enabled the team's performance.</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>DELTA — what inhibited us?</b> Name what inhibited performance — framed as conditions and systems, not blame. "The pulse ox was on the BP-cuff arm" invites a fix; "you missed the sat drop" invites defensiveness.</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b>PLUS — what do we take away from this?</b> Close on the takeaway: anything to communicate or escalate? Key saves or key learning? Missing or broken equipment to report? The team leaves with what to keep doing and who's carrying each item forward.</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Pick <b>one or two deltas at most</b> to actually act on, name who owns each, and stop there.</li>
+        </ul>
+      </details>
+    </div>
+
+    <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
+      <b>Sources:</b> The Basic Assumption is adapted from the Center for Medical Simulation (Boston, MA) — harvardmedsim.org; the enabled/inhibited framing draws on debriefing-with-good-judgment and plus/delta conventions from the simulation-education literature. This card is a locally drafted placeholder, not a published protocol — refine with your simulation/education leads and cite your final sources here.
+    </div>
+    <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
+      <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment.
+    </div>
+  </article>
+</main>
+
+<script>
+/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
+var SITE = { version: "0.3", lastReviewed: "2026-08-04" };
+(function(){
+  document.querySelectorAll('.verstamp').forEach(function(el){ el.textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH'; });
+  var s=document.getElementById('betasplash'), b=document.getElementById('betago');
+  if(!s||!b) return;
+  function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); }
+  b.addEventListener('click', go, false);
+  b.addEventListener('touchend', go, false);
+  /* handlers attach first so a parse failure can never leave the splash stuck */
+  try{ if(/(^|[?&])from=(home|tool)(&|$)/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); } }catch(err){}
+})();
+
+/* ---- BACK button: returns to the previous card/tool (browser history). Shows
+   only once there is somewhere to go back to — a within-page card jump or an
+   arrival from another tool. ---- */
+(function(){
+  var b=document.getElementById('backbtn');
+  if(!b) return;
+  function maybeShow(){ if(history.length>1) b.style.display='inline-flex'; }
+  window.addEventListener('hashchange', maybeShow, false);
+  maybeShow();
+  b.addEventListener('click', function(){ history.back(); }, false);
+})();
+</script>
+</body>
+</html>

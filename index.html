@@ -59,6 +59,8 @@
   a.tool.cat-codes{--c:#2f62a8}      /* blue   · codes / resuscitation */
   a.tool.cat-trauma{--c:#c26a1b}     /* orange · trauma */
   a.tool.cat-peds{--c:#7a3fa0}       /* purple · pediatrics */
+  a.tool.cat-debrief{--c:#5a6a78}    /* slate  · debrief / team reflection */
+  a.tool.cat-procedures{--c:#0f7a86} /* teal   · rare high-stakes procedures */
 
   a.tool{--c:var(--brand-primary); display:flex; flex-direction:column; text-decoration:none; color:inherit;
     background:var(--panel); border:1px solid var(--line); border-left:6px solid var(--c);
@@ -177,7 +179,7 @@
           <path d="M16 27 C 4 18 7 7 16 12 C 25 7 28 18 16 27 Z" fill="#fff"/>
           <polyline points="7,17 12,17 14.5,12.5 17.5,21 20,17 25,17" fill="none" stroke="#2f62a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
         </svg></span>
-        <div class="name">Codes<span class="badge">Beta — 17 cards</span></div>
+        <div class="name">Codes</div>
       </div>
       <div class="desc">Code / resuscitation reference, including the ED code-cart drawer contents.</div>
       <div class="go">Open</div>
@@ -194,9 +196,9 @@
           <rect x="14.4" y="13.6" width="3.2" height="4" rx="1.4" fill="#fff"/>
           <path d="M9 27 C 9 19 23 19 23 27 Z" fill="#fff"/>
         </svg></span>
-        <div class="name">Pediatric Emergencies<span class="badge">Beta — 14 cards</span></div>
+        <div class="name">Pediatric Emergencies</div>
       </div>
-      <div class="desc">Shared weight/age-based dosing engine plus 14 pediatric ED topics — PALS, anaphylaxis, status epilepticus, DKA, and more.</div>
+      <div class="desc">Shared weight/age-based dosing engine plus 15 pediatric ED topics — PALS, anaphylaxis, status epilepticus, DKA, and more.</div>
       <div class="go">Open</div>
     </a>
 
@@ -207,9 +209,38 @@
           <rect x="13" y="5" width="6" height="22" rx="2" fill="#fff"/>
           <rect x="5" y="13" width="22" height="6" rx="2" fill="#fff"/>
         </svg></span>
-        <div class="name">Trauma<span class="badge">Beta — 3 cards</span></div>
+        <div class="name">Trauma</div>
       </div>
       <div class="desc">Brain Injury Guidelines (BIG) for minor TBI, plus quick links to the Massive Transfusion Protocol and Front of Neck Access (FONA).</div>
+      <div class="go">Open</div>
+    </a>
+
+    <!-- ===== CATEGORY: Procedures (beta · TEAL) -> /procedures/ ===== -->
+    <a class="tool cat-procedures" href="procedures/?from=home">
+      <div class="cardhead">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 32 32">
+          <path d="M6 24 L20 8 l4 4 L10 26 l-5 1 z" fill="#fff"/>
+          <line x1="19" y1="11" x2="22" y2="14" stroke="#0f7a86" stroke-width="1.6"/>
+          <circle cx="25" cy="7" r="3" fill="#fff"/>
+        </svg></span>
+        <div class="name">Procedures</div>
+      </div>
+      <div class="desc">Rare, high-stakes procedures — chest tube, thoracotomy, hysterotomy, burr hole, canthotomy, CVC, transvenous pacing, escharotomy — with anatomy figures.</div>
+      <div class="go">Open</div>
+    </a>
+
+    <!-- ===== CATEGORY: Debrief (beta · SLATE · keep last) -> /debrief/ ===== -->
+    <a class="tool cat-debrief" href="debrief/?from=home">
+      <div class="cardhead">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 32 32">
+          <path d="M5 7 h22 v14 h-13 l-5 5 v-5 h-4 z" fill="#fff"/>
+          <circle cx="12" cy="14" r="1.8" fill="#5a6a78"/>
+          <circle cx="16" cy="14" r="1.8" fill="#5a6a78"/>
+          <circle cx="20" cy="14" r="1.8" fill="#5a6a78"/>
+        </svg></span>
+        <div class="name">Debrief</div>
+      </div>
+      <div class="desc">A short structure for the team conversation after a code or critical event — basic assumption, what did you see, plus/delta/plus.</div>
       <div class="go">Open</div>
     </a>
 
@@ -233,12 +264,12 @@
   function boot(){
     var s=document.getElementById('betasplash'), b=document.getElementById('betago');
     if(!s||!b) return;
-    var params=new URLSearchParams(location.search);
-    if(params.get('from')==='tool'){ if(s.parentNode) s.parentNode.removeChild(s); return; }
     function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s);
       var q=document.getElementById('q'); if(q) q.focus(); }
     b.addEventListener('click', go, false);
     b.addEventListener('touchend', go, false);
+    /* handlers are attached first so a parsing failure can never leave the splash undismissable */
+    try{ if(/(^|[?&])from=tool(&|$)/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); } }catch(err){}
   }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
 })();
@@ -260,7 +291,23 @@
     {t:"Umbilical cord prolapse", c:"OB & Neonatal", k:"cord prolapse presenting", u:"ob-neonatal/?from=home#c09"},
     {t:"Resuscitative (perimortem) hysterotomy", c:"OB & Neonatal", k:"perimortem resuscitative hysterotomy maternal cardiac arrest", u:"ob-neonatal/?from=home#c10"},
     {t:"OB / neonatal cart — drawer contents", c:"OB & Neonatal", k:"cart drawer equipment supplies where is", u:"ob-neonatal/?from=home#cart"},
+    {t:"Code cart — drawer contents", c:"Codes", k:"code cart drawer equipment supplies where is intubation IV medications suction surgical omnicell anaphylaxis stemi stroke box", u:"codes/?from=home#cart"},
     {t:"Pulseless VF / VT", c:"Codes", k:"code cart cardiac arrest ventricular fibrillation tachycardia defibrillation shock epinephrine amiodarone lidocaine cpr acls", u:"codes/?from=home#c01"},
+    {t:"PEA / Asystole", c:"Codes", k:"pea asystole non-shockable cardiac arrest reversible causes h's and t's epinephrine cpr code", u:"codes/?from=home#c02"},
+    {t:"Symptomatic Bradycardia", c:"Codes", k:"bradycardia atropine transcutaneous pacing pacer heart block slow heart rate symptomatic code", u:"codes/?from=home#c03"},
+    {t:"Suspected Acute Stroke", c:"Codes", k:"stroke code stroke tpa tnk tenecteplase alteplase thrombectomy last known well nihss ct head lytic omnicell", u:"codes/?from=home#c04"},
+    {t:"Respiratory Arrest", c:"Codes", k:"respiratory arrest apnea bag mask ventilation bvm reversible causes naloxone code", u:"codes/?from=home#c05"},
+    {t:"Intubation / RSI Checklist", c:"Codes", k:"intubation rsi rapid sequence intubation checklist airway induction paralytic sedation etomidate ketamine propofol rocuronium succinylcholine capnography preoxygenation cico emcrit push dose timer", u:"codes/?from=home#c06"},
+    {t:"Intracranial Hemorrhage", c:"Codes", k:"intracranial hemorrhage ich subarachnoid subdural blood pressure control anticoagulation reversal neurosurgery code", u:"codes/?from=home#c07"},
+    {t:"Anaphylaxis", c:"Codes", k:"anaphylaxis epinephrine allergic reaction angioedema stridor epi im code omnicell", u:"codes/?from=home#c08"},
+    {t:"Bleeding / Hemorrhagic Shock", c:"Codes", k:"bleeding hemorrhagic shock trauma resuscitation blood products lethal triad tranexamic txa code", u:"codes/?from=home#c09"},
+    {t:"Reversal of Anticoagulants", c:"Codes", k:"anticoagulant reversal warfarin coumadin doac apixaban rivaroxaban dabigatran heparin vitamin k prothrombin complex concentrate pcc andexanet idarucizumab protamine code", u:"codes/?from=home#c10"},
+    {t:"Hyperkalemia — Crash Protocol", c:"Codes", k:"hyperkalemia potassium calcium gluconate insulin dextrose albuterol kayexalate dialysis peaked t waves ecg code", u:"codes/?from=home#c11"},
+    {t:"Status Epilepticus", c:"Codes", k:"status epilepticus seizure benzodiazepine lorazepam midazolam levetiracetam fosphenytoin second line code", u:"codes/?from=home#c13"},
+    {t:"Unstable on the Vent — DOPE", c:"Codes", k:"vent ventilator dope displacement obstruction pneumothorax equipment failure decompensation intubated patient code", u:"codes/?from=home#c14"},
+    {t:"Status Asthmaticus", c:"Codes", k:"status asthmaticus asthma albuterol ipratropium magnesium bipap severe exacerbation wheeze code", u:"codes/?from=home#c15"},
+    {t:"Angioedema", c:"Codes", k:"angioedema ace inhibitor bradykinin histaminergic airway swelling icatibant tranexamic code", u:"codes/?from=home#c16"},
+    {t:"Tracheostomy Emergency", c:"Codes", k:"tracheostomy emergency laryngectomy stoma decannulation trach tube obstruction code", u:"codes/?from=home#c17"},
     {t:"Pediatric Emergencies — overview / index", c:"Pediatric Emergencies", k:"pediatric peds children kids weight dosing index", u:"peds/?from=home"},
     {t:"Pediatric Cardiac Arrest / PALS", c:"Pediatric Emergencies", k:"pals pediatric cardiac arrest resuscitation defibrillation epinephrine cpr shockable", u:"peds/?from=home#p01"},
     {t:"Pediatric Anaphylaxis", c:"Pediatric Emergencies", k:"anaphylaxis epinephrine allergic reaction pediatric angioedema", u:"peds/?from=home#p02"},
@@ -276,12 +323,25 @@
     {t:"Non-Accidental Trauma", c:"Pediatric Emergencies", k:"nat non-accidental trauma child abuse suspected", u:"peds/?from=home#p12"},
     {t:"Death of a Child in the ED", c:"Pediatric Emergencies", k:"pediatric death bereavement family termination of resuscitation", u:"peds/?from=home#p13"},
     {t:"Pediatric Procedural Sedation", c:"Pediatric Emergencies", k:"procedural sedation ketamine propofol etomidate fasting pediatric", u:"peds/?from=home#p14"},
+    {t:"Croup", c:"Pediatric Emergencies", k:"croup barky cough stridor racemic epinephrine dexamethasone steeple laryngotracheitis", u:"peds/?from=home#p15"},
+    {t:"Codes — overview / index", c:"Codes", k:"codes resuscitation cardiac arrest overview index", u:"codes/?from=home"},
+    {t:"Clinical Pathways — overview / index", c:"Clinical Pathways", k:"clinical pathways accelerated diagnostic overview index", u:"clinical-pathways/"},
     {t:"Trauma — overview / index", c:"Trauma", k:"trauma resuscitation index", u:"trauma/?from=home"},
     {t:"Brain Injury Guidelines (BIG)", c:"Trauma", k:"big brain injury guidelines mbig modified traumatic brain injury tbi minor head injury mtbi intracranial hemorrhage ich concussion", u:"trauma/?from=home#c01"},
-    {t:"Massive Transfusion Protocol (MTP)", c:"Trauma", k:"mtp massive transfusion protocol blood products prbc plasma platelets cryo hemorrhagic shock", u:"codes/?from=home#c12"},
-    {t:"Front of Neck Access (FONA)", c:"Trauma", k:"fona cricothyroidotomy cico front of neck access surgical airway difficult airway das", u:"codes/?from=home#c18"},
     {t:"Massive Transfusion Protocol (MTP)", c:"Codes", k:"mtp massive transfusion protocol blood products prbc plasma platelets cryo hemorrhagic shock trauma", u:"codes/?from=home#c12"},
-    {t:"Front of Neck Access (FONA)", c:"Codes", k:"fona cricothyroidotomy cico front of neck access surgical airway difficult airway das trauma", u:"codes/?from=home#c18"}
+    {t:"Front of Neck Access (FONA)", c:"Codes", k:"fona cricothyroidotomy cico front of neck access surgical airway difficult airway das trauma", u:"codes/?from=home#c18"},
+    {t:"LVAD — Responsive (Pump Running)", c:"Codes", k:"lvad ventricular assist device heartmate heartware pump hum driveline alarm map doppler thrombosis vad", u:"codes/?from=home#c19"},
+    {t:"LVAD — Unresponsive (Pump NOT Running)", c:"Codes", k:"lvad ventricular assist device pump not running no hum restart battery controller driveline arrest cpr vad", u:"codes/?from=home#c20"},
+    {t:"Debrief — after a code or critical event", c:"Debrief", k:"debrief same shift team reflection basic assumption plus delta enabled inhibited center for medical simulation takeaway escalate equipment", u:"debrief/?from=home"},
+    {t:"Procedures — overview / index", c:"Procedures", k:"procedures rare high stakes index alfred star", u:"procedures/?from=home"},
+    {t:"Chest Tube (Tube Thoracostomy)", c:"Procedures", k:"chest tube thoracostomy pneumothorax hemothorax pleural safe triangle finger", u:"procedures/?from=home#c01"},
+    {t:"Resuscitative Thoracotomy", c:"Procedures", k:"thoracotomy clamshell cardiac tamponade pericardiotomy trauma arrest", u:"procedures/?from=home#c02"},
+    {t:"Resuscitative Hysterotomy", c:"Procedures", k:"hysterotomy perimortem c-section cesarean maternal arrest fundus umbilicus", u:"procedures/?from=home#c03"},
+    {t:"Emergency Burr Hole (Craniotomy)", c:"Procedures", k:"burr hole craniotomy epidural subdural herniation blown pupil middle meningeal", u:"procedures/?from=home#c04"},
+    {t:"Lateral Canthotomy & Cantholysis", c:"Procedures", k:"canthotomy cantholysis retrobulbar hematoma orbital compartment eye pressure IOP", u:"procedures/?from=home#c05"},
+    {t:"Central Venous Catheter (CVC)", c:"Procedures", k:"central line cvc internal jugular seldinger ultrasound sterile", u:"procedures/?from=home#c06"},
+    {t:"Transvenous Pacing (TVP)", c:"Procedures", k:"transvenous pacing pacemaker wire bradycardia capture threshold", u:"procedures/?from=home#c07"},
+    {t:"Escharotomy", c:"Procedures", k:"escharotomy burns eschar circumferential perfusion ventilation", u:"procedures/?from=home#c08"}
   ];
   var q=document.getElementById('q'), box=document.getElementById('results');
   if(!q||!box) return;
