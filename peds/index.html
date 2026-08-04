@@ -41,12 +41,14 @@
     .steps { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
     .figs { grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); }
   }
-  nav.bar { position:relative; display:flex; align-items:center; gap:10px; padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px; background:#005596; color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.1em; }
+  nav.bar { position:relative; display:flex; align-items:center; gap:10px; padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px; background:var(--peds-accent,#005596); color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.1em; transition:background-color 0.25s ease; }
   nav.bar a, nav.bar button { color:#fffefb; background:none; text-decoration:none; border:1px solid rgba(255,255,255,0.4); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center; }
   nav.bar #resetnote { flex:1; text-align:right; font-size:10.5px; color:#a9c2dc; letter-spacing:0.08em; }
-  .section-stripe { height:5px; background:#2f62a8; }
+  .section-stripe { height:5px; background:var(--peds-accent-mid,#2f62a8); transition:background-color 0.25s ease; }
   #stickytop { position:sticky; top:0; z-index:5; }
-  #wtbar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; background:#0c2a44; color:#fffefb; border-bottom:2px solid #2f62a8; padding:9px 14px; }
+  #wtbar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; background:var(--peds-accent-dark,#0c2a44); color:#fffefb; border-bottom:2px solid var(--peds-accent-mid,#2f62a8); padding:9px 14px; transition:background-color 0.25s ease, border-color 0.25s ease; }
+  #wtzone { display:inline-flex; align-items:center; gap:6px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:#dbe4ee; }
+  #wtzone .sw { width:13px; height:13px; border-radius:50%; border:1.5px solid rgba(255,255,255,0.85); flex:none; background:transparent; }
   #wtbar label { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10px; letter-spacing:0.1em; color:#a9c2dc; }
   #wtbar input, #wtbar select { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14px; padding:6px 8px; border:1px solid rgba(255,255,255,0.5); background:#16324f; color:#fffefb; min-height:34px; width:72px; }
   #wtbar select { width:auto; }
@@ -88,6 +90,7 @@
   <select id="wtageunit"><option value="mo">months</option><option value="yr" selected>years</option></select>
   <button type="button" id="wtestimate">ESTIMATE KG FROM AGE</button>
   <span id="wtdisplay">WEIGHT NOT SET</span>
+  <span id="wtzone"></span>
 </div>
 </div>
 <div id="summarymodal" style="display:none; position:fixed; inset:0; z-index:20; background:rgba(15,28,44,0.55); padding:14px; overflow:auto;">
@@ -142,7 +145,7 @@
     </div>
 
     <div style="margin:14px 14px 0; border:2px solid #8a6d1f; background:#fdf3cf; color:#6b5410; padding:11px 14px; font-size:13px; line-height:1.4;">
-      <b>Enter the patient's weight in the bar at the top of the page</b> — it stays set as you move between cards and every calculated dose on this page updates from it live. If weight is genuinely unknown, use the age-based estimate button, understanding it's an estimate, not a substitute for an actual weight/length measurement when one can be obtained. (2025 FDA Class I recall of the Broselow Pediatric Emergency Tape's 2025 edition — incorrect drug/energy values printed in three color zones — is part of why this tool computes directly from an entered weight rather than a printed length-tape lookup.)
+      <b>Enter the patient's weight in the bar at the top of the page</b> — it stays set as you move between cards and every calculated dose on this page updates from it live. If weight is genuinely unknown, use the age-based estimate button, understanding it's an estimate, not a substitute for an actual weight/length measurement when one can be obtained. (2025 FDA Class I recall of the Broselow Pediatric Emergency Tape's 2025 edition — incorrect drug/energy values printed in three color zones — is part of why this tool computes directly from an entered weight rather than a printed length-tape lookup.) The page's accent color and the ZONE badge at top match the weight to the standard Broselow-Luten color band — pointing at the same colored drawer on the pediatric cart — <b>but every dose below is still calculated from the exact kg you entered, never read off a color zone.</b>
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
@@ -202,7 +205,7 @@
     </div>
 
     <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
-      <b>Sources:</b> AHA/AAP 2025 Guidelines for CPR and ECC, Part 8: Pediatric Advanced Life Support, and Part 6: Pediatric Basic Life Support, <i>Circulation</i> 2025 (CIR.0000000000001368 / CIR.0000000000001370); Topjian AA, et al., 2020 AHA Guidelines Part 4: Pediatric Basic and Advanced Life Support, <i>Circulation</i> 2020;142(16_suppl_2):S469–S523 (drug/defibrillation-energy numbers unchanged 2020→2025, confirmed against the 2025 AHA Pediatric Cardiac Arrest algorithm and the 2025 American Red Cross PALS code card). ETT sizing/depth formulas are standard pediatric-airway-literature convention rather than verbatim AHA guideline text — confirm against your PALS Provider Manual. US FDA Class I Recall Z-1904-2025, AirLife Broselow Pediatric Emergency Rainbow Tape (2025 edition), May–June 2025.
+      <b>Sources:</b> AHA/AAP 2025 Guidelines for CPR and ECC, Part 8: Pediatric Advanced Life Support, and Part 6: Pediatric Basic Life Support, <i>Circulation</i> 2025 (CIR.0000000000001368 / CIR.0000000000001370); Topjian AA, et al., 2020 AHA Guidelines Part 4: Pediatric Basic and Advanced Life Support, <i>Circulation</i> 2020;142(16_suppl_2):S469–S523 (drug/defibrillation-energy numbers unchanged 2020→2025, confirmed against the 2025 AHA Pediatric Cardiac Arrest algorithm and the 2025 American Red Cross PALS code card). ETT sizing/depth formulas are standard pediatric-airway-literature convention rather than verbatim AHA guideline text — confirm against your PALS Provider Manual. US FDA Class I Recall Z-1904-2025, AirLife Broselow Pediatric Emergency Rainbow Tape (2025 edition), May–June 2025. Broselow-Luten color-zone/weight bands (grey 3–5 kg through green 30–36 kg) used for the page's zone-color wayfinding indicator per WikEM's Broselow Color Zones reference — <b>colors are a visual pointer to the matching cart drawer only; they do not drive any calculated dose on this page.</b>
     </div>
     <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -1022,7 +1025,7 @@
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "0.1",
+  version: "0.2",
   lastReviewed: "2026-08-04"
 };
 (function(){
@@ -1056,6 +1059,46 @@ var PEDS_WT = (function(){
   var wtKg=null, src=null; /* src: 'entered' | 'estimated' */
   try{ var v=localStorage.getItem(KKG); if(v!==null){ wtKg=parseFloat(v); if(isNaN(wtKg)) wtKg=null; } }catch(e){}
   try{ src=localStorage.getItem(KSRC)||null; }catch(e){}
+  /* ---- Broselow-Luten weight-zone colour band (WikEM), for wayfinding only —
+     matches the colour-coded drawers on the pediatric cart so the page's
+     dominant colour points at the same drawer a clinician would pull. Every
+     calculated dose on this page still comes from the exact kg entered above,
+     never from a colour-zone lookup — see the FDA recall note under card 01. */
+  var BANDS=[
+    {name:'GREY',   lo:3,  hi:5,  mid:'#5a6a78', dark:'#33404c'},
+    {name:'PINK',   lo:6,  hi:7,  mid:'#c96f8c', dark:'#7a3f50'},
+    {name:'RED',    lo:8,  hi:9,  mid:'#9b1c2e', dark:'#5c1119'},
+    {name:'PURPLE', lo:10, hi:11, mid:'#6f4fa8', dark:'#432f66'},
+    {name:'YELLOW', lo:12, hi:14, mid:'#8a6d1f', dark:'#5c4a15'},
+    {name:'WHITE',  lo:15, hi:18, mid:'#8a8578', dark:'#4d4a41'},
+    {name:'BLUE',   lo:19, hi:23, mid:'#2f62a8', dark:'#0c2a44'},
+    {name:'ORANGE', lo:24, hi:29, mid:'#b45a1f', dark:'#6b3712'},
+    {name:'GREEN',  lo:30, hi:36, mid:'#2f7a3f', dark:'#1a4423'}
+  ];
+  var DEFAULT_MID='#2f62a8', DEFAULT_DARK='#0c2a44', DEFAULT_TOP='#005596', DEFAULT_THEME='#005596';
+  var zoneEl=document.getElementById('wtzone'), root=document.documentElement,
+      themeMeta=document.querySelector('meta[name="theme-color"]');
+  function bandFor(kg){
+    if(kg===null||isNaN(kg)) return null;
+    for(var i=0;i<BANDS.length;i++){ if(kg>=BANDS[i].lo && kg<=BANDS[i].hi) return BANDS[i]; }
+    return null;
+  }
+  function paintZone(){
+    var b=bandFor(wtKg);
+    if(b){
+      root.style.setProperty('--peds-accent-mid', b.mid);
+      root.style.setProperty('--peds-accent-dark', b.dark);
+      root.style.setProperty('--peds-accent', b.dark);
+      if(themeMeta) themeMeta.setAttribute('content', b.dark);
+      if(zoneEl) zoneEl.innerHTML = '<span class="sw" style="background:'+b.mid+';"></span>'+b.name+' ZONE · '+b.lo+'–'+b.hi+' kg cart drawer';
+    } else {
+      root.style.setProperty('--peds-accent-mid', DEFAULT_MID);
+      root.style.setProperty('--peds-accent-dark', DEFAULT_DARK);
+      root.style.setProperty('--peds-accent', DEFAULT_TOP);
+      if(themeMeta) themeMeta.setAttribute('content', DEFAULT_THEME);
+      if(zoneEl) zoneEl.innerHTML = (wtKg!==null && !isNaN(wtKg)) ? '<span class="sw"></span>OUTSIDE BROSELOW-LUTEN RANGE (3–36 kg)' : '';
+    }
+  }
   function save(){
     try{
       if(wtKg!==null){ localStorage.setItem(KKG,String(wtKg)); if(src) localStorage.setItem(KSRC,src); else localStorage.removeItem(KSRC); }
@@ -1064,6 +1107,7 @@ var PEDS_WT = (function(){
   }
   function fmt(n){ var r=Math.round(n*10)/10; return (r%1===0) ? String(r) : r.toFixed(1); }
   function paintDisplay(){
+    paintZone();
     if(!dispEl) return;
     if(wtKg===null || isNaN(wtKg)){ dispEl.textContent='WEIGHT NOT SET'; dispEl.style.color='#f7d97a'; return; }
     dispEl.textContent = fmt(wtKg)+' kg'+(src==='estimated' ? ' (age-estimate)' : '');
