@@ -41,13 +41,20 @@
     .steps { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
     .figs { grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); }
   }
-  nav.bar { position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:10px; padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px; background:#005596; color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.1em; }
+  nav.bar { position:relative; display:flex; align-items:center; gap:10px; padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px; background:#005596; color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.1em; }
   nav.bar a, nav.bar button { color:#fffefb; background:none; text-decoration:none; border:1px solid rgba(255,255,255,0.4); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center; }
   nav.bar #resetnote { flex:1; text-align:right; font-size:10.5px; color:#a9c2dc; letter-spacing:0.08em; }
   .section-stripe { height:5px; background:#2f62a8; }
+  #stickytop { position:sticky; top:0; z-index:5; }
+  #headsup { display:none; flex-direction:column; gap:0; background:#0c2a44; color:#fffefb; border-bottom:2px solid #2f62a8; }
+  #headsup .hurow { display:flex; align-items:center; gap:12px; padding:7px 14px; }
+  #headsup .hulabel { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10px; letter-spacing:0.1em; color:#a9c2dc; }
+  #headsup #huclock { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:19px; font-weight:700; line-height:1; }
+  #headsup #hucue { flex:1; text-align:right; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.04em; color:#f7d97a; }
+  #headsup [data-loglane] { padding:0 12px 8px; display:flex; gap:6px; overflow-x:auto; }
   @media print {
     body { background:#fffefb; }
-    nav.bar, a[href="#top"] { display:none; }
+    nav.bar, #headsup, a[href="#top"] { display:none; }
     article { break-before:page; }
     .nca { grid-template-columns:1.05fr 1fr 1fr; }
     .steps { grid-template-columns:repeat(3,1fr); }
@@ -64,8 +71,18 @@
   <div style="max-width:460px; font-size:14.5px; line-height:1.35; color:#a9c2dc;">Content is unverified and unapproved. Every situation requires nuance; use your professional judgment and your department's policies.</div>
   <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
 </div>
+<div id="stickytop">
 <nav class="bar"><a href="../" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a><button id="summarybtn" type="button" style="color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center;">SUMMARY</button><button id="resetbtn" type="button" style="display:none;">RESET FOR NEXT CASE</button><span id="resetnote"></span></nav>
 <div class="section-stripe"></div>
+<div id="headsup">
+  <div class="hurow">
+    <span class="hulabel">CODE RUNNING</span>
+    <span id="huclock">0:00</span>
+    <span id="hucue"></span>
+  </div>
+  <div data-loglane="01"></div>
+</div>
+</div>
 <div id="summarymodal" style="display:none; position:fixed; inset:0; z-index:20; background:rgba(15,28,44,0.55); padding:14px; overflow:auto;">
   <div style="max-width:560px; margin:22px auto; background:#fffefb; border:2px solid #16324f; box-shadow:0 12px 44px rgba(0,0,0,0.32);">
     <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; background:linear-gradient(135deg,#005596,#003e6e); color:#fffefb; border-bottom:5px solid #2f62a8;">
@@ -87,7 +104,7 @@
 
   <!-- ============ CARD MENU ============ -->
   <div id="menu" class="menu" style="margin:14px 0 24px;">
-    <a href="#c01" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #2f62a8; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#2f62a8;">01</span><span style="font-size:17px; font-weight:700; line-height:1.15;">Pulseless VF / VT</span></a>
+    <a href="#c01" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #2f62a8; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#2f62a8;">01</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Pulseless VF / VT</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,20 10,20 14,4 18,36 22,20 30,20 34,12 38,28 42,18 46,22 50,10 54,30 58,20 66,20 70,6 74,34 78,20 92,20" fill="none" stroke="#9b1c2e" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
     <div style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#eef1f4; border:1px solid #e4e0d6; border-left:5px solid #c3ccd4; color:#8a949d;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px;">02</span><span style="font-size:17px; font-weight:700; line-height:1.15;">PEA / Asystole <span style="font-size:11px; letter-spacing:0.06em; text-transform:uppercase; background:#e2e7ec; padding:2px 7px; border-radius:10px;">Coming soon</span></span></div>
     <div style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#eef1f4; border:1px solid #e4e0d6; border-left:5px solid #c3ccd4; color:#8a949d;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px;">03</span><span style="font-size:17px; font-weight:700; line-height:1.15;">Symptomatic bradycardia <span style="font-size:11px; letter-spacing:0.06em; text-transform:uppercase; background:#e2e7ec; padding:2px 7px; border-radius:10px;">Coming soon</span></span></div>
     <div style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#eef1f4; border:1px solid #e4e0d6; border-left:5px solid #c3ccd4; color:#8a949d;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px;">04</span><span style="font-size:17px; font-weight:700; line-height:1.15;">Stroke (suspected acute) <span style="font-size:11px; letter-spacing:0.06em; text-transform:uppercase; background:#e2e7ec; padding:2px 7px; border-radius:10px;">Coming soon</span></span></div>
@@ -112,9 +129,9 @@
     </div>
 
     <div class="nca" style="padding:12px 14px 0;">
-      <div style="border:2px solid #9b1c2e; background:#fbeaec; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#9b1c2e;">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"Pulseless — starting CPR, calling a code." Say it out loud.</div></div>
+      <div style="border:2px solid #9b1c2e; background:#fbeaec; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#9b1c2e;">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"This looks like VF. Start compressions and get ready to defib. I'll get us organized and I need your help." Say it out loud.</div></div>
       <div style="border:2px solid #16324f; background:#eef3f6; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#16324f;">CLAIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Compressor · airway · meds/IV-IO · defibrillator/recorder — assign aloud, rotate compressor every 2 min.</div></div>
-      <div style="border:2px solid #2f62a8; background:#eaf1fa; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#2f62a8;">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">High-quality CPR with minimal interruption. Shock early and often. Find and fix a reversible cause.</div></div>
+      <div style="border:2px solid #2f62a8; background:#eaf1fa; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#2f62a8;">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">The next priority during compressions is defib.</div></div>
     </div>
 
     <!-- ---- CPR CYCLE / SHOCK ENGINE ---- -->
@@ -133,7 +150,8 @@
         <button type="button" id="ccstart" style="min-height:52px; background:#16324f; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">START CPR CLOCK</button>
         <button type="button" id="ccreset" style="min-height:52px; background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">RESET CLOCK</button>
       </div>
-      <button type="button" id="ccshock" data-logevent="SHOCK DELIVERED" data-logcard="01" style="width:100%; min-height:60px; background:#9b1c2e; color:#fffefb; border:2px solid #9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">SHOCK DELIVERED — RESUME CPR</button>
+      <div id="ccnextshock" style="padding:7px 14px; text-align:center; background:#fdf3cf; color:#6b5410; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; border-top:1px solid #eadfbf;">NEXT SHOCK: 120 J (ZOLL, shock #1)</div>
+      <button type="button" id="ccshock" style="width:100%; min-height:60px; background:#9b1c2e; color:#fffefb; border:2px solid #9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">SHOCK DELIVERED — RESUME CPR</button>
       <div id="ccdosecue" style="padding:11px 14px; font-size:13.5px; line-height:1.35; color:#16324f; background:#fdf3cf; border-top:2px solid #8a6d1f; display:none;"></div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:12px 14px;">
         <button type="button" id="ccepi" data-logevent="EPI 1 mg" data-logcard="01" style="min-height:48px; background:#fffefb; color:#16324f; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">GIVE EPI 1 mg — LOG IT</button>
@@ -141,15 +159,14 @@
       </div>
       <div style="padding:0 14px 12px;"><button type="button" id="ccrosc" data-logevent="ROSC" data-logcard="01" style="width:100%; min-height:52px; background:#2f7a3f; color:#fffefb; border:2px solid #2f7a3f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">ROSC — PULSE RETURNED</button></div>
     </div>
-    <div data-loglane="01" style="margin:0 14px; padding:8px 12px; background:#fffefb; border:1px solid #dde3ea; border-top:none; display:flex; gap:6px; overflow-x:auto;"></div>
 
     <!-- ---- DOSING REFERENCE ---- -->
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">DEFIBRILLATION</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Biphasic: <b id="rBiphasic">120–200 J</b> first shock (per your device's manufacturer label); equal or escalating for subsequent shocks.</li>
-          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Monophasic: <b id="rMonophasic">360 J</b> for all shocks.</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;"><b id="rMfr">ZOLL Rectilinear Biphasic</b> (LRH's device) — 1st shock <b id="rShock1">120 J</b> → 2nd shock <b id="rShock2">150 J</b> → 3rd and all subsequent shocks <b id="rShock3">200 J</b>.</li>
+          <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Different manufacturer/device on your unit? Use its manufacturer label instead — energies are device-specific.</li>
           <li style="border-top:1px solid #e7eaef; padding:11px 0; font-size:14.5px; line-height:1.35;">Resume compressions immediately after each shock — minimize the pause to &lt;10 s.</li>
         </ul>
       </details>
@@ -196,7 +213,7 @@
     </div>
 
     <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
-      <b>Sources:</b> 2020 American Heart Association Guidelines for CPR and Emergency Cardiovascular Care — Adult Cardiac Arrest Algorithm (VF/pVT pathway): defibrillation energy, epinephrine 1 mg IV/IO every 3–5 min, amiodarone 300 mg then 150 mg, lidocaine 1–1.5 mg/kg then 0.5–0.75 mg/kg (max 3 mg/kg), CPR rate 100–120/min and depth 5–6 cm, and the H's-and-T's reversible-cause list. Energy levels and exact interval are device- and protocol-specific — verify against your defibrillator's manufacturer label and LRH's own ACLS order set.
+      <b>Sources:</b> 2020 American Heart Association Guidelines for CPR and Emergency Cardiovascular Care — Adult Cardiac Arrest Algorithm (VF/pVT pathway): epinephrine 1 mg IV/IO every 3–5 min, amiodarone 300 mg then 150 mg, lidocaine 1–1.5 mg/kg then 0.5–0.75 mg/kg (max 3 mg/kg), CPR rate 100–120/min and depth 5–6 cm, and the H's-and-T's reversible-cause list. Defibrillation energies (120 J → 150 J → 200 J) per ZOLL's published Rectilinear Biphasic ACLS defibrillation protocol for LRH's ZOLL devices. Energy levels are device-specific — verify against your unit's manufacturer label and LRH's own ACLS order set.
     </div>
     <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
       <span id="verStamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -207,18 +224,20 @@
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "0.1",
+  version: "0.2",
   lastReviewed: "2026-08-04",
   cpr: { cycleSec: 120, rateLow: 100, rateHigh: 120, depthCm: "5–6", rotateMin: 2 },
-  defib: { biphasicFirst: "120–200 J", monophasic: "360 J" },
-  epi: { dose: "1 mg", intervalMin: "3–5" },
+  defib: { mfr: "ZOLL Rectilinear Biphasic", shock1: "120 J", shock2: "150 J", shock3plus: "200 J" },
+  epi: { dose: "1 mg", intervalMin: "3–5", suggestSec: 180 },
   amio: { dose1: "300 mg", dose2: "150 mg", maxTotal: "2.2 g" },
   lido: { dose1: "1–1.5 mg/kg", dose2: "0.5–0.75 mg/kg", maxTotal: "3 mg/kg" }
 };
+/* energy for the Nth shock (n is 1-based: 1st, 2nd, 3rd...) per ZOLL's protocol */
+function zollJoules(n){ return n<=1 ? SITE.defib.shock1 : (n===2 ? SITE.defib.shock2 : SITE.defib.shock3plus); }
 (function(){
   function $(id){ return document.getElementById(id); }
   var map = {
-    rBiphasic: SITE.defib.biphasicFirst, rMonophasic: SITE.defib.monophasic,
+    rMfr: SITE.defib.mfr, rShock1: SITE.defib.shock1, rShock2: SITE.defib.shock2, rShock3: SITE.defib.shock3plus,
     rEpiDose: SITE.epi.dose, rEpiInterval: SITE.epi.intervalMin+' min',
     rAmio1: SITE.amio.dose1, rAmio2: SITE.amio.dose2, rAmioMax: SITE.amio.maxTotal,
     rLido1: SITE.lido.dose1, rLido2: SITE.lido.dose2, rLidoMax: SITE.lido.maxTotal,
@@ -242,55 +261,101 @@ var SITE = {
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
 })();
 
-/* ---- CPR cycle clock + shock counter + dosing cue engine ----
-   Device-local, PHI-free (times/counts only); cleared on RESET. */
+/* ---- CPR cycle clock + shock counter + next-step suggestion engine ----
+   Device-local, PHI-free (times/counts only); cleared on RESET.
+   t0            = time since last shock / last rhythm check (drives the 2-min rhythm-check cue)
+   codeStartMs   = time the code/CPR clock was first started (drives the heads-up total-time banner)
+   lastEpiMs     = time of the most recent epi dose (drives the 3-min "EPI DUE" cue); null until first epi */
 (function(){
-  var KC='lrh-codes-ccstart', KS='lrh-codes-shocks', KE='lrh-codes-epicount', KA='lrh-codes-amiocount';
-  var clock=$id('ccclock'), cue=$id('cccue'), shocksEl=$id('ccshocks'), startBtn=$id('ccstart'),
-      resetClockBtn=$id('ccreset'), shockBtn=$id('ccshock'), doseCue=$id('ccdosecue'),
-      epiBtn=$id('ccepi'), amioBtn=$id('ccamio'), roscBtn=$id('ccrosc');
+  var KC='lrh-codes-ccstart', KS='lrh-codes-shocks', KE='lrh-codes-epicount', KA='lrh-codes-amiocount',
+      KCS='lrh-codes-codestart', KEM='lrh-codes-lastepims';
   function $id(id){ return document.getElementById(id); }
-  var t0=null, tick=null, shocks=0, epiCount=0, amioCount=0;
+  var clock=$id('ccclock'), cue=$id('cccue'), shocksEl=$id('ccshocks'), startBtn=$id('ccstart'),
+      resetClockBtn=$id('ccreset'), shockBtn=$id('ccshock'), doseCue=$id('ccdosecue'), nextShockEl=$id('ccnextshock'),
+      epiBtn=$id('ccepi'), amioBtn=$id('ccamio'), roscBtn=$id('ccrosc'),
+      headsup=$id('headsup'), huclock=$id('huclock'), hucue=$id('hucue');
+  var t0=null, codeStartMs=null, lastEpiMs=null, tick=null, shocks=0, epiCount=0, amioCount=0;
   try{ var s=localStorage.getItem(KC); if(s) t0=+s||null; }catch(e){}
   try{ shocks=+localStorage.getItem(KS)||0; }catch(e){}
   try{ epiCount=+localStorage.getItem(KE)||0; }catch(e){}
   try{ amioCount=+localStorage.getItem(KA)||0; }catch(e){}
+  try{ var cs=localStorage.getItem(KCS); if(cs) codeStartMs=+cs||null; }catch(e){}
+  try{ var em=localStorage.getItem(KEM); if(em) lastEpiMs=+em||null; }catch(e){}
   function pad(n){ return (n<10?'0':'')+n; }
+  function mmss(sec){ return Math.floor(sec/60)+':'+pad(sec%60); }
   function save(){ try{
     if(t0) localStorage.setItem(KC,String(t0)); else localStorage.removeItem(KC);
+    if(codeStartMs) localStorage.setItem(KCS,String(codeStartMs)); else localStorage.removeItem(KCS);
+    if(lastEpiMs) localStorage.setItem(KEM,String(lastEpiMs)); else localStorage.removeItem(KEM);
     localStorage.setItem(KS,String(shocks)); localStorage.setItem(KE,String(epiCount)); localStorage.setItem(KA,String(amioCount));
   }catch(e){} }
-  function doseCueFor(){
-    /* AHA sequencing: epi after 2nd shock then q3-5min; amiodarone 300mg after 3rd shock, 150mg after a later shock. */
+  function nextStepCue(){
+    var now=Date.now();
+    var sinceCheck = t0!==null ? Math.floor((now-t0)/1000) : null;
+    var sinceEpi = lastEpiMs!==null ? Math.floor((now-lastEpiMs)/1000) : null;
+    var rhythmDue = sinceCheck!==null && sinceCheck>=SITE.cpr.cycleSec;
+    var epiDue = sinceEpi!==null && sinceEpi>=SITE.epi.suggestSec;
+    /* priority: rhythm check first (it pauses compressions) > amiodarone milestone > epi due (time) > first epi (shock-count) */
+    if(rhythmDue) return {text:'RHYTHM CHECK DUE — '+mmss(sinceCheck)+' since last check.', show:true, urgent:true};
     if(shocks>=3 && amioCount===0) return {text:'Consider AMIODARONE '+SITE.amio.dose1+' now (after shock #'+shocks+').', show:true};
     if(shocks>=4 && amioCount===1) return {text:'Still in VF/VT after amiodarone — consider a 2nd dose, '+SITE.amio.dose2+'.', show:true};
-    if(shocks>=2 && epiCount===0) return {text:'Consider EPINEPHRINE '+SITE.epi.dose+' now (after shock #'+shocks+'), then every '+SITE.epi.intervalMin+' min.', show:true};
+    if(epiDue) return {text:'EPI DUE — '+mmss(sinceEpi)+' since last dose ('+SITE.epi.dose+').', show:true, urgent:true};
+    if(shocks>=2 && lastEpiMs===null) return {text:'Consider first EPINEPHRINE dose now (after shock #'+shocks+'), then every '+SITE.epi.intervalMin+' min.', show:true};
     return {text:'', show:false};
   }
   function paintDoseCue(){
-    var d=doseCueFor();
-    if(d.show){ doseCue.style.display='block'; doseCue.textContent=d.text; } else { doseCue.style.display='none'; }
+    var d=nextStepCue();
+    if(d.show){
+      doseCue.style.display='block'; doseCue.textContent=d.text;
+      doseCue.style.background = d.urgent ? '#f6d8dc' : '#fdf3cf';
+      doseCue.style.borderTopColor = d.urgent ? '#9b1c2e' : '#8a6d1f';
+      if(hucue){ hucue.textContent=d.text; hucue.style.color = d.urgent ? '#ff9f9f' : '#f7d97a'; }
+    } else {
+      doseCue.style.display='none';
+      if(hucue) hucue.textContent='';
+    }
+  }
+  function paintNextShock(){
+    if(!nextShockEl) return;
+    var n=shocks+1;
+    nextShockEl.textContent='NEXT SHOCK: '+zollJoules(n)+' (ZOLL, shock #'+n+')';
+  }
+  function paintHeadsup(){
+    if(!headsup) return;
+    if(codeStartMs===null){ headsup.style.display='none'; return; }
+    headsup.style.display='flex';
+    var s=Math.max(0,Math.floor((Date.now()-codeStartMs)/1000));
+    if(huclock) huclock.textContent=mmss(s);
   }
   function paint(){
-    if(t0===null){ clock.textContent='0:00'; cue.textContent='CPR CYCLE — CHECK RHYTHM/PULSE AT '+Math.floor(SITE.cpr.cycleSec/60)+':00'; }
+    if(t0===null){ clock.textContent='0:00'; cue.textContent='CPR CYCLE — CHECK RHYTHM/PULSE AT '+Math.floor(SITE.cpr.cycleSec/60)+':00'; clock.style.color='#16324f'; cue.style.color='#5a6a78'; }
     else {
       var s=Math.max(0,Math.floor((Date.now()-t0)/1000));
-      clock.textContent=Math.floor(s/60)+':'+pad(s%60);
+      clock.textContent=mmss(s);
       if(s>=SITE.cpr.cycleSec){ clock.style.color='#9b1c2e'; cue.textContent='CHECK RHYTHM / PULSE NOW'; cue.style.color='#9b1c2e'; }
       else { clock.style.color='#16324f'; cue.textContent='CPR CYCLE — CHECK RHYTHM/PULSE AT '+Math.floor(SITE.cpr.cycleSec/60)+':00'; cue.style.color='#5a6a78'; }
     }
     shocksEl.textContent=String(shocks);
+    paintNextShock();
     paintDoseCue();
+    paintHeadsup();
   }
-  function startClock(){ t0=Date.now(); save(); if(tick) clearInterval(tick); tick=setInterval(paint,1000); paint(); }
+  function startClock(){
+    t0=Date.now();
+    if(codeStartMs===null) codeStartMs=t0;
+    save(); if(tick) clearInterval(tick); tick=setInterval(paint,1000); paint();
+  }
   startBtn.addEventListener('click', startClock);
   resetClockBtn.addEventListener('click', function(){ t0=Date.now(); save(); paint(); });
   shockBtn.addEventListener('click', function(){
-    shocks++; save();
+    var justDelivered=shocks+1;
+    var energy=zollJoules(justDelivered);
+    shocks=justDelivered; save();
     if(t0===null) startClock(); else { t0=Date.now(); save(); }
+    if(window.__codeslog && window.__codeslog.add){ window.__codeslog.add('01','SHOCK '+energy+' DELIVERED (#'+justDelivered+')'); }
     paint();
   });
-  epiBtn.addEventListener('click', function(){ epiCount++; save(); paint(); });
+  epiBtn.addEventListener('click', function(){ epiCount++; lastEpiMs=Date.now(); save(); paint(); });
   amioBtn.addEventListener('click', function(){
     amioCount++; save();
     if(window.__codeslog && window.__codeslog.add){ window.__codeslog.add('01', amioCount===1?('AMIODARONE '+SITE.amio.dose1):('AMIODARONE '+SITE.amio.dose2)); }
@@ -299,12 +364,12 @@ var SITE = {
   roscBtn.addEventListener('click', function(){ if(tick){ clearInterval(tick); tick=null; } });
   var rb=document.getElementById('resetbtn');
   if(rb) rb.addEventListener('click', function(){
-    t0=null; shocks=0; epiCount=0; amioCount=0;
-    try{ localStorage.removeItem(KC); localStorage.removeItem(KS); localStorage.removeItem(KE); localStorage.removeItem(KA); }catch(e){}
+    t0=null; codeStartMs=null; lastEpiMs=null; shocks=0; epiCount=0; amioCount=0;
+    try{ localStorage.removeItem(KC); localStorage.removeItem(KCS); localStorage.removeItem(KEM); localStorage.removeItem(KS); localStorage.removeItem(KE); localStorage.removeItem(KA); }catch(e){}
     if(tick){ clearInterval(tick); tick=null; }
     paint();
   });
-  if(t0!==null){ tick=setInterval(paint,1000); }
+  if(t0!==null || codeStartMs!==null){ tick=setInterval(paint,1000); }
   paint();
 })();
 
