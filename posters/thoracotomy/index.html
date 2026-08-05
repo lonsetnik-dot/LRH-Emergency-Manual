@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#005596">
+<title>Resuscitative Thoracotomy — Wall Poster · LRH Emergency Manual</title>
+<meta name="description" content="Printable letter-portrait wall poster: clamshell resuscitative thoracotomy — selection gate, sequence, key numbers.">
+<link rel="canonical" href="https://lrhemergencymanual.net/posters/thoracotomy/">
+<style>
+  /* ===== SITE CONFIG (LRH) — accent + text edits for another site go here ===== */
+  /* accent for this poster: #9b1c2e (red) · ink #16324f · amber #8a6d1f · teal #0f7a86 */
+  @page { size: letter portrait; margin: 0.45in; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body { background:#eceff3; color:#16324f; font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+         -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .toolbar { width:8.5in; max-width:96vw; margin:14px auto 0; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  .toolbar a, .toolbar button { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px;
+         letter-spacing:0.1em; min-height:40px; display:inline-flex; align-items:center; padding:8px 14px; cursor:pointer; text-decoration:none; }
+  .toolbar a { color:#16324f; border:1px solid #b9c2cc; background:#fffefb; }
+  .toolbar button { color:#fffefb; background:#16324f; border:2px solid #16324f; font-weight:700; }
+  .sheet { width:8.5in; margin:12px auto 48px; background:#fff; box-shadow:0 6px 26px rgba(22,50,79,0.22); padding:0.45in; }
+  @media print {
+    body { background:#fff; }
+    .toolbar { display:none; }
+    .sheet { width:auto; margin:0; padding:0; box-shadow:none; }
+  }
+  .eyebrow { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10pt; font-weight:700; letter-spacing:0.22em; color:#9b1c2e; }
+  h1 { margin:2pt 0 7pt; font-size:26.5pt; line-height:1.0; letter-spacing:-0.5pt; color:#16324f; text-transform:uppercase; }
+  .rule { height:5pt; background:#9b1c2e; }
+  .indication { margin:6pt 0 7pt; font-size:11.2pt; line-height:1.32; }
+  .indication .tag { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:9pt; font-weight:700; letter-spacing:0.14em; color:#fff; background:#9b1c2e; padding:1.5pt 5pt; margin-right:5pt; }
+  .cols { display:grid; grid-template-columns:1fr 1.18fr; gap:0.24in; }
+  .colhead { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11pt; font-weight:700; letter-spacing:0.14em; border-bottom:2.5pt solid #16324f; padding-bottom:3pt; margin-bottom:5pt; }
+  .loc { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:8.2pt; letter-spacing:0.08em; color:#16324f; background:#eef1f5; border-left:3pt solid #9b1c2e; padding:4pt 6pt; margin:0 0 6pt; }
+  ul.eq { list-style:none; margin:0; padding:0; }
+  ul.eq li { font-size:10pt; line-height:1.26; padding:2.1pt 0 2.1pt 17pt; text-indent:-17pt; }
+  ul.eq li::before { content:"\25A1\00A0\00A0"; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5pt; color:#9b1c2e; }
+  .grp { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:8pt; font-weight:700; letter-spacing:0.16em; color:#5a6a78; margin:6pt 0 1.5pt; }
+  ol.steps { list-style:none; margin:0; padding:0; counter-reset:st; }
+  ol.steps li { counter-increment:st; font-size:10pt; line-height:1.25; margin:0 0 4.2pt; padding-left:20pt; position:relative; }
+  ol.steps li::before { content:counter(st); position:absolute; left:0; top:0.5pt; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10pt; font-weight:700; color:#9b1c2e; }
+  .warn { border:1.5pt solid #8a6d1f; color:#6b5410; background:#fdf3cf; font-size:9.3pt; line-height:1.3; padding:4pt 6pt; margin-top:3pt; font-weight:700; }
+  .keys { display:flex; border:2.5pt solid #16324f; margin-top:9pt; }
+  .key { flex:1; text-align:center; padding:7pt 3pt 6pt; border-left:1.5pt solid #d7dde3; }
+  .key:first-child { border-left:none; }
+  .key .v { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:19pt; font-weight:800; color:#9b1c2e; white-space:nowrap; }
+  .key .l { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:7.2pt; letter-spacing:0.1em; color:#5a6a78; margin-top:1.5pt; }
+  .fig { border:1.5pt solid #d7dde3; margin-top:7pt; }
+  .figcap { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:8pt; letter-spacing:0.1em; color:#0f7a86; padding:4pt 6pt 0; }
+  footer.strip { border-top:2pt solid #16324f; margin-top:7pt; padding-top:4pt; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:7.4pt; line-height:1.45; letter-spacing:0.03em; color:#5a6a78; }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <a href="../../">&#9664; LRH EMERGENCY MANUAL</a>
+  <button type="button" id="printbtn">PRINT — LETTER PORTRAIT</button>
+</div>
+
+<div class="sheet">
+  <div class="eyebrow">LRH · EMERGENCY DEPARTMENT</div>
+  <h1>Resuscitative Thoracotomy (Clamshell)</h1>
+  <div class="rule"></div>
+
+  <p class="indication"><span class="tag">INDICATION</span>Unstable patient in extremis with deteriorating physiology and <b>PROVEN cardiac tamponade on ultrasound</b>. <b>No signs of life + PEA on arrival = consistently poor</b> (Alfred 2008–13: 9 independent survivors of 27).</p>
+
+  <div class="cols">
+    <div>
+      <div class="colhead">EQUIPMENT</div>
+      <div class="loc">TRAUMA CART · THORACOSTOMY + RIB SPREADER shelves<br>(scalpel in SCALPEL drawer)</div>
+      <ul class="eq">
+        <li>Scalpel — large blade, <b>No. 10 / 20</b></li>
+        <li>Heavy Mayo scissors / trauma shears</li>
+        <li><b>Finochietto rib spreader</b> — RIB SPREADER shelf</li>
+        <li>Gigli saw or heavy scissors — for the sternum</li>
+        <li>Artery forceps (pericardium) + long forceps</li>
+        <li><b>3-0 non-absorbable</b> suture on large needle · skin stapler · Foley catheter (wound occlusion)</li>
+        <li>Vascular / aortic cross-clamp · internal defib paddles</li>
+        <li>Chlorhexidine or iodine — splash prep only</li>
+      </ul>
+      <div class="grp">IN PARALLEL — OTHER HANDS</div>
+      <ul class="eq">
+        <li>ETT in place · bilateral finger thoracostomies</li>
+        <li>Large-bore access (14 g / RIC / MAC) · blood + MTP</li>
+      </ul>
+      <div class="fig">
+        <div class="figcap">FIG · CLAMSHELL INCISION — 5TH ICS, AXILLA TO AXILLA</div>
+        <svg viewBox="0 0 360 185" style="width:100%; height:auto; display:block;" role="img" aria-label="Clamshell thoracotomy incision line across the 5th intercostal space">
+          <rect x="0" y="0" width="360" height="185" fill="#fffefb"/>
+          <path d="M 40 12 C 20 65 24 140 50 180" fill="none" stroke="#5a6a78" stroke-width="2"/>
+          <path d="M 320 12 C 340 65 336 140 310 180" fill="none" stroke="#5a6a78" stroke-width="2"/>
+          <line x1="180" y1="16" x2="180" y2="112" stroke="#c9d2da" stroke-width="10" stroke-linecap="round"/>
+          <circle cx="130" cy="84" r="5" fill="#c9d2da"/><circle cx="230" cy="84" r="5" fill="#c9d2da"/>
+          <path d="M 45 112 C 110 142 250 142 315 112" fill="none" stroke="#9b1c2e" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round"/>
+          <text x="84" y="168" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#9b1c2e">5TH ICS · FOLLOW INFRAMAMMARY CREASE</text>
+          <text x="150" y="36" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" fill="#5a6a78">STERNUM</text>
+          <text x="196" y="106" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10" fill="#16324f">CUT TRANSVERSELY</text>
+        </svg>
+      </div>
+    </div>
+    <div>
+      <div class="colhead">STEPS</div>
+      <ol class="steps">
+        <li><b>Gate the decision:</b> tamponade proven on ultrasound — it may hide with no external signs and a normal ECG. Airway, bilateral finger thoracostomies, and MTP run in parallel.</li>
+        <li><b>Splash prep</b> — no delay for full asepsis.</li>
+        <li>Extend the LEFT thoracostomy incision along the <b>5th ICS</b>, sternum &rarr; mid-axillary line.</li>
+        <li>Cut intercostal muscle into pleura along the full length with heavy scissors.</li>
+        <li>Mirror the incision on the RIGHT; divide the <b>sternum transversely</b> — Gigli saw or heavy scissors.</li>
+        <li><b>Finochietto in</b>, handle toward the axilla; open WIDE; sweep the left lung out of the way.</li>
+        <li>Tent the pericardium with artery forceps; open with a long <b>VERTICAL</b> incision, <b>anterior to the phrenic nerve</b>.</li>
+        <li>Deliver the heart; evacuate clot; inspect every surface for the wound.</li>
+        <li><b>Wound control:</b> finger occlusion first &rarr; staples or 3-0 suture (avoid coronaries) &rarr; Foley balloon through the defect, gentle traction.</li>
+        <li>Internal massage, two-handed, <b>~100/min</b>; VF &rarr; internal defibrillation <b>10–20 J</b>.</li>
+        <li>Aorta: hand along the posterior left chest wall — compress the descending aorta against the spine or cross-clamp at the diaphragm.</li>
+        <li><b>ROSC &rarr; mammary + intercostal bleeding WILL start</b> — control it; sedate/ventilate; straight to OR / transfer.</li>
+      </ol>
+      <div class="warn">LOCALIZE: agree in advance whether ED thoracotomy is in this facility&rsquo;s scope and what surgical backup exists — decide before the event, not at the bedside.</div>
+    </div>
+  </div>
+
+  <div class="keys">
+    <div class="key"><div class="v">5TH ICS</div><div class="l">BILATERAL, JOINED ACROSS STERNUM</div></div>
+    <div class="key"><div class="v">VERTICAL</div><div class="l">PERICARDIOTOMY, ANT. TO PHRENIC</div></div>
+    <div class="key"><div class="v">10–20 J</div><div class="l">INTERNAL DEFIB</div></div>
+    <div class="key"><div class="v">3-0</div><div class="l">NON-ABSORBABLE SUTURE</div></div>
+    <div class="key"><div class="v">9 / 27</div><div class="l">ALFRED SURVIVORS 2008–13</div></div>
+  </div>
+
+  <footer class="strip">
+    v0.1 · 2026-08-04 · personal/unofficial aid — not hospital policy · verify locally · lrhemergencymanual.net/posters/thoracotomy/<br>
+    Content adapted from The Procedures Course, Alfred STAR Program (Alfred Health) + cited open references (LITFL CCC: resuscitative thoracotomy; EMCrit: procedure of thoracotomy).
+  </footer>
+</div>
+
+<script>
+(function(){
+  var b=document.getElementById('printbtn');
+  if(b) b.addEventListener('click', function(){ window.print(); }, false);
+})();
+</script>
+</body>
+</html>
