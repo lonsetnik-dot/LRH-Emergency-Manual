@@ -102,6 +102,26 @@
   .final .detail b{font-weight:700}
   .final.pending{background:#f5f8fb; border-color:var(--line); color:var(--muted)}
 
+  /* ---- STEMI transfer-call tracker: compact, device-local time stamps only ---- */
+  .xferbox{margin-top:12px; padding-top:11px; border-top:1px solid rgba(0,0,0,.15)}
+  .xferbox .xfertitle{font-size:.72rem; text-transform:uppercase; letter-spacing:.5px; font-weight:700; opacity:.8; margin-bottom:8px}
+  .xferrow{background:rgba(255,255,255,.6); border:1px solid rgba(0,0,0,.16); border-radius:8px; padding:9px 10px; margin-bottom:8px}
+  .xferrow:last-child{margin-bottom:0}
+  .xferrow .xfertop{display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:6px}
+  .xferrow .xfername{font-weight:700; font-size:.85rem}
+  .xferrow .xferphone{font-size:.85rem}
+  .xferrow .xferphone a{color:inherit; font-weight:700; text-decoration:underline; white-space:nowrap}
+  .xferstages{display:grid; grid-template-columns:1fr 1fr 1fr; gap:6px; margin-top:8px}
+  .xferstages button,.xferstages .chip{min-height:42px; border-radius:6px; font:inherit; font-size:.7rem; font-weight:700;
+    letter-spacing:.02em; padding:2px 4px; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    line-height:1.2; text-align:center}
+  .xferstages button{border:1.5px solid rgba(0,0,0,.35); background:#fff; color:inherit; cursor:pointer}
+  .xferstages button:active{background:rgba(0,0,0,.08)}
+  .xferstages .chip{border:1.5px solid transparent; background:rgba(0,0,0,.1); color:inherit; cursor:pointer}
+  .xferstages .chip .e{font-size:.63rem; opacity:.75; font-weight:600; margin-top:1px}
+  .xferfoot{margin-top:8px; font-size:.72rem; opacity:.75}
+  @media print{ .xferstages button{background:#fff} }
+
   .btnrow{display:flex; gap:10px; margin-top:14px}
   button.btn{background:#fff; border:1.5px solid var(--brand-primary); color:var(--brand-primary);
     font-weight:600; font-size:.85rem; padding:9px 18px; border-radius:8px; cursor:pointer}
@@ -334,7 +354,15 @@
       grayHigh:         49,   // gray-zone upper bound (display)
       heartNormalLimit: { male: 19.8, female: 14.9 }, // HEART troponin normal limit by sex
       heartMultiplier:   3    // >1x..3x normal = 1 pt, >3x normal = 2 pts
-    }
+    },
+    // STEMI transfer-center contacts — LRH has no on-site cath lab, so a STEMI patient is
+    // transferred out. Numbers are each hospital's own transfer-center line (not a direct
+    // cardiology/cath-lab line — the transfer-center RN routes the call). Verify locally;
+    // hospital transfer lines do change.
+    stemiTransferContacts: [
+      { key:'dhmc',    label:'Dartmouth-Hitchcock (DHMC) Transfer Center', tel:'+18779999870', phoneDisplay:'877-999-9870 (urgent/emergent)' },
+      { key:'concord', label:'Concord Hospital Transfer Center',           tel:'+18009929399', phoneDisplay:'800-992-9399' }
+    ]
   };
   // ============================================================================
 
@@ -490,7 +518,11 @@
 
     if(d.code==='incomplete'){ pending(d.why||'Answer Section 1 and enter the troponins.'); return; }
     if(d.code==='esrd'){ show('ref','ESRD','Algorithm not applicable — use clinical judgment','This accelerated hs-troponin pathway excludes ESRD (chronically elevated hs-troponin). Use serial troponins, serial EKGs, and clinical judgment; the HEART score may still help frame risk.'); return; }
-    if(d.code==='stemi'){ show('in','STEMI','STEMI Alert — activate STEMI protocol','Evidence of STEMI on EKG. Proceed directly to STEMI activation; the troponin pathway does not apply. The STEMI/Chest Pain response bundle is a premade box pulled from the Omnicell, not stocked on the code cart — confirm current contents against the physical box. <a href="../../codes/?from=home#cart" style="color:inherit; text-decoration:underline;">Code cart drawer reference →</a>'); return; }
+    if(d.code==='stemi'){
+      show('in','STEMI','STEMI Alert — activate STEMI protocol','Evidence of STEMI on EKG. Proceed directly to STEMI activation; the troponin pathway does not apply. The STEMI/Chest Pain response bundle is a premade box pulled from the Omnicell, not stocked on the code cart — confirm current contents against the physical box. <a href="../../codes/?from=home#cart" style="color:inherit; text-decoration:underline;">Code cart drawer reference →</a><div class="xferbox" id="xferBox"></div>');
+      renderTransferWidget();
+      return;
+    }
     if(d.code==='in'){ show('in','Rule-in zone','Rule in — consider cardiology consult','Rule-in criteria met ('+d.why+'). Consider cardiology consultation if clinically appropriate. Manage as ACS.'); return; }
     if(d.code==='reflex'){ var T=SITE.trop; show('ref','Reflex','Observe — repeat hs-troponin at 3 hours','Troponin under '+T.ruleInValue+' '+SITE.units+' with a 0/1-hr Δ ≥ '+T.ruleOutDelta+' but < '+T.ruleInDelta+'. Obtain a 3-hr troponin: Δ ≥ '+T.ruleInDelta+' rules in; Δ < '+T.ruleInDelta+' rules AMI out (then apply HEART score).'); return; }
 
@@ -529,6 +561,45 @@
     return 'Stress test prior to d/c (or cardiology)';
   }
 
+  // ---- STEMI transfer-call tracker: time-stamps only (call / callback / transport arrived),
+  // per receiving center. Device-local localStorage, no patient identifiers — same discipline
+  // as the Codes tool's case timeline. Tapping a logged stage again clears it (fixes a mis-tap). ----
+  var XK='lrh-heart-stemi-xfer';
+  function loadXfer(){ try{ return JSON.parse(localStorage.getItem(XK))||{}; }catch(e){ return {}; } }
+  function saveXfer(x){ try{ localStorage.setItem(XK, JSON.stringify(x)); }catch(e){} }
+  function pad2(n){ return (n<10?'0':'')+n; }
+  function fmtClock(ms){ var d=new Date(ms); return pad2(d.getHours())+':'+pad2(d.getMinutes()); }
+  function elapsedLabel(ms){ var m=Math.max(0,Math.round((Date.now()-ms)/60000)); return m===0?'just now':('+'+m+'m'); }
+  var XSTAGES=[['call','CALL'],['callback','CALLBACK'],['arrived','ARRIVED']];
+  function renderTransferWidget(){
+    var box=$('xferBox'); if(!box) return;
+    var st=loadXfer();
+    var html='<div class="xfertitle">Transfer call log &mdash; time stamps only, device-local, no patient info</div>';
+    SITE.stemiTransferContacts.forEach(function(c){
+      var s=st[c.key]||{};
+      html+='<div class="xferrow"><div class="xfertop"><span class="xfername">'+c.label+'</span>'+
+        '<span class="xferphone">&#9742; <a href="tel:'+c.tel+'">'+c.phoneDisplay+'</a></span></div>'+
+        '<div class="xferstages">';
+      XSTAGES.forEach(function(pair){
+        var stage=pair[0], label=pair[1], ts=s[stage];
+        if(ts){ html+='<div class="chip" data-dest="'+c.key+'" data-stage="'+stage+'"><span>'+label+' '+fmtClock(ts)+'</span><span class="e">'+elapsedLabel(ts)+'</span></div>'; }
+        else{ html+='<button type="button" data-dest="'+c.key+'" data-stage="'+stage+'">'+label+'</button>'; }
+      });
+      html+='</div></div>';
+    });
+    html+='<div class="xferfoot">Numbers per each hospital’s transfer-center page, verified 2026-08-05 &mdash; confirm current before relying on them.</div>';
+    box.innerHTML=html;
+    box.querySelectorAll('[data-dest]').forEach(function(el){
+      el.addEventListener('click', function(){
+        var dest=el.getAttribute('data-dest'), stage=el.getAttribute('data-stage');
+        var s=loadXfer(); s[dest]=s[dest]||{};
+        if(s[dest][stage]) delete s[dest][stage]; else s[dest][stage]=Date.now();
+        saveXfer(s); renderTransferWidget();
+      });
+    });
+  }
+  setInterval(function(){ if($('xferBox')) renderTransferWidget(); }, 30000);
+
   // wire up radio highlighting + recalc
   document.querySelectorAll('.opts[data-group]').forEach(function(grp){
     grp.addEventListener('change',function(){
@@ -546,6 +617,7 @@
     document.querySelectorAll('input[type=radio]').forEach(function(r){r.checked=false;});
     $('esrd').checked=false;
     document.querySelectorAll('label.opt').forEach(function(l){l.classList.remove('sel');});
+    try{ localStorage.removeItem(XK); }catch(e){}
     recalc();
   };
   // version / last-reviewed stamp (from SITE CONFIG)
