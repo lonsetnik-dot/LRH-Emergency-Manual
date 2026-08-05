@@ -61,6 +61,7 @@
   a.tool.cat-peds{--c:#7a3fa0}       /* purple · pediatrics */
   a.tool.cat-debrief{--c:#5a6a78}    /* slate  · debrief / team reflection */
   a.tool.cat-procedures{--c:#0f7a86} /* teal   · rare high-stakes procedures */
+  a.tool.cat-posters{--c:#8a6011}    /* gold   · printable wall/cart posters */
 
   a.tool{--c:var(--brand-primary); display:flex; flex-direction:column; text-decoration:none; color:inherit;
     background:var(--panel); border:1px solid var(--line); border-left:6px solid var(--c);
@@ -225,7 +226,24 @@
         </svg></span>
         <div class="name">Procedures</div>
       </div>
-      <div class="desc">Rare, high-stakes procedures — chest tube, thoracotomy, hysterotomy, burr hole, canthotomy, CVC, transvenous pacing, escharotomy — with anatomy figures.</div>
+      <div class="desc">Rare, high-stakes procedures — chest tube, thoracotomy, burr hole, canthotomy, CVC, transvenous pacing, escharotomy — with equipment lists and anatomy figures. (Resuscitative hysterotomy lives in OB &amp; Neonatal.)</div>
+      <div class="go">Open</div>
+    </a>
+
+    <!-- ===== CATEGORY: Posters (beta · GOLD) -> /posters/ ===== -->
+    <a class="tool cat-posters" href="posters/?from=home">
+      <div class="cardhead">
+        <span class="ic" aria-hidden="true"><svg viewBox="0 0 32 32">
+          <rect x="9" y="4" width="14" height="7" rx="1" fill="#fff"/>
+          <rect x="5" y="11" width="22" height="10" rx="2" fill="#fff"/>
+          <circle cx="23.5" cy="14" r="1.3" fill="#8a6011"/>
+          <rect x="9" y="18" width="14" height="10" rx="1" fill="#fff" stroke="#8a6011" stroke-width="1.2"/>
+          <line x1="12" y1="22" x2="20" y2="22" stroke="#8a6011" stroke-width="1.4" stroke-linecap="round"/>
+          <line x1="12" y1="25" x2="18" y2="25" stroke="#8a6011" stroke-width="1.4" stroke-linecap="round"/>
+        </svg></span>
+        <div class="name">Posters</div>
+      </div>
+      <div class="desc">Print-ready one-pagers for the resuscitation-bay walls and carts — TVP, chest tube, thoracotomy, burr hole. Letter portrait, one page each.</div>
       <div class="go">Open</div>
     </a>
 
@@ -289,7 +307,6 @@
     {t:"Shoulder dystocia (HELPERR)", c:"OB & Neonatal", k:"shoulder dystocia helperr mcroberts suprapubic pressure maneuvers", u:"ob-neonatal/?from=home#c07"},
     {t:"Breech delivery", c:"OB & Neonatal", k:"breech buttocks footling frank complete", u:"ob-neonatal/?from=home#c08"},
     {t:"Umbilical cord prolapse", c:"OB & Neonatal", k:"cord prolapse presenting", u:"ob-neonatal/?from=home#c09"},
-    {t:"Resuscitative (perimortem) hysterotomy", c:"OB & Neonatal", k:"perimortem resuscitative hysterotomy maternal cardiac arrest", u:"ob-neonatal/?from=home#c10"},
     {t:"OB / neonatal cart — drawer contents", c:"OB & Neonatal", k:"cart drawer equipment supplies where is", u:"ob-neonatal/?from=home#cart"},
     {t:"Code cart — drawer contents", c:"Codes", k:"code cart drawer equipment supplies where is intubation IV medications suction surgical omnicell anaphylaxis stemi stroke box", u:"codes/?from=home#cart"},
     {t:"Pulseless VF / VT", c:"Codes", k:"code cart cardiac arrest ventricular fibrillation tachycardia defibrillation shock epinephrine amiodarone lidocaine cpr acls", u:"codes/?from=home#c01"},
@@ -328,6 +345,12 @@
     {t:"Clinical Pathways — overview / index", c:"Clinical Pathways", k:"clinical pathways accelerated diagnostic overview index", u:"clinical-pathways/"},
     {t:"Trauma — overview / index", c:"Trauma", k:"trauma resuscitation index", u:"trauma/?from=home"},
     {t:"Brain Injury Guidelines (BIG)", c:"Trauma", k:"big brain injury guidelines mbig modified traumatic brain injury tbi minor head injury mtbi intracranial hemorrhage ich concussion", u:"trauma/?from=home#c01"},
+    {t:"Level 1 Trauma Activation", c:"Trauma", k:"level 1 trauma activation full team response criteria acs field triage abc score mtp trigger", u:"trauma/?from=home#c02"},
+    {t:"Blunt Polytrauma", c:"Trauma", k:"blunt polytrauma multi-system xabcde damage control resuscitation permissive hypotension react-2 blunt aortic cardiac injury seatbelt sign", u:"trauma/?from=home#c03"},
+    {t:"Penetrating Trauma", c:"Trauma", k:"penetrating trauma gunshot stab wound torso abdomen tension pneumothorax open chest wound massive hemothorax tamponade", u:"trauma/?from=home#c04"},
+    {t:"Burn", c:"Trauma", k:"burn tbsa rule of nines parkland fluid resuscitation inhalation injury carbon monoxide cyanide burn center transfer", u:"trauma/?from=home#c05"},
+    {t:"Isolated Head Trauma", c:"Trauma", k:"head trauma tbi gcs canadian ct head rule new orleans criteria herniation mannitol hypertonic saline hypoxia hypotension", u:"trauma/?from=home#c06"},
+    {t:"Mangled / Amputated Extremity", c:"Trauma", k:"mangled amputated extremity mess score replantation limb salvage vascular injury compartment syndrome tourniquet", u:"trauma/?from=home#c07"},
     {t:"Massive Transfusion Protocol (MTP)", c:"Codes", k:"mtp massive transfusion protocol blood products prbc plasma platelets cryo hemorrhagic shock trauma", u:"codes/?from=home#c12"},
     {t:"Front of Neck Access (FONA)", c:"Codes", k:"fona cricothyroidotomy cico front of neck access surgical airway difficult airway das trauma", u:"codes/?from=home#c18"},
     {t:"LVAD — Responsive (Pump Running)", c:"Codes", k:"lvad ventricular assist device heartmate heartware pump hum driveline alarm map doppler thrombosis vad", u:"codes/?from=home#c19"},
@@ -336,12 +359,26 @@
     {t:"Procedures — overview / index", c:"Procedures", k:"procedures rare high stakes index alfred star", u:"procedures/?from=home"},
     {t:"Chest Tube (Tube Thoracostomy)", c:"Procedures", k:"chest tube thoracostomy pneumothorax hemothorax pleural safe triangle finger", u:"procedures/?from=home#c01"},
     {t:"Resuscitative Thoracotomy", c:"Procedures", k:"thoracotomy clamshell cardiac tamponade pericardiotomy trauma arrest", u:"procedures/?from=home#c02"},
-    {t:"Resuscitative Hysterotomy", c:"Procedures", k:"hysterotomy perimortem c-section cesarean maternal arrest fundus umbilicus", u:"procedures/?from=home#c03"},
+    {t:"Resuscitative Hysterotomy", c:"OB & Neonatal", k:"hysterotomy perimortem c-section cesarean maternal arrest fundus umbilicus procedures", u:"ob-neonatal/?from=home#c10"},
     {t:"Emergency Burr Hole (Craniotomy)", c:"Procedures", k:"burr hole craniotomy epidural subdural herniation blown pupil middle meningeal", u:"procedures/?from=home#c04"},
     {t:"Lateral Canthotomy & Cantholysis", c:"Procedures", k:"canthotomy cantholysis retrobulbar hematoma orbital compartment eye pressure IOP", u:"procedures/?from=home#c05"},
     {t:"Central Venous Catheter (CVC)", c:"Procedures", k:"central line cvc internal jugular seldinger ultrasound sterile", u:"procedures/?from=home#c06"},
     {t:"Transvenous Pacing (TVP)", c:"Procedures", k:"transvenous pacing pacemaker wire bradycardia capture threshold", u:"procedures/?from=home#c07"},
-    {t:"Escharotomy", c:"Procedures", k:"escharotomy burns eschar circumferential perfusion ventilation", u:"procedures/?from=home#c08"}
+    {t:"Escharotomy", c:"Procedures", k:"escharotomy burns eschar circumferential perfusion ventilation", u:"procedures/?from=home#c08"},
+    {t:"Pelvic Binder Application", c:"Procedures", k:"pelvic binder sam sling t-pod unstable pelvis fracture greater trochanters sheet wrap", u:"procedures/?from=home#c09"},
+    {t:"Tourniquet Application", c:"Procedures", k:"tourniquet application cat combat application windlass extremity hemorrhage stop the bleed", u:"procedures/?from=home#c10"},
+    {t:"Penetrating Neck Trauma", c:"Procedures", k:"penetrating neck trauma zones hard signs soft signs cta foley catheter balloon tamponade", u:"procedures/?from=home#c11"},
+    {t:"Junctional Hemorrhage Control", c:"Procedures", k:"junctional hemorrhage groin axilla wound packing hemostatic gauze combat gauze itclamp junctional tourniquet", u:"procedures/?from=home#c12"},
+    {t:"Posters — printable one-pagers", c:"Posters", k:"posters print printable wall cart infographic letter one page index", u:"posters/?from=home"},
+    {t:"Poster · Transvenous Pacing (TVP)", c:"Posters", k:"tvp transvenous pacing poster print wall generator settings capture threshold", u:"posters/tvp/"},
+    {t:"Poster · Chest Tube / Finger Thoracostomy", c:"Posters", k:"chest tube finger thoracostomy poster print triangle of safety trauma cart", u:"posters/chest-tube/"},
+    {t:"Poster · Resuscitative Thoracotomy", c:"Posters", k:"thoracotomy clamshell rib spreader poster print trauma cart", u:"posters/thoracotomy/"},
+    {t:"Poster · Emergency Burr Hole", c:"Posters", k:"burr hole craniotomy poster print skull landmarks trauma cart", u:"posters/burr-hole/"},
+    {t:"Poster · Blakemore Tube — Balloon Tamponade", c:"Posters", k:"blakemore sengstaken minnesota tube balloon tamponade variceal GI bleed poster print resus bay cabinet", u:"posters/blakemore/"},
+    {t:"Poster · Lateral Canthotomy & Cantholysis", c:"Posters", k:"canthotomy cantholysis retrobulbar hematoma orbital compartment eye pressure IOP poster print trauma cart eye kit", u:"posters/canthotomy/"},
+    {t:"Poster · Central Venous Catheter (CVC)", c:"Posters", k:"central line cvc internal jugular seldinger ultrasound sterile poster print resus bay", u:"posters/cvc/"},
+    {t:"Poster · Escharotomy", c:"Posters", k:"escharotomy burns eschar circumferential perfusion ventilation poster print trauma cart burn kit", u:"posters/escharotomy/"},
+    {t:"Poster · Resuscitative Hysterotomy", c:"Posters", k:"hysterotomy perimortem c-section cesarean maternal arrest fundus umbilicus poster print OB cart", u:"posters/hysterotomy/"}
   ];
   var q=document.getElementById('q'), box=document.getElementById('results');
   if(!q||!box) return;

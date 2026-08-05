@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#005596">
+<title>Resuscitative Hysterotomy — Wall Poster · LRH Emergency Manual</title>
+<meta name="description" content="Printable letter-portrait wall poster: perimortem / resuscitative hysterotomy for maternal cardiac arrest with gestation over 20 weeks.">
+<link rel="canonical" href="https://lrhemergencymanual.net/posters/hysterotomy/">
+<style>
+  /* ===== SITE CONFIG (LRH) — accent + text edits for another site go here ===== */
+  /* accent for this poster: #9b1c2e (red) · ink #16324f · amber #8a6d1f (used for warnings, since accent is already red) */
+  @page { size: letter portrait; margin: 0.45in; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body { background:#eceff3; color:#16324f; font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+         -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .mono { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; }
+  .toolbar { width:8.5in; max-width:96vw; margin:14px auto 0; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  .toolbar a, .toolbar button { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px;
+         letter-spacing:0.1em; min-height:40px; display:inline-flex; align-items:center; padding:8px 14px; cursor:pointer; text-decoration:none; }
+  .toolbar a { color:#16324f; border:1px solid #b9c2cc; background:#fffefb; }
+  .toolbar button { color:#fffefb; background:#16324f; border:2px solid #16324f; font-weight:700; }
+  .sheet { width:8.5in; margin:12px auto 48px; background:#fff; box-shadow:0 6px 26px rgba(22,50,79,0.22); padding:0.45in; }
+  @media print {
+    body { background:#fff; }
+    .toolbar { display:none; }
+    .sheet { width:auto; margin:0; padding:0; box-shadow:none; }
+  }
+  .eyebrow { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10pt; font-weight:700; letter-spacing:0.22em; color:#9b1c2e; }
+  h1 { margin:1pt 0 5pt; font-size:24pt; line-height:1.0; letter-spacing:-0.5pt; color:#16324f; text-transform:uppercase; }
+  .rule { height:5pt; background:#9b1c2e; }
+  .indication { margin:4pt 0 5pt; font-size:10.3pt; line-height:1.26; }
+  .indication .tag { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:9pt; font-weight:700; letter-spacing:0.14em; color:#fff; background:#9b1c2e; padding:1.5pt 5pt; margin-right:5pt; }
+  .cols { display:grid; grid-template-columns:1fr 1.2fr; gap:0.2in; }
+  .colhead { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10pt; font-weight:700; letter-spacing:0.14em; border-bottom:2pt solid #16324f; padding-bottom:2pt; margin-bottom:4pt; }
+  .loc { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:7.6pt; letter-spacing:0.06em; color:#16324f; background:#eef1f5; border-left:3pt solid #9b1c2e; padding:3pt 5pt; margin:0 0 4pt; }
+  ul.eq { list-style:none; margin:0; padding:0; }
+  ul.eq li { font-size:8.7pt; line-height:1.16; padding:1.3pt 0 1.3pt 15pt; text-indent:-15pt; }
+  ul.eq li::before { content:"\25A1\00A0\00A0"; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5pt; color:#9b1c2e; }
+  .grp { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:7.2pt; font-weight:700; letter-spacing:0.14em; color:#5a6a78; margin:4pt 0 1pt; }
+  ol.steps { list-style:none; margin:0; padding:0; counter-reset:st; }
+  ol.steps li { counter-increment:st; font-size:8.6pt; line-height:1.15; margin:0 0 2.6pt; padding-left:17pt; position:relative; }
+  ol.steps li::before { content:counter(st); position:absolute; left:0; top:0.5pt; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:8.6pt; font-weight:700; color:#9b1c2e; }
+  .warn { border:1.5pt solid #9b1c2e; color:#9b1c2e; font-size:8.3pt; line-height:1.2; padding:3pt 5pt; margin-top:2pt; font-weight:700; }
+  .keys { display:flex; border:2pt solid #16324f; margin-top:6pt; }
+  .key { flex:1; text-align:center; padding:5pt 2pt 4pt; border-left:1.5pt solid #d7dde3; }
+  .key:first-child { border-left:none; }
+  .key .v { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14pt; font-weight:800; color:#9b1c2e; white-space:nowrap; }
+  .key .l { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:6.3pt; letter-spacing:0.08em; color:#5a6a78; margin-top:1pt; }
+  .fig { border:1.5pt solid #d7dde3; margin:5pt auto 0; width:66%; }
+  .figcap { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:7.2pt; letter-spacing:0.08em; color:#9b1c2e; padding:3pt 5pt 0; }
+  footer.strip { border-top:1.5pt solid #16324f; margin-top:5pt; padding-top:3pt; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:6.6pt; line-height:1.35; letter-spacing:0.02em; color:#5a6a78; }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <a href="../../">&#9664; LRH EMERGENCY MANUAL</a>
+  <button type="button" id="printbtn">PRINT — LETTER PORTRAIT</button>
+</div>
+
+<div class="sheet">
+  <div class="eyebrow">LRH · EMERGENCY DEPARTMENT</div>
+  <h1>Resuscitative Hysterotomy</h1>
+  <div class="rule"></div>
+
+  <p class="indication"><span class="tag">INDICATION</span>Maternal cardiac arrest, gestation &gt;20 weeks (fundus at or above the umbilicus), with <b>no ROSC after one defibrillation or one round of trauma resuscitation</b> — deliver to save both mother and baby. <b>CPR never stops</b> during the procedure.</p>
+
+  <div class="cols">
+    <div>
+      <div class="colhead">EQUIPMENT</div>
+      <div class="loc">OB CART · DRAWER 5 — C-SECTION KIT</div>
+      <ul class="eq">
+        <li><b>Scalpel, 10 blade</b> — the only truly essential item; in hand = start when the decision is made, everything else is nice-to-have</li>
+        <li>Bandage/curved Mayo scissors</li>
+        <li>Retractors</li>
+        <li>3 cord clamps + cord scissors</li>
+        <li>Dry packs / lap sponges</li>
+        <li>Splash prep (chlorhexidine or betadine) if immediately at hand — prep never delays the incision</li>
+      </ul>
+      <div class="grp">NEONATAL SIDE — SET UP IN PARALLEL</div>
+      <ul class="eq">
+        <li>Infant kit + airway/monitor from a separate drawer — two patients, two teams</li>
+      </ul>
+      <div class="grp">AFTER DELIVERY / ROSC</div>
+      <ul class="eq">
+        <li>Oxytocin 5 units IV</li>
+        <li>0 chromic suture, large needle</li>
+        <li>Skin stapler</li>
+      </ul>
+      <div class="fig">
+        <div class="figcap">FIG 1 · INCISION — VERTICAL MIDLINE, UMBILICUS TO SYMPHYSIS</div>
+        <svg viewBox="0 0 222 266" style="width:100%; height:auto; display:block;" role="img" aria-label="Vertical midline incision from umbilicus to symphysis for resuscitative hysterotomy">
+          <rect x="0" y="0" width="222" height="266" fill="#fffefb"/>
+          <path d="M 34 40 H 188 A 26 26 0 0 1 188 248 H 34 A 26 26 0 0 1 34 40 Z" fill="#fffefb" stroke="#16324f" stroke-width="2"/>
+          <ellipse cx="111" cy="150" rx="64" ry="76" fill="#eef3f9" stroke="#16324f" stroke-width="1.5" stroke-dasharray="5 4"/>
+          <circle cx="111" cy="132" r="5" fill="#16324f"/>
+          <text x="124" y="128" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10" fill="#5a6a78">UMBILICUS</text>
+          <rect x="83" y="222" width="56" height="9" rx="4" fill="#16324f"/>
+          <text x="146" y="231" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10" fill="#5a6a78">SYMPHYSIS</text>
+          <line x1="111" y1="106" x2="111" y2="220" stroke="#9b1c2e" stroke-width="5" stroke-linecap="round"/>
+          <text x="111" y="96" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="11" font-weight="700" fill="#9b1c2e">10 BLADE</text>
+        </svg>
+      </div>
+    </div>
+    <div>
+      <div class="colhead">STEPS</div>
+      <ol class="steps">
+        <li><b>Manual left uterine displacement</b> — continuous until delivery.</li>
+        <li>Call &ldquo;ED OB emergency,&rdquo; activate telehealth/OB support.</li>
+        <li><b>Decision:</b> no ROSC after one defibrillation or one round of trauma resuscitation &rarr; cut now. Team lead decides.</li>
+        <li>Recorder calls elapsed time every minute — target <b>incision by 4 minutes</b> of arrest, <b>baby out by 5</b>.</li>
+        <li>Splash prep with chlorhexidine or betadine — <b>never delay the incision for it</b>.</li>
+        <li>10 blade: <b>vertical midline incision</b>, above the umbilicus to the symphysis, deep to fascia.</li>
+        <li>Fingers separate the rectus muscles to expose the uterus; scissors on fascia only if needed.</li>
+        <li>Vertical uterine incision; extend with fingers or bandage scissors.</li>
+        <li>Extract the infant, note the time, hand to the neonatal team. Three cord clamps: two on the baby side, cut between them, one toward the placenta — the long segment is for a <b>cord gas (draw within &asymp;60 min)</b>.</li>
+        <li>Manually remove the placenta, wipe the cavity with gauze; close the uterus with running locked 0 chromic; staple the skin fast (hemostasis, not cosmetics); continue maternal ACLS — aortocaval compression is now relieved, recheck rhythm.</li>
+      </ol>
+      <div class="warn">CPR never stops during this procedure. This is time-critical — the fundus-at-umbilicus rule decides gestational age at the bedside; don&rsquo;t wait for ultrasound.</div>
+    </div>
+  </div>
+
+  <div class="keys">
+    <div class="key"><div class="v">&ge;umbilicus</div><div class="l">GESTATION &gt;20 WK (PROCEED)</div></div>
+    <div class="key"><div class="v">4 min</div><div class="l">INCISION BY</div></div>
+    <div class="key"><div class="v">5 min</div><div class="l">BABY OUT BY</div></div>
+    <div class="key"><div class="v">60 min</div><div class="l">CORD GAS — DRAW WITHIN</div></div>
+    <div class="key"><div class="v">10 blade</div><div class="l">ONLY ESSENTIAL ITEM</div></div>
+  </div>
+
+  <footer class="strip">
+    v0.1 · 2026-08-04 · personal/unofficial aid — not hospital policy · verify locally · lrhemergencymanual.net/posters/hysterotomy/<br>
+    Sources: The Procedures Course — Resuscitative Hysterotomy Reference, Alfred STAR Program (Alfred Health, Melbourne): gestation/fundal-height rule, equipment, incision technique, and cord-clamp/cord-gas technique. The full interactive checklist and timer for this procedure live in the <a href="../../ob-neonatal/?from=home#c10" target="_blank" rel="noopener">OB &amp; Neonatal Emergencies — full checklist</a> tool (card 10) — this poster is a condensed print reference for the OB cart, not a separate source of truth.
+  </footer>
+</div>
+
+<script>
+(function(){
+  var b=document.getElementById('printbtn');
+  if(b) b.addEventListener('click', function(){ window.print(); }, false);
+})();
+</script>
+</body>
+</html>

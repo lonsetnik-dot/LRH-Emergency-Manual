@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#005596">
+<title>Central Venous Catheter — Wall Poster · LRH Emergency Manual</title>
+<meta name="description" content="Printable letter-portrait wall poster: ultrasound-guided Seldinger central venous catheter placement — site selection, steps, depths.">
+<link rel="canonical" href="https://lrhemergencymanual.net/posters/cvc/">
+<style>
+  /* ===== SITE CONFIG (LRH) — accent + text edits for another site go here ===== */
+  /* accent for this poster: #2b5c93 (steel blue) · ink #16324f · red #9b1c2e · amber #8a6d1f */
+  @page { size: letter portrait; margin: 0.45in; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body { background:#eceff3; color:#16324f; font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+         -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .mono { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; }
+  .toolbar { width:8.5in; max-width:96vw; margin:14px auto 0; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  .toolbar a, .toolbar button { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px;
+         letter-spacing:0.1em; min-height:40px; display:inline-flex; align-items:center; padding:8px 14px; cursor:pointer; text-decoration:none; }
+  .toolbar a { color:#16324f; border:1px solid #b9c2cc; background:#fffefb; }
+  .toolbar button { color:#fffefb; background:#16324f; border:2px solid #16324f; font-weight:700; }
+  .sheet { width:8.5in; margin:12px auto 48px; background:#fff; box-shadow:0 6px 26px rgba(22,50,79,0.22); padding:0.45in; }
+  @media print {
+    body { background:#fff; }
+    .toolbar { display:none; }
+    .sheet { width:auto; margin:0; padding:0; box-shadow:none; }
+  }
+  .eyebrow { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10pt; font-weight:700; letter-spacing:0.22em; color:#2b5c93; }
+  h1 { margin:1pt 0 5pt; font-size:24pt; line-height:1.0; letter-spacing:-0.5pt; color:#16324f; text-transform:uppercase; }
+  .rule { height:5pt; background:#2b5c93; }
+  .indication { margin:4pt 0 5pt; font-size:10.3pt; line-height:1.26; }
+  .indication .tag { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:9pt; font-weight:700; letter-spacing:0.14em; color:#fff; background:#2b5c93; padding:1.5pt 5pt; margin-right:5pt; }
+  .cols { display:grid; grid-template-columns:1fr 1.2fr; gap:0.2in; }
+  .colhead { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10pt; font-weight:700; letter-spacing:0.14em; border-bottom:2pt solid #16324f; padding-bottom:2pt; margin-bottom:4pt; }
+  .loc { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:7.6pt; letter-spacing:0.06em; color:#16324f; background:#eef1f5; border-left:3pt solid #2b5c93; padding:3pt 5pt; margin:0 0 4pt; }
+  ul.eq { list-style:none; margin:0; padding:0; }
+  ul.eq li { font-size:8.7pt; line-height:1.16; padding:1.3pt 0 1.3pt 15pt; text-indent:-15pt; }
+  ul.eq li::before { content:"\25A1\00A0\00A0"; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5pt; color:#2b5c93; }
+  .grp { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:7.2pt; font-weight:700; letter-spacing:0.14em; color:#5a6a78; margin:4pt 0 1pt; }
+  ol.steps { list-style:none; margin:0; padding:0; counter-reset:st; }
+  ol.steps li { counter-increment:st; font-size:8.6pt; line-height:1.15; margin:0 0 2.6pt; padding-left:17pt; position:relative; }
+  ol.steps li::before { content:counter(st); position:absolute; left:0; top:0.5pt; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:8.6pt; font-weight:700; color:#2b5c93; }
+  .warn { border:1.5pt solid #9b1c2e; color:#9b1c2e; font-size:8.3pt; line-height:1.2; padding:3pt 5pt; margin-top:2pt; font-weight:700; }
+  .keys { display:flex; border:2pt solid #16324f; margin-top:6pt; }
+  .key { flex:1; text-align:center; padding:5pt 2pt 4pt; border-left:1.5pt solid #d7dde3; }
+  .key:first-child { border-left:none; }
+  .key .v { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14pt; font-weight:800; color:#2b5c93; white-space:nowrap; }
+  .key .l { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:6.3pt; letter-spacing:0.08em; color:#5a6a78; margin-top:1pt; }
+  .fig { border:1.5pt solid #d7dde3; margin-top:5pt; }
+  .figcap { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:7.2pt; letter-spacing:0.08em; color:#2b5c93; padding:3pt 5pt 0; }
+  footer.strip { border-top:1.5pt solid #16324f; margin-top:5pt; padding-top:3pt; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:6.6pt; line-height:1.35; letter-spacing:0.02em; color:#5a6a78; }
+  footer.strip a { color:#16324f; text-decoration:underline; }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <a href="../../">&#9664; LRH EMERGENCY MANUAL</a>
+  <button type="button" id="printbtn">PRINT — LETTER PORTRAIT</button>
+</div>
+
+<div class="sheet">
+  <div class="eyebrow">LRH · EMERGENCY DEPARTMENT</div>
+  <h1>Central Venous Catheter (CVC)</h1>
+  <div class="rule"></div>
+
+  <p class="indication"><span class="tag">INDICATION</span>Central venous access for drugs / monitoring / volume resuscitation / dialysis when peripheral access is inadequate — ultrasound-guided Seldinger technique, full sterile barrier precautions.</p>
+
+  <div class="cols">
+    <div>
+      <div class="colhead">EQUIPMENT</div>
+      <div class="loc">RESUS BAY · CVC KIT + ULTRASOUND</div>
+      <ul class="eq">
+        <li><b>Catheter choice:</b> triple-lumen 7 Fr 15&#8211;20 cm (drugs/monitoring) · 8.5 Fr introducer sheath/Cordis/MAC (volume resuscitation) · 12 Fr dialysis catheter where needed</li>
+        <li>Kit includes: 18g introducer needle + syringe, J-tip guidewire, dilator</li>
+        <li>Ultrasound + high-frequency linear probe, sterile probe cover and gel</li>
+        <li>Full barrier: sterile gown/gloves/cap/mask, large drape, dressing tray, 600 mL bowl + 150 mL gallipot for flush</li>
+        <li>Skin prep: chlorhexidine 2% in 70% alcohol or povidone-iodine, 2&times; 15 cm foam applicators</li>
+        <li>Disposable 10/11 scalpel; syringes (2&times;10 mL + 1&times;5 mL Luer-lock); needles 18g blunt/21g/25g; lidocaine 1%</li>
+        <li><b>To finish:</b> suture kit with 3/0 non-absorbable, gauze, Biopatch, Tegaderm 10&times;12 (large) + 6&times;7 (small), non-return caps &times;4 (one per lumen), saline flushes</li>
+      </ul>
+      <div class="fig">
+        <div class="figcap">FIG 1 · RIGHT IJ ACCESS UNDER ULTRASOUND</div>
+        <svg viewBox="0 0 360 220" style="width:100%; height:auto; display:block;" role="img" aria-label="Right internal jugular vein access under ultrasound, showing carotid artery, internal jugular vein anterolateral to the carotid, ultrasound probe on the skin, and the needle entering at roughly 45 degrees">
+          <rect x="0" y="0" width="360" height="220" fill="#fffefb"/>
+          <!-- neck landmark context -->
+          <path d="M 26 18 C 60 40 70 90 58 150 C 52 172 44 186 34 196" fill="none" stroke="#16324f" stroke-width="1.2" stroke-dasharray="4,3"/>
+          <text x="14" y="14" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="7.5" fill="#5a6a78">SCM</text>
+          <path d="M 40 196 L 150 208" fill="none" stroke="#16324f" stroke-width="1.2" stroke-dasharray="4,3"/>
+          <text x="86" y="216" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="7.5" fill="#5a6a78">CLAVICLE</text>
+          <!-- skin surface -->
+          <line x1="60" y1="50" x2="330" y2="50" stroke="#16324f" stroke-width="2"/>
+          <text x="62" y="42" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="7.5" fill="#5a6a78">SKIN</text>
+          <!-- US probe on skin -->
+          <rect x="196" y="32" width="64" height="16" rx="2" fill="none" stroke="#16324f" stroke-width="2.2"/>
+          <line x1="196" y1="48" x2="196" y2="50" stroke="#16324f" stroke-width="2.2"/>
+          <line x1="260" y1="48" x2="260" y2="50" stroke="#16324f" stroke-width="2.2"/>
+          <text x="264" y="42" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9" font-weight="700" fill="#16324f">US PROBE</text>
+          <!-- IJ vein (anterolateral, more superficial) -->
+          <ellipse cx="248" cy="102" rx="27" ry="21" fill="none" stroke="#2b5c93" stroke-width="2.5"/>
+          <text x="284" y="98" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#2b5c93">IJ VEIN</text>
+          <text x="284" y="110" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="7" fill="#5a6a78">anterolateral,</text>
+          <text x="284" y="121" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="7" fill="#5a6a78">compressible</text>
+          <!-- Carotid artery (deeper, medial) -->
+          <circle cx="196" cy="132" r="17" fill="none" stroke="#9b1c2e" stroke-width="2.5"/>
+          <text x="86" y="128" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#9b1c2e">CAROTID A.</text>
+          <text x="98" y="140" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="7" fill="#5a6a78">do not compress</text>
+          <line x1="180" y1="130" x2="160" y2="128" stroke="#9b1c2e" stroke-width="1.2"/>
+          <!-- needle trajectory ~45deg, in-plane, entering vein -->
+          <line x1="300" y1="176" x2="252" y2="88" stroke="#16324f" stroke-width="2.2"/>
+          <path d="M 252 88 L 260 96 L 246 100 Z" fill="#16324f"/>
+          <path d="M 262 50 A 20 20 0 0 0 279 62" fill="none" stroke="#16324f" stroke-width="1.2"/>
+          <text x="280" y="66" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9" font-weight="700" fill="#16324f">&#126;45&#176;</text>
+          <text x="220" y="192" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="8" fill="#16324f" font-weight="700">NEEDLE</text>
+          <text x="220" y="203" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="7" fill="#5a6a78">track tip in-plane,</text>
+          <text x="220" y="213" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="7" fill="#5a6a78">aspirate for dark flash</text>
+        </svg>
+      </div>
+    </div>
+    <div>
+      <div class="colhead">STEPS</div>
+      <ol class="steps">
+        <li><b>Site:</b> right IJ preferred (straight run to SVC, ultrasound-friendly); subclavian has lowest infection rate but highest pneumothorax risk; femoral fastest in arrest. If the IJ attempt fails, next attempt stays <b>ipsilateral</b> — never risk bilateral pneumothorax.</li>
+        <li><b>Position:</b> supine, head neutral (cervical collar on if trauma); Trendelenburg for IJ/subclavian, head rotated slightly away. Pre-scan the vein: compressible, adequate calibre.</li>
+        <li>Full sterile prep and drape; sheath the probe; flush all lumens; anesthetize skin and track.</li>
+        <li>Puncture under real-time ultrasound at &#126;45&deg; (shallower for subclavian), tracking the needle tip, aspirating until dark venous flash.</li>
+        <li>Drop the angle, stabilize, remove the syringe (occlude the hub) and thread the J-wire — <b>never force it</b>, stop at &#126;15 cm. Ectopy on monitor &rarr; withdraw wire a few cm.</li>
+        <li><b>NEVER let go of the wire</b> — remove the needle over it.</li>
+        <li>Confirm the wire in the vein in <b>transverse AND longitudinal</b> planes before dilating.</li>
+        <li>Nick the skin &#126;0.5 cm beside the wire; dilate — only the first 1/3&#8211;1/2 of the dilator is needed.</li>
+        <li>Advance the catheter over the wire to target depth (see key numbers); withdraw the wire out of the distal port, check the whole wire is out.</li>
+        <li>Aspirate then flush every lumen, non-return cap on each; secure with two sutures + Biopatch + Tegaderm; <b>CXR</b> to confirm tip at cavoatrial junction, no pneumothorax.</li>
+      </ol>
+      <div class="warn">Losing the guidewire intravascularly is the classic disaster — one hand on the wire at all times, count it out at the end. Dilating before two-plane wire confirmation risks arterial dilation, the injury that matters.</div>
+    </div>
+  </div>
+
+  <div class="keys">
+    <div class="key"><div class="v">&#126;15 cm</div><div class="l">WIRE IN</div></div>
+    <div class="key"><div class="v">0.5 cm</div><div class="l">SKIN NICK</div></div>
+    <div class="key"><div class="v">13&#8211;17 cm</div><div class="l">DEPTH R/L IJ &amp; SC (&plusmn;2)</div></div>
+    <div class="key"><div class="v">INR &gt;3 / PLT &lt;20K</div><div class="l">CAUTION</div></div>
+    <div class="key"><div class="v">2 PLANES</div><div class="l">CONFIRM WIRE B4 DILATE</div></div>
+  </div>
+
+  <footer class="strip">
+    v0.1 · 2026-08-04 · personal/unofficial aid — not hospital policy · verify locally · lrhemergencymanual.net/posters/cvc/<br>
+    Sources: The Procedures Course — CVC Reference, Alfred STAR Program (Alfred Health): equipment kit and positioning. Site selection, Seldinger steps, depths, and coagulopathy thresholds paraphrased from <a href="https://www.ncbi.nlm.nih.gov/books/NBK557798/" target="_blank" rel="noopener">StatPearls — Central Venous Catheterization</a>, <a href="https://wikem.org/wiki/Central_venous_catheterization" target="_blank" rel="noopener">wikem.org — Central venous catheterization</a>, and <a href="https://litfl.com/central-venous-catheters" target="_blank" rel="noopener">litfl.com — Central Venous Catheters</a>. Depth formulas are approximations (&plusmn;2 cm) — confirm tip position on CXR.
+  </footer>
+</div>
+
+<script>
+(function(){
+  var b=document.getElementById('printbtn');
+  if(b) b.addEventListener('click', function(){ window.print(); }, false);
+})();
+</script>
+</body>
+</html>

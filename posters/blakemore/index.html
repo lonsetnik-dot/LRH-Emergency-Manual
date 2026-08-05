@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#005596">
+<title>Blakemore Tube — Wall Poster · LRH Emergency Manual</title>
+<meta name="description" content="Printable letter-portrait wall poster: Sengstaken-Blakemore / Minnesota tube balloon tamponade for massive variceal hemorrhage.">
+<link rel="canonical" href="https://lrhemergencymanual.net/posters/blakemore/">
+<style>
+  /* ===== SITE CONFIG (LRH) — accent + text edits for another site go here ===== */
+  /* accent for this poster: #0f7a86 (teal) · ink #16324f · red #9b1c2e · amber #8a6d1f */
+  @page { size: letter portrait; margin: 0.45in; }
+  * { box-sizing: border-box; }
+  html, body { margin:0; padding:0; }
+  body { background:#eceff3; color:#16324f; font-family:"Helvetica Neue",Helvetica,Arial,sans-serif;
+         -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+  .mono { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; }
+  .toolbar { width:8.5in; max-width:96vw; margin:14px auto 0; display:flex; justify-content:space-between; align-items:center; gap:10px; }
+  .toolbar a, .toolbar button { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px;
+         letter-spacing:0.1em; min-height:40px; display:inline-flex; align-items:center; padding:8px 14px; cursor:pointer; text-decoration:none; }
+  .toolbar a { color:#16324f; border:1px solid #b9c2cc; background:#fffefb; }
+  .toolbar button { color:#fffefb; background:#16324f; border:2px solid #16324f; font-weight:700; }
+  .sheet { width:8.5in; margin:12px auto 48px; background:#fff; box-shadow:0 6px 26px rgba(22,50,79,0.22); padding:0.45in; }
+  @media print {
+    body { background:#fff; }
+    .toolbar { display:none; }
+    .sheet { width:auto; margin:0; padding:0; box-shadow:none; }
+  }
+  .eyebrow { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10pt; font-weight:700; letter-spacing:0.22em; color:#0f7a86; }
+  h1 { margin:1pt 0 5pt; font-size:24pt; line-height:1.0; letter-spacing:-0.5pt; color:#16324f; text-transform:uppercase; }
+  .rule { height:5pt; background:#0f7a86; }
+  .indication { margin:4pt 0 5pt; font-size:10.3pt; line-height:1.26; }
+  .indication .tag { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:9pt; font-weight:700; letter-spacing:0.14em; color:#fff; background:#0f7a86; padding:1.5pt 5pt; margin-right:5pt; }
+  .cols { display:grid; grid-template-columns:1fr 1.2fr; gap:0.2in; }
+  .colhead { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10pt; font-weight:700; letter-spacing:0.14em; border-bottom:2pt solid #16324f; padding-bottom:2pt; margin-bottom:4pt; }
+  .loc { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:7.6pt; letter-spacing:0.06em; color:#16324f; background:#eef1f5; border-left:3pt solid #0f7a86; padding:3pt 5pt; margin:0 0 4pt; }
+  ul.eq { list-style:none; margin:0; padding:0; }
+  ul.eq li { font-size:8.7pt; line-height:1.16; padding:1.3pt 0 1.3pt 15pt; text-indent:-15pt; }
+  ul.eq li::before { content:"\25A1\00A0\00A0"; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5pt; color:#0f7a86; }
+  .grp { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:7.2pt; font-weight:700; letter-spacing:0.14em; color:#5a6a78; margin:4pt 0 1pt; }
+  ol.steps { list-style:none; margin:0; padding:0; counter-reset:st; }
+  ol.steps li { counter-increment:st; font-size:8.6pt; line-height:1.15; margin:0 0 2.6pt; padding-left:17pt; position:relative; }
+  ol.steps li::before { content:counter(st); position:absolute; left:0; top:0.5pt; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:8.6pt; font-weight:700; color:#0f7a86; }
+  .warn { border:1.5pt solid #9b1c2e; color:#9b1c2e; font-size:8.3pt; line-height:1.2; padding:3pt 5pt; margin-top:2pt; font-weight:700; }
+  .keys { display:flex; border:2pt solid #16324f; margin-top:6pt; }
+  .key { flex:1; text-align:center; padding:5pt 2pt 4pt; border-left:1.5pt solid #d7dde3; }
+  .key:first-child { border-left:none; }
+  .key .v { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14pt; font-weight:800; color:#0f7a86; white-space:nowrap; }
+  .key .l { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:6.3pt; letter-spacing:0.08em; color:#5a6a78; margin-top:1pt; }
+  .fig { border:1.5pt solid #d7dde3; margin-top:5pt; }
+  .figcap { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:7.2pt; letter-spacing:0.08em; color:#0f7a86; padding:3pt 5pt 0; }
+  footer.strip { border-top:1.5pt solid #16324f; margin-top:5pt; padding-top:3pt; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:6.6pt; line-height:1.35; letter-spacing:0.02em; color:#5a6a78; }
+</style>
+</head>
+<body>
+<div class="toolbar">
+  <a href="../../">&#9664; LRH EMERGENCY MANUAL</a>
+  <button type="button" id="printbtn">PRINT — LETTER PORTRAIT</button>
+</div>
+
+<div class="sheet">
+  <div class="eyebrow">LRH · EMERGENCY DEPARTMENT</div>
+  <h1>Blakemore Tube — Balloon Tamponade</h1>
+  <div class="rule"></div>
+
+  <p class="indication"><span class="tag">INDICATION</span>Massive, uncontrolled upper-GI hemorrhage from esophageal/gastric varices when endoscopy is <b>unavailable, delayed, or failed</b> — a temporizing bridge to endoscopy or TIPS, not definitive therapy.</p>
+
+  <div class="cols">
+    <div>
+      <div class="colhead">EQUIPMENT</div>
+      <div class="loc">RESUS BAY CABINET · GI HEMORRHAGE / BLAKEMORE KIT</div>
+      <ul class="eq">
+        <li>Sengstaken-Blakemore tube (3-lumen, dual balloon) <i>or</i> Minnesota tube (4-lumen, adds esophageal aspiration)</li>
+        <li>Separate NG/OG tube — for proximal (above-balloon) aspiration</li>
+        <li>Two <b>60 mL</b> syringes (gastric port + esophageal port)</li>
+        <li>3-way stopcocks &times;2; luer-lock caps</li>
+        <li>Insufflation manometer</li>
+        <li>Basin of water — leak-test <b>both</b> balloons before insertion</li>
+        <li>Water-soluble lubricant; marking pen</li>
+        <li>Roller gauze / umbilical tape + <b>1 L IV fluid bag</b> — traction weight</li>
+        <li>IV pole or overhead pulley — traction line</li>
+        <li>Suction canisters &times;2 (gastric port + proximal NG/OG)</li>
+      </ul>
+      <div class="grp">AIRWAY — BEFORE ANYTHING ELSE</div>
+      <ul class="eq">
+        <li>Full RSI / intubation setup — mandatory; do not insert in a non-intubated patient</li>
+      </ul>
+      <div class="grp">AT THE BEDSIDE, ALWAYS</div>
+      <ul class="eq">
+        <li><b>Scissors</b> taped within reach for the entire dwell time</li>
+      </ul>
+      <div class="fig">
+        <div class="figcap">FIG 1 · TUBE IN PLACE — BALLOONS &amp; TRACTION</div>
+        <svg viewBox="0 0 380 250" style="width:100%; height:auto; display:block;" role="img" aria-label="Blakemore tube in place with esophageal and gastric balloons and traction weight">
+          <rect x="0" y="0" width="380" height="250" fill="#fffefb"/>
+          <!-- mouth mark + tube top -->
+          <text x="10" y="17" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="8.5" font-weight="700" fill="#16324f">50 cm AT LIPS</text>
+          <line x1="90" y1="22" x2="90" y2="200" stroke="#16324f" stroke-width="4" stroke-linecap="round"/>
+          <!-- traction cord + pulley + weight, isolated top-right -->
+          <line x1="90" y1="20" x2="338" y2="20" stroke="#16324f" stroke-width="2"/>
+          <circle cx="338" cy="20" r="8" fill="none" stroke="#16324f" stroke-width="2.5"/>
+          <line x1="338" y1="28" x2="338" y2="48" stroke="#16324f" stroke-width="2"/>
+          <rect x="326" y="48" width="24" height="24" rx="2" fill="none" stroke="#16324f" stroke-width="2.5"/>
+          <text x="296" y="90" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10" font-weight="700" fill="#16324f" text-anchor="middle">&asymp;1 kg</text>
+          <text x="296" y="102" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="7" fill="#5a6a78" text-anchor="middle">1 L IVF · TRACTION</text>
+          <!-- esophageal balloon -->
+          <ellipse cx="90" cy="95" rx="14" ry="32" fill="none" stroke="#9b1c2e" stroke-width="2.5"/>
+          <text x="120" y="82" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9" font-weight="700" fill="#9b1c2e">ESOPHAGEAL</text>
+          <text x="120" y="94" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9" font-weight="700" fill="#9b1c2e">30 &#8594; &#8804;45 mmHg</text>
+          <text x="120" y="106" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="7" fill="#5a6a78">only if bleeding continues</text>
+          <!-- diaphragm -->
+          <path d="M20 146 Q90 134 340 146" fill="none" stroke="#8a6d1f" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <text x="300" y="140" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="7.5" fill="#8a6d1f">DIAPHRAGM</text>
+          <!-- gastric balloon -->
+          <circle cx="90" cy="182" r="22" fill="none" stroke="#0f7a86" stroke-width="2.5"/>
+          <text x="120" y="172" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9" font-weight="700" fill="#0f7a86">GASTRIC</text>
+          <text x="120" y="184" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9" font-weight="700" fill="#0f7a86">250&#8211;300 mL</text>
+          <text x="120" y="196" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="7" fill="#5a6a78">seated at GE junction</text>
+          <line x1="90" y1="204" x2="90" y2="218" stroke="#16324f" stroke-width="4" stroke-linecap="round"/>
+          <text x="10" y="234" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="8" fill="#9b1c2e" font-weight="700">NEVER inflate the gastric balloon unless confirmed past the GEJ —</text>
+          <text x="10" y="246" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="8" fill="#9b1c2e" font-weight="700">inflation in the esophagus is almost always fatal.</text>
+        </svg>
+      </div>
+    </div>
+    <div>
+      <div class="colhead">STEPS</div>
+      <ol class="steps">
+        <li><b>Airway first:</b> intubate. Do not attempt this procedure in a non-intubated patient — aspiration risk is extreme.</li>
+        <li>Leak-test <b>both</b> balloons underwater before insertion; lubricate the tube generously.</li>
+        <li>Insert orally to the <b>50 cm</b> mark. Never force advancement.</li>
+        <li><b>Confirm gastric position:</b> inject air via the gastric port while auscultating the epigastrium; inflate gastric balloon with an initial <b>50 mL</b> air. Get a CXR to confirm position before full inflation.</li>
+        <li>Complete gastric inflation in <b>50&#8211;100 mL</b> steps to <b>250&#8211;300 mL</b> (Sengstaken-Blakemore) or <b>450&#8211;500 mL</b> (Minnesota). <b>STOP</b> if pressure rises &gt;15 mmHg above the pre-insertion reading — suspect esophageal placement and deflate immediately.</li>
+        <li>Clamp/cap the gastric port; withdraw gently until resistance is felt — balloon seated against the GE junction.</li>
+        <li><b>Apply traction:</b> tie roller gauze/tape to the tube over a pulley or IV pole; hang a <b>1 L IV fluid bag (&asymp;1 kg)</b> for constant inline traction. Mark and record tube depth at the lips.</li>
+        <li>Start continuous suction on the gastric port. Place the separate NG/OG tube for proximal aspiration above the gastric balloon.</li>
+        <li>Bleeding continues despite an adequately inflated, traction-seated gastric balloon &rarr; inflate the esophageal balloon (SB tube) to <b>30 mmHg</b> via manometer; titrate up in <b>5 mmHg</b> steps, <b>never exceeding 45 mmHg</b>.</li>
+        <li>Deflate the esophageal balloon intermittently every <b>6&#8211;8 h</b>; total dwell <b>&le;24 h</b>. This buys time only — call GI/surgery for definitive therapy (endoscopy/TIPS) immediately, not after.</li>
+      </ol>
+      <div class="warn">Scissors at the bedside, always. Sudden airway obstruction or respiratory distress = cut all lumens and remove the tube immediately.</div>
+    </div>
+  </div>
+
+  <div class="keys">
+    <div class="key"><div class="v">250&#8211;300 mL</div><div class="l">GASTRIC BALLOON (SB)</div></div>
+    <div class="key"><div class="v">&le;45 mmHg</div><div class="l">ESOPHAGEAL MAX</div></div>
+    <div class="key"><div class="v">&asymp;1 kg</div><div class="l">TRACTION WEIGHT</div></div>
+    <div class="key"><div class="v">50 cm</div><div class="l">INSERTION MARK</div></div>
+    <div class="key"><div class="v">&le;24 h</div><div class="l">MAX DWELL</div></div>
+  </div>
+
+  <footer class="strip">
+    v0.1 · 2026-08-04 · personal/unofficial aid — not hospital policy · verify locally · lrhemergencymanual.net/posters/blakemore/<br>
+    Sources: traction weight, esophageal balloon pressure, deflation interval, and max dwell time follow WikEM — Balloon Tamponade for Massive GI Bleeding and StatPearls (NCBI Bookshelf NBK558924) — Sengstaken-Blakemore Tube, which agree (1 kg / 1000 mL bag, 30&rarr;45 mmHg in 5 mmHg steps, deflate q6&ndash;8h, &le;24h dwell). LITFL &mdash; Sengstaken-Blakemore and Minnesota Tubes gives lower figures (500 mL bag, up to 24&ndash;36h dwell, deflate gastric balloon at 12h, 40 mmHg if required) &mdash; not used here; this poster follows WikEM/StatPearls throughout.
+  </footer>
+</div>
+
+<script>
+(function(){
+  var b=document.getElementById('printbtn');
+  if(b) b.addEventListener('click', function(){ window.print(); }, false);
+})();
+</script>
+</body>
+</html>
