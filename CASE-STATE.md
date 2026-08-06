@@ -19,20 +19,22 @@ Every key here is device-local and PHI-free — see the PHI guard note under
 |---|---|---|---|---|
 | `lrh-case-wtkg` | number (string) | codes, peds | codes, peds | The one patient weight used for every weight-based dose in codes and peds. **Not** `lrh-ob-weight` — see Tool-local keys below, that's a different concept (neonatal equipment sizing in OB). |
 | `lrh-case-wtsrc` | `'measured'` \| `'estimated'` | peds | peds | Provenance of `lrh-case-wtkg`. Codes doesn't write this yet — it has no provenance UI (WS2.2 will port peds' weight bar into codes; until then codes' weight entries leave this untouched). |
+| `lrh-case-ageyrs` | number (string) | codes | codes | Patient age in years, entered alongside weight in codes' weight bar. Added by the arrest-card merge (codes card 01 now covers both adult ACLS and pediatric PALS in one interface) so the pediatric-mode trigger can read age as well as weight — see `lrh-case-adultoverride` below. Not yet written by peds (peds' own age-based weight *estimate* stays a one-shot calculation, not a persisted age). |
+| `lrh-case-adultoverride` | `'1'` \| absent | codes | codes | The "no, this is an adult" override on codes' merged arrest card (card 01). Weight/age below the pediatric trigger (`SITE.arrestTrigger` in `codes/index.html`: weight < 50 kg OR age ≤ 12 y) normally switches that card into weight-based PALS dosing; this key, when `'1'`, forces it back to adult ACLS dosing even though the trigger is met — a deliberate, reversible, always-visible override (tapping it again clears the key), because weight alone can't reliably distinguish a small child from a small/frail adult. Absent = not overridden (the default). Namespaced under `lrh-case-` on purpose so RESET FOR NEXT CASE and the inactivity auto-clear both already sweep it with no extra code. |
 | `lrh-case-startms` | epoch ms (string) | codes | codes | First action of the case. **Gap:** only codes writes this today (it's a direct rename of codes' pre-existing `codeStartMs`). ob-neonatal and peds don't have an equally unambiguous "the case just began" hook yet — wiring them in is future work, not WS0. |
 | `lrh-case-clocks` | `{ name: epochMs }` | codes, ob, peds | codes, ob, peds | One shared namespace. See **Clock names** below for what's live and who uses each. |
 | `lrh-case-counts` | `{ name: int }` | codes, peds | codes, peds | One shared namespace. See **Count names** below. |
 | `lrh-case-checks` | `{ "<tool>:<data-k>": true }` | codes, ob, peds, trauma | codes, ob, peds, trauma | One map, every tool's checkboxes. The `<tool>:` prefix is applied at the storage layer only (in each tool's `CASESTATE.setChecked`/`isChecked`) — **no card's HTML `data-k` attribute was renamed**, so two tools' own numbering (codes' `"01-1"`, ob's `"02-0-0"`, peds' `"p01-1"`, trauma's `"c01-1"`) can never collide in the shared map even though they collide in principle. As of WS2.1, all four tools' checkboxes are keyed and persisted; every `input[type=checkbox]` in the repo now carries a `data-k`. Trauma's `CASESTATE` module is deliberately partial — checks only, no weight/clocks/log yet (those are WS7 scope, see the note at the end of this file). |
 | `lrh-case-log` | `[{ tMs, tool, card, label, k?, el? }]` | codes, ob, peds | codes, ob, peds | One flat, time-ordered array for the whole case. `tool` is `'codes'`\|`'ob'`\|`'peds'`. `k` and `el` are optional fields OB's log lane uses internally (correlating an entry back to the checkbox that logged it, and a clock-relative display string) — other tools ignore them. **PHI guard:** every tool's `CASESTATE.addLog()` is the *only* function allowed to write this key, and it refuses (drops, with a console warning) any label matching a weight-shaped number (`\d+(\.\d+)?\s*(kg\|lb)`) or a 6+ digit run (MRN/DOB/phone-shaped). As of WS2.3, each tool's "CASE TIMELINE" modal (button renamed from SUMMARY) shows *every* tool's events in one merged, time-ordered list, each row tagged with its source tool — not just its own entries. OB's copy sorts by an HH:MM "wall" string (its own events already worked this way, driven by user-entered birth time); other tools' real `tMs` entries convert to the same HH:MM shape to interleave correctly. **Known precision limit:** the sort key is minute-granularity, so two events logged in different tools within the same minute can display in insertion order rather than true sub-minute order — acceptable given OB's own events never had sub-minute precision to begin with. |
-| `lrh-case-lastactive` | epoch ms (string) | peds | peds | **Gap:** only peds writes this today (a rename of peds' pre-existing 60-minute stale-case guard). Making every tool refresh it, and making the resulting auto-clear genuinely manual-wide, is WS2.5. **Safety note (WS0):** because peds' guard can now clear shared clocks/counts/weight that codes or ob might be actively using, the guard was changed to check `CASESTATE.anyClockRunning()` across *all* tools' clocks before it fires — if anything in `lrh-case-clocks` is running, the guard is fully suppressed, even past the 60-minute mark. This is the minimum safety fix the migration itself required; it is not the full WS2.5 feature. |
+| `lrh-case-lastactive` | epoch ms (string) | codes, ob, peds, trauma | codes, ob, peds, trauma | As of WS2.5, every tool touches this on load and on every click — not just peds. Drives each tool's inactivity auto-clear guard: past 60 minutes stale AND `CASESTATE.anyClockRunning()` false (checked across *all* tools' `lrh-case-clocks`, not just the current one) triggers the same `lrh-` prefix sweep RESET FOR NEXT CASE uses (WS2.4), with a dismissible banner instead of a silent clear. See the "Inactivity auto-clear" section below. |
 | `lrh-pref-mute` | `'0'` \| `'1'` | codes | codes | A **preference**, not case state — survives RESET. Only codes persists a mute setting today; ob-neonatal's mute is in-memory only (resets on reload) and peds has no mute control. Extending persistence to ob/peds is new functionality, not migration, and was left out of WS0. |
 
 ### Clock names currently in `lrh-case-clocks`
 
 | Name | Set by | Meaning |
 |---|---|---|
-| `cprCycle` | codes (c01/c02), peds (p01) | Time of the last shock / last rhythm check — drives the 2-min rhythm-check cue. Shared deliberately: codes and peds track the *same* arrest. |
-| `epi` | codes (c01/c02), peds (p01) | Time of the most recent (IV/IO) epi dose — drives the 3–5 min "epi due" cue. Shared with the same patient-continuity intent as `cprCycle`. |
+| `cprCycle` | codes (c01) | Time of the last shock / last rhythm check — drives the 2-min rhythm-check cue. Formerly shared with peds' own arrest card (p01); as of the arrest-card merge, codes' card 01 is the one arrest interface for both populations (peds' p01 was retired — see `CLAUDE.md`/commit history), so only codes writes this now. |
+| `epi` | codes (c01) | Time of the most recent (IV/IO) epi dose — drives the 3–5 min "epi due" cue. Same retirement note as `cprCycle` above. |
 | `rosc` | codes | The ROSC instant. Freezes the c01/c02 clocks (protected behavior — do not touch) and drives the live-counting-up "time since ROSC" clock on Codes card 22. |
 | `seizure` | codes (c13), peds (p10) | Seizure/status-epilepticus clock start. Shared for the same reason as `cprCycle`/`epi`. |
 | `pph` | ob (c06) | Postpartum hemorrhage clock start. |
@@ -52,7 +54,7 @@ edit risk for unclear present cross-tool value) and `hrcycle` (a compound
 | Name | Set by | Meaning |
 |---|---|---|
 | `shocks` | codes | Defibrillation count, drives ZOLL joules-per-shock escalation. |
-| `epi` | codes (c01/c02), peds (p01) | Arrest **IV/IO** epi dose count. Shared — same patient, same drug, same route, across codes and peds' own arrest cards. **Not** the same thing as peds' anaphylaxis **IM** epi-pen count (`lrh-peds-epidoses`, tool-local — see below); mixing those would itself be a safety bug (a clinician seeing "epi: 2" needs to know if that's 2 IM epi-pens or 2 IV pushes). |
+| `epi` | codes (c01) | Arrest **IV/IO** epi dose count. Formerly shared with peds' own arrest card (p01); as of the arrest-card merge only codes' card 01 writes this (see the `cprCycle`/`epi` clock notes above). **Not** the same thing as peds' anaphylaxis **IM** epi-pen count (`lrh-peds-epidoses`, tool-local — see below); mixing those would itself be a safety bug (a clinician seeing "epi: 2" needs to know if that's 2 IM epi-pens or 2 IV pushes). |
 | `amio` | codes | Amiodarone dose count, drives the 300 mg → 150 mg → max-reached sequence. |
 
 ## Tool-local keys (documented so nothing is orphaned; deliberately not in the shared contract)
@@ -187,11 +189,38 @@ PPH clock) is confirmed still present after CANCEL, and gone from all three — 
 per-card clock/counter tested (codes' epi-push counter, MTP tally, ETCO2 timestamp) —
 after CLEAR CASE, while `lrh-pref-mute` survives.
 
+Note: because the confirm-gated clear reloads the page, and every tool's WS2.5 guard (next
+section) touches `lrh-case-lastactive` again on load, that one key reappears immediately
+after a CLEAR CASE — expected, not a leak. It carries no case data, only "when was this
+device last used," and a freshly-cleared case is, correctly, active right now.
+
+## Inactivity auto-clear, manual-wide (WS2.5)
+
+`lrh-case-lastactive` is now touched by every tool — on load and on every tap anywhere in
+that tool (`document.addEventListener('click', ..., true)`) — not just peds. Each tool
+runs the same guard before any of its own per-card modules read state: if the shared
+`lastactive` is more than 60 minutes old AND `CASESTATE.anyClockRunning()` is false (no
+clock running in `lrh-case-clocks`, checked across every tool, not just this one), it runs
+the identical `lrh-` prefix sweep RESET FOR NEXT CASE uses (WS2.4, preserving `lrh-pref-`)
+and sets a flag that makes a dismissible amber banner appear — "Cleared — no activity
+anywhere in the manual for over an hour" — instead of clearing silently. `anyClockRunning`
+suppresses the clear regardless of how stale `lastactive` is, so a case actively running in
+one tool is never interrupted just because a different tool sat idle.
+
+This closes the gap this section used to describe: before WS2.5, only peds ever touched
+`lastactive`, so a case whose second half ran in Codes never reset peds' own idle clock,
+and Codes/OB/Trauma never went stale on their own at all. `trauma` has no clocks or log of
+its own yet (checks-only, per WS7 scope) but still participates — it reads the *shared*
+`lrh-case-clocks` for `anyClockRunning()`, touches `lastactive`, and runs the same sweep,
+since a stale trauma checklist from a prior patient is exactly the kind of state this guard
+exists to prevent.
+
+Verified with Playwright: every tool touches `lastactive` on load; backdating it 90 minutes
+with a clock running clears nothing (in any tool); backdating it 90 minutes with nothing
+running clears everything except `lrh-pref-mute` and shows the banner; activity in one tool
+(codes) keeps a different tool (peds) from treating the case as stale when opened next.
+
 ## Known, accepted scope gaps (see the notes above for reasoning)
 
 - `lrh-case-startms` only wired into codes.
-- `lrh-case-lastactive` only wired into peds (with the cross-tool `anyClockRunning()`
-  safety suppression described above) — codes, ob, and trauma don't call `touchActive()`
-  anywhere yet, so the inactivity auto-clear (WS2.5) only ever fires from peds' own idle
-  timer today, not from time spent elsewhere in the app. Tracked as WS2.5.
 - `lrh-pref-mute` only wired into codes.
