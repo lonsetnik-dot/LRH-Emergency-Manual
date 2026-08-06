@@ -102,6 +102,9 @@
   .final .detail b{font-weight:700}
   .final.pending{background:#f5f8fb; border-color:var(--line); color:var(--muted)}
 
+  /* ---- STEMI result: link-over to the full cognitive aid on the Codes STEMI card ---- */
+  .xferlink{margin-top:12px; padding-top:11px; border-top:1px solid rgba(0,0,0,.15); font-size:.88rem}
+
   .btnrow{display:flex; gap:10px; margin-top:14px}
   button.btn{background:#fff; border:1.5px solid var(--brand-primary); color:var(--brand-primary);
     font-weight:600; font-size:.85rem; padding:9px 18px; border-radius:8px; cursor:pointer}
@@ -490,7 +493,10 @@
 
     if(d.code==='incomplete'){ pending(d.why||'Answer Section 1 and enter the troponins.'); return; }
     if(d.code==='esrd'){ show('ref','ESRD','Algorithm not applicable — use clinical judgment','This accelerated hs-troponin pathway excludes ESRD (chronically elevated hs-troponin). Use serial troponins, serial EKGs, and clinical judgment; the HEART score may still help frame risk.'); return; }
-    if(d.code==='stemi'){ show('in','STEMI','STEMI Alert — activate STEMI protocol','Evidence of STEMI on EKG. Proceed directly to STEMI activation; the troponin pathway does not apply. The STEMI/Chest Pain response bundle is a premade box pulled from the Omnicell, not stocked on the code cart — confirm current contents against the physical box. <a href="../../codes/?from=home#cart" style="color:inherit; text-decoration:underline;">Code cart drawer reference →</a>'); return; }
+    if(d.code==='stemi'){
+      show('in','STEMI','STEMI Alert — activate STEMI protocol','Evidence of STEMI on EKG. Proceed directly to STEMI activation; the troponin pathway does not apply. The STEMI/Chest Pain response bundle is a premade box pulled from the Omnicell, not stocked on the code cart — confirm current contents against the physical box. <a href="../../codes/?from=home#cart" style="color:inherit; text-decoration:underline;">Code cart drawer reference →</a><div class="xferlink"><a href="../../codes/?from=home#c21" style="color:inherit; font-weight:700; text-decoration:underline;">Full STEMI cognitive aid, TNK dosing, and transfer call log — Codes card 21 →</a></div>');
+      return;
+    }
     if(d.code==='in'){ show('in','Rule-in zone','Rule in — consider cardiology consult','Rule-in criteria met ('+d.why+'). Consider cardiology consultation if clinically appropriate. Manage as ACS.'); return; }
     if(d.code==='reflex'){ var T=SITE.trop; show('ref','Reflex','Observe — repeat hs-troponin at 3 hours','Troponin under '+T.ruleInValue+' '+SITE.units+' with a 0/1-hr Δ ≥ '+T.ruleOutDelta+' but < '+T.ruleInDelta+'. Obtain a 3-hr troponin: Δ ≥ '+T.ruleInDelta+' rules in; Δ < '+T.ruleInDelta+' rules AMI out (then apply HEART score).'); return; }
 
@@ -528,6 +534,10 @@
     if(s<=6) return 'ASAP outpatient stress test';
     return 'Stress test prior to d/c (or cardiology)';
   }
+
+  // STEMI transfer-call tracking (call time stamps, Dartmouth/Concord numbers) now lives on
+  // its own Codes card — see the "STEMI card, Codes →" link rendered in the STEMI result box
+  // above. Kept this pathway free of duplicate widget state; single source of truth.
 
   // wire up radio highlighting + recalc
   document.querySelectorAll('.opts[data-group]').forEach(function(grp){
