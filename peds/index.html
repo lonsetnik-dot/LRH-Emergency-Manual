@@ -1114,20 +1114,129 @@ var SITE = {
   Array.prototype.forEach.call(document.querySelectorAll('.verstamp'), function(vs){ vs.textContent=stampText; });
 })();
 
+/* ===== CASE-STATE shared contract — see /CASE-STATE.md at the repo root =====
+   Per CLAUDE.md: tools share the CONTRACT, not the CODE — codes/index.html and
+   ob-neonatal/index.html each keep their own copy of this module. They agree only on the
+   localStorage key names and value shapes documented in CASE-STATE.md. Read or write any
+   lrh-case-* / lrh-pref-* key ONLY through these functions. Must load before every module
+   below (including the stale-case guard immediately after it), so it's placed first. */
+var CASESTATE = (function(){
+  var TOOL='peds';
+  function rd(k, fb){ try{ var v=localStorage.getItem(k); return v===null?fb:JSON.parse(v); }catch(e){ return fb; } }
+  function wr(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+  function rdRaw(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function wrRaw(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+  function rm(k){ try{ localStorage.removeItem(k); }catch(e){} }
+
+  function getClocks(){ return rd('lrh-case-clocks', {}); }
+  function setClock(name, ms){ var c=getClocks(); if(ms===null||ms===undefined){ delete c[name]; } else { c[name]=ms; } wr('lrh-case-clocks', c); }
+  function getClock(name){ var c=getClocks(); return (name in c) ? c[name] : null; }
+  function clearClocks(names){ var c=getClocks(); names.forEach(function(n){ delete c[n]; }); wr('lrh-case-clocks', c); }
+  function anyClockRunning(){ return Object.keys(getClocks()).length>0; }
+
+  function getCounts(){ return rd('lrh-case-counts', {}); }
+  function setCount(name, n){ var c=getCounts(); c[name]=n; wr('lrh-case-counts', c); }
+  function getCount(name){ var c=getCounts(); return (name in c) ? (c[name]||0) : 0; }
+  function clearCounts(names){ var c=getCounts(); names.forEach(function(n){ delete c[n]; }); wr('lrh-case-counts', c); }
+
+  function getWtKg(){ var v=rdRaw('lrh-case-wtkg'); if(v===null) return null; var n=parseFloat(v); return isNaN(n)?null:n; }
+  function setWtKg(n){ if(n===null||isNaN(n)) rm('lrh-case-wtkg'); else wrRaw('lrh-case-wtkg', String(n)); }
+  function getWtSrc(){ return rdRaw('lrh-case-wtsrc'); } /* 'measured' | 'estimated' | null */
+  function setWtSrc(s){ if(!s) rm('lrh-case-wtsrc'); else wrRaw('lrh-case-wtsrc', s); }
+
+  /* PHI guard (WS0.3) — the ONLY way this file may append to the shared case log. */
+  function isSafeLabel(s){
+    if(typeof s!=='string' || !s) return false;
+    if(/\d{1,3}(\.\d+)?\s*(kg|kilograms?|lb|lbs|pounds?)\b/i.test(s)) return false;
+    if(/\d{6,}/.test(s)) return false;
+    return true;
+  }
+  function addLog(card, label){
+    if(!isSafeLabel(label)){ try{ console.warn('CASESTATE.addLog: rejected unsafe label', label); }catch(e){} return; }
+    var log=rd('lrh-case-log', []);
+    log.push({ tMs:Date.now(), tool:TOOL, card:card, label:label });
+    if(log.length>400) log=log.slice(-400);
+    wr('lrh-case-log', log);
+  }
+  function getLog(){ return rd('lrh-case-log', []); }
+  function clearToolLog(){
+    var log=getLog().filter(function(e){ return e.tool!==TOOL; });
+    wr('lrh-case-log', log);
+  }
+
+  function touchActive(){ wrRaw('lrh-case-lastactive', String(Date.now())); }
+  function getLastActive(){ var v=rdRaw('lrh-case-lastactive'); return v===null?0:(+v||0); }
+
+  /* ---- one-time migration off peds' old per-tool keys (WS0.2) — same pattern as codes'
+     and ob's copies of this module. Note lrh-peds-epidoses is NOT migrated: it's a
+     per-button dose-time map (anaphylaxis IM/IV tracker), a genuinely different shape
+     than the shared clocks/counts buckets, so it stays peds-local — see CASE-STATE.md. */
+  (function migrate(){
+    var did=false;
+    if(rdRaw('lrh-peds-wtkg')!==null){
+      if(getWtKg()===null){ var wv=parseFloat(rdRaw('lrh-peds-wtkg')); if(!isNaN(wv)) setWtKg(wv); }
+      rm('lrh-peds-wtkg'); did=true;
+    }
+    if(rdRaw('lrh-peds-wtsrc')!==null){
+      if(getWtSrc()===null){ var sv=rdRaw('lrh-peds-wtsrc'); setWtSrc(sv==='entered'?'measured':sv); }
+      rm('lrh-peds-wtsrc'); did=true;
+    }
+    if(rdRaw('lrh-peds-cprstart')!==null){ setClock('cprCycle', +rdRaw('lrh-peds-cprstart')); rm('lrh-peds-cprstart'); did=true; }
+    if(rdRaw('lrh-peds-cprepims')!==null){ setClock('epi', +rdRaw('lrh-peds-cprepims')); rm('lrh-peds-cprepims'); did=true; }
+    if(rdRaw('lrh-peds-cprepicount')!==null){ setCount('epi', +rdRaw('lrh-peds-cprepicount')); rm('lrh-peds-cprepicount'); did=true; }
+    if(rdRaw('lrh-peds-seizure')!==null){ setClock('seizure', +rdRaw('lrh-peds-seizure')); rm('lrh-peds-seizure'); did=true; }
+    if(rdRaw('lrh-peds-lastactive')!==null){ wrRaw('lrh-case-lastactive', rdRaw('lrh-peds-lastactive')); rm('lrh-peds-lastactive'); did=true; }
+    var oldLog=rd('lrh-peds-log', null);
+    if(oldLog){
+      var log=getLog(), cards=Object.keys(oldLog), total=0, idx=0;
+      cards.forEach(function(card){ total += (oldLog[card]||[]).length; });
+      cards.forEach(function(card){
+        (oldLog[card]||[]).forEach(function(it){
+          if(it && it.label && isSafeLabel(it.label)) log.push({ tMs: it.t||Date.now(), tool:TOOL, card:card, label:it.label });
+          idx++;
+        });
+      });
+      log.sort(function(a,b){ return (a.tMs||0)-(b.tMs||0); });
+      wr('lrh-case-log', log);
+      rm('lrh-peds-log'); did=true;
+    }
+    if(did){ try{ console.info('CASESTATE: migrated legacy lrh-peds-* keys to the shared lrh-case-* contract'); }catch(e){} }
+  })();
+
+  return {
+    getClocks:getClocks, setClock:setClock, getClock:getClock, clearClocks:clearClocks, anyClockRunning:anyClockRunning,
+    getCounts:getCounts, setCount:setCount, getCount:getCount, clearCounts:clearCounts,
+    getWtKg:getWtKg, setWtKg:setWtKg, getWtSrc:getWtSrc, setWtSrc:setWtSrc,
+    addLog:addLog, getLog:getLog, clearToolLog:clearToolLog, isSafeLabel:isSafeLabel,
+    touchActive:touchActive, getLastActive:getLastActive
+  };
+})();
+
 /* ---- Stale-case guard (runs before anything reads storage): if this device hasn't
    touched the peds tool in >60 minutes, clear all case state — weight, seizure clock,
    epi times, log — so a previous patient's weight can never silently drive doses for
    the next one. Mirrors the OB tool's 1-hour checklist TTL. RESET FOR NEXT CASE is
-   still the right habit between patients. ---- */
+   still the right habit between patients.
+   WS0 note: weight/clocks/counts/log now live in shared lrh-case-* keys that codes and
+   ob-neonatal can also be writing to. Blindly clearing them on peds' own 60-minute
+   inactivity would risk wiping a case that's actively continuing in another tool — so
+   this guard now also checks CASESTATE.anyClockRunning() (across ALL tools) and skips the
+   clear entirely if anything is running. lrh-peds-epidoses is peds-only and always safe
+   to clear on its own timer. Making this manual-wide (shared lastactive touched by every
+   tool, not just suppressed by peds reading everyone else's clocks) is WS2.5, not WS0. ---- */
 (function(){
-  var TS='lrh-peds-lastactive', TTL=60*60*1000;
-  var KEYS=['lrh-peds-wtkg','lrh-peds-wtsrc','lrh-peds-seizure','lrh-peds-epidoses','lrh-peds-log',
-            'lrh-peds-cprstart','lrh-peds-cprepims','lrh-peds-cprepicount'];
+  var TTL=60*60*1000;
   try{
-    var t=+localStorage.getItem(TS)||0;
-    if(t && (Date.now()-t)>TTL){ KEYS.forEach(function(k){ localStorage.removeItem(k); }); }
-    localStorage.setItem(TS,String(Date.now()));
-    document.addEventListener('click', function(){ try{ localStorage.setItem(TS,String(Date.now())); }catch(e){} }, true);
+    var t=CASESTATE.getLastActive();
+    if(t && (Date.now()-t)>TTL && !CASESTATE.anyClockRunning()){
+      CASESTATE.setWtKg(null); CASESTATE.setWtSrc(null);
+      CASESTATE.clearClocks(['cprCycle','epi','seizure']);
+      CASESTATE.clearCounts(['epi']);
+      CASESTATE.clearToolLog();
+      try{ localStorage.removeItem('lrh-peds-epidoses'); }catch(e){}
+    }
+    CASESTATE.touchActive();
+    document.addEventListener('click', function(){ CASESTATE.touchActive(); }, true);
   }catch(e){}
 })();
 
@@ -1150,13 +1259,12 @@ var SITE = {
    FOR NEXT CASE and auto-cleared by the 60-min stale-case guard above. Still —
    always tap RESET between patients; the TTL is a backstop, not a habit. */
 var PEDS_WT = (function(){
-  var KKG='lrh-peds-wtkg', KSRC='lrh-peds-wtsrc';
   var kgEl=document.getElementById('wtkg'), ageEl=document.getElementById('wtage'),
       unitEl=document.getElementById('wtageunit'), estBtn=document.getElementById('wtestimate'),
       dispEl=document.getElementById('wtdisplay');
-  var wtKg=null, src=null; /* src: 'entered' | 'estimated' */
-  try{ var v=localStorage.getItem(KKG); if(v!==null){ wtKg=parseFloat(v); if(isNaN(wtKg)) wtKg=null; } }catch(e){}
-  try{ src=localStorage.getItem(KSRC)||null; }catch(e){}
+  var wtKg=null, src=null; /* src: 'measured' | 'estimated' */
+  try{ wtKg = CASESTATE.getWtKg(); }catch(e){}
+  try{ src = CASESTATE.getWtSrc(); }catch(e){}
   /* ---- Broselow-Luten weight-zone colour band (WikEM), for wayfinding only —
      matches the colour-coded drawers on the pediatric cart so the page's
      dominant colour points at the same drawer a clinician would pull. Every
@@ -1205,10 +1313,8 @@ var PEDS_WT = (function(){
     }
   }
   function save(){
-    try{
-      if(wtKg!==null){ localStorage.setItem(KKG,String(wtKg)); if(src) localStorage.setItem(KSRC,src); else localStorage.removeItem(KSRC); }
-      else { localStorage.removeItem(KKG); localStorage.removeItem(KSRC); }
-    }catch(e){}
+    CASESTATE.setWtKg(wtKg);
+    CASESTATE.setWtSrc(wtKg!==null ? src : null);
   }
   function fmt(n){ var r=Math.round(n*10)/10; return (r%1===0) ? String(r) : r.toFixed(1); }
   function paintDisplay(){
@@ -1238,7 +1344,7 @@ var PEDS_WT = (function(){
     if(wtKg!==null) kgEl.value = wtKg;
     kgEl.addEventListener('input', function(){
       var n = parseFloat(kgEl.value);
-      if(kgEl.value===''||isNaN(n)||n<=0){ wtKg=null; src=null; } else { wtKg=n; src='entered'; }
+      if(kgEl.value===''||isNaN(n)||n<=0){ wtKg=null; src=null; } else { wtKg=n; src='measured'; }
       save(); recompute();
     });
   }
@@ -1294,22 +1400,23 @@ var PEDSDOSE = (function(){
 /* ---- Card 01: CPR cycle clock + epi timer (PALS) — 2-min rhythm check, epi q3–5 min.
    Wall-clock anchored; persisted; cleared on RESET. Same keys pattern as the rest. ---- */
 (function(){
-  var K='lrh-peds-cprstart', KE='lrh-peds-cprepims', KEC='lrh-peds-cprepicount';
   var clock=document.getElementById('pcaclock'), cue=document.getElementById('pcacue'),
       startBtn=document.getElementById('pcastart'), cycleBtn=document.getElementById('pcacycle'),
       epiBtn=document.getElementById('pcaepi'), epicue=document.getElementById('pcaepicue');
   if(!startBtn) return;
   var t0=null, epiMs=null, epiCount=0, tick=null;
-  try{ var s=localStorage.getItem(K); if(s) t0=+s||null; }catch(e){}
-  try{ var e2=localStorage.getItem(KE); if(e2) epiMs=+e2||null; }catch(e){}
-  try{ epiCount=+localStorage.getItem(KEC)||0; }catch(e){}
+  /* shared with codes' own arrest cprCycle/epi clocks + epi count — same patient, same
+     case, whichever tool is open (WS0). */
+  try{ t0 = CASESTATE.getClock('cprCycle'); }catch(e){}
+  try{ epiMs = CASESTATE.getClock('epi'); }catch(e){}
+  try{ epiCount = CASESTATE.getCount('epi'); }catch(e){}
   function pad(n){ return (n<10?'0':'')+n; }
   function mmss(sec){ return Math.floor(sec/60)+':'+pad(sec%60); }
-  function save(){ try{
-    if(t0) localStorage.setItem(K,String(t0)); else localStorage.removeItem(K);
-    if(epiMs) localStorage.setItem(KE,String(epiMs)); else localStorage.removeItem(KE);
-    localStorage.setItem(KEC,String(epiCount));
-  }catch(e){} }
+  function save(){
+    CASESTATE.setClock('cprCycle', t0);
+    CASESTATE.setClock('epi', epiMs);
+    CASESTATE.setCount('epi', epiCount);
+  }
   function paint(){
     if(t0===null){
       clock.textContent='0:00'; clock.style.color='#16324f';
@@ -1338,7 +1445,8 @@ var PEDSDOSE = (function(){
   var rb=document.getElementById('resetbtn');
   if(rb) rb.addEventListener('click', function(){
     t0=null; epiMs=null; epiCount=0;
-    try{ localStorage.removeItem(K); localStorage.removeItem(KE); localStorage.removeItem(KEC); }catch(e){}
+    CASESTATE.clearClocks(['cprCycle','epi']);
+    CASESTATE.clearCounts(['epi']);
     if(tick){ clearInterval(tick); tick=null; }
     paint();
   });
@@ -1348,16 +1456,16 @@ var PEDSDOSE = (function(){
 
 /* ---- Card 10: Seizure clock + timed-phase engine (status epilepticus) ---- */
 (function(){
-  var K='lrh-peds-seizure';
   var clock=document.getElementById('pseclock'), cue=document.getElementById('psecue'),
       startBtn=document.getElementById('psestart'), resetBtn=document.getElementById('psereset'),
       ph=[document.getElementById('psephase-0'),document.getElementById('psephase-1'),document.getElementById('psephase-2')];
   if(!startBtn) return;
   var t0=null, tick=null;
-  try{ var s=localStorage.getItem(K); if(s) t0=+s||null; }catch(e){}
+  /* shared with codes' own seizure clock — same patient, same case (WS0). */
+  try{ t0 = CASESTATE.getClock('seizure'); }catch(e){}
   function pad(n){ return (n<10?'0':'')+n; }
   function mmss(sec){ return Math.floor(sec/60)+':'+pad(sec%60); }
-  function save(){ try{ if(t0) localStorage.setItem(K,String(t0)); else localStorage.removeItem(K); }catch(e){} }
+  function save(){ CASESTATE.setClock('seizure', t0); }
   function phaseFor(sec){ var min=sec/60; if(min<5) return 0; if(min<15) return 1; return 2; }
   var PHASE_TEXT=[
     'STABILIZE — ABCs, O₂, glucose check. Give the first benzodiazepine dose as early as possible.',
@@ -1391,7 +1499,7 @@ var PEDSDOSE = (function(){
   });
   resetBtn.addEventListener('click', function(){ t0=null; save(); if(tick){ clearInterval(tick); tick=null; } paint(); });
   var rb=document.getElementById('resetbtn');
-  if(rb) rb.addEventListener('click', function(){ t0=null; try{ localStorage.removeItem(K); }catch(e){} if(tick){ clearInterval(tick); tick=null; } paint(); });
+  if(rb) rb.addEventListener('click', function(){ t0=null; CASESTATE.setClock('seizure', null); if(tick){ clearInterval(tick); tick=null; } paint(); });
   if(t0!==null) tick=setInterval(paint,1000);
   paint();
 })();
@@ -1452,24 +1560,19 @@ var PEDSDOSE = (function(){
   paint();
 })();
 
-/* ---- Event log (times/labels only, no identifiers, no weight) ---- */
+/* ---- Event log (times/labels only, no identifiers, no weight) ----
+   Persists to the shared lrh-case-log via CASESTATE (WS0) — the PHI guard there is the
+   only path that can write it. */
 (function(){
-  var LK='lrh-peds-log';
-  var data={};
-  try{ data=JSON.parse(localStorage.getItem(LK)||'{}')||{}; }catch(e){}
-  function save(){ try{ localStorage.setItem(LK, JSON.stringify(data)); }catch(e){} }
-  function pad(n){ return (n<10?'0':'')+n; }
-  function wall(){ var d=new Date(); return pad(d.getHours())+':'+pad(d.getMinutes()); }
-  function add(card,label){ data[card]=(data[card]||[]).concat([{label:label,wall:wall(),t:Date.now()}]).slice(-40); save(); }
   document.addEventListener('click', function(ev){
     var t=ev.target.closest ? ev.target.closest('[data-logevent]') : null;
     if(!t) return;
     var card=t.getAttribute('data-logcard')||'p01';
-    add(card, t.getAttribute('data-logevent'));
+    CASESTATE.addLog(card, t.getAttribute('data-logevent'));
   });
-  window.__pedslog={ add:function(card,label){ add(card,label); } };
+  window.__pedslog={ add:function(card,label){ CASESTATE.addLog(card,label); } };
   var g=document.getElementById('resetbtn');
-  if(g) g.addEventListener('click', function(){ data={}; save(); });
+  if(g) g.addEventListener('click', function(){ CASESTATE.clearToolLog(); });
 })();
 
 /* ---- CASE TIMELINE summary modal ---- */
@@ -1478,16 +1581,20 @@ var PEDSDOSE = (function(){
       closeb=document.getElementById('summaryclose'), copyb=document.getElementById('summarycopy'),
       body=document.getElementById('summarybody');
   if(!btn||!modal) return;
-  function rd(k){ try{ return JSON.parse(localStorage.getItem(k)||'null'); }catch(e){ return null; } }
+  function pad(n){ return (n<10?'0':'')+n; }
+  function wallFromMs(ms){ var d=new Date(ms); return pad(d.getHours())+':'+pad(d.getMinutes()); }
   function render(){
-    var log=rd('lrh-peds-log')||{}, ev=[];
-    Object.keys(log).forEach(function(card){ (log[card]||[]).forEach(function(it){ if(it&&it.label) ev.push(it); }); });
-    ev.sort(function(a,b){ return (a.t||0)-(b.t||0); }); /* one chronological timeline across all cards */
+    /* WS0: reads the shared lrh-case-log, filtered to this tool's own entries — still
+       "peds' own timeline" in scope, same as before migration. Showing every tool's
+       events here is WS2.3's job, not this migration's. */
+    var ev=CASESTATE.getLog().filter(function(e){ return e.tool==='peds' && e.label; })
+      .sort(function(a,b){ return (a.tMs||0)-(b.tMs||0); });
     if(!ev.length){ body.innerHTML='<div style="color:#5a6a78; padding:16px 0; text-align:center;">Nothing logged yet.</div>'; return ''; }
     var rows='', text='LRH Pediatric Emergencies — case timeline (times only, no identifiers, no weight)\n\n';
     ev.forEach(function(e){
-      rows+='<div style="display:grid; grid-template-columns:52px 1fr; gap:8px; padding:8px 0; border-top:1px solid #edf0f3;"><span style="font-family:ui-monospace,Menlo,monospace; font-weight:700;">'+e.wall+'</span><span>'+e.label+'</span></div>';
-      text+=e.wall+'  '+e.label+'\n';
+      var w=wallFromMs(e.tMs);
+      rows+='<div style="display:grid; grid-template-columns:52px 1fr; gap:8px; padding:8px 0; border-top:1px solid #edf0f3;"><span style="font-family:ui-monospace,Menlo,monospace; font-weight:700;">'+w+'</span><span>'+e.label+'</span></div>';
+      text+=w+'  '+e.label+'\n';
     });
     body.innerHTML=rows;
     return text;

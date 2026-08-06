@@ -1592,20 +1592,138 @@
   <div style="margin:14px 18px 0;"><a href="#top" style="display:flex; align-items:center; justify-content:center; min-height:46px; border:1px solid #d8d3c7; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.12em; color:#8a8578; text-decoration:none;">↑ INDEX</a></div>
 </section>
 </main>
+<script>
+/* ===== CASE-STATE shared contract — see /CASE-STATE.md at the repo root =====
+   Per CLAUDE.md: tools share the CONTRACT, not the CODE — codes/index.html and (once it
+   gets one) peds/index.html each keep their own copy of this module. They agree only on
+   the localStorage key names and value shapes documented in CASE-STATE.md. Read or write
+   any lrh-case-* key ONLY through these functions. Must load before every module below —
+   it is the first script in the document for exactly that reason. */
+var CASESTATE = (function(){
+  var TOOL='ob';
+  function rd(k, fb){ try{ var v=localStorage.getItem(k); return v===null?fb:JSON.parse(v); }catch(e){ return fb; } }
+  function wr(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+  function rdRaw(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function wrRaw(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+  function rm(k){ try{ localStorage.removeItem(k); }catch(e){} }
+
+  function getClocks(){ return rd('lrh-case-clocks', {}); }
+  function setClock(name, ms){ var c=getClocks(); if(ms===null||ms===undefined){ delete c[name]; } else { c[name]=ms; } wr('lrh-case-clocks', c); }
+  function getClock(name){ var c=getClocks(); return (name in c) ? c[name] : null; }
+  function clearClocks(names){ var c=getClocks(); names.forEach(function(n){ delete c[n]; }); wr('lrh-case-clocks', c); }
+
+  function getChecks(){ return rd('lrh-case-checks', {}); }
+  /* one shared map across every tool; keys are "<tool>:<data-k>" so two tools' own card
+     numbering can never collide — the prefix is applied here, at the storage layer, not
+     in any card's markup. */
+  function setChecked(dataK, on){
+    var c=getChecks(), fullKey=TOOL+':'+dataK;
+    if(on) c[fullKey]=true; else delete c[fullKey];
+    wr('lrh-case-checks', c);
+  }
+  function isChecked(dataK){ return !!getChecks()[TOOL+':'+dataK]; }
+  function clearToolChecks(){
+    var c=getChecks(), changed=false;
+    Object.keys(c).forEach(function(k){ if(k.indexOf(TOOL+':')===0){ delete c[k]; changed=true; } });
+    if(changed) wr('lrh-case-checks', c);
+  }
+
+  /* PHI guard (WS0.3) — the ONLY way this file may append to the shared case log. Rejects
+     anything that looks like a weight (a number immediately followed by kg/lb) or a long
+     digit run (MRN / DOB / phone) rather than a fixed clinical-event label. */
+  function isSafeLabel(s){
+    if(typeof s!=='string' || !s) return false;
+    if(/\d{1,3}(\.\d+)?\s*(kg|kilograms?|lb|lbs|pounds?)\b/i.test(s)) return false;
+    if(/\d{6,}/.test(s)) return false;
+    return true;
+  }
+  /* OB's per-card log lanes support two things codes/peds don't need: removing an entry
+     when its triggering checkbox is unchecked, and backfilling a clock-relative "el"
+     string onto an entry after the fact (setLogElapsed). Both need to find "this tool's
+     entry for checkbox k on card X" again later, so OB's entries carry an optional `k` —
+     harmless extra field for any other tool reading the shared array. */
+  function addLog(card, label, k, el){
+    if(!isSafeLabel(label)){ try{ console.warn('CASESTATE.addLog: rejected unsafe label', label); }catch(e){} return; }
+    var log=rd('lrh-case-log', []);
+    log.push({ tMs:Date.now(), tool:TOOL, card:card, label:label, k:(k||''), el:(el||'') });
+    if(log.length>400) log=log.slice(-400);
+    wr('lrh-case-log', log);
+  }
+  function getLog(){ return rd('lrh-case-log', []); }
+  function removeLogByKey(card, k){
+    if(!k) return;
+    var log=getLog().filter(function(e){ return !(e.tool===TOOL && e.card===card && e.k===k); });
+    wr('lrh-case-log', log);
+  }
+  function setLogElapsed(card, k, el){
+    if(!k) return;
+    var log=getLog(), changed=false;
+    log.forEach(function(e){ if(e.tool===TOOL && e.card===card && e.k===k){ e.el=el; changed=true; } });
+    if(changed) wr('lrh-case-log', log);
+  }
+  function clearToolLog(){
+    var log=getLog().filter(function(e){ return e.tool!==TOOL; });
+    wr('lrh-case-log', log);
+  }
+
+  /* ---- one-time migration off ob's old per-tool keys (WS0.2), same pattern as codes'
+     copy of this module — run every load; a no-op once the old keys are gone. ---- */
+  (function migrate(){
+    var did=false;
+    var oldChecks=rd('lrh-ob-checks', null);
+    if(oldChecks && oldChecks.v){
+      var c=getChecks();
+      oldChecks.v.forEach(function(k){ c[TOOL+':'+k]=true; });
+      wr('lrh-case-checks', c);
+      rm('lrh-ob-checks'); did=true;
+    }
+    if(rdRaw('lrh-ob-pphclock')!==null){ setClock('pph', +rdRaw('lrh-ob-pphclock')); rm('lrh-ob-pphclock'); did=true; }
+    if(rdRaw('lrh-ob-rhclock')!==null){ setClock('rh', +rdRaw('lrh-ob-rhclock')); rm('lrh-ob-rhclock'); did=true; }
+    if(rdRaw('lrh-ob-rhbaby')!==null){ setClock('rhBaby', +rdRaw('lrh-ob-rhbaby')); rm('lrh-ob-rhbaby'); did=true; }
+    if(rdRaw('lrh-ob-sdclock')!==null){ setClock('dystocia', +rdRaw('lrh-ob-sdclock')); rm('lrh-ob-sdclock'); did=true; }
+    var oldLog=rd('lrh-ob-log', null);
+    if(oldLog){
+      var log=getLog(), cards=Object.keys(oldLog), nowMs=Date.now(), total=0, idx=0;
+      cards.forEach(function(card){ total += (oldLog[card]||[]).length; });
+      cards.forEach(function(card){
+        (oldLog[card]||[]).forEach(function(it){
+          if(it && it.label && isSafeLabel(it.label)) log.push({ tMs: nowMs-(total-idx)*1000, tool:TOOL, card:card, label:it.label, k:(it.k||''), el:(it.el||'') });
+          idx++;
+        });
+      });
+      wr('lrh-case-log', log);
+      rm('lrh-ob-log'); did=true;
+    }
+    if(did){ try{ console.info('CASESTATE: migrated legacy lrh-ob-* keys to the shared lrh-case-* contract'); }catch(e){} }
+  })();
+
+  return {
+    getClocks:getClocks, setClock:setClock, getClock:getClock, clearClocks:clearClocks,
+    getChecks:getChecks, setChecked:setChecked, isChecked:isChecked, clearToolChecks:clearToolChecks,
+    addLog:addLog, getLog:getLog, removeLogByKey:removeLogByKey, setLogElapsed:setLogElapsed,
+    clearToolLog:clearToolLog, isSafeLabel:isSafeLabel
+  };
+})();
+</script>
 <script>(function(){
-  var KEY='lrh-ob-checks', HOUR=3600000, btn=document.getElementById('resetbtn'), note=document.getElementById('resetnote');
+  /* Checks live in the shared lrh-case-checks map (via CASESTATE, WS0), one "ob:<data-k>"
+     entry per box. TSKEY is a small tool-local timestamp used only to run this tool's own
+     1-hour auto-clear TTL and the "CASE STARTED N MIN AGO" note — not part of the
+     cross-tool contract (see CASE-STATE.md's note on lrh-case-startms not yet being wired
+     into ob-neonatal). */
+  var TSKEY='lrh-ob-checks-ts', HOUR=3600000, btn=document.getElementById('resetbtn'), note=document.getElementById('resetnote');
   function boxes(){ return Array.prototype.slice.call(document.querySelectorAll('input[type=checkbox][data-k]')); }
-  function read(){ try { return JSON.parse(localStorage.getItem(KEY)||'null'); } catch(e){ return null; } }
-  function write(v){ try { localStorage.setItem(KEY, JSON.stringify(v)); } catch(e){} }
+  function getTs(){ try{ return +localStorage.getItem(TSKEY)||0; }catch(e){ return 0; } }
+  function setTs(t){ try{ localStorage.setItem(TSKEY, String(t)); }catch(e){} }
   function stamp(t){ if(!note) return; if(!t){ note.textContent=''; return; }
     var m=Math.round((Date.now()-t)/60000); note.textContent = m<1 ? 'CASE STARTED JUST NOW' : 'CASE STARTED '+m+' MIN AGO'; }
-  function clear(){ try { localStorage.removeItem(KEY); } catch(e){} boxes().forEach(function(b){ b.checked=false; }); stamp(0); }
-  function save(){ var d=read(); var t=(d&&d.t)||Date.now();
-    write({t:t, v:boxes().filter(function(b){ return b.checked; }).map(function(b){ return b.getAttribute('data-k'); })}); stamp(t); }
-  function restore(){ var d=read(); if(!d){ stamp(0); return; }
-    if (Date.now()-d.t > HOUR) { clear(); return; }
-    var set={}; d.v.forEach(function(k){ set[k]=1; });
-    boxes().forEach(function(b){ b.checked = !!set[b.getAttribute('data-k')]; }); stamp(d.t); }
+  function clear(){ CASESTATE.clearToolChecks(); try{ localStorage.removeItem(TSKEY); }catch(e){} boxes().forEach(function(b){ b.checked=false; }); stamp(0); }
+  function save(){ var t=getTs()||Date.now();
+    boxes().forEach(function(b){ CASESTATE.setChecked(b.getAttribute('data-k'), b.checked); });
+    setTs(t); stamp(t); }
+  function restore(){ var t=getTs(); if(!t){ stamp(0); return; }
+    if (Date.now()-t > HOUR) { clear(); return; }
+    boxes().forEach(function(b){ b.checked = CASESTATE.isChecked(b.getAttribute('data-k')); }); stamp(t); }
   document.addEventListener('change', function(e){ if (e.target && e.target.getAttribute && e.target.getAttribute('data-k')) save(); });
   if (btn) { btn.style.display='inline-flex'; btn.addEventListener('click', clear); }
   document.addEventListener('visibilitychange', function(){ if (!document.hidden) restore(); });
@@ -1898,10 +2016,10 @@ var SITE = { version: "1.2", lastReviewed: "2026-08-04" };
 })();
 </script>
 <script>(function(){
-  var K='lrh-ob-pphclock', t0=null, tick=null;
+  var t0=null, tick=null;
   var el=document.getElementById('pphtime'), sb=document.getElementById('pphstart'), rb=document.getElementById('pphreset');
   if(!el) return;
-  try{ var v=localStorage.getItem(K); if(v) t0=+v||null; }catch(e){}
+  try{ t0 = CASESTATE.getClock('pph'); }catch(e){}
   function pad(n){ return (n<10?'0':'')+n; }
   function paint(){
     var ms = t0 ? Date.now()-t0 : 0, s = Math.max(0, Math.floor(ms/1000)), m = Math.floor(s/60);
@@ -1920,8 +2038,8 @@ var SITE = { version: "1.2", lastReviewed: "2026-08-04" };
     });
   }
   function run(){ if(tick) clearInterval(tick); if(t0) tick=setInterval(paint,1000); paint(); }
-  sb.addEventListener('click', function(){ if(!t0){ t0=Date.now(); try{ localStorage.setItem(K,String(t0)); }catch(e){} if(window.__oblog&&window.__oblog.add) window.__oblog.add('06','PPH DECLARED','0:00'); run(); } });
-  function reset(){ t0=null; if(tick){ clearInterval(tick); tick=null; } try{ localStorage.removeItem(K); }catch(e){} paint(); }
+  sb.addEventListener('click', function(){ if(!t0){ t0=Date.now(); CASESTATE.setClock('pph', t0); if(window.__oblog&&window.__oblog.add) window.__oblog.add('06','PPH DECLARED','0:00'); run(); } });
+  function reset(){ t0=null; if(tick){ clearInterval(tick); tick=null; } CASESTATE.setClock('pph', null); paint(); }
   rb.addEventListener('click', reset);
   var g=document.getElementById('resetbtn'); if(g) g.addEventListener('click', reset);
   run();
@@ -1930,12 +2048,12 @@ var SITE = { version: "1.2", lastReviewed: "2026-08-04" };
   /* Card 10: maternal-arrest clock — the card's own words: "incision by 4 minutes of
      arrest, baby out by 5. Call the elapsed time every minute." Same wall-clock-anchored
      pattern as the PPH clock; persisted; cleared by CLEAR or RESET. */
-  var K='lrh-ob-rhclock', BK='lrh-ob-rhbaby', t0=null, babyMs=null, tick=null;
+  var t0=null, babyMs=null, tick=null;
   var el=document.getElementById('rhtime'), cue=document.getElementById('rhcue'),
       sb=document.getElementById('rhstart'), cb=document.getElementById('rhclear'), bb=document.getElementById('rhbaby');
   if(!el||!sb||!cb) return;
-  try{ var v=localStorage.getItem(K); if(v) t0=+v||null; }catch(e){}
-  try{ var b=localStorage.getItem(BK); if(b) babyMs=+b||null; }catch(e){}
+  try{ t0 = CASESTATE.getClock('rh'); }catch(e){}
+  try{ babyMs = CASESTATE.getClock('rhBaby'); }catch(e){}
   function pad(n){ return (n<10?'0':'')+n; }
   function fmt(s){ return Math.floor(s/60)+':'+pad(s%60); }
   function paint(){
@@ -1963,28 +2081,31 @@ var SITE = { version: "1.2", lastReviewed: "2026-08-04" };
   function run(){ if(tick){ clearInterval(tick); tick=null; } if(t0!==null && babyMs===null) tick=setInterval(paint,1000); paint(); }
   sb.addEventListener('click', function(){
     if(t0!==null) return; /* one-way while running; CLEAR/RESET re-arms */
-    t0=Date.now(); try{ localStorage.setItem(K,String(t0)); }catch(e){}
+    t0=Date.now(); CASESTATE.setClock('rh', t0);
     if(window.__oblog&&window.__oblog.add) window.__oblog.add('10','MATERNAL ARREST — CLOCK STARTED','0:00');
     run();
   });
   if(bb) bb.addEventListener('click', function(){
     if(t0===null||babyMs!==null) return;
-    babyMs=Date.now(); try{ localStorage.setItem(BK,String(babyMs)); }catch(e){}
+    babyMs=Date.now(); CASESTATE.setClock('rhBaby', babyMs);
     if(window.__oblog&&window.__oblog.add) window.__oblog.add('10','BABY OUT (HYSTEROTOMY)', fmt(Math.max(0,Math.floor((babyMs-t0)/1000))));
     run();
   });
-  function reset(){ t0=null; babyMs=null; if(tick){ clearInterval(tick); tick=null; } try{ localStorage.removeItem(K); localStorage.removeItem(BK); }catch(e){} paint(); }
+  function reset(){ t0=null; babyMs=null; if(tick){ clearInterval(tick); tick=null; } CASESTATE.clearClocks(['rh','rhBaby']); paint(); }
   cb.addEventListener('click', reset);
   var g=document.getElementById('resetbtn'); if(g) g.addEventListener('click', reset);
   run();
 })();</script>
 <script>(function(){
-  var K='lrh-ob-sdclock', RK='lrh-ob-sdround', SK='lrh-ob-sdroundstart', t0=null, r0=null, tick=null, round=1;
+  /* Round counter/round-start (RK/SK) stay tool-local — see CASE-STATE.md: they're
+     shoulder-dystocia-specific re-run bookkeeping, not a simple named clock, so WS0 left
+     them out of the shared lrh-case-clocks shape. Only the main clock (K) moved. */
+  var RK='lrh-ob-sdround', SK='lrh-ob-sdroundstart', t0=null, r0=null, tick=null, round=1;
   var el=document.getElementById('sdtime'), sb=document.getElementById('sdstart'), rb=document.getElementById('sdreset'), nw=document.getElementById('sdnow'), ag=document.getElementById('sdagain');
   if(!el) return;
   var panes = Array.prototype.slice.call(document.querySelectorAll('[data-sdband]'));
   var mans = panes.filter(function(p){ return p.hasAttribute('data-man'); });
-  try{ var v=localStorage.getItem(K); if(v) t0=+v||null; var r=localStorage.getItem(RK); if(r) round=+r||1; var rs=localStorage.getItem(SK); if(rs) r0=+rs||null; }catch(e){}
+  try{ t0 = CASESTATE.getClock('dystocia'); var r=localStorage.getItem(RK); if(r) round=+r||1; var rs=localStorage.getItem(SK); if(rs) r0=+rs||null; }catch(e){}
   function pad(n){ return (n<10?'0':'')+n; }
   function boxes(p){ return Array.prototype.slice.call(p.querySelectorAll('input[type=checkbox]')); }
   function done(p){ var b=boxes(p); return b.length>0 && b.every(function(x){ return x.checked; }); }
@@ -2016,8 +2137,8 @@ var SITE = { version: "1.2", lastReviewed: "2026-08-04" };
     nw.textContent = t0 ? rnd+(active ? 'NOW: '+active : 'Sequence complete — run it again or go to the last-resort maneuvers.') : 'Start the clock as you announce it. Roughly 30 s per maneuver.';
   }
   function run(){ if(tick) clearInterval(tick); if(t0) tick=setInterval(paint,1000); paintDone(); paint(); }
-  sb.addEventListener('click', function(){ if(!t0){ t0=Date.now(); try{ localStorage.setItem(K,String(t0)); }catch(e){} if(window.__oblog&&window.__oblog.add) window.__oblog.add('07','SHOULDER DYSTOCIA DECLARED','0:00'); run(); } });
-  function reset(){ t0=null; r0=null; round=1; if(tick){ clearInterval(tick); tick=null; } try{ localStorage.removeItem(K); localStorage.removeItem(RK); localStorage.removeItem(SK); }catch(e){} mans.forEach(function(p){ p.open=true; }); paintDone(); paint(); }
+  sb.addEventListener('click', function(){ if(!t0){ t0=Date.now(); CASESTATE.setClock('dystocia', t0); if(window.__oblog&&window.__oblog.add) window.__oblog.add('07','SHOULDER DYSTOCIA DECLARED','0:00'); run(); } });
+  function reset(){ t0=null; r0=null; round=1; if(tick){ clearInterval(tick); tick=null; } CASESTATE.setClock('dystocia', null); try{ localStorage.removeItem(RK); localStorage.removeItem(SK); }catch(e){} mans.forEach(function(p){ p.open=true; }); paintDone(); paint(); }
   rb.addEventListener('click', reset);
   if(ag) ag.addEventListener('click', function(){
     round++; r0=Date.now(); try{ localStorage.setItem(RK,String(round)); localStorage.setItem(SK,String(r0)); }catch(e){}
@@ -2107,14 +2228,25 @@ var SITE = { version: "1.2", lastReviewed: "2026-08-04" };
   paint();
 })();</script>
 <script>(function(){
-  var LK='lrh-ob-log', COL={'02':'#8a6d1f','03':'#16324f','06':'#9b1c2e','07':'#8a6d1f'}, CLK={'03':'pctime','06':'pphtime','07':'sdtime'};
+  /* Persistent source of truth is now the shared lrh-case-log (via CASESTATE, WS0); `data`
+     here is an in-memory, ob-only, per-card grouping of that shared log kept around to
+     paint the little inline lane widgets without re-filtering storage on every event. */
+  var COL={'02':'#8a6d1f','03':'#16324f','06':'#9b1c2e','07':'#8a6d1f'}, CLK={'03':'pctime','06':'pphtime','07':'sdtime'};
   var lanes={};
   Array.prototype.forEach.call(document.querySelectorAll('[data-loglane]'), function(l){ lanes[l.getAttribute('data-loglane')]=l; });
   if(!Object.keys(lanes).length) return;
   var data={};
-  try{ data=JSON.parse(localStorage.getItem(LK)||'{}')||{}; }catch(e){}
-  function save(){ try{ localStorage.setItem(LK, JSON.stringify(data)); }catch(e){} }
   function pad(n){ return (n<10?'0':'')+n; }
+  function wallFromMs(ms){ var d=ms?new Date(ms):new Date(); return pad(d.getHours())+':'+pad(d.getMinutes()); }
+  function loadFromShared(){
+    data={};
+    CASESTATE.getLog().forEach(function(e){
+      if(e.tool!=='ob') return;
+      (data[e.card]=data[e.card]||[]).push({k:e.k||'', label:e.label, wall:wallFromMs(e.tMs), el:e.el||''});
+    });
+    Object.keys(data).forEach(function(card){ data[card]=data[card].slice(-24); });
+  }
+  loadFromShared();
   function wall(){ var d=new Date(); return pad(d.getHours())+':'+pad(d.getMinutes()); }
   function elapsed(card){
     /* Card 02 events display as time since birth (issue #7), seconds-precise. */
@@ -2147,8 +2279,9 @@ var SITE = { version: "1.2", lastReviewed: "2026-08-04" };
   }
   function add(card,entry){
     if(!lanes[card]) return;
+    CASESTATE.addLog(card, entry.label, entry.k, entry.el);
     data[card]=(data[card]||[]).concat([entry]).slice(-24);
-    save(); render();
+    render();
   }
   document.addEventListener('change', function(ev){
     var t=ev.target;
@@ -2156,7 +2289,7 @@ var SITE = { version: "1.2", lastReviewed: "2026-08-04" };
     var k=t.getAttribute('data-k')||'', card=k.slice(0,2);
     if(!lanes[card]) return;
     if(t.checked){ add(card,{k:k,label:t.getAttribute('data-log'),wall:wall(),el:elapsed(card)}); }
-    else if(!t.classList.contains('hrcycle') && !document.body.hasAttribute('data-sdrerun')){ data[card]=(data[card]||[]).filter(function(x){ return x.k!==k; }); save(); render(); }
+    else if(!t.classList.contains('hrcycle') && !document.body.hasAttribute('data-sdrerun')){ CASESTATE.removeLogByKey(card, k); data[card]=(data[card]||[]).filter(function(x){ return x.k!==k; }); render(); }
   });
   document.addEventListener('click', function(ev){
     var t=ev.target.closest ? ev.target.closest('[data-logevent]') : null;
@@ -2165,12 +2298,12 @@ var SITE = { version: "1.2", lastReviewed: "2026-08-04" };
     add(card,{k:'',label:t.getAttribute('data-logevent'),wall:wall(),el:elapsed(card)});
   });
   window.__oblog={
-    setEl:function(card,k,el){ (data[card]||[]).forEach(function(x){ if(x.k===k) x.el=el; }); save(); render(); },
+    setEl:function(card,k,el){ CASESTATE.setLogElapsed(card,k,el); (data[card]||[]).forEach(function(x){ if(x.k===k) x.el=el; }); render(); },
     /* Programmatic event logging for declared emergencies (issue #4). */
     add:function(card,label,el){ add(card,{k:'',label:label,wall:wall(),el:(el!=null?el:elapsed(card))}); }
   };
   var g=document.getElementById('resetbtn');
-  if(g) g.addEventListener('click', function(){ data={}; save(); render(); });
+  if(g) g.addEventListener('click', function(){ CASESTATE.clearToolLog(); data={}; render(); });
   render();
 })();</script>
 <script>(function(){
@@ -2266,8 +2399,20 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
     var b=toMin(birth), w=toMin(wall); if(b===null||w===null) return '';
     var d=w-b; if(d<0) d+=1440; return '+'+d+'m';
   }
+  function pad2(n){ return (n<10?'0':'')+n; }
+  function wallFromMs(ms){ var d=new Date(ms); return pad2(d.getHours())+':'+pad2(d.getMinutes()); }
+  function obLogByCard(){
+    /* WS0: lrh-ob-log is gone — rebuild the same {card:[...]} shape from the shared
+       lrh-case-log, filtered to this tool's own entries, so build() below is unchanged. */
+    var out={};
+    (CASESTATE.getLog()||[]).forEach(function(e){
+      if(e.tool!=='ob') return;
+      (out[e.card]=out[e.card]||[]).push({label:e.label, wall:wallFromMs(e.tMs), el:e.el||''});
+    });
+    return out;
+  }
   function build(){
-    var ap=rd('lrh-ob-apgar'), log=rd('lrh-ob-log')||{};
+    var ap=rd('lrh-ob-apgar'), log=obLogByCard();
     var birth = ap && ap.t ? ap.t : '', ev=[];
     if(birth) ev.push({wall:birth, label:'Born', pri:0});
     Object.keys(log).forEach(function(card){ (log[card]||[]).forEach(function(it){ if(it&&it.label) ev.push({wall:it.wall||'', label:it.label, pri:1, els:(card==='02'&&it.el)?it.el:null}); }); });

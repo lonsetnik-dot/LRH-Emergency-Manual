@@ -2130,12 +2130,149 @@ function zollJoules(n){ return n<=1 ? SITE.defib.shock1 : (n===2 ? SITE.defib.sh
   Array.prototype.forEach.call(document.querySelectorAll('.verstamp'), function(vs){ vs.textContent=stampText; });
 })();
 
+/* ===== CASE-STATE shared contract — see /CASE-STATE.md at the repo root =====
+   Per CLAUDE.md: tools share the CONTRACT, not the CODE — every tool keeps its own copy
+   of this exact module (ob-neonatal and peds have theirs). They agree only on the
+   localStorage key names and value shapes documented in CASE-STATE.md. Read or write any
+   lrh-case-* / lrh-pref-* key ONLY through these functions so this file can never drift
+   from what CASE-STATE.md says it does. */
+var CASESTATE = (function(){
+  var TOOL='codes';
+  function rd(k, fb){ try{ var v=localStorage.getItem(k); return v===null?fb:JSON.parse(v); }catch(e){ return fb; } }
+  function wr(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+  function rdRaw(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function wrRaw(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+  function rm(k){ try{ localStorage.removeItem(k); }catch(e){} }
+
+  function getClocks(){ return rd('lrh-case-clocks', {}); }
+  function setClock(name, ms){ var c=getClocks(); if(ms===null||ms===undefined){ delete c[name]; } else { c[name]=ms; } wr('lrh-case-clocks', c); }
+  function getClock(name){ var c=getClocks(); return (name in c) ? c[name] : null; }
+  function clearClocks(names){ var c=getClocks(); names.forEach(function(n){ delete c[n]; }); wr('lrh-case-clocks', c); }
+
+  function getCounts(){ return rd('lrh-case-counts', {}); }
+  function setCount(name, n){ var c=getCounts(); c[name]=n; wr('lrh-case-counts', c); }
+  function getCount(name){ var c=getCounts(); return (name in c) ? (c[name]||0) : 0; }
+  function clearCounts(names){ var c=getCounts(); names.forEach(function(n){ delete c[n]; }); wr('lrh-case-counts', c); }
+
+  function getWtKg(){ var v=rdRaw('lrh-case-wtkg'); if(v===null) return null; var n=parseFloat(v); return isNaN(n)?null:n; }
+  function setWtKg(n){ if(n===null||isNaN(n)) rm('lrh-case-wtkg'); else wrRaw('lrh-case-wtkg', String(n)); }
+  function getWtSrc(){ return rdRaw('lrh-case-wtsrc'); } /* 'measured' | 'estimated' | null */
+  function setWtSrc(s){ if(!s) rm('lrh-case-wtsrc'); else wrRaw('lrh-case-wtsrc', s); }
+
+  function getStartMs(){ var v=rdRaw('lrh-case-startms'); return v===null?null:(+v||null); }
+  /* first action of the case, in ANY tool — set once, never overwritten until RESET */
+  function markCaseStarted(){ if(getStartMs()===null) wrRaw('lrh-case-startms', String(Date.now())); }
+  function clearStartMs(){ rm('lrh-case-startms'); }
+
+  function getChecks(){ return rd('lrh-case-checks', {}); }
+  /* one shared map across every tool; keys are "<tool>:<data-k>" so two tools' own card
+     numbering (codes' "01-1", ob's "02-0-0", peds' future "p03-2"...) can never collide —
+     the prefix is applied here, at the storage layer, not in any card's markup. */
+  function setChecked(dataK, on){
+    var c=getChecks(), fullKey=TOOL+':'+dataK;
+    if(on) c[fullKey]=true; else delete c[fullKey];
+    wr('lrh-case-checks', c);
+  }
+  function isChecked(dataK){ return !!getChecks()[TOOL+':'+dataK]; }
+  function clearToolChecks(){
+    var c=getChecks(), changed=false;
+    Object.keys(c).forEach(function(k){ if(k.indexOf(TOOL+':')===0){ delete c[k]; changed=true; } });
+    if(changed) wr('lrh-case-checks', c);
+  }
+
+  /* PHI guard (WS0.3) — the ONLY way this file may append to the shared case log. Rejects
+     anything that looks like a weight (a number immediately followed by kg/lb) or a long
+     digit run (MRN / DOB / phone) rather than a fixed clinical-event label. */
+  function isSafeLabel(s){
+    if(typeof s!=='string' || !s) return false;
+    if(/\d{1,3}(\.\d+)?\s*(kg|kilograms?|lb|lbs|pounds?)\b/i.test(s)) return false;
+    if(/\d{6,}/.test(s)) return false;
+    return true;
+  }
+  function addLog(card, label){
+    if(!isSafeLabel(label)){ try{ console.warn('CASESTATE.addLog: rejected unsafe label', label); }catch(e){} return; }
+    var log=rd('lrh-case-log', []);
+    log.push({ tMs:Date.now(), tool:TOOL, card:card, label:label });
+    if(log.length>400) log=log.slice(-400);
+    wr('lrh-case-log', log);
+  }
+  function getLog(){ return rd('lrh-case-log', []); }
+  function clearToolLog(){
+    var log=getLog().filter(function(e){ return e.tool!==TOOL; });
+    wr('lrh-case-log', log);
+  }
+
+  function touchActive(){ wrRaw('lrh-case-lastactive', String(Date.now())); }
+
+  function getMute(){ return rdRaw('lrh-pref-mute')==='1'; }
+  function setMute(v){ wrRaw('lrh-pref-mute', v?'1':'0'); }
+
+  /* ---- one-time migration off codes' old per-tool keys (WS0.2) — reads each old key if
+     present, folds it into the new shared shape (merging rather than clobbering another
+     tool's already-written value), then deletes the old key. Safe to run every load: once
+     the old keys are gone this whole block is a no-op. Remove after two deploys. ---- */
+  (function migrate(){
+    var did=false;
+    if(rdRaw('lrh-codes-mute')!==null){ setMute(rdRaw('lrh-codes-mute')==='1'); rm('lrh-codes-mute'); did=true; }
+    if(rdRaw('lrh-codes-wtkg')!==null){
+      if(getWtKg()===null){ var wv=parseFloat(rdRaw('lrh-codes-wtkg')); if(!isNaN(wv)) setWtKg(wv); }
+      rm('lrh-codes-wtkg'); did=true;
+    }
+    if(rdRaw('lrh-codes-codestart')!==null){
+      if(getStartMs()===null) wrRaw('lrh-case-startms', rdRaw('lrh-codes-codestart'));
+      rm('lrh-codes-codestart'); did=true;
+    }
+    if(rdRaw('lrh-codes-ccstart')!==null){ setClock('cprCycle', +rdRaw('lrh-codes-ccstart')); rm('lrh-codes-ccstart'); did=true; }
+    if(rdRaw('lrh-codes-lastepims')!==null){ setClock('epi', +rdRaw('lrh-codes-lastepims')); rm('lrh-codes-lastepims'); did=true; }
+    if(rdRaw('lrh-codes-stopms')!==null){ setClock('rosc', +rdRaw('lrh-codes-stopms')); rm('lrh-codes-stopms'); did=true; }
+    if(rdRaw('lrh-codes-shocks')!==null){ setCount('shocks', +rdRaw('lrh-codes-shocks')); rm('lrh-codes-shocks'); did=true; }
+    if(rdRaw('lrh-codes-epicount')!==null){ setCount('epi', +rdRaw('lrh-codes-epicount')); rm('lrh-codes-epicount'); did=true; }
+    if(rdRaw('lrh-codes-amiocount')!==null){ setCount('amio', +rdRaw('lrh-codes-amiocount')); rm('lrh-codes-amiocount'); did=true; }
+    if(rdRaw('lrh-codes-seizure')!==null){ setClock('seizure', +rdRaw('lrh-codes-seizure')); rm('lrh-codes-seizure'); did=true; }
+    var oldChecks=rd('lrh-codes-checks', null);
+    if(oldChecks && oldChecks.v){
+      var c=getChecks();
+      oldChecks.v.forEach(function(k){ c[TOOL+':'+k]=true; });
+      wr('lrh-case-checks', c);
+      rm('lrh-codes-checks'); did=true;
+    }
+    var oldLog=rd('lrh-codes-log', null);
+    if(oldLog){
+      var log=getLog(), cards=Object.keys(oldLog), nowMs=Date.now(), total=0, idx=0;
+      cards.forEach(function(card){ total += (oldLog[card]||[]).length; });
+      cards.forEach(function(card){
+        (oldLog[card]||[]).forEach(function(it){
+          /* legacy entries only ever stored a wall-clock display string, never a real epoch —
+             synthesize one that preserves original relative order (exact age is unrecoverable). */
+          if(it && it.label && isSafeLabel(it.label)) log.push({ tMs: nowMs-(total-idx)*1000, tool:TOOL, card:card, label:it.label });
+          idx++;
+        });
+      });
+      wr('lrh-case-log', log);
+      rm('lrh-codes-log'); did=true;
+    }
+    if(did){ try{ console.info('CASESTATE: migrated legacy lrh-codes-* keys to the shared lrh-case-* contract'); }catch(e){} }
+  })();
+
+  return {
+    getClocks:getClocks, setClock:setClock, getClock:getClock, clearClocks:clearClocks,
+    getCounts:getCounts, setCount:setCount, getCount:getCount, clearCounts:clearCounts,
+    getWtKg:getWtKg, setWtKg:setWtKg, getWtSrc:getWtSrc, setWtSrc:setWtSrc,
+    getStartMs:getStartMs, markCaseStarted:markCaseStarted, clearStartMs:clearStartMs,
+    getChecks:getChecks, setChecked:setChecked, isChecked:isChecked, clearToolChecks:clearToolChecks,
+    addLog:addLog, getLog:getLog, clearToolLog:clearToolLog, isSafeLabel:isSafeLabel,
+    touchActive:touchActive,
+    getMute:getMute, setMute:setMute
+  };
+})();
+
 /* ===== Shared audio helper (metronome beats + rhythm-check/epi alert tones) =====
-   Single mute switch for all audio in this tool; PHI-free, device-local. */
+   Single mute switch for all audio in this tool; PHI-free, device-local. Preference —
+   survives RESET FOR NEXT CASE, shared across every tool via lrh-pref-mute. */
 var SITEAUDIO = (function(){
-  var KM='lrh-codes-mute'; var muted=false, ctx=null;
-  try{ muted = localStorage.getItem(KM)==='1'; }catch(e){}
-  function setMuted(v){ muted=!!v; try{ localStorage.setItem(KM, muted?'1':'0'); }catch(e){} }
+  var muted=false, ctx=null;
+  try{ muted = CASESTATE.getMute(); }catch(e){}
+  function setMuted(v){ muted=!!v; try{ CASESTATE.setMute(muted); }catch(e){} }
   function isMuted(){ return muted; }
   /* Browsers only allow audio started from a user gesture. unlock() must be called from a
      click handler (START / SHOCK / metronome) so that timer-driven alert beeps can sound —
@@ -2259,8 +2396,7 @@ window.__cardNav=CardNav;
    lastEpiMs     = time of the most recent epi dose (drives the 3-min "EPI DUE" cue); null until first epi
    Shared across card 01 (VF/VT) and card 02 (PEA/Asystole) — it's the same code either way. */
 (function(){
-  var KC='lrh-codes-ccstart', KS='lrh-codes-shocks', KE='lrh-codes-epicount', KA='lrh-codes-amiocount',
-      KCS='lrh-codes-codestart', KEM='lrh-codes-lastepims', KSP='lrh-codes-stopms', KAR='lrh-codes-shockarmed';
+  var KAR='lrh-codes-shockarmed'; /* tool-local: an in-code UI armed/idle flag, not a shared case fact */
   var PREALERT_SEC = 10;
   function $id(id){ return document.getElementById(id); }
   var clock=$id('ccclock'), cue=$id('cccue'), shocksEl=$id('ccshocks'), startBtn=$id('ccstart'),
@@ -2276,24 +2412,28 @@ window.__cardNav=CardNav;
      hasn't been delivered yet. This is the only state the DEFIB button flashes in; everything
      else (idle, browsing, mid-CPR-cycle waiting for the next check) is solid red, unanimated. */
   var alertedDue=false, alertedWarn=false, shockConfirmUntil=0, shockArmed=false;
-  try{ var s=localStorage.getItem(KC); if(s) t0=+s||null; }catch(e){}
-  try{ var sp=localStorage.getItem(KSP); if(sp) stopMs=+sp||null; }catch(e){}
-  try{ shocks=+localStorage.getItem(KS)||0; }catch(e){}
-  try{ epiCount=+localStorage.getItem(KE)||0; }catch(e){}
-  try{ amioCount=+localStorage.getItem(KA)||0; }catch(e){}
-  try{ var cs=localStorage.getItem(KCS); if(cs) codeStartMs=+cs||null; }catch(e){}
-  try{ var em=localStorage.getItem(KEM); if(em) lastEpiMs=+em||null; }catch(e){}
+  try{ t0 = CASESTATE.getClock('cprCycle'); }catch(e){}
+  try{ stopMs = CASESTATE.getClock('rosc'); }catch(e){}
+  try{ shocks = CASESTATE.getCount('shocks'); }catch(e){}
+  try{ epiCount = CASESTATE.getCount('epi'); }catch(e){}
+  try{ amioCount = CASESTATE.getCount('amio'); }catch(e){}
+  try{ codeStartMs = CASESTATE.getStartMs(); }catch(e){}
+  try{ lastEpiMs = CASESTATE.getClock('epi'); }catch(e){}
   try{ shockArmed = localStorage.getItem(KAR)==='1'; }catch(e){}
   function pad(n){ return (n<10?'0':'')+n; }
   function mmss(sec){ return Math.floor(sec/60)+':'+pad(sec%60); }
-  function save(){ try{
-    if(t0) localStorage.setItem(KC,String(t0)); else localStorage.removeItem(KC);
-    if(codeStartMs) localStorage.setItem(KCS,String(codeStartMs)); else localStorage.removeItem(KCS);
-    if(lastEpiMs) localStorage.setItem(KEM,String(lastEpiMs)); else localStorage.removeItem(KEM);
-    if(stopMs) localStorage.setItem(KSP,String(stopMs)); else localStorage.removeItem(KSP);
-    localStorage.setItem(KS,String(shocks)); localStorage.setItem(KE,String(epiCount)); localStorage.setItem(KA,String(amioCount));
-    localStorage.setItem(KAR, shockArmed?'1':'0');
-  }catch(e){} }
+  function save(){
+    CASESTATE.setClock('cprCycle', t0);
+    CASESTATE.setClock('epi', lastEpiMs);
+    CASESTATE.setClock('rosc', stopMs);
+    /* case start is a cross-tool, set-once fact — if another tool already set it, adopt
+       that earlier timestamp rather than overwrite it with this tool's later Date.now() */
+    if(codeStartMs!==null){ CASESTATE.markCaseStarted(); codeStartMs=CASESTATE.getStartMs(); }
+    CASESTATE.setCount('shocks', shocks);
+    CASESTATE.setCount('epi', epiCount);
+    CASESTATE.setCount('amio', amioCount);
+    try{ localStorage.setItem(KAR, shockArmed?'1':'0'); }catch(e){}
+  }
   function logIt(label){ if(window.__codeslog && window.__codeslog.add) window.__codeslog.add('01', label); }
   function clearCycleAlerts(){ alertedDue=false; alertedWarn=false; }
   /* Reference "now": frozen at the ROSC/pulse-present instant so a reload can't resurrect a
@@ -2543,7 +2683,10 @@ window.__cardNav=CardNav;
   var rb=document.getElementById('resetbtn');
   if(rb) rb.addEventListener('click', function(){
     t0=null; codeStartMs=null; lastEpiMs=null; stopMs=null; shocks=0; epiCount=0; amioCount=0; shockArmed=false; clearCycleAlerts();
-    try{ localStorage.removeItem(KC); localStorage.removeItem(KCS); localStorage.removeItem(KEM); localStorage.removeItem(KSP); localStorage.removeItem(KS); localStorage.removeItem(KE); localStorage.removeItem(KA); localStorage.removeItem(KAR); }catch(e){}
+    CASESTATE.clearClocks(['cprCycle','epi','rosc']);
+    CASESTATE.clearCounts(['shocks','epi','amio']);
+    CASESTATE.clearStartMs();
+    try{ localStorage.removeItem(KAR); }catch(e){}
     if(tick){ clearInterval(tick); tick=null; }
     hidePulseSubs();
     paint();
@@ -2875,11 +3018,10 @@ window.__cardNav=CardNav;
    weight-based lytics/AEDs) computes every mg/kg dose live. Device-local only,
    cleared on RESET. ---- */
 var CODES_WT = (function(){
-  var KKG='lrh-codes-wtkg';
   var kgEl=document.getElementById('wtkg'), dispEl=document.getElementById('wtdisplay');
   var wtKg=null;
-  try{ var v=localStorage.getItem(KKG); if(v!==null){ wtKg=parseFloat(v); if(isNaN(wtKg)) wtKg=null; } }catch(e){}
-  function save(){ try{ if(wtKg!==null) localStorage.setItem(KKG,String(wtKg)); else localStorage.removeItem(KKG); }catch(e){} }
+  try{ wtKg = CASESTATE.getWtKg(); }catch(e){}
+  function save(){ CASESTATE.setWtKg(wtKg); }
   function paint(){
     if(!dispEl) return;
     if(wtKg===null||isNaN(wtKg)){ dispEl.textContent='no weight entered · per-kg doses hidden'; dispEl.style.color='#f7d97a'; return; }
@@ -3289,16 +3431,16 @@ var CODESDOSE = (function(){
 
 /* ---- Card 13: Seizure clock + timed-phase engine (status epilepticus) ---- */
 (function(){
-  var K='lrh-codes-seizure';
   var clock=document.getElementById('seclock'), cue=document.getElementById('secue'),
       startBtn=document.getElementById('sestart'), resetBtn=document.getElementById('sereset'),
       ph=[document.getElementById('sephase-0'),document.getElementById('sephase-1'),document.getElementById('sephase-2'),document.getElementById('sephase-3')];
   if(!startBtn) return;
   var t0=null, tick=null;
-  try{ var s=localStorage.getItem(K); if(s) t0=+s||null; }catch(e){}
+  /* shared with peds' own seizure clock — same patient, same case (WS0). */
+  try{ t0 = CASESTATE.getClock('seizure'); }catch(e){}
   function pad(n){ return (n<10?'0':'')+n; }
   function mmss(sec){ return Math.floor(sec/60)+':'+pad(sec%60); }
-  function save(){ try{ if(t0) localStorage.setItem(K,String(t0)); else localStorage.removeItem(K); }catch(e){} }
+  function save(){ CASESTATE.setClock('seizure', t0); }
   function phaseFor(sec){ var min=sec/60; if(min<5) return 0; if(min<20) return 1; if(min<30) return 2; return 3; }
   var PHASE_TEXT=['STABILIZE — ABCs, glucose check.','BENZODIAZEPINE — give first-line now if not already given.','2ND-LINE — levetiracetam / valproate (or fosphenytoin) if still seizing.','≥30 MIN — prepare to intubate (ketamine preferred); anesthetic infusion if refractory; STAT transfer to Neuro ICU.'];
   var PHASE_COLOR=['#16324f','#8a6d1f','#9b1c2e','#9b1c2e'];
@@ -3328,7 +3470,7 @@ var CODESDOSE = (function(){
   });
   resetBtn.addEventListener('click', function(){ t0=null; save(); if(tick){ clearInterval(tick); tick=null; } paint(); });
   var rb=document.getElementById('resetbtn');
-  if(rb) rb.addEventListener('click', function(){ t0=null; try{ localStorage.removeItem(K); }catch(e){} if(tick){ clearInterval(tick); tick=null; } paint(); });
+  if(rb) rb.addEventListener('click', function(){ t0=null; CASESTATE.setClock('seizure', null); if(tick){ clearInterval(tick); tick=null; } paint(); });
   if(t0!==null) tick=setInterval(paint,1000);
   paint();
 })();
@@ -3421,17 +3563,28 @@ var CODESDOSE = (function(){
   paint();
 })();
 
-/* ---- Event log lane (per-card) — mirrors the OB app's pattern ---- */
+/* ---- Event log lane (per-card) — mirrors the OB app's pattern ----
+   The persistent source of truth is now the shared lrh-case-log (via CASESTATE, WS0) —
+   `data` here is just an in-memory, codes-only, per-card grouping of that shared log kept
+   around to paint the little inline lane widgets without re-reading/re-filtering storage
+   on every keystroke. */
 (function(){
-  var LK='lrh-codes-log', COL={'01':'#2f62a8'};
+  var COL={'01':'#2f62a8'};
   var lanes={};
   Array.prototype.forEach.call(document.querySelectorAll('[data-loglane]'), function(l){ lanes[l.getAttribute('data-loglane')]=l; });
   if(!Object.keys(lanes).length) return;
   var data={};
-  try{ data=JSON.parse(localStorage.getItem(LK)||'{}')||{}; }catch(e){}
-  function save(){ try{ localStorage.setItem(LK, JSON.stringify(data)); }catch(e){} }
   function pad(n){ return (n<10?'0':'')+n; }
-  function wall(){ var d=new Date(); return pad(d.getHours())+':'+pad(d.getMinutes()); }
+  function wall(ms){ var d=ms?new Date(ms):new Date(); return pad(d.getHours())+':'+pad(d.getMinutes()); }
+  function loadFromShared(){
+    data={};
+    CASESTATE.getLog().forEach(function(e){
+      if(e.tool!=='codes') return;
+      (data[e.card]=data[e.card]||[]).push({label:e.label, wall:wall(e.tMs)});
+    });
+    Object.keys(data).forEach(function(card){ data[card]=data[card].slice(-40); });
+  }
+  loadFromShared();
   function render(){
     Object.keys(lanes).forEach(function(card){
       var lane=lanes[card], list=data[card]||[], c=COL[card]||'#16324f';
@@ -3454,9 +3607,11 @@ var CODESDOSE = (function(){
   }
   function add(card,label){
     /* always record to the case timeline even if this card has no inline lane element on screen —
-       the SUMMARY modal aggregates every card's events regardless. */
+       the SUMMARY modal aggregates every card's events regardless. CASESTATE.addLog applies the
+       PHI guard (WS0.3) and is the only path that writes lrh-case-log. */
+    CASESTATE.addLog(card, label);
     data[card]=(data[card]||[]).concat([{label:label,wall:wall()}]).slice(-40);
-    save(); render();
+    render();
   }
   document.addEventListener('click', function(ev){
     var t=ev.target.closest ? ev.target.closest('[data-logevent]') : null;
@@ -3466,7 +3621,7 @@ var CODESDOSE = (function(){
   });
   window.__codeslog={ add:function(card,label){ add(card,label); } };
   var g=document.getElementById('resetbtn');
-  if(g) g.addEventListener('click', function(){ data={}; save(); render(); });
+  if(g) g.addEventListener('click', function(){ CASESTATE.clearToolLog(); data={}; render(); });
   render();
 })();
 
@@ -3476,15 +3631,20 @@ var CODESDOSE = (function(){
       closeb=document.getElementById('summaryclose'), copyb=document.getElementById('summarycopy'),
       body=document.getElementById('summarybody');
   if(!btn||!modal) return;
-  function rd(k){ try{ return JSON.parse(localStorage.getItem(k)||'null'); }catch(e){ return null; } }
+  function pad(n){ return (n<10?'0':'')+n; }
+  function wall(ms){ var d=new Date(ms); return pad(d.getHours())+':'+pad(d.getMinutes()); }
   function render(){
-    var log=rd('lrh-codes-log')||{}, ev=[];
-    Object.keys(log).forEach(function(card){ (log[card]||[]).forEach(function(it){ if(it&&it.label) ev.push(it); }); });
+    /* WS0: reads the shared lrh-case-log now, filtered to this tool's own entries — still
+       "codes' own timeline" in scope, same as before migration. Showing every tool's events
+       here (a genuine cross-tool timeline) is WS2.3's job, not this migration's. */
+    var ev=CASESTATE.getLog().filter(function(e){ return e.tool==='codes' && e.label; })
+      .sort(function(a,b){ return (a.tMs||0)-(b.tMs||0); });
     if(!ev.length){ body.innerHTML='<div style="color:#5a6a78; padding:16px 0; text-align:center;">Nothing logged yet.</div>'; return ''; }
     var rows='', text='LRH Codes — case timeline (times only, no identifiers)\n\n';
     ev.forEach(function(e){
-      rows+='<div style="display:grid; grid-template-columns:52px 1fr; gap:8px; padding:8px 0; border-top:1px solid #edf0f3;"><span style="font-family:ui-monospace,Menlo,monospace; font-weight:700;">'+e.wall+'</span><span>'+e.label+'</span></div>';
-      text+=e.wall+'  '+e.label+'\n';
+      var w=wall(e.tMs);
+      rows+='<div style="display:grid; grid-template-columns:52px 1fr; gap:8px; padding:8px 0; border-top:1px solid #edf0f3;"><span style="font-family:ui-monospace,Menlo,monospace; font-weight:700;">'+w+'</span><span>'+e.label+'</span></div>';
+      text+=w+'  '+e.label+'\n';
     });
     body.innerHTML=rows;
     return text;
@@ -3520,17 +3680,20 @@ var CODESDOSE = (function(){
    #resetnote is already driven by the CPR clock engine's codeStartMs, so this copy
    deliberately omits stamp(). ---- */
 (function(){
-  var KEY='lrh-codes-checks', HOUR=3600000, btn=document.getElementById('resetbtn');
+  /* Checks themselves now live in the shared lrh-case-checks map (via CASESTATE, WS0), one
+     "codes:<data-k>" entry per box. TSKEY is a small tool-local timestamp used only to run
+     this tool's own 1-hour auto-clear TTL — it isn't part of the cross-tool contract. */
+  var TSKEY='lrh-codes-checks-ts', HOUR=3600000, btn=document.getElementById('resetbtn');
   function boxes(){ return Array.prototype.slice.call(document.querySelectorAll('input[type=checkbox][data-k]')); }
-  function read(){ try{ return JSON.parse(localStorage.getItem(KEY)||'null'); }catch(e){ return null; } }
-  function write(v){ try{ localStorage.setItem(KEY, JSON.stringify(v)); }catch(e){} }
-  function clear(){ try{ localStorage.removeItem(KEY); }catch(e){} boxes().forEach(function(b){ b.checked=false; }); }
-  function save(){ var d=read(); var t=(d&&d.t)||Date.now();
-    write({t:t, v:boxes().filter(function(b){ return b.checked; }).map(function(b){ return b.getAttribute('data-k'); })}); }
-  function restore(){ var d=read(); if(!d) return;
-    if(Date.now()-d.t > HOUR){ clear(); return; }
-    var set={}; d.v.forEach(function(k){ set[k]=1; });
-    boxes().forEach(function(b){ b.checked = !!set[b.getAttribute('data-k')]; }); }
+  function getTs(){ try{ return +localStorage.getItem(TSKEY)||0; }catch(e){ return 0; } }
+  function setTs(t){ try{ localStorage.setItem(TSKEY, String(t)); }catch(e){} }
+  function clear(){ CASESTATE.clearToolChecks(); try{ localStorage.removeItem(TSKEY); }catch(e){} boxes().forEach(function(b){ b.checked=false; }); }
+  function save(){ var t=getTs()||Date.now();
+    boxes().forEach(function(b){ CASESTATE.setChecked(b.getAttribute('data-k'), b.checked); });
+    setTs(t); }
+  function restore(){ var t=getTs(); if(!t) return;
+    if(Date.now()-t > HOUR){ clear(); return; }
+    boxes().forEach(function(b){ b.checked = CASESTATE.isChecked(b.getAttribute('data-k')); }); }
   document.addEventListener('change', function(e){ if(e.target && e.target.getAttribute && e.target.getAttribute('data-k')) save(); });
   if(btn) btn.addEventListener('click', clear);
   document.addEventListener('visibilitychange', function(){ if(!document.hidden) restore(); });
