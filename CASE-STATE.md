@@ -22,8 +22,8 @@ Every key here is device-local and PHI-free — see the PHI guard note under
 | `lrh-case-startms` | epoch ms (string) | codes | codes | First action of the case. **Gap:** only codes writes this today (it's a direct rename of codes' pre-existing `codeStartMs`). ob-neonatal and peds don't have an equally unambiguous "the case just began" hook yet — wiring them in is future work, not WS0. |
 | `lrh-case-clocks` | `{ name: epochMs }` | codes, ob, peds | codes, ob, peds | One shared namespace. See **Clock names** below for what's live and who uses each. |
 | `lrh-case-counts` | `{ name: int }` | codes, peds | codes, peds | One shared namespace. See **Count names** below. |
-| `lrh-case-checks` | `{ "<tool>:<data-k>": true }` | codes, ob | codes, ob | One map, every tool's checkboxes. The `<tool>:` prefix is applied at the storage layer only (in each tool's `CASESTATE.setChecked`/`isChecked`) — **no card's HTML `data-k` attribute was renamed**, so two tools' own numbering (codes' `"01-1"`, ob's `"02-0-0"`) can never collide in the shared map even though they collide in principle. peds has no persisted checkboxes yet (WS2.1-equivalent for peds is still open). |
-| `lrh-case-log` | `[{ tMs, tool, card, label, k?, el? }]` | codes, ob, peds | codes, ob, peds | One flat, time-ordered array for the whole case. `tool` is `'codes'`\|`'ob'`\|`'peds'`. `k` and `el` are optional fields OB's log lane uses internally (correlating an entry back to the checkbox that logged it, and a clock-relative display string) — other tools ignore them. **PHI guard:** every tool's `CASESTATE.addLog()` is the *only* function allowed to write this key, and it refuses (drops, with a console warning) any label matching a weight-shaped number (`\d+(\.\d+)?\s*(kg\|lb)`) or a 6+ digit run (MRN/DOB/phone-shaped). Each tool's own on-screen "case timeline" modal currently still filters this array down to its own `tool` — showing every tool's events in one place is WS2.3, not WS0. |
+| `lrh-case-checks` | `{ "<tool>:<data-k>": true }` | codes, ob, peds, trauma | codes, ob, peds, trauma | One map, every tool's checkboxes. The `<tool>:` prefix is applied at the storage layer only (in each tool's `CASESTATE.setChecked`/`isChecked`) — **no card's HTML `data-k` attribute was renamed**, so two tools' own numbering (codes' `"01-1"`, ob's `"02-0-0"`, peds' `"p01-1"`, trauma's `"c01-1"`) can never collide in the shared map even though they collide in principle. As of WS2.1, all four tools' checkboxes are keyed and persisted; every `input[type=checkbox]` in the repo now carries a `data-k`. Trauma's `CASESTATE` module is deliberately partial — checks only, no weight/clocks/log yet (those are WS7 scope, see the note at the end of this file). |
+| `lrh-case-log` | `[{ tMs, tool, card, label, k?, el? }]` | codes, ob, peds | codes, ob, peds | One flat, time-ordered array for the whole case. `tool` is `'codes'`\|`'ob'`\|`'peds'`. `k` and `el` are optional fields OB's log lane uses internally (correlating an entry back to the checkbox that logged it, and a clock-relative display string) — other tools ignore them. **PHI guard:** every tool's `CASESTATE.addLog()` is the *only* function allowed to write this key, and it refuses (drops, with a console warning) any label matching a weight-shaped number (`\d+(\.\d+)?\s*(kg\|lb)`) or a 6+ digit run (MRN/DOB/phone-shaped). As of WS2.3, each tool's "CASE TIMELINE" modal (button renamed from SUMMARY) shows *every* tool's events in one merged, time-ordered list, each row tagged with its source tool — not just its own entries. OB's copy sorts by an HH:MM "wall" string (its own events already worked this way, driven by user-entered birth time); other tools' real `tMs` entries convert to the same HH:MM shape to interleave correctly. **Known precision limit:** the sort key is minute-granularity, so two events logged in different tools within the same minute can display in insertion order rather than true sub-minute order — acceptable given OB's own events never had sub-minute precision to begin with. |
 | `lrh-case-lastactive` | epoch ms (string) | peds | peds | **Gap:** only peds writes this today (a rename of peds' pre-existing 60-minute stale-case guard). Making every tool refresh it, and making the resulting auto-clear genuinely manual-wide, is WS2.5. **Safety note (WS0):** because peds' guard can now clear shared clocks/counts/weight that codes or ob might be actively using, the guard was changed to check `CASESTATE.anyClockRunning()` across *all* tools' clocks before it fires — if anything in `lrh-case-clocks` is running, the guard is fully suppressed, even past the 60-minute mark. This is the minimum safety fix the migration itself required; it is not the full WS2.5 feature. |
 | `lrh-pref-mute` | `'0'` \| `'1'` | codes | codes | A **preference**, not case state — survives RESET. Only codes persists a mute setting today; ob-neonatal's mute is in-memory only (resets on reload) and peds has no mute control. Extending persistence to ob/peds is new functionality, not migration, and was left out of WS0. |
 
@@ -86,6 +86,10 @@ candidate to reconsider in a later workstream, not a bug.
 
 **peds**
 - `lrh-peds-epidoses` — anaphylaxis epi tracker (`{pep1: ms, pep2: ms, pep3: ms, pepbolus: ms, pepdrip: ms}`), one timestamp per dose button. A richer shape than the shared `counts`/`clocks` buckets fit; also a different clinical event (IM epi-pen) than the shared arrest `counts.epi` (IV push) — see the count-name table above.
+- `lrh-peds-checks-ts` — same role as codes'/ob's `-checks-ts` (WS2.1).
+
+**trauma**
+- `lrh-trauma-checks-ts` — same role as the other three tools' `-checks-ts` (WS2.1). Trauma has no other persisted state yet — see the WS7 note below.
 
 ## Migration (WS 0.2)
 
@@ -137,20 +141,57 @@ interpolates the patient's actual weight into a log label (peds' anaphylaxis epi
 says `"0.01 mg/kg"` — a fixed per-kg *rate* constant, not the patient's weight — which is
 fine and passes the guard).
 
+## RESET FOR NEXT CASE — the one destructive control (WS2.4)
+
+Every tool used to have several buttons that said RESET, CLEAR, or RESTART CYCLE — the
+nav bar's case-wide control plus 6-8 per-card buttons that only ever cleared *that one
+card's own clock or counter*. A clinician skimming a card mid-case had no reliable way
+to tell which of those was the one that would wipe the whole case out from under them.
+
+WS2.4 renamed every per-card control off that vocabulary — cycle/round restarts (codes'
+card 01/02, peds' `pcacycle`) are now **NEW CYCLE**; every other per-card clock re-arm
+(codes' LKW/RSI-induction/RSI-paralytic/TXA/seizure/FONA, peds' seizure clock, ob's
+metronome/PPH/dystocia/Rh clocks) is now **UNDO**. Their underlying behavior is
+unchanged — each still only touches its own one card, and each is still safe to tap
+without a confirm, since it never destroys anything outside that card.
+
+**RESET FOR NEXT CASE** is now the only control, in any tool, whose label contains
+"reset" or "clear" — and it is gated behind an in-page confirm modal (`#resetmodal`,
+built the same way as codes' `#audiencemodal`; the confirm button itself is literally
+labeled **CLEAR CASE**, so between the two there is exactly one "reset" control and one
+"clear" control system-wide, both steps of the same single destructive action). Tapping
+RESET FOR NEXT CASE no longer clears anything directly — it opens the confirm. Only
+confirming runs the actual clear:
+
+1. Every `localStorage` key on the origin whose name starts with `lrh-` is removed,
+   **except** keys starting with `lrh-pref-` (today, just `lrh-pref-mute`) — the one
+   documented preference namespace that is meant to survive a case. Because the four
+   tools are same-origin subpaths, this reaches every tool's state — codes, ob, peds,
+   and trauma — regardless of which tool's RESET was pressed, not just the pressing
+   tool's own keys. This directly closes the gap this section used to describe (below).
+2. The page reloads, so every module re-reads its now-empty state through its normal
+   boot path — the same path a fresh page load already takes — rather than each of the
+   ~8-13 per-card modules needing its own bespoke "also clear me" listener kept in sync
+   by hand. Those old per-card `resetbtn`-click listeners are still in the code (removing
+   them was out of scope for this pass) but are now unreachable: the confirm-gate script
+   is loaded first (immediately after the nav bar, before any card markup) and calls
+   `stopImmediatePropagation()` on the raw click, so none of the later listeners on the
+   same button ever fire. The prefix sweep supersedes what they used to do.
+
+This means a *new* card's localStorage key needs no RESET-specific wiring at all to be
+covered — it's swept by the `lrh-` prefix automatically. The only way to opt a new key
+out of RESET is to put it in the `lrh-pref-` namespace on purpose.
+
+Verified with Playwright: state set in codes (weight), peds (a checkbox), and ob (the
+PPH clock) is confirmed still present after CANCEL, and gone from all three — plus every
+per-card clock/counter tested (codes' epi-push counter, MTP tally, ETCO2 timestamp) —
+after CLEAR CASE, while `lrh-pref-mute` survives.
+
 ## Known, accepted scope gaps (see the notes above for reasoning)
 
 - `lrh-case-startms` only wired into codes.
 - `lrh-case-lastactive` only wired into peds (with the cross-tool `anyClockRunning()`
-  safety suppression described above).
+  safety suppression described above) — codes, ob, and trauma don't call `touchActive()`
+  anywhere yet, so the inactivity auto-clear (WS2.5) only ever fires from peds' own idle
+  timer today, not from time spent elsewhere in the app. Tracked as WS2.5.
 - `lrh-pref-mute` only wired into codes.
-- Each tool's own "case timeline" modal still shows only its own events (cross-tool
-  aggregation is WS2.3).
-- **Reset scope, not yet consolidated (WS2.4):** each tool's own RESET button still only
-  clears the shared clocks/counts/log entries *that tool itself writes* — e.g. hitting
-  RESET in peds clears the shared `cprCycle`/`epi` clock and `epi` count (since peds'
-  own arrest card writes those same shared names), which would also interrupt an
-  actively-running case in codes if one happened to be open on the same shared state.
-  This is a real, new, narrow cross-tool risk introduced by unifying the storage layer —
-  accepted for WS0 because the alternative (giving codes and peds their own separately-named
-  clocks/counts) would defeat the actual cross-tool continuity this workstream exists to
-  deliver. WS2.4's "exactly one destructive control" is the intended fix.

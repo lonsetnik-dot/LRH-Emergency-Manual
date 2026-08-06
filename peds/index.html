@@ -82,7 +82,57 @@
   <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
 </div>
 <div id="stickytop">
-<nav class="bar"><a href="../?from=tool" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a><button id="backbtn" type="button" style="display:none; color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px;">◀ BACK</button><button id="summarybtn" type="button" style="color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center;">SUMMARY</button><button id="resetbtn" type="button">RESET FOR NEXT CASE</button><span id="resetnote"></span></nav>
+<nav class="bar"><a href="../?from=tool" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a><button id="backbtn" type="button" style="display:none; color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px;">◀ BACK</button><button id="summarybtn" type="button" style="color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center;">TIMELINE</button><button id="resetbtn" type="button">RESET FOR NEXT CASE</button><span id="resetnote"></span></nav>
+<script>
+/* ---- WS2.4 — the one destructive control, gated behind a confirm ----
+   Same pattern as codes/ob-neonatal/trauma (contract, not shared code —
+   see CASE-STATE.md). This must run before any other script on the page
+   registers its own click listener on #resetbtn (several cards still
+   attach a "when RESET FOR NEXT CASE is pressed, also clear my own card"
+   listener directly to this element). Placing this script block immediately
+   after the nav bar guarantees it registers first; stopImmediatePropagation()
+   then keeps those later listeners from firing on an unconfirmed tap —
+   they become dead code, superseded by the sweep in doClear() below, and
+   are left in place rather than deleted to keep this change small. */
+(function(){
+  var btn=document.getElementById('resetbtn');
+  if(!btn) return;
+  var modal=null;
+  function ensureModal(){
+    if(modal) return;
+    modal=document.createElement('div');
+    modal.id='resetmodal';
+    modal.style.cssText='display:none; position:fixed; inset:0; z-index:40; background:rgba(15,28,44,0.55); padding:14px; align-items:center; justify-content:center;';
+    modal.innerHTML =
+      '<div style="max-width:420px; width:100%; background:#fffefb; border:2px solid #9b1c2e; box-shadow:0 12px 44px rgba(0,0,0,0.32);">'
+      +'<div style="padding:12px 14px; background:#9b1c2e; color:#fffefb; font-family:\'IBM Plex Mono\',\'SF Mono\',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em;">START THE NEXT CASE?</div>'
+      +'<div style="padding:14px; font-size:14px; line-height:1.45; color:#16324f;">This wipes every check, clock, weight entry, and log line for this case — across Codes, OB, Peds, and Trauma. This cannot be undone. Your mute preference is kept.</div>'
+      +'<div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border-top:1px solid #e7eaef;">'
+      +'<button type="button" id="resetmodalcancel" style="min-height:52px; background:#fffefb; color:#16324f; border:none; border-right:1px solid #e7eaef; font-family:\'IBM Plex Mono\',\'SF Mono\',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer;">CANCEL</button>'
+      +'<button type="button" id="resetmodalgo" style="min-height:52px; background:#9b1c2e; color:#fffefb; border:none; font-family:\'IBM Plex Mono\',\'SF Mono\',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer;">CLEAR CASE</button>'
+      +'</div></div>';
+    document.body.appendChild(modal);
+    modal.addEventListener('click', function(ev){ if(ev.target===modal) closeModal(); });
+    modal.querySelector('#resetmodalcancel').addEventListener('click', closeModal);
+    modal.querySelector('#resetmodalgo').addEventListener('click', doClear);
+  }
+  function openModal(){ ensureModal(); modal.style.display='flex'; }
+  function closeModal(){ if(modal) modal.style.display='none'; }
+  function doClear(){
+    try{
+      var keys=[];
+      for(var i=0;i<localStorage.length;i++) keys.push(localStorage.key(i));
+      keys.forEach(function(k){ if(k && k.indexOf('lrh-')===0 && k.indexOf('lrh-pref-')!==0) localStorage.removeItem(k); });
+    }catch(e){}
+    location.reload();
+  }
+  btn.addEventListener('click', function(ev){
+    ev.preventDefault();
+    ev.stopImmediatePropagation();
+    openModal();
+  });
+})();
+</script>
 <div class="section-stripe"></div>
 <div id="wtbar">
   <label for="wtkg">WEIGHT (kg)</label>
@@ -159,7 +209,7 @@
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
         <button type="button" id="pcastart" style="min-height:52px; background:#16324f; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">START CPR CLOCK</button>
-        <button type="button" id="pcacycle" style="min-height:52px; background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">RHYTHM CHECKED — RESTART CYCLE</button>
+        <button type="button" id="pcacycle" style="min-height:52px; background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">RHYTHM CHECKED — NEW CYCLE</button>
       </div>
       <button type="button" id="pcaepi" style="width:100%; min-height:52px; background:#9b1c2e; color:#fffefb; border:none; border-top:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">EPI GIVEN — LOG IT</button>
       <div id="pcaepicue" style="display:none; padding:11px 14px; font-size:13.5px; line-height:1.35; color:#16324f; background:#fdf3cf; border-top:2px solid #8a6d1f;"></div>
@@ -759,7 +809,7 @@
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
         <button type="button" id="psestart" style="min-height:52px; background:#16324f; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">START SEIZURE CLOCK</button>
-        <button type="button" id="psereset" style="min-height:52px; background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">RESET CLOCK</button>
+        <button type="button" id="psereset" style="min-height:52px; background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">UNDO</button>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0; border-top:1px solid #e7eaef; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:9.5px; text-align:center; color:#5a6a78;">
         <div id="psephase-0" style="padding:8px 2px; border-right:1px solid #e7eaef;">0–5 min<br>STABILIZE</div>
@@ -1108,7 +1158,7 @@
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "0.7",
+  version: "0.9",
   lastReviewed: "2026-08-06"
 };
 (function(){
@@ -1609,26 +1659,28 @@ var PEDSDOSE = (function(){
   if(g) g.addEventListener('click', function(){ CASESTATE.clearToolLog(); });
 })();
 
-/* ---- CASE TIMELINE summary modal ---- */
+/* ---- CASE TIMELINE modal (design-review F36/2.3) — ONE timeline, every tool's events,
+   in time order, each row tagged with its source tool. Previously this filtered the
+   shared lrh-case-log down to peds' own entries only; a cross-tool case (e.g. peds
+   anaphylaxis handed off into a codes RSI) produced two silently-partial records with
+   no sign either was incomplete. Same change made in codes' and ob-neonatal's copies. ---- */
 (function(){
   var btn=document.getElementById('summarybtn'), modal=document.getElementById('summarymodal'),
       closeb=document.getElementById('summaryclose'), copyb=document.getElementById('summarycopy'),
       body=document.getElementById('summarybody');
   if(!btn||!modal) return;
+  var TOOL_LABEL={codes:'CODES', ob:'OB', peds:'PEDS', trauma:'TRAUMA'};
   function pad(n){ return (n<10?'0':'')+n; }
   function wallFromMs(ms){ var d=new Date(ms); return pad(d.getHours())+':'+pad(d.getMinutes()); }
   function render(){
-    /* WS0: reads the shared lrh-case-log, filtered to this tool's own entries — still
-       "peds' own timeline" in scope, same as before migration. Showing every tool's
-       events here is WS2.3's job, not this migration's. */
-    var ev=CASESTATE.getLog().filter(function(e){ return e.tool==='peds' && e.label; })
+    var ev=CASESTATE.getLog().filter(function(e){ return e.label; })
       .sort(function(a,b){ return (a.tMs||0)-(b.tMs||0); });
     if(!ev.length){ body.innerHTML='<div style="color:#5a6a78; padding:16px 0; text-align:center;">Nothing logged yet.</div>'; return ''; }
-    var rows='', text='LRH Pediatric Emergencies — case timeline (times only, no identifiers, no weight)\n\n';
+    var rows='', text='LRH Emergency Manual — case timeline, all tools (times only, no identifiers, no weight)\n\n';
     ev.forEach(function(e){
-      var w=wallFromMs(e.tMs);
-      rows+='<div style="display:grid; grid-template-columns:52px 1fr; gap:8px; padding:8px 0; border-top:1px solid #edf0f3;"><span style="font-family:ui-monospace,Menlo,monospace; font-weight:700;">'+w+'</span><span>'+e.label+'</span></div>';
-      text+=w+'  '+e.label+'\n';
+      var w=wallFromMs(e.tMs), tag=TOOL_LABEL[e.tool]||String(e.tool||'').toUpperCase();
+      rows+='<div style="display:grid; grid-template-columns:52px 62px 1fr; gap:8px; padding:8px 0; border-top:1px solid #edf0f3; align-items:baseline;"><span style="font-family:ui-monospace,Menlo,monospace; font-weight:700;">'+w+'</span><span style="font-family:ui-monospace,Menlo,monospace; color:#5a6a78; font-size:11px; letter-spacing:0.04em;">'+tag+'</span><span>'+e.label+'</span></div>';
+      text+=w+'  ['+tag+']  '+e.label+'\n';
     });
     body.innerHTML=rows;
     return text;

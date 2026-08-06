@@ -69,7 +69,58 @@
   <div style="max-width:460px; font-size:14.5px; line-height:1.35; color:#a9c2dc;">Content is unverified and unapproved. Every situation requires nuance; use your professional judgment and your department's policies.</div>
   <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
 </div>
-<nav class="bar"><a href="../?from=tool" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a><button id="backbtn" type="button" style="display:none; color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px;">◀ BACK</button><button id="summarybtn" type="button" style="color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center;">SUMMARY</button><button id="resetbtn" type="button" style="display:none;">RESET FOR NEXT CASE</button><span id="resetnote"></span></nav>
+<nav class="bar"><a href="../?from=tool" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a><button id="backbtn" type="button" style="display:none; color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px;">◀ BACK</button><button id="summarybtn" type="button" style="color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center;">TIMELINE</button><button id="resetbtn" type="button" style="display:none;">RESET FOR NEXT CASE</button><span id="resetnote"></span></nav>
+<script>
+/* ---- WS2.4 — the one destructive control, gated behind a confirm ----
+   Same pattern as codes/peds/trauma (contract, not shared code — see
+   CASE-STATE.md). This must run before any other script on the page
+   registers its own click listener on #resetbtn (several cards — PPH,
+   shoulder dystocia, the Rh clock, the metronome — each still attach a
+   "when RESET FOR NEXT CASE is pressed, also clear my own card" listener
+   directly to this element). Placing this script block immediately after the
+   nav bar guarantees it registers first; stopImmediatePropagation() then
+   keeps those later listeners from firing on an unconfirmed tap — they
+   become dead code, superseded by the sweep in doClear() below, and are
+   left in place rather than deleted to keep this change small. */
+(function(){
+  var btn=document.getElementById('resetbtn');
+  if(!btn) return;
+  var modal=null;
+  function ensureModal(){
+    if(modal) return;
+    modal=document.createElement('div');
+    modal.id='resetmodal';
+    modal.style.cssText='display:none; position:fixed; inset:0; z-index:40; background:rgba(15,28,44,0.55); padding:14px; align-items:center; justify-content:center;';
+    modal.innerHTML =
+      '<div style="max-width:420px; width:100%; background:#fffefb; border:2px solid #9b1c2e; box-shadow:0 12px 44px rgba(0,0,0,0.32);">'
+      +'<div style="padding:12px 14px; background:#9b1c2e; color:#fffefb; font-family:\'IBM Plex Mono\',\'SF Mono\',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em;">START THE NEXT CASE?</div>'
+      +'<div style="padding:14px; font-size:14px; line-height:1.45; color:#16324f;">This wipes every check, clock, weight entry, and log line for this case — across Codes, OB, Peds, and Trauma. This cannot be undone. Your mute preference is kept.</div>'
+      +'<div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border-top:1px solid #e7eaef;">'
+      +'<button type="button" id="resetmodalcancel" style="min-height:52px; background:#fffefb; color:#16324f; border:none; border-right:1px solid #e7eaef; font-family:\'IBM Plex Mono\',\'SF Mono\',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer;">CANCEL</button>'
+      +'<button type="button" id="resetmodalgo" style="min-height:52px; background:#9b1c2e; color:#fffefb; border:none; font-family:\'IBM Plex Mono\',\'SF Mono\',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer;">CLEAR CASE</button>'
+      +'</div></div>';
+    document.body.appendChild(modal);
+    modal.addEventListener('click', function(ev){ if(ev.target===modal) closeModal(); });
+    modal.querySelector('#resetmodalcancel').addEventListener('click', closeModal);
+    modal.querySelector('#resetmodalgo').addEventListener('click', doClear);
+  }
+  function openModal(){ ensureModal(); modal.style.display='flex'; }
+  function closeModal(){ if(modal) modal.style.display='none'; }
+  function doClear(){
+    try{
+      var keys=[];
+      for(var i=0;i<localStorage.length;i++) keys.push(localStorage.key(i));
+      keys.forEach(function(k){ if(k && k.indexOf('lrh-')===0 && k.indexOf('lrh-pref-')!==0) localStorage.removeItem(k); });
+    }catch(e){}
+    location.reload();
+  }
+  btn.addEventListener('click', function(ev){
+    ev.preventDefault();
+    ev.stopImmediatePropagation();
+    openModal();
+  });
+})();
+</script>
 <div id="summarymodal" style="display:none; position:fixed; inset:0; z-index:20; background:rgba(15,28,44,0.55); padding:14px; overflow:auto;">
   <div style="max-width:560px; margin:22px auto; background:#fffefb; border:2px solid #16324f; box-shadow:0 12px 44px rgba(0,0,0,0.32);">
     <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; background:linear-gradient(135deg,#005596,#003e6e); color:#fffefb; border-bottom:5px solid #9b1c2e;">
@@ -341,7 +392,7 @@
     </div>
     <div style="margin-top:8px; display:flex; gap:6px;">
       <button type="button" id="pcrun" style="flex:2; min-height:46px; background:#0e7c86; color:#fffefb; border:2px solid #0e7c86; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">START</button>
-      <button type="button" id="pcreset" style="flex:1; min-height:46px; background:#fffefb; color:#16324f; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">RESET</button>
+      <button type="button" id="pcreset" style="flex:1; min-height:46px; background:#fffefb; color:#16324f; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">UNDO</button>
       <button type="button" id="pcmute" style="flex:1; min-height:46px; background:#fffefb; color:#16324f; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">SOUND ON</button>
     </div>
     <div data-loglane="03" style="margin-top:8px; display:flex; gap:6px; align-items:center; overflow-x:auto; -webkit-overflow-scrolling:touch; min-height:28px; scrollbar-width:none;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:#16324f; opacity:0.7; white-space:nowrap;">NOTHING LOGGED YET</span></div>
@@ -755,7 +806,7 @@
       <div id="pphtime" style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:34px; font-weight:700; line-height:1; color:#9b1c2e; letter-spacing:0.02em; min-width:104px;">00:00</div>
       <div style="display:flex; gap:8px; flex:1; min-width:170px;">
         <button type="button" id="pphstart" style="flex:1; min-height:46px; padding:0 12px; background:#9b1c2e; color:#fffefb; border:2px solid #9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">START</button>
-        <button type="button" id="pphreset" style="min-height:46px; padding:0 12px; background:#fffefb; color:#9b1c2e; border:2px solid #9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">RESET</button>
+        <button type="button" id="pphreset" style="min-height:46px; padding:0 12px; background:#fffefb; color:#9b1c2e; border:2px solid #9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">UNDO</button>
       </div>
     </div>
     <div id="pphstamp" style="margin-top:7px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; color:#9b1c2e;">Start the clock at recognition — the time is stamped here.</div>
@@ -847,7 +898,7 @@
     <div id="sdtime" style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:32px; font-weight:700; line-height:1; color:#8a6d1f; letter-spacing:0.02em; min-width:96px;">00:00</div>
     <div style="display:flex; gap:8px; flex:1; min-width:170px;">
       <button type="button" id="sdstart" style="flex:1; min-height:44px; padding:0 12px; background:#8a6d1f; color:#fffefb; border:2px solid #8a6d1f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">START</button>
-      <button type="button" id="sdreset" style="min-height:44px; padding:0 12px; background:#fffefb; color:#8a6d1f; border:2px solid #8a6d1f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">RESET</button>
+      <button type="button" id="sdreset" style="min-height:44px; padding:0 12px; background:#fffefb; color:#8a6d1f; border:2px solid #8a6d1f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">UNDO</button>
     </div>
     <div id="sdnow" style="width:100%; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.06em; color:#8a6d1f;">Start the clock as you announce it. Roughly 30 s per maneuver.</div>
     <div data-loglane="07" style="margin-top:8px; display:flex; gap:6px; align-items:center; overflow-x:auto; -webkit-overflow-scrolling:touch; min-height:28px; scrollbar-width:none;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:#8a6d1f; opacity:0.7; white-space:nowrap;">NOTHING LOGGED YET</span></div>
@@ -1337,7 +1388,7 @@
     </div>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border-top:1px solid #e7eaef;">
       <button type="button" id="rhstart" style="min-height:52px; background:#9b1c2e; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">START — ARREST NOW</button>
-      <button type="button" id="rhclear" style="min-height:52px; background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">CLEAR</button>
+      <button type="button" id="rhclear" style="min-height:52px; background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">UNDO</button>
     </div>
     <button type="button" id="rhbaby" style="width:100%; min-height:52px; background:#16324f; color:#fffefb; border:none; border-top:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">BABY OUT — LOG IT</button>
   </div>
@@ -1987,7 +2038,7 @@ var CASESTATE = (function(){
 </script>
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
-var SITE = { version: "1.3", lastReviewed: "2026-08-06" };
+var SITE = { version: "1.5", lastReviewed: "2026-08-06" };
 (function(){
   var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
   Array.prototype.forEach.call(document.querySelectorAll('.verstamp'), function(vs){ vs.textContent=stampText; });
@@ -2401,6 +2452,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   }
   function pad2(n){ return (n<10?'0':'')+n; }
   function wallFromMs(ms){ var d=new Date(ms); return pad2(d.getHours())+':'+pad2(d.getMinutes()); }
+  var TOOL_LABEL={codes:'CODES', ob:'OB', peds:'PEDS', trauma:'TRAUMA'};
   function obLogByCard(){
     /* WS0: lrh-ob-log is gone — rebuild the same {card:[...]} shape from the shared
        lrh-case-log, filtered to this tool's own entries, so build() below is unchanged. */
@@ -2411,17 +2463,32 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
     });
     return out;
   }
+  /* design-review F36/2.3 — ONE timeline, every tool's events. OB's own events (and its
+     synthetic Born/Apgar rows) sort by an HH:MM "wall" string derived either from the
+     user-entered time of birth or from a real logged timestamp; every other tool's real
+     lrh-case-log entries reduce to that same HH:MM shape via wallFromMs(tMs), so they can
+     be pushed into the same ev[] array and the existing toMin(wall) sort interleaves them
+     correctly without needing a second sort key. */
+  function otherToolEvents(){
+    var out=[];
+    (CASESTATE.getLog()||[]).forEach(function(e){
+      if(e.tool==='ob' || !e.label) return;
+      out.push({wall: wallFromMs(e.tMs), label:e.label, pri:1, tool:e.tool});
+    });
+    return out;
+  }
   function build(){
     var ap=rd('lrh-ob-apgar'), log=obLogByCard();
     var birth = ap && ap.t ? ap.t : '', ev=[];
-    if(birth) ev.push({wall:birth, label:'Born', pri:0});
-    Object.keys(log).forEach(function(card){ (log[card]||[]).forEach(function(it){ if(it&&it.label) ev.push({wall:it.wall||'', label:it.label, pri:1, els:(card==='02'&&it.el)?it.el:null}); }); });
+    if(birth) ev.push({wall:birth, label:'Born', pri:0, tool:'ob'});
+    Object.keys(log).forEach(function(card){ (log[card]||[]).forEach(function(it){ if(it&&it.label) ev.push({wall:it.wall||'', label:it.label, pri:1, els:(card==='02'&&it.el)?it.el:null, tool:'ob'}); }); });
     ['1','5','10','15','20'].forEach(function(m){
       var set=ap&&ap.s&&ap.s[m]; if(!set) return;
       var ks=Object.keys(set); if(ks.length!==5) return;
       var tot=0; ks.forEach(function(k){ tot+=set[k]; });
-      ev.push({wall: birth?plus(birth,+m):'', label:'Apgar '+m+' min: '+tot+'/10', pri:2, min:+m});
+      ev.push({wall: birth?plus(birth,+m):'', label:'Apgar '+m+' min: '+tot+'/10', pri:2, min:+m, tool:'ob'});
     });
+    ev = ev.concat(otherToolEvents());
     ev.sort(function(a,b){ var am=toMin(a.wall), bm=toMin(b.wall);
       if(am===null&&bm===null) return a.pri-b.pri; if(am===null) return 1; if(bm===null) return -1;
       return am!==bm ? am-bm : a.pri-b.pri; });
@@ -2430,16 +2497,17 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   function render(){
     var m=build();
     if(!m.ev.length){ body.innerHTML='<div style="color:#5a6a78; padding:16px 0; text-align:center;">Nothing logged yet — set the time of birth and work the case.</div>'; return ''; }
-    var rows='', text='LRH OB & Neonatal — case timeline (times only, no identifiers)\n';
+    var rows='', text='LRH Emergency Manual — case timeline, all tools (times only, no identifiers)\n';
     if(m.birth) text+='Born: '+m.birth+'\n';
     text+='\n';
     m.ev.forEach(function(e){
-      var el=e.els||elapsed(m.birth,e.wall,e.min), w=e.wall||'--:--';
-      rows+='<div style="display:grid; grid-template-columns:52px 44px 1fr; gap:8px; padding:8px 0; border-top:1px solid #edf0f3; align-items:baseline;">'
+      var el=e.els||elapsed(m.birth,e.wall,e.min), w=e.wall||'--:--', tag=TOOL_LABEL[e.tool]||String(e.tool||'').toUpperCase();
+      rows+='<div style="display:grid; grid-template-columns:52px 44px 56px 1fr; gap:8px; padding:8px 0; border-top:1px solid #edf0f3; align-items:baseline;">'
         +'<span style="font-family:ui-monospace,Menlo,monospace; font-weight:700;">'+w+'</span>'
         +'<span style="font-family:ui-monospace,Menlo,monospace; color:#5a6a78; font-size:12.5px;">'+el+'</span>'
+        +'<span style="font-family:ui-monospace,Menlo,monospace; color:#5a6a78; font-size:11px; letter-spacing:0.04em;">'+tag+'</span>'
         +'<span>'+e.label+'</span></div>';
-      text+=w+'  '+(el||'   ')+'  '+e.label+'\n';
+      text+=w+'  '+(el||'   ')+'  ['+tag+']  '+e.label+'\n';
     });
     body.innerHTML=rows;
     return text;

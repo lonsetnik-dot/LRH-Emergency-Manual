@@ -59,6 +59,55 @@
 </div>
 <div id="stickytop">
 <nav class="bar"><a href="../?from=tool" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a><button id="backbtn" type="button" style="display:none; color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px;">◀ BACK</button><button id="resetbtn" type="button" style="margin-left:auto; color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.4); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px;">RESET FOR NEXT CASE</button></nav>
+<script>
+/* ---- WS2.4 — the one destructive control, gated behind a confirm ----
+   Same pattern as codes/ob-neonatal/peds (contract, not shared code — see
+   CASE-STATE.md). This must run before the checkbox-persistence script
+   further down this file registers its own click listener on #resetbtn.
+   Placing this script block immediately after the nav bar guarantees it
+   registers first; stopImmediatePropagation() then keeps that later
+   listener from firing on an unconfirmed tap — it becomes dead code,
+   superseded by the sweep in doClear() below, and is left in place rather
+   than deleted to keep this change small. */
+(function(){
+  var btn=document.getElementById('resetbtn');
+  if(!btn) return;
+  var modal=null;
+  function ensureModal(){
+    if(modal) return;
+    modal=document.createElement('div');
+    modal.id='resetmodal';
+    modal.style.cssText='display:none; position:fixed; inset:0; z-index:40; background:rgba(15,28,44,0.55); padding:14px; align-items:center; justify-content:center;';
+    modal.innerHTML =
+      '<div style="max-width:420px; width:100%; background:#fffefb; border:2px solid #9b1c2e; box-shadow:0 12px 44px rgba(0,0,0,0.32);">'
+      +'<div style="padding:12px 14px; background:#9b1c2e; color:#fffefb; font-family:\'IBM Plex Mono\',\'SF Mono\',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em;">START THE NEXT CASE?</div>'
+      +'<div style="padding:14px; font-size:14px; line-height:1.45; color:#16324f;">This wipes every check, clock, weight entry, and log line for this case — across Codes, OB, Peds, and Trauma. This cannot be undone. Your mute preference is kept.</div>'
+      +'<div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border-top:1px solid #e7eaef;">'
+      +'<button type="button" id="resetmodalcancel" style="min-height:52px; background:#fffefb; color:#16324f; border:none; border-right:1px solid #e7eaef; font-family:\'IBM Plex Mono\',\'SF Mono\',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer;">CANCEL</button>'
+      +'<button type="button" id="resetmodalgo" style="min-height:52px; background:#9b1c2e; color:#fffefb; border:none; font-family:\'IBM Plex Mono\',\'SF Mono\',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer;">CLEAR CASE</button>'
+      +'</div></div>';
+    document.body.appendChild(modal);
+    modal.addEventListener('click', function(ev){ if(ev.target===modal) closeModal(); });
+    modal.querySelector('#resetmodalcancel').addEventListener('click', closeModal);
+    modal.querySelector('#resetmodalgo').addEventListener('click', doClear);
+  }
+  function openModal(){ ensureModal(); modal.style.display='flex'; }
+  function closeModal(){ if(modal) modal.style.display='none'; }
+  function doClear(){
+    try{
+      var keys=[];
+      for(var i=0;i<localStorage.length;i++) keys.push(localStorage.key(i));
+      keys.forEach(function(k){ if(k && k.indexOf('lrh-')===0 && k.indexOf('lrh-pref-')!==0) localStorage.removeItem(k); });
+    }catch(e){}
+    location.reload();
+  }
+  btn.addEventListener('click', function(ev){
+    ev.preventDefault();
+    ev.stopImmediatePropagation();
+    openModal();
+  });
+})();
+</script>
 <div class="section-stripe"></div>
 </div>
 
@@ -502,7 +551,7 @@
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "0.4",
+  version: "0.5",
   lastReviewed: "2026-08-06"
 };
 (function(){
