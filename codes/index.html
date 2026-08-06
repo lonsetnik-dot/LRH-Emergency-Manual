@@ -69,6 +69,12 @@
   .wdose { font-weight:700; color:#16324f; }
   .wdose-vol { font-size:1.05em; }
   .wdose-mg { font-size:0.86em; font-weight:400; opacity:0.82; margin-left:3px; }
+  .audiencestrip { display:block; padding:6px 14px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.04em; cursor:pointer; }
+  .audiencestrip.quiet { background:#eef3f6; color:#5a6a78; }
+  .audiencestrip.quiet:hover, .audiencestrip.quiet:focus-visible { background:#e2e9ee; }
+  .audiencestrip.warn { background:#fbeaec; color:#9b1c2e; border-bottom:2px solid #9b1c2e; }
+  .audiencestrip.warn:hover, .audiencestrip.warn:focus-visible { background:#f7d7db; }
+  @media print { .audiencestrip { display:none; } }
   /* .unset renders as a tappable chip, not italic red prose (design-review item 17) —
      tapping it focuses+highlights the weight field instead of making the reader hunt for a
      bar that scrolled off three screens ago. */
@@ -175,7 +181,7 @@
   </div>
 
   <!-- ============ CARD 01 · PULSELESS VF / VT ============ -->
-  <article id="c01">
+  <article id="c01" data-audience="adult" data-peds-alt="peds#p01">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#2f62a8; font-size:16px; margin-right:8px;">01</span>Pulseless VF / VT</h2>
@@ -316,7 +322,7 @@
   </article>
 
   <!-- ============ CARD 02 · PEA / ASYSTOLE (minimal stub) ============ -->
-  <article id="c02">
+  <article id="c02" data-audience="adult" data-peds-alt="peds#p01">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#5a6a78; font-size:16px; margin-right:8px;">02</span>PEA / Asystole</h2>
@@ -407,7 +413,7 @@
        (card 01's ROSC button, or the PULSE PRESENT tile at a rhythm check on either card 01
        or 02 — all three funnel through the same stopTiming(), which is where the auto-jump
        lives). Also reachable directly from the menu for review/prep. ---- -->
-  <article id="c22">
+  <article id="c22" data-audience="adult" data-peds-alt="peds#p01">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#2f7a3f; font-size:16px; margin-right:8px;">22</span>Post-ROSC Care</h2>
@@ -483,7 +489,7 @@
   </article>
 
   <!-- ============ CARD 03 · SYMPTOMATIC BRADYCARDIA ============ -->
-  <article id="c03">
+  <article id="c03" data-audience="adult" data-peds-alt="peds#p16">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#16324f; font-size:16px; margin-right:8px;">03</span>Symptomatic Bradycardia</h2>
@@ -545,7 +551,7 @@
   </article>
 
   <!-- ============ CARD 04 · SUSPECTED ACUTE STROKE ============ -->
-  <article id="c04">
+  <article id="c04" data-audience="adult">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#16324f; font-size:16px; margin-right:8px;">04</span>Suspected Acute Stroke</h2>
@@ -636,7 +642,7 @@
   </article>
 
   <!-- ============ CARD 05 · RESPIRATORY ARREST ============ -->
-  <article id="c05">
+  <article id="c05" data-audience="adult" data-peds-alt="peds#p01">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#16324f; font-size:16px; margin-right:8px;">05</span>Respiratory Arrest</h2>
@@ -688,7 +694,7 @@
   </article>
 
   <!-- ============ CARD 06 · INTUBATION / RSI CHECKLIST ============ -->
-  <article id="c06">
+  <article id="c06" data-audience="adult">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#16324f; font-size:16px; margin-right:8px;">06</span>Intubation / RSI Checklist</h2>
@@ -799,7 +805,7 @@
   </article>
 
   <!-- ============ CARD 07 · INTRACRANIAL HEMORRHAGE ============ -->
-  <article id="c07">
+  <article id="c07" data-audience="adult">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#16324f; font-size:16px; margin-right:8px;">07</span>Intracranial Hemorrhage</h2>
@@ -840,7 +846,7 @@
   </article>
 
   <!-- ============ CARD 08 · ANAPHYLAXIS ============ -->
-  <article id="c08">
+  <article id="c08" data-audience="adult" data-peds-alt="peds#p02">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#9b1c2e; font-size:16px; margin-right:8px;">08</span>Anaphylaxis</h2>
@@ -922,7 +928,7 @@
   </article>
 
   <!-- ============ CARD 09 · BLEEDING / HEMORRHAGIC SHOCK ============ -->
-  <article id="c09">
+  <article id="c09" data-audience="adult">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#9b1c2e; font-size:16px; margin-right:8px;">09</span>Bleeding / Hemorrhagic Shock</h2>
@@ -973,7 +979,7 @@
   </article>
 
   <!-- ============ CARD 10 · REVERSAL OF ANTICOAGULANTS ============ -->
-  <article id="c10">
+  <article id="c10" data-audience="adult">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#16324f; font-size:16px; margin-right:8px;">10</span>Reversal of Anticoagulants</h2>
@@ -1046,7 +1052,7 @@
   </article>
 
   <!-- ============ CARD 11 · HYPERKALEMIA CRASH PROTOCOL ============ -->
-  <article id="c11">
+  <article id="c11" data-audience="adult">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#9b1c2e; font-size:16px; margin-right:8px;">11</span>Hyperkalemia — Crash Protocol</h2>
@@ -1104,7 +1110,7 @@
   </article>
 
   <!-- ============ CARD 12 · MASSIVE TRANSFUSION PROTOCOL ============ -->
-  <article id="c12">
+  <article id="c12" data-audience="adult">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#9b1c2e; font-size:16px; margin-right:8px;">12</span>Massive Transfusion Protocol</h2>
@@ -1173,7 +1179,7 @@
   </article>
 
   <!-- ============ CARD 13 · STATUS EPILEPTICUS ============ -->
-  <article id="c13">
+  <article id="c13" data-audience="adult" data-peds-alt="peds#p10">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#9b1c2e; font-size:16px; margin-right:8px;">13</span>Status Epilepticus</h2>
@@ -1269,7 +1275,7 @@
   </article>
 
   <!-- ============ CARD 14 · UNSTABLE ON THE VENT — DOPE ============ -->
-  <article id="c14">
+  <article id="c14" data-audience="any">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#9b1c2e; font-size:16px; margin-right:8px;">14</span>Unstable on the Vent — DOPE</h2>
@@ -1340,7 +1346,7 @@
   </article>
 
   <!-- ============ CARD 15 · STATUS ASTHMATICUS ============ -->
-  <article id="c15">
+  <article id="c15" data-audience="adult" data-peds-alt="peds#p03">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#9b1c2e; font-size:16px; margin-right:8px;">15</span>Status Asthmaticus</h2>
@@ -1413,7 +1419,7 @@
   </article>
 
   <!-- ============ CARD 16 · ANGIOEDEMA ============ -->
-  <article id="c16">
+  <article id="c16" data-audience="adult">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#9b1c2e; font-size:16px; margin-right:8px;">16</span>Angioedema</h2>
@@ -1483,7 +1489,7 @@
   </article>
 
   <!-- ============ CARD 17 · TRACHEOSTOMY EMERGENCY ============ -->
-  <article id="c17">
+  <article id="c17" data-audience="any">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#9b1c2e; font-size:16px; margin-right:8px;">17</span>Tracheostomy Emergency</h2>
@@ -1558,7 +1564,7 @@
   </article>
 
   <!-- ============ CARD 18 · FRONT OF NECK ACCESS (FONA) ============ -->
-  <article id="c18">
+  <article id="c18" data-audience="adult">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#9b1c2e; font-size:16px; margin-right:8px;">18</span>Front of Neck Access (FONA)</h2>
@@ -1638,7 +1644,7 @@
   </article>
 
   <!-- ============ CARD 19 · LVAD RESPONSIVE ============ -->
-  <article id="c19">
+  <article id="c19" data-audience="adult">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#16324f; font-size:16px; margin-right:8px;">19</span>LVAD — Responsive (Pump Running)</h2>
@@ -1738,7 +1744,7 @@
   </article>
 
   <!-- ============ CARD 20 · LVAD UNRESPONSIVE ============ -->
-  <article id="c20">
+  <article id="c20" data-audience="adult">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#9b1c2e; font-size:16px; margin-right:8px;">20</span>LVAD — Unresponsive (Pump NOT Running)</h2>
@@ -1819,7 +1825,7 @@
   </article>
 
   <!-- ============ CARD 21 · STEMI ============ -->
-  <article id="c21">
+  <article id="c21" data-audience="adult">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#16324f; font-size:16px; margin-right:8px;">21</span>STEMI</h2>
@@ -2102,7 +2108,7 @@
 
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "1.7",
+  version: "1.8",
   lastReviewed: "2026-08-06",
   cpr: { cycleSec: 120, rateLow: 100, rateHigh: 120, depthCm: "5–6", rotateMin: 2 },
   defib: { mfr: "ZOLL Rectilinear Biphasic", mfrShort: "ZOLL", shock1: "120 J", shock2: "150 J", shock3plus: "200 J" },
@@ -2116,7 +2122,13 @@ var SITE = {
   stemi: { contacts: [
     { key:'dhmc',    label:'Dartmouth-Hitchcock (DHMC) Transfer Center', tel:'+18779999870', phoneDisplay:'877-999-9870 (urgent/emergent)' },
     { key:'concord', label:'Concord Hospital Transfer Center',           tel:'+18009929399', phoneDisplay:'800-992-9399' }
-  ] }
+  ] },
+  /* Audience strip (design-review F31) — the ONE number that decides which card a shared
+     weight *suggests* switching to; it never decides which dose is shown. TODO(maintainer):
+     set thresholdKg and cite the source (e.g. the top of your pediatric weight-based-dosing
+     range / Broselow-Luten range) before this ships. Left null on purpose — the strip logic
+     below treats null as "not yet configured" and never guesses a cutoff. */
+  audience: { thresholdKg: null /* TODO(maintainer) */ }
 };
 /* energy for the Nth shock (n is 1-based: 1st, 2nd, 3rd...) per ZOLL's protocol */
 function zollJoules(n){ return n<=1 ? SITE.defib.shock1 : (n===2 ? SITE.defib.shock2 : SITE.defib.shock3plus); }
@@ -3049,7 +3061,7 @@ var CODES_WT = (function(){
     else { kg = (3*years) + 7; }
     return {kg: Math.round(kg*10)/10};
   }
-  function recompute(){ if(window.CODESDOSE) window.CODESDOSE.recompute(wtKg); paint(); }
+  function recompute(){ if(window.CODESDOSE) window.CODESDOSE.recompute(wtKg); paint(); if(window.AUDIENCE) window.AUDIENCE.paint(); }
   if(kgEl){
     if(wtKg!==null) kgEl.value=wtKg;
     kgEl.addEventListener('input', function(){
@@ -3137,6 +3149,109 @@ var CODESDOSE = (function(){
   }
   recompute(CODES_WT.getKg());
   return { recompute:recompute };
+})();
+
+/* ---- Audience strip (design-review F31) — derived from the shared weight, never chosen.
+   Reads data-audience ("adult" | "peds" | "any") and optional data-peds-alt (e.g. "peds#p16")
+   off each card's article element. Renders one strip as the first child of every "adult" article:
+     - no weight set:            quiet "ADULT DOSES · TAP FOR PEDIATRIC"
+     - weight set, < threshold:  red warning naming the weight (+ the suggested card, if any)
+     - weight set, >= threshold: quiet "<kg> · ADULT DOSES" confirmation
+   "peds" and "any" cards render nothing — this is a safety net for a weight ending up on the
+   wrong card, not a general audience label. Tapping the red state opens a two-action
+   interstitial: go to the named pediatric card, or "stay — adult patient" (clears the weight).
+   TODO(maintainer): SITE.audience.thresholdKg is unset — until it is, every entered weight
+   renders as the plain confirmation state (never a guessed red warning). The per-card
+   data-audience/data-peds-alt values above are an agent-prepared proposal (per AGENTTASKS.md
+   1.2) — review and correct them; several codes cards point at peds#p16 (Peds 16 Bradycardia),
+   which doesn't exist yet (WS 6). */
+var AUDIENCE = (function(){
+  var THRESH = (SITE.audience && typeof SITE.audience.thresholdKg==='number') ? SITE.audience.thresholdKg : null;
+  var cards = Array.prototype.slice.call(document.querySelectorAll('article[data-audience="adult"]'));
+  if(!cards.length) return { paint:function(){} };
+  var strips = cards.map(function(article){
+    var s = document.createElement('div');
+    s.className = 'audiencestrip';
+    article.insertBefore(s, article.firstChild);
+    return { el:s, alt: article.getAttribute('data-peds-alt') };
+  });
+  var modal=null, pendingAlt=null;
+  function altHref(alt){ /* "peds#p16" -> "../peds/?from=home#p16" */
+    var hashIdx = alt.indexOf('#');
+    var tool = hashIdx>=0 ? alt.slice(0,hashIdx) : alt;
+    var anchor = hashIdx>=0 ? alt.slice(hashIdx) : '';
+    return '../'+tool+'/?from=home'+anchor;
+  }
+  function ensureModal(){
+    if(modal) return;
+    modal = document.createElement('div');
+    modal.id = 'audiencemodal';
+    modal.style.cssText = 'display:none; position:fixed; inset:0; z-index:30; background:rgba(15,28,44,0.55); padding:14px; align-items:center; justify-content:center;';
+    modal.innerHTML =
+      '<div style="max-width:420px; width:100%; background:#fffefb; border:2px solid #9b1c2e; box-shadow:0 12px 44px rgba(0,0,0,0.32);">'
+      +'<div style="padding:12px 14px; background:#9b1c2e; color:#fffefb; font-family:\'IBM Plex Mono\',\'SF Mono\',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em;">PEDIATRIC WEIGHT ON AN ADULT CARD</div>'
+      +'<div id="audiencemodalbody" style="padding:14px; font-size:14px; line-height:1.4; color:#16324f;"></div>'
+      +'<div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border-top:1px solid #e7eaef;">'
+      +'<button type="button" id="audiencemodalgo" style="min-height:52px; background:#16324f; color:#fffefb; border:none; border-right:1px solid #e7eaef; font-family:\'IBM Plex Mono\',\'SF Mono\',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer;">GO TO PEDIATRIC CARD</button>'
+      +'<button type="button" id="audiencemodalstay" style="min-height:52px; background:#fffefb; color:#16324f; border:none; font-family:\'IBM Plex Mono\',\'SF Mono\',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer;">STAY — ADULT PATIENT</button>'
+      +'</div></div>';
+    document.body.appendChild(modal);
+    modal.addEventListener('click', function(ev){ if(ev.target===modal) closeModal(); });
+    modal.querySelector('#audiencemodalgo').addEventListener('click', function(){
+      var href = pendingAlt ? altHref(pendingAlt) : '../peds/?from=home';
+      closeModal();
+      location.href = href;
+    });
+    modal.querySelector('#audiencemodalstay').addEventListener('click', function(){
+      closeModal();
+      /* CODES_WT owns wtKg/src and has no public "clear" beyond its own input listener —
+         clearing the field and dispatching a real input event runs that listener, which
+         nulls wtKg/src, persists via CASESTATE, and repaints (weight bar, doses, this strip)
+         through the normal path rather than duplicating that logic here. */
+      var el=document.getElementById('wtkg');
+      var ageEl=document.getElementById('wtage'); if(ageEl) ageEl.value='';
+      if(el){
+        el.value='';
+        var ev; try{ ev=new Event('input',{bubbles:true}); }catch(e){ ev=document.createEvent('Event'); ev.initEvent('input', true, true); }
+        el.dispatchEvent(ev);
+      }
+    });
+  }
+  function openModal(alt, kg){
+    ensureModal();
+    pendingAlt = alt;
+    var body = modal.querySelector('#audiencemodalbody');
+    var kgText = (Math.round(kg*10)/10)+' kg';
+    body.textContent = alt
+      ? ('This card shows adult doses. The weight entered ('+kgText+') suggests this is a pediatric patient — go to the pediatric card, or stay here if this patient is actually an adult (this clears the entered weight).')
+      : ('This card shows adult doses. The weight entered ('+kgText+') suggests this is a pediatric patient, but there is no pediatric version of this card yet — go to the Pediatrics manual to find the right one, or stay here if this patient is actually an adult (this clears the entered weight).');
+    modal.style.display = 'flex';
+  }
+  function closeModal(){ if(modal) modal.style.display='none'; }
+  function paint(){
+    var kg = window.CODES_WT ? window.CODES_WT.getKg() : null;
+    var set = kg!==null && kg!==undefined && !isNaN(kg) && kg>0;
+    strips.forEach(function(s){
+      s.el.onclick = null;
+      if(!set){
+        s.el.className = 'audiencestrip quiet';
+        s.el.textContent = 'ADULT DOSES · TAP FOR PEDIATRIC';
+        s.el.onclick = function(){ location.href = altHref(s.alt || 'peds'); };
+        return;
+      }
+      if(THRESH===null || kg>=THRESH){
+        s.el.className = 'audiencestrip quiet';
+        s.el.textContent = (Math.round(kg*10)/10)+' kg · ADULT DOSES';
+        return;
+      }
+      var name = s.alt && s.alt.indexOf('#p')>=0 ? (' → PEDS '+s.alt.split('#p')[1]) : '';
+      s.el.className = 'audiencestrip warn';
+      s.el.textContent = '⚠ '+(Math.round(kg*10)/10)+' kg PATIENT · THIS CARD IS ADULT DOSES'+name;
+      s.el.onclick = function(){ openModal(s.alt, kg); };
+    });
+  }
+  paint();
+  return { paint:paint };
 })();
 
 /* ---- Card 21: STEMI — weight-band TNK highlight, ID/TNK time stamps, transfer call log ---- */
