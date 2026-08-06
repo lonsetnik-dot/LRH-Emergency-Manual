@@ -56,6 +56,8 @@
   #wtdisplay { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; color:#f7d97a; }
   .wdose { font-weight:700; color:#16324f; }
   .wdose.unset { color:#9b1c2e; font-weight:400; font-style:italic; }
+  .wdose-vol { font-size:1.05em; }
+  .wdose-mg { font-size:0.86em; font-weight:400; opacity:0.82; margin-left:3px; }
   table.dt { border-collapse:collapse; width:100%; font-size:13.5px; margin:6px 0 2px; }
   table.dt th, table.dt td { border:1px solid #e7eaef; padding:6px 8px; text-align:left; }
   table.dt th { background:#f4f7fa; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:0.04em; color:#16324f; }
@@ -193,7 +195,7 @@
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">DRUG DOSES — CALCULATED FROM WEIGHT ABOVE</summary>
         <table class="dt">
           <tr><th>Drug</th><th>Dose</th><th>Max</th><th>Interval</th></tr>
-          <tr class="hl"><td>Epinephrine IV/IO (1:10,000 = 0.1 mg/mL)</td><td>0.01 mg/kg = <span class="wdose" data-perkg="0.01" data-max="1" data-unit="mg" data-decimals="2">enter weight above</span></td><td>1 mg</td><td>q3–5min</td></tr>
+          <tr class="hl"><td>Epinephrine IV/IO (1:10,000 = 0.1 mg/mL)</td><td>0.01 mg/kg = <span class="wdose" data-perkg="0.01" data-max="1" data-unit="mg" data-decimals="2" data-conc="0.1">enter weight above</span></td><td>1 mg</td><td>q3–5min</td></tr>
           <tr><td>Epinephrine via ETT (2nd-line route only)</td><td>0.1 mg/kg = <span class="wdose" data-perkg="0.1" data-max="10" data-unit="mg" data-decimals="2">enter weight above</span></td><td>—</td><td>—</td></tr>
           <tr><td>Amiodarone (refractory VF/pVT)</td><td>5 mg/kg = <span class="wdose" data-perkg="5" data-max="300" data-unit="mg" data-decimals="0">enter weight above</span></td><td>300 mg/dose</td><td>may repeat ×2 (max ≤3 doses / ≤15 mg/kg)</td></tr>
           <tr><td>Lidocaine (alternative to amiodarone)</td><td>1 mg/kg = <span class="wdose" data-perkg="1" data-unit="mg" data-decimals="1">enter weight above</span></td><td>—</td><td>repeat 0.5 mg/kg if needed</td></tr>
@@ -245,7 +247,7 @@
         <summary style="background:#9b1c2e; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">EPINEPHRINE — CALCULATED FROM WEIGHT ABOVE</summary>
         <table class="dt">
           <tr><th>Route</th><th>Dose</th><th>Max</th><th>Repeat</th></tr>
-          <tr class="hl"><td>IM (1:1000), anterolateral thigh</td><td>0.01 mg/kg = <span class="wdose" data-perkg="0.01" data-max="0.5" data-unit="mg" data-decimals="2">enter weight above</span></td><td>0.5 mg (WAO 2020)</td><td>q5–15min</td></tr>
+          <tr class="hl"><td>IM (1:1000), anterolateral thigh</td><td>0.01 mg/kg = <span class="wdose" data-perkg="0.01" data-max="0.5" data-unit="mg" data-decimals="2" data-conc="1">enter weight above</span></td><td>0.5 mg (WAO 2020)</td><td>q5–15min</td></tr>
         </table>
         <div style="margin:10px 0 4px; border:2px solid #9b1c2e;">
           <div style="padding:9px 12px; background:#fbeaec;">
@@ -1106,8 +1108,8 @@
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "0.5",
-  lastReviewed: "2026-08-04"
+  version: "0.6",
+  lastReviewed: "2026-08-06"
 };
 (function(){
   var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
@@ -1321,7 +1323,7 @@ var PEDS_WT = (function(){
     paintZone();
     if(!dispEl) return;
     if(wtKg===null || isNaN(wtKg)){ dispEl.textContent='WEIGHT NOT SET'; dispEl.style.color='#f7d97a'; return; }
-    dispEl.textContent = fmt(wtKg)+' kg'+(src==='estimated' ? ' (age-estimate)' : '');
+    dispEl.textContent = fmt(wtKg)+' kg'+(src==='estimated' ? ' (age-estimate)' : ' (measured)');
     dispEl.style.color = src==='estimated' ? '#f2b84b' : '#8fd19e';
   }
   /* Age→weight estimate: APLS-style bands, for reference only when an actual
@@ -1372,9 +1374,18 @@ var PEDS_WT = (function(){
 })();
 
 /* ---- Generic weight-based dose calculator for every <span class="wdose">.
-   data-perkg (required), data-max (optional cap), data-unit, data-decimals. ---- */
+   data-perkg (required), data-max (optional cap), data-unit, data-decimals.
+   Optional data-conc (mg per mL, only meaningful when data-unit="mg") — when present,
+   render the volume to draw up as the primary figure and the mg as a smaller secondary
+   figure (design-review F29: "0.14 mg" alone doesn't tell you whether to draw up 0.14 mL
+   of 1:1000 or 1.4 mL of 1:10,000 — same number, tenfold difference in volume).
+   TODO(maintainer): data-conc is wired up only where a concentration is already stated
+   and cited in that row's own text (see the two epinephrine rows below) — do not add
+   data-conc to any other row without first confirming LRH's actual stocked concentration
+   for that drug/route; this calculator will never guess one. */
 var PEDSDOSE = (function(){
   var spans = Array.prototype.slice.call(document.querySelectorAll('.wdose'));
+  function fmtVol(n){ return String(Math.round(n*100)/100); }
   function recompute(kg){
     spans.forEach(function(el){
       var perkg = parseFloat(el.getAttribute('data-perkg'));
@@ -1382,6 +1393,7 @@ var PEDSDOSE = (function(){
       var max = hasMax ? parseFloat(el.getAttribute('data-max')) : null;
       var unit = el.getAttribute('data-unit')||'';
       var dec = el.hasAttribute('data-decimals') ? parseInt(el.getAttribute('data-decimals'),10) : 1;
+      var conc = el.hasAttribute('data-conc') ? parseFloat(el.getAttribute('data-conc')) : null;
       if(kg===null || kg===undefined || isNaN(kg) || kg<=0 || isNaN(perkg)){
         el.textContent='enter weight above';
         el.classList.add('unset');
@@ -1389,7 +1401,12 @@ var PEDSDOSE = (function(){
       }
       var val = perkg*kg;
       if(max!==null && !isNaN(max) && val>max) val=max;
-      el.textContent = val.toFixed(isNaN(dec)?1:dec)+(unit?(' '+unit):'');
+      var mgText = val.toFixed(isNaN(dec)?1:dec)+(unit?(' '+unit):'');
+      if(conc!==null && !isNaN(conc) && conc>0 && unit==='mg'){
+        el.innerHTML = '<span class="wdose-vol">'+fmtVol(val/conc)+' mL</span><span class="wdose-mg">('+mgText+')</span>';
+      } else {
+        el.textContent = mgText;
+      }
       el.classList.remove('unset');
     });
   }

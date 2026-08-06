@@ -53,6 +53,8 @@
   #wtbar { display:flex; align-items:center; gap:8px; flex-wrap:nowrap; overflow-x:auto; background:#0c2a44; color:#fffefb; border-bottom:2px solid #2f62a8; padding:5px 14px; }
   #wtbar label { flex:none; display:inline-flex; align-items:center; background:#f7d97a; color:#16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10px; font-weight:700; letter-spacing:0.06em; padding:4px 7px; white-space:nowrap; }
   #wtbar input { flex:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; padding:4px 7px; border:1px solid rgba(255,255,255,0.5); background:#16324f; color:#fffefb; min-height:28px; width:58px; }
+  #wtbar select, #wtbar button { flex:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.04em; padding:4px 7px; border:1px solid rgba(255,255,255,0.5); background:#16324f; color:#fffefb; min-height:28px; white-space:nowrap; cursor:pointer; }
+  #wtbar select { width:auto; cursor:pointer; }
   #wtdisplay { flex:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; color:#f7d97a; white-space:nowrap; }
   @keyframes flashred { 0%,100% { background:#9b1c2e; } 50% { background:#d62c40; } }
   #ccshock.flashred { animation: flashred 1.1s ease-in-out infinite; }
@@ -65,6 +67,8 @@
   .flashgentle { animation: flashgentle 1.6s ease-in-out infinite; }
   @media (prefers-reduced-motion: reduce) { .flashgentle { animation:none; } }
   .wdose { font-weight:700; color:#16324f; }
+  .wdose-vol { font-size:1.05em; }
+  .wdose-mg { font-size:0.86em; font-weight:400; opacity:0.82; margin-left:3px; }
   /* .unset renders as a tappable chip, not italic red prose (design-review item 17) —
      tapping it focuses+highlights the weight field instead of making the reader hunt for a
      bar that scrolled off three screens ago. */
@@ -107,7 +111,11 @@
 <div id="wtbar">
   <label for="wtkg">WEIGHT</label>
   <input id="wtkg" type="number" inputmode="decimal" step="0.1" min="0" placeholder="kg">
-  <span id="wtdisplay">· ADULT DEFAULTS</span>
+  <label for="wtage">or AGE</label>
+  <input id="wtage" type="number" inputmode="decimal" step="0.1" min="0" placeholder="age">
+  <select id="wtageunit"><option value="mo">months</option><option value="yr" selected>years</option></select>
+  <button type="button" id="wtestimate">ESTIMATE KG FROM AGE</button>
+  <span id="wtdisplay">no weight entered · per-kg doses hidden</span>
 </div>
 <div id="headsup">
   <div class="hurow">
@@ -233,10 +241,7 @@
 
     <!-- ---- RHYTHM CHECK ROUTING — always available; #rhhead01 relabels to "EARLY CHECK"
          and the resulting log entry gets the same tag when tapped before the 2:00 mark
-         (see isEarlyCheck() / checkTag() in the CPR-engine script). #rhhint01 is legacy
-         markup, always hidden now — kept rather than deleted in case a future revision
-         wants a persistent caption slot here. ---- -->
-    <div id="rhhint01" style="margin:0 14px; border:2px solid #16324f; border-top:none; padding:10px 14px; text-align:center; background:#f4f7fa; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.05em; color:#8a8578;">RHYTHM-CHECK OPTIONS APPEAR AT THE 2:00 MARK</div>
+         (see isEarlyCheck() / checkTag() in the CPR-engine script). ---- -->
     <div id="rhpanel01" style="display:none; margin:0 14px; border:2px solid #16324f; border-top:none;">
       <div id="rhhead01" style="padding:9px 14px; background:#eef3f6; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.06em; color:#16324f;">AT THE RHYTHM CHECK — WHAT DO YOU SEE?</div>
       <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0;">
@@ -341,8 +346,7 @@
     </div>
 
     <!-- ---- RHYTHM CHECK ROUTING — always available; see the matching comment on card 01's
-         copy of this block above (#rhpanel01) for how #rhhead02/#rhhint02 behave. ---- -->
-    <div id="rhhint02" style="margin:0 14px; border:2px solid #16324f; border-top:none; padding:10px 14px; text-align:center; background:#f4f7fa; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.05em; color:#8a8578;">RHYTHM-CHECK OPTIONS APPEAR AT THE 2:00 MARK</div>
+         copy of this block above (#rhpanel01) for how #rhhead02 behaves. ---- -->
     <div id="rhpanel02" style="display:none; margin:0 14px; border:2px solid #16324f; border-top:none;">
       <div id="rhhead02" style="padding:9px 14px; background:#eef3f6; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.06em; color:#16324f;">AT THE RHYTHM CHECK — WHAT DO YOU SEE?</div>
       <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0;">
@@ -2098,8 +2102,8 @@
 
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "1.6",
-  lastReviewed: "2026-08-04",
+  version: "1.7",
+  lastReviewed: "2026-08-06",
   cpr: { cycleSec: 120, rateLow: 100, rateHigh: 120, depthCm: "5–6", rotateMin: 2 },
   defib: { mfr: "ZOLL Rectilinear Biphasic", mfrShort: "ZOLL", shock1: "120 J", shock2: "150 J", shock3plus: "200 J" },
   epi: { dose: "1 mg", intervalMin: "3–5", suggestSec: 180 },
@@ -2404,7 +2408,7 @@ window.__cardNav=CardNav;
       epiBtn=$id('ccepi'), amioBtn=$id('ccamio'), roscBtn=$id('ccrosc'),
       headsup=$id('headsup'), huclock=$id('huclock'), hucue=$id('hucue'),
       peaclock=$id('peaclock'), peacue=$id('peacue'), peaepiBtn=$id('peaepi'), peaDoseCue=$id('peadosecue'),
-      rhPanel01=$id('rhpanel01'), rhPanel02=$id('rhpanel02'), rhHint01=$id('rhhint01'), rhHint02=$id('rhhint02'),
+      rhPanel01=$id('rhpanel01'), rhPanel02=$id('rhpanel02'),
       rhHead01=$id('rhhead01'), rhHead02=$id('rhhead02');
   var t0=null, codeStartMs=null, lastEpiMs=null, stopMs=null, tick=null, shocks=0, epiCount=0, amioCount=0;
   /* shockArmed: true only in the one state the reviewer called out — a shockable rhythm was
@@ -2613,8 +2617,6 @@ window.__cardNav=CardNav;
     var active = stopMs===null;
     if(rhPanel01) rhPanel01.style.display = active ? '' : 'none';
     if(rhPanel02) rhPanel02.style.display = active ? '' : 'none';
-    if(rhHint01) rhHint01.style.display = 'none';
-    if(rhHint02) rhHint02.style.display = 'none';
     var early = isEarlyCheck();
     var headText = early ? 'EARLY CHECK — WHAT DO YOU SEE? (before 2:00 — logged as an early check)' : 'AT THE RHYTHM CHECK — WHAT DO YOU SEE?';
     if(rhHead01) rhHead01.textContent = headText;
@@ -3018,26 +3020,57 @@ window.__cardNav=CardNav;
    weight-based lytics/AEDs) computes every mg/kg dose live. Device-local only,
    cleared on RESET. ---- */
 var CODES_WT = (function(){
-  var kgEl=document.getElementById('wtkg'), dispEl=document.getElementById('wtdisplay');
-  var wtKg=null;
+  var kgEl=document.getElementById('wtkg'), dispEl=document.getElementById('wtdisplay'),
+      ageEl=document.getElementById('wtage'), unitEl=document.getElementById('wtageunit'),
+      estBtn=document.getElementById('wtestimate');
+  var wtKg=null, src=null; /* src: 'measured' | 'estimated' */
   try{ wtKg = CASESTATE.getWtKg(); }catch(e){}
-  function save(){ CASESTATE.setWtKg(wtKg); }
+  try{ src = CASESTATE.getWtSrc(); }catch(e){}
+  function save(){ CASESTATE.setWtKg(wtKg); CASESTATE.setWtSrc(wtKg!==null ? src : null); }
+  function fmt(n){ var r=Math.round(n*10)/10; return (r%1===0) ? String(r) : r.toFixed(1); }
   function paint(){
     if(!dispEl) return;
     if(wtKg===null||isNaN(wtKg)){ dispEl.textContent='no weight entered · per-kg doses hidden'; dispEl.style.color='#f7d97a'; return; }
-    dispEl.textContent='· '+(Math.round(wtKg*10)/10)+' kg'; dispEl.style.color='#8fd19e';
+    dispEl.textContent = fmt(wtKg)+' kg'+(src==='estimated' ? ' (age-estimate)' : ' (measured)');
+    dispEl.style.color = src==='estimated' ? '#f2b84b' : '#8fd19e';
+  }
+  /* Age→weight estimate — identical bands/formula to peds/index.html's PEDS_WT
+     (duplicated intentionally, per the tools-share-a-contract-not-code rule, not
+     re-derived). Reference only when an actual measured weight can't be obtained;
+     always prefer a measured weight. Not valid beyond 12 years. */
+  function estimateFromAge(ageVal, unit){
+    if(ageVal===null || ageVal===undefined || isNaN(ageVal) || ageVal<0) return {err:'ENTER A VALID AGE FIRST'};
+    var months = unit==='mo' ? ageVal : ageVal*12;
+    var years = months/12;
+    if(years > 12) return {err:'AGE ESTIMATE VALID TO 12 y — USE A MEASURED WEIGHT'};
+    var kg;
+    if(months < 12){ kg = (0.5*months) + 4; }
+    else if(years <= 5){ kg = (2*years) + 8; }
+    else { kg = (3*years) + 7; }
+    return {kg: Math.round(kg*10)/10};
   }
   function recompute(){ if(window.CODESDOSE) window.CODESDOSE.recompute(wtKg); paint(); }
   if(kgEl){
     if(wtKg!==null) kgEl.value=wtKg;
     kgEl.addEventListener('input', function(){
       var n=parseFloat(kgEl.value);
-      if(kgEl.value===''||isNaN(n)||n<=0){ wtKg=null; } else { wtKg=n; }
+      if(kgEl.value===''||isNaN(n)||n<=0){ wtKg=null; src=null; } else { wtKg=n; src='measured'; }
+      save(); recompute();
+    });
+  }
+  if(estBtn){
+    estBtn.addEventListener('click', function(){
+      var a = parseFloat(ageEl ? ageEl.value : NaN);
+      var u = unitEl ? unitEl.value : 'yr';
+      var r = estimateFromAge(a, u);
+      if(r.err){ if(dispEl){ dispEl.textContent=r.err; dispEl.style.color='#e07a7a'; } return; }
+      wtKg=r.kg; src='estimated';
+      if(kgEl) kgEl.value=r.kg;
       save(); recompute();
     });
   }
   var rb=document.getElementById('resetbtn');
-  if(rb) rb.addEventListener('click', function(){ wtKg=null; if(kgEl) kgEl.value=''; save(); recompute(); });
+  if(rb) rb.addEventListener('click', function(){ wtKg=null; src=null; if(kgEl) kgEl.value=''; if(ageEl) ageEl.value=''; save(); recompute(); });
   paint();
   /* Tappable-chip placeholder (design-review item 17) — every "enter weight ↑" chip focuses
      and flashes the weight field instead of leaving the reader to go find it themselves.
@@ -3063,14 +3096,22 @@ var CODES_WT = (function(){
   }
   return { getKg:function(){ return wtKg; } };
 })();
+/* data-conc (mg per mL, only meaningful when data-unit="mg") is supported here identically
+   to peds/index.html's PEDSDOSE (design-review F29) but is not wired up on any row in this
+   file yet — none of codes' weight-based rows currently state a concentration in their own
+   cited text (peds' two epinephrine rows do; that's why they're the ones wired). TODO(maintainer):
+   add data-conc="<mg/mL>" to a row only once LRH's actual stocked concentration for that
+   drug/route is confirmed — never guessed. */
 var CODESDOSE = (function(){
   var spans=Array.prototype.slice.call(document.querySelectorAll('.wdose'));
+  function fmtVol(n){ return String(Math.round(n*100)/100); }
   function recompute(kg){
     spans.forEach(function(el){
       var perkg=parseFloat(el.getAttribute('data-perkg'));
       var max=el.hasAttribute('data-max')?parseFloat(el.getAttribute('data-max')):null;
       var unit=el.getAttribute('data-unit')||'';
       var dec=el.hasAttribute('data-decimals')?parseInt(el.getAttribute('data-decimals'),10):0;
+      var conc=el.hasAttribute('data-conc')?parseFloat(el.getAttribute('data-conc')):null;
       /* data-round="50" etc — opt-in only. A raw per-kg calculation ("88 mg") isn't how a
          drug actually gets drawn up; round to the nearest practical increment for doses
          where that matters (lidocaine → nearest 50 mg). Left off (the default) for anything
@@ -3084,7 +3125,12 @@ var CODESDOSE = (function(){
       var val=perkg*kg;
       if(max!==null&&!isNaN(max)&&val>max) val=max;
       if(round!==null&&!isNaN(round)&&round>0) val=Math.round(val/round)*round;
-      el.textContent=val.toFixed(isNaN(dec)?0:dec)+(unit?(' '+unit):'');
+      var mgText=val.toFixed(isNaN(dec)?0:dec)+(unit?(' '+unit):'');
+      if(conc!==null && !isNaN(conc) && conc>0 && unit==='mg'){
+        el.innerHTML = '<span class="wdose-vol">'+fmtVol(val/conc)+' mL</span><span class="wdose-mg">('+mgText+')</span>';
+      } else {
+        el.textContent=mgText;
+      }
       el.classList.remove('unset');
       el.removeAttribute('tabindex'); el.removeAttribute('role'); el.removeAttribute('aria-label');
     });
