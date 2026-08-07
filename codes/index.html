@@ -732,17 +732,17 @@
     <div style="margin:14px 14px 0; border:2px dashed #8a6d1f; background:#fdf3cf; padding:11px 14px; font-size:13px; line-height:1.4; color:#16324f;">🗄 <b>Stroke Box (Omnicell):</b> the lytic/TNK response bundle is a premade box pulled from the Omnicell, not stocked loose on the code cart — confirm its current contents/checklist against the physical box before treating. <a href="#cart" style="color:#8a6d1f; font-weight:700;">Code cart drawer reference →</a></div>
 
     <!-- ---- LAST KNOWN WELL CLOCK ---- -->
-    <div style="margin:14px 14px 0; border:2px solid #16324f;">
+    <div class="console" style="margin:14px 14px 0; border:2px solid #16324f;">
       <div style="padding:10px 14px; background:#f4f7fa;">
         <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#5a6a78;">LAST KNOWN WELL</div>
         <div id="stlkwline" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; color:#16324f; margin:1px 0 6px;">Not set</div>
         <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#5a6a78;">TIME SINCE LAST KNOWN WELL</div>
-        <div id="stclock" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:38px; font-weight:700; line-height:1.1; color:#16324f;">0:00</div>
+        <div id="stclock" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1.1; color:#16324f;">0:00</div>
         <div id="stcue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:#5a6a78;">Tap NOW for witnessed onset, or enter hours-ago / a clock time below.</div>
       </div>
       <div style="display:grid; grid-template-columns:2fr 1fr; gap:0;">
-        <button type="button" id="ststart" style="min-height:52px; background:#16324f; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">NOW (WITNESSED ONSET)</button>
-        <button type="button" id="streset" style="min-height:52px; background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">UNDO</button>
+        <button type="button" id="ststart" class="cs-secondary" style="background:#16324f; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">NOW (WITNESSED ONSET)</button>
+        <button type="button" id="streset" class="cs-secondary" style="background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">UNDO</button>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:11px 14px; border-top:1px solid #e7eaef;">
         <label style="display:block;">
@@ -759,7 +759,7 @@
         <div id="stwin-thrombectomy" style="padding:9px 4px; color:#5a6a78; border-left:1px solid #e7eaef; border-right:1px solid #e7eaef;">≤24h (LVO)<br>thrombectomy window</div>
         <div id="stwin-status" style="padding:9px 4px; color:#5a6a78;">status</div>
       </div>
-      <button type="button" id="sttnk" style="width:100%; min-height:52px; background:#16324f; color:#fffefb; border:none; border-top:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">LYTIC (TNK) GIVEN — LOG IT</button>
+      <button type="button" id="sttnk" class="cs-secondary" style="width:100%; background:#16324f; color:#fffefb; border:none; border-top:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">LYTIC (TNK) GIVEN — LOG IT</button>
       <div id="sttnkcue" style="display:none; padding:11px 14px; font-size:13.5px; line-height:1.35; color:#16324f; background:#fdf3cf; border-top:2px solid #8a6d1f;"></div>
     </div>
 
@@ -903,28 +903,30 @@
 
     <!-- ---- RSI MEDICATION PUSH TIMERS ---- -->
     <div style="margin:14px 14px 0; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#5a6a78;">RSI MEDICATION TIMES — TAP WHEN EACH DRUG IS PUSHED</div>
+    <div class="console">
     <div style="margin:6px 14px 0; border:2px solid #16324f;">
       <div style="padding:10px 14px; background:#f4f7fa;">
         <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#5a6a78;">SEDATION / INDUCTION AGENT</div>
-        <div id="rsiinductclock" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:32px; font-weight:700; line-height:1.1; color:#16324f;">0:00</div>
+        <div id="rsiinductclock" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1.1; color:#16324f;">0:00</div>
         <div id="rsiinductcue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:#5a6a78;">Tap when the induction agent/sedative is pushed.</div>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
-        <button type="button" id="rsiinductgive" style="min-height:52px; background:#16324f; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">PUSHED — START CLOCK</button>
-        <button type="button" id="rsiinductreset" style="min-height:52px; background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">UNDO</button>
+        <button type="button" id="rsiinductgive" class="cs-secondary" style="background:#16324f; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">PUSHED — START CLOCK</button>
+        <button type="button" id="rsiinductreset" class="cs-secondary" style="background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">UNDO</button>
       </div>
     </div>
     <div style="margin:8px 14px 0; border:2px solid #9b1c2e;">
       <div style="padding:10px 14px; background:#fbeaec;">
         <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#9b1c2e;">PARALYTIC</div>
-        <div id="rsiparalyticclock" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:32px; font-weight:700; line-height:1.1; color:#9b1c2e;">0:00</div>
+        <div id="rsiparalyticclock" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1.1; color:#9b1c2e;">0:00</div>
         <div id="rsiparalyticcue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:#5a6a78;">Tap when the paralytic is pushed.</div>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
-        <button type="button" id="rsiparalyticgive" style="min-height:52px; background:#9b1c2e; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">PUSHED — START CLOCK</button>
-        <button type="button" id="rsiparalyticreset" style="min-height:52px; background:#fffefb; color:#9b1c2e; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">UNDO</button>
+        <button type="button" id="rsiparalyticgive" class="cs-secondary" style="background:#9b1c2e; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">PUSHED — START CLOCK</button>
+        <button type="button" id="rsiparalyticreset" class="cs-secondary" style="background:#fffefb; color:#9b1c2e; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">UNDO</button>
       </div>
     </div>
+    </div><!-- /.console -->
 
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid #16324f;">
@@ -938,8 +940,8 @@
       </details>
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">3 · POST-TUBE CONFIRMATION &amp; SAFETY</summary>
-        <div style="padding:10px 12px 0;">
-          <button type="button" id="c06etco2btn" style="width:100%; min-height:52px; background:#16324f; color:#fffefb; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">CONFIRM ETCO₂ / TUBE PLACEMENT — TIME-STAMP</button>
+        <div class="console" style="padding:10px 12px 0;">
+          <button type="button" id="c06etco2btn" class="cs-secondary" style="width:100%; background:#16324f; color:#fffefb; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">CONFIRM ETCO₂ / TUBE PLACEMENT — TIME-STAMP</button>
           <div id="c06etco2cue" style="padding:8px 2px 0; font-size:12.5px; line-height:1.35; color:#5a6a78;">Tap once waveform capnography confirms placement.</div>
         </div>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
@@ -1359,14 +1361,14 @@
     </div>
 
     <!-- ---- SEIZURE CLOCK / PHASE ENGINE ---- -->
-    <div style="margin:14px 14px 0; border:2px solid #16324f;">
+    <div class="console" style="margin:14px 14px 0; border:2px solid #16324f;">
       <div style="padding:10px 14px; background:#f4f7fa;">
-        <div id="seclock" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:38px; font-weight:700; line-height:1; color:#16324f;">0:00</div>
+        <div id="seclock" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1; color:#16324f;">0:00</div>
         <div id="secue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; font-weight:700; letter-spacing:0.04em; color:#5a6a78;">Tap START at seizure onset (≥5 min continuous, or ≥2 seizures without return to baseline = status epilepticus).</div>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
-        <button type="button" id="sestart" style="min-height:52px; background:#16324f; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">START SEIZURE CLOCK</button>
-        <button type="button" id="sereset" style="min-height:52px; background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">UNDO</button>
+        <button type="button" id="sestart" class="cs-secondary" style="background:#16324f; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">START SEIZURE CLOCK</button>
+        <button type="button" id="sereset" class="cs-secondary" style="background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">UNDO</button>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:0; border-top:1px solid #e7eaef; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:9.5px; text-align:center; color:#5a6a78;">
         <div id="sephase-0" style="padding:8px 2px; border-right:1px solid #e7eaef;">0–5 min<br>STABILIZE</div>
@@ -1413,9 +1415,9 @@
       </details>
     </div>
 
-    <div style="margin:0 14px 14px; display:grid; grid-template-columns:1fr 1fr; gap:8px;">
-      <button type="button" id="segivebenzo" data-logevent="BENZODIAZEPINE GIVEN" data-logcard="13" style="min-height:52px; background:#16324f; color:#fffefb; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.04em; cursor:pointer;">BENZO GIVEN — LOG IT</button>
-      <button type="button" id="segive2nd" data-logevent="SECOND-LINE AGENT GIVEN" data-logcard="13" style="min-height:52px; background:#fffefb; color:#16324f; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.04em; cursor:pointer;">2ND-LINE GIVEN — LOG IT</button>
+    <div class="console" style="margin:0 14px 14px; display:grid; grid-template-columns:1fr 1fr; gap:8px;">
+      <button type="button" id="segivebenzo" class="cs-secondary" data-logevent="BENZODIAZEPINE GIVEN" data-logcard="13" style="background:#16324f; color:#fffefb; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.04em; cursor:pointer;">BENZO GIVEN — LOG IT</button>
+      <button type="button" id="segive2nd" class="cs-secondary" data-logevent="SECOND-LINE AGENT GIVEN" data-logcard="13" style="background:#fffefb; color:#16324f; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.04em; cursor:pointer;">2ND-LINE GIVEN — LOG IT</button>
     </div>
 
     <div style="padding:0 14px 0;">
@@ -2009,11 +2011,11 @@
     <div style="margin:10px 14px 0; border:2px dashed #8a6d1f; background:#fdf3cf; padding:11px 14px; font-size:13px; line-height:1.4; color:#16324f;">🗄 <b>STEMI/Chest Pain Box (Omnicell):</b> the response bundle is a premade box pulled from the Omnicell, not stocked loose on the code cart — confirm current contents against the physical box. <a href="#cart" style="color:#8a6d1f; font-weight:700;">Code cart drawer reference →</a></div>
 
     <!-- ---- TIME STAMPS: STEMI identified · TNK delivered · transfer call(s) ---- -->
-    <div style="margin:14px 14px 0; border:2px solid #16324f;">
+    <div class="console" style="margin:14px 14px 0; border:2px solid #16324f;">
       <div style="padding:9px 14px; background:#f4f7fa; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#5a6a78;">TIME STAMPS — device-local, no patient info</div>
-      <button type="button" id="stmid" style="width:100%; min-height:52px; background:#16324f; color:#fffefb; border:none; border-top:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">STEMI IDENTIFIED — LOG IT</button>
+      <button type="button" id="stmid" class="cs-secondary" style="width:100%; background:#16324f; color:#fffefb; border:none; border-top:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">STEMI IDENTIFIED — LOG IT</button>
       <div id="stmidcue" style="display:none; padding:9px 14px; font-size:12.5px; line-height:1.3; color:#16324f; background:#eef3f6; border-top:1px solid #e7eaef;"></div>
-      <button type="button" id="sttnk21" style="width:100%; min-height:52px; background:#9b1c2e; color:#fffefb; border:none; border-top:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">TNK DELIVERED — LOG IT</button>
+      <button type="button" id="sttnk21" class="cs-secondary" style="width:100%; background:#9b1c2e; color:#fffefb; border:none; border-top:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">TNK DELIVERED — LOG IT</button>
       <div id="sttnk21cue" style="display:none; padding:9px 14px; font-size:12.5px; line-height:1.3; color:#16324f; background:#fbeaec; border-top:1px solid #e7eaef;"></div>
       <div id="stemiXferBox" style="border-top:1px solid #e7eaef;"></div>
     </div>
@@ -2273,7 +2275,7 @@
 
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "2.5",
+  version: "2.6",
   lastReviewed: "2026-08-07",
   /* WS10.2 — minutes of manual-wide inactivity (lrh-case-lastactive) before the weight
      strip appends an "ENTERED HH:MM · N MIN AGO" line and ambers #wtbar's border.
