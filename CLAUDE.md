@@ -99,6 +99,49 @@ editing:
 4. Cite every clinical value; verify the logic; stamp version + last-reviewed
    date on the tool file the card lives in.
 
+## Deploy & test workflow
+
+Give Lon this four-step close-out after every deliverable that touches a
+live file (not needed for pure documentation-only changes) — adjust it for
+whatever's actually pending (e.g. don't say "open a PR" if one's already
+open on this branch):
+
+1. **Commit & push** to the active feature branch (currently
+   `system-audit-fixes`).
+2. **Test on the Netlify branch deploy** — pushing to any connected branch
+   automatically builds a live, fully-working deploy at its own URL,
+   completely separate from production. Find it on Netlify → Deploys → the
+   latest entry for that branch → **"Open branch deploy."** This is the real
+   pre-merge test step: safe, live, and it doesn't require merging first. The
+   URL persists and auto-updates on every new push to that branch, so it's
+   worth bookmarking for the duration of the branch's life.
+3. **Once it checks out on the branch deploy, merge the PR** into `main` on
+   GitHub (compare URL pattern: `.../compare/main...<branch-name>`).
+4. **Netlify auto-builds `main`**; production (`lrhemergencymanual.net`)
+   updates. One more quick check there closes the loop.
+
+**Do not send Lon straight to the GitHub compare/PR page as the "test"
+step** — that page only renders a diff, it is not a live, testable site.
+Step 2 (the Netlify branch deploy) is the actual test environment, and it's
+available immediately after step 1, before any PR or merge.
+
+Netlify also has a separate "Preview Servers" feature (visible in its left
+nav) — unrelated to this workflow; don't point Lon there.
+
+**The assistant cannot fetch or confirm the branch deploy itself** — Netlify
+branch deploys are access-gated (401 on a direct fetch), so "let me check if
+it's live" is not a real offer; don't make it. What the assistant *can* and
+must do instead: with every deliverable, hand Lon a concrete, change-specific
+test checklist for that branch deploy — not "check that it works," but the
+actual buttons/cards/fields to tap and what to look for, scoped to exactly
+what changed in that update (new card → open it, tap every checkbox/button
+once; touch-target resize → confirm the specific elements resized and still
+function; search-index entry → search the specific new keywords; terminology
+sweep → spot-check the specific lines that changed). Model: the WS11.6
+Codes-family checklist ("what am I testing specifically" exchange) — list
+each card, what to tap, and what a pass/fail looks like. A generic "please
+test it" is not sufficient close-out for a deliverable.
+
 ## Current tools
 
 - `codes/` — Codes (cardiac arrest, stroke, RSI, STEMI, status epilepticus,
