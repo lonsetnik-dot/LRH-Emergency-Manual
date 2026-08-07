@@ -45,19 +45,25 @@
      custom properties consumed by .cs-destructive/.cs-router/.cs-secondary/
      .cs-check/.cs-numeric below; applies wherever those classes sit inside a
      .console ancestor. See LAYOUT.md. */
-  .console { --cs-destructive:72px; --cs-router:62px; --cs-secondary:56px; --cs-check:44px; --cs-numeric:44px; }
+  .console { --cs-destructive:72px; --cs-router:62px; --cs-router-font:13.5px; --cs-secondary:56px; --cs-check:44px; --cs-numeric:44px; }
   .console .cs-destructive { min-height:var(--cs-destructive); }
-  .console .cs-router { min-height:var(--cs-router); }
+  .console .cs-router { min-height:var(--cs-router); font-size:var(--cs-router-font); text-align:left; padding:0 16px; }
   .console .cs-secondary { min-height:var(--cs-secondary); }
   .console .cs-check { min-height:var(--cs-check); }
   .console .cs-numeric { font-size:var(--cs-numeric); }
+  /* WS11.5 — greyed-until-armed styling hook for decision-router panels that are
+     visible before a case is really underway (e.g. card 01's rhythm panel before
+     the CPR clock starts). Pure CSS presentation, toggled by a plain class the
+     existing paint logic already sets — no arm/disarm behavior changes. No-op
+     below 760px by design (see LAYOUT.md / the WS11.0 decision record). */
+  .console .cs-unarmed { }
   @media (min-width:760px) {
     .nca { grid-template-columns:1.05fr 1fr 1fr; }
     .steps { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
     .figs { grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); }
-    .console { --cs-destructive:88px; --cs-router:74px; --cs-secondary:64px; --cs-check:44px; --cs-numeric:60px; }
+    .console { --cs-destructive:88px; --cs-router:74px; --cs-router-font:16px; --cs-secondary:64px; --cs-check:44px; --cs-numeric:60px; }
     .card-split { display:grid; grid-template-columns:minmax(300px,420px) 1fr; gap:16px; align-items:start; }
-    .twoup { display:grid; grid-template-columns:1fr 1fr; gap:0 20px; } .twoup > li { min-width:0; } .twoup li label { min-width:0; } .twoup li label > span { min-width:0; overflow-wrap:break-word; }
+    .twoup { display:grid; grid-template-columns:1fr 1fr; gap:0 20px; } .twoup > li { min-width:0; } .twoup li label { min-width:0; } .twoup li label > span { min-width:0; overflow-wrap:break-word; } .cs-unarmed { opacity:.45; pointer-events:none; }
   }
   nav.bar { position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:10px; padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px; background:#005596; color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.1em; }
   nav.bar a, nav.bar button { color:#fffefb; background:none; text-decoration:none; border:1px solid rgba(255,255,255,0.4); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center; }
@@ -219,7 +225,7 @@
     <div style="margin-top:6px; display:flex; gap:6px; align-items:stretch; flex-wrap:wrap;">
       <input type="time" id="tob" step="60" style="flex:2; min-width:110px; min-height:44px; padding:4px 8px; border:2px solid #8a6d1f; background:#fffefb; color:#16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px;">
       <button type="button" id="tobnow" style="min-height:44px; padding:0 14px; background:#8a6d1f; color:#fffefb; border:2px solid #8a6d1f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">NOW</button>
-      <input type="number" id="babyweight" inputmode="decimal" step="0.1" min="0" placeholder="kg (sizes)" style="flex:1; min-width:80px; min-height:44px; padding:4px 8px; border:2px solid #8a6d1f; background:#fffefb; color:#16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px;">
+      <input type="number" id="babyweight" class="wt-sync" inputmode="decimal" step="0.1" min="0" placeholder="kg (sizes)" style="flex:1; min-width:80px; min-height:44px; padding:4px 8px; border:2px solid #8a6d1f; background:#fffefb; color:#16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px;">
     </div>
     <div id="tobmarks" style="margin-top:5px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.04em; color:#8a6d1f; line-height:1.3;">Set the time — the 1 and 5 minute marks appear here.</div>
     <div data-loglane="02" style="margin-top:8px; display:flex; gap:6px; align-items:center; overflow-x:auto; -webkit-overflow-scrolling:touch; min-height:28px; scrollbar-width:none;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:#8a6d1f; opacity:0.7; white-space:nowrap;">NOTHING LOGGED YET</span></div>
@@ -246,7 +252,7 @@
         <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.1em; color:#16324f;">ASK THE MOTHER — QUICK</div>
         <div style="margin-top:8px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
           <span style="font-weight:700;">Weeks gestation</span>
-          <input type="number" id="gaweeks" inputmode="numeric" step="1" min="20" max="44" placeholder="wk" style="width:84px; min-height:44px; padding:6px 10px; border:2px solid #16324f; background:#fffefb; color:#16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px;">
+          <input type="number" id="gaweeks" class="ga-sync" inputmode="numeric" step="1" min="20" max="44" placeholder="wk" style="width:84px; min-height:44px; padding:6px 10px; border:2px solid #16324f; background:#fffefb; color:#16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px;">
           <span style="font-size:12.5px; color:#5a6a78;">drives equipment sizes</span>
         </div>
         <div style="margin-top:10px; display:flex; flex-direction:column; gap:10px;">
@@ -424,7 +430,21 @@
     <div data-loglane="03" style="margin-top:8px; display:flex; gap:6px; align-items:center; overflow-x:auto; -webkit-overflow-scrolling:touch; min-height:28px; scrollbar-width:none;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:#16324f; opacity:0.7; white-space:nowrap;">NOTHING LOGGED YET</span></div>
   </div>
 
-  <div class="eqpanel" style="margin:12px 18px 0;"></div>
+  <!-- WS-audit: quick-entry so a team landing directly on this card (baby already
+       delivered elsewhere) isn't stuck reading "enter weight on card 02" with no
+       way to do it here. Synced live with card 02's #babyweight/#gaweeks via the
+       .wt-sync/.ga-sync classes — see the equipment/code-dose engine script. -->
+  <div style="margin:12px 18px 0; display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding:9px 12px; background:#eef3f9; border:2px solid #16324f;">
+    <div style="display:flex; align-items:center; gap:8px; flex:none;">
+      <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.06em; color:#16324f; white-space:nowrap;">WEIGHT</span>
+      <input type="number" id="babyweight-c03" class="wt-sync" inputmode="decimal" step="0.1" min="0" placeholder="kg" style="width:78px; min-height:44px; padding:4px 8px; border:2px solid #16324f; background:#fffefb; color:#16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px;">
+    </div>
+    <div style="display:flex; align-items:center; gap:8px; flex:none;">
+      <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.06em; color:#16324f; white-space:nowrap;">OR WKS GESTATION</span>
+      <input type="number" id="gaweeks-c03" class="ga-sync" inputmode="numeric" step="1" min="20" max="44" placeholder="wk" style="width:64px; min-height:44px; padding:4px 8px; border:2px solid #16324f; background:#fffefb; color:#16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px;">
+    </div>
+  </div>
+  <div class="eqpanel" style="margin:8px 18px 0;"></div>
 
   <div style="margin:10px 18px 0; padding:9px 12px; background:#fdf3cf; border-left:4px solid #8a6d1f; font-size:13px; line-height:1.35; color:#16324f;"><b>Meconium + not vigorous:</b> start PPV now — do <b>not</b> delay for routine tracheal suction (suction only an obstructed airway).</div>
   <div class="nca" style="padding:0 18px;">
@@ -579,7 +599,18 @@
     <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:#16324f;">Umbilical vein catheterization</h2>
     <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:11px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:#8a8578;">CART</span><a href="#d2" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:#e9eff8; border:1px solid #2f62a8; text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:#2f62a8; flex:none;"><span style="display:block; width:8.1px; height:8.1px; background:#fffefb; transform:rotate(45deg);"></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:#2f62a8;">2 · CIRCULATION</span></a><a href="#d3" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:#efeaf8; border:1px solid #6f4fa8; text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:#6f4fa8; flex:none;"><span style="display:block; width:9px; height:9px; background:#fffefb;"></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:#6f4fa8;">3 · LABS / MISC.</span></a></div>
   </header>
-  <div class="eqpanel" style="margin:12px 18px 0;"></div>
+  <!-- WS-audit: same quick-entry as card 03 — see the note there. -->
+  <div style="margin:12px 18px 0; display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding:9px 12px; background:#eef3f9; border:2px solid #16324f;">
+    <div style="display:flex; align-items:center; gap:8px; flex:none;">
+      <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.06em; color:#16324f; white-space:nowrap;">WEIGHT</span>
+      <input type="number" id="babyweight-c04" class="wt-sync" inputmode="decimal" step="0.1" min="0" placeholder="kg" style="width:78px; min-height:44px; padding:4px 8px; border:2px solid #16324f; background:#fffefb; color:#16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px;">
+    </div>
+    <div style="display:flex; align-items:center; gap:8px; flex:none;">
+      <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.06em; color:#16324f; white-space:nowrap;">OR WKS GESTATION</span>
+      <input type="number" id="gaweeks-c04" class="ga-sync" inputmode="numeric" step="1" min="20" max="44" placeholder="wk" style="width:64px; min-height:44px; padding:4px 8px; border:2px solid #16324f; background:#fffefb; color:#16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px;">
+    </div>
+  </div>
+  <div class="eqpanel" style="margin:8px 18px 0;"></div>
   <div class="nca" style="padding:0 18px;">
     <div style="padding:11px 14px; background:#fbeaec; border-left:4px solid #9b1c2e;">
       <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.14em; color:#9b1c2e;">NAME</div>
@@ -2106,7 +2137,7 @@ var CASESTATE = (function(){
 </script>
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
-var SITE = { version: "1.9", lastReviewed: "2026-08-07" };
+var SITE = { version: "1.10", lastReviewed: "2026-08-07" };
 (function(){
   var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
   Array.prototype.forEach.call(document.querySelectorAll('.verstamp'), function(vs){ vs.textContent=stampText; });
@@ -2795,7 +2826,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
       +'<line x1="226" y1="38" x2="250" y2="38" stroke="#5a6a78" stroke-width="2"/>'
       +'<text x="182" y="70" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="9" font-weight="700" fill="#0e7c86">CODE-CART 0.1 mg/mL</text></svg>';
     function html(c){
-      if(!c){ return '<div style="border:2px dashed #b7c7ca; background:#f2f8f9; padding:11px 12px; font-size:13.5px; color:#16324f;">Enter <b>weight</b> (birth banner) or <b>weeks gestation</b> (PREPARE) for ETT / LMA / UVC / blade sizes and the code-dose epi.</div>'; }
+      if(!c){ return '<div style="border:2px dashed #b7c7ca; background:#f2f8f9; padding:11px 12px; font-size:13.5px; color:#16324f;">Enter <b>weight</b> or <b>weeks gestation</b> above for ETT / LMA / UVC / blade sizes and the code-dose epi.</div>'; }
       var basis=c.haveW?('weight '+c.w+' kg'+(c.haveG?(' · '+c.g+' wk'):'')):(c.g+' wk (no weight)');
       var warn=c.conflict?'<div style="margin:0 10px 6px; padding:6px 9px; background:#fbeaec; border:1px solid #9b1c2e; color:#9b1c2e; font-size:12px; font-weight:700;">&#9888; WEIGHT AND DATES DISAGREE — USING WEIGHT</div>':'';
       var epiLine=c.epi
@@ -2827,10 +2858,24 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
       var nt=(c&&c.haveW)?('→ this baby: '+Math.round(10*c.w)+' mL'):'→ enter weight for the mL dose';
       var nss=document.querySelectorAll('.nsmini'); for(i=0;i<nss.length;i++){ nss[i].textContent=nt; }
     }
-    var wIn=document.getElementById('babyweight'), gIn=document.getElementById('gaweeks');
-    if(wIn){ wIn.value=localStorage.getItem(WK)||''; wIn.addEventListener('input', function(){ if(wIn.value==='') localStorage.removeItem(WK); else localStorage.setItem(WK, wIn.value); render(); }); }
-    if(gIn){ gIn.value=localStorage.getItem(GK)||''; gIn.addEventListener('input', function(){ if(gIn.value==='') localStorage.removeItem(GK); else localStorage.setItem(GK, gIn.value); render(); }); }
-    var rb=document.getElementById('resetbtn'); if(rb) rb.addEventListener('click', function(){ try{ localStorage.removeItem(WK); localStorage.removeItem(GK); }catch(e){} if(wIn)wIn.value=''; if(gIn)gIn.value=''; render(); });
+    /* WS-audit: weight/gestation can now be entered on card 02 (birth banner /
+       PREPARE) OR directly on cards 03/04 via the .wt-sync/.ga-sync quick-entry
+       rows added there — all instances share one localStorage value and stay
+       live-synced with each other, typing in any one updates the rest. */
+    function wireSync(cls, key){
+      var els=document.querySelectorAll('.'+cls);
+      Array.prototype.forEach.call(els, function(el){
+        el.value=localStorage.getItem(key)||'';
+        el.addEventListener('input', function(){
+          if(el.value==='') localStorage.removeItem(key); else localStorage.setItem(key, el.value);
+          Array.prototype.forEach.call(els, function(other){ if(other!==el) other.value=el.value; });
+          render();
+        });
+      });
+      return els;
+    }
+    var wEls=wireSync('wt-sync', WK), gEls=wireSync('ga-sync', GK);
+    var rb=document.getElementById('resetbtn'); if(rb) rb.addEventListener('click', function(){ try{ localStorage.removeItem(WK); localStorage.removeItem(GK); }catch(e){} Array.prototype.forEach.call(wEls, function(el){ el.value=''; }); Array.prototype.forEach.call(gEls, function(el){ el.value=''; }); render(); });
     render();
   }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
