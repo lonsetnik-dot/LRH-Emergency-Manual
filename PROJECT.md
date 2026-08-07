@@ -63,6 +63,21 @@ Each tool carries a version number, a "last reviewed" date, the standard
 disclaimer, and a citation for every clinical threshold. The repo carries a
 license. These habits cost little now and are essential at any scale.
 
+**P6 — Discoverable by design.**
+A card that exists but can't be found under pressure is functionally
+unfinished. Site search is a hand-maintained index (`SEARCH_INDEX` in the
+landing page), not something that updates itself when a tool or card is
+added — so registering a new card there, and sanity-checking its keywords
+against existing entries, is part of *finishing* the card, not a follow-up.
+
+**P7 — One dialect, documented aliases.**
+Content is written in the deploying site's own English dialect — US medical
+English for LRH — so a clinician's search terms, reading level, and drug
+names match what's on screen without translation. A documented alias list
+(`TERMINOLOGY.md`) records the mapping so a fork in another dialect region
+can revert quickly instead of re-deriving it, and so a reviewer can tell a
+deliberate proper-noun/citation exception from a missed localization.
+
 ## 4. Conventions (the "how")
 
 - **One tool = one folder** containing `index.html` (e.g. `heart/index.html` →
@@ -77,19 +92,35 @@ license. These habits cost little now and are essential at any scale.
   release.
 - **Git is the source of truth:** deploy via GitHub → Netlify continuous
   deployment. Do not use Netlify drag-and-drop once Git is connected.
+- **Search index registration:** every new tool, and every new card inside an
+  existing tool, gets a `SEARCH_INDEX` entry in the landing page's
+  `index.html` — checked for real-keyword hits and for confusing overlap with
+  existing entries.
+- **US English, documented aliases:** prose is written in US medical English;
+  non-US spelling/drug-naming survives only inside direct quotes or real
+  proper names. See `TERMINOLOGY.md`.
 
 ## 5. Repository structure
 
 ```
-index.html            landing page            -> /
-heart/index.html      HEART pathway           -> /heart/
-ob/index.html         OB emergencies          -> /ob/
-<tool>/index.html     future tools            -> /<tool>/
-netlify.toml          Netlify config (publishes repo root)
-CLAUDE.md             operating rules for AI assistants
-PROJECT.md            this charter
-README.md             human overview
-LICENSE               (to add) code license, e.g. MIT or Apache-2.0
+index.html                    landing page + site search index -> /
+codes/index.html               Codes (arrest, stroke, RSI, STEMI...) -> /codes/
+ob-neonatal/index.html         OB & Neonatal emergencies -> /ob-neonatal/
+peds/index.html                Pediatric Emergencies -> /peds/
+procedures/index.html          Rare, high-stakes procedures -> /procedures/
+trauma/index.html              Trauma activation/resuscitation -> /trauma/
+clinical-pathways/             Diagnostic pathways (e.g. Chest Pain/HEART)
+posters/                       Printable one-page posters
+debrief/index.html             Post-code/critical-event debrief -> /debrief/
+<tool>/index.html              future tools -> /<tool>/
+netlify.toml                   Netlify config (publishes repo root)
+CLAUDE.md                      operating rules for AI assistants
+PROJECT.md                     this charter
+TERMINOLOGY.md                 US-English localization alias list
+CASE-STATE.md                  cross-tool localStorage contract
+LAYOUT.md                      shared touch-target sizing scaffold (.console)
+README.md                      human overview
+LICENSE                        (to add) code license, e.g. MIT or Apache-2.0
 ```
 
 ## 6. Roadmap (phased, no step forces rework of an earlier one)

@@ -858,12 +858,12 @@
     <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:#16324f;">Postpartum hemorrhage</h2>
     <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:11px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:#8a8578;">CART</span><a href="#d4" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:#fbeaec; border:1px solid #9b1c2e; text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:#9b1c2e; flex:none;"><span style="display:block; width:0; height:0; border-left:5.4px solid transparent; border-right:5.4px solid transparent; border-bottom:9px solid #fffefb;"></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:#9b1c2e;">4 · POSTPARTUM HEMORRHAGE</span></a></div>
   </header>
-  <div style="position:sticky; top:calc(var(--sticky-h,54px) + env(safe-area-inset-top,0px)); z-index:4; padding:10px 18px; background:#fbeaec; border-top:2px solid #9b1c2e; border-bottom:2px solid #9b1c2e;">
+  <div class="console" style="position:sticky; top:calc(var(--sticky-h,54px) + env(safe-area-inset-top,0px)); z-index:4; padding:10px 18px; background:#fbeaec; border-top:2px solid #9b1c2e; border-bottom:2px solid #9b1c2e;">
     <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-      <div id="pphtime" style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:34px; font-weight:700; line-height:1; color:#9b1c2e; letter-spacing:0.02em; min-width:104px;">00:00</div>
+      <div id="pphtime" class="cs-numeric" style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-weight:700; line-height:1; color:#9b1c2e; letter-spacing:0.02em; min-width:104px;">00:00</div>
       <div style="display:flex; gap:8px; flex:1; min-width:170px;">
-        <button type="button" id="pphstart" style="flex:1; min-height:46px; padding:0 12px; background:#9b1c2e; color:#fffefb; border:2px solid #9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">START</button>
-        <button type="button" id="pphreset" style="min-height:46px; padding:0 12px; background:#fffefb; color:#9b1c2e; border:2px solid #9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">UNDO</button>
+        <button type="button" id="pphstart" class="cs-secondary" style="flex:1; padding:0 12px; background:#9b1c2e; color:#fffefb; border:2px solid #9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">START</button>
+        <button type="button" id="pphreset" class="cs-secondary" style="padding:0 12px; background:#fffefb; color:#9b1c2e; border:2px solid #9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">UNDO</button>
       </div>
     </div>
     <div id="pphstamp" style="margin-top:7px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; color:#9b1c2e;">Start the clock at recognition — the time is stamped here.</div>
@@ -931,7 +931,7 @@
       <ul style="margin:0; padding:4px 14px 13px; list-style:none;">
         <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-3-0" data-log="O-NEG BLOOD" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span>Hypotensive or tachycardic: hang 2 units uncrossmatched O-negative.</span></label></li>
         <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-3-1" data-log="VAULT PACKED" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span>OB delayed &gt;15 min: firmly pack the vaginal vault with sterile Kerlix.</span></label></li>
-        <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-3-2" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>Balloon tamponade</b> (Bakri or Jada) if OB is at the bedside and the uterus is atonic.</span></label></li>
+        <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-3-2" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>Balloon tamponade</b> (Bakri, or <a href="../procedures/?from=home#c13">JADA System — Procedures card 13</a>) if OB is at the bedside and the uterus is atonic.</span></label></li>
 <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-3-3" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span>Hand off to the arriving OB attending.</span></label></li>
       </ul>
     </details>
@@ -951,11 +951,11 @@
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:11px;"><a href="#c02s2" style="display:flex; align-items:center; justify-content:center; min-height:44px; background:#f4f7fa; border:2px solid #16324f; color:#16324f; text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em;">← DELIVERY (02)</a><a href="#c03" style="display:flex; align-items:center; justify-content:center; min-height:44px; background:#fbeaec; border:2px solid #9b1c2e; color:#9b1c2e; text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em;">→ RESUS (03)</a></div>
     <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:11px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:#8a8578;">CART</span><a href="#d6" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:#e8f2ea; border:1px solid #2f7a3f; text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:#2f7a3f; flex:none;"><span style="display:flex; flex-direction:column; gap:2.7px;"><span style="display:block; width:12.6px; height:2.7px; background:#fffefb;"></span><span style="display:block; width:12.6px; height:2.7px; background:#fffefb;"></span></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:#2f7a3f;">6 · VAGINAL DELIVERY</span></a></div>
   </header>
-  <div style="position:sticky; top:calc(var(--sticky-h,54px) + env(safe-area-inset-top,0px)); z-index:4; margin:0 0 2px; padding:10px 18px; background:#fdf3cf; border-top:2px solid #8a6d1f; border-bottom:2px solid #8a6d1f; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-    <div id="sdtime" style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:32px; font-weight:700; line-height:1; color:#8a6d1f; letter-spacing:0.02em; min-width:96px;">00:00</div>
+  <div class="console" style="position:sticky; top:calc(var(--sticky-h,54px) + env(safe-area-inset-top,0px)); z-index:4; margin:0 0 2px; padding:10px 18px; background:#fdf3cf; border-top:2px solid #8a6d1f; border-bottom:2px solid #8a6d1f; display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
+    <div id="sdtime" class="cs-numeric" style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-weight:700; line-height:1; color:#8a6d1f; letter-spacing:0.02em; min-width:96px;">00:00</div>
     <div style="display:flex; gap:8px; flex:1; min-width:170px;">
-      <button type="button" id="sdstart" style="flex:1; min-height:44px; padding:0 12px; background:#8a6d1f; color:#fffefb; border:2px solid #8a6d1f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">START</button>
-      <button type="button" id="sdreset" style="min-height:44px; padding:0 12px; background:#fffefb; color:#8a6d1f; border:2px solid #8a6d1f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">UNDO</button>
+      <button type="button" id="sdstart" class="cs-secondary" style="flex:1; padding:0 12px; background:#8a6d1f; color:#fffefb; border:2px solid #8a6d1f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">START</button>
+      <button type="button" id="sdreset" class="cs-secondary" style="padding:0 12px; background:#fffefb; color:#8a6d1f; border:2px solid #8a6d1f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">UNDO</button>
     </div>
     <div id="sdnow" style="width:100%; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.06em; color:#8a6d1f;">Start the clock as you announce it. Roughly 30 s per maneuver.</div>
     <div data-loglane="07" style="margin-top:8px; display:flex; gap:6px; align-items:center; overflow-x:auto; -webkit-overflow-scrolling:touch; min-height:28px; scrollbar-width:none;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:#8a6d1f; opacity:0.7; white-space:nowrap;">NOTHING LOGGED YET</span></div>
@@ -1131,8 +1131,8 @@
         <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-6-0" data-log="ALL FOURS" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span>Roll her to hands and knees, then run the sequence again.</span></label></li>
       </ul>
     </details>
-    <div style="padding:2px 0 0;">
-      <button type="button" id="sdagain" style="width:100%; min-height:52px; background:#fffefb; color:#8a6d1f; border:2px dashed #8a6d1f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">↻ RUN THE SEQUENCE AGAIN — CLOCK KEEPS RUNNING</button>
+    <div class="console" style="padding:2px 0 0;">
+      <button type="button" id="sdagain" class="cs-secondary" style="width:100%; background:#fffefb; color:#8a6d1f; border:2px dashed #8a6d1f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">↻ RUN THE SEQUENCE AGAIN — CLOCK KEEPS RUNNING</button>
     </div>
     <details open data-sdband data-lo="240" data-hi="99999" style="border:2px solid #9b1c2e; align-self:start; transition:opacity .2s;">
       <summary style="background:#9b1c2e; color:#fffefb; padding:10px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; align-items:center; gap:11px;"><span data-badge style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; flex:none; background:#fffefb; color:#9b1c2e; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:17px; font-weight:700;">!</span><span data-title style="flex:1;">STILL STUCK — LAST RESORT</span><span data-win style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:400; opacity:0.85; text-align:right; white-space:nowrap;">&gt;4:00</span></summary>
@@ -1437,17 +1437,17 @@
   </div>
 
   <!-- ---- MATERNAL ARREST CLOCK — incision by 4:00, baby out by 5:00 ---- -->
-  <div style="margin:14px 18px 0; border:2px solid #9b1c2e; background:#fffefb;">
+  <div class="console" style="margin:14px 18px 0; border:2px solid #9b1c2e; background:#fffefb;">
     <div style="padding:10px 14px; background:#fbeaec;">
       <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#9b1c2e;">TIME SINCE MATERNAL ARREST</div>
-      <div id="rhtime" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:38px; font-weight:700; line-height:1; color:#16324f;">0:00</div>
+      <div id="rhtime" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1; color:#16324f;">0:00</div>
       <div id="rhcue" style="margin-top:2px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.05em; color:#5a6a78;">TAP START AT ARREST RECOGNITION — CALL THE TIME EVERY MINUTE</div>
     </div>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border-top:1px solid #e7eaef;">
-      <button type="button" id="rhstart" style="min-height:52px; background:#9b1c2e; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">START — ARREST NOW</button>
-      <button type="button" id="rhclear" style="min-height:52px; background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">UNDO</button>
+      <button type="button" id="rhstart" class="cs-secondary" style="background:#9b1c2e; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">START — ARREST NOW</button>
+      <button type="button" id="rhclear" class="cs-secondary" style="background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">UNDO</button>
     </div>
-    <button type="button" id="rhbaby" style="width:100%; min-height:52px; background:#16324f; color:#fffefb; border:none; border-top:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">BABY OUT — LOG IT</button>
+    <button type="button" id="rhbaby" class="cs-secondary" style="width:100%; background:#16324f; color:#fffefb; border:none; border-top:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">BABY OUT — LOG IT</button>
   </div>
   <div class="steps" style="padding:14px 18px 0;">
     <details open style="border:2px solid #0f7a86; align-self:start;">
@@ -1553,7 +1553,7 @@
       <span style="flex:1; text-align:right; color:#8a8578;">6 DRAWERS · TOP TO BOTTOM</span>
     </div>
     <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:#16324f;">OB / neonatal cart</h2>
-    <div style="margin-top:8px; font-size:15px; line-height:1.35; color:#5a6a78;">Every drawer has a colour and a shape. The same badge marks each card that needs something from it — tap a badge to jump here, tap a drawer to see what is inside.</div>
+    <div style="margin-top:8px; font-size:15px; line-height:1.35; color:#5a6a78;">Every drawer has a color and a shape. The same badge marks each card that needs something from it — tap a badge to jump here, tap a drawer to see what is inside.</div>
   </header>
   <div style="padding:0 18px;">
     <div style="display:flex; flex-wrap:wrap; gap:8px; align-items:center; padding:11px 12px; background:#f4f7fa; border-left:4px solid #16324f;">
@@ -1644,10 +1644,12 @@
           <li style="padding:9px 0; border-top:1px solid #e7eaef; font-size:15.5px; line-height:1.3;">Sterile Kerlix for packing</li>
           <li style="padding:9px 0; border-top:1px solid #e7eaef; font-size:15.5px; line-height:1.3;">Foley catheter kit</li>
           <li style="padding:9px 0; border-top:1px solid #e7eaef; font-size:15.5px; line-height:1.3;">Graduated drape, sterile gloves</li>
+          <li style="padding:9px 0; border-top:1px solid #e7eaef; font-size:15.5px; line-height:1.3;">JADA System (vacuum-induced uterine tamponade)</li>
         </ul>
         <div style="display:flex; flex-wrap:wrap; align-items:center; gap:7px; margin-top:12px; padding-top:11px; border-top:2px solid #fbeaec;">
           <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:#8a8578;">USED BY</span>
           <a href="#c06" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid #9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:#9b1c2e; text-decoration:none;">06 Postpartum hemorrhage</a>
+          <a href="../procedures/?from=home#c13" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid #9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:#9b1c2e; text-decoration:none;">Procedures 13 · JADA insertion</a>
         </div>
       </div>
     </details>
@@ -2137,7 +2139,7 @@ var CASESTATE = (function(){
 </script>
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
-var SITE = { version: "1.10", lastReviewed: "2026-08-07" };
+var SITE = { version: "1.13", lastReviewed: "2026-08-07" };
 (function(){
   var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
   Array.prototype.forEach.call(document.querySelectorAll('.verstamp'), function(vs){ vs.textContent=stampText; });
