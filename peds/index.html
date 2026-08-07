@@ -54,6 +54,8 @@
   #wtbar select { width:auto; }
   #wtbar button { min-height:34px; }
   #wtdisplay { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; color:#f7d97a; }
+  #wtstale { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; color:#f2b84b; }
+  #wtbar.stale { border-bottom-color:#b8862b; }
   .wdose { font-weight:700; color:#16324f; }
   .wdose.unset { color:#9b1c2e; font-weight:400; font-style:italic; }
   .wdose-vol { font-size:1.05em; }
@@ -64,7 +66,7 @@
   table.dt tr.hl td { background:#eaf1fa; font-weight:700; }
   @media print {
     body { background:#fffefb; }
-    nav.bar, a[href="#top"] { display:none; }
+    nav.bar, a[href="#top"], #startnewcasebtn { display:none; }
     article { break-before:page; }
     .nca { grid-template-columns:1.05fr 1fr 1fr; }
     .steps { grid-template-columns:repeat(3,1fr); }
@@ -131,6 +133,22 @@
     ev.stopImmediatePropagation();
     openModal();
   });
+  /* WS10.3 — "START NEW CASE" entry points. Same confirm, same sweep, no second
+     clearing path: both just call the exact openModal()/doClear() above.
+     1) the button at the top of THIS tool's own page (below), and
+     2) the landing page's own "START NEW CASE" link, which can't run this tool's sweep
+        itself (it has no CASESTATE/case state of its own) — it instead links here with
+        ?startnewcase=1, and this reads that param on load and opens the same confirm. */
+  /* delegated, not a direct getElementById binding — #startnewcasebtn lives further
+     down the page (this script runs immediately after the nav bar, before <main> is
+     even parsed), so it doesn't exist in the DOM yet at the moment this IIFE runs. */
+  document.addEventListener('click', function(ev){
+    var t=ev.target.closest ? ev.target.closest('#startnewcasebtn') : null;
+    if(!t) return;
+    ev.preventDefault();
+    openModal();
+  });
+  try{ if(/(^|[?&])startnewcase=1(&|$)/.test(location.search)) openModal(); }catch(e){}
 })();
 </script>
 <div class="section-stripe"></div>
@@ -162,6 +180,7 @@
     <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:#2f62a8; font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
     <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Pediatric Emergencies</h1>
     <p style="margin:0; color:#5a6a78; font-size:14.5px;">Enter a weight once above — every card below calculates its doses live from it. Weight and timers live only on this device, clear on RESET FOR NEXT CASE, and auto-clear after an hour of inactivity — still, always tap RESET between patients.</p>
+    <button type="button" id="startnewcasebtn" style="margin-top:10px; min-height:44px; padding:0 16px; background:#16324f; color:#fffefb; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">START NEW CASE</button>
   </div>
 
   <!-- ============ CARD MENU ============ -->
@@ -1070,8 +1089,15 @@
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "1.1",
-  lastReviewed: "2026-08-06"
+  version: "1.2",
+  lastReviewed: "2026-08-07",
+  /* WS10.2 — minutes of manual-wide inactivity (lrh-case-lastactive) before the weight
+     strip appends an "ENTERED HH:MM · N MIN AGO" line and ambers its border. Purely
+     informational — never hides the kg value, its colour, or any .wdose span. A
+     maintainer-tunable guess, not a clinical cutoff: raise it if state B ends up visible
+     most of the time (lost signal value), lower it if consecutive patients still slip
+     through unflagged. See CASE-STATE.md (lrh-case-wtms) and CLAUDE.md's WS10 notes. */
+  staleWeightMins: 10
 };
 (function(){
   var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
@@ -1107,6 +1133,13 @@ var CASESTATE = (function(){
   function setWtKg(n){ if(n===null||isNaN(n)) rm('lrh-case-wtkg'); else wrRaw('lrh-case-wtkg', String(n)); }
   function getWtSrc(){ return rdRaw('lrh-case-wtsrc'); } /* 'measured' | 'estimated' | null */
   function setWtSrc(s){ if(!s) rm('lrh-case-wtsrc'); else wrRaw('lrh-case-wtsrc', s); }
+  /* WS10.1 — epoch ms of when lrh-case-wtkg was last actually CHANGED (not merely
+     re-saved). Written/cleared in the same place as lrh-case-wtkg, by PEDS_WT.save()
+     below — never touched anywhere else. Powers the two-state weight strip (WS10.2):
+     the tool's confidence in a displayed weight decays with elapsed manual-wide
+     inactivity, not with this timestamp directly — see PEDS_WT.paintStale(). */
+  function getWtMs(){ var v=rdRaw('lrh-case-wtms'); return v===null?null:(+v||null); }
+  function setWtMs(ms){ if(ms===null||ms===undefined) rm('lrh-case-wtms'); else wrRaw('lrh-case-wtms', String(ms)); }
 
   /* PHI guard (WS0.3) — the ONLY way this file may append to the shared case log. */
   function isSafeLabel(s){
@@ -1187,6 +1220,7 @@ var CASESTATE = (function(){
     getClocks:getClocks, setClock:setClock, getClock:getClock, clearClocks:clearClocks, anyClockRunning:anyClockRunning,
     getCounts:getCounts, setCount:setCount, getCount:getCount, clearCounts:clearCounts,
     getWtKg:getWtKg, setWtKg:setWtKg, getWtSrc:getWtSrc, setWtSrc:setWtSrc,
+    getWtMs:getWtMs, setWtMs:setWtMs,
     addLog:addLog, getLog:getLog, clearToolLog:clearToolLog, isSafeLabel:isSafeLabel,
     touchActive:touchActive, getLastActive:getLastActive,
     getChecks:getChecks, setChecked:setChecked, isChecked:isChecked, clearToolChecks:clearToolChecks
@@ -1314,18 +1348,77 @@ var PEDS_WT = (function(){
       if(zoneEl) zoneEl.innerHTML = (wtKg!==null && !isNaN(wtKg)) ? '<span class="sw"></span>OUTSIDE BROSELOW-LUTEN RANGE (3–36 kg)' : '';
     }
   }
+  /* WS10.1 — lrh-case-wtms records when wtKg was last actually CHANGED, not every save()
+     call. Compare against the value already committed to storage (not a local var) so a
+     save() triggered by something that didn't actually change the number — there isn't
+     one today, but a future caller might add one — still can't bump the timestamp. */
   function save(){
+    var prevKg = CASESTATE.getWtKg();
     CASESTATE.setWtKg(wtKg);
     CASESTATE.setWtSrc(wtKg!==null ? src : null);
+    if(wtKg !== prevKg) CASESTATE.setWtMs(wtKg!==null ? Date.now() : null);
   }
   function fmt(n){ var r=Math.round(n*10)/10; return (r%1===0) ? String(r) : r.toFixed(1); }
+  /* WS10.2 — is a clock THIS TOOL itself would show as running right now? Deliberately
+     NOT CASESTATE.anyClockRunning() (that's cross-tool, over every clock name any tool
+     anywhere uses — pph/rh/dystocia in OB, cprCycle/epi/rosc in Codes — none of which
+     peds' own cards ever display). 'seizure' is the one clock name peds' own p10 card
+     reads/shows (shared with Codes' c13 by the same key, per CASE-STATE.md) — if it's
+     running, peds' own on-screen seizure clock is visibly counting up right now, which is
+     itself good evidence someone is actively with this patient. */
+  function toolClockRunning(){
+    try{ return CASESTATE.getClock('seizure')!==null; }catch(e){ return false; }
+  }
+  function pad2(n){ return (n<10?'0':'')+n; }
+  function fmtClockTime(ms){ var d=new Date(ms); return pad2(d.getHours())+':'+pad2(d.getMinutes()); }
+  var wtbarEl=document.getElementById('wtbar'), staleEl=null;
+  /* WS10.2 — the two-state weight strip. State A (today's display, untouched) is the
+     only state while a weight is fresh; state B appends a second, purely informational
+     element after #wtdisplay once the manual has sat idle (lrh-case-lastactive) past
+     SITE.staleWeightMins, UNLESS a clock this tool itself would show as running is
+     active. Never changes the kg value, its colour, its provenance text, or any .wdose
+     span — see the binding constraint in WS10's own spec: nothing here may hide a dose,
+     grey out a figure, block a card, or interrupt a running case. Called from
+     paintDisplay() (so every genuine weight change repaints it immediately — always
+     fresh right after a change), a 30 s interval (the only new timer; no per-second
+     tick), and the click listener below (so any tap anywhere returns to state A without
+     waiting up to 30 s) — never on visibilitychange/focus/resume, so backgrounding and
+     reopening the app inside the threshold stays state A. */
+  function paintStale(){
+    if(wtKg===null || isNaN(wtKg)){
+      if(wtbarEl) wtbarEl.classList.remove('stale');
+      if(staleEl){ staleEl.remove(); staleEl=null; }
+      return;
+    }
+    var wtMs=null; try{ wtMs=CASESTATE.getWtMs(); }catch(e){}
+    var lastActive=0; try{ lastActive=CASESTATE.getLastActive(); }catch(e){}
+    var threshMs=(typeof SITE.staleWeightMins==='number'?SITE.staleWeightMins:10)*60000;
+    var idleMs = lastActive ? (Date.now()-lastActive) : 0;
+    var stale = wtMs!==null && idleMs>threshMs && !toolClockRunning();
+    if(!stale){
+      if(wtbarEl) wtbarEl.classList.remove('stale');
+      if(staleEl){ staleEl.remove(); staleEl=null; }
+      return;
+    }
+    var minsAgo=Math.max(0, Math.round((Date.now()-wtMs)/60000));
+    if(!staleEl && dispEl){
+      staleEl=document.createElement('span');
+      staleEl.id='wtstale';
+      dispEl.parentNode.insertBefore(staleEl, dispEl.nextSibling);
+    }
+    if(staleEl) staleEl.textContent='ENTERED '+fmtClockTime(wtMs)+' · '+minsAgo+' MIN AGO';
+    if(wtbarEl) wtbarEl.classList.add('stale');
+  }
   function paintDisplay(){
     paintZone();
-    if(!dispEl) return;
-    if(wtKg===null || isNaN(wtKg)){ dispEl.textContent='WEIGHT NOT SET'; dispEl.style.color='#f7d97a'; return; }
+    if(!dispEl){ paintStale(); return; }
+    if(wtKg===null || isNaN(wtKg)){ dispEl.textContent='WEIGHT NOT SET'; dispEl.style.color='#f7d97a'; paintStale(); return; }
     dispEl.textContent = fmt(wtKg)+' kg'+(src==='estimated' ? ' (age-estimate)' : ' (measured)');
     dispEl.style.color = src==='estimated' ? '#f2b84b' : '#8fd19e';
+    paintStale();
   }
+  setInterval(paintStale, 30000);
+  document.addEventListener('click', function(){ paintStale(); }, true);
   /* Age→weight estimate: APLS-style bands, for reference only when an actual
      weight/length measurement cannot be obtained. Always prefer a measured
      weight. Not valid beyond 12 years — the tool refuses rather than guessing

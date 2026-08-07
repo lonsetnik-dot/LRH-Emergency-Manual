@@ -31,6 +31,18 @@
 
   .intro{color:var(--muted); font-size:.9rem; margin:22px 2px 14px}
 
+  /* WS10.3 — "START NEW CASE": a motivated entry point to the same single destructive
+     control every tool already has (its own #resetmodal confirm + lrh- prefix sweep,
+     see CASE-STATE.md). This page has no CASESTATE of its own — nothing here reads or
+     writes localStorage — so it can't run that sweep directly; it links into a tool
+     with ?startnewcase=1, which that tool's own existing gate script reads on load to
+     open its own confirm. No second clearing path — see codes/peds/ob-neonatal/trauma's
+     matching WS10.3 note. */
+  .startnewcasebtn{display:inline-block; margin-top:12px; padding:11px 18px; border-radius:10px;
+    background:var(--brand-primary-dark); color:#fff; text-decoration:none; font-weight:700;
+    font-size:.85rem; letter-spacing:.02em}
+  .startnewcasebtn:hover{background:var(--brand-primary)}
+
   /* ---- Search ---- */
   .search{position:relative; margin:0 0 20px}
   .search input{width:100%; font-size:1rem; padding:13px 42px 13px 15px; border:1px solid var(--line);
@@ -128,6 +140,7 @@
 
 <div class="wrap">
   <p class="intro">Choose a category, or search for a topic. Each tool has its own direct link you can bookmark or share.</p>
+  <a class="startnewcasebtn" href="codes/?from=home&amp;startnewcase=1#top">START NEW CASE</a>
 
   <!-- ===== SEARCH ===== -->
   <div class="search">

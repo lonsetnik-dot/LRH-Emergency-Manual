@@ -42,7 +42,7 @@
   #stickytop { position:sticky; top:0; z-index:5; }
   @media print {
     body { background:#fffefb; }
-    nav.bar, #betasplash { display:none; }
+    nav.bar, #betasplash, #startnewcasebtn { display:none; }
     article { break-before:page; }
     .steps { grid-template-columns:repeat(3,1fr); }
   }
@@ -106,6 +106,18 @@
     ev.stopImmediatePropagation();
     openModal();
   });
+  /* WS10.3 — "START NEW CASE" entry points. Same confirm, same sweep, no second
+     clearing path. See peds/index.html's identical note. */
+  /* delegated, not a direct getElementById binding — #startnewcasebtn lives further
+     down the page (this script runs immediately after the nav bar, before <main> is
+     even parsed), so it doesn't exist in the DOM yet at the moment this IIFE runs. */
+  document.addEventListener('click', function(ev){
+    var t=ev.target.closest ? ev.target.closest('#startnewcasebtn') : null;
+    if(!t) return;
+    ev.preventDefault();
+    openModal();
+  });
+  try{ if(/(^|[?&])startnewcase=1(&|$)/.test(location.search)) openModal(); }catch(e){}
 })();
 </script>
 <div class="section-stripe"></div>
@@ -116,6 +128,7 @@
     <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:#c26a1b; font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
     <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Trauma</h1>
     <p style="margin:0; color:#5a6a78; font-size:14.5px;">Tap a card to open. Massive Transfusion Protocol and Front of Neck Access live in the Codes tool — the cards below link straight there so nothing is duplicated.</p>
+    <button type="button" id="startnewcasebtn" style="margin-top:10px; min-height:44px; padding:0 16px; background:#16324f; color:#fffefb; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">START NEW CASE</button>
   </div>
 
   <!-- ============ CARD MENU ============ -->
@@ -551,8 +564,8 @@
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "0.6",
-  lastReviewed: "2026-08-06"
+  version: "0.7",
+  lastReviewed: "2026-08-07"
 };
 (function(){
   var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';

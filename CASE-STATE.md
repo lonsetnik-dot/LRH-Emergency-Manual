@@ -18,7 +18,8 @@ Every key here is device-local and PHI-free — see the PHI guard note under
 | Key | Shape | Written by | Read by | Notes |
 |---|---|---|---|---|
 | `lrh-case-wtkg` | number (string) | codes, peds | codes, peds | The one patient weight used for every weight-based dose in codes and peds. **Not** `lrh-ob-weight` — see Tool-local keys below, that's a different concept (neonatal equipment sizing in OB). |
-| `lrh-case-wtsrc` | `'measured'` \| `'estimated'` | peds | peds | Provenance of `lrh-case-wtkg`. Codes doesn't write this yet — it has no provenance UI (WS2.2 will port peds' weight bar into codes; until then codes' weight entries leave this untouched). |
+| `lrh-case-wtsrc` | `'measured'` \| `'estimated'` | codes, peds | codes, peds | Provenance of `lrh-case-wtkg`. As of WS2.2, codes' own weight bar ports the identical `paint()`/provenance display peds' weight bar always had — both tools now write this. |
+| `lrh-case-wtms` | epoch ms (string) | codes, peds | codes, peds | Added by WS10.1. Written/cleared in the exact same place as `lrh-case-wtkg` (each tool's own `save()`), and only when the *value* actually changes — not on every keystroke that reparses to the same number, and not on load. Powers the WS10.2 two-state weight strip (below): the strip's confidence decays with elapsed manual-wide inactivity (`lrh-case-lastactive`), not with this timestamp directly, but this is the timestamp the strip's "ENTERED HH:MM · N MIN AGO" text itself displays. |
 | `lrh-case-ageyrs` | number (string) | codes | codes | Patient age in years, entered alongside weight in codes' weight bar. Added by the arrest-card merge (codes card 01 now covers both adult ACLS and pediatric PALS in one interface) so the pediatric-mode trigger can read age as well as weight — see `lrh-case-adultoverride` below. Not yet written by peds (peds' own age-based weight *estimate* stays a one-shot calculation, not a persisted age). |
 | `lrh-case-adultoverride` | `'1'` \| absent | codes | codes | The "no, this is an adult" override on codes' merged arrest card (card 01). Weight/age below the pediatric trigger (`SITE.arrestTrigger` in `codes/index.html`: weight < 50 kg OR age ≤ 12 y) normally switches that card into weight-based PALS dosing; this key, when `'1'`, forces it back to adult ACLS dosing even though the trigger is met — a deliberate, reversible, always-visible override (tapping it again clears the key), because weight alone can't reliably distinguish a small child from a small/frail adult. Absent = not overridden (the default). Namespaced under `lrh-case-` on purpose so RESET FOR NEXT CASE and the inactivity auto-clear both already sweep it with no extra code. |
 | `lrh-case-startms` | epoch ms (string) | codes | codes | First action of the case. **Gap:** only codes writes this today (it's a direct rename of codes' pre-existing `codeStartMs`). ob-neonatal and peds don't have an equally unambiguous "the case just began" hook yet — wiring them in is future work, not WS0. |
@@ -219,6 +220,58 @@ Verified with Playwright: every tool touches `lastactive` on load; backdating it
 with a clock running clears nothing (in any tool); backdating it 90 minutes with nothing
 running clears everything except `lrh-pref-mute` and shows the banner; activity in one tool
 (codes) keeps a different tool (peds) from treating the case as stale when opened next.
+
+## Two-state weight strip (WS10.2)
+
+Codes' and peds' weight bars (`#wtbar`/`#wtdisplay`) each independently gained a second,
+purely informational display state. State A is exactly what shipped before WS10 — the kg
+value, its colour, and its `(measured)`/`(age-estimate)` provenance text, untouched.
+State B appends a second element, `#wtstale`, reading `ENTERED HH:MM · N MIN AGO` (from
+`lrh-case-wtms`) and adds a `.stale` class to `#wtbar` (an amber border). Nothing about the
+kg value, its colour, its provenance text, or any `.wdose` span ever changes — state B adds
+information, it never hides, greys out, or blocks anything.
+
+The trigger for state B is elapsed time since `lrh-case-lastactive`, past each tool's own
+`SITE.staleWeightMins` (default 10 — a maintainer-tunable guess, not a clinical cutoff),
+**unless** a clock *that tool itself* would show as running is active (`toolClockRunning()`
+in each tool's own weight-bar module — codes checks `cprCycle`/`epi`/`rosc`/`seizure`, peds
+checks `seizure`). This is deliberately **not** `CASESTATE.anyClockRunning()`, which is
+cross-tool over every clock name any tool anywhere uses (OB's `pph`/`rh`/`dystocia` would
+wrongly suppress a stale Codes or Peds weight). Any tap anywhere in the tool (the same
+capture-phase click already touching `lrh-case-lastactive`, WS2.5) returns the strip to
+state A immediately — the strip's confidence decays with the tool's own idle time, not with
+the weight entry's own age directly, so a checkbox tick on an unrelated card returns to
+state A even though the underlying weight is unchanged (this is intentional, not a bug — see
+the WS10 spec's own "let the tool's confidence decay on its own" principle). Repainted on a
+30-second interval (the only new timer) and never on `visibilitychange`/focus/resume, so
+backgrounding and reopening the app inside the threshold stays state A.
+
+## "START NEW CASE" entry points (WS10.3)
+
+A second, motivated-action entry point to the exact same single destructive control every
+tool already had (WS2.4's `#resetmodal` confirm + `lrh-` prefix sweep) — no second clearing
+path was built. Codes, OB, Peds, and Trauma each gained a `#startnewcasebtn` button in their
+own intro block, wired in the same script that already owns `openModal()`/`doClear()` for
+that tool's `#resetbtn`, so it opens the identical confirm. The landing page (`index.html`)
+has no `CASESTATE` of its own and can't run the sweep directly, so its own "START NEW CASE"
+link instead navigates into Codes with `?startnewcase=1`, which that tool's gate script reads
+on load and opens the same confirm automatically. The original nav-bar `RESET FOR NEXT CASE`
+button is untouched, in wording and behavior — **whether to also rename it is an open
+maintainer call, flagged rather than decided by WS10.3.**
+
+## Adult-override clears on a changed weight/age (WS10.4)
+
+Codes' `lrh-case-adultoverride` (see above) now also clears whenever the committed weight or
+age value changes — not just on RESET. "Committed" means debounced ~800ms against the last
+value actually saved, so a rapid `1` → `14` → `14.2` typing sequence, or a same-window typo
+correction, clears the override at most once, after the value settles — never mid-keystroke.
+This is deliberately unconditional (no confirmation, no decline) since a changed weight/age
+is the closest signal this system is permitted to treat as "possibly a different patient,"
+and the override exists specifically to be the shortest-lived key in the system. WS10.4's
+optional "offer to also clear the previous patient's checkboxes" (never automatic, always
+with a visible decline) was scoped out of this pass — flagged, not built, since the spec
+marks it explicitly optional and it adds a second confirm-style interstitial for a workflow
+the core override-clear already makes safe.
 
 ## Known, accepted scope gaps (see the notes above for reasoning)
 

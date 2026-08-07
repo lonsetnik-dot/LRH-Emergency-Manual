@@ -51,7 +51,7 @@
   nav.bar #resetnote { flex:1; text-align:right; font-size:10.5px; color:#a9c2dc; letter-spacing:0.08em; }
   @media print {
     body { background:#fffefb; }
-    nav.bar, #betasplash, a[href="#top"] { display:none; }
+    nav.bar, #betasplash, a[href="#top"], #startnewcasebtn { display:none; }
     article { break-before:page; }
     .nca { grid-template-columns:1.05fr 1fr 1fr; }
     .steps { grid-template-columns:repeat(3,1fr); }
@@ -119,6 +119,18 @@
     ev.stopImmediatePropagation();
     openModal();
   });
+  /* WS10.3 — "START NEW CASE" entry points. Same confirm, same sweep, no second
+     clearing path. See peds/index.html's identical note. */
+  /* delegated, not a direct getElementById binding — #startnewcasebtn lives further
+     down the page (this script runs immediately after the nav bar, before <main> is
+     even parsed), so it doesn't exist in the DOM yet at the moment this IIFE runs. */
+  document.addEventListener('click', function(ev){
+    var t=ev.target.closest ? ev.target.closest('#startnewcasebtn') : null;
+    if(!t) return;
+    ev.preventDefault();
+    openModal();
+  });
+  try{ if(/(^|[?&])startnewcase=1(&|$)/.test(location.search)) openModal(); }catch(e){}
 })();
 </script>
 <div id="summarymodal" style="display:none; position:fixed; inset:0; z-index:20; background:rgba(15,28,44,0.55); padding:14px; overflow:auto;">
@@ -148,6 +160,7 @@
     </div>
     <div style="margin-top:10px; font-size:14px; line-height:1.35; color:#bcd6ec;">A reference to assist professional decision-making — not a policy or protocol. Every situation requires nuance; use your professional judgment to vary from this source.</div>
     <div style="margin-top:8px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:#8fb3d4;"><span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.</div>
+    <button type="button" id="startnewcasebtn" style="margin-top:10px; min-height:44px; padding:0 16px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">START NEW CASE</button>
   </div>
   <div style="padding:18px 18px 0;">
     <div style="display:flex; align-items:center; gap:8px; margin-bottom:9px;"><span style="width:11px; height:11px; background:#8a8578;"></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:#8a8578;">EQUIPMENT</span></div>
@@ -2080,7 +2093,7 @@ var CASESTATE = (function(){
 </script>
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
-var SITE = { version: "1.6", lastReviewed: "2026-08-06" };
+var SITE = { version: "1.7", lastReviewed: "2026-08-07" };
 (function(){
   var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
   Array.prototype.forEach.call(document.querySelectorAll('.verstamp'), function(vs){ vs.textContent=stampText; });
