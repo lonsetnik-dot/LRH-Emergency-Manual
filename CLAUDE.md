@@ -50,15 +50,65 @@ unclear. If a request conflicts with a rule below, flag it before proceeding.
 8. **Git is the source of truth.** Changes deploy via GitHub → Netlify. Do not
    use Netlify drag-and-drop deploys.
 
+9. **Register every new tool or card in the search index.** The landing page's
+   `index.html` carries a hand-maintained `SEARCH_INDEX` array — nothing gets
+   found by site search unless it has an entry there, and there's no automatic
+   link between a tool/card existing and it being indexed. Any new tool folder
+   *or* any new card added inside an existing tool (a new `id="cXX"` article)
+   needs a `SEARCH_INDEX` entry before the task is done. Before delivering:
+   search 2–3 of the real terms a clinician would actually type and confirm
+   the new entry surfaces. Also check the new entry's keywords against
+   existing entries for confusing overlap — a keyword string that's a near-
+   duplicate of another entry's, or that would make an ambiguous query
+   surface the wrong card first. Don't silently resolve an overlap you're not
+   sure about; flag it to the user instead of guessing which entry should win.
+
+10. **Write in US English.** LRH is a US hospital, so all prose you write or
+    edit — checklist text, headers, UI copy, code comments — uses US medical
+    spelling and drug-naming conventions, not British/Commonwealth ones
+    (adrenaline → epinephrine, colour → color, paralysed → paralyzed,
+    salbutamol → albuterol, trauma centre → trauma center, etc.). See
+    `TERMINOLOGY.md` for the full alias list and for what's exempt.
+    **Exception:** never rewrite text inside a direct quote or a real proper
+    name — a paper title, an institution's own name, a named program like
+    "Tactical Combat Casualty Care" — even if it's spelled the Commonwealth
+    way. Quote it exactly as the source has it.
+
 ## Adding a new tool
 
 1. Create a folder `<tool>/` with `index.html`, copying an existing tool as the
    skeleton so the shared header/CSS/disclaimer come along.
 2. Fill in the SITE CONFIG block and the tool's logic; cite every threshold.
 3. Add a card to the landing page (`index.html`) linking to `<tool>/`.
-4. Verify the logic; stamp version + last-reviewed date.
+4. Add a `SEARCH_INDEX` entry for the tool (and for each of its cards) in the
+   landing page's `index.html` — see golden rule 9.
+5. Write all prose in US English — see golden rule 10.
+6. Verify the logic; stamp version + last-reviewed date.
+
+## Adding a new card (inside an existing tool)
+
+Same obligations as a new tool, minus the new folder — easy to forget the
+search-index step since it lives in a different file than the one you're
+editing:
+
+1. Copy an existing card's structure inside the tool's `index.html`; add a
+   menu tile if the tool has one.
+2. Add a `SEARCH_INDEX` entry in the landing page's `index.html` pointing to
+   the card's `#cXX` anchor — see golden rule 9.
+3. Write all prose in US English — see golden rule 10.
+4. Cite every clinical value; verify the logic; stamp version + last-reviewed
+   date on the tool file the card lives in.
 
 ## Current tools
 
-- `heart/` — Chest Pain hs-Troponin 0/1-hr ADP + HEART pathway.
-- `ob/` — OB emergencies manual.
+- `codes/` — Codes (cardiac arrest, stroke, RSI, STEMI, status epilepticus,
+  and other resuscitation cards).
+- `ob-neonatal/` — OB & Neonatal emergencies (delivery, PPH, shoulder
+  dystocia, neonatal resuscitation, hysterotomy, and more).
+- `peds/` — Pediatric Emergencies.
+- `procedures/` — Rare, high-stakes procedure checklists (chest tube,
+  thoracotomy, burr hole, canthotomy, CVC, TVP, tourniquet, JADA, etc.).
+- `trauma/` — Trauma activation and resuscitation pathways.
+- `clinical-pathways/` — Diagnostic pathways (e.g. Chest Pain / HEART).
+- `posters/` — Printable one-page posters generated from procedure content.
+- `debrief/` — Post-code/critical-event debrief tool.
