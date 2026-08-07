@@ -2093,7 +2093,7 @@ var CASESTATE = (function(){
 </script>
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
-var SITE = { version: "1.7", lastReviewed: "2026-08-07" };
+var SITE = { version: "1.8", lastReviewed: "2026-08-07" };
 (function(){
   var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
   Array.prototype.forEach.call(document.querySelectorAll('.verstamp'), function(vs){ vs.textContent=stampText; });
@@ -2262,6 +2262,16 @@ var SITE = { version: "1.7", lastReviewed: "2026-08-07" };
   var HK='lrh-ob-hrcycle', n0=null, dur=60, band='', tick=null, flash=0, airflash=0;
   var labels = Array.prototype.slice.call(document.querySelectorAll('.hrleft'));
   if(!labels.length) return;
+  /* card2 = "2 · HEART RATE CHECK" (03-1-*, high/mid guidance), card3 = "3 · HR
+     STILL <60" (03-2-*, low/prep compressions guidance). Located by their first
+     checkbox rather than a new id, so no id/data-k is added anywhere. */
+  var card2i=document.querySelector('input[data-k="03-1-0"]'), card2=card2i && card2i.closest('details');
+  var card3i=document.querySelector('input[data-k="03-2-0"]'), card3=card3i && card3i.closest('details');
+  function applyVisibility(){
+    if(!card2 || !card3) return;
+    if(band==='high' || band==='mid'){ card2.open=true; card3.open=false; }
+    else if(band==='low' || band==='prep'){ card2.open=false; card3.open=true; }
+  }
   var BANDS = {
     high:{ note:'HR ≥100 · BREATHING WELL? ROUTINE CARE — LABORED OR BLUE: CPAP', col:'#0e7c86', dur:60, mode:null, pane:'03-1-4' },
     mid: { note:'HR 60–100 · PPV 40–60',  col:'#16324f', dur:30, mode:'p50', pane:'03-1-1' },
@@ -2311,7 +2321,7 @@ var SITE = { version: "1.7", lastReviewed: "2026-08-07" };
       band=b.getAttribute('data-band');
       var cfg=BANDS[band];
       dur=cfg.dur; n0=Date.now(); flash=0; airflash=(band==='low')?Date.now():0; save();
-      clearBoxes(); pacer(cfg); ring();
+      clearBoxes(); pacer(cfg); ring(); applyVisibility();
       Array.prototype.forEach.call(document.querySelectorAll('.hrband'), function(x){
         var on = x.getAttribute('data-band')===band || (band==='prep' && x.getAttribute('data-band')==='low'), c=BANDS[x.getAttribute('data-band')].col;
         x.style.background = on ? c : '#fffefb';
@@ -2328,9 +2338,11 @@ var SITE = { version: "1.7", lastReviewed: "2026-08-07" };
     try{ localStorage.removeItem(HK); }catch(e){}
     Array.prototype.forEach.call(document.querySelectorAll('.hrband'), function(x){ x.style.background='#fffefb'; x.style.color=BANDS[x.getAttribute('data-band')].col; });
     Array.prototype.forEach.call(document.querySelectorAll('#c03 .steps > details'), function(d){ d.style.boxShadow='none'; });
+    if(card2) card2.open=true;
+    if(card3) card3.open=true;
     paint();
   });
-  if(n0){ tick=setInterval(paint,1000); ring(); }
+  if(n0){ tick=setInterval(paint,1000); ring(); applyVisibility(); }
   paint();
 })();</script>
 <script>(function(){
