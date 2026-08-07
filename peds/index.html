@@ -39,20 +39,26 @@
      custom properties consumed by .cs-destructive/.cs-router/.cs-secondary/
      .cs-check/.cs-numeric below; applies wherever those classes sit inside a
      .console ancestor. See LAYOUT.md. */
-  .console { --cs-destructive:72px; --cs-router:62px; --cs-secondary:56px; --cs-check:44px; --cs-numeric:44px; }
+  .console { --cs-destructive:72px; --cs-router:62px; --cs-router-font:13.5px; --cs-secondary:56px; --cs-check:44px; --cs-numeric:44px; }
   .console .cs-destructive { min-height:var(--cs-destructive); }
-  .console .cs-router { min-height:var(--cs-router); }
+  .console .cs-router { min-height:var(--cs-router); font-size:var(--cs-router-font); text-align:left; padding:0 16px; }
   .console .cs-secondary { min-height:var(--cs-secondary); }
   .console .cs-check { min-height:var(--cs-check); }
   .console .cs-numeric { font-size:var(--cs-numeric); }
+  /* WS11.5 — greyed-until-armed styling hook for decision-router panels that are
+     visible before a case is really underway (e.g. card 01's rhythm panel before
+     the CPR clock starts). Pure CSS presentation, toggled by a plain class the
+     existing paint logic already sets — no arm/disarm behavior changes. No-op
+     below 760px by design (see LAYOUT.md / the WS11.0 decision record). */
+  .console .cs-unarmed { }
   @media (min-width:600px) { .menu { grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); } }
   @media (min-width:760px) {
     .nca { grid-template-columns:1.05fr 1fr 1fr; }
     .steps { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
     .figs { grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); }
-    .console { --cs-destructive:88px; --cs-router:74px; --cs-secondary:64px; --cs-check:44px; --cs-numeric:60px; }
+    .console { --cs-destructive:88px; --cs-router:74px; --cs-router-font:16px; --cs-secondary:64px; --cs-check:44px; --cs-numeric:60px; }
     .card-split { display:grid; grid-template-columns:minmax(300px,420px) 1fr; gap:16px; align-items:start; }
-    .twoup { display:grid; grid-template-columns:1fr 1fr; gap:0 20px; } .twoup > li { min-width:0; } .twoup li label { min-width:0; } .twoup li label > span { min-width:0; overflow-wrap:break-word; }
+    .twoup { display:grid; grid-template-columns:1fr 1fr; gap:0 20px; } .twoup > li { min-width:0; } .twoup li label { min-width:0; } .twoup li label > span { min-width:0; overflow-wrap:break-word; } .cs-unarmed { opacity:.45; pointer-events:none; }
   }
   nav.bar { position:relative; display:flex; align-items:center; gap:10px; padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px; background:var(--peds-accent,#005596); color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.1em; transition:background-color 0.25s ease; }
   nav.bar a, nav.bar button { color:#fffefb; background:none; text-decoration:none; border:1px solid rgba(255,255,255,0.4); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center; }
@@ -512,7 +518,7 @@
       <details open style="border:2px solid #9b1c2e;">
         <summary style="background:#9b1c2e; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">WHAT DOESN'T WORK — DON'T TREAT THIS LIKE ASTHMA</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p06-6" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Bronchodilators (albuterol/salbutamol), nebulized epinephrine, and ipratropium</b> — may transiently bump heart rate but do not meaningfully change work of breathing or oxygen saturation in true bronchiolitis; not routinely recommended.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p06-6" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Bronchodilators (albuterol), nebulized epinephrine, and ipratropium</b> — may transiently bump heart rate but do not meaningfully change work of breathing or oxygen saturation in true bronchiolitis; not routinely recommended.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p06-7" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Systemic or inhaled corticosteroids</b> — not effective in bronchiolitis (distinct from the asthma pathway on card 03).</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p06-8" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Chest physiotherapy and hypertonic saline nebs</b> — not routinely recommended in the ED setting.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p06-9" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>If a bronchodilator trial is given and there's no real change in work of breathing, don't keep re-dosing it hoping for a different result — that's a sign this is bronchiolitis, not asthma.</span></label></li>
@@ -1102,11 +1108,11 @@
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "1.3",
+  version: "1.4",
   lastReviewed: "2026-08-07",
   /* WS10.2 — minutes of manual-wide inactivity (lrh-case-lastactive) before the weight
      strip appends an "ENTERED HH:MM · N MIN AGO" line and ambers its border. Purely
-     informational — never hides the kg value, its colour, or any .wdose span. A
+     informational — never hides the kg value, its color, or any .wdose span. A
      maintainer-tunable guess, not a clinical cutoff: raise it if state B ends up visible
      most of the time (lost signal value), lower it if consecutive patients still slip
      through unflagged. See CASE-STATE.md (lrh-case-wtms) and CLAUDE.md's WS10 notes. */
@@ -1314,11 +1320,11 @@ var PEDS_WT = (function(){
   var wtKg=null, src=null; /* src: 'measured' | 'estimated' */
   try{ wtKg = CASESTATE.getWtKg(); }catch(e){}
   try{ src = CASESTATE.getWtSrc(); }catch(e){}
-  /* ---- Broselow-Luten weight-zone colour band (WikEM), for wayfinding only —
-     matches the colour-coded drawers on the pediatric cart so the page's
-     dominant colour points at the same drawer a clinician would pull. Every
+  /* ---- Broselow-Luten weight-zone color band (WikEM), for wayfinding only —
+     matches the color-coded drawers on the pediatric cart so the page's
+     dominant color points at the same drawer a clinician would pull. Every
      calculated dose on this page still comes from the exact kg entered above,
-     never from a colour-zone lookup — see the FDA recall note under card 01. */
+     never from a color-zone lookup — see the FDA recall note under card 01. */
   var BANDS=[
     {name:'GREY',   lo:3,  hi:5,  mid:'#5a6a78', dark:'#33404c'},
     {name:'PINK',   lo:6,  hi:7,  mid:'#c96f8c', dark:'#7a3f50'},
@@ -1389,7 +1395,7 @@ var PEDS_WT = (function(){
      only state while a weight is fresh; state B appends a second, purely informational
      element after #wtdisplay once the manual has sat idle (lrh-case-lastactive) past
      SITE.staleWeightMins, UNLESS a clock this tool itself would show as running is
-     active. Never changes the kg value, its colour, its provenance text, or any .wdose
+     active. Never changes the kg value, its color, its provenance text, or any .wdose
      span — see the binding constraint in WS10's own spec: nothing here may hide a dose,
      grey out a figure, block a card, or interrupt a running case. Called from
      paintDisplay() (so every genuine weight change repaints it immediately — always
