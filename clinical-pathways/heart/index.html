@@ -271,6 +271,8 @@
       <button class="btn" onclick="window.print()">Print</button>
     </div>
 
+    <p class="sub" style="margin-top:10px"><b>DHMC Transfer Center: (877) 999-9870</b> — for cardiology consultation or transfer.</p>
+
     <details class="ref">
       <summary>Disposition logic (per posted protocol)</summary>
       <ul>
@@ -280,8 +282,8 @@
         <li><b>AMI ruled out</b> &rarr; apply HEART score:
           <ul>
             <li>0&ndash;3 (low) &rarr; D/C, no stress test, F/U PCP</li>
-            <li>4&ndash;6 (medium) &rarr; outpatient stress test within 72h&ndash;1 week &mdash; rapid F/U with cardiology or PCP matters more than the exact day; document that follow-up is arranged. Strong ACS story + high-risk factors despite negative serials? Discuss with cardiology before discharge.</li>
-            <li>7&ndash;10 (high) &rarr; consider stress test prior to d/c &rarr; D/C w/ PCP F/U or cardiology consult</li>
+            <li>4&ndash;6 (medium) &rarr; consider outpatient stress testing within 72 hours&ndash;1 week, using clinical acumen in conjunction with patient preference &mdash; emphasis on rapid follow-up with cardiology or PCP rather than a fixed hour count; document that follow-up is arranged, along with clear return precautions.</li>
+            <li>7&ndash;10 (high) &rarr; consider stress testing prior to d/c, using clinical acumen in conjunction with patient preference &rarr; D/C w/ PCP F/U or cardiology consult</li>
           </ul>
         </li>
       </ul>
@@ -311,7 +313,7 @@
     hospital: "Littleton Regional Hospital",
     hospitalShort: "LRH",
     units: "ng/L",
-    version: "1.62",
+    version: "1.72",
     lastReviewed: "2026-08-07",
     trop: {
       ruleInValue:      50,   // any hs-Trop >= this            -> rules in
@@ -404,12 +406,12 @@
     return {total:total, complete:complete, sub:sub};
   }
   function tier(s){ if(s<=3) return {t:'low',label:'Low risk (0–3)',cls:'out'};
-                    if(s<=6) return {t:'med',label:'Medium risk (4–6)',cls:'ref'};
+                    if(s<=6) return {t:'med',label:'Medium risk (4–6)',cls:'dc'};
                     return {t:'high',label:'High risk (7–10)',cls:'in'}; }
   function heartDispo(s){
     if(s<=3) return 'D/C, no stress test, follow up with PCP.';
-    if(s<=6) return 'Outpatient stress test within 72h–1 week — rapid cardiology/PCP follow-up matters more than the exact day; document that follow-up is arranged. If the story is strongly suspicious with high-risk factors despite negative serials, discuss with cardiology before discharge rather than relying on the stress test alone.';
-    return 'Consider stress test prior to discharge — then D/C with PCP follow-up or cardiology consultation.';
+    if(s<=6) return 'Consider outpatient stress testing within 72 hours–1 week, using clinical acumen in conjunction with patient preference — the emphasis is on rapid follow-up with cardiology or PCP rather than a fixed hour count; document that follow-up is arranged, along with clear return precautions.';
+    return 'Consider stress testing prior to discharge, using clinical acumen in conjunction with patient preference — or discharge with PCP follow-up or cardiology consultation.';
   }
 
   function paint(box,cls){
@@ -512,8 +514,8 @@
   }
   function heartVerdict(s){
     if(s<=3) return 'D/C, no stress test, PCP follow-up';
-    if(s<=6) return 'Outpatient stress test, 72h–1 week';
-    return 'Stress test prior to d/c (or cardiology)';
+    if(s<=6) return 'Consider stress test, 72h–1 week';
+    return 'Consider stress test (or cardiology)';
   }
 
   // STEMI is handled entirely on its own Codes card (cognitive aid, TNK dosing, transfer-call
