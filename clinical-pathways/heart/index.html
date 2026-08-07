@@ -46,7 +46,6 @@
   .esrd-warn{display:none; background:var(--in-bg); border:1.5px solid var(--in-br); color:var(--in);
     font-weight:600; font-size:.85rem; border-radius:8px; padding:10px 14px; margin:0 0 16px}
   .esrd-warn.show{display:block}
-
   .card{background:var(--panel); border:1px solid var(--line); border-radius:12px;
     padding:18px 18px 20px; margin-bottom:18px; box-shadow:0 1px 2px rgba(16,42,67,.04)}
   .card h2{font-size:1.02rem; margin:0 0 4px; color:var(--brand-primary-dark); display:flex; align-items:center; gap:8px}
@@ -102,9 +101,6 @@
   .final .detail b{font-weight:700}
   .final.pending{background:#f5f8fb; border-color:var(--line); color:var(--muted)}
 
-  /* ---- STEMI result: link-over to the full cognitive aid on the Codes STEMI card ---- */
-  .xferlink{margin-top:12px; padding-top:11px; border-top:1px solid rgba(0,0,0,.15); font-size:.88rem}
-
   .btnrow{display:flex; gap:10px; margin-top:14px}
   button.btn{background:#fff; border:1.5px solid var(--brand-primary); color:var(--brand-primary);
     font-weight:600; font-size:.85rem; padding:9px 18px; border-radius:8px; cursor:pointer}
@@ -144,10 +140,7 @@
   <div class="disclaimer">
     <strong>Not a substitute for clinical judgment.</strong>
     <ul>
-      <li>If clinical suspicion is high, consider keeping the patient for observation.</li>
       <li>This algorithm is <strong>not applicable to patients with ESRD</strong>.</li>
-      <li>HEART-score troponin points use sex-based normal limits (Male 0&ndash;19.8, Female 0&ndash;14.9 ng/L).</li>
-      <li>FYI: hs-troponin 50 ng/L &asymp; 0.05 ng/mL on the prior assay.</li>
       <li>Personal decision-support aid &mdash; <strong>not part of the LRH IT system / EHR</strong>. Verify all values independently.</li>
     </ul>
   </div>
@@ -156,15 +149,7 @@
   <!-- ============ SECTION 1: PRESENTATION ============ -->
   <div class="card">
     <h2><span class="num">1</span> Presentation</h2>
-    <p class="sub">Patient presenting to the ED with symptoms suggestive of acute coronary syndrome &mdash; obtain EKG.</p>
-
-    <div class="q">
-      <span class="label">Evidence of STEMI on EKG?</span>
-      <div class="opts two" data-group="stemi">
-        <label class="opt"><input type="radio" name="stemi" value="no"><span>No</span></label>
-        <label class="opt"><input type="radio" name="stemi" value="yes"><span>Yes &rarr; STEMI Alert</span></label>
-      </div>
-    </div>
+    <p class="sub">Patient presenting to the ED with symptoms suggestive of acute coronary syndrome, STEMI already excluded on EKG. If STEMI is present, use the <a href="../../codes/?from=home#c21" style="color:inherit;">STEMI cognitive aid on the Codes card</a> instead — this pathway does not apply.</p>
 
     <div class="q">
       <span class="label">Sex assigned at birth <span class="hint">&mdash; sets HEART troponin normal limit</span></span>
@@ -208,7 +193,6 @@
       <summary>Troponin pathway logic (per posted protocol)</summary>
       <table>
         <tr><th>Condition</th><th>Result</th></tr>
-        <tr><td>Evidence of STEMI on EKG</td><td><b>STEMI Alert</b></td></tr>
         <tr><td>Any hs-troponin &ge; 50 ng/L, <em>or</em> &Delta; &ge; 15 ng/L</td><td><b>Rule-in zone</b> &rarr; consider cardiology consult</td></tr>
         <tr><td>&lt; 4 ng/L &amp; chest pain &gt; 3 h, <em>or</em> &lt; 5 ng/L &amp; &Delta; &lt; 4</td><td><b>D/C home</b>, outpatient follow-up as needed</td></tr>
         <tr><td>Single 0-hr troponin: &ge; 50 <em>(rules in)</em> · &le; 3 <em>(below detection)</em> · &lt; 4 with pain &gt; 3 h</td><td><b>Pathway completes without the 1-hr draw</b></td></tr>
@@ -223,6 +207,8 @@
   <div class="card">
     <h2><span class="num">3</span> HEART Score</h2>
     <p class="sub">Used once AMI is ruled out to guide stress-testing vs discharge. Troponin points auto-fill from the 0-hr value and sex.</p>
+
+    <p class="sub">Consider a HEART score for discharge planning - always use your clinical accumen and patient preferences in association with any score</p>
 
     <div class="q">
       <span class="label">History</span>
@@ -285,18 +271,19 @@
       <button class="btn" onclick="window.print()">Print</button>
     </div>
 
+    <p class="sub" style="margin-top:10px"><b>DHMC Transfer Center: (877) 999-9870</b> — for cardiology consultation or transfer.</p>
+
     <details class="ref">
       <summary>Disposition logic (per posted protocol)</summary>
       <ul>
-        <li><b>STEMI on EKG</b> &rarr; STEMI Alert (activate STEMI protocol).</li>
         <li><b>Rule-in zone</b> (any hs-Trop &ge;50 or &Delta;&ge;15) &rarr; consider cardiology consult if clinically appropriate.</li>
         <li><b>D/C home</b> (&lt;4 &amp; pain&gt;3h, or &lt;5 &amp; &Delta;&lt;4, or a single 0-hr &le;3) &rarr; discharge, outpatient follow-up as needed.</li>
         <li><b>Reflex to 3 h</b> (&lt; 50 &amp; &Delta; 4&ndash;14) &rarr; repeat troponin; &Delta;&ge;15 rules in, else AMI ruled out.</li>
         <li><b>AMI ruled out</b> &rarr; apply HEART score:
           <ul>
             <li>0&ndash;3 (low) &rarr; D/C, no stress test, F/U PCP</li>
-            <li>4&ndash;6 (medium) &rarr; ASAP outpatient stress test</li>
-            <li>7&ndash;10 (high) &rarr; consider stress test prior to d/c &rarr; D/C w/ PCP F/U or cardiology consult</li>
+            <li>4&ndash;6 (medium) &rarr; consider outpatient stress testing within 72 hours&ndash;1 week, using clinical acumen in conjunction with patient preference &mdash; emphasis on rapid follow-up with cardiology or PCP rather than a fixed hour count; document that follow-up is arranged, along with clear return precautions.</li>
+            <li>7&ndash;10 (high) &rarr; consider stress testing prior to d/c, using clinical acumen in conjunction with patient preference &rarr; D/C w/ PCP F/U or cardiology consult</li>
           </ul>
         </li>
       </ul>
@@ -306,6 +293,9 @@
   <footer>
     LRH Chest Pain hs-Troponin ADP + HEART Pathway &mdash; personal decision-support aid, not part of the LRH IT system.
     Thresholds are assay-specific; verify against your local hs-cTn assay.
+    <div style="margin-top:8px;">
+      <strong>Sources:</strong> HEART score derivation and 0/1-hr hs-troponin ADP thresholds per the posted protocol flowchart (cross-checked against WikEM/MDCalc). Outpatient stress-test timing after AMI is ruled out: ACC/AHA and ACEP guidance describes a 72-hour&ndash;1-week window for medium-risk patients discharged with shared decision-making &mdash; strict completion within 72 hours is the older, more commonly cited figure, but is often impractical and has not been consistently shown to improve outcomes in carefully selected patients; the emphasis in more recent guidance is on rapid follow-up (cardiology or PCP) and documented return precautions rather than a fixed hour count.
+    </div>
     <div id="verStamp" style="margin-top:6px;font-weight:600"></div>
   </footer>
 </div>
@@ -323,8 +313,8 @@
     hospital: "Littleton Regional Hospital",
     hospitalShort: "LRH",
     units: "ng/L",
-    version: "1.4",
-    lastReviewed: "2026-08-04",
+    version: "1.72",
+    lastReviewed: "2026-08-07",
     trop: {
       ruleInValue:      50,   // any hs-Trop >= this            -> rules in
       ruleInDelta:      15,   // 0/1-hr or 3-hr delta >= this    -> rules in
@@ -360,11 +350,9 @@
 
   // Core pathway decision -> {code, ...}
   function decide(){
-    var stemi=sel('stemi'), pain=sel('pain'), sex=sel('sex');
+    var pain=sel('pain'), sex=sel('sex');
     var t0=num(t0El), t1=num(t1El), t3=num(t3El);
 
-    if(stemi==='yes') return {code:'stemi'};
-    if(stemi===null)  return {code:'incomplete', why:'Answer the STEMI question.'};
     // ESRD is excluded from this accelerated algorithm — don't render pathway recommendations for it.
     if($('esrd').checked) return {code:'esrd'};
 
@@ -418,12 +406,12 @@
     return {total:total, complete:complete, sub:sub};
   }
   function tier(s){ if(s<=3) return {t:'low',label:'Low risk (0–3)',cls:'out'};
-                    if(s<=6) return {t:'med',label:'Medium risk (4–6)',cls:'ref'};
+                    if(s<=6) return {t:'med',label:'Medium risk (4–6)',cls:'dc'};
                     return {t:'high',label:'High risk (7–10)',cls:'in'}; }
   function heartDispo(s){
     if(s<=3) return 'D/C, no stress test, follow up with PCP.';
-    if(s<=6) return 'ASAP outpatient stress test.';
-    return 'Consider stress test prior to discharge — then D/C with PCP follow-up or cardiology consultation.';
+    if(s<=6) return 'Consider outpatient stress testing within 72 hours–1 week, using clinical acumen in conjunction with patient preference — the emphasis is on rapid follow-up with cardiology or PCP rather than a fixed hour count; document that follow-up is arranged, along with clear return precautions.';
+    return 'Consider stress testing prior to discharge, using clinical acumen in conjunction with patient preference — or discharge with PCP follow-up or cardiology consultation.';
   }
 
   function paint(box,cls){
@@ -466,7 +454,6 @@
     var tr=$('tropResult'); tr.className='resultcard';
     var t3field=$('t3field'); t3field.classList.remove('hot');
     if(d.code==='incomplete'){ tr.classList.add('pending'); tr.innerHTML=d.why||'Complete Section 1 and enter troponins.'; }
-    else if(d.code==='stemi'){ tr.classList.add('r-in'); tr.innerHTML='<span class="tag">STEMI ALERT</span> Evidence of STEMI on EKG — activate STEMI protocol.'; }
     else if(d.code==='in'){ tr.classList.add('r-in'); tr.innerHTML='<span class="tag">RULE-IN ZONE</span> '+d.why+'.'; }
     else if(d.code==='dchome'){ tr.classList.add('r-dc'); tr.innerHTML='<span class="tag">D/C HOME</span> '+d.why+' — AMI ruled out.'; }
     else if(d.code==='esrd'){ tr.classList.add('r-ref'); tr.innerHTML='<span class="tag">NOT APPLICABLE</span> ESRD — this accelerated hs-troponin algorithm does not apply. Use serial troponins and clinical judgment.'; }
@@ -493,10 +480,6 @@
 
     if(d.code==='incomplete'){ pending(d.why||'Answer Section 1 and enter the troponins.'); return; }
     if(d.code==='esrd'){ show('ref','ESRD','Algorithm not applicable — use clinical judgment','This accelerated hs-troponin pathway excludes ESRD (chronically elevated hs-troponin). Use serial troponins, serial EKGs, and clinical judgment; the HEART score may still help frame risk.'); return; }
-    if(d.code==='stemi'){
-      show('in','STEMI','STEMI Alert — activate STEMI protocol','Evidence of STEMI on EKG. Proceed directly to STEMI activation; the troponin pathway does not apply. The STEMI/Chest Pain response bundle is a premade box pulled from the Omnicell, not stocked on the code cart — confirm current contents against the physical box. <a href="../../codes/?from=home#cart" style="color:inherit; text-decoration:underline;">Code cart drawer reference →</a><div class="xferlink"><a href="../../codes/?from=home#c21" style="color:inherit; font-weight:700; text-decoration:underline;">Full STEMI cognitive aid, TNK dosing, and transfer call log — Codes card 21 →</a></div>');
-      return;
-    }
     if(d.code==='in'){ show('in','Rule-in zone','Rule in — consider cardiology consult','Rule-in criteria met ('+d.why+'). Consider cardiology consultation if clinically appropriate. Manage as ACS.'); return; }
     if(d.code==='reflex'){ var T=SITE.trop; show('ref','Reflex','Observe — repeat hs-troponin at 3 hours','Troponin under '+T.ruleInValue+' '+SITE.units+' with a 0/1-hr Δ ≥ '+T.ruleOutDelta+' but < '+T.ruleInDelta+'. Obtain a 3-hr troponin: Δ ≥ '+T.ruleInDelta+' rules in; Δ < '+T.ruleInDelta+' rules AMI out (then apply HEART score).'); return; }
 
@@ -531,13 +514,13 @@
   }
   function heartVerdict(s){
     if(s<=3) return 'D/C, no stress test, PCP follow-up';
-    if(s<=6) return 'ASAP outpatient stress test';
-    return 'Stress test prior to d/c (or cardiology)';
+    if(s<=6) return 'Consider stress test, 72h–1 week';
+    return 'Consider stress test (or cardiology)';
   }
 
-  // STEMI transfer-call tracking (call time stamps, Dartmouth/Concord numbers) now lives on
-  // its own Codes card — see the "STEMI card, Codes →" link rendered in the STEMI result box
-  // above. Kept this pathway free of duplicate widget state; single source of truth.
+  // STEMI is handled entirely on its own Codes card (cognitive aid, TNK dosing, transfer-call
+  // tracking) — linked from the Section 1 subhead above. This pathway assumes STEMI is already
+  // excluded and carries no STEMI logic of its own; single source of truth stays on Codes.
 
   // wire up radio highlighting + recalc
   document.querySelectorAll('.opts[data-group]').forEach(function(grp){

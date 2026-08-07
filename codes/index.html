@@ -1289,7 +1289,22 @@
     <div class="nca" style="padding:12px 14px 0;">
       <div style="border:2px solid #9b1c2e; background:#fbeaec; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#9b1c2e;">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"Activating MTP." Say it out loud, then call it in.</div></div>
       <div style="border:2px solid #16324f; background:#eef3f6; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#16324f;">CLAIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Blood bank liaison/runner · product-tally scribe · calcium/warming · repeat labs — assign aloud.</div></div>
-      <div style="border:2px solid #2f62a8; background:#eaf1fa; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#2f62a8;">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Balanced blood products in a 1:1:1-ish ratio, calcium with every pack, and reassess for stop criteria as you go.</div></div>
+      <div style="border:2px solid #2f62a8; background:#eaf1fa; padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:#2f62a8;">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Balanced blood products (PRBC:plasma ~1:1, cryo early), calcium with every pack, and reassess for stop criteria — LRH usually has no platelets on hand, so don't wait on them to start resuscitating.</div></div>
+    </div>
+
+    <!-- ---- MTP ACTIVATION CLOCK ---- -->
+    <div class="console" style="margin:14px 14px 0; border:2px solid #9b1c2e;">
+      <div style="padding:10px 14px; background:#fbeaec;">
+        <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:#5a6a78;">TIME SINCE MTP ACTIVATION</div>
+        <div id="mtpclock" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1.1; color:#16324f;">0:00</div>
+        <div id="mtpcue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:#5a6a78;">Tap START when MTP is activated.</div>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
+        <button type="button" id="mtpstart" class="cs-secondary" style="background:#9b1c2e; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">START (ACTIVATED NOW)</button>
+        <button type="button" id="mtpundo" class="cs-secondary" style="background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">UNDO</button>
+      </div>
+      <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.06em; color:#5a6a78; padding:8px 14px 2px; border-top:1px solid #e7eaef;">FACE-UP LOG — every product and reminder logged below, most recent last</div>
+      <div data-loglane="12" style="display:flex; gap:6px; overflow-x:auto; padding:0 14px 12px;"></div>
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
@@ -1305,31 +1320,37 @@
     </div>
 
     <!-- ---- PRODUCT TALLY ---- -->
-    <div style="margin:14px 14px 0; border:2px solid #16324f;">
-      <div style="padding:9px 14px; background:#f4f7fa; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; color:#16324f;">PRODUCT TALLY — target ratio ~1 PRBC : 1 plasma : 1 platelet</div>
-      <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:0; border-top:1px solid #e7eaef;">
+    <div class="console" style="margin:14px 14px 0; border:2px solid #16324f;">
+      <div style="padding:9px 14px; background:#f4f7fa; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; color:#16324f;">PRODUCT TALLY — target ~1 PRBC : 1 plasma, cryo early</div>
+      <div style="padding:0 14px 9px; font-size:12px; line-height:1.35; color:#5a6a78;">LRH typically has <b>no platelets on site</b> — don't wait on them to start. Request from the regional supplier immediately if the pack progresses; a low-titer O whole-blood unit, if available, can substitute for a PRBC+plasma+platelet combination in one bag.</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0; border-top:1px solid #e7eaef;">
         <div style="padding:10px 4px; text-align:center; border-right:1px solid #e7eaef;"><div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; color:#5a6a78;">PRBC</div><div id="mtpprbc" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:26px; font-weight:700; color:#9b1c2e;">0</div></div>
         <div style="padding:10px 4px; text-align:center; border-right:1px solid #e7eaef;"><div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; color:#5a6a78;">PLASMA</div><div id="mtpplasma" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:26px; font-weight:700; color:#2f62a8;">0</div></div>
-        <div style="padding:10px 4px; text-align:center; border-right:1px solid #e7eaef;"><div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; color:#5a6a78;">PLT</div><div id="mtpplt" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:26px; font-weight:700; color:#8a6d1f;">0</div></div>
         <div style="padding:10px 4px; text-align:center;"><div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; color:#5a6a78;">CRYO</div><div id="mtpcryo" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:26px; font-weight:700; color:#5a6a78;">0</div></div>
       </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr 1fr 1fr; gap:0; border-top:1px solid #e7eaef;">
-        <button type="button" id="mtpprbc-add" style="min-height:46px; background:#fbeaec; color:#9b1c2e; border:none; border-right:1px solid #e7eaef; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; cursor:pointer;">+1</button>
-        <button type="button" id="mtpplasma-add" style="min-height:46px; background:#eaf1fa; color:#2f62a8; border:none; border-right:1px solid #e7eaef; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; cursor:pointer;">+1</button>
-        <button type="button" id="mtpplt-add" style="min-height:46px; background:#fdf3cf; color:#8a6d1f; border:none; border-right:1px solid #e7eaef; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; cursor:pointer;">+1</button>
-        <button type="button" id="mtpcryo-add" style="min-height:46px; background:#eef1f4; color:#5a6a78; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; cursor:pointer;">+1</button>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0; border-top:1px solid #e7eaef;">
+        <button type="button" id="mtpprbc-add" class="cs-secondary" style="background:#fbeaec; color:#9b1c2e; border:none; border-right:1px solid #e7eaef; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; cursor:pointer;">+1</button>
+        <button type="button" id="mtpplasma-add" class="cs-secondary" style="background:#eaf1fa; color:#2f62a8; border:none; border-right:1px solid #e7eaef; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; cursor:pointer;">+1</button>
+        <button type="button" id="mtpcryo-add" class="cs-secondary" style="background:#eef1f4; color:#5a6a78; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; cursor:pointer;">+1</button>
       </div>
-      <div id="mtpcalcue" style="display:none; padding:11px 14px; font-size:13.5px; line-height:1.35; color:#16324f; background:#fdf3cf; border-top:2px solid #8a6d1f;">Every ~4–6 units PRBC: give <b>calcium</b> (gluconate 2g peripheral or chloride 1g central) and recheck ionized calcium if available — citrate in banked blood chelates calcium and worsens coagulopathy.</div>
+      <div id="mtpcalcue" style="display:none; padding:11px 14px; font-size:13.5px; line-height:1.35; color:#16324f; background:#fdf3cf; border-top:2px solid #8a6d1f;">Every <b>4 units PRBC</b>: give <b>calcium</b> (gluconate 2 g peripheral or chloride 1 g central) — citrate in banked blood chelates calcium and worsens coagulopathy. <b>Recheck labs now:</b> ionized calcium, coags/INR, fibrinogen, CBC, ABG/lactate. Consider checking (not empirically dosing) <b>magnesium</b> — evidence on massive-transfusion magnesium is mixed, some data show it rises rather than falls, so check the level rather than assume it's low.</div>
+      <div style="padding:9px 14px; border-top:1px solid #e7eaef; background:#fdf3cf; font-size:12.5px; line-height:1.35; color:#6b5410;">PLATELETS — <b>often unavailable at LRH.</b> If your blood bank has them on hand, they're still part of a balanced pack; tally them here without slowing PRBC/plasma/cryo while waiting.</div>
+      <div style="display:grid; grid-template-columns:1fr 2fr; gap:0; border-top:1px solid #eadfbf;">
+        <div style="padding:8px 4px; text-align:center; border-right:1px solid #eadfbf;"><div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10px; color:#8a8578;">PLT</div><div id="mtpplt" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:20px; font-weight:700; color:#8a6d1f;">0</div></div>
+        <button type="button" id="mtpplt-add" class="cs-secondary" style="background:#fdf3cf; color:#8a6d1f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; cursor:pointer;">+1 PLT</button>
+      </div>
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
       <details style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">LOGISTICS CHECKLIST</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-5" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Activate MTP with blood bank (phone/page/EHR order) — confirm LRH's activation process.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-5" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Activate MTP with blood bank (phone/page/EHR order) — confirm LRH's activation process. Start the clock above.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-6" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Send type &amp; crossmatch — don't wait for results before starting O-neg/O-pos or low-titer O whole blood if available.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-6b" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Check your access can keep up.</b> A standard triple-lumen CVC is flow-limited even on its biggest port. If peripheral access is poor or flow can't keep up with product delivery, place a large-bore resuscitation line — a Cordis-style introducer sheath, or the combination AVA 3Xi device — for rapid volume (<a href="#c14">see card 14</a>).</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-7" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Assign a runner (confirm whether your pneumatic tube system is approved for blood products, or if a runner is required).</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-8" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Baseline labs: CBC, coags/INR, fibrinogen, ionized calcium, ABG/lactate — repeat every 30–60 min during active MTP.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-8" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Baseline labs: CBC, coags/INR, fibrinogen, ionized calcium, ABG/lactate. Repeat coags/fibrinogen roughly <b>every 2 hours</b> during active MTP (WikEM); recheck ionized calcium, ABG/lactate, and CBC more often — roughly every 30–60 min — to trend response, and every time the calcium/recheck-labs cue below fires.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-8b" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>TXA:</b> give within 3 hours of injury if not already given — has its own countdown clock (<a href="#c09">see card 09</a>).</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-9" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Active warming running continuously (fluid warmer, forced-air blanket).</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-10" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Reassess continuously: stop MTP once the source is controlled and vitals/labs trend toward stable, or shift to a goals-of-care discussion if resuscitation becomes futile.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-11" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Notify blood bank to deactivate and return unused products promptly once stopped.</span></label></li>
@@ -1338,7 +1359,7 @@
     </div>
 
     <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:#5a6a78;">
-      <b>Sources:</b> ACS TQIP Massive Transfusion in Trauma Guidelines (Oct 2014) — activation criteria, plasma:RBC ratio range 1:1–1:2, ~1 platelet unit per 6 units RBC; Nunez et al., <i>J Trauma</i> 2009 (ABC score derivation); Holcomb et al., <i>JAMA</i> 2015 (PROPPR — 1:1:1 vs 1:1:2, reduced death-from-exsanguination with 1:1:1). Pack contents, calcium dosing, and activation logistics shown here are illustrative examples (e.g., UAMS protocol) — <b>replace with LRH's own blood bank protocol</b> in the SITE CONFIG.
+      <b>Sources:</b> ACS TQIP Massive Transfusion in Trauma Guidelines (Oct 2014) — activation criteria, plasma:RBC ratio range 1:1–1:2, ~1 platelet unit per 6 units RBC; Nunez et al., <i>J Trauma</i> 2009 (ABC score derivation); Holcomb et al., <i>JAMA</i> 2015 (PROPPR — 1:1:1 vs 1:1:2, reduced death-from-exsanguination with 1:1:1, no 30-day mortality difference vs 1:1:2); <a href="https://wikem.org/wiki/Massive_transfusion" target="_blank" rel="noopener">wikem.org — Massive transfusion</a> (activation triggers, calcium/magnesium supplementation "if approaching &gt;4 units pRBC," PT/aPTT/fibrinogen roughly q2h, hyperkalemia and hypothermia as complications). <b>Magnesium — evidence conflict, flagged rather than resolved:</b> WikEM lists empiric magnesium alongside calcium with no dose given; a more recent analysis (Ekelund et al., <i>PMC</i> 10419839) found massive transfusion more often <i>raises</i> serum magnesium (57–67% hypermagnesemic by 24–48h, likely from mild hemolysis) and does not recommend empiric dosing. This card follows the more recent data — check magnesium, don't empirically dose it — pending your own transfusion medicine director's guidance. Pack contents and activation logistics shown here are illustrative examples (e.g., UAMS protocol) — <b>replace with LRH's own blood bank protocol</b> in the SITE CONFIG.
     </div>
     <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -2275,7 +2296,7 @@
 
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "2.7",
+  version: "2.8",
   lastReviewed: "2026-08-07",
   /* WS10.2 — minutes of manual-wide inactivity (lrh-case-lastactive) before the weight
      strip appends an "ENTERED HH:MM · N MIN AGO" line and ambers #wtbar's border.
@@ -4090,6 +4111,35 @@ var AUDIENCE = (function(){
   paint();
 })();
 
+/* ---- Card 12: MTP activation clock (time since MTP activation) ---- */
+(function(){
+  var clock=document.getElementById('mtpclock'), cue=document.getElementById('mtpcue'),
+      startBtn=document.getElementById('mtpstart'), resetBtn=document.getElementById('mtpundo');
+  if(!startBtn) return;
+  var t0=null, tick=null;
+  try{ t0 = CASESTATE.getClock('mtp'); }catch(e){}
+  function pad(n){ return (n<10?'0':'')+n; }
+  function mmss(sec){ return Math.floor(sec/60)+':'+pad(sec%60); }
+  function save(){ CASESTATE.setClock('mtp', t0); }
+  function paint(){
+    if(t0===null){ clock.textContent='0:00'; clock.style.color='#16324f'; cue.textContent='Tap START when MTP is activated.'; cue.style.color='#5a6a78'; return; }
+    var s=Math.max(0,Math.floor((Date.now()-t0)/1000));
+    clock.textContent=mmss(s);
+    clock.style.color='#9b1c2e';
+    cue.textContent='Running — every product and reminder below is logged with a time stamp.';
+    cue.style.color='#5a6a78';
+  }
+  startBtn.addEventListener('click', function(){
+    t0=Date.now(); save(); if(tick) clearInterval(tick); tick=setInterval(paint,1000); paint();
+    if(window.__codeslog) window.__codeslog.add('12','MTP ACTIVATION CLOCK STARTED');
+  });
+  resetBtn.addEventListener('click', function(){ t0=null; save(); if(tick){ clearInterval(tick); tick=null; } paint(); });
+  var rb=document.getElementById('resetbtn');
+  if(rb) rb.addEventListener('click', function(){ t0=null; CASESTATE.setClock('mtp', null); if(tick){ clearInterval(tick); tick=null; } paint(); });
+  if(t0!==null) tick=setInterval(paint,1000);
+  paint();
+})();
+
 /* ---- Card 12: MTP product tally + calcium-per-pack reminder ---- */
 (function(){
   var KP='lrh-codes-mtpprbc', KL='lrh-codes-mtpplasma', KT='lrh-codes-mtpplt', KCr='lrh-codes-mtpcryo';
@@ -4266,7 +4316,7 @@ var AUDIENCE = (function(){
    around to paint the little inline lane widgets without re-reading/re-filtering storage
    on every keystroke. */
 (function(){
-  var COL={'01':'#2f62a8'};
+  var COL={'01':'#2f62a8','12':'#9b1c2e'};
   var lanes={};
   Array.prototype.forEach.call(document.querySelectorAll('[data-loglane]'), function(l){ lanes[l.getAttribute('data-loglane')]=l; });
   if(!Object.keys(lanes).length) return;

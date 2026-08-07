@@ -42,6 +42,7 @@ Every key here is device-local and PHI-free — see the PHI guard note under
 | `rh` | ob (c10) | Maternal-arrest (resuscitative hysterotomy) clock start. |
 | `rhBaby` | ob (c10) | "Baby out" mark, relative to `rh`. |
 | `dystocia` | ob (c07) | Shoulder dystocia clock start. Doc's own example name for this clock (see `AGENTTASKS.md` WS0.1) — matched exactly. |
+| `mtp` | codes (c12) | Time since MTP activation — elapsed-time clock, paired with the card's face-up event log (`data-loglane="12"`). |
 
 Not migrated into this namespace (see Tool-local keys — deliberately deferred, not an
 oversight): codes' `rsiinduct`/`rsiparalytic`/`c06etco2` (three independent airway
