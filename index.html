@@ -31,6 +31,18 @@
 
   .intro{color:var(--muted); font-size:.9rem; margin:22px 2px 14px}
 
+  /* WS10.3 — "START NEW CASE": a motivated entry point to the same single destructive
+     control every tool already has (its own #resetmodal confirm + lrh- prefix sweep,
+     see CASE-STATE.md). This page has no CASESTATE of its own — nothing here reads or
+     writes localStorage — so it can't run that sweep directly; it links into a tool
+     with ?startnewcase=1, which that tool's own existing gate script reads on load to
+     open its own confirm. No second clearing path — see codes/peds/ob-neonatal/trauma's
+     matching WS10.3 note. */
+  .startnewcasebtn{display:inline-block; margin-top:12px; padding:11px 18px; border-radius:10px;
+    background:var(--brand-primary-dark); color:#fff; text-decoration:none; font-weight:700;
+    font-size:.85rem; letter-spacing:.02em}
+  .startnewcasebtn:hover{background:var(--brand-primary)}
+
   /* ---- Search ---- */
   .search{position:relative; margin:0 0 20px}
   .search input{width:100%; font-size:1rem; padding:13px 42px 13px 15px; border:1px solid var(--line);
@@ -128,6 +140,7 @@
 
 <div class="wrap">
   <p class="intro">Choose a category, or search for a topic. Each tool has its own direct link you can bookmark or share.</p>
+  <a class="startnewcasebtn" href="codes/?from=home&amp;startnewcase=1#top">START NEW CASE</a>
 
   <!-- ===== SEARCH ===== -->
   <div class="search">
@@ -309,8 +322,7 @@
     {t:"Umbilical cord prolapse", c:"OB & Neonatal", k:"cord prolapse presenting", u:"ob-neonatal/?from=home#c09"},
     {t:"OB / neonatal cart — drawer contents", c:"OB & Neonatal", k:"cart drawer equipment supplies where is", u:"ob-neonatal/?from=home#cart"},
     {t:"Code cart — drawer contents", c:"Codes", k:"code cart drawer equipment supplies where is intubation IV medications suction surgical omnicell anaphylaxis stemi stroke box", u:"codes/?from=home#cart"},
-    {t:"Pulseless VF / VT", c:"Codes", k:"code cart cardiac arrest ventricular fibrillation tachycardia defibrillation shock epinephrine amiodarone lidocaine cpr acls", u:"codes/?from=home#c01"},
-    {t:"PEA / Asystole", c:"Codes", k:"pea asystole non-shockable cardiac arrest reversible causes h's and t's epinephrine cpr code", u:"codes/?from=home#c02"},
+    {t:"Cardiac Arrest — VF/VT · PEA/Asystole (adult & pediatric/PALS)", c:"Codes", k:"code cart cardiac arrest ventricular fibrillation tachycardia defibrillation shock epinephrine amiodarone lidocaine cpr acls pea asystole non-shockable reversible causes h's and t's pals pediatric weight-based broselow resuscitation", u:"codes/?from=home#c01"},
     {t:"Symptomatic Bradycardia", c:"Codes", k:"bradycardia atropine transcutaneous pacing pacer heart block slow heart rate symptomatic code", u:"codes/?from=home#c03"},
     {t:"Suspected Acute Stroke", c:"Codes", k:"stroke code stroke tpa tnk tenecteplase alteplase thrombectomy last known well nihss ct head lytic omnicell", u:"codes/?from=home#c04"},
     {t:"Respiratory Arrest", c:"Codes", k:"respiratory arrest apnea bag mask ventilation bvm reversible causes naloxone code", u:"codes/?from=home#c05"},
@@ -326,7 +338,6 @@
     {t:"Angioedema", c:"Codes", k:"angioedema ace inhibitor bradykinin histaminergic airway swelling icatibant tranexamic code", u:"codes/?from=home#c16"},
     {t:"Tracheostomy Emergency", c:"Codes", k:"tracheostomy emergency laryngectomy stoma decannulation trach tube obstruction code", u:"codes/?from=home#c17"},
     {t:"Pediatric Emergencies — overview / index", c:"Pediatric Emergencies", k:"pediatric peds children kids weight dosing index", u:"peds/?from=home"},
-    {t:"Pediatric Cardiac Arrest / PALS", c:"Pediatric Emergencies", k:"pals pediatric cardiac arrest resuscitation defibrillation epinephrine cpr shockable", u:"peds/?from=home#p01"},
     {t:"Pediatric Anaphylaxis", c:"Pediatric Emergencies", k:"anaphylaxis epinephrine allergic reaction pediatric angioedema", u:"peds/?from=home#p02"},
     {t:"Pediatric Asthma Exacerbation", c:"Pediatric Emergencies", k:"asthma albuterol ipratropium wheeze pediatric pass severity dexamethasone magnesium terbutaline", u:"peds/?from=home#p03"},
     {t:"Pediatric Airway Obstruction (Choking)", c:"Pediatric Emergencies", k:"choking foreign body airway obstruction back blows abdominal thrusts", u:"peds/?from=home#p04"},
