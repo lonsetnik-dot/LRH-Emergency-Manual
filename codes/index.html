@@ -39,11 +39,30 @@
   .steps { display:grid; grid-template-columns:1fr; gap:12px; align-items:start; }
   .figs { display:grid; grid-template-columns:1fr; gap:12px; align-items:start; }
   .menu { display:grid; grid-template-columns:1fr; gap:10px; padding:0 14px; }
+  /* .console (WS11) — a sizing scope, not a layout. Sets the target-size floor
+     custom properties consumed by .cs-destructive/.cs-router/.cs-secondary/
+     .cs-check/.cs-numeric below; applies wherever those classes sit inside a
+     .console ancestor. See LAYOUT.md. */
+  .console { --cs-destructive:72px; --cs-router:62px; --cs-router-font:13.5px; --cs-secondary:56px; --cs-check:44px; --cs-numeric:44px; }
+  .console .cs-destructive { min-height:var(--cs-destructive); }
+  .console .cs-router { min-height:var(--cs-router); font-size:var(--cs-router-font); text-align:left; padding:0 16px; }
+  .console .cs-secondary { min-height:var(--cs-secondary); }
+  .console .cs-check { min-height:var(--cs-check); }
+  .console .cs-numeric { font-size:var(--cs-numeric); }
+  /* WS11.5 — greyed-until-armed styling hook for decision-router panels that are
+     visible before a case is really underway (e.g. card 01's rhythm panel before
+     the CPR clock starts). Pure CSS presentation, toggled by a plain class the
+     existing paint logic already sets — no arm/disarm behavior changes. No-op
+     below 760px by design (see LAYOUT.md / the WS11.0 decision record). */
+  .console .cs-unarmed { }
   @media (min-width:600px) { .menu { grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); } }
   @media (min-width:760px) {
     .nca { grid-template-columns:1.05fr 1fr 1fr; }
     .steps { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
     .figs { grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); }
+    .console { --cs-destructive:88px; --cs-router:74px; --cs-router-font:16px; --cs-secondary:64px; --cs-check:44px; --cs-numeric:60px; }
+    .card-split { display:grid; grid-template-columns:minmax(300px,420px) 1fr; gap:16px; align-items:start; }
+    .twoup { display:grid; grid-template-columns:1fr 1fr; gap:0 20px; } .twoup > li { min-width:0; } .twoup li label { min-width:0; } .twoup li label > span { min-width:0; overflow-wrap:break-word; } .cs-unarmed { opacity:.45; pointer-events:none; }
   }
   nav.bar { position:relative; display:flex; align-items:center; gap:8px; flex-wrap:nowrap; overflow-x:auto; padding:calc(6px + env(safe-area-inset-top,0px)) 14px 6px; background:#005596; color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; }
   nav.bar a, nav.bar button { flex:none; white-space:nowrap; color:#fffefb; background:none; text-decoration:none; border:1px solid rgba(255,255,255,0.4); padding:5px 9px; font:inherit; letter-spacing:0.08em; cursor:pointer; min-height:30px; display:inline-flex; align-items:center; }
@@ -306,15 +325,34 @@
       </div>
     </div>
 
-    <!-- ---- COMPRESSION METRONOME + BREATHING ---- -->
-    <div style="margin:14px 14px 0; border:2px solid #16324f;">
-      <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 14px; background:#f4f7fa;">
-        <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em; color:#16324f;">COMPRESSION METRONOME · <span id="mtRateHead">100</span>/min</div>
+    <!-- ---- WS11.5: .card-split > .console / .card-ref. Wrap only — nothing inside
+         either pane moved relative to its siblings, no id changed. Below 760px
+         .card-split is display:block (no rule declared outside the media query),
+         so output is unchanged from before this wrap at phone width. See LAYOUT.md. -->
+    <div class="card-split">
+    <div class="console">
+
+    <!-- ---- COMPRESSION METRONOME + BREATHING ----
+         WS11.5 — collapsed by default (native <details>, same om-open/om-close pattern used
+         by the drawer/audit-trail disclosures elsewhere in this file) so its ~360px doesn't
+         sit permanently ahead of the CPR clock / DEFIB / rhythm panel in the console column.
+         All ids, the mtRateHead live label, and every control below are unchanged — this is
+         a visibility wrapper only, nothing here is new or reworded clinical content. -->
+    <details id="mtpanel01" style="margin:14px 14px 0; border:2px solid #16324f;">
+      <summary style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:8px 14px; background:#f4f7fa; cursor:pointer; list-style:none;">
+        <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em; color:#16324f;">COMPRESSION METRONOME · <span id="mtRateHead">100</span>/min</span>
+        <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; font-weight:700; letter-spacing:0.06em; color:#16324f; flex:none;"><span class="om-open">OPEN +</span><span class="om-close">CLOSE −</span></span>
+      </summary>
+      <div><!-- WS11.5: single plain wrapper, no inline display: — an inline display value on
+           a direct <details> child overrides the browser's own display:none-when-closed rule,
+           which is what let this content stay visibly laid out with details.open===false.
+           Matches the d1–d6 drawer pattern (wrapper div carries no display declaration). -->
+      <div style="display:flex; justify-content:flex-end; padding:8px 14px; border-top:1px solid #e7eaef;">
         <button type="button" id="mtmute" style="min-height:30px; padding:0 9px; background:#fffefb; color:#16324f; border:1.5px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; font-weight:700; letter-spacing:0.04em; cursor:pointer;">🔊 SOUND ON</button>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
-        <button type="button" id="mtstart" style="min-height:44px; background:#16324f; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">START METRONOME</button>
-        <button type="button" id="mtstop" style="min-height:44px; background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">STOP</button>
+        <button type="button" id="mtstart" class="cs-secondary" style="background:#16324f; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">START METRONOME</button>
+        <button type="button" id="mtstop" class="cs-secondary" style="background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">STOP</button>
       </div>
       <div style="display:flex; align-items:center; gap:14px; padding:12px 14px; border-top:1px solid #e7eaef;">
         <div id="mtbeat" style="width:24px; height:24px; border-radius:50%; background:#c3ccd4; flex:none; transition:background 0.06s;"></div>
@@ -329,7 +367,8 @@
         <span style="font-size:13px; line-height:1.3;">Advanced airway placed — switch to continuous compressions + breath every 6 s</span>
       </label>
       <div class="mode-peds" style="padding:9px 14px; border-top:1px solid #e7eaef; font-size:12px; line-height:1.35; color:#5a6a78;">This metronome paces rate only (100–120/min, same both modes) and doesn't model the pediatric two-rescuer ratio or age-based depth — see HIGH-QUALITY CPR TARGETS below for the exact pediatric numbers.</div>
-    </div>
+      </div>
+    </details>
 
     <!-- ---- PEDIATRIC-MODE BANNER + REVERSIBLE OVERRIDE (WS-arrest-merge) ----
          Always rendered — never appears/disappears — so it's in the same place whether the
@@ -345,7 +384,7 @@
     <div style="margin:0 14px; border:2px solid #16324f; border-top:none;">
       <div style="display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center; padding:10px 14px; background:#f4f7fa;">
         <div>
-          <div id="ccclock" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:38px; font-weight:700; line-height:1; color:#16324f;">0:00</div>
+          <div id="ccclock" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1; color:#16324f;">0:00</div>
           <div id="cccue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em; color:#5a6a78;">CPR CYCLE — CHECK RHYTHM/PULSE AT 2:00</div>
         </div>
         <div style="text-align:right;">
@@ -354,16 +393,27 @@
         </div>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
-        <button type="button" id="ccstart" style="min-height:46px; background:#16324f; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">START CPR CLOCK</button>
-        <button type="button" id="ccreset" style="min-height:46px; background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">NEW CYCLE</button>
+        <button type="button" id="ccstart" class="cs-secondary" style="background:#16324f; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">START CPR CLOCK</button>
+        <button type="button" id="ccreset" class="cs-secondary" style="background:#fffefb; color:#16324f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">NEW CYCLE</button>
       </div>
-      <button type="button" id="ccshock" style="width:100%; min-height:56px; background:#9b1c2e; color:#fffefb; border:2px solid #7a1522; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14px; font-weight:700; letter-spacing:0.05em; cursor:pointer;">⚡ DEFIB 120 J — SHOCK NOW</button>
-      <div id="ccdosecue" style="padding:11px 14px; font-size:13.5px; line-height:1.35; color:#16324f; background:#fdf3cf; border-top:2px solid #8a6d1f; display:none;"></div>
+      <!-- WS11.5 — DEFIB isolation: >=12px clear space on all four sides, nothing flush
+           against it (today it sits directly on the CPR-cycle header above and the EPI/
+           AMIO row below with zero gap). #ccdosecue stays visually attached inside this
+           same zone. Sized via .cs-destructive (primary-destructive floor) instead of the
+           old fixed 56px. -->
+      <div style="padding:12px 14px; border-top:1px solid #e7eaef;">
+        <button type="button" id="ccshock" class="cs-destructive" style="width:100%; background:#9b1c2e; color:#fffefb; border:3px solid #7a1522; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14px; font-weight:700; letter-spacing:0.05em; cursor:pointer;">⚡ DEFIB 120 J — SHOCK NOW</button>
+        <div id="ccdosecue" style="margin-top:11px; padding:11px 14px; font-size:13.5px; line-height:1.35; color:#16324f; background:#fdf3cf; border-top:2px solid #8a6d1f; display:none;"></div>
+      </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:12px 14px;">
-        <button type="button" id="ccepi" style="min-height:44px; background:#fffefb; color:#16324f; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.05em; cursor:pointer;">EPI 1 mg — LOG IT</button>
-        <button type="button" id="ccamio" style="min-height:44px; background:#fffefb; color:#16324f; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.05em; cursor:pointer;">AMIODARONE 300 mg — LOG IT</button>
+        <button type="button" id="ccepi" class="cs-secondary" style="background:#fffefb; color:#16324f; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.05em; cursor:pointer;">EPI 1 mg — LOG IT</button>
+        <button type="button" id="ccamio" class="cs-secondary" style="background:#fffefb; color:#16324f; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.05em; cursor:pointer;">AMIODARONE 300 mg — LOG IT</button>
       </div>
-      <div style="padding:0 14px 12px;"><button type="button" id="ccrosc" data-logevent="ROSC" data-logcard="01" style="width:100%; min-height:46px; background:#2f7a3f; color:#fffefb; border:2px solid #2f7a3f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">ROSC — PULSE RETURNED</button></div>
+      <!-- WS11.5 — ROSC (WS11.0 decision: outline, not solid). A solid green full-width
+           button is the affirmative/continue action on nearly every other screen someone
+           uses; here it ends the resuscitation, so it's set apart by a rule and no longer
+           looks like "tap to proceed." -->
+      <div style="padding:12px 14px 12px; border-top:1px solid #e7eaef;"><button type="button" id="ccrosc" data-logevent="ROSC" data-logcard="01" style="width:100%; min-height:46px; background:#fffefb; color:#2f7a3f; border:2px solid #2f7a3f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">ROSC — PULSE RETURNED</button></div>
     </div>
 
     <!-- ---- RHYTHM CHECK ROUTING — always available; #rhhead01 relabels to "EARLY CHECK"
@@ -374,16 +424,24 @@
          the shock button is always on-screen). ---- -->
     <div id="rhpanel01" style="display:none; margin:0 14px; border:2px solid #16324f; border-top:none;">
       <div id="rhhead01" style="padding:9px 14px; background:#eef3f6; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.06em; color:#16324f;">AT THE RHYTHM CHECK — WHAT DO YOU SEE?</div>
-      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0;">
-        <button type="button" id="rh01-vfvt" style="min-height:56px; padding:6px 4px; background:#9b1c2e; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.03em; line-height:1.25; cursor:pointer;">SHOCKABLE<br>(VF/VT)</button>
-        <button type="button" id="rh01-organized" style="min-height:56px; padding:6px 4px; background:#2f62a8; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.03em; line-height:1.25; cursor:pointer;">ORGANIZED<br>RHYTHM</button>
-        <button type="button" id="rh01-nonshockable" style="min-height:56px; padding:6px 4px; background:#5a6a78; color:#fffefb; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.03em; line-height:1.25; cursor:pointer;">NON-SHOCKABLE<br>(PEA/ASYSTOLE)</button>
+      <!-- WS11.5: single column of full-width rows (was a cramped 1fr/1fr/1fr grid that
+           wrapped NON-SHOCKABLE across ~110px at 390px). Reordered SHOCKABLE, NON-SHOCKABLE,
+           ORGANIZED — DOM order only, no id/handler changes: the first two are the answers
+           given at nearly every check; ORGANIZED is the rarer one that opens the pulse
+           follow-up. Labels dropped their <br> line-break, verbatim per LAYOUT.md/WS11.5. -->
+      <div style="display:grid; grid-template-columns:1fr; gap:0;">
+        <button type="button" id="rh01-vfvt" class="cs-router" style="background:#9b1c2e; color:#fffefb; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; letter-spacing:0.03em; cursor:pointer;">SHOCKABLE — VF / pVT</button>
+        <button type="button" id="rh01-nonshockable" class="cs-router" style="background:#5a6a78; color:#fffefb; border:none; border-top:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; letter-spacing:0.03em; cursor:pointer;">NON-SHOCKABLE — PEA / ASYSTOLE</button>
+        <button type="button" id="rh01-organized" class="cs-router" style="background:#2f62a8; color:#fffefb; border:none; border-top:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; letter-spacing:0.03em; cursor:pointer;">ORGANIZED RHYTHM</button>
       </div>
-      <div id="rh01-pulse" style="display:none; grid-template-columns:1fr 1fr; gap:0; border-top:1px solid #e7eaef;">
-        <button type="button" id="rh01-pulseyes" style="min-height:50px; padding:6px 4px; background:#2f7a3f; color:#fffefb; border:none; border-right:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.03em; line-height:1.25; cursor:pointer;">PULSE PRESENT<br>→ ROSC</button>
-        <button type="button" id="rh01-pulseno" style="min-height:50px; padding:6px 4px; background:#5a6a78; color:#fffefb; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.03em; line-height:1.25; cursor:pointer;">NO PULSE<br>→ PEA</button>
+      <div id="rh01-pulse" style="display:none; grid-template-columns:1fr; gap:0; border-top:1px solid #e7eaef;">
+        <button type="button" id="rh01-pulseyes" class="cs-router" style="background:#2f7a3f; color:#fffefb; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; letter-spacing:0.03em; cursor:pointer;">PULSE PRESENT → ROSC</button>
+        <button type="button" id="rh01-pulseno" class="cs-router" style="background:#5a6a78; color:#fffefb; border:none; border-top:1px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; letter-spacing:0.03em; cursor:pointer;">NO PULSE → PEA</button>
       </div>
     </div>
+
+    </div><!-- /.console -->
+    <div class="card-ref">
 
     <!-- ---- DOSING REFERENCE ---- -->
     <div class="steps" style="padding:14px 14px 0;">
@@ -446,7 +504,7 @@
     <div style="padding:14px 14px 0;">
       <details style="border:2px solid #8a6d1f;">
         <summary style="background:#8a6d1f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><span>REVERSIBLE CAUSES — H's AND T's</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:400; opacity:0.85;">CHECK EVERY CYCLE</span></summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+        <ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="01-2" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Hypoxia</b> — confirm airway, 100% O₂, waveform capnography.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="01-3" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Hypovolemia</b> — IV/IO fluid bolus if suspected.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="01-4" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Hydrogen ion (acidosis)</b> — consider bicarb if severe/known.</span></label></li>
@@ -491,6 +549,9 @@
     <div style="padding:0 14px 20px; font-size:12px; color:#8a8578;">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
     </div>
+
+    </div><!-- /.card-ref -->
+    </div><!-- /.card-split -->
   </article>
 
   <!-- ============ CARD 02 · PEA / ASYSTOLE — retired into card 01 (WS-arrest-merge) ============
@@ -705,7 +766,7 @@
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">IMMEDIATE SEQUENCE</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+        <ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="04-1" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Finger-stick glucose</b> immediately — hypoglycemia is the classic stroke mimic; treat and reassess before proceeding.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="04-2" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>FAST/BE-FAST exam, NIHSS if trained. <b>STAT non-contrast CT head</b> — don't wait on labs to move to CT.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="04-3" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Labs in parallel:</b> coags/INR, platelets, renal function (don't delay CT/lytic decision waiting on these unless on anticoagulation or renal disease known).</span></label></li>
@@ -928,7 +989,7 @@
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">IMMEDIATE PRIORITIES</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+        <ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-1" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>IV access ×2 large-bore; continuous BP monitoring q5min; repeat neuro checks/GCS q5min.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-2" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Protect the airway if GCS is low (<a href="#c06">see card 06</a> if intubation is needed).</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-3" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Acute BP target: SBP &lt;140 mmHg</b> (AHA/ASA-endorsed range 130–150; avoid driving SBP below ~130 — too aggressive a target hasn't shown benefit and may cause harm). <b>Labetalol 10–20 mg IV q10min PRN</b>, or <b>nicardipine infusion 5 mg/hr</b>, titrate to goal BP.</span></label></li>
@@ -1704,7 +1765,7 @@
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid #9b1c2e;">
         <summary style="background:#9b1c2e; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">SCALPEL–BOUGIE–TUBE TECHNIQUE</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+        <ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="18-1" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>1.</b> Stabilize the larynx with your non-dominant hand (laryngeal handshake grip).</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="18-2" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>2.</b> Vertical incision through skin with a #10 scalpel blade.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="18-3" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>3.</b> Blunt dissection down to the cricothyroid membrane.</span></label></li>
@@ -1960,7 +2021,7 @@
     <div class="steps" style="padding:14px 14px 0;">
       <details style="border:2px solid #8a6d1f;">
         <summary style="background:#8a6d1f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">STEMI MIMICS — CONFIRM BEFORE YOU ACTIVATE</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+        <ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="21-1" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Pericarditis</b> — diffuse (not regional) concave ST elevation with widespread PR depression/reciprocal PR elevation in aVR. <b>Spodick's sign</b> (downsloping TP segment) favors pericarditis (~30% vs ~5% in STEMI); ST elevation in III&gt;II or any ST depression outside aVR/V1 favors STEMI instead.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="21-2" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Benign early repolarization</b> — concave ST elevation, mid-precordial, J-wave notching/slurring, tall T waves, usually a young asymptomatic patient, stable on serial tracings.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="21-3" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>LBBB</b> — don't dismiss it, use <b>modified Sgarbossa (Smith) criteria:</b> concordant STE ≥1 mm, concordant ST depression ≥1 mm in V1–V3, or discordant STE ≥25% of the preceding S-wave depth (proportional — replaces the old fixed 5 mm rule).</span></label></li>
@@ -2212,7 +2273,7 @@
 
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "2.3",
+  version: "2.5",
   lastReviewed: "2026-08-07",
   /* WS10.2 — minutes of manual-wide inactivity (lrh-case-lastactive) before the weight
      strip appends an "ENTERED HH:MM · N MIN AGO" line and ambers #wtbar's border.
@@ -2969,6 +3030,12 @@ window.__cardNav=CardNav;
   function paintRhythmPanels(){
     var active = stopMs===null;
     if(rhPanel01) rhPanel01.style.display = active ? '' : 'none';
+    /* WS11.5 — pure presentation hook for the >=760px "greyed until armed" decision
+       (LAYOUT.md / WS11.0): t0===null means the CPR clock hasn't actually been started
+       yet, i.e. nothing to check a rhythm against. This only toggles a CSS class (see
+       .cs-unarmed) — it does not change what "active" means or when the panel shows/
+       hides, and it's a no-op below 760px by design. */
+    if(rhPanel01) rhPanel01.classList.toggle('cs-unarmed', t0===null);
     var early = isEarlyCheck();
     var headText = early ? 'EARLY CHECK — WHAT DO YOU SEE? (before 2:00 — logged as an early check)' : 'AT THE RHYTHM CHECK — WHAT DO YOU SEE?';
     if(rhHead01) rhHead01.textContent = headText;

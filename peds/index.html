@@ -35,11 +35,24 @@
   .steps { display:grid; grid-template-columns:1fr; gap:12px; align-items:start; }
   .figs { display:grid; grid-template-columns:1fr; gap:12px; align-items:start; }
   .menu { display:grid; grid-template-columns:1fr; gap:10px; padding:0 14px; }
+  /* .console (WS11) — a sizing scope, not a layout. Sets the target-size floor
+     custom properties consumed by .cs-destructive/.cs-router/.cs-secondary/
+     .cs-check/.cs-numeric below; applies wherever those classes sit inside a
+     .console ancestor. See LAYOUT.md. */
+  .console { --cs-destructive:72px; --cs-router:62px; --cs-secondary:56px; --cs-check:44px; --cs-numeric:44px; }
+  .console .cs-destructive { min-height:var(--cs-destructive); }
+  .console .cs-router { min-height:var(--cs-router); }
+  .console .cs-secondary { min-height:var(--cs-secondary); }
+  .console .cs-check { min-height:var(--cs-check); }
+  .console .cs-numeric { font-size:var(--cs-numeric); }
   @media (min-width:600px) { .menu { grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); } }
   @media (min-width:760px) {
     .nca { grid-template-columns:1.05fr 1fr 1fr; }
     .steps { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
     .figs { grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); }
+    .console { --cs-destructive:88px; --cs-router:74px; --cs-secondary:64px; --cs-check:44px; --cs-numeric:60px; }
+    .card-split { display:grid; grid-template-columns:minmax(300px,420px) 1fr; gap:16px; align-items:start; }
+    .twoup { display:grid; grid-template-columns:1fr 1fr; gap:0 20px; } .twoup > li { min-width:0; } .twoup li label { min-width:0; } .twoup li label > span { min-width:0; overflow-wrap:break-word; }
   }
   nav.bar { position:relative; display:flex; align-items:center; gap:10px; padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px; background:var(--peds-accent,#005596); color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.1em; transition:background-color 0.25s ease; }
   nav.bar a, nav.bar button { color:#fffefb; background:none; text-decoration:none; border:1px solid rgba(255,255,255,0.4); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center; }
@@ -1089,7 +1102,7 @@
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "1.2",
+  version: "1.3",
   lastReviewed: "2026-08-07",
   /* WS10.2 — minutes of manual-wide inactivity (lrh-case-lastactive) before the weight
      strip appends an "ENTERED HH:MM · N MIN AGO" line and ambers its border. Purely
