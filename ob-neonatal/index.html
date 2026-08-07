@@ -41,10 +41,23 @@
   .nca { display:grid; grid-template-columns:1fr; gap:9px; align-items:start; }
   .steps { display:grid; grid-template-columns:1fr; gap:12px; align-items:start; }
   .figs { display:grid; grid-template-columns:1fr; gap:12px; align-items:start; }
+  /* .console (WS11) — a sizing scope, not a layout. Sets the target-size floor
+     custom properties consumed by .cs-destructive/.cs-router/.cs-secondary/
+     .cs-check/.cs-numeric below; applies wherever those classes sit inside a
+     .console ancestor. See LAYOUT.md. */
+  .console { --cs-destructive:72px; --cs-router:62px; --cs-secondary:56px; --cs-check:44px; --cs-numeric:44px; }
+  .console .cs-destructive { min-height:var(--cs-destructive); }
+  .console .cs-router { min-height:var(--cs-router); }
+  .console .cs-secondary { min-height:var(--cs-secondary); }
+  .console .cs-check { min-height:var(--cs-check); }
+  .console .cs-numeric { font-size:var(--cs-numeric); }
   @media (min-width:760px) {
     .nca { grid-template-columns:1.05fr 1fr 1fr; }
     .steps { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
     .figs { grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); }
+    .console { --cs-destructive:88px; --cs-router:74px; --cs-secondary:64px; --cs-check:44px; --cs-numeric:60px; }
+    .card-split { display:grid; grid-template-columns:minmax(300px,420px) 1fr; gap:16px; align-items:start; }
+    .twoup { display:grid; grid-template-columns:1fr 1fr; gap:0 20px; } .twoup > li { min-width:0; } .twoup li label { min-width:0; } .twoup li label > span { min-width:0; overflow-wrap:break-word; }
   }
   nav.bar { position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:10px; padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px; background:#005596; color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.1em; }
   nav.bar a, nav.bar button { color:#fffefb; background:none; text-decoration:none; border:1px solid rgba(255,255,255,0.4); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center; }
@@ -768,7 +781,7 @@
         <details id="c05to" style="border:2px solid #8a6d1f; scroll-margin-top:60px;">
           <summary style="background:#8a6d1f; color:#fffefb; padding:11px 14px; font-size:15px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><span>SURGICAL TIME OUT — TAP TO WALK IT</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:400; opacity:0.85; text-align:right;">READ ALOUD</span></summary>
           <div style="padding:11px 14px 0; font-size:13.5px; line-height:1.3; color:#16324f; background:#fdf3cf;">Hands off. Everyone stops and faces the bed. One person reads; each owner answers out loud.</div>
-          <ul style="margin:0; padding:4px 14px 13px; list-style:none;">
+          <ul class="twoup" style="margin:0; padding:4px 14px 13px; list-style:none;">
             <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="05-4-0" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><span style="display:inline-block; min-width:20px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11px; font-weight:700; color:#8a6d1f;">1</span><b>STOP.</b> “Time out.” Nobody cuts, nobody pushes drugs until it is finished.</span></label></li>
             <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="05-4-1" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><span style="display:inline-block; min-width:20px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11px; font-weight:700; color:#8a6d1f;">2</span><b>WHO IS HERE.</b> Every person says their name and role aloud.</span></label></li>
             <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="05-4-2" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><span style="display:inline-block; min-width:20px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11px; font-weight:700; color:#8a6d1f;">3</span><b>PATIENT.</b> Name, MRN, allergies, consent — or state the emergency exception.</span></label></li>
@@ -2093,7 +2106,7 @@ var CASESTATE = (function(){
 </script>
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
-var SITE = { version: "1.8", lastReviewed: "2026-08-07" };
+var SITE = { version: "1.9", lastReviewed: "2026-08-07" };
 (function(){
   var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
   Array.prototype.forEach.call(document.querySelectorAll('.verstamp'), function(vs){ vs.textContent=stampText; });

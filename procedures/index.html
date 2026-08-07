@@ -33,10 +33,23 @@
   .steps { display:grid; grid-template-columns:1fr; gap:12px; align-items:start; }
   .figs { display:grid; grid-template-columns:1fr; gap:12px; align-items:start; }
   .menu { display:grid; grid-template-columns:1fr; gap:10px; padding:0 14px; }
+  /* .console (WS11) — a sizing scope, not a layout. Sets the target-size floor
+     custom properties consumed by .cs-destructive/.cs-router/.cs-secondary/
+     .cs-check/.cs-numeric below; applies wherever those classes sit inside a
+     .console ancestor. See LAYOUT.md. */
+  .console { --cs-destructive:72px; --cs-router:62px; --cs-secondary:56px; --cs-check:44px; --cs-numeric:44px; }
+  .console .cs-destructive { min-height:var(--cs-destructive); }
+  .console .cs-router { min-height:var(--cs-router); }
+  .console .cs-secondary { min-height:var(--cs-secondary); }
+  .console .cs-check { min-height:var(--cs-check); }
+  .console .cs-numeric { font-size:var(--cs-numeric); }
   @media (min-width:600px) { .menu { grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); } }
   @media (min-width:760px) {
     .steps { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
     .figs { grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); }
+    .console { --cs-destructive:88px; --cs-router:74px; --cs-secondary:64px; --cs-check:44px; --cs-numeric:60px; }
+    .card-split { display:grid; grid-template-columns:minmax(300px,420px) 1fr; gap:16px; align-items:start; }
+    .twoup { display:grid; grid-template-columns:1fr 1fr; gap:0 20px; } .twoup > li { min-width:0; } .twoup li label { min-width:0; } .twoup li label > span { min-width:0; overflow-wrap:break-word; }
   }
   nav.bar { position:relative; display:flex; align-items:center; gap:10px; padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px; background:#005596; color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.1em; }
   nav.bar a { color:#fffefb; background:none; text-decoration:none; border:1px solid rgba(255,255,255,0.4); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center; }
@@ -123,7 +136,7 @@
       </details>
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">SELDINGER — STEP BY STEP</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+        <ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Puncture under real-time ultrasound</b> at ~45° (shallower for subclavian), tracking the needle tip, aspirating until dark venous flash.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Drop the angle, stabilize, remove the syringe</b> (occlude the hub) and thread the J-wire — never force it; stop at ~15 cm. Ectopy on the monitor → withdraw the wire a few cm.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>Never let go of the wire.</b> Remove the needle over it.</span></label></li>
@@ -223,7 +236,7 @@
       </details>
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">TECHNIQUE — STEP BY STEP</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+        <ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Position:</b> supine or head up 30–45°, arm on the affected side abducted or behind the head.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Landmark the safe triangle:</b> 4th–5th intercostal space, anterior-to-mid axillary line — anterior border of latissimus dorsi, lateral border of pectoralis major, above the 5th ICS (nipple line). Palpate and confirm before prepping.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Prep and drape;</b> in the conscious patient infiltrate lidocaine through skin, muscle, periosteum, and pleura.</span></label></li>
@@ -409,7 +422,7 @@
       </details>
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">TECHNIQUE — STEP BY STEP</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+        <ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Mark the incision lines</b> with the limb in anatomical position.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Incise through the full thickness of eschar DOWN TO SUBCUTANEOUS FAT only</b> — not fascia (that's a fasciotomy) — until the wound edges visibly spring apart.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Extend each incision at least 1 cm into unburned skin</b> at both ends.</span></label></li>
@@ -492,7 +505,7 @@
       </details>
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">TECHNIQUE — STEP BY STEP</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+        <ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Prepare:</b> analgesia/sedation as needed; topical anesthetic drops; irrigate the area with saline.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Infiltrate</b> lidocaine + adrenaline at the lateral canthus toward the orbital rim — needle always pointing away from the globe.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Crush:</b> clamp the lateral canthus horizontally out to the rim for ~1 minute to devascularize the incision line.</span></label></li>
@@ -559,7 +572,7 @@
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid #0f7a86;">
         <summary style="background:#0f7a86; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">EQUIPMENT — GATHER / CHECK</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+        <ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#0f7a86; flex:none;"><span><b>PPE first:</b> gown, double gloves, eye protection.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#0f7a86; flex:none;"><span><b>Scalpel with a large blade</b> (No. 10/20); chlorhexidine or iodine for a splash prep.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#0f7a86; flex:none;"><span><b>Heavy Mayo scissors / tough-cut shears</b> for intercostal muscle and pleura.</span></label></li>
@@ -580,7 +593,7 @@
       </details>
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">SEQUENCE — STEP BY STEP</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+        <ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>In parallel:</b> secure the airway (<a href="../codes/?from=home#c06">Codes card 06</a>), bilateral finger thoracostomies, activate <a href="../codes/?from=home#c12">MTP</a>.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Splash prep</b> with chlorhexidine or iodine — no delay for full asepsis.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Extend the left thoracostomy incision</b> with the scalpel along the 5th ICS from sternum to mid-axillary line, then cut through intercostal muscle into pleura along its whole length with heavy scissors.</span></label></li>
@@ -661,7 +674,7 @@
       </details>
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">FLOAT, CAPTURE &amp; SETTINGS — STEP BY STEP</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+        <ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Test the balloon in saline</b> (1.5 mL, no leak); thread the catheter through its sterile sleeve <i>before</i> insertion; connect terminals to the generator — distal = negative.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Set before floating:</b> rate 80/min, output maximal at 20 mA, asynchronous/non-sensing.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Advance to 15–20 cm</b> (just beyond the sheath tip), then inflate the balloon gently and lock it.</span></label></li>
@@ -964,8 +977,8 @@
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "0.3",
-  lastReviewed: "2026-08-04"
+  version: "0.4",
+  lastReviewed: "2026-08-07"
 };
 (function(){
   var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';

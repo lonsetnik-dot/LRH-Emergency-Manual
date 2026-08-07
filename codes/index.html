@@ -39,11 +39,24 @@
   .steps { display:grid; grid-template-columns:1fr; gap:12px; align-items:start; }
   .figs { display:grid; grid-template-columns:1fr; gap:12px; align-items:start; }
   .menu { display:grid; grid-template-columns:1fr; gap:10px; padding:0 14px; }
+  /* .console (WS11) — a sizing scope, not a layout. Sets the target-size floor
+     custom properties consumed by .cs-destructive/.cs-router/.cs-secondary/
+     .cs-check/.cs-numeric below; applies wherever those classes sit inside a
+     .console ancestor. See LAYOUT.md. */
+  .console { --cs-destructive:72px; --cs-router:62px; --cs-secondary:56px; --cs-check:44px; --cs-numeric:44px; }
+  .console .cs-destructive { min-height:var(--cs-destructive); }
+  .console .cs-router { min-height:var(--cs-router); }
+  .console .cs-secondary { min-height:var(--cs-secondary); }
+  .console .cs-check { min-height:var(--cs-check); }
+  .console .cs-numeric { font-size:var(--cs-numeric); }
   @media (min-width:600px) { .menu { grid-template-columns:repeat(auto-fit,minmax(280px,1fr)); } }
   @media (min-width:760px) {
     .nca { grid-template-columns:1.05fr 1fr 1fr; }
     .steps { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
     .figs { grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); }
+    .console { --cs-destructive:88px; --cs-router:74px; --cs-secondary:64px; --cs-check:44px; --cs-numeric:60px; }
+    .card-split { display:grid; grid-template-columns:minmax(300px,420px) 1fr; gap:16px; align-items:start; }
+    .twoup { display:grid; grid-template-columns:1fr 1fr; gap:0 20px; } .twoup > li { min-width:0; } .twoup li label { min-width:0; } .twoup li label > span { min-width:0; overflow-wrap:break-word; }
   }
   nav.bar { position:relative; display:flex; align-items:center; gap:8px; flex-wrap:nowrap; overflow-x:auto; padding:calc(6px + env(safe-area-inset-top,0px)) 14px 6px; background:#005596; color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; }
   nav.bar a, nav.bar button { flex:none; white-space:nowrap; color:#fffefb; background:none; text-decoration:none; border:1px solid rgba(255,255,255,0.4); padding:5px 9px; font:inherit; letter-spacing:0.08em; cursor:pointer; min-height:30px; display:inline-flex; align-items:center; }
@@ -446,7 +459,7 @@
     <div style="padding:14px 14px 0;">
       <details style="border:2px solid #8a6d1f;">
         <summary style="background:#8a6d1f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><span>REVERSIBLE CAUSES — H's AND T's</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:400; opacity:0.85;">CHECK EVERY CYCLE</span></summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+        <ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="01-2" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Hypoxia</b> — confirm airway, 100% O₂, waveform capnography.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="01-3" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Hypovolemia</b> — IV/IO fluid bolus if suspected.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="01-4" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Hydrogen ion (acidosis)</b> — consider bicarb if severe/known.</span></label></li>
@@ -705,7 +718,7 @@
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">IMMEDIATE SEQUENCE</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+        <ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="04-1" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Finger-stick glucose</b> immediately — hypoglycemia is the classic stroke mimic; treat and reassess before proceeding.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="04-2" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>FAST/BE-FAST exam, NIHSS if trained. <b>STAT non-contrast CT head</b> — don't wait on labs to move to CT.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="04-3" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Labs in parallel:</b> coags/INR, platelets, renal function (don't delay CT/lytic decision waiting on these unless on anticoagulation or renal disease known).</span></label></li>
@@ -928,7 +941,7 @@
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">IMMEDIATE PRIORITIES</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+        <ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-1" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>IV access ×2 large-bore; continuous BP monitoring q5min; repeat neuro checks/GCS q5min.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-2" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Protect the airway if GCS is low (<a href="#c06">see card 06</a> if intubation is needed).</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-3" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Acute BP target: SBP &lt;140 mmHg</b> (AHA/ASA-endorsed range 130–150; avoid driving SBP below ~130 — too aggressive a target hasn't shown benefit and may cause harm). <b>Labetalol 10–20 mg IV q10min PRN</b>, or <b>nicardipine infusion 5 mg/hr</b>, titrate to goal BP.</span></label></li>
@@ -1704,7 +1717,7 @@
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid #9b1c2e;">
         <summary style="background:#9b1c2e; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">SCALPEL–BOUGIE–TUBE TECHNIQUE</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+        <ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="18-1" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>1.</b> Stabilize the larynx with your non-dominant hand (laryngeal handshake grip).</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="18-2" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>2.</b> Vertical incision through skin with a #10 scalpel blade.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="18-3" style="width:20px; height:20px; margin:2px 0 0; accent-color:#9b1c2e; flex:none;"><span><b>3.</b> Blunt dissection down to the cricothyroid membrane.</span></label></li>
@@ -1960,7 +1973,7 @@
     <div class="steps" style="padding:14px 14px 0;">
       <details style="border:2px solid #8a6d1f;">
         <summary style="background:#8a6d1f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">STEMI MIMICS — CONFIRM BEFORE YOU ACTIVATE</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+        <ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="21-1" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Pericarditis</b> — diffuse (not regional) concave ST elevation with widespread PR depression/reciprocal PR elevation in aVR. <b>Spodick's sign</b> (downsloping TP segment) favors pericarditis (~30% vs ~5% in STEMI); ST elevation in III&gt;II or any ST depression outside aVR/V1 favors STEMI instead.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="21-2" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>Benign early repolarization</b> — concave ST elevation, mid-precordial, J-wave notching/slurring, tall T waves, usually a young asymptomatic patient, stable on serial tracings.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="21-3" style="width:20px; height:20px; margin:2px 0 0; accent-color:#8a6d1f; flex:none;"><span><b>LBBB</b> — don't dismiss it, use <b>modified Sgarbossa (Smith) criteria:</b> concordant STE ≥1 mm, concordant ST depression ≥1 mm in V1–V3, or discordant STE ≥25% of the preceding S-wave depth (proportional — replaces the old fixed 5 mm rule).</span></label></li>
@@ -2212,7 +2225,7 @@
 
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "2.3",
+  version: "2.4",
   lastReviewed: "2026-08-07",
   /* WS10.2 — minutes of manual-wide inactivity (lrh-case-lastactive) before the weight
      strip appends an "ENTERED HH:MM · N MIN AGO" line and ambers #wtbar's border.
