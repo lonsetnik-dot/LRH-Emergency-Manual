@@ -1,0 +1,174 @@
+# DESIGN-SYSTEM.md — the physical/digital system
+
+Companion to PROJECT.md (why) and LAYOUT.md (page structure). This file governs how the
+**physical** side — carts, cabinets, drawer faces, wall posters — and the **digital** side —
+checklists on a phone — form one system rather than two that happen to share content.
+
+Written 2026-08-08 after a full audit. The findings that drove it are in the last section.
+
+---
+
+## 1. The governing rule
+
+> **Each artifact answers exactly one question, at exactly one reading distance, for exactly one
+> reader.**
+
+Most of what is currently wrong comes from one artifact trying to do two jobs. A drawer label
+carrying an expiry field is unreadable across a resus bay; a wall poster carrying a full citation
+list is unreadable with your hands in a patient.
+
+| Artifact | Distance | Reader | The one question | Carries |
+|---|---|---|---|---|
+| **Drawer face** | 2–3 m | anyone, mid-resuscitation | *Which drawer do I pull?* | colour, number, one word, one pictogram, optional qualifier chip |
+| **Stock strip** | 30 cm | whoever checks/restocks | *Is this stocked and in date?* | check + initials, earliest expiry, restock route, QR |
+| **Wall poster** | 0.5–1 m, hands busy | operator doing the procedure | *How do I do this, now?* | steps, one figure, key numbers, location, QR |
+| **Phone card** | in hand | operator or team lead | *Full checklist — and where is the kit?* | interactive checklist, timers, location back-link, sources |
+
+If a piece of information does not serve the one question, it belongs on a different artifact.
+
+---
+
+## 2. Colour
+
+**Colour encodes WHERE. Nothing else. Ever.**
+
+Which cart, which drawer, which shelf. Not severity, not tool identity, not risk tier, not
+acuity. Those get shape, position, size and words.
+
+| Token | Value | Meaning |
+|---|---|---|
+| `--d1` | `#0f7a86` | drawer 1 |
+| `--d2` | `#2f62a8` | drawer 2 |
+| `--d3` | `#6f4fa8` | drawer 3 |
+| `--d4` | `#9b1c2e` | drawer 4 |
+| `--d5` | `#8a6011` | drawer 5 |
+| `--d6` | `#2f7a3f` | drawer 6 |
+
+Drawer 4 is red on every cart because red means *fourth drawer*. On the code cart that is suction
+and fluids; on the OB cart it is postpartum haemorrhage. The word and the pictogram carry meaning;
+colour only gets a hand to the right height on the cart.
+
+Semantic colour, used **only** inside clinical content, never on a label:
+
+| Token | Value | Meaning |
+|---|---|---|
+| `--danger` | `#9b1c2e` | critical / life-threat step |
+| `--caution` | `#8a6d1f` | caution, pitfall, "wait / reflex" |
+| `--safe` | `#2f7a3f` | ruled out / stable |
+| `--info` | `#2f62a8` | neutral information, links |
+
+Yes, these reuse drawer hues. That is acceptable *only* because they never appear in the same
+context: a drawer badge is always a coloured square with a shape and a number inside it, and a
+severity colour is always a text/box treatment. If that separation ever blurs, split the palettes.
+
+**Three hard constraints.**
+
+1. **Colour is never the sole carrier.** Every drawer has a number, a word and a shape. Every
+   result box has a text tag. The system must survive greyscale, a photocopy, and a red-green
+   colourblind reader. Test by printing in black and white and checking nothing is lost.
+2. **Contrast floors:** 4.5:1 body text, 3:1 large text and non-text indicators.
+3. **Print backgrounds must be forced.** Every tool needs
+   `* { -webkit-print-color-adjust:exact; print-color-adjust:exact; }` in its `@media print`
+   block. Without it, Chrome and Safari drop backgrounds, white knockout text lands on white
+   paper, and the entire colour code silently disappears from every printout.
+
+---
+
+## 3. Pictograms
+
+One object, black silhouette, on a white disc. No colour, no outline style, no detail that
+disappears at 2 m.
+
+The test is **discriminability, not accuracy**: any two pictograms on the same cart must be
+distinguishable at a glance, at distance, by someone who is not looking carefully. A beautifully
+accurate endotracheal tube and a beautifully accurate suction catheter that are both "a curved
+tube" have failed, however good each is alone. Give them different silhouettes — smooth curve with
+a cuff versus rigid angled tip with a thumb port — even at some cost to realism.
+
+---
+
+## 4. Numbers, letters and words
+
+- The **drawer number** is the shared index across the physical drawer, the app's cart section,
+  the drawer badge on a card, and any poster that references it. Never renumber without changing
+  all four.
+- **One word** on a face, two at most. "Intubation", not "Airway equipment and intubation adjuncts".
+- A **qualifier chip** (weight band, patient group) only where it genuinely disambiguates two
+  otherwise identical drawers.
+
+---
+
+## 5. The physical↔digital loop
+
+Both arrows must exist, or the system is a one-way street.
+
+**Physical → digital.** Every printed artifact carries a QR to its checklist. Encode absolute
+URLs with `?from=home` so the beta splash is suppressed on arrival.
+
+**Digital → physical.** Every card states where the kit lives, and links to that cart section.
+This is the arrow that is currently missing almost everywhere, and it is the more important of the
+two: the QR takes someone from the poster to the phone, and at that moment they lose the location
+information the poster was carrying.
+
+Rules:
+
+- Every procedure/equipment card names its storage location and links to the drawer/shelf anchor.
+- Every card with a poster links to it ("print this poster").
+- Every drawer lists the cards that need it (`USED BY`), and every card badges the drawers it
+  needs. Both directions, kept in sync — this is hand-maintained and has already drifted, so it
+  needs a check in the verify suite.
+- Every cart a poster names must actually be modelled in the app. Six posters currently direct
+  people to a "TRAUMA CART" that exists nowhere in the site.
+
+---
+
+## 6. Simplification test
+
+Before adding anything to an artifact, ask:
+
+1. Does this serve the one question this artifact answers? If not, it belongs elsewhere.
+2. Is it readable at this artifact's distance?
+3. If colour were removed, would it still work?
+4. Is there an existing element already carrying this, in a different form?
+
+"As simple as possible, but no simpler" cuts both ways: the drawer face loses the expiry field,
+but it keeps the number *and* the word *and* the pictogram, because each covers a different
+failure mode — the number for cross-reference, the word for certainty, the pictogram for speed.
+
+---
+
+## 7. Audit findings behind this document (2026-08-08)
+
+State at the time of writing, so future work knows what was true.
+
+**Colour.** 134 distinct hex values, ~7,000 inline literals, and seven overlapping colour systems.
+`#9b1c2e` alone carried seven meanings (danger, OB tool identity, drawer 4, Broselow red, life-
+threat header, four poster accents, poster warning boxes). `#2f62a8` carried six. Six of eight
+tools had no `:root` block at all, and no SITE CONFIG block contained a single colour — so
+CLAUDE.md's claim that an adopting site can re-skin by editing one block per file was not true.
+`ob-neonatal` used two teals 1.6 ΔE apart for different meanings.
+
+**Print.** `print-color-adjust` was set on the posters only. Everywhere else, ~200 accordion
+headers using white-on-dark printed as white-on-white, drawer badges printed blank, and the
+tool-identity stripe vanished. The peds weight bar — the number every dose derives from — printed
+invisible.
+
+**The loop.** 9 of 10 posters had a working QR (all decoded and verified). Zero cards linked back
+to a poster. Zero of 13 procedure cards stated a storage location, though the posters pointing at
+them all did. No trauma cart existed in the app despite six posters naming its shelves. Six
+`USED BY` mappings had drifted out of sync between drawer and card.
+
+**Accessibility.** Completed-checklist text at 3.65:1 across five tools; several 3.4–4.4:1 pairs
+in headers and result boxes.
+
+---
+
+## 8. Order of work
+
+1. Print correctness — one CSS line per tool. Cheapest fix, largest recovery of meaning on paper.
+2. Storage location on every procedure card, linked to its cart section.
+3. Model the trauma cart; the posters already name its shelves.
+4. Drawer faces + stock strips (`labels/`) for all three carts.
+5. Contrast fixes.
+6. Collapse colour onto the tokens above; add the `:root` block to every tool.
+7. Card→poster links; `USED BY` symmetry check in the verify suite.
