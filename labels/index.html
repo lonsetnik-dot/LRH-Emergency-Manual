@@ -562,16 +562,16 @@ var CABINETS = {
     {t:'Fluids',c:'--p5',icon:'fluid',list:['NaCl 0.9% 1 L','Lactated Ringer’s','Giving sets','Pressure bags']}
    ]},
    {row:'LOWER', items:[
-    {t:'Chest Drainage',c:'--p2',icon:'pigtail',list:['Pigtail 8–14 Fr','Chest tubes 28–32 Fr','Primed drain','Suture / dressing']},
+    {t:'Chest Drainage',c:'--p2',icon:'pigtail',list:['Pigtail 14 Fr','Chest tubes 28–32 Fr','Primed drain','Suture / dressing']},
     /* GI HEMORRHAGE — added with card 23 (massive hematemesis). The poster called this cupboard
        the "resus bay cabinet" and the labels sheet calls it "Room 7"; both now read
        ROOM 7 (RESUS BAY) CABINET. CONFIRM ON THE WALK-ROUND that these are the same cupboard.
        Item names here are byte-identical to the card and the poster on purpose —
        verify_kit_consistency.mjs asserts it. */
-    {t:'GI Hemorrhage',c:'--p4',icon:'blakemore',list:['Sengstaken-Blakemore tube','Minnesota tube','Two 60 mL syringes + stopcocks','Insufflation manometer','Roller gauze + 1 L IVF bag','Scissors taped within reach']},
+    {t:'GI Hemorrhage',c:'--p4',icon:'blakemore',list:['Sengstaken-Blakemore tube','Two 60 mL syringes + stopcocks','Insufflation manometer','Roller gauze + 1 L IVF bag','Scissors taped within reach']},
     /* Added with Codes cards 24/25 and procedures card 15. Item names are byte-identical to the
        cards on purpose - verify_kit_consistency.mjs asserts it. Contents still need a walk-round. */
-    {t:'Lung Isolation',c:'--p2',icon:'blocker',list:['Bronchial blocker','ETT 8.0 and 9.0','Coude bougie','Nebulizer setup for TXA','TXA 1 g vials']},
+    {t:'Lung Isolation',c:'--p2',icon:'blocker',list:['ETT 8.0 and 9.0','Coude bougie','Nebulizer setup for TXA','TXA 1 g vials','Suction x2 for the good lung']},
     {t:'Epistaxis',c:'--p4',icon:'nose',list:['Nasal speculum + headlamp','Rapid Rhino 5.5 / 7.5 / 9 cm','Merocel tampons','Silver nitrate sticks','Foley 12-14 Fr + 20 mL syringe','Oxymetazoline 0.05% + lidocaine 4%']},
     {t:'SALAD Suction',c:'--p2',icon:'suction',list:['DuCanto rigid catheter x2','HI-D Big Stick','Meconium aspirator','Spare ETT 8.0','Suction tubing + canisters']},
     {t:'Procedure Trays',c:'--p1',icon:'lp',list:['Lumbar puncture tray','Suture trays','Minor procedure set']},
@@ -707,11 +707,11 @@ var PROCS = [
   items:['3 mL syringe','Needle to draw','Needle to inject','Mosquito clamp','Toothed forceps','Blunt-tipped iris scissors'],
   note:'Zip-lock bag, wrapped in the poster, behind the drawer label.'},
  {t:'Blakemore Kit',    icon:'blakemore', c:'--p4', loc:'ROOM 7 (RESUS BAY) CABINET',          qr:'GI Hemorrhage',
-  items:['Sengstaken-Blakemore tube','Minnesota tube','Two 60 mL syringes','Insufflation manometer','Roller gauze + 1 L IVF bag','Scissors taped within reach'],
+  items:['Sengstaken-Blakemore tube','Two 60 mL syringes','Insufflation manometer','Roller gauze + 1 L IVF bag','Scissors taped within reach'],
   note:'Leak-test both balloons in water before every insertion.'},
  {t:'Lung Isolation',   icon:'blocker',   c:'--p2', loc:'ROOM 7 (RESUS BAY) CABINET',          qr:'Lung Isolation',
-  items:['Bronchial blocker','ETT 8.0 and 9.0','Coude bougie','Nebulizer setup for TXA','TXA 1 g vials'],
-  note:'A 7.0 tube blocks the bronchoscope. Keep the big tubes here.'},
+  items:['ETT 8.0 and 9.0','Coude bougie','Nebulizer setup for TXA','TXA 1 g vials','Suction x2 for the good lung'],
+  note:'No blocker and no DLT at LRH - the big ETT IS the isolation technique. A 7.0 blocks the bronchoscope downstream.'},
  {t:'Epistaxis Kit',    icon:'nose',      c:'--p4', loc:'ROOM 7 (RESUS BAY) CABINET',          qr:'Epistaxis',
   items:['Nasal speculum + headlamp','Rapid Rhino 5.5 / 7.5 / 9 cm','Merocel tampons','Silver nitrate sticks','Foley 12-14 Fr + 20 mL syringe','Oxymetazoline 0.05% + lidocaine 4%'],
   note:'Rapid Rhino: sterile water 30 s, then AIR only.'},
@@ -719,7 +719,7 @@ var PROCS = [
   items:['DuCanto rigid catheter x2','HI-D Big Stick','Meconium aspirator','Spare ETT 8.0','Suction tubing + canisters'],
   note:'Two units. Both tested before induction, every time.'},
  {t:'Pigtail Thoracostomy', icon:'pigtail', c:'--p2', loc:'ROOM 7 (RESUS BAY) CABINET',        qr:'Procedure Trays',
-  items:['Pigtail catheter with stiffener','Introducer needle','Marked guidewire','Sequential dilators','Lidocaine 1%','Underwater-seal drain'],
+  items:['Pigtail catheter with stiffener 14 Fr','Introducer needle','Marked guidewire','Sequential dilators','Lidocaine 1%','Underwater-seal drain'],
   note:'Always over the top of the rib. CXR after every insertion.'},
  {t:'Pacemaker Magnet', icon:'magnet',    c:'--p1', loc:'CODE CART \u00b7 SIDE PANEL',         qr:'Pacemaker Magnet',
   items:['Doughnut magnet','Tape to secure it over the generator'],

@@ -50,7 +50,9 @@ ck('menu tile reaches it', await codes.locator('a[href="#c24"]').count() > 0, tr
 {
   const t = await textOf(codes, '#c24');
   ck('bleeding lung DOWN', /Bleeding lung DOWN/i.test(t), true);
-  ck('ETT >= 8.0 and the reason', /ETT\s*≥8\.0 mm/i.test(t) && /bronchial blocker both have to fit/i.test(t), true);
+  ck('ETT >= 8.0 and the reason', /ETT\s*≥8\.0 mm/i.test(t) && /bronchoscope has to fit/i.test(t), true);
+  // LRH stocks no blocker and no DLT — the card must say the big ETT IS the isolation technique
+  ck('no-blocker reality stated', /stocks neither a bronchial blocker nor a double-lumen tube/i.test(t), true);
   ck('blind mainstem success rates', /95%/.test(t) && /73%/.test(t), true);
   ck('nebulized TXA 500 mg', /Nebulized TXA 500 mg/i.test(t), true);
   ck('IV TXA 1 g over 10 min', /1 g over 10 min/i.test(t), true);
@@ -119,15 +121,20 @@ ck('procedures card 16 exists', await proc.locator('#c16').count(), 1);
   const t = await textOf(proc, '#c16');
   ck('triangle of safety borders', /lateral edge of pectoralis major/i.test(t) && /latissimus dorsi/i.test(t), true);
   ck('over the upper border of the rib', /over the upper border of the rib below/i.test(t), true);
-  ck('sizes by indication', /12–14 Fr/.test(t) && /10–14 Fr/.test(t), true);
+  ck('one stocked size, 14 Fr, stated plainly', /LRH stocks one size: 14 Fr/.test(t), true);
   ck('lidocaine ceiling', /3 mg\/kg/.test(t) && /250 mg/.test(t), true);
-  ck('haemothorax given as two options', /two options/i.test(t) && /28–32 Fr/.test(t) && /P-CAT/.test(t), true);
+  // LRH resolved this: haemothorax is a chest tube. P-CAT stays as the reason the question exists.
+  ck('haemothorax routed to a chest tube', /at LRH this is a chest tube, not a pigtail/i.test(t) && /28–32 Fr/.test(t) && /P-CAT/.test(t), true);
   ck('wire depth given as two options', /Two options for depth/i.test(t) && /15–20 cm/.test(t), true);
   ck('never clamp a bubbling drain', /Never clamp a bubbling drain/i.test(t), true);
   ck('1.5 L then clamp', /1\.5 L/.test(t), true);
   ck('CXR after every insertion', /Post-insertion chest radiograph for every patient/i.test(t), true);
   ck('anterior 2nd space explicitly NOT printed', /deliberately not described here/i.test(t), true);
   ck('figure present', await proc.locator('#c16 svg[aria-label*="triangle of safety"]').count(), 1);
+  ck('figure marks the target with a green check', /green check marking the insertion target/i.test(
+    await proc.locator('#c16 svg').first().getAttribute('aria-label') || ''), true);
+  ck('needle drawn plain black', /plain\s+black needle/i.test(
+    await proc.locator('#c16 svg').first().getAttribute('aria-label') || ''), true);
 }
 
 /* ================= #30 DSED / vector change ================= */
@@ -147,8 +154,11 @@ console.log('--- #30 DSED / vector change');
     const src = Array.from(document.scripts).map(x => x.textContent).join('\n');
     return { dsed: src.indexOf("REFRACTORY VF — shock #"), epi: src.indexOf("EPI DUE — "), rhythm: src.indexOf("RHYTHM CHECK DUE") };
   });
-  ck('DSED cue ranks below the rhythm-check cue', order.dsed > order.rhythm, true);
-  ck('DSED cue ranks below the epi-due cue', order.dsed > order.epi, true);
+  // The transient cue was replaced by a persistent banner: DSED needs kit and a designated
+  // operator, so it has to be visible before shock four, not announced at it.
+  ck('refractory-VF banner is present from the start', await codes.locator('#dsedbar').isVisible(), true);
+  ck('banner starts unarmed', await codes.locator('#dsedbar.armed').count(), 0);
+  ck('banner links to the reference section', await codes.locator('#dsedbar[href="#refractoryvf"]').count(), 1);
 }
 
 /* ================= #20 epinephrine in mg AND mL ================= */

@@ -145,7 +145,11 @@
       for(var i=0;i<localStorage.length;i++) keys.push(localStorage.key(i));
       keys.forEach(function(k){ if(k && k.indexOf('lrh-')===0 && k.indexOf('lrh-pref-')!==0) localStorage.removeItem(k); });
     }catch(e){}
-    location.reload();
+    /* Not reload(): that preserves the #cNN hash, so a reset performed while a card was open
+       dropped you straight back onto that same card and looked like nothing had happened. Drop
+       the hash to land on the card menu, and replace() so the cleared case leaves no history
+       entry to go "back" into. */
+    location.replace(location.pathname + '?from=home');
   }
   btn.addEventListener('click', function(ev){
     ev.preventDefault();

@@ -30,7 +30,9 @@ const KITS = [
   {
     name: 'Blakemore / balloon-tamponade kit',
     location: /ROOM 7/i,
-    items: ['Sengstaken-Blakemore tube','Minnesota tube','Two 60 mL syringes',
+    // Minnesota tube and bronchial blocker deliberately absent: LRH stocks neither, and a kit list
+    // that names equipment the department does not own sends someone hunting mid-resuscitation.
+    items: ['Sengstaken-Blakemore tube','Two 60 mL syringes',
             'Insufflation manometer','Roller gauze','Scissors taped within reach'],
     artifacts: [
       { file: 'codes/index.html',            role: 'interactive card' },
@@ -50,7 +52,7 @@ const KITS = [
   {
     name: 'Lung isolation kit',
     location: /ROOM 7/i,
-    items: ['Bronchial blocker', 'TXA'],
+    items: ['TXA'],
     artifacts: [
       { file: 'codes/index.html',  role: 'interactive card' },
       { file: 'labels/index.html', role: 'cabinet label'    },
