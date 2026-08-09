@@ -1,5 +1,7 @@
-import { chromium } from '/home/claude/.npm-global/lib/node_modules/playwright/index.mjs';
-const browser = await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome'});
+let chromium;
+try { ({ chromium } = await import('playwright')); }
+catch { ({ chromium } = await import('/home/claude/.npm-global/lib/node_modules/playwright/index.mjs')); }
+const browser = await chromium.launch(process.env.PW_CHROME ? { executablePath: process.env.PW_CHROME } : {});
 const page = await browser.newPage({viewport:{width:390, height:1400}});
 const errors = [];
 page.on('pageerror', e => errors.push(String(e)));
