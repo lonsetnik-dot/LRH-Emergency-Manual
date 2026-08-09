@@ -187,7 +187,7 @@
       <div class="delta-box"><div class="dv" id="deltaVal">&ndash;</div><div class="dl">1-hr &Delta;</div></div>
     </div>
 
-    <div class="resultcard pending" id="tropResult">Enter 0-hr and 1-hr troponin (and complete Section 1) to classify.</div>
+    <div class="resultcard pending" id="tropResult">Enter the 0-hr and 1-hr troponin to classify.</div>
 
     <details class="ref">
       <summary>Troponin pathway logic (per posted protocol)</summary>
@@ -264,7 +264,7 @@
     <div class="final pending" id="finalBox">
       <div class="head">Recommendation</div>
       <div class="verdict">Complete the sections above</div>
-      <div class="detail">Answer Section 1, enter the troponins, and (if AMI is ruled out) complete the HEART score.</div>
+      <div class="detail">Enter the troponins, and (if AMI is ruled out) complete the HEART score.</div>
     </div>
     <div class="btnrow">
       <button class="btn" onclick="resetAll()">Reset</button>
@@ -277,7 +277,7 @@
       <summary>Disposition logic (per posted protocol)</summary>
       <ul>
         <li><b>Rule-in zone</b> (any hs-Trop &ge;50 or &Delta;&ge;15) &rarr; consider cardiology consult if clinically appropriate.</li>
-        <li><b>D/C home</b> (&lt;4 &amp; pain&gt;3h, or &lt;5 &amp; &Delta;&lt;4, or a single 0-hr &le;3) &rarr; discharge, outpatient follow-up as needed.</li>
+        <li><b>D/C home</b> (&lt;5 &amp; &Delta;&lt;4 on the 0/1-hr pair; or, on a <i>single</i> 0-hr, &le;3, or &lt;4 with pain&gt;3h) &rarr; discharge, outpatient follow-up as needed. Once a 1-hr value exists, the 0/1-hr &Delta; governs &mdash; a low 0-hr with a rising 1-hr reflexes to 3 h rather than discharging.</li>
         <li><b>Reflex to 3 h</b> (&lt; 50 &amp; &Delta; 4&ndash;14) &rarr; repeat troponin; &Delta;&ge;15 rules in, else AMI ruled out.</li>
         <li><b>AMI ruled out</b> &rarr; apply HEART score:
           <ul>
@@ -313,7 +313,7 @@
     hospital: "Littleton Regional Hospital",
     hospitalShort: "LRH",
     units: "ng/L",
-    version: "1.72",
+    version: "1.8",
     lastReviewed: "2026-08-07",
     trop: {
       ruleInValue:      50,   // any hs-Trop >= this            -> rules in
@@ -366,31 +366,40 @@
     }
     if(t0===null||t1===null) return {code:'incomplete', why:'Enter both 0-hr and 1-hr troponin.'};
     var d01=Math.abs(t1-t0);
-    var measured=[t0,t1]; if(t3!==null) measured.push(t3);
-    var anyRuleIn=measured.some(function(v){return v>=T.ruleInValue;});
-    var d3=null;
-    if(t3!==null) d3=Math.max(Math.abs(t3-t0),Math.abs(t3-t1));
 
-    // RULE IN
-    if(anyRuleIn || d01>=T.ruleInDelta || (d3!==null && d3>=T.ruleInDelta)){
+    // The 0/1-hr pair decides every branch below. A 3-hr value is ONLY consulted once the
+    // pair actually reflexes (final branch) — otherwise a value left in the 3-hr box from a
+    // previous entry could manufacture a rule-in or a "ruled out after reflex" that never
+    // happened. `stray` flags that case so the result card can say the value is being ignored.
+    var stray = (t3!==null);
+
+    // RULE IN — on the 0/1-hr pair only
+    if(t0>=T.ruleInValue || t1>=T.ruleInValue || d01>=T.ruleInDelta){
       var r=[];
-      if(anyRuleIn) r.push('a troponin &ge; '+T.ruleInValue+' '+SITE.units);
+      if(t0>=T.ruleInValue||t1>=T.ruleInValue) r.push('a troponin &ge; '+T.ruleInValue+' '+SITE.units);
       if(d01>=T.ruleInDelta) r.push('0/1-hr &Delta; &ge; '+T.ruleInDelta);
-      if(d3!==null && d3>=T.ruleInDelta) r.push('3-hr &Delta; &ge; '+T.ruleInDelta);
-      return {code:'in', why:r.join(' and ')};
+      return {code:'in', why:r.join(' and '), stray:stray};
     }
-    // RULE OUT -> straight D/C home
-    if((t0<T.ruleOutPainValue && pain==='yes') || (t0<T.ruleOutValue && d01<T.ruleOutDelta)){
-      var w = (t0<T.ruleOutPainValue&&pain==='yes')
-        ? '0-hr &lt; '+T.ruleOutPainValue+' '+SITE.units+' with chest pain &gt; '+T.painHours+' h'
-        : '0-hr &lt; '+T.ruleOutValue+' '+SITE.units+' with 0/1-hr &Delta; &lt; '+T.ruleOutDelta;
-      return {code:'dchome', why:w};
+    // RULE OUT -> straight D/C home. NOTE: the "<4 with chest pain >3 h" criterion is a
+    // SINGLE-troponin completion (handled above, and scoped that way in the pathway table);
+    // once a 1-hr value exists the 0/1-hr delta governs, so a low 0-hr with a rising 1-hr
+    // reflexes rather than discharging.
+    if(t0<T.ruleOutValue && d01<T.ruleOutDelta){
+      return {code:'dchome', why:'0-hr &lt; '+T.ruleOutValue+' '+SITE.units+' with 0/1-hr &Delta; &lt; '+T.ruleOutDelta, stray:stray};
     }
     // GRAY ZONE
-    if(d01<T.ruleOutDelta) return {code:'ruledout', via:'0/1-hr &Delta; &lt; '+T.ruleOutDelta+' in the '+T.grayLow+'&ndash;'+T.grayHigh+' gray zone'};
-    // gray-zone delta above rule-out but below rule-in
+    if(d01<T.ruleOutDelta) return {code:'ruledout', via:'0/1-hr &Delta; &lt; '+T.ruleOutDelta+' in the '+T.grayLow+'&ndash;'+T.grayHigh+' gray zone', stray:stray};
+
+    // ---- REFLEX BAND (0/1-hr delta between ruleOutDelta and ruleInDelta) ----
+    // This is the only branch in which the 3-hr value is meaningful.
     if(t3===null) return {code:'reflex'};
-    // 3-hr entered and not ruled in -> ruled out
+    var d3=Math.max(Math.abs(t3-t0),Math.abs(t3-t1));
+    if(t3>=T.ruleInValue || d3>=T.ruleInDelta){
+      var r3=[];
+      if(t3>=T.ruleInValue) r3.push('3-hr troponin &ge; '+T.ruleInValue+' '+SITE.units);
+      if(d3>=T.ruleInDelta) r3.push('3-hr &Delta; &ge; '+T.ruleInDelta);
+      return {code:'in', why:r3.join(' and ')};
+    }
     return {code:'ruledout', via:'3-hr &Delta; &lt; '+T.ruleInDelta+' after reflex'};
   }
 
@@ -453,12 +462,16 @@
     // troponin result card
     var tr=$('tropResult'); tr.className='resultcard';
     var t3field=$('t3field'); t3field.classList.remove('hot');
-    if(d.code==='incomplete'){ tr.classList.add('pending'); tr.innerHTML=d.why||'Complete Section 1 and enter troponins.'; }
+    if(d.code==='incomplete'){ tr.classList.add('pending'); tr.innerHTML=d.why||'Enter the 0-hr and 1-hr troponin.'; }
     else if(d.code==='in'){ tr.classList.add('r-in'); tr.innerHTML='<span class="tag">RULE-IN ZONE</span> '+d.why+'.'; }
     else if(d.code==='dchome'){ tr.classList.add('r-dc'); tr.innerHTML='<span class="tag">D/C HOME</span> '+d.why+' — AMI ruled out.'; }
     else if(d.code==='esrd'){ tr.classList.add('r-ref'); tr.innerHTML='<span class="tag">NOT APPLICABLE</span> ESRD — this accelerated hs-troponin algorithm does not apply. Use serial troponins and clinical judgment.'; }
     else if(d.code==='reflex'){ tr.classList.add('r-ref'); tr.innerHTML='<span class="tag">REFLEX TO 3 HOURS</span> troponin under '+SITE.trop.ruleInValue+' '+SITE.units+' with 0/1-hr Δ &ge; '+SITE.trop.ruleOutDelta+' but &lt; '+SITE.trop.ruleInDelta+' — obtain a 3-hr troponin and enter it above.'; t3field.classList.add('hot'); }
     else if(d.code==='ruledout'){ tr.classList.add('r-out'); tr.innerHTML='<span class="tag">AMI RULED OUT</span> '+d.via+' — apply HEART score.'; }
+
+    // A 3-hr value that the current 0/1-hr result does not use is called out explicitly,
+    // so a number left over from a previous patient/entry can never sit there unnoticed.
+    if(d.stray){ tr.innerHTML += '<div style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(0,0,0,.15); font-weight:600;">&#9888; A 3-hr value is entered but <u>not used</u> — this result comes from the 0-hr and 1-hr values alone. Clear the 3-hr box if it is left over from another patient.</div>'; }
 
     // HEART score bar
     var h=heartData();
@@ -478,7 +491,7 @@
     function show(cls,head,verdict,detail){ paint(box,cls);
       box.innerHTML='<div class="head">'+head+'</div><div class="verdict">'+verdict+'</div><div class="detail">'+detail+'</div>'; }
 
-    if(d.code==='incomplete'){ pending(d.why||'Answer Section 1 and enter the troponins.'); return; }
+    if(d.code==='incomplete'){ pending(d.why||'Enter the 0-hr and 1-hr troponin.'); return; }
     if(d.code==='esrd'){ show('ref','ESRD','Algorithm not applicable — use clinical judgment','This accelerated hs-troponin pathway excludes ESRD (chronically elevated hs-troponin). Use serial troponins, serial EKGs, and clinical judgment; the HEART score may still help frame risk.'); return; }
     if(d.code==='in'){ show('in','Rule-in zone','Rule in — consider cardiology consult','Rule-in criteria met ('+d.why+'). Consider cardiology consultation if clinically appropriate. Manage as ACS.'); return; }
     if(d.code==='reflex'){ var T=SITE.trop; show('ref','Reflex','Observe — repeat hs-troponin at 3 hours','Troponin under '+T.ruleInValue+' '+SITE.units+' with a 0/1-hr Δ ≥ '+T.ruleOutDelta+' but < '+T.ruleInDelta+'. Obtain a 3-hr troponin: Δ ≥ '+T.ruleInDelta+' rules in; Δ < '+T.ruleInDelta+' rules AMI out (then apply HEART score).'); return; }

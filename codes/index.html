@@ -1316,8 +1316,10 @@
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-1" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>ABC score ≥2</b> — 1 point each for: penetrating mechanism, pulse &gt;120, SBP &lt;90, positive FAST.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-2" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Persistent hemodynamic instability despite initial resuscitation.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-3" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Active bleeding requiring operation or angioembolization.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-19" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Anticipated or actual <b>≥4 units PRBC in 1 hour</b> with ongoing bleeding, or replacement of <b>&gt;50% blood volume in 3 hours</b>. <span style="color:#8a8578;">(Not in the LRH policy&nbsp;— ACS TQIP volume-based trigger, kept because the ABC score does not apply to non-trauma exsanguination: GI bleed, post-partum hemorrhage, ruptured AAA.)</span></span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-20" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Physician gestalt in exsanguinating hemorrhage is a valid trigger on its own</b> — don't wait to calculate a score in an obviously exsanguinating patient. <span style="color:#8a8578;">(Not in the LRH policy&nbsp;— but the policy does state any attending may activate MTP in an emergent situation.)</span></span></label></li>
         </ul>
-        <div style="padding:2px 12px 12px; font-size:12px; line-height:1.35; color:#5a6a78;">Any attending physician may activate MTP in an emergent situation. Weigh the hazard of transfusing un-crossmatched blood against the risk of waiting for testing — if blood is released before the crossmatch is complete, the record needs a statement that the clinical situation required release; that documentation can be completed after the emergency. Never let paperwork delay the release of blood products.</div>
+        <div style="padding:2px 12px 12px; font-size:12px; line-height:1.35; color:#5a6a78;">The first three criteria are LRH policy. Any attending physician may activate MTP in an emergent situation. Weigh the hazard of transfusing un-crossmatched blood against the risk of waiting for testing — if blood is released before the crossmatch is complete, the record needs a statement that the clinical situation required release; that documentation can be completed after the emergency. Never let paperwork delay the release of blood products.</div>
       </details>
     </div>
 
@@ -1330,16 +1332,34 @@
         <div style="padding:10px 4px; text-align:center; border-right:1px solid #e7eaef;"><div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; color:#5a6a78;">PLASMA</div><div id="mtpplasma" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:26px; font-weight:700; color:#2f62a8;">0</div></div>
         <div style="padding:10px 4px; text-align:center;"><div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; color:#5a6a78;">CRYO</div><div id="mtpcryo" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:26px; font-weight:700; color:#5a6a78;">0</div></div>
       </div>
+      <!-- Each product gets a wide +1 and a narrow −1. The −1 exists because a single mis-tap
+           otherwise offsets the calcium cue for the rest of the case with no way to correct it
+           short of the global reset, which wipes every tool's case state. -->
       <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0; border-top:1px solid #e7eaef;">
-        <button type="button" id="mtpprbc-add" class="cs-secondary" style="background:#fbeaec; color:#9b1c2e; border:none; border-right:1px solid #e7eaef; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; cursor:pointer;">+1</button>
-        <button type="button" id="mtpplasma-add" class="cs-secondary" style="background:#eaf1fa; color:#2f62a8; border:none; border-right:1px solid #e7eaef; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; cursor:pointer;">+1</button>
-        <button type="button" id="mtpcryo-add" class="cs-secondary" style="background:#eef1f4; color:#5a6a78; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; cursor:pointer;">+1</button>
+        <div style="display:flex; border-right:1px solid #e7eaef;">
+          <button type="button" id="mtpprbc-add" class="cs-secondary" style="flex:1; min-height:44px; background:#fbeaec; color:#9b1c2e; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; cursor:pointer;">+1</button>
+          <button type="button" id="mtpprbc-sub" class="cs-secondary" aria-label="Remove one PRBC" style="flex:none; width:42px; min-height:44px; background:#fffefb; color:#8a8578; border:none; border-left:1px solid #e7eaef; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14px; font-weight:700; cursor:pointer;">&minus;</button>
+        </div>
+        <div style="display:flex; border-right:1px solid #e7eaef;">
+          <button type="button" id="mtpplasma-add" class="cs-secondary" style="flex:1; min-height:44px; background:#eaf1fa; color:#2f62a8; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; cursor:pointer;">+1</button>
+          <button type="button" id="mtpplasma-sub" class="cs-secondary" aria-label="Remove one plasma" style="flex:none; width:42px; min-height:44px; background:#fffefb; color:#8a8578; border:none; border-left:1px solid #e7eaef; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14px; font-weight:700; cursor:pointer;">&minus;</button>
+        </div>
+        <div style="display:flex;">
+          <button type="button" id="mtpcryo-add" class="cs-secondary" style="flex:1; min-height:44px; background:#eef1f4; color:#5a6a78; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; cursor:pointer;">+1</button>
+          <button type="button" id="mtpcryo-sub" class="cs-secondary" aria-label="Remove one cryoprecipitate" style="flex:none; width:42px; min-height:44px; background:#fffefb; color:#8a8578; border:none; border-left:1px solid #e7eaef; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14px; font-weight:700; cursor:pointer;">&minus;</button>
+        </div>
       </div>
-      <div id="mtpcalcue" style="display:none; padding:11px 14px; font-size:13.5px; line-height:1.35; color:#16324f; background:#fdf3cf; border-top:2px solid #8a6d1f;">Every <b>4 units PRBC</b>: give <b>calcium</b> (gluconate 2 g peripheral or chloride 1 g central) — citrate in banked blood chelates calcium and worsens coagulopathy. <b>Recheck labs now:</b> ionized calcium, coags/INR, fibrinogen, CBC, ABG. Consider checking (not empirically dosing) <b>magnesium</b> — evidence on massive-transfusion magnesium is mixed, some data show it rises rather than falls, so check the level rather than assume it's low.</div>
+      <div id="mtpcalcue" style="display:none; padding:11px 14px; font-size:13.5px; line-height:1.35; color:#16324f; background:#fdf3cf; border-top:2px solid #8a6d1f;">
+        <div id="mtpcalstatus" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.04em; margin-bottom:6px;"></div>
+        <div>Every <b>4 units PRBC</b>: give <b>calcium</b> (gluconate 2 g peripheral or chloride 1 g central) — citrate in banked blood chelates calcium and worsens coagulopathy. <b>Recheck labs now:</b> ionized calcium, coags/INR, fibrinogen, CBC, ABG. Consider checking (not empirically dosing) <b>magnesium</b> — evidence on massive-transfusion magnesium is mixed, some data show it rises rather than falls, so check the level rather than assume it's low.</div>
+      </div>
       <div style="padding:9px 14px; border-top:1px solid #e7eaef; background:#fdf3cf; font-size:12.5px; line-height:1.35; color:#6b5410;">PLATELETS — <b>often unavailable at LRH.</b> If your blood bank has them on hand, they're still part of a balanced pack; tally them here without slowing PRBC/plasma/cryo while waiting.</div>
       <div style="display:grid; grid-template-columns:1fr 2fr; gap:0; border-top:1px solid #eadfbf;">
         <div style="padding:8px 4px; text-align:center; border-right:1px solid #eadfbf;"><div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10px; color:#8a8578;">PLT</div><div id="mtpplt" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:20px; font-weight:700; color:#8a6d1f;">0</div></div>
-        <button type="button" id="mtpplt-add" class="cs-secondary" style="background:#fdf3cf; color:#8a6d1f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; cursor:pointer;">+1 PLT</button>
+        <div style="display:flex;">
+          <button type="button" id="mtpplt-add" class="cs-secondary" style="flex:1; min-height:44px; background:#fdf3cf; color:#8a6d1f; border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; cursor:pointer;">+1 PLT</button>
+          <button type="button" id="mtpplt-sub" class="cs-secondary" aria-label="Remove one platelet unit" style="flex:none; width:42px; min-height:44px; background:#fffefb; color:#8a8578; border:none; border-left:1px solid #eadfbf; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14px; font-weight:700; cursor:pointer;">&minus;</button>
+        </div>
       </div>
     </div>
 
@@ -1352,7 +1372,7 @@
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-6" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Blood Bank issues group O RBCs while type is pending — <b>females &lt;50y → O-negative</b>; <b>all other females and all males → O-positive.</b> Group AB plasma is thawed in parallel (~30 min). Once the patient's ABO/Rh is known, products switch to group-specific or ABO-compatible.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-7" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Send blood immediately for: <b>Type &amp; Screen</b> (blood drawn by EMS can't be used for Type/Screen unless patient history info is available), PT/INR, PTT, fibrinogen, D-dimer, CBC, lactate, BMP, ionized calcium — plus a separate <b>ABG.</b></span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-8" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Place two large-bore IVs (18-gauge or larger) or a central line, start continuous core temperature monitoring, and prepare the Level 1 rapid infuser.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-8b" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Check your access can keep up.</b> A standard triple-lumen CVC is flow-limited even on its biggest port. If peripheral access is poor or flow can't keep up with product delivery, place a large-bore resuscitation line — a Cordis-style introducer sheath, or the combination AVA 3Xi device — for rapid volume (<a href="#c14">see card 14</a>).</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-8b" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Check your access can keep up.</b> A standard triple-lumen CVC is flow-limited even on its biggest port. If peripheral access is poor or flow can't keep up with product delivery, place a large-bore resuscitation line — a Cordis-style introducer sheath, or the combination AVA 3Xi device — for rapid volume (<a href="../procedures/?from=home#c14">Resuscitation Line, Procedures card 14 →</a>).</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-9" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Begin crystalloid or colloid infusion as ordered while products are en route — once blood products start, limit crystalloid so it doesn't dislodge the early forming clot. If feasible, consider an arterial line for continuous pressure monitoring.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-10" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>TXA:</b> give within 3 hours of injury if not already given — has its own countdown clock (<a href="#c09">see card 09</a>).</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-11" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Assign a runner (confirm whether your pneumatic tube system is approved for blood products, or if a runner is required). Products may not arrive/alternate evenly — give what's available; the sequence doesn't have to strictly alternate PRBC/plasma.</span></label></li>
@@ -1376,7 +1396,7 @@
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">STOPPING MTP</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-15" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>The decision to stop is the <b>attending physician's</b> call — bleeding controlled (anatomic) <b>and</b> hemodynamics normalizing (physiologic), or recognition that further resuscitation is futile.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-16" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>If bleeding is controlled but the patient is still in the acute resuscitation phase, use these goal-directed stopping points instead of continuing ratio-driven transfusion: <b>RBC</b> once Hgb &ge;10 g/dL · <b>plasma</b> once PT/INR is normalizing or aPTT &lt;35 sec · <b>platelets</b> once count &gt;150&times;10&#8313; · <b>cryoprecipitate</b> (OB patients) once fibrinogen &gt;200 g/L.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-16" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>If bleeding is controlled but the patient is still in the acute resuscitation phase, use these goal-directed stopping points instead of continuing ratio-driven transfusion: <b>RBC</b> once Hgb &ge;10 g/dL · <b>plasma</b> once PT/INR is normalizing or aPTT &lt;35 sec · <b>platelets</b> once count &gt;150&times;10&#8313;/L · <b>cryoprecipitate</b> (OB patients) once fibrinogen &gt;200 mg/dL (2 g/L). <span style="color:#8a8578;">(The written policy prints "200 g/L" — that unit is ~100&times; any physiologic value and reads as a typo; verify with your blood bank.)</span></span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-17" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Return all unused products to the Blood Bank promptly, in the correct cooler. Document on the <b>MTP paper flowsheet</b> — one copy in the chart, one copy to the Blood Bank; this can be completed after the emergency resolves.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="12-18" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Notify Blood Bank that MTP has been <b>terminated — within 1 hour</b> of stopping.</span></label></li>
         </ul>
@@ -2321,7 +2341,7 @@
 
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "2.9",
+  version: "3.0",
   lastReviewed: "2026-08-08",
   /* WS10.2 — minutes of manual-wide inactivity (lrh-case-lastactive) before the weight
      strip appends an "ENTERED HH:MM · N MIN AGO" line and ambers #wtbar's border.
@@ -4174,31 +4194,76 @@ var AUDIENCE = (function(){
   var prbc=0, plasma=0, plt=0, cryo=0;
   try{ prbc=+localStorage.getItem(KP)||0; plasma=+localStorage.getItem(KL)||0; plt=+localStorage.getItem(KT)||0; cryo=+localStorage.getItem(KCr)||0; }catch(e){}
   function save(){ try{ localStorage.setItem(KP,String(prbc)); localStorage.setItem(KL,String(plasma)); localStorage.setItem(KT,String(plt)); localStorage.setItem(KCr,String(cryo)); }catch(e){} }
-  function paint(){ prbcEl.textContent=String(prbc); plasmaEl.textContent=String(plasma); pltEl.textContent=String(plt); cryoEl.textContent=String(cryo); }
+
+  var calstatus=document.getElementById('mtpcalstatus'), flashT=null;
+  // Cue state is derived from the CURRENT count on every paint, never only at the moment of a
+  // tap — otherwise a reload (screen lock, PWA relaunch, crash) restores the count but leaves
+  // the calcium instruction hidden until the next multiple of 4.
+  function paintCue(flash){
+    if(prbc < 4){ calcue.style.display='none'; return; }
+    calcue.style.display='block';
+    var due = (prbc % 4 === 0);
+    if(due){
+      calcue.style.background = '#fdf3cf';
+      calcue.style.borderTop  = '3px solid #8a6d1f';
+      if(calstatus){ calstatus.style.color='#8a6d1f';
+        calstatus.textContent='⚠ CALCIUM DUE NOW — ' + prbc + ' UNITS PRBC'; }
+    } else {
+      // Between doses: stay on screen (the dose text is the only place it appears) but read
+      // as standing reference rather than an active prompt.
+      calcue.style.background = '#fbf7ea';
+      calcue.style.borderTop  = '1px solid #eadfbf';
+      if(calstatus){ calstatus.style.color='#8a8578';
+        calstatus.textContent='LAST DUE AT ' + (prbc - (prbc % 4)) + ' · NEXT AT ' + (prbc + (4 - (prbc % 4))) + ' UNITS'; }
+    }
+    // Brief high-contrast flash so units 8 and 12 signal as loudly as unit 4 did.
+    if(flash && due){
+      calcue.style.background='#f7e08a';
+      if(flashT) clearTimeout(flashT);
+      flashT=setTimeout(function(){ if(prbc%4===0 && prbc>=4) calcue.style.background='#fdf3cf'; }, 1400);
+    }
+  }
+  function paint(flash){ prbcEl.textContent=String(prbc); plasmaEl.textContent=String(plasma); pltEl.textContent=String(plt); cryoEl.textContent=String(cryo); paintCue(flash); }
+
   function bump(kind){
     if(kind==='prbc'){
       prbc++;
       if(window.__codeslog) window.__codeslog.add('12','PRBC #'+prbc+' STARTED');
-      if(prbc%4===0){ calcue.style.display='block'; if(window.__codeslog) window.__codeslog.add('12','CALCIUM REMINDER (after '+prbc+' PRBC)'); }
+      if(prbc%4===0 && window.__codeslog) window.__codeslog.add('12','CALCIUM REMINDER (after '+prbc+' PRBC)');
     }
     if(kind==='plasma'){ plasma++; if(window.__codeslog) window.__codeslog.add('12','PLASMA #'+plasma+' STARTED'); }
     if(kind==='plt'){ plt++; if(window.__codeslog) window.__codeslog.add('12','PLATELETS #'+plt+' STARTED'); }
     if(kind==='cryo'){ cryo++; if(window.__codeslog) window.__codeslog.add('12','CRYO #'+cryo+' STARTED'); }
-    save(); paint();
+    save(); paint(true);
+  }
+  // Correction, not a clinical event: floors at 0 and logs as a correction so the face-up log
+  // stays an honest record rather than silently losing a unit.
+  function unbump(kind){
+    var changed=false;
+    if(kind==='prbc'  && prbc>0)  { prbc--;   changed=true; }
+    if(kind==='plasma'&& plasma>0){ plasma--; changed=true; }
+    if(kind==='plt'   && plt>0)   { plt--;    changed=true; }
+    if(kind==='cryo'  && cryo>0)  { cryo--;   changed=true; }
+    if(!changed) return;
+    if(window.__codeslog) window.__codeslog.add('12','CORRECTION — '+kind.toUpperCase()+' COUNT DOWN TO '+({prbc:prbc,plasma:plasma,plt:plt,cryo:cryo})[kind]);
+    save(); paint(false);
   }
   var b;
   b=document.getElementById('mtpprbc-add'); if(b) b.addEventListener('click', function(){ bump('prbc'); });
   b=document.getElementById('mtpplasma-add'); if(b) b.addEventListener('click', function(){ bump('plasma'); });
   b=document.getElementById('mtpplt-add'); if(b) b.addEventListener('click', function(){ bump('plt'); });
   b=document.getElementById('mtpcryo-add'); if(b) b.addEventListener('click', function(){ bump('cryo'); });
+  b=document.getElementById('mtpprbc-sub'); if(b) b.addEventListener('click', function(){ unbump('prbc'); });
+  b=document.getElementById('mtpplasma-sub'); if(b) b.addEventListener('click', function(){ unbump('plasma'); });
+  b=document.getElementById('mtpplt-sub'); if(b) b.addEventListener('click', function(){ unbump('plt'); });
+  b=document.getElementById('mtpcryo-sub'); if(b) b.addEventListener('click', function(){ unbump('cryo'); });
   var rb=document.getElementById('resetbtn');
   if(rb) rb.addEventListener('click', function(){
     prbc=0; plasma=0; plt=0; cryo=0;
     try{ localStorage.removeItem(KP); localStorage.removeItem(KL); localStorage.removeItem(KT); localStorage.removeItem(KCr); }catch(e){}
-    calcue.style.display='none';
-    paint();
+    paint(false);
   });
-  paint();
+  paint(false);
 })();
 
 /* ---- Card 13: Seizure clock + timed-phase engine (status epilepticus) ---- */
