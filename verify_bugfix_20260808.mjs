@@ -1,5 +1,30 @@
-import { chromium } from '/home/claude/.npm-global/lib/node_modules/playwright/index.mjs';
-const b = await chromium.launch({executablePath:'/opt/pw-browsers/chromium-1194/chrome-linux/chrome'});
+/* LRH Emergency Manual — regression checks for the 2026-08-08 bug-fix round.
+ *
+ * Run against a local server:
+ *     python3 -m http.server 8123        # from the repo root, in another terminal
+ *     node verify_bugfix_20260808.mjs
+ *
+ * Or against a deployed URL:
+ *     BASE=https://system-audit-fixes--loquacious-dolphin-833eb2.netlify.app node verify_bugfix_20260808.mjs
+ *
+ * Needs Playwright once:  npm i -D playwright && npx playwright install chromium
+ * Unlike the older verify_*.mjs files in this repo, this one resolves Playwright and the
+ * browser binary at runtime instead of hardcoding a path, so it runs anywhere.
+ */
+let chromium;
+try { ({ chromium } = await import('playwright')); }
+catch { ({ chromium } = await import('/home/claude/.npm-global/lib/node_modules/playwright/index.mjs')); }
+
+const BASE = (process.env.BASE || 'http://localhost:8123').replace(/\/$/, '');
+const launchOpts = process.env.PW_CHROME ? { executablePath: process.env.PW_CHROME } : {};
+let b;
+try { b = await chromium.launch(launchOpts); }
+catch (e) {
+  console.error('Could not launch Chromium: ' + e.message);
+  console.error('Try:  npx playwright install chromium   (or set PW_CHROME=/path/to/chrome)');
+  process.exit(2);
+}
+console.log('testing against ' + BASE + '\n');
 let pass=0, fail=0;
 const ck=(name,got,want)=>{ const ok=String(got)===String(want); (ok?pass++:fail++);
   console.log((ok?'PASS ':'FAIL ')+name+'  got='+got+(ok?'':'  want='+want)); };
@@ -7,7 +32,7 @@ const ck=(name,got,want)=>{ const ok=String(got)===String(want); (ok?pass++:fail
 /* ---- 1. HEART: stale 3-hr no longer fabricates results ---- */
 const pg = await b.newPage({viewport:{width:390,height:1400}});
 const errs=[]; pg.on('pageerror',e=>errs.push(String(e)));
-await pg.goto('http://localhost:8123/clinical-pathways/heart/', {waitUntil:'networkidle'});
+await pg.goto(BASE + '/clinical-pathways/heart/', {waitUntil:'networkidle'});
 async function heart(t0,t1,t3){
   await pg.fill('#t0',''); await pg.fill('#t1',''); await pg.fill('#t3','');
   await pg.fill('#t0',String(t0)); await pg.fill('#t1',String(t1));
@@ -42,7 +67,7 @@ ck('heart page errors', errs.length, 0);
 /* ---- 2. codes card 12 ---- */
 const p2 = await b.newPage({viewport:{width:390,height:1400}});
 const e2=[]; p2.on('pageerror',e=>e2.push(String(e)));
-await p2.goto('http://localhost:8123/codes/?from=home', {waitUntil:'networkidle'});
+await p2.goto(BASE + '/codes/?from=home', {waitUntil:'networkidle'});
 const cue=()=>p2.evaluate(()=>({n:+document.getElementById('mtpprbc').textContent,
   d:getComputedStyle(document.getElementById('mtpcalcue')).display,
   s:(document.getElementById('mtpcalstatus')||{}).textContent||''}));
@@ -65,7 +90,7 @@ ck('codes page errors', e2.length, 0);
 
 /* ---- 3. OB service worker ---- */
 const p3 = await b.newPage();
-await p3.goto('http://localhost:8123/ob-neonatal/', {waitUntil:'networkidle'});
+await p3.goto(BASE + '/ob-neonatal/', {waitUntil:'networkidle'});
 const sw = await p3.evaluate(async () => {
   const t = async a => { try { const c=await caches.open('t'+Math.random()); await c.addAll(a); return 'RESOLVED'; } catch(e){ return 'REJECTED'; } };
   return { icon:(await fetch('icon.svg')).status, addAll: await t(['./','index.html','manifest.webmanifest','icon.svg']) };
@@ -75,7 +100,7 @@ ck('sw asset list caches cleanly', sw.addAll, 'RESOLVED');
 
 /* ---- 4. search ---- */
 const p4 = await b.newPage({viewport:{width:390,height:1400}});
-await p4.goto('http://localhost:8123/', {waitUntil:'networkidle'});
+await p4.goto(BASE + '/', {waitUntil:'networkidle'});
 const q = await p4.$('input[type=search], #q, input[type=text]');
 if(q){ await q.fill('rosc'); await p4.waitForTimeout(250);
   const txt=(await p4.textContent('body'))||'';

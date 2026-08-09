@@ -1,1 +1,26 @@
+# Node — only present because the verify_*.mjs regression scripts use Playwright.
+# Nothing in the deployed site depends on node_modules; the tools are self-contained HTML.
+node_modules/
+package-lock.json
+package.json
+
+# Playwright artifacts
+test-results/
+playwright-report/
+.playwright/
+
+# macOS
 .DS_Store
+.AppleDouble
+.LSOverride
+Icon?
+._*
+
+# Editor / scratch
+.vscode/
+.idea/
+*.swp
+*~
+
+# Netlify local state
+.netlify/
