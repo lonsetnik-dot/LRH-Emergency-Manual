@@ -1,6 +1,14 @@
 import re, glob, html as H
 def txt(p): return open(p,encoding='utf-8').read()
-proc=txt('procedures/index.html'); lab=txt('labels/index.html')
+proc=txt('procedures/index.html'); lab=txt('labels/index.html'); cod=txt('codes/index.html')
+
+# The map covers the PHYSICAL system, so it is not simply "every card in the manual".
+# procedures/ is included whole — every one of those cards is a thing you do to a patient with
+# equipment that has to live somewhere. codes/ is included SELECTIVELY: a Codes card only earns a
+# row once it has a poster, a defined kit, or a cart/cabinet label. Symptomatic bradycardia does not
+# need a drawer; massive hematemesis does. Without that rule the denominator fills with cards that
+# can never score, and the coverage bars stop meaning anything.
+TOOLS=[('procedures',proc,'all'),('codes',cod,'physical-only')]
 
 CARTS=[]
 blk=lab[lab.find('var CARTS = ['):lab.find('/* Cabinets')]
@@ -23,37 +31,47 @@ for cid,cname,drawers in CARTS:
             LOC[nm]=('loc-'+cid, ('%s · side panel'%cname) if kind=='side panel' else '%s · %s %s'%(cname,kind,n))
 for nm in ROOM7: LOC[nm]=('loc-room7','Room 7 cabinets · %s'%nm)
 
-LABELMAP={'c01':['Chest Tube Insertion','Pneumothorax Tray'],'c02':['Thoracostomy','Rib Spreader'],
- 'c04':['Burr Hole'],'c05':['Canthotomy Kit'],'c06':['Vascular Access'],'c07':[],'c08':[],
- 'c09':[],'c10':['Hemorrhage Control 2'],'c11':[],'c12':['Hemorrhage Control 1'],
- 'c13':['Postpartum Hemorrhage'],'c14':['Vascular Access']}
+LABELMAP={
+ 'procedures':{'c01':['Chest Tube Insertion','Pneumothorax Tray'],'c02':['Thoracostomy','Rib Spreader'],
+   'c04':['Burr Hole'],'c05':['Canthotomy Kit'],'c06':['Vascular Access'],
+   'c07':['Transvenous Pacing'],'c08':['Procedure Trays'],
+   'c09':[],'c10':['Hemorrhage Control 2'],'c11':['Hemorrhage Control 1'],'c12':['Hemorrhage Control 1'],
+   'c13':['Postpartum Hemorrhage'],'c14':['Vascular Access'],
+   'c15':['SALAD Suction'],'c16':['Chest Drainage']},
+ 'codes':{'c23':['GI Hemorrhage'],'c24':['Lung Isolation'],'c25':['Epistaxis'],'c26':['Pacemaker Magnet']},
+}
 
 TILE={}
-for m in re.finditer(r'<a href="#(c\d+)"[^>]*>(.*?)</a>', proc, re.S):
-    sv=re.search(r'<svg.*?</svg>', m.group(2), re.S)
-    if sv: TILE[m.group(1)]=sv.group(0)
+for tool,src,_ in TOOLS:
+    for m in re.finditer(r'<a href="#(c\d+)"[^>]*>(.*?)</a>', src, re.S):
+        sv=re.search(r'<svg.*?</svg>', m.group(2), re.S)
+        if sv: TILE.setdefault((tool,m.group(1)), sv.group(0))
 POST={}
 for d in sorted(glob.glob('posters/*/index.html')):
-    hh=txt(d); t=re.search(r'procedures/\?from=home#(c\d+)', hh)
-    POST[d.split('/')[1]]=dict(qr=bool(re.search(r'class="qr"',hh)), target=t.group(1) if t else None)
+    hh=txt(d); t=re.search(r'(procedures|codes)/\?from=home#(c\d+)', hh)
+    POST[d.split('/')[1]]=dict(qr=bool(re.search(r'class="qr"',hh)),
+                               target=(t.group(1),t.group(2)) if t else None)
 
 ROWS=[]
-for m in re.finditer(r'<article id="(c\d+)"', proc):
-    cid=m.group(1); s=m.start(); e=proc.find('</article>',s); b=proc[s:e]
-    t=re.search(r'</span>([^<]{3,70})</h2>', b)
-    if not t: continue
-    figs=[f for f in re.findall(r'<svg[^>]*viewBox="0 0 \d+ \d+"[^>]*>.*?</svg>', b, re.S) if 'width="46"' not in f]
-    poster=next((n for n,i in POST.items() if i['target']==cid), None)
-    labels=[l for l in LABELMAP.get(cid,[]) if l in LOC]
-    places=[]
-    for l in labels:
-        v=LOC[l]
-        if v not in places: places.append(v)
-    ROWS.append(dict(id=cid,title=re.sub(r'\s+',' ',t.group(1)).strip().replace('&amp;','&'),
-      tile=TILE.get(cid,''),fig=figs[0] if figs else '',nfig=len(figs),
-      kit=bool(re.search(r'IN THE KIT',b)),poster=poster,
-      qr=POST[poster]['qr'] if poster else False,labels=labels,places=places))
-ROWS.sort(key=lambda r:r['id'])
+for tool,src,mode in TOOLS:
+    for m in re.finditer(r'<article id="(c\d+)"', src):
+        cid=m.group(1); st=m.start(); e=src.find('</article>',st); b=src[st:e]
+        t=re.search(r'</span>([^<]{3,70})</h2>', b)
+        if not t: continue
+        figs=[f for f in re.findall(r'<svg[^>]*viewBox="0 0 \d+ \d+"[^>]*>.*?</svg>', b, re.S) if 'width="46"' not in f]
+        poster=next((n for n,i in POST.items() if i['target']==(tool,cid)), None)
+        labels=[l for l in LABELMAP.get(tool,{}).get(cid,[]) if l in LOC]
+        kit=bool(re.search(r'IN THE KIT',b))
+        if mode=='physical-only' and not (poster or labels or kit): continue
+        places=[]
+        for l in labels:
+            v=LOC[l]
+            if v not in places: places.append(v)
+        ROWS.append(dict(tool=tool,id=cid,title=re.sub(r'\s+',' ',t.group(1)).strip().replace('&amp;','&'),
+          tile=TILE.get((tool,cid),''),fig=figs[0] if figs else '',nfig=len(figs),
+          kit=kit,poster=poster,
+          qr=POST[poster]['qr'] if poster else False,labels=labels,places=places))
+ROWS.sort(key=lambda r:(r['tool'],r['id']))
 
 rows=''
 for r in ROWS:
@@ -61,7 +79,7 @@ for r in ROWS:
     labels='<br>'.join(r['labels']) if r['labels'] else '—'
     place='<br>'.join('<a href="../labels/#%s">%s</a>'%(a,H.escape(x)) for a,x in r['places']) if r['places'] else '—'
     fig=('<div class="figbox">%s</div>%s'%(r['fig'],'<i style="font-style:normal;font-size:10px;color:#5a6a78">%d figures</i>'%r['nfig'] if r['nfig']>1 else '')) if r['fig'] else '<span class="n">no figure</span>'
-    rows+=('<tr><td class="ic">%s</td><td class="fg">%s</td><td class="ti"><a href="../procedures/?from=home#%s"><b>%s</b></a><i>%s</i></td>'%(r['tile'],fig,r['id'],H.escape(r['title']),r['id']))
+    rows+=('<tr><td class="ic">%s</td><td class="fg">%s</td><td class="ti"><a href="../%s/?from=home#%s"><b>%s</b></a><i>%s &middot; %s</i></td>'%(r['tile'],fig,r['tool'],r['id'],H.escape(r['title']),r['tool'],r['id']))
     rows+=(('<td class="y">%s</td>'%poster) if r['poster'] else '<td class="n">—</td>')
     rows+=('<td class="y">QR → card</td>' if r['qr'] else '<td class="n">—</td>')
     rows+=(('<td class="y">%s</td>'%place) if r['places'] else '<td class="n">not located</td>')

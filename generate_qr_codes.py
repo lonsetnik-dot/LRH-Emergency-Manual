@@ -6,7 +6,15 @@ BASE='https://lrhemergencymanual.net'
 # Destination per label. Only where a real card exists — no invented targets.
 DEST = {
  # --- code cart ---
- 'Medications':            '/codes/?from=home#cart',
+ # Cart-front category faces point at their own drawer anchor; item faces point at the card that
+ # uses them. Drawer 5 is the deep drawer and carries two category faces.
+ 'Intubation':             '/codes/?from=home#d1',
+ 'I.V. Supplies':          '/codes/?from=home#d5',
+ 'Medications':            '/codes/?from=home#d3',
+ 'Suction':                '/codes/?from=home#d4',
+ 'I.V. Fluids':            '/codes/?from=home#d4',
+ 'Surgical / Supraglottic':'/codes/?from=home#d2',
+ 'Miscellaneous':          '/codes/?from=home#d5',
  'OPA / NPA':              '/codes/?from=home#c06',
  'End-Tidal CO₂':          '/codes/?from=home#c06',
  'ETT / Bougie':           '/codes/?from=home#c06',
@@ -38,6 +46,31 @@ DEST = {
  'Fluids':                 '/codes/?from=home#c12',
  'Chest Drainage':         '/procedures/?from=home#c01',
  'Monitoring':             '/codes/?from=home#c06',
+ 'GI Hemorrhage':          '/codes/?from=home#c23',
+ 'Lung Isolation':         '/codes/?from=home#c24',
+ 'Epistaxis':              '/codes/?from=home#c25',
+ 'SALAD Suction':          '/procedures/?from=home#c15',
+ 'Pacemaker Magnet':       '/codes/?from=home#c26',
+ 'Procedure Trays':        '/procedures/?from=home#c16',
+ # Kit build sheets and their 4x6 cabinet cards resolve to the procedure they belong to.
+ 'Chest Tube Kit':           '/procedures/?from=home#c01',
+ 'Thoracotomy Tray':         '/procedures/?from=home#c02',
+ 'Burr Hole Kit':            '/procedures/?from=home#c04',
+ 'Central Line Kit':         '/procedures/?from=home#c06',
+ 'Transvenous Pacing Kit':   '/procedures/?from=home#c07',
+ 'Transvenous Pacing':       '/procedures/?from=home#c07',
+ 'Escharotomy Kit':          '/procedures/?from=home#c08',
+ 'Neck Tamponade Kit':       '/procedures/?from=home#c11',
+ 'Junctional Hemorrhage Kit':'/procedures/?from=home#c12',
+ 'JADA Kit':                 '/procedures/?from=home#c13',
+ 'Resuscitation Line Kit':   '/procedures/?from=home#c14',
+ # These four cabinets have no card of their own yet. Rather than leave them the only labels in the
+ # building with no QR, or invent a destination, they resolve to the system map's Room 7 index --
+ # which really does say what is in each cabinet. Repoint them the day a card exists.
+ 'Arterial Line':          '/system/',
+ 'Suture / Wound':         '/system/',
+ 'Specimens':              '/system/',
+ 'Splints':                '/system/',
  # --- per-cart check cards ---
  '@check-code':            '/codes/?from=home#cart',
  '@check-trauma':          '/procedures/?from=home',

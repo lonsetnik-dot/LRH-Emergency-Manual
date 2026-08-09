@@ -27,6 +27,146 @@ const KITS = [
       { file: 'labels/index.html',             role: 'cart label'       },
     ],
   },
+  {
+    name: 'Blakemore / balloon-tamponade kit',
+    location: /ROOM 7/i,
+    items: ['Sengstaken-Blakemore tube','Minnesota tube','Two 60 mL syringes',
+            'Insufflation manometer','Roller gauze','Scissors taped within reach'],
+    artifacts: [
+      { file: 'codes/index.html',            role: 'interactive card' },
+      { file: 'posters/blakemore/index.html', role: 'wall poster'      },
+      { file: 'labels/index.html',            role: 'cabinet label'    },
+    ],
+  },
+  {
+    name: 'Epistaxis kit',
+    location: /ROOM 7/i,
+    items: ['Rapid Rhino', 'Merocel', 'Silver nitrate', 'Foley', 'Oxymetazoline 0.05%'],
+    artifacts: [
+      { file: 'codes/index.html',  role: 'interactive card' },
+      { file: 'labels/index.html', role: 'cabinet label'    },
+    ],
+  },
+  {
+    name: 'Lung isolation kit',
+    location: /ROOM 7/i,
+    items: ['Bronchial blocker', 'TXA'],
+    artifacts: [
+      { file: 'codes/index.html',  role: 'interactive card' },
+      { file: 'labels/index.html', role: 'cabinet label'    },
+    ],
+  },
+  {
+    name: 'SALAD suction kit',
+    // 'Spare ETT 8.0' is deliberately NOT asserted: the card names the tube in prose rather than as
+    // a kit line, and forcing the two to match word-for-word would make the card read worse.
+    location: /ROOM 7/i,
+    items: ['DuCanto rigid catheter x2', 'HI-D Big Stick', 'Meconium aspirator'],
+    artifacts: [
+      { file: 'procedures/index.html', role: 'interactive card' },
+      { file: 'labels/index.html',     role: 'cabinet label'    },
+    ],
+  },
+  {
+    name: 'Pigtail thoracostomy kit',
+    location: /ROOM 7/i,
+    items: ['Pigtail catheter with stiffener', 'Introducer needle', 'Marked guidewire',
+            'Sequential dilators', 'Lidocaine 1%'],
+    artifacts: [
+      { file: 'procedures/index.html', role: 'interactive card' },
+      { file: 'labels/index.html',     role: 'cabinet label'    },
+    ],
+  },
+  {
+    name: 'Chest Tube Kit',
+    location: /ROOM 7|TRAUMA CART|OB \/ NEONATAL CART/i,
+    items: ['Scalpel No. 10 blade', 'Kelly clamps', 'Heavy suture 0 or 2-0'],
+    artifacts: [
+      { file: 'procedures/index.html', role: 'interactive card' },
+      { file: 'labels/index.html',     role: 'kit card + build sheet' },
+    ],
+  },
+  {
+    name: 'Thoracotomy Tray',
+    location: /ROOM 7|TRAUMA CART|OB \/ NEONATAL CART/i,
+    items: ['Finochietto rib spreader', 'Gigli saw with handles', 'Vascular (aortic) cross-clamp'],
+    artifacts: [
+      { file: 'procedures/index.html', role: 'interactive card' },
+      { file: 'labels/index.html',     role: 'kit card + build sheet' },
+    ],
+  },
+  {
+    name: 'Burr Hole Kit',
+    location: /ROOM 7|TRAUMA CART|OB \/ NEONATAL CART/i,
+    items: ['Codman disposable perforator', 'Sharp dural hook', 'Bone nibbler'],
+    artifacts: [
+      { file: 'procedures/index.html', role: 'interactive card' },
+      { file: 'labels/index.html',     role: 'kit card + build sheet' },
+    ],
+  },
+  {
+    name: 'Central Line Kit',
+    location: /ROOM 7|TRAUMA CART|OB \/ NEONATAL CART/i,
+    items: ['Triple-lumen catheter 7 Fr, 15–20 cm', 'Scalpel No. 11 blade'],
+    artifacts: [
+      { file: 'procedures/index.html', role: 'interactive card' },
+      { file: 'labels/index.html',     role: 'kit card + build sheet' },
+    ],
+  },
+  {
+    name: 'Transvenous Pacing Kit',
+    location: /ROOM 7|TRAUMA CART|OB \/ NEONATAL CART/i,
+    items: ['Balloon-tipped bipolar pacing catheter 5 Fr', 'Balloon syringe capped at 1.5 mL'],
+    artifacts: [
+      { file: 'procedures/index.html', role: 'interactive card' },
+      { file: 'labels/index.html',     role: 'kit card + build sheet' },
+    ],
+  },
+  {
+    name: 'Escharotomy Kit',
+    location: /ROOM 7|TRAUMA CART|OB \/ NEONATAL CART/i,
+    items: ['Marking pen', 'Topical hemostatic gauze'],
+    artifacts: [
+      { file: 'procedures/index.html', role: 'interactive card' },
+      { file: 'labels/index.html',     role: 'kit card + build sheet' },
+    ],
+  },
+  {
+    name: 'Neck Tamponade Kit',
+    location: /ROOM 7|TRAUMA CART|OB \/ NEONATAL CART/i,
+    items: ['Foley catheter 16 Fr', 'Umbilical tape or clamp'],
+    artifacts: [
+      { file: 'procedures/index.html', role: 'interactive card' },
+      { file: 'labels/index.html',     role: 'kit card + build sheet' },
+    ],
+  },
+  {
+    name: 'Junctional Hemorrhage Kit',
+    location: /ROOM 7|TRAUMA CART|OB \/ NEONATAL CART/i,
+    items: ['Hemostatic gauze', 'Pressure dressing'],
+    artifacts: [
+      { file: 'procedures/index.html', role: 'interactive card' },
+      { file: 'labels/index.html',     role: 'kit card + build sheet' },
+    ],
+  },
+  {
+    name: 'JADA Kit',
+    location: /ROOM 7|TRAUMA CART|OB \/ NEONATAL CART/i,
+    items: ['JADA System single-use kit', 'Straight catheter or Foley kit'],
+    artifacts: [
+      { file: 'procedures/index.html', role: 'interactive card' },
+      { file: 'labels/index.html',     role: 'kit card + build sheet' },
+    ],
+  },
+  {
+    name: 'Resuscitation Line Kit',
+    location: /ROOM 7|TRAUMA CART|OB \/ NEONATAL CART/i,
+    items: ['Introducer sheath 8–9 Fr', 'J-tip guidewire', 'Dilator'],
+    artifacts: [
+      { file: 'procedures/index.html', role: 'interactive card' },
+      { file: 'labels/index.html',     role: 'kit card + build sheet' },
+    ],
+  },
 ];
 
 // Compare on visible text: strip tags/entities so <b>3 mL syringe</b> matches "3 mL syringe".
