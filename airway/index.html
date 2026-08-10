@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0D1420">
+<title>LRH Airway — Failed Intubation Ladder (DAS 2025)</title>
+<meta name="description" content="Mobile cognitive aid for the unanticipated difficult airway: DAS 2025 Plan A to Plan D with attempt counts, declare-out-loud prompts and scalpel-bougie-tube. Personal aid, not hospital policy.">
+<style>
+/* ===========================================================================
+   SITE CONFIG + design tokens — identical to /arrest/ on purpose. Two screens
+   a person moves between mid-resuscitation must not look like two products.
+   Fonts are system stacks, not Google Fonts: CLAUDE.md rule 1 requires this to
+   work offline from a cart. Self-host woff2 here if the exact faces are wanted.
+   =========================================================================== */
+:root{
+  --bg:#0D1420; --card:#161F2E; --card2:#1D2A3C; --ink:#EAF0F7; --ink2:#8FA0B5;
+  --line:rgba(255,255,255,.10);
+  --red:#E5484D; --gray:#5C6B7E; --blue:#4C8DDA; --green:#3DA35D; --amber:#F0B429;
+  --accent:#2FA372; --accentInk:#fff;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Roboto Mono",monospace;
+}
+body[data-theme="light"]{
+  --bg:#EFF2F5; --card:#FFFFFF; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D;
+  --line:rgba(15,35,60,.13);
+  --red:#C63238; --gray:#6B7A8D; --blue:#2F6FB5; --green:#1F7F49; --amber:#B07E13; --accent:#00693E;
+}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+button,input{font-family:inherit}
+button{-webkit-appearance:none;appearance:none;touch-action:manipulation}
+.wrap{max-width:680px;margin:0 auto;padding:0 14px 40px}
+.mono{font-family:var(--mono)}
+.hdr{position:sticky;top:0;z-index:30;background:var(--bg);padding:12px 0 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+.sec{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--ink2)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px}
+.btn{border:1px solid var(--line);border-radius:12px;background:var(--card2);color:var(--ink);font:800 16px var(--sans);cursor:pointer}
+.ghost{background:var(--card);border:1px solid var(--line);color:var(--ink2);font:700 11px var(--sans);letter-spacing:.08em;padding:9px 12px;border-radius:10px;cursor:pointer;min-height:38px}
+.acc{margin-top:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.acch{width:100%;display:flex;justify-content:space-between;align-items:center;background:none;border:none;color:var(--ink);padding:15px 14px;font:800 14px var(--sans);letter-spacing:.06em;cursor:pointer;min-height:52px}
+.accb{padding:0 14px 14px;font-size:14.5px;line-height:1.6;border-top:1px solid var(--line)}
+.accb p{margin:10px 0}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700}
+.pip{display:inline-block;width:26px;height:26px;border-radius:50%;border:2px solid var(--line);margin-right:6px}
+.evrow{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+.say{border-left:4px solid var(--amber);background:var(--card2);padding:9px 12px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.45;margin-top:10px}
+@keyframes duepulse{0%,100%{opacity:1}50%{opacity:.45}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.due{animation:duepulse 1.2s infinite}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;animation:blink 1.4s infinite}
+@media (prefers-reduced-motion: reduce){.due,.dot{animation:none}}
+</style>
+</head>
+<body data-theme="dark">
+<div class="wrap">
+
+  <div class="hdr">
+    <div style="flex:1;min-width:0">
+      <div id="plabel" style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--accent)">AIRWAY · DAS 2025 LADDER</div>
+      <div style="display:flex;align-items:baseline;gap:8px">
+        <span class="mono" id="clock" style="font-size:26px;font-weight:700">0:00</span>
+        <span id="rundot" style="display:none"><span class="dot"></span></span>
+        <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:600">READY</span>
+      </div>
+    </div>
+    <button class="ghost" id="themebtn" type="button">LIGHT</button>
+    <button class="ghost" id="resetbtn" type="button">RESET</button>
+  </div>
+
+  <!-- The single most important sentence on this screen. DAS 2025 is an
+       anaesthesia guideline; it has no cardiac-arrest algorithm. Saying so is
+       not a disclaimer, it is the routing instruction. -->
+  <div class="card" id="scopebar" style="margin-top:12px;padding:11px 12px;border-color:var(--amber);font-size:13.5px;line-height:1.45">
+    <b>This is the ladder for a patient you cannot intubate.</b> If there is <b>no pulse</b>, this is not the screen —
+    go to <a href="../arrest/" style="color:var(--blue)">cardiac arrest</a>. If there is <b>a pulse but no breathing</b> and you can
+    ventilate them, that is <a href="../arrest/" style="color:var(--blue)">rescue breathing</a>, not this ladder.
+    DAS 2025 is written for anaesthesia and gives no arrest algorithm; its wake-the-patient options do not exist here.
+  </div>
+
+  <div id="idle">
+    <button id="startbtn" type="button" style="width:100%;margin-top:14px;min-height:96px;border:none;border-radius:16px;background:var(--red);color:#fff;font:800 21px var(--sans);letter-spacing:.03em;cursor:pointer;box-shadow:0 6px 24px rgba(229,72,77,.25)">
+      DECLARE A DIFFICULT AIRWAY
+      <div style="font-size:13px;font-weight:600;opacity:.85;margin-top:4px">Starts the clock, calls for help, primes for front-of-neck access</div>
+    </button>
+    <div class="card" style="margin-top:12px;padding:12px">
+      <div class="sec">BEFORE YOU INDUCE — DAS 2025</div>
+      <div style="font-size:14px;line-height:1.6;margin-top:6px">
+        Pre-oxygenate to <b>ETO₂ &ge;0.9</b> · head up <b>&ge;30&deg;</b> · HFNO <b>&gt;30 L/min</b> if you have it, kept running throughout
+        (<b>peroxygenation</b>).<br>
+        <b>Videolaryngoscopy is first-line</b>, not rescue.<br>
+        Full block: <b>rocuronium 1.2 mg/kg</b> or <b>suxamethonium 1.5 mg/kg</b>.<br>
+        Turn the <b>audible SpO₂ tone on</b>. Name an airway assistant who watches capnography and the clock.
+      </div>
+    </div>
+  </div>
+
+  <div id="ladder" style="display:none">
+    <div class="card" id="planbox" style="margin-top:14px;padding:14px;border-radius:16px"></div>
+
+    <div class="card" id="primebox" style="margin-top:10px;border:1px dashed var(--amber);padding:12px;display:flex;gap:10px;align-items:center">
+      <div style="flex:1">
+        <div class="sec" style="color:var(--amber)">PRIME IN PARALLEL — DO NOT WAIT FOR CICO</div>
+        <div style="font-size:13px;color:var(--ink2);margin-top:2px">Scalpel, bougie and a 6.0 tube out of the bag now, while Plans A–C are still running.</div>
+      </div>
+      <button id="primebtn" type="button" style="min-height:56px;border:none;border-radius:12px;background:var(--amber);color:#141E2B;font:800 13px var(--sans);padding:0 14px;cursor:pointer;white-space:nowrap">PRIMED — LOG IT</button>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+      <button class="btn" id="logtoggle" type="button" style="min-height:52px;font:700 14px var(--sans)">+ LOG EVENT</button>
+      <button class="btn" id="securedbtn" type="button" style="min-height:52px;font:700 14px var(--sans);border-color:var(--green);color:var(--green)">AIRWAY SECURED</button>
+    </div>
+    <div id="customrow" style="display:none;gap:8px;margin-top:8px">
+      <input id="customin" style="flex:1;background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:12px;font-size:15px" placeholder="e.g. ELM applied, size 4 iGel in">
+      <button id="customlog" type="button" style="border:none;border-radius:10px;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG</button>
+    </div>
+    <div id="customwarn" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>
+  </div>
+
+  <div id="secured" style="display:none">
+    <div class="card" style="margin-top:14px;border:2px solid var(--green);border-radius:16px;padding:16px">
+      <div class="sec" style="color:var(--green)">AIRWAY SECURED</div>
+      <div style="font-size:20px;font-weight:800;margin:4px 0 10px">Secured at <span id="securedat" class="mono">0:00</span></div>
+      <div style="font-size:14.5px;line-height:1.6">
+        · Confirm with <b>waveform capnography</b> — every time, no exceptions<br>
+        · Secure the tube, check depth, re-check bilateral ventilation<br>
+        · Document the attempts, the devices and the grade of view<br>
+        · <b>Every failed intubation and every eFONA goes to M&amp;M review</b>, and the team gets a debrief
+      </div>
+      <button id="resumebtn" type="button" style="width:100%;margin-top:12px;min-height:56px;border:none;border-radius:12px;background:var(--gray);color:#fff;font:800 15px var(--sans);cursor:pointer">LOST IT AGAIN — BACK TO THE LADDER</button>
+    </div>
+  </div>
+
+  <div class="sec" style="margin-top:18px;letter-spacing:.12em">REFERENCE — TAP TO OPEN</div>
+  <div id="accordions"></div>
+
+  <div style="margin-top:16px;font-size:12px;color:var(--ink2);text-align:center;line-height:1.5">
+    Cognitive aid — verify against your own devices and local policy.<br>
+    <span id="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment.
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ============================ SITE CONFIG ==================================
+   Every number here is from ONE document: Ahmad I, El-Boghdadly K, Iliff H, et
+   al. Difficult Airway Society 2025 guidelines for management of unanticipated
+   difficult tracheal intubation in adults. Br J Anaesth 2026;136(1):283-307.
+   DAS 2025 SUPERSEDES DAS 2015 — do not blend the two, and do not blend it with
+   the DAS obstetric (2015), ICU (2017) or awake-intubation (2019) documents,
+   which still carry their own older algorithms.
+   ========================================================================== */
+var DAS = {
+  version:"0.2", lastReviewed:"2026-08-10",
+  attempts:{ planA:3, planASenior:1, planB:3, planBviaSAD:1, planC:3 },
+  preox:{ eto2:"0.9", headUp:"30°", hfno:"30 L/min" },
+  rsi:{ roc:"1.2 mg/kg", sux:"1.5 mg/kg" },
+  cricoid:{ awake:"10 N", asleep:"30 N" },
+  fona:{ blade:"size 10 scalpel", bougie:"coudé-tip bougie", bougieDepth:"10–15 cm",
+         tube:"6.0 mm cuffed", incision:"vertical midline, up to 8 cm" }
+};
+
+var S = { theme:'dark', phase:'idle', t0:null, plan:'A', a:0, b:0, c:0, fonaStep:0,
+          primed:false, stopThink:false, events:[], open:null, resetArm:false,
+          securedAt:null, showCustom:false };
+
+var $=function(i){return document.getElementById(i);};
+function fmt(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+function clk(){ return S.t0 ? fmt((Date.now()-S.t0)/1000) : '0:00'; }
+function log(l){ S.events.unshift({t:clk(), label:l}); }
+
+/* PHI guard — same contract as /arrest/. In memory only, refused with a reason
+   rather than silently scrubbed, because a silent scrub teaches people the
+   field is safe to put a name in. */
+var PHI=[{re:/\b\d{3}-?\d{2}-?\d{4}\b/,why:'looks like a social security number'},
+ {re:/\b(mrn|medical record|acct|account)\b/i,why:'mentions a record or account number'},
+ {re:/\b\d{6,}\b/,why:'contains a long number that could be an identifier'},
+ {re:/\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/,why:'contains a date of birth style date'},
+ {re:/\b(dob|date of birth)\b/i,why:'mentions a date of birth'}];
+function phiReason(t){ for(var i=0;i<PHI.length;i++){ if(PHI[i].re.test(t)) return PHI[i].why; } return null; }
+
+function pips(n,max,colour){
+  var h='';
+  for(var i=0;i<max;i++){
+    h+='<span class="pip" style="'+(i<n?('background:'+colour+';border-color:'+colour):'')+'"></span>';
+  }
+  return h;
+}
+function sayBox(words){
+  return '<div class="say"><b>Say it out loud:</b> &ldquo;'+words+'&rdquo;</div>';
+}
+
+/* ---- the eFONA sequence, in the order DAS 2025 sets it out ---- */
+var FONA=[
+ 'Stand on the patient&rsquo;s left (if right-handed).',
+ 'Identify laryngeal anatomy; find the midline with your non-dominant hand.',
+ 'Apply skin tension and stabilise the larynx.',
+ '<b>Vertical midline skin incision, up to 8 cm</b>, caudad to cephalad.',
+ 'Blunt dissection to identify and stabilise the larynx.',
+ 'Index finger identifies the cricothyroid membrane.',
+ '<b>Transverse stab</b> through the cricothyroid membrane.',
+ 'Rotate the scalpel 90&deg;, sharp edge caudal.',
+ 'Swap hands, maintaining traction.',
+ 'Bougie into your dominant hand.',
+ 'Slide the coud&eacute; tip down the scalpel blade into the trachea.',
+ 'Rotate and advance the bougie to <b>10&ndash;15 cm</b>.',
+ 'Remove the scalpel.',
+ 'Railroad a <b>6.0 mm cuffed tube</b>.',
+ 'Remove the bougie.',
+ 'Inflate the cuff, ventilate with 100% O&#8322;, confirm with <b>waveform capnography</b>.',
+ 'Secure the tube.'
+];
+
+function planBox(){
+  var p=S.plan, h='';
+  if(p==='A'){
+    var senior = S.a>=DAS.attempts.planA;
+    h+='<div class="sec" style="color:var(--blue)">PLAN A — TRACHEAL INTUBATION</div>'+
+       '<div style="font-size:22px;font-weight:800;margin-top:4px">Videolaryngoscopy, first-line</div>'+
+       '<div style="margin-top:10px">'+pips(S.a, DAS.attempts.planA+1, 'var(--blue)')+
+       '<span style="font-size:13px;color:var(--ink2);margin-left:6px">'+S.a+' of 3 &nbsp;+&nbsp; 1 senior</span></div>'+
+       '<div style="font-size:13.5px;line-height:1.5;margin-top:8px;color:var(--ink2)">'+
+       'An attempt is any instrumentation with a device, an introducer, or both. Between attempts change <b>something</b> — '+
+       'operator, blade, stylet or bougie, external laryngeal manipulation, position.</div>';
+    if(senior) h+='<div class="say" style="border-color:var(--amber)"><b>Three attempts used.</b> A fourth is <b>only</b> for a more experienced colleague. '+
+       'If nobody more experienced is coming, or a fourth would not change anything, stop now.</div>';
+    h+='<button class="btn" id="attempt" type="button" style="width:100%;min-height:72px;margin-top:10px;background:var(--blue);color:#fff;border:none;font-size:19px">'+
+       (senior?'SENIOR ATTEMPT — LOG IT':'ATTEMPT '+(S.a+1)+' — LOG IT')+'</button>'+
+       '<button class="btn" id="failA" type="button" style="width:100%;min-height:60px;margin-top:8px;border-color:var(--red);color:var(--red)">DECLARE FAILED INTUBATION → PLAN B</button>'+
+       '<div style="font-size:12.5px;color:var(--ink2);margin-top:8px">Failure can be declared at any time, even after the first attempt. 3+1 is a ceiling, not a quota.</div>';
+  }
+  if(p==='B'){
+    h+='<div class="sec" style="color:var(--accent)">PLAN B — OXYGENATE VIA A SUPRAGLOTTIC AIRWAY</div>'+
+       '<div style="font-size:22px;font-weight:800;margin-top:4px">Second-generation SAD</div>'+
+       '<div style="margin-top:10px">'+pips(S.b, DAS.attempts.planB, 'var(--accent)')+
+       '<span style="font-size:13px;color:var(--ink2);margin-left:6px">'+S.b+' of 3 insertions</span></div>'+
+       '<div style="font-size:13.5px;line-height:1.5;margin-top:8px;color:var(--ink2)">Change the size or the device between attempts. Second generation ahead of first.</div>';
+    if(S.stopThink){
+      h+='<div class="say"><b>It is ventilating. STOP AND THINK.</b> Four options, and the default is the first:</div>'+
+         '<div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">'+
+         '<button class="btn" data-st="wake" type="button" style="min-height:56px;text-align:left;padding:0 14px">1 · Wake the patient <span style="font-weight:600;color:var(--ink2)">— the default</span></button>'+
+         '<button class="btn" data-st="proceed" type="button" style="min-height:56px;text-align:left;padding:0 14px">2 · Proceed using the SAD <span style="font-weight:600;color:var(--red)">— high risk</span></button>'+
+         '<button class="btn" data-st="viaSAD" type="button" style="min-height:56px;text-align:left;padding:0 14px">3 · Intubate through the SAD <span style="font-weight:600;color:var(--ink2)">— ONE attempt, bronchoscope</span></button>'+
+         '<button class="btn" data-st="fona" type="button" style="min-height:56px;text-align:left;padding:0 14px">4 · Front-of-neck airway</button></div>';
+    } else {
+      h+='<button class="btn" id="attempt" type="button" style="width:100%;min-height:72px;margin-top:10px;background:var(--accent);color:var(--accentInk);border:none;font-size:19px">SAD ATTEMPT '+(S.b+1)+' — LOG IT</button>'+
+         '<button class="btn" id="worksB" type="button" style="width:100%;min-height:60px;margin-top:8px;border-color:var(--green);color:var(--green)">IT IS VENTILATING — STOP AND THINK</button>'+
+         '<button class="btn" id="failB" type="button" style="width:100%;min-height:56px;margin-top:8px;border-color:var(--red);color:var(--red)">DECLARE FAILED SAD VENTILATION → PLAN C</button>';
+    }
+  }
+  if(p==='C'){
+    h+='<div class="sec" style="color:var(--amber)">PLAN C — FINAL FACEMASK VENTILATION</div>'+
+       '<div style="font-size:22px;font-weight:800;margin-top:4px">Two people, four hands</div>'+
+       '<div style="margin-top:10px">'+pips(S.c, DAS.attempts.planC, 'var(--amber)')+
+       '<span style="font-size:13px;color:var(--ink2);margin-left:6px">'+S.c+' of 3 attempts</span></div>'+
+       '<div style="font-size:13.5px;line-height:1.5;margin-top:8px;color:var(--ink2)">'+
+       '<b>Ensure full neuromuscular block.</b> Two-person technique, optimise position, oral and nasal adjuncts in.</div>'+
+       '<button class="btn" id="attempt" type="button" style="width:100%;min-height:72px;margin-top:10px;background:var(--amber);color:#141E2B;border:none;font-size:19px">MASK ATTEMPT '+(S.c+1)+' — LOG IT</button>'+
+       '<button class="btn" id="worksC" type="button" style="width:100%;min-height:60px;margin-top:8px;border-color:var(--green);color:var(--green)">IT IS VENTILATING — STOP, THINK, CALL SENIORS</button>'+
+       '<button class="btn" id="cico" type="button" type="button" style="width:100%;min-height:72px;margin-top:8px;background:var(--red);color:#fff;border:none;font-size:19px">DECLARE CICO → PLAN D</button>';
+  }
+  if(p==='D'){
+    h+='<div class="sec" style="color:var(--red)">PLAN D — EMERGENCY FRONT OF NECK AIRWAY</div>'+
+       '<div style="font-size:22px;font-weight:800;margin-top:4px">Scalpel &middot; bougie &middot; tube</div>'+
+       sayBox('Cannot intubate, cannot oxygenate. We are doing a front-of-neck airway.')+
+       '<div class="card" style="margin-top:10px;padding:10px 12px;border-color:var(--red);font-size:13.5px;line-height:1.5">'+
+       '<b>Do not attempt an eFONA without full neuromuscular block.</b> Kit: '+DAS.fona.blade+', '+DAS.fona.bougie+', '+DAS.fona.tube+' tube.</div>'+
+       '<div style="margin-top:10px;font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--ink2)">STEP '+
+       Math.min(S.fonaStep+1,FONA.length)+' OF '+FONA.length+'</div>'+
+       '<div style="font-size:19px;font-weight:700;line-height:1.35;margin-top:4px">'+FONA[Math.min(S.fonaStep,FONA.length-1)]+'</div>'+
+       (S.fonaStep<FONA.length-1
+         ? '<button class="btn" id="fonanext" type="button" style="width:100%;min-height:64px;margin-top:12px;background:var(--red);color:#fff;border:none;font-size:18px">DONE — NEXT STEP</button>'
+         : '<button class="btn" id="fonadone" type="button" style="width:100%;min-height:64px;margin-top:12px;background:var(--green);color:#fff;border:none;font-size:18px">TUBE IN, CAPNOGRAPHY CONFIRMED</button>')+
+       (S.fonaStep>0?'<button class="btn" id="fonaback" type="button" style="width:100%;min-height:48px;margin-top:8px;font-size:14px">BACK A STEP</button>':'');
+  }
+  return h;
+}
+
+var ACC=[
+ {id:'preox',t:'PRE-OXYGENATION & DRUGS',b:function(){
+   return '<p>Pre-oxygenate to <b>ETO&#8322; &ge;'+DAS.preox.eto2+'</b>, head up <b>&ge;'+DAS.preox.headUp+
+     '</b>, HFNO <b>&gt;'+DAS.preox.hfno+'</b> if available and left running throughout — DAS 2025 calls this <b>peroxygenation</b>.</p>'+
+     '<p>Full neuromuscular block: <b>rocuronium '+DAS.rsi.roc+'</b> or <b>suxamethonium '+DAS.rsi.sux+'</b>.</p>'+
+     '<p>Cricoid force <b>'+DAS.cricoid.awake+' awake, '+DAS.cricoid.asleep+' once unconscious</b>. Remove it for a poor '+
+     'laryngoscopic view, for SAD insertion, or if the patient is actively vomiting.</p>'+
+     '<p style="margin-bottom:0">Enable the <b>audible SpO&#8322; tone</b> before induction.</p>';
+ }},
+ {id:'triggers',t:'WHEN TO MOVE ON',b:function(){
+   return '<p>DAS 2025 uses <b>attempt count, time taken and physiological response</b> as the triggers to transition — '+
+     '<b>not</b> a stated saturation cut-off. No SpO&#8322; number and no time limit is given in the guideline, so none is printed here.</p>'+
+     '<p>Start a timer when the neuromuscular blocker goes in. Give the airway assistant explicit permission to call the time '+
+     'and prompt the transition.</p>'+
+     '<p style="margin-bottom:0"><b>Priming:</b> prepare for eFONA <i>in parallel</i> with Plans A&ndash;C, not after them.</p>';
+ }},
+ {id:'say',t:'DECLARE IT OUT LOUD',b:function(){
+   return '<p>The guideline is explicit that failure is announced, not privately concluded. The words are the intervention:</p>'+
+     '<p>&ldquo;<b>Failed intubation.</b> Moving to Plan B.&rdquo;<br>'+
+     '&ldquo;<b>Failed SAD ventilation.</b> Moving to Plan C.&rdquo;<br>'+
+     '&ldquo;<b>Cannot intubate, cannot oxygenate.</b> We are doing a front-of-neck airway.&rdquo;</p>'+
+     '<p style="margin-bottom:0">Afterwards: every failed intubation and every eFONA goes to <b>M&amp;M review</b>, and the '+
+     'team gets psychological support. That is in the guideline too.</p>';
+ }},
+ {id:'fona',t:'eFONA — FULL SEQUENCE',b:function(){
+   var h='<p>Kit: <b>'+DAS.fona.blade+'</b> · <b>'+DAS.fona.bougie+'</b> · <b>'+DAS.fona.tube+' tube</b>. '+
+     'Incision <b>'+DAS.fona.incision+'</b>.</p><ol style="padding-left:20px;margin:10px 0 0">';
+   for(var i=0;i<FONA.length;i++) h+='<li style="margin-bottom:5px">'+FONA[i]+'</li>';
+   return h+'</ol><p style="margin-bottom:0"><b>Vertical is the 2025 default.</b> Where DAS 2015 made the incision '+
+     'depend on whether you could palpate the membrane, 2025 says that if there is any uncertainty about palpability, '+
+     'go vertical.</p>';
+ }},
+ {id:'why',t:'WHY IS THIS FAILING?',b:function(){ return '<p><b>DAS 2025 does not publish a causes mnemonic</b> — so this is two lists it does not claim, kept separate because they answer different questions.</p>'+'<p style="font-weight:700;margin-bottom:4px">Still trying to intubate — change SOMETHING between attempts</p>'+'<p style="margin-top:0">This part <i>is</i> DAS 2025: a repeat attempt that changes nothing is not an attempt, it is the same attempt. Change the <b>operator</b> · the <b>blade</b> (hyperangulated vs Mac) · add a <b>stylet or bougie</b> · <b>external laryngeal manipulation</b> · the <b>position</b> (ramp, head lift) · <b>suction</b> if the view is soiled · confirm <b>full neuromuscular block</b>.</p>'+'<p style="font-weight:700;margin-bottom:4px">It was ventilating and stopped — DOPES</p>'+'<div style="display:grid;gap:6px;margin:4px 0 10px">'+'<div><b>D — Displacement</b> <span style="color:var(--ink2)">— oesophageal or endobronchial. Capnography and depth.</span></div>'+'<div><b>O — Obstruction</b> <span style="color:var(--ink2)">— secretions, blood, kink, bitten tube. Pass a suction catheter.</span></div>'+'<div><b>P — Pneumothorax</b> <span style="color:var(--ink2)">— tension. Decompress on suspicion.</span></div>'+'<div><b>E — Equipment</b> <span style="color:var(--ink2)">— circuit, oxygen supply, valve, ventilator. Disconnect and bag.</span></div>'+'<div><b>S — Stacked breaths</b> <span style="color:var(--ink2)">— breath stacking in obstruction. Disconnect and let them exhale.</span></div>'+'</div>'+'<p style="margin-bottom:0">DOPES is carried from this manual&rsquo;s own Codes card 14, not from DAS. If the airway is soiled rather than difficult, that is a different problem — see the SALAD card.</p>'; }},
+ {id:'scope',t:'WHAT THIS GUIDELINE DOES NOT COVER',b:function(){
+   return '<p>DAS 2025 is written for <b>anaesthesia</b>. It contains <b>no cardiac-arrest algorithm</b> and no '+
+     'apnoeic-arrest-specific guidance. Its Plan B and Plan C options include waking the patient, which does not exist '+
+     'in an arrest.</p>'+
+     '<p>Separate DAS documents, <b>not updated in 2025</b> and carrying their own older algorithms — do not blend them '+
+     'with this one: obstetric (OAA/DAS 2015), critically ill adults (2017), awake tracheal intubation (2019), '+
+     'paediatric (APA/DAS).</p>'+
+     '<p style="margin-bottom:0"><b>Tracheostomy and laryngectomy emergencies are not a DAS guideline at all</b> — the UK '+
+     'standard is the National Tracheostomy Safety Project.</p>';
+ }},
+ {id:'src',t:'SOURCE',b:function(){
+   return '<p>Ahmad I, El-Boghdadly K, Iliff H, et al. <b>Difficult Airway Society 2025 guidelines for management of '+
+     'unanticipated difficult tracheal intubation in adults.</b> <i>Br J Anaesth</i> 2026;136(1):283&ndash;307. '+
+     'doi:10.1016/j.bja.2025.10.006 · <a href="https://pubmed.ncbi.nlm.nih.gov/41203471/" target="_blank" rel="noopener">PMID 41203471</a>.</p>'+
+     '<p><b>This supersedes DAS 2015.</b> Changes: videolaryngoscopy first-line rather than rescue; peroxygenation as an '+
+     'organising principle; the explicit 3+1 rule; vertical incision as the eFONA default; modified cricoid force; new '+
+     'sections on the physiologically difficult airway, obesity, POCUS and human factors.</p>'+
+     '<p style="margin-bottom:0">Other bodies differ: <b>ASA 2022</b> is a context-driven framework rather than a fixed '+
+     'ladder with hard attempt caps, and the <b>Vortex</b> approach uses three lifelines with a best-effort rule rather '+
+     'than 3+1. A published <i>BJA</i> comment argues DAS 2025 underweights anatomical endpoints in eFONA.</p>';
+ }},
+ {id:'log',t:'EVENT LOG',b:function(){
+   if(!S.events.length) return '<div style="font-size:13.5px;color:var(--ink2);padding:8px 0">Nothing logged yet.</div>';
+   var h='';
+   for(var i=0;i<S.events.length;i++)
+     h+='<div class="evrow"><span class="mono" style="font-weight:700;color:var(--accent);flex:none">'+S.events[i].t+
+        '</span><span style="line-height:1.4">'+S.events[i].label+'</span></div>';
+   return h;
+ }}
+];
+
+function paint(){
+  $('clock').textContent=clk();
+  var live = S.phase==='ladder';
+  $('rundot').style.display = live ? '' : 'none';
+  $('statusword').textContent = S.phase==='idle' ? 'READY' : (S.phase==='secured' ? 'SECURED' : ('PLAN '+S.plan));
+  $('plabel').textContent = S.phase==='ladder' ? ('AIRWAY · PLAN '+S.plan+' · DAS 2025') : 'AIRWAY · DAS 2025 LADDER';
+  $('themebtn').textContent = S.theme==='dark' ? 'LIGHT' : 'DARK';
+  $('resetbtn').textContent = S.resetArm ? 'SURE?' : 'RESET';
+  $('resetbtn').style.background = S.resetArm ? 'var(--red)' : 'var(--card)';
+  $('resetbtn').style.color = S.resetArm ? '#fff' : 'var(--ink2)';
+
+  $('idle').style.display = S.phase==='idle' ? '' : 'none';
+  $('ladder').style.display = live ? '' : 'none';
+  $('secured').style.display = S.phase==='secured' ? '' : 'none';
+  if(live){
+    $('planbox').innerHTML = planBox();
+    $('planbox').style.border = (S.plan==='D') ? '2px solid var(--red)' : '1px solid var(--line)';
+    $('primebox').style.display = (S.primed || S.plan==='D') ? 'none' : 'flex';
+    $('customrow').style.display = S.showCustom ? 'flex' : 'none';
+  }
+  if(S.phase==='secured') $('securedat').textContent = S.securedAt || clk();
+
+  var h='';
+  for(var i=0;i<ACC.length;i++){
+    var a=ACC[i], open=(S.open===a.id);
+    h+='<div class="acc"><button class="acch" type="button" data-acc="'+a.id+'">'+a.t+
+       '<span style="color:var(--ink2)">'+(open?'−':'+')+'</span></button>'+
+       (open?'<div class="accb">'+a.b()+'</div>':'')+'</div>';
+  }
+  $('accordions').innerHTML=h;
+  $('verstamp').textContent='v'+DAS.version+' · last reviewed '+DAS.lastReviewed+' · LRH · DAS 2025';
+}
+
+function toPlan(p, words){ S.plan=p; if(words) log(words); paint(); }
+
+document.addEventListener('click', function(e){
+  var t=e.target.closest ? e.target.closest('button') : null;
+  if(!t) return;
+  var id=t.id, acc=t.getAttribute('data-acc'), st=t.getAttribute('data-st');
+
+  if(acc){ S.open = (S.open===acc ? null : acc); paint(); return; }
+
+  if(id==='themebtn'){ S.theme = S.theme==='dark'?'light':'dark'; document.body.dataset.theme=S.theme; paint(); return; }
+  if(id==='resetbtn'){
+    if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){S.resetArm=false;paint();},2500); return; }
+    S={theme:S.theme,phase:'idle',t0:null,plan:'A',a:0,b:0,c:0,fonaStep:0,primed:false,stopThink:false,
+       events:[],open:null,resetArm:false,securedAt:null,showCustom:false};
+    $('customin').value=''; paint(); return;
+  }
+  if(id==='startbtn'){
+    S.phase='ladder'; S.t0=Date.now(); S.plan='A';
+    log('Difficult airway declared — help called, eFONA primed in parallel'); paint(); return;
+  }
+  if(id==='primebtn'){ S.primed=true; log('eFONA kit primed — scalpel, bougie, 6.0 tube out'); paint(); return; }
+
+  if(id==='attempt'){
+    if(S.plan==='A'){
+      S.a++;
+      log(S.a>DAS.attempts.planA ? ('Plan A — SENIOR attempt #'+S.a) : ('Plan A — intubation attempt #'+S.a));
+      if(S.a>=DAS.attempts.planA+DAS.attempts.planASenior) toPlan('B','Three plus one attempts used — failed intubation declared, moving to Plan B');
+    } else if(S.plan==='B'){
+      S.b++; log('Plan B — SAD insertion attempt #'+S.b);
+      if(S.b>=DAS.attempts.planB) toPlan('C','Three SAD attempts used — failed SAD ventilation declared, moving to Plan C');
+    } else if(S.plan==='C'){
+      S.c++; log('Plan C — facemask attempt #'+S.c);
+      if(S.c>=DAS.attempts.planC) toPlan('D','Three facemask attempts used — CANNOT INTUBATE CANNOT OXYGENATE declared');
+    }
+    paint(); return;
+  }
+  if(id==='failA'){ toPlan('B','Failed intubation declared — moving to Plan B'); return; }
+  if(id==='failB'){ toPlan('C','Failed SAD ventilation declared — moving to Plan C'); return; }
+  if(id==='worksB'){ S.stopThink=true; log('Plan B — SAD ventilating. Stop and think.'); paint(); return; }
+  if(id==='worksC'){ log('Plan C — facemask ventilating. Stop, think, call seniors, consider waking.'); paint(); return; }
+  if(id==='cico'){ toPlan('D','CANNOT INTUBATE CANNOT OXYGENATE declared — Plan D'); return; }
+
+  if(st==='wake'){ log('Stop and think → wake the patient (the default option)'); S.phase='secured'; S.securedAt=clk(); paint(); return; }
+  if(st==='proceed'){ log('Stop and think → proceed using the SAD (high risk)'); S.phase='secured'; S.securedAt=clk(); paint(); return; }
+  if(st==='viaSAD'){ log('Stop and think → intubate through the SAD — ONE attempt, flexible bronchoscopy'); S.stopThink=false; paint(); return; }
+  if(st==='fona'){ toPlan('D','Stop and think → front-of-neck airway'); return; }
+
+  if(id==='fonanext'){ S.fonaStep++; log('eFONA step '+S.fonaStep+' done'); paint(); return; }
+  if(id==='fonaback'){ S.fonaStep=Math.max(0,S.fonaStep-1); paint(); return; }
+  if(id==='fonadone'){ S.phase='secured'; S.securedAt=clk(); log('eFONA complete — tube in, capnography confirmed'); paint(); return; }
+
+  if(id==='securedbtn'){ S.phase='secured'; S.securedAt=clk(); log('Airway secured — capnography confirmed'); paint(); return; }
+  if(id==='resumebtn'){ S.phase='ladder'; log('Airway lost again — back to the ladder'); paint(); return; }
+
+  if(id==='logtoggle'){ S.showCustom=!S.showCustom; paint(); if(S.showCustom) setTimeout(function(){$('customin').focus();},30); return; }
+  if(id==='customlog'){ submitCustom(); return; }
+});
+
+function submitCustom(){
+  var t=$('customin').value.trim(); if(!t) return;
+  var why=phiReason(t);
+  if(why){
+    $('customwarn').style.display='';
+    $('customwarn').textContent='Not logged — that text '+why+'. This aid never stores patient identifiers. Describe the event, not the patient.';
+    return;
+  }
+  $('customwarn').style.display='none';
+  log(t); $('customin').value=''; S.showCustom=false; paint();
+}
+$('customin').addEventListener('keydown', function(e){ if(e.key==='Enter') submitCustom(); });
+
+paint();
+setInterval(paint, 500);
+})();
+</script>
+</body>
+</html>
