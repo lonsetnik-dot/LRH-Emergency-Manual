@@ -1,7 +1,25 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-  <rect width="512" height="512" fill="#16324f"></rect>
-  <rect x="196" y="96" width="120" height="320" rx="16" fill="#fffefb"></rect>
-  <rect x="96" y="196" width="320" height="120" rx="16" fill="#fffefb"></rect>
-  <circle cx="256" cy="256" r="52" fill="#16324f"></circle>
-  <text x="256" y="274" text-anchor="middle" font-family="ui-monospace,monospace" font-size="56" font-weight="700" fill="#fffefb">OB</text>
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  LRH OB & Neonatal Emergencies — app icon.
+  Referenced by index.html (apple-touch-icon), manifest.webmanifest, and sw.js.
+  IMPORTANT: sw.js caches this file via Cache.addAll(), which rejects wholesale if any
+  listed asset 404s — a missing icon here silently kills the entire offline shell.
+  Do not delete this file without also removing it from sw.js ASSETS and the manifest.
+
+  Drawn inside a 512 viewBox with all meaningful content kept within the central ~60%
+  so it survives the circular crop applied to "maskable" icons.
+-->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="LRH OB and Neonatal Emergencies">
+  <title>LRH OB &amp; Neonatal Emergencies</title>
+
+  <!-- Full-bleed brand field (theme_color) — extends past the maskable safe zone by design. -->
+  <rect width="512" height="512" fill="#16324f"/>
+
+  <!-- Safe-zone content starts here: cardiac/pulse trace, the motif used across the manual. -->
+  <polyline points="128,268 186,268 206,214 236,318 258,268 302,268 322,238 342,268 384,268"
+            fill="none" stroke="#fffefb" stroke-width="19"
+            stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Neonatal accent: the single small mark that distinguishes this tool from Codes. -->
+  <circle cx="256" cy="150" r="21" fill="#e8b4c8"/>
 </svg>
