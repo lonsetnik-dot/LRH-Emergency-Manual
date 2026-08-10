@@ -68,6 +68,14 @@
   .lrh-row .n{font-size:15px;font-weight:700;color:var(--cc,var(--lrh-accent));flex:none;width:24px}
   .lrh-row .t{font-size:16.5px;font-weight:700;line-height:1.25}
   .lrh-row:hover, .lrh-row:focus-visible{color:var(--lrh-ink)}
+  .lrh-filter{display:flex;gap:8px;align-items:center;background:var(--lrh-card);border:1px solid var(--lrh-line);
+    border-radius:14px;padding:4px 6px 4px 14px;margin:18px 2px 14px}
+  .lrh-filter .ico{color:var(--lrh-ink2);font-size:16px;flex:none}
+  .lrh-filter input{flex:1;background:none;border:none;color:var(--lrh-ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit;-webkit-appearance:none}
+  .lrh-filter input::-webkit-search-cancel-button{-webkit-appearance:none}
+  .lrh-filter-empty{margin:0 2px 14px;padding:12px 14px;color:var(--lrh-ink2);font-size:.88rem;background:var(--lrh-card);
+    border:1px solid var(--lrh-line);border-radius:14px}
+  .lrh-filter-empty[hidden]{display:none}
   /* #stickytop: new synthetic sticky wrapper. This tool had no #stickytop
      before — nav.bar was itself position:sticky;top:0. Introducing .lrh-hdr
      as a sibling above it would have made both fight to stick at top:0
@@ -252,30 +260,40 @@ catch(e){ document.body.dataset.theme='dark'; }
       <p class="lrh-idx-sub lrh-mono" style="margin-top:6px; font-size:10.5px; letter-spacing:.06em;"><span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.</p>
       <button type="button" id="startnewcasebtn" class="lrh-startnew-btn">START NEW CASE</button>
 
-      <div class="lrh-group-hd"><span class="dot" style="background:var(--lrh-gray)"></span><span class="label">EQUIPMENT</span><span class="rule"></span></div>
-      <div class="lrh-row-grid">
-        <a href="#cart" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="t">OB / neonatal cart — what is in each drawer</span></a>
+      <!-- ============ FILTER ============ -->
+      <div class="lrh-filter">
+        <span class="ico" aria-hidden="true">&#8981;</span>
+        <input type="search" id="menuFilter" autocomplete="off" spellcheck="false" autofocus
+          placeholder="Filter this list&hellip;" aria-label="Filter this list" aria-controls="menu">
       </div>
+      <p class="lrh-filter-empty" id="menuFilterEmpty" hidden>No matches. Try a different term.</p>
 
-      <div class="lrh-group-hd"><span class="dot" style="background:var(--lrh-gray)"></span><span class="label">DELIVERY</span><span class="rule"></span></div>
-      <div class="lrh-row-grid">
-        <a href="#c02" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">02</span><span class="t">Imminent normal delivery</span></a>
-        <a href="#c07" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">07</span><span class="t">Shoulder dystocia</span></a>
-        <a href="#c08" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">08</span><span class="t">Breech delivery</span></a>
-        <a href="#c09" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">09</span><span class="t">Umbilical cord prolapse</span></a>
-      </div>
+      <div id="menu">
+        <div class="lrh-group-hd"><span class="dot" style="background:var(--lrh-gray)"></span><span class="label">EQUIPMENT</span><span class="rule"></span></div>
+        <div class="lrh-row-grid">
+          <a href="#cart" data-k="cart drawer equipment supplies where is" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="t">OB / neonatal cart — what is in each drawer</span></a>
+        </div>
 
-      <div class="lrh-group-hd"><span class="dot" style="background:var(--lrh-teal)"></span><span class="label">NEWBORN</span><span class="rule"></span></div>
-      <div class="lrh-row-grid">
-        <a href="#c03" class="lrh-row" style="--cc:var(--lrh-teal)"><span class="n lrh-mono">03</span><span class="t">Neonatal resuscitation</span></a>
-        <a href="#c04" class="lrh-row" style="--cc:var(--lrh-teal)"><span class="n lrh-mono">04</span><span class="t">Umbilical vein catheterization</span></a>
-      </div>
+        <div class="lrh-group-hd"><span class="dot" style="background:var(--lrh-gray)"></span><span class="label">DELIVERY</span><span class="rule"></span></div>
+        <div class="lrh-row-grid">
+          <a href="#c02" data-k="labor birth precipitous apgar nuchal cord crowning" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">02</span><span class="t">Imminent normal delivery</span></a>
+          <a href="#c07" data-k="shoulder dystocia helperr mcroberts suprapubic pressure maneuvers" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">07</span><span class="t">Shoulder dystocia</span></a>
+          <a href="#c08" data-k="breech buttocks footling frank complete" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">08</span><span class="t">Breech delivery</span></a>
+          <a href="#c09" data-k="cord prolapse presenting" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">09</span><span class="t">Umbilical cord prolapse</span></a>
+        </div>
 
-      <div class="lrh-group-hd"><span class="dot" style="background:var(--lrh-red)"></span><span class="label">MATERNAL EMERGENCY</span><span class="rule"></span></div>
-      <div class="lrh-row-grid">
-        <a href="#c05" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">05</span><span class="t">ED C-Section</span></a>
-        <a href="#c06" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">06</span><span class="t">Postpartum hemorrhage</span></a>
-        <a href="#c10" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">10</span><span class="t">Resuscitative hysterotomy</span></a>
+        <div class="lrh-group-hd"><span class="dot" style="background:var(--lrh-teal)"></span><span class="label">NEWBORN</span><span class="rule"></span></div>
+        <div class="lrh-row-grid">
+          <a href="#c03" data-k="nrp newborn resus ppv chest compressions heart rate metronome apgar" class="lrh-row" style="--cc:var(--lrh-teal)"><span class="n lrh-mono">03</span><span class="t">Neonatal resuscitation</span></a>
+          <a href="#c04" data-k="uvc umbilical vein line venous access emergency" class="lrh-row" style="--cc:var(--lrh-teal)"><span class="n lrh-mono">04</span><span class="t">Umbilical vein catheterization</span></a>
+        </div>
+
+        <div class="lrh-group-hd"><span class="dot" style="background:var(--lrh-red)"></span><span class="label">MATERNAL EMERGENCY</span><span class="rule"></span></div>
+        <div class="lrh-row-grid">
+          <a href="#c05" data-k="cesarean c-section section operative" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">05</span><span class="t">ED C-Section</span></a>
+          <a href="#c06" data-k="pph bleeding hemorrhage uterotonics oxytocin tranexamic txa uterine massage atony" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">06</span><span class="t">Postpartum hemorrhage</span></a>
+          <a href="#c10" data-k="hysterotomy perimortem c-section cesarean maternal arrest fundus umbilicus procedures" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">10</span><span class="t">Resuscitative hysterotomy</span></a>
+        </div>
       </div>
     </div>
   </div>
@@ -2225,7 +2243,10 @@ var SITE = { version: "1.13", lastReviewed: "2026-08-07" };
   function boot(){
     var s=document.getElementById('betasplash'), b=document.getElementById('betago');
     if(!s||!b) return;
-    function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); }
+    /* Drop straight into the filter box once the splash is gone — but only when
+       landing on the plain menu (no #cNN deep link already taking the user to a card). */
+    function focusFilter(){ if(location.hash) return; var f=document.getElementById('menuFilter'); if(f) f.focus(); }
+    function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); focusFilter(); }
     // Arrived from the site home menu (?from=home): the site-level beta splash
     // was already shown, so skip this one and jump to any deep-linked card.
     // Direct / bookmarked / home-screen visits still see the splash.
@@ -2990,6 +3011,51 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   window.addEventListener('hashchange', maybeShow, false);
   maybeShow();
   b.addEventListener('click', function(){ history.back(); }, false);
+})();
+</script>
+<script>
+(function(){
+  var menu=document.getElementById('menu');
+  var fInput=document.getElementById('menuFilter');
+  if(!menu || !fInput) return;
+  var emptyMsg=document.getElementById('menuFilterEmpty');
+  var rows=Array.prototype.slice.call(menu.querySelectorAll('.lrh-row'));
+  var groups=Array.prototype.slice.call(menu.querySelectorAll('.lrh-group-hd'));
+  function norm(s){ return (s||'').toLowerCase(); }
+  var rowData=rows.map(function(r){
+    var num=r.querySelector('.n'), t=r.querySelector('.t');
+    var text=norm((num?num.textContent:'')+' '+(t?t.textContent:'')+' '+(r.getAttribute('data-k')||''));
+    return {row:r, text:text};
+  });
+  function applyFilter(){
+    var term=norm(fInput.value.trim());
+    var anyVisible=false;
+    rowData.forEach(function(rd){
+      var match=!term || rd.text.indexOf(term)!==-1;
+      rd.row.style.display=match?'':'none';
+      if(match) anyVisible=true;
+    });
+    groups.forEach(function(gh){
+      var grid=gh.nextElementSibling;
+      if(!grid) return;
+      var visRows=grid.querySelectorAll('.lrh-row');
+      var vis=false;
+      for(var i=0;i<visRows.length;i++){ if(visRows[i].style.display!=='none'){ vis=true; break; } }
+      gh.style.display=vis?'':'none';
+      grid.style.display=vis?'':'none';
+    });
+    if(emptyMsg){ emptyMsg.hidden = anyVisible || !term; }
+  }
+  fInput.addEventListener('input', applyFilter);
+  fInput.addEventListener('keydown', function(e){
+    if(e.key==='Enter'){
+      var first=null;
+      for(var i=0;i<rowData.length;i++){ if(rowData[i].row.style.display!=='none'){ first=rowData[i].row; break; } }
+      if(first){ e.preventDefault(); window.location.href=first.getAttribute('href'); }
+    } else if(e.key==='Escape'){
+      fInput.value=''; applyFilter();
+    }
+  });
 })();
 </script>
 </body>

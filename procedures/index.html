@@ -51,6 +51,14 @@
   .lrh-row .spacer{flex:1}
   .lrh-row .tag{font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--lrh-ink2);white-space:nowrap;flex:none}
   .lrh-row:hover, .lrh-row:focus-visible{color:var(--lrh-ink)}
+  .lrh-filter{display:flex;gap:8px;align-items:center;background:var(--lrh-card);border:1px solid var(--lrh-line);
+    border-radius:14px;padding:4px 6px 4px 14px;margin:18px 2px 14px}
+  .lrh-filter .ico{color:var(--lrh-ink2);font-size:16px;flex:none}
+  .lrh-filter input{flex:1;background:none;border:none;color:var(--lrh-ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit;-webkit-appearance:none}
+  .lrh-filter input::-webkit-search-cancel-button{-webkit-appearance:none}
+  .lrh-filter-empty{margin:0 2px 14px;padding:12px 14px;color:var(--lrh-ink2);font-size:.88rem;background:var(--lrh-card);
+    border:1px solid var(--lrh-line);border-radius:14px}
+  .lrh-filter-empty[hidden]{display:none}
   .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;
     color:var(--lrh-ink2);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
   .lrh-hdr button{background:var(--lrh-card);border:1px solid var(--lrh-line);color:var(--lrh-ink2);
@@ -164,29 +172,37 @@
       <h1 class="lrh-idx-h1">Procedures</h1>
       <p class="lrh-idx-sub">Rare, high-stakes procedures — high-level checklists with anatomy figures. Procedures that already live in another tool link straight there; nothing is duplicated.</p>
 
+      <!-- ============ FILTER ============ -->
+      <div class="lrh-filter">
+        <span class="ico" aria-hidden="true">&#8981;</span>
+        <input type="search" id="menuFilter" autocomplete="off" spellcheck="false" autofocus
+          placeholder="Filter this list&hellip;" aria-label="Filter this list" aria-controls="menu">
+      </div>
+      <p class="lrh-filter-empty" id="menuFilterEmpty" hidden>No matches. Try a different term.</p>
+
       <!-- ============ CARD MENU ============ -->
       <div id="menu" class="menu" style="padding:0; margin:18px 0 0;">
-        <a href="#c06" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">06</span><span class="t">Central Venous Catheter (CVC)</span></a>
-        <a href="#c01" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">01</span><span class="t">Chest Tube (Tube Thoracostomy)</span></a>
-        <a href="../ob-neonatal/?from=home#c05" class="lrh-row" style="--cc:var(--lrh-red)"><span class="t">ED C-Section</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; OB / NEONATAL</span></a>
-        <a href="#c04" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">04</span><span class="t">Emergency Burr Hole (Craniotomy)</span></a>
-        <a href="#c08" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">08</span><span class="t">Escharotomy</span></a>
-        <a href="../codes/?from=home#c18" class="lrh-row" style="--cc:var(--lrh-red)"><span class="t">Front of Neck Access (FONA)</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; CODES</span></a>
-        <a href="../codes/?from=home#c06" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="t">Intubation / RSI Checklist</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; CODES</span></a>
-        <a href="#c05" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">05</span><span class="t">Lateral Canthotomy &amp; Cantholysis</span></a>
-        <a href="../peds/?from=home#p14" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="t">Procedural Sedation</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; PEDIATRIC EMERGENCIES</span></a>
-        <a href="../ob-neonatal/?from=home#c10" class="lrh-row" style="--cc:var(--lrh-red)"><span class="t">Resuscitative Hysterotomy</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; OB &amp; NEONATAL</span></a>
-        <a href="#c02" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">02</span><span class="t">Resuscitative Thoracotomy</span></a>
-        <a href="#c07" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">07</span><span class="t">Transvenous Pacing (TVP)</span></a>
-        <a href="../ob-neonatal/?from=home#c04" class="lrh-row" style="--cc:var(--lrh-blue)"><span class="t">Umbilical Vein Catheterization</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; OB / NEONATAL</span></a>
-        <a href="#c09" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">09</span><span class="t">Pelvic Binder Application</span></a>
-        <a href="#c10" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">10</span><span class="t">Tourniquet Application</span></a>
-        <a href="#c11" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">11</span><span class="t">Penetrating Neck Trauma</span></a>
-        <a href="#c12" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">12</span><span class="t">Junctional Hemorrhage Control</span></a>
-        <a href="#c13" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">13</span><span class="t">JADA System Insertion</span></a>
-        <a href="#c14" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">14</span><span class="t">Resuscitation Line (Cordis / AVA 3Xi)</span></a>
-        <a href="#c15" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">15</span><span class="t">SALAD &mdash; Contaminated Airway</span></a>
-        <a href="#c16" class="lrh-row" style="--cc:var(--lrh-teal)"><span class="n lrh-mono">16</span><span class="t">Pigtail Chest Tube</span></a>
+        <a href="#c06" data-k="central line cvc internal jugular seldinger ultrasound sterile triple lumen catheter" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">06</span><span class="t">Central Venous Catheter (CVC)</span></a>
+        <a href="#c01" data-k="chest tube thoracostomy pneumothorax hemothorax pleural safe triangle finger" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">01</span><span class="t">Chest Tube (Tube Thoracostomy)</span></a>
+        <a href="../ob-neonatal/?from=home#c05" data-k="cesarean c-section section operative" class="lrh-row" style="--cc:var(--lrh-red)"><span class="t">ED C-Section</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; OB / NEONATAL</span></a>
+        <a href="#c04" data-k="burr hole craniotomy epidural subdural herniation blown pupil middle meningeal" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">04</span><span class="t">Emergency Burr Hole (Craniotomy)</span></a>
+        <a href="#c08" data-k="escharotomy burns eschar circumferential perfusion ventilation" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">08</span><span class="t">Escharotomy</span></a>
+        <a href="../codes/?from=home#c18" data-k="fona cricothyroidotomy cico front of neck access surgical airway difficult airway das trauma" class="lrh-row" style="--cc:var(--lrh-red)"><span class="t">Front of Neck Access (FONA)</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; CODES</span></a>
+        <a href="../codes/?from=home#c06" data-k="intubation rsi rapid sequence intubation checklist airway induction paralytic sedation etomidate ketamine propofol rocuronium succinylcholine capnography preoxygenation cico emcrit push dose timer" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="t">Intubation / RSI Checklist</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; CODES</span></a>
+        <a href="#c05" data-k="canthotomy cantholysis retrobulbar hematoma orbital compartment eye pressure IOP" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">05</span><span class="t">Lateral Canthotomy &amp; Cantholysis</span></a>
+        <a href="../peds/?from=home#p14" data-k="procedural sedation ketamine propofol etomidate fasting pediatric" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="t">Procedural Sedation</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; PEDIATRIC EMERGENCIES</span></a>
+        <a href="../ob-neonatal/?from=home#c10" data-k="hysterotomy perimortem c-section cesarean maternal arrest fundus umbilicus procedures" class="lrh-row" style="--cc:var(--lrh-red)"><span class="t">Resuscitative Hysterotomy</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; OB &amp; NEONATAL</span></a>
+        <a href="#c02" data-k="thoracotomy clamshell cardiac tamponade pericardiotomy trauma arrest" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">02</span><span class="t">Resuscitative Thoracotomy</span></a>
+        <a href="#c07" data-k="transvenous pacing pacemaker wire bradycardia capture threshold" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">07</span><span class="t">Transvenous Pacing (TVP)</span></a>
+        <a href="../ob-neonatal/?from=home#c04" data-k="uvc umbilical vein line venous access emergency" class="lrh-row" style="--cc:var(--lrh-blue)"><span class="t">Umbilical Vein Catheterization</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; OB / NEONATAL</span></a>
+        <a href="#c09" data-k="pelvic binder sam sling t-pod unstable pelvis fracture greater trochanters sheet wrap" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">09</span><span class="t">Pelvic Binder Application</span></a>
+        <a href="#c10" data-k="tourniquet application cat combat application windlass extremity hemorrhage stop the bleed" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">10</span><span class="t">Tourniquet Application</span></a>
+        <a href="#c11" data-k="penetrating neck trauma zones hard signs soft signs cta foley catheter balloon tamponade" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">11</span><span class="t">Penetrating Neck Trauma</span></a>
+        <a href="#c12" data-k="junctional hemorrhage groin axilla wound packing hemostatic gauze combat gauze itclamp junctional tourniquet" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">12</span><span class="t">Junctional Hemorrhage Control</span></a>
+        <a href="#c13" data-k="jada system insertion postpartum hemorrhage pph vacuum induced uterine tamponade intrauterine loop cervical seal balloon bakri" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">13</span><span class="t">JADA System Insertion</span></a>
+        <a href="#c14" data-k="resuscitation line cordis code line big line massive transfusion large bore introducer sheath ava 3xi combination catheter mtp access" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">14</span><span class="t">Resuscitation Line (Cordis / AVA 3Xi)</span></a>
+        <a href="#c15" data-k="salad suction assisted laryngoscopy airway decontamination vomit emesis contaminated airway ducanto rigid suction meconium aspirator three trajectories oesophageal park intubation soiled airway aspiration" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">15</span><span class="t">SALAD &mdash; Contaminated Airway</span></a>
+        <a href="#c16" data-k="pigtail chest tube seldinger small bore thoracostomy pneumothorax hemothorax effusion empyema triangle of safety guidewire dilator underwater seal drain pcat" class="lrh-row" style="--cc:var(--lrh-teal)"><span class="n lrh-mono">16</span><span class="t">Pigtail Chest Tube</span></a>
       </div>
     </div>
   </div>
@@ -1453,11 +1469,14 @@ var SITE = {
   function boot(){
     var s=document.getElementById('betasplash'), b=document.getElementById('betago');
     if(!s||!b) return;
+    /* Drop straight into the filter box once the splash is gone — but only when
+       landing on the plain menu (no #cNN deep link already taking the user to a card). */
+    function focusFilter(){ if(location.hash) return; var f=document.getElementById('menuFilter'); if(f) f.focus(); }
     try{
       var params=new URLSearchParams(location.search);
-      if(params.get('from')==='home'){ if(s.parentNode) s.parentNode.removeChild(s); return; }
+      if(params.get('from')==='home'){ if(s.parentNode) s.parentNode.removeChild(s); focusFilter(); return; }
     }catch(e){}
-    function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); }
+    function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); focusFilter(); }
     b.addEventListener('click', go, false);
     b.addEventListener('touchend', go, false);
   }
@@ -1474,6 +1493,51 @@ var SITE = {
   window.addEventListener('hashchange', maybeShow, false);
   maybeShow();
   b.addEventListener('click', function(){ history.back(); }, false);
+})();
+</script>
+<script>
+(function(){
+  var menu=document.getElementById('menu');
+  var fInput=document.getElementById('menuFilter');
+  if(!menu || !fInput) return;
+  var emptyMsg=document.getElementById('menuFilterEmpty');
+  var rows=Array.prototype.slice.call(menu.querySelectorAll('.lrh-row'));
+  var groups=Array.prototype.slice.call(menu.querySelectorAll('.lrh-group-hd'));
+  function norm(s){ return (s||'').toLowerCase(); }
+  var rowData=rows.map(function(r){
+    var num=r.querySelector('.n'), t=r.querySelector('.t');
+    var text=norm((num?num.textContent:'')+' '+(t?t.textContent:'')+' '+(r.getAttribute('data-k')||''));
+    return {row:r, text:text};
+  });
+  function applyFilter(){
+    var term=norm(fInput.value.trim());
+    var anyVisible=false;
+    rowData.forEach(function(rd){
+      var match=!term || rd.text.indexOf(term)!==-1;
+      rd.row.style.display=match?'':'none';
+      if(match) anyVisible=true;
+    });
+    groups.forEach(function(gh){
+      var grid=gh.nextElementSibling;
+      if(!grid) return;
+      var visRows=grid.querySelectorAll('.lrh-row');
+      var vis=false;
+      for(var i=0;i<visRows.length;i++){ if(visRows[i].style.display!=='none'){ vis=true; break; } }
+      gh.style.display=vis?'':'none';
+      grid.style.display=vis?'':'none';
+    });
+    if(emptyMsg){ emptyMsg.hidden = anyVisible || !term; }
+  }
+  fInput.addEventListener('input', applyFilter);
+  fInput.addEventListener('keydown', function(e){
+    if(e.key==='Enter'){
+      var first=null;
+      for(var i=0;i<rowData.length;i++){ if(rowData[i].row.style.display!=='none'){ first=rowData[i].row; break; } }
+      if(first){ e.preventDefault(); window.location.href=first.getAttribute('href'); }
+    } else if(e.key==='Escape'){
+      fInput.value=''; applyFilter();
+    }
+  });
 })();
 </script>
 </body>

@@ -58,6 +58,14 @@
   .lrh-row .spacer{flex:1}
   .lrh-row .tag{font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--lrh-ink2);white-space:nowrap;flex:none}
   .lrh-row:hover, .lrh-row:focus-visible{color:var(--lrh-ink)}
+  .lrh-filter{display:flex;gap:8px;align-items:center;background:var(--lrh-card);border:1px solid var(--lrh-line);
+    border-radius:14px;padding:4px 6px 4px 14px;margin:18px 2px 14px}
+  .lrh-filter .ico{color:var(--lrh-ink2);font-size:16px;flex:none}
+  .lrh-filter input{flex:1;background:none;border:none;color:var(--lrh-ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit;-webkit-appearance:none}
+  .lrh-filter input::-webkit-search-cancel-button{-webkit-appearance:none}
+  .lrh-filter-empty{margin:0 2px 14px;padding:12px 14px;color:var(--lrh-ink2);font-size:.88rem;background:var(--lrh-card);
+    border:1px solid var(--lrh-line);border-radius:14px}
+  .lrh-filter-empty[hidden]{display:none}
   body { margin:0; background:#eceff3; color:#16324f; font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; font-size:16.5px; line-height:1.4; text-wrap:pretty; }
   main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
   article { scroll-margin-top:var(--sticky-h,54px); margin-top:12px; }
@@ -234,17 +242,25 @@ catch(e){ document.body.dataset.theme='dark'; }
       <p class="lrh-idx-sub">Tap a card to open. Massive Transfusion Protocol and Front of Neck Access live in the Codes tool — the cards below link straight there so nothing is duplicated.</p>
       <button type="button" id="startnewcasebtn" class="lrh-startnew-btn">START NEW CASE</button>
 
+      <!-- ============ FILTER ============ -->
+      <div class="lrh-filter">
+        <span class="ico" aria-hidden="true">&#8981;</span>
+        <input type="search" id="menuFilter" autocomplete="off" spellcheck="false" autofocus
+          placeholder="Filter this list&hellip;" aria-label="Filter this list" aria-controls="menu">
+      </div>
+      <p class="lrh-filter-empty" id="menuFilterEmpty" hidden>No matches. Try a different term.</p>
+
       <!-- ============ CARD MENU ============ -->
       <div id="menu" class="menu" style="padding:0; margin:18px 0 0;">
-        <a href="#c01" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">01</span><span class="t">Brain Injury Guidelines (BIG)</span></a>
-        <a href="#c02" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">02</span><span class="t">Level 1 Trauma Activation</span></a>
-        <a href="#c03" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">03</span><span class="t">Blunt Polytrauma</span></a>
-        <a href="#c04" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">04</span><span class="t">Penetrating Trauma</span></a>
-        <a href="#c05" class="lrh-row" style="--cc:var(--lrh-orange)"><span class="n lrh-mono">05</span><span class="t">Burn</span></a>
-        <a href="#c06" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">06</span><span class="t">Isolated Head Trauma</span></a>
-        <a href="#c07" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">07</span><span class="t">Mangled / Amputated Extremity</span></a>
-        <a href="../codes/?from=home#c12" class="lrh-row" style="--cc:var(--lrh-red)"><span class="t">Massive Transfusion Protocol</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; CODES</span></a>
-        <a href="../codes/?from=home#c18" class="lrh-row" style="--cc:var(--lrh-red)"><span class="t">Front of Neck Access (FONA)</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; CODES</span></a>
+        <a href="#c01" data-k="big brain injury guidelines mbig modified traumatic brain injury tbi minor head injury mtbi intracranial hemorrhage ich concussion" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">01</span><span class="t">Brain Injury Guidelines (BIG)</span></a>
+        <a href="#c02" data-k="level 1 trauma activation full team response criteria acs field triage abc score mtp trigger" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">02</span><span class="t">Level 1 Trauma Activation</span></a>
+        <a href="#c03" data-k="blunt polytrauma multi-system xabcde damage control resuscitation permissive hypotension react-2 blunt aortic cardiac injury seatbelt sign" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">03</span><span class="t">Blunt Polytrauma</span></a>
+        <a href="#c04" data-k="penetrating trauma gunshot stab wound torso abdomen tension pneumothorax open chest wound massive hemothorax tamponade" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">04</span><span class="t">Penetrating Trauma</span></a>
+        <a href="#c05" data-k="burn tbsa rule of nines parkland fluid resuscitation inhalation injury carbon monoxide cyanide burn center transfer" class="lrh-row" style="--cc:var(--lrh-orange)"><span class="n lrh-mono">05</span><span class="t">Burn</span></a>
+        <a href="#c06" data-k="head trauma tbi gcs canadian ct head rule new orleans criteria herniation mannitol hypertonic saline hypoxia hypotension" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">06</span><span class="t">Isolated Head Trauma</span></a>
+        <a href="#c07" data-k="mangled amputated extremity mess score replantation limb salvage vascular injury compartment syndrome tourniquet" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">07</span><span class="t">Mangled / Amputated Extremity</span></a>
+        <a href="../codes/?from=home#c12" data-k="mtp massive transfusion protocol blood products prbc plasma platelets cryo hemorrhagic shock trauma" class="lrh-row" style="--cc:var(--lrh-red)"><span class="t">Massive Transfusion Protocol</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; CODES</span></a>
+        <a href="../codes/?from=home#c18" data-k="fona cricothyroidotomy cico front of neck access surgical airway difficult airway das trauma" class="lrh-row" style="--cc:var(--lrh-red)"><span class="t">Front of Neck Access (FONA)</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; CODES</span></a>
       </div>
     </div>
   </div>
@@ -685,11 +701,14 @@ var SITE = {
   function boot(){
     var s=document.getElementById('betasplash'), b=document.getElementById('betago');
     if(!s||!b) return;
-    function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); }
+    /* Drop straight into the filter box once the splash is gone — but only when
+       landing on the plain menu (no #cNN deep link already taking the user to a card). */
+    function focusFilter(){ if(location.hash) return; var f=document.getElementById('menuFilter'); if(f) f.focus(); }
+    function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); focusFilter(); }
     b.addEventListener('click', go, false);
     b.addEventListener('touchend', go, false);
     /* handlers attach first so a parse failure can never leave the splash stuck */
-    try{ if(/(^|[?&])from=home(&|$)/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); } }catch(err){}
+    try{ if(/(^|[?&])from=home(&|$)/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); focusFilter(); } }catch(err){}
   }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
 })();
@@ -810,6 +829,51 @@ var CASESTATE = (function(){
   if(btn) btn.addEventListener('click', clear);
   document.addEventListener('visibilitychange', function(){ if(!document.hidden) restore(); });
   restore();
+})();
+</script>
+<script>
+(function(){
+  var menu=document.getElementById('menu');
+  var fInput=document.getElementById('menuFilter');
+  if(!menu || !fInput) return;
+  var emptyMsg=document.getElementById('menuFilterEmpty');
+  var rows=Array.prototype.slice.call(menu.querySelectorAll('.lrh-row'));
+  var groups=Array.prototype.slice.call(menu.querySelectorAll('.lrh-group-hd'));
+  function norm(s){ return (s||'').toLowerCase(); }
+  var rowData=rows.map(function(r){
+    var num=r.querySelector('.n'), t=r.querySelector('.t');
+    var text=norm((num?num.textContent:'')+' '+(t?t.textContent:'')+' '+(r.getAttribute('data-k')||''));
+    return {row:r, text:text};
+  });
+  function applyFilter(){
+    var term=norm(fInput.value.trim());
+    var anyVisible=false;
+    rowData.forEach(function(rd){
+      var match=!term || rd.text.indexOf(term)!==-1;
+      rd.row.style.display=match?'':'none';
+      if(match) anyVisible=true;
+    });
+    groups.forEach(function(gh){
+      var grid=gh.nextElementSibling;
+      if(!grid) return;
+      var visRows=grid.querySelectorAll('.lrh-row');
+      var vis=false;
+      for(var i=0;i<visRows.length;i++){ if(visRows[i].style.display!=='none'){ vis=true; break; } }
+      gh.style.display=vis?'':'none';
+      grid.style.display=vis?'':'none';
+    });
+    if(emptyMsg){ emptyMsg.hidden = anyVisible || !term; }
+  }
+  fInput.addEventListener('input', applyFilter);
+  fInput.addEventListener('keydown', function(e){
+    if(e.key==='Enter'){
+      var first=null;
+      for(var i=0;i<rowData.length;i++){ if(rowData[i].row.style.display!=='none'){ first=rowData[i].row; break; } }
+      if(first){ e.preventDefault(); window.location.href=first.getAttribute('href'); }
+    } else if(e.key==='Escape'){
+      fInput.value=''; applyFilter();
+    }
+  });
 })();
 </script>
 </body>

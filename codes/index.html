@@ -63,6 +63,14 @@
      than a single class) which would otherwise turn row text dark-on-dark on hover
      in the dark theme. */
   .lrh-row:hover, .lrh-row:focus-visible{color:var(--lrh-ink)}
+  .lrh-filter{display:flex;gap:8px;align-items:center;background:var(--lrh-card);border:1px solid var(--lrh-line);
+    border-radius:14px;padding:4px 6px 4px 14px;margin:18px 2px 14px}
+  .lrh-filter .ico{color:var(--lrh-ink2);font-size:16px;flex:none}
+  .lrh-filter input{flex:1;background:none;border:none;color:var(--lrh-ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit;-webkit-appearance:none}
+  .lrh-filter input::-webkit-search-cancel-button{-webkit-appearance:none}
+  .lrh-filter-empty{margin:0 2px 14px;padding:12px 14px;color:var(--lrh-ink2);font-size:.88rem;background:var(--lrh-card);
+    border:1px solid var(--lrh-line);border-radius:14px}
+  .lrh-filter-empty[hidden]{display:none}
   main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
   article { scroll-margin-top:var(--sticky-h,54px); margin-top:12px; }
   section#top { scroll-margin-top:0; }
@@ -336,34 +344,42 @@ catch(e){ document.body.dataset.theme='dark'; }
       <p class="lrh-idx-sub">Tap a card to open. Timers, dose reminders, and a device-local case timeline — no patient data is stored.</p>
       <button type="button" id="startnewcasebtn" class="lrh-startnew-btn">START NEW CASE</button>
 
+      <!-- ============ FILTER ============ -->
+      <div class="lrh-filter">
+        <span class="ico" aria-hidden="true">&#8981;</span>
+        <input type="search" id="menuFilter" autocomplete="off" spellcheck="false" autofocus
+          placeholder="Filter this list&hellip;" aria-label="Filter this list" aria-controls="menu">
+      </div>
+      <p class="lrh-filter-empty" id="menuFilterEmpty" hidden>No matches. Try a different term.</p>
+
       <!-- ============ CARD MENU ============ -->
       <div id="menu" class="menu" style="padding:0; margin:18px 0 0;">
-        <a href="#c01" id="menu-c01" class="lrh-row" style="--cc:var(--lrh-blue)"><span class="n lrh-mono">01</span><span class="t">Pulseless VF / VT</span></a>
+        <a href="#c01" data-k="code cart cardiac arrest ventricular fibrillation tachycardia defibrillation shock epinephrine amiodarone lidocaine cpr acls pea asystole non-shockable reversible causes h's and t's pals pediatric weight-based broselow resuscitation" id="menu-c01" class="lrh-row" style="--cc:var(--lrh-blue)"><span class="n lrh-mono">01</span><span class="t">Pulseless VF / VT</span></a>
         <a href="#c02" id="menu-c02" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">02</span><span class="t">PEA / Asystole</span></a>
-        <a href="#c22" id="menu-c22" class="lrh-row" style="--cc:var(--lrh-green)"><span class="n lrh-mono">22</span><span class="t">Post-ROSC Care</span></a>
-        <a href="#c03" class="lrh-row" style="--cc:var(--lrh-blue)"><span class="n lrh-mono">03</span><span class="t">Symptomatic Bradycardia</span></a>
-        <a href="#c04" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">04</span><span class="t">Suspected Acute Stroke</span></a>
-        <a href="#c21" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">21</span><span class="t">STEMI</span></a>
-        <a href="#c05" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">05</span><span class="t">Respiratory Arrest</span></a>
-        <a href="#c06" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">06</span><span class="t">Intubation / RSI Checklist</span></a>
-        <a href="#c07" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">07</span><span class="t">Intracranial Hemorrhage</span></a>
-        <a href="#c08" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">08</span><span class="t">Anaphylaxis</span></a>
-        <a href="#c09" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">09</span><span class="t">Bleeding / Hemorrhagic Shock</span></a>
-        <a href="#c10" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">10</span><span class="t">Reversal of Anticoagulants</span></a>
-        <a href="#c11" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">11</span><span class="t">Hyperkalemia (Crash Protocol)</span></a>
-        <a href="#c12" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">12</span><span class="t">Massive Transfusion Protocol</span></a>
-        <a href="#c23" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">23</span><span class="t">Massive Hematemesis</span></a>
-        <a href="#c24" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">24</span><span class="t">Massive Hemoptysis</span></a>
-        <a href="#c25" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">25</span><span class="t">Epistaxis</span></a>
-        <a href="#c26" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">26</span><span class="t">Pacemaker / ICD Emergencies</span></a>
-        <a href="#c13" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">13</span><span class="t">Status Epilepticus</span></a>
-        <a href="#c14" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">14</span><span class="t">Unstable on the Vent (DOPE)</span></a>
-        <a href="#c15" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">15</span><span class="t">Status Asthmaticus</span></a>
-        <a href="#c16" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">16</span><span class="t">Angioedema</span></a>
-        <a href="#c17" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">17</span><span class="t">Tracheostomy Emergency</span></a>
-        <a href="#c18" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">18</span><span class="t">Front of Neck Access (FONA)</span></a>
-        <a href="#c19" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">19</span><span class="t">LVAD — Responsive (Pump Running)</span></a>
-        <a href="#c20" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">20</span><span class="t">LVAD — Unresponsive (Pump NOT Running)</span></a>
+        <a href="#c22" data-k="post rosc return of spontaneous circulation post arrest care post-arrest first 20 minutes after arrest targeted temperature management ttm cooling oxygenation ventilation blood pressure map 12-lead ekg neuroprognostication code" id="menu-c22" class="lrh-row" style="--cc:var(--lrh-green)"><span class="n lrh-mono">22</span><span class="t">Post-ROSC Care</span></a>
+        <a href="#c03" data-k="bradycardia atropine transcutaneous pacing pacer heart block slow heart rate symptomatic code" class="lrh-row" style="--cc:var(--lrh-blue)"><span class="n lrh-mono">03</span><span class="t">Symptomatic Bradycardia</span></a>
+        <a href="#c04" data-k="stroke code stroke tpa tnk tenecteplase alteplase thrombectomy last known well nihss ct head lytic omnicell" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">04</span><span class="t">Suspected Acute Stroke</span></a>
+        <a href="#c21" data-k="stemi st elevation mi myocardial infarction chest pain heart cognitive aid mimics aspirin heparin enoxaparin atorvastatin tenecteplase tnk weight band pressor norepinephrine dobutamine cardiogenic shock reperfusion arrhythmia aivr transfer dartmouth concord omnicell code" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">21</span><span class="t">STEMI</span></a>
+        <a href="#c05" data-k="respiratory arrest apnea bag mask ventilation bvm reversible causes naloxone code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">05</span><span class="t">Respiratory Arrest</span></a>
+        <a href="#c06" data-k="intubation rsi rapid sequence intubation checklist airway induction paralytic sedation etomidate ketamine propofol rocuronium succinylcholine capnography preoxygenation cico emcrit push dose timer" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">06</span><span class="t">Intubation / RSI Checklist</span></a>
+        <a href="#c07" data-k="intracranial hemorrhage ich subarachnoid subdural blood pressure control anticoagulation reversal neurosurgery code" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">07</span><span class="t">Intracranial Hemorrhage</span></a>
+        <a href="#c08" data-k="anaphylaxis epinephrine allergic reaction angioedema stridor epi im code omnicell" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">08</span><span class="t">Anaphylaxis</span></a>
+        <a href="#c09" data-k="bleeding hemorrhagic shock trauma resuscitation blood products lethal triad tranexamic txa code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">09</span><span class="t">Bleeding / Hemorrhagic Shock</span></a>
+        <a href="#c10" data-k="anticoagulant reversal warfarin coumadin doac apixaban rivaroxaban dabigatran heparin vitamin k prothrombin complex concentrate pcc andexanet idarucizumab protamine code" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">10</span><span class="t">Reversal of Anticoagulants</span></a>
+        <a href="#c11" data-k="hyperkalemia potassium calcium gluconate insulin dextrose albuterol kayexalate dialysis peaked t waves ecg code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">11</span><span class="t">Hyperkalemia (Crash Protocol)</span></a>
+        <a href="#c12" data-k="mtp massive transfusion protocol blood products prbc plasma platelets cryo hemorrhagic shock trauma" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">12</span><span class="t">Massive Transfusion Protocol</span></a>
+        <a href="#c23" data-k="hematemesis massive gi bleed upper gastrointestinal bleeding vomiting blood coffee ground variceal varices esophageal cirrhosis liver portal hypertension octreotide ceftriaxone ppi pantoprazole txa halt-it blakemore sengstaken minnesota balloon tamponade endoscopy egd salad suction aortoenteric fistula transfusion mtp exsanguinating code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">23</span><span class="t">Massive Hematemesis</span></a>
+        <a href="#c24" data-k="hemoptysis massive coughing up blood lung bleeding bronchial artery embolization bae lung isolation mainstem bronchial blocker double lumen tube nebulized txa tranexamic bleeding side down asphyxiation ett 8.0 code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">24</span><span class="t">Massive Hemoptysis</span></a>
+        <a href="#c25" data-k="epistaxis nosebleed nose bleed anterior posterior kiesselbach little area silver nitrate cautery packing merocel rapid rhino rhino rocket foley balloon topical txa tranexamic oxymetazoline afrin nasal ent" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">25</span><span class="t">Epistaxis</span></a>
+        <a href="#c26" data-k="pacemaker icd aicd defibrillator magnet electrical storm vt storm inappropriate shock failure to capture undersensing oversensing pacemaker mediated tachycardia pmt runaway twiddler device interrogation esmolol procainamide stellate ganglion" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">26</span><span class="t">Pacemaker / ICD Emergencies</span></a>
+        <a href="#c13" data-k="status epilepticus seizure benzodiazepine lorazepam midazolam levetiracetam fosphenytoin second line code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">13</span><span class="t">Status Epilepticus</span></a>
+        <a href="#c14" data-k="vent ventilator dope displacement obstruction pneumothorax equipment failure decompensation intubated patient code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">14</span><span class="t">Unstable on the Vent (DOPE)</span></a>
+        <a href="#c15" data-k="status asthmaticus asthma albuterol ipratropium magnesium bipap severe exacerbation wheeze code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">15</span><span class="t">Status Asthmaticus</span></a>
+        <a href="#c16" data-k="angioedema ace inhibitor bradykinin histaminergic airway swelling icatibant tranexamic code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">16</span><span class="t">Angioedema</span></a>
+        <a href="#c17" data-k="tracheostomy emergency laryngectomy stoma decannulation trach tube obstruction code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">17</span><span class="t">Tracheostomy Emergency</span></a>
+        <a href="#c18" data-k="fona cricothyroidotomy cico front of neck access surgical airway difficult airway das trauma" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">18</span><span class="t">Front of Neck Access (FONA)</span></a>
+        <a href="#c19" data-k="lvad ventricular assist device heartmate heartware pump hum driveline alarm map doppler thrombosis vad" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">19</span><span class="t">LVAD — Responsive (Pump Running)</span></a>
+        <a href="#c20" data-k="lvad ventricular assist device pump not running no hum restart battery controller driveline arrest cpr vad" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">20</span><span class="t">LVAD — Unresponsive (Pump NOT Running)</span></a>
         <a href="#cart" class="lrh-row lrh-row-cart" style="--cc:var(--lrh-gray)"><span class="t">Code cart — what is in each drawer</span></a>
       </div>
     </div>
@@ -2907,11 +2923,14 @@ var SITEAUDIO = (function(){
   function boot(){
     var s=document.getElementById('betasplash'), b=document.getElementById('betago');
     if(!s||!b) return;
-    function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); }
+    /* Drop straight into the filter box once the splash is gone — but only when
+       landing on the plain menu (no #cNN deep link already taking the user to a card). */
+    function focusFilter(){ if(location.hash) return; var f=document.getElementById('menuFilter'); if(f) f.focus(); }
+    function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); focusFilter(); }
     b.addEventListener('click', go, false);
     b.addEventListener('touchend', go, false);
     /* handlers attach first so a parse failure can never leave the splash stuck */
-    try{ if(/(^|[?&])from=home(&|$)/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); } }catch(err){}
+    try{ if(/(^|[?&])from=home(&|$)/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); focusFilter(); } }catch(err){}
   }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
 })();
@@ -4752,6 +4771,51 @@ var AUDIENCE = (function(){
   if(btn) btn.addEventListener('click', clear);
   document.addEventListener('visibilitychange', function(){ if(!document.hidden) restore(); });
   restore();
+})();
+</script>
+<script>
+(function(){
+  var menu=document.getElementById('menu');
+  var fInput=document.getElementById('menuFilter');
+  if(!menu || !fInput) return;
+  var emptyMsg=document.getElementById('menuFilterEmpty');
+  var rows=Array.prototype.slice.call(menu.querySelectorAll('.lrh-row'));
+  var groups=Array.prototype.slice.call(menu.querySelectorAll('.lrh-group-hd'));
+  function norm(s){ return (s||'').toLowerCase(); }
+  var rowData=rows.map(function(r){
+    var num=r.querySelector('.n'), t=r.querySelector('.t');
+    var text=norm((num?num.textContent:'')+' '+(t?t.textContent:'')+' '+(r.getAttribute('data-k')||''));
+    return {row:r, text:text};
+  });
+  function applyFilter(){
+    var term=norm(fInput.value.trim());
+    var anyVisible=false;
+    rowData.forEach(function(rd){
+      var match=!term || rd.text.indexOf(term)!==-1;
+      rd.row.style.display=match?'':'none';
+      if(match) anyVisible=true;
+    });
+    groups.forEach(function(gh){
+      var grid=gh.nextElementSibling;
+      if(!grid) return;
+      var visRows=grid.querySelectorAll('.lrh-row');
+      var vis=false;
+      for(var i=0;i<visRows.length;i++){ if(visRows[i].style.display!=='none'){ vis=true; break; } }
+      gh.style.display=vis?'':'none';
+      grid.style.display=vis?'':'none';
+    });
+    if(emptyMsg){ emptyMsg.hidden = anyVisible || !term; }
+  }
+  fInput.addEventListener('input', applyFilter);
+  fInput.addEventListener('keydown', function(e){
+    if(e.key==='Enter'){
+      var first=null;
+      for(var i=0;i<rowData.length;i++){ if(rowData[i].row.style.display!=='none'){ first=rowData[i].row; break; } }
+      if(first){ e.preventDefault(); window.location.href=first.getAttribute('href'); }
+    } else if(e.key==='Escape'){
+      fInput.value=''; applyFilter();
+    }
+  });
 })();
 </script>
 </body>
