@@ -1,0 +1,1031 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0D1420">
+<title>LRH Arrest — Cardiac Arrest Cognitive Aid</title>
+<meta name="description" content="Mobile cognitive aid for cardiac arrest: code clock, 2-minute cycle, weight-based PALS dosing, rhythm-check branching and an event log. Personal aid, not hospital policy.">
+<style>
+/* ===========================================================================
+   SITE CONFIG — everything an adopting ED would change lives in this block.
+   The clinical logic below reads these and nothing else.
+
+   FONTS: the handoff specifies Source Sans 3 and JetBrains Mono from Google
+   Fonts. CLAUDE.md rule 1 forbids external dependencies and requires the tool
+   to work offline from a cart in a basement, so no font is fetched. The stacks
+   below are the closest system equivalents: a humanist sans, and a mono for
+   every timer and timestamp exactly as the design asks. If the department
+   wants the exact faces, self-host the woff2 files in this folder and add them
+   here as @font-face — do not add a <link> to fonts.googleapis.com.
+   =========================================================================== */
+:root{
+  --bg:#0D1420; --card:#161F2E; --card2:#1D2A3C; --ink:#EAF0F7; --ink2:#8FA0B5;
+  --line:rgba(255,255,255,.10);
+  --red:#E5484D; --gray:#5C6B7E; --blue:#4C8DDA; --green:#3DA35D; --amber:#F0B429;
+  --accent:#2FA372; --accentInk:#fff;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Roboto Mono",monospace;
+}
+body[data-theme="light"]{
+  --bg:#EFF2F5; --card:#FFFFFF; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D;
+  --line:rgba(15,35,60,.13);
+  --red:#C63238; --gray:#6B7A8D; --blue:#2F6FB5; --green:#1F7F49; --amber:#B07E13;
+  --accent:#00693E;
+}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+button,input{font-family:inherit}
+button{-webkit-appearance:none;appearance:none;touch-action:manipulation;-webkit-tap-highlight-color:rgba(255,255,255,.12)}
+.wrap{max-width:680px;margin:0 auto;padding:0 14px 40px}
+.mono{font-family:var(--mono)}
+.hdr{position:sticky;top:0;z-index:30;background:var(--bg);padding:12px 0 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+.plabel{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--accent)}
+.sec{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--ink2)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px}
+.btn{border:1px solid var(--line);border-radius:12px;background:var(--card2);color:var(--ink);font:800 16px var(--sans);cursor:pointer}
+.ghost{background:var(--card);border:1px solid var(--line);color:var(--ink2);font:700 11px var(--sans);letter-spacing:.08em;padding:9px 12px;border-radius:10px;cursor:pointer;min-height:38px}
+.inp{background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:9px 10px;font-size:17px;font-weight:700;text-align:center}
+.acc{margin-top:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.acch{width:100%;display:flex;justify-content:space-between;align-items:center;background:none;border:none;color:var(--ink);padding:15px 14px;font:800 14px var(--sans);letter-spacing:.06em;cursor:pointer;min-height:52px}
+.accb{padding:0 14px 14px;font-size:14.5px;line-height:1.6;border-top:1px solid var(--line)}
+.accb p{margin:10px 0}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700}
+/* Only overdue things move. Everything else is deliberately still — motion is a
+   signal here, not decoration, and a screen where several things animate is a
+   screen where none of them mean anything. */
+@keyframes duepulse{0%,100%{opacity:1}50%{opacity:.45}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.due{animation:duepulse 1.2s infinite}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;animation:blink 1.4s infinite}
+@media (prefers-reduced-motion: reduce){.due,.dot{animation:none}}
+.sheetwrap{position:fixed;inset:0;z-index:60;background:rgba(5,10,18,.72);display:flex;align-items:flex-end;justify-content:center}
+.sheet{width:100%;max-width:680px;background:var(--card);border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));border:1px solid var(--line);box-sizing:border-box}
+.rcbtn{width:100%;min-height:76px;border:none;border-radius:14px;color:#fff;font:800 19px var(--sans);letter-spacing:.03em;cursor:pointer;text-align:left;padding:0 18px;display:flex;align-items:center;gap:14px}
+.rcsub{font-size:13px;font-weight:600;opacity:.85;margin-top:3px}
+.evrow{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+</style>
+</head>
+<body data-theme="dark">
+<div class="wrap">
+
+  <div class="hdr">
+    <div style="flex:1;min-width:0">
+      <div class="plabel" id="plabel">01 · PULSELESS VF / VT</div>
+      <div style="display:flex;align-items:baseline;gap:8px">
+        <span class="mono" id="clock" style="font-size:26px;font-weight:700">0:00</span>
+        <span id="rundot" style="display:none"><span class="dot"></span></span>
+        <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:600">READY</span>
+      </div>
+    </div>
+    <button class="ghost" id="themebtn" type="button">LIGHT</button>
+    <button class="ghost" id="resetbtn" type="button">RESET</button>
+  </div>
+
+  <div class="card" style="display:flex;gap:8px;align-items:center;margin:12px 0 0;padding:10px 12px;flex-wrap:wrap">
+    <span class="sec">WEIGHT</span>
+    <input class="inp" id="wIn" inputmode="decimal" style="width:64px" aria-label="Weight in kg">
+    <span style="font-size:13px;color:var(--ink2)">kg &nbsp;·&nbsp; or age</span>
+    <input class="inp" id="aIn" inputmode="numeric" placeholder="yrs" style="width:52px;font-size:16px" aria-label="Age in years">
+    <button class="btn" id="estbtn" type="button" style="font:700 12px var(--sans);padding:9px 12px;border-radius:9px;min-height:38px">ESTIMATE KG</button>
+    <span id="wnote" style="font-size:13px;font-weight:700;color:var(--accent)">enter weight</span>
+  </div>
+
+  <div id="pedsbanner" class="card" style="display:none;gap:10px;align-items:center;margin-top:10px;border-color:var(--accent);padding:10px 12px">
+    <span style="width:14px;height:38px;border-radius:6px;background:var(--accent);flex:none"></span>
+    <div style="flex:1;font-size:13.5px;line-height:1.4" id="pedstext"></div>
+    <button class="ghost" id="dismisspeds" type="button" style="white-space:nowrap">DISMISS</button>
+  </div>
+  <div id="overridebar" class="card" style="display:none;align-items:center;gap:10px;margin-top:10px;border-color:var(--amber);padding:10px 12px">
+    <div style="flex:1;font-size:13.5px;line-height:1.4"><b>Adult mode — overridden.</b> Pediatric criteria are met but this is being treated as an adult. Doses below are adult.</div>
+    <button class="ghost" id="undooverride" type="button" style="white-space:nowrap">UNDO</button>
+  </div>
+
+  <div id="idle">
+    <div class="card" id="pulsegate" style="margin-top:14px;padding:12px;border-color:var(--amber)">
+      <div class="sec" style="color:var(--amber)">FIRST — FEEL FOR A PULSE. TEN SECONDS, NO LONGER.</div>
+      <div style="font-size:13.5px;line-height:1.5;margin-top:4px">
+        Carotid or femoral in an adult; brachial or femoral in an infant. Look for normal breathing at the same time.
+        <b>If you are not certain there is a pulse, there is no pulse</b> — start compressions.
+      </div>
+    </div>
+
+    <button id="startbtn" type="button" style="width:100%;margin-top:12px;min-height:96px;border:none;border-radius:16px;background:var(--red);color:#fff;font:800 22px var(--sans);letter-spacing:.04em;cursor:pointer;box-shadow:0 6px 24px rgba(229,72,77,.25)">
+      <span style="display:inline-flex;align-items:center;justify-content:center;gap:12px">
+        <svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21C7 17 3 13.5 3 9.5 3 7 5 5 7.5 5c1.8 0 3.4 1 4.5 2.6C13.1 6 14.7 5 16.5 5 19 5 21 7 21 9.5c0 4-4 7.5-9 11.5z"></path></svg>NO PULSE — START CPR</span>
+      <div style="font-size:13px;font-weight:600;opacity:.85;margin-top:4px">Code blue · starts the clock and the 2:00 cycle · rhythm decided at the first check</div>
+    </button>
+
+    <button id="respstartbtn" type="button" style="width:100%;margin-top:10px;min-height:84px;border:2px solid var(--blue);border-radius:16px;background:transparent;color:var(--blue);font:800 19px var(--sans);letter-spacing:.03em;cursor:pointer">
+      <span style="display:inline-flex;align-items:center;justify-content:center;gap:10px">
+        <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9"></path><path d="M12 12c0 4-1.5 8-4.5 8S4 17 4 14"></path><path d="M12 12c0 4 1.5 8 4.5 8S20 17 20 14"></path></svg>PULSE, NOT BREATHING</span>
+      <div style="font-size:13px;font-weight:600;color:var(--ink2);margin-top:4px">Rescue breathing — starts a paced breath tone</div>
+    </button>
+
+    <div id="bradygate" class="card" style="display:none;margin-top:10px;padding:11px 12px;border-color:var(--red);font-size:13.5px;line-height:1.45">
+      <b>Child with a pulse under <span id="bradyhr">60</span>/min and poor perfusion</b>, despite oxygenation and ventilation —
+      start compressions anyway. A palpable pulse is not a reason to wait.
+    </div>
+
+    <div style="margin-top:10px;font-size:13px;color:var(--ink2);text-align:center">Call the code · attach the defibrillator · enter weight above</div>
+  </div>
+
+  <div id="cpr" style="display:none">
+    <!-- The code blue front door. CPR starts before anyone knows the rhythm, so
+         the screen says so out loud rather than quietly presenting the VF
+         algorithm and hoping. It disappears the moment a rhythm is named. -->
+    <div id="unknownbar" class="card" style="margin-top:14px;padding:12px;border:2px solid var(--amber)">
+      <div class="sec" style="color:var(--amber)">RHYTHM NOT YET KNOWN — THIS IS STILL JUST CPR</div>
+      <div style="font-size:13.5px;line-height:1.45;margin-top:4px">
+        Good compressions, pads on, airway supported. <b>The first rhythm you see chooses the algorithm</b> — until then nothing below is committed.
+      </div>
+      <button class="btn" id="firstrcbtn" type="button" style="width:100%;min-height:64px;margin-top:10px;background:var(--amber);color:#141E2B;border:none;font:800 17px var(--sans)">PADS ON — CHECK THE RHYTHM</button>
+    </div>
+
+    <div id="rhythmbar" class="card" style="display:none;margin-top:14px;padding:10px 12px;align-items:center;gap:10px">
+      <div style="flex:1;font-size:14px;line-height:1.4" id="rhythmtext"></div>
+      <button class="ghost" id="rhythmchange" type="button" style="white-space:nowrap">RE-CHECK</button>
+    </div>
+
+    <div class="card" id="cyclecard" style="margin-top:10px;padding:14px;border-radius:16px">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div class="sec">CPR CYCLE — RHYTHM CHECK AT 0:00</div>
+        <div class="sec" style="text-align:right">SHOCKS <span class="mono" id="shockn" style="font-size:20px;color:var(--red)">0</span></div>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:14px;margin-top:2px">
+        <span class="mono" id="cycleclock" style="font-size:54px;font-weight:700;line-height:1">2:00</span>
+        <span id="modelabel" style="font-size:13px;color:var(--ink2);font-weight:600"></span>
+      </div>
+      <button id="duebtn" type="button" class="due" style="display:none;width:100%;min-height:64px;border:none;border-radius:12px;background:var(--amber);color:#141E2B;font:800 18px var(--sans);letter-spacing:.03em;cursor:pointer;margin-top:10px">RHYTHM CHECK DUE — WHAT DO YOU SEE?</button>
+      <button id="shockbtn" type="button" style="width:100%;min-height:72px;border:none;border-radius:12px;background:var(--red);color:#fff;font:800 20px var(--sans);letter-spacing:.03em;cursor:pointer;margin-top:10px">
+        <span style="display:inline-flex;align-items:center;justify-content:center;gap:10px">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"></path></svg><span id="shocklabel">SHOCK — LOG IT</span></span>
+        <div style="font-size:12.5px;font-weight:600;opacity:.85;margin-top:3px" id="shocksub"></div>
+      </button>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+        <button class="btn" id="epibtn" type="button" style="min-height:64px">
+          <span style="display:inline-flex;align-items:center;justify-content:center;gap:8px">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3c3 4.5 6 7.7 6 11a6 6 0 1 1-12 0c0-3.3 3-6.5 6-11z"></path></svg><span id="epilabel">EPI</span></span>
+          <div style="font-size:12px;font-weight:600;margin-top:2px" id="episub"></div>
+        </button>
+        <button class="btn" id="amiobtn" type="button" style="min-height:64px"><span id="amiolabel">AMIO</span>
+          <div style="font-size:12px;font-weight:600;color:var(--ink2);margin-top:2px" id="amiosub"></div>
+        </button>
+        <button class="btn" id="rcbtn" type="button" style="min-height:52px;font:700 14px var(--sans)">RHYTHM CHECK</button>
+        <button class="btn" id="logtoggle" type="button" style="min-height:52px;font:700 14px var(--sans)">+ LOG EVENT</button>
+      </div>
+      <div id="customrow" style="display:none;gap:8px;margin-top:8px">
+        <input id="customin" class="inp" style="flex:1;text-align:left;font-size:15px;font-weight:400;border-radius:10px;padding:12px" placeholder="e.g. IO placed right tibia, calcium given…">
+        <button id="customlog" type="button" style="border:none;border-radius:10px;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG</button>
+      </div>
+      <div id="customwarn" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>
+      <div style="margin-top:8px;font-size:12.5px;color:var(--ink2)">Anything can be tapped at any time — the algorithm is a guide, not a lock.</div>
+    </div>
+
+    <div id="rolesstep" class="card" style="margin-top:10px;border:1px dashed var(--accent);padding:12px">
+      <div style="display:flex;gap:10px;align-items:center">
+        <div style="flex:1">
+          <div class="sec" style="color:var(--accent)">GET ORGANIZED — NAME THE ROLES</div>
+          <div style="font-size:12.5px;color:var(--ink2);margin-top:2px">Assign aloud · rotate compressor every 2 min</div>
+        </div>
+        <button id="rolesbtn" type="button" style="min-height:56px;border:none;border-radius:12px;background:var(--accent);color:var(--accentInk);font:800 13px var(--sans);padding:0 14px;cursor:pointer;white-space:nowrap">ASSIGNED — LOG IT</button>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
+        <span class="chip">Compressor</span><span class="chip">Airway / ventilation</span><span class="chip">Meds / IV-IO</span><span class="chip">Defibrillator</span><span class="chip">Recorder</span>
+      </div>
+    </div>
+
+    <div id="airwaystep" class="card" style="display:none;gap:10px;align-items:center;margin-top:10px;border:1px dashed var(--blue);padding:12px">
+      <div style="flex:1">
+        <div class="sec" style="color:var(--blue)">NEXT STEP</div>
+        <div style="font-size:14.5px;font-weight:700;margin-top:2px">Advanced airway placed?</div>
+        <div style="font-size:12.5px;color:var(--ink2)">Switches pacing to continuous compressions + 1 breath every 6 s</div>
+      </div>
+      <button id="airwaybtn" type="button" style="min-height:56px;border:none;border-radius:12px;background:var(--blue);color:#fff;font:800 14px var(--sans);padding:0 16px;cursor:pointer;white-space:nowrap">AIRWAY IN — SWITCH</button>
+    </div>
+
+    <button id="roscbtn" type="button" style="width:100%;margin-top:10px;min-height:60px;border:2px solid var(--green);border-radius:14px;background:transparent;color:var(--green);font:800 17px var(--sans);letter-spacing:.05em;cursor:pointer">
+      <span style="display:inline-flex;align-items:center;justify-content:center;gap:10px">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21C7 17 3 13.5 3 9.5 3 7 5 5 7.5 5c1.8 0 3.4 1 4.5 2.6C13.1 6 14.7 5 16.5 5 19 5 21 7 21 9.5c0 4-4 7.5-9 11.5z"></path><path d="M5 12h4l1.5-3 2 5 1.5-2h5"></path></svg>ROSC — PULSE RETURNED</span>
+    </button>
+  </div>
+
+  <!-- ===================== RESPIRATORY ARREST WITH A PULSE =====================
+       Neither the cardiac-arrest algorithm nor DAS 2025 covers this patient: one
+       assumes no pulse, the other assumes you are trying to intubate. The whole
+       job here is a rate — and a rate is the one thing a screen can actually
+       hold better than a person can. -->
+  <div id="resp" style="display:none">
+    <div class="card" id="ventcard" style="margin-top:14px;padding:14px;border-radius:16px;border:2px solid var(--blue)">
+      <div style="display:flex;align-items:center;justify-content:space-between">
+        <div class="sec" style="color:var(--blue)">RESCUE BREATHING — PULSE PRESENT</div>
+        <div class="sec" style="text-align:right">BREATHS <span class="mono" id="breathn" style="font-size:20px;color:var(--blue)">0</span></div>
+      </div>
+      <div style="display:flex;align-items:baseline;gap:14px;margin-top:2px">
+        <span class="mono" id="ventclock" style="font-size:54px;font-weight:700;line-height:1">6</span>
+        <span id="ventlabel" style="font-size:13px;color:var(--ink2);font-weight:600;line-height:1.35"></span>
+      </div>
+      <div id="ventcue" style="margin-top:10px;min-height:66px;border-radius:12px;background:var(--card2);color:var(--ink2);font:800 22px var(--sans);display:flex;align-items:center;justify-content:center;letter-spacing:.08em">BREATHE</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+        <button class="btn" id="venttoggle" type="button" style="min-height:52px;font:700 14px var(--sans)">MUTE TONE</button>
+        <button class="btn" id="pulsebtn" type="button" style="min-height:52px;font:700 14px var(--sans)">CHECK PULSE NOW</button>
+      </div>
+      <div style="margin-top:8px;font-size:12.5px;color:var(--ink2)">About one second per breath, only enough for visible chest rise. Hyperventilation raises intrathoracic pressure and drops the blood pressure — the rate <i>is</i> the treatment.</div>
+    </div>
+
+    <div id="pulsedue" class="card due" style="display:none;margin-top:10px;border:2px solid var(--amber);padding:12px">
+      <div class="sec" style="color:var(--amber)">PULSE CHECK DUE — <span id="pulsedueat">2</span> MINUTES SINCE THE LAST ONE</div>
+      <div style="font-size:13px;color:var(--ink2);margin-top:3px">Ten seconds, no longer. Keep breathing for them while you feel.</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+        <button class="btn" id="pulseyes" type="button" style="min-height:64px;border-color:var(--green);color:var(--green);font:800 14px var(--sans)">STILL A PULSE
+          <div style="font-size:11.5px;font-weight:600;color:var(--ink2);margin-top:2px">keep breathing for them</div></button>
+        <button class="btn" id="pulseno" type="button" style="min-height:64px;background:var(--red);color:#fff;border:none;font:800 14px var(--sans)">NO PULSE
+          <div style="font-size:11.5px;font-weight:600;opacity:.85;margin-top:2px">start CPR now</div></button>
+      </div>
+    </div>
+
+    <div id="bradycard" class="card" style="display:none;margin-top:10px;padding:12px;border-color:var(--red)">
+      <div class="sec" style="color:var(--red)">PAEDIATRIC — THE PULSE IS NOT THE WHOLE ANSWER</div>
+      <div style="font-size:13.5px;line-height:1.5;margin-top:4px">
+        If the heart rate stays below <b><span id="bradyhr2">60</span>/min with signs of cardiopulmonary compromise</b> despite
+        oxygenation and ventilation, <b>start compressions</b> — even though you can feel a pulse. In children the
+        bradycardia is the arrest, arriving slowly.
+      </div>
+    </div>
+
+    <div id="spontcard" class="card" style="display:none;margin-top:10px;padding:12px;border:2px solid var(--green)">
+      <div class="sec" style="color:var(--green)">BREATHING ON THEIR OWN — TONE STOPPED</div>
+      <div style="font-size:13.5px;line-height:1.5;margin-top:4px">
+        Stay at the head. Recheck rate, depth, saturation and end-tidal CO₂. Apnoea that resolved once will often resolve again in the other direction.
+      </div>
+      <button class="btn" id="respresume" type="button" style="width:100%;min-height:56px;margin-top:10px;background:var(--blue);color:#fff;border:none;font:800 15px var(--sans)">APNOEIC AGAIN — RESUME RESCUE BREATHING</button>
+    </div>
+
+    <div class="card" style="margin-top:10px;padding:12px">
+      <div class="sec">WHY IS THIS PATIENT NOT BREATHING?</div>
+      <div style="font-size:13.5px;line-height:1.55;margin-top:6px">
+        <div style="margin-bottom:5px"><b>Opioid</b> <span style="color:var(--ink2)">— pinpoint pupils, slow shallow rate. Ventilate first, naloxone second; titrate to breathing, not to consciousness.</span></div>
+        <div style="margin-bottom:5px"><b>Glucose</b> <span style="color:var(--ink2)">— check one on everybody. It costs a finger-prick and it is the cause you will otherwise miss.</span></div>
+        <div style="margin-bottom:5px"><b>Postictal or still seizing</b> <span style="color:var(--ink2)">— apnoea after a tonic-clonic is usually short. Support and watch; a prolonged one is status until proven otherwise.</span></div>
+        <div style="margin-bottom:5px"><b>CO₂ narcosis</b> <span style="color:var(--ink2)">— COPD, obesity hypoventilation, sedatives on board. Ventilate; consider NIV once they are protecting.</span></div>
+        <div style="margin-bottom:5px"><b>Brainstem</b> <span style="color:var(--ink2)">— stroke, bleed, raised ICP. Irregular pattern, hypertension, bradycardia. Needs a scanner, not a ward bed.</span></div>
+        <div style="margin-bottom:5px"><b>Neuromuscular</b> <span style="color:var(--ink2)">— Guillain-Barré, myasthenia, high cord injury. The diaphragm tires long before the saturation falls.</span></div>
+        <div style="margin-bottom:5px"><b>Obstruction, not arrest</b> <span style="color:var(--ink2)">— if the chest is trying and no air moves, this is an obstructed airway. Look, clear, reposition first.</span></div>
+        <div><b>Other toxins</b> <span style="color:var(--ink2)">— benzodiazepine, alcohol, GHB, organophosphate. Support the breathing; the antidote is rarely the urgent part.</span></div>
+      </div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+      <button class="btn" id="respcpr" type="button" style="min-height:64px;background:var(--red);color:#fff;border:none;font:800 15px var(--sans)">LOST THE PULSE — START CPR</button>
+      <button class="btn" id="respok" type="button" style="min-height:64px;border-color:var(--green);color:var(--green);font:800 15px var(--sans)">BREATHING ON THEIR OWN</button>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+      <button class="btn" id="resplog" type="button" style="min-height:48px;font:700 13px var(--sans)">+ LOG EVENT</button>
+      <a class="btn" id="resplink" href="../airway/" style="min-height:48px;font:700 13px var(--sans);display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--blue);border-color:var(--blue)">CANNOT VENTILATE →</a>
+    </div>
+    <div id="customrow2" style="display:none;gap:8px;margin-top:8px">
+      <input id="customin2" class="inp" style="flex:1;text-align:left;font-size:15px;font-weight:400;border-radius:10px;padding:12px" placeholder="e.g. naloxone 0.4 mg IV, chest rising well">
+      <button id="customlog2" type="button" style="border:none;border-radius:10px;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG</button>
+    </div>
+    <div id="customwarn2" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>
+  </div>
+
+  <div id="rosc" style="display:none">
+    <div class="card" style="margin-top:14px;border:2px solid var(--green);border-radius:16px;padding:16px">
+      <div class="sec" style="color:var(--green)">ROSC — POST-ARREST CARE</div>
+      <div style="font-size:20px;font-weight:800;margin:4px 0 10px">Pulse returned at <span id="roscat" class="mono">0:00</span></div>
+      <div style="font-size:14.5px;line-height:1.6">
+        · Support airway + oxygenation — target SpO₂ 94–99%, avoid hyperventilation<br>
+        · Blood pressure — treat hypotension (fluids / vasoactives)<br>
+        · 12-lead ECG · glucose · temperature management<br>
+        · Find and treat the cause (H's &amp; T's)
+      </div>
+      <button id="roscvent" type="button" style="width:100%;margin-top:12px;min-height:60px;border:2px solid var(--blue);border-radius:12px;background:transparent;color:var(--blue);font:800 16px var(--sans);cursor:pointer">NOT BREATHING ADEQUATELY — RESCUE BREATHING</button>
+      <button id="rearrestbtn" type="button" style="width:100%;margin-top:8px;min-height:60px;border:none;border-radius:12px;background:var(--red);color:#fff;font:800 17px var(--sans);cursor:pointer">RE-ARREST — RESUME CPR</button>
+    </div>
+  </div>
+
+  <div class="sec" style="margin-top:18px;letter-spacing:.12em">REFERENCE — TAP TO OPEN</div>
+  <div id="accordions"></div>
+
+  <div style="margin-top:16px;font-size:12px;color:var(--ink2);text-align:center;line-height:1.5">
+    Cognitive aid — verify doses against your device labels and local policy.<br>
+    Rhythm check due every <span id="cyclemin">2:00</span> · Epi every 3–5 min.<br>
+    <span id="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment.
+  </div>
+</div>
+
+<div id="sheet" class="sheetwrap" style="display:none">
+  <div class="sheet" id="sheetinner">
+    <div class="sec" style="letter-spacing:.12em;margin-bottom:12px">AT THE RHYTHM CHECK — WHAT DO YOU SEE?</div>
+    <div id="rcmain">
+      <button class="rcbtn" id="rcshock" type="button" style="background:var(--red)">
+        <svg width="54" height="26" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="flex:none;opacity:.9"><path d="M1 13l3-6 3 11 3-14 3 12 3-9 3 10 3-13 3 11 3-8 3 9 3-11 3 10 3-7 3 8 3-6 3 5 3-4"></path></svg>
+        <span>SHOCKABLE — VF / pVT<div class="rcsub" id="rcshocksub"></div></span></button>
+      <button class="rcbtn" id="rcnon" type="button" style="background:var(--gray);margin-top:10px">
+        <svg width="54" height="26" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="flex:none;opacity:.9"><path d="M1 13h16l2-4 2 4h32"></path></svg>
+        <span>NON-SHOCKABLE — PEA / ASYSTOLE<div class="rcsub">Resume CPR — epinephrine as early as possible</div></span></button>
+      <button class="rcbtn" id="rcorg" type="button" style="background:var(--blue);margin-top:10px">
+        <svg width="54" height="26" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="flex:none;opacity:.9"><path d="M1 15h6l2-4 2 4 2-12 2 16 2-8h10l2-4 2 4 2-12 2 16 2-8h10"></path></svg>
+        <span>ORGANIZED RHYTHM<div class="rcsub">Check for a pulse — next screen</div></span></button>
+    </div>
+    <div id="rcorgstep" style="display:none">
+      <button class="rcbtn" id="rcpulse" type="button" style="background:var(--green);display:block">PULSE PRESENT — ROSC<div class="rcsub">Move to post-arrest care</div></button>
+      <button class="rcbtn" id="rcpulsenobreath" type="button" style="background:var(--blue);margin-top:10px;display:block">PULSE, STILL NOT BREATHING<div class="rcsub">Rescue breathing — paced breath tone</div></button>
+      <button class="rcbtn" id="rcnopulse" type="button" style="background:var(--gray);margin-top:10px;display:block">NO PULSE — PEA<div class="rcsub">Resume CPR immediately</div></button>
+    </div>
+    <button id="rccancel" type="button" style="width:100%;margin-top:12px;min-height:48px;background:none;border:1px solid var(--line);border-radius:12px;color:var(--ink2);font:700 13px var(--sans);letter-spacing:.06em;cursor:pointer">CANCEL — BACK TO CPR</button>
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* =============================== SITE CONFIG ===============================
+   Ported verbatim from codes/index.html so the two screens cannot drift on
+   dose math. THIS IS A DUPLICATE BY DESIGN — CLAUDE.md rule 1 forbids a shared
+   dependency between tools, so if either changes, change both by hand.
+
+   NOTE ON ADULT DEFIBRILLATION: the design prototype showed a flat 200 J for
+   adults. LRH runs a ZOLL rectilinear biphasic with a labelled escalating
+   sequence, which is what the existing site implements, and the handoff says
+   to keep the site's clinical logic where the two differ. So 120 / 150 / 200.
+   ========================================================================== */
+var SITE = {
+  version: "0.2", lastReviewed: "2026-08-10",
+  cpr:   { cycleSec:120, rateLow:100, rateHigh:120, rotateMin:2, bpm:110 },
+  defib: { mfrShort:"ZOLL", adultJ:[120,150,200] },
+  epi:   { adultMg:1, intervalMin:"3–5", suggestSec:180, conc:0.1 },
+  amio:  { adultDose1:300, adultDose2:150 },
+  peds:  { defibPerKg1:2, defibPerKgN:4, defibMaxPerKg:10,
+           epiPerKg:0.01, epiMaxMg:1, epiConc:0.1, epiEttPerKg:0.1,
+           amioPerKgDose1:5, amioMaxMgDose:300, amioMaxDoses:3,
+           lidoPerKg1:1, lidoPerKg2:0.5 },
+  /* ---- RESCUE BREATHING — a pulse but no breathing ------------------------
+     Adult: AHA 2025 Part 7 (Adult BLS) — "it is reasonable for the health care
+     professional to give 1 ventilation every 6 s, or 10 breaths/min." Class 2a,
+     LOE C-LD.
+     Paediatric: AHA/AAP 2025 Part 6 (Pediatric BLS) — "For infants and children
+     with a pulse but absent or inadequate respiratory effort, it is reasonable
+     to give 1 breath every 2 to 3 s (20-30 breaths/min)." Class 2a, LOE C-EO.
+     The guideline gives a RANGE for children; a metronome has to pick one
+     number. pedsPaceSec is that pick, and it is deliberately the slow end —
+     over-ventilating a small chest is the commoner error. Change it here, not
+     in the logic. */
+  vent:  { adultSec:6, adultPerMin:10,
+           pedsSecLow:2, pedsSecHigh:3, pedsPerMinLow:20, pedsPerMinHigh:30,
+           pedsPaceSec:3,
+           pulseCheckSec:120, toneHz:523, toneMs:280, cueMs:900 },
+  /* Paediatric bradycardia: HR <60 with signs of cardiopulmonary compromise
+     despite oxygenation and ventilation — start compressions even though a
+     pulse is palpable (AHA/AAP 2025 Pediatric). Adults have no equivalent
+     rule, which is why this is inside peds-only display logic. */
+  brady: { pedsHrCpr:60 },
+  /* Same trigger as the main manual: weight OR age. Weight alone cannot tell a
+     small child from a small frail adult, which is why the age arm exists and
+     why the override below is loud and reversible rather than silent. */
+  trigger: { maxKg:50, maxAgeYrs:12 },
+  /* Broselow-Luten bands (WikEM). Wayfinding and accent colour only — every
+     dose on this screen computes from the exact kg entered, never from a band. */
+  bands: [[5,'#8E8E93','Grey'],[7,'#E75480','Pink'],[9,'#D22B2B','Red'],[11,'#7D3C98','Purple'],
+          [14,'#D4AC0D','Yellow'],[18,'#B9BEC4','White'],[23,'#2E86C1','Blue'],
+          [29,'#E67E22','Orange'],[36,'#229954','Green']]
+};
+
+/* phase: 'idle' | 'cpr' | 'resp' | 'rosc'
+   rhythm: null until the first rhythm check — the whole point of the code blue
+   front door is that the algorithm is NOT chosen at the moment CPR starts. */
+var S = { theme:'dark', kg:null, ageY:null, phase:'idle', codeStart:null, cycleStart:null,
+          shocks:0, epiN:0, lastEpiAt:null, amioN:0, airway:false, roles:false,
+          override:false, pedsDismissed:false, events:[], open:null, met:false,
+          resetArm:false, roscAt:null, rcOpen:false, rcOrg:false, showCustom:false,
+          rhythm:null, breaths:0, lastBeatAt:null, pulseFrom:null,
+          respSpont:false, ventMuted:false };
+
+var $ = function(id){ return document.getElementById(id); };
+function fmt(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+function clockNow(){ return S.codeStart ? fmt((Date.now()-S.codeStart)/1000) : '0:00'; }
+
+/* ---- PHI GUARD -------------------------------------------------------------
+   CLAUDE.md rule 3 is absolute: nothing that could hold PHI. The design asks
+   for a free-text log field, which is the one place a name or an MRN could get
+   typed. Entries are held in memory only (never localStorage, never sent), and
+   anything that looks like an identifier is refused with an explanation rather
+   than silently scrubbed — a silent scrub teaches people the field is safe. */
+var PHI = [
+  {re:/\b\d{3}-?\d{2}-?\d{4}\b/, why:'looks like a social security number'},
+  {re:/\b(mrn|medical record|acct|account)\b/i, why:'mentions a record or account number'},
+  {re:/\b\d{6,}\b/, why:'contains a long number that could be an identifier'},
+  {re:/\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/, why:'contains a date of birth style date'},
+  {re:/\b(dob|date of birth)\b/i, why:'mentions a date of birth'}
+];
+function phiReason(t){ for(var i=0;i<PHI.length;i++){ if(PHI[i].re.test(t)) return PHI[i].why; } return null; }
+
+function log(label){ S.events.unshift({ t: clockNow(), label: label }); }
+
+function kg(){ var k=S.kg; return (k>0 && k<300) ? k : null; }
+function autoPeds(){ var k=kg(); return (k!==null && k<SITE.trigger.maxKg) || (S.ageY!==null && S.ageY<=SITE.trigger.maxAgeYrs); }
+function isPeds(){ return autoPeds() && !S.override; }
+function band(){ var k=kg(); if(k===null) return null;
+  for(var i=0;i<SITE.bands.length;i++){ if(k<=SITE.bands[i][0]) return {c:SITE.bands[i][1], name:'Broselow '+SITE.bands[i][2]}; }
+  return null; }
+
+/* ---- DOSE MATH — the site's, not the prototype's --------------------------- */
+function r(x,d){ var m=Math.pow(10,d===undefined?1:d); return Math.round(x*m)/m; }
+function doses(){
+  var k=kg(), p=isPeds(), P=SITE.peds, adultMax=SITE.defib.adultJ[SITE.defib.adultJ.length-1];
+  if(p && k){
+    return { pedsKnown:true,
+      e1: Math.round(Math.min(P.defibPerKg1*k, adultMax)),
+      eN: Math.round(Math.min(P.defibPerKgN*k, adultMax)),
+      eMax: Math.round(Math.min(P.defibMaxPerKg*k, adultMax)),
+      epiMg: r(Math.min(P.epiPerKg*k, P.epiMaxMg),2),
+      epiMl: r(Math.min(P.epiPerKg*k, P.epiMaxMg)/P.epiConc,1),
+      epiEttMg: r(P.epiEttPerKg*k,2),
+      amioMg: Math.round(Math.min(P.amioPerKgDose1*k, P.amioMaxMgDose)),
+      lidoMg: r(P.lidoPerKg1*k), lido2Mg: r(P.lidoPerKg2*k) };
+  }
+  if(p && !k) return { pedsKnown:false };   /* peds by age, weight not yet entered */
+  return { pedsKnown:true, adult:true,
+    epiMg: SITE.epi.adultMg, epiMl: r(SITE.epi.adultMg/SITE.epi.conc,0),
+    amioMg: S.amioN>=1 ? SITE.amio.adultDose2 : SITE.amio.adultDose1 };
+}
+/* Adult energy escalates with the shock count; peds is per-kg. Returns null
+   when peds mode is on but no weight is known — the UI then refuses to print a
+   number rather than inventing one. */
+function shockJ(){
+  var d=doses(), n=S.shocks;
+  if(isPeds()){ if(!d.pedsKnown) return null; return n===0 ? d.e1 : d.eN; }
+  var a=SITE.defib.adultJ;
+  return a[Math.min(n, a.length-1)];
+}
+
+/* ---- ACCENT: adult green, or the patient's Broselow band ------------------- */
+function applyAccent(){
+  var b = isPeds() ? band() : null, c, ink='#fff';
+  if(b){ c=b.c; if(/Yellow|White/.test(b.name)) ink='#141E2B'; }
+  else c = (S.theme==='dark' ? '#2FA372' : '#00693E');
+  document.body.style.setProperty('--accent', c);
+  document.body.style.setProperty('--accentInk', ink);
+}
+
+/* =============================== METRONOME =================================
+   Same contract as the manual's: paces RATE only, 30:2 versus continuous is a
+   label not a behaviour, and it starts with the code clock rather than needing
+   its own tap — the commonest way a code drifts off rate is a running clock
+   with nobody being paced. */
+/* One AudioContext, two engines. They must never both run: compressions and
+   rescue breathing are different patients, and two overlapping tones would be
+   read as one confusing rhythm. The phase switch enforces it. */
+var AUDIO = (function(){
+  var ac=null;
+  function ctx(){ try{ ac = ac || new (window.AudioContext||window.webkitAudioContext)(); ac.resume(); return ac; }catch(e){ return null; } }
+  return { ready:function(){ return !!ctx(); },
+    tone:function(hz, ms, gain){
+      var c=ctx(); if(!c) return;
+      try{
+        var o=c.createOscillator(), g=c.createGain();
+        o.frequency.value=hz; g.gain.value=(gain===undefined?0.15:gain);
+        o.connect(g); g.connect(c.destination); o.start();
+        g.gain.exponentialRampToValueAtTime(0.001, c.currentTime+ms/1000);
+        o.stop(c.currentTime+ms/1000+0.02);
+      }catch(e){}
+    } };
+})();
+
+var MET = (function(){
+  var timer=null;
+  function blip(){ AUDIO.tone(880, 60, 0.15); }
+  return {
+    start:function(){
+      if(timer) return;
+      if(!AUDIO.ready()) return;
+      timer=setInterval(blip, 60000/SITE.cpr.bpm); blip();
+      S.met=true;
+    },
+    stop:function(){ if(timer){ clearInterval(timer); timer=null; } S.met=false; },
+    running:function(){ return !!timer; }
+  };
+})();
+
+/* ---- VENTILATION METRONOME — rescue breathing, pulse present ---------------
+   Deliberately a different sound from the compression blip: lower pitch, four
+   times as long. In a room where both have been heard, nobody should have to
+   work out which one is playing. The interval is read from SITE.vent and is
+   re-armed whenever the adult/paediatric decision changes, so entering a
+   weight mid-run retimes the tone rather than leaving it on the adult rate. */
+var VENT = (function(){
+  var timer=null, iv=null;
+  function beat(){
+    S.breaths++; S.lastBeatAt=Date.now();
+    if(!S.ventMuted) AUDIO.tone(SITE.vent.toneHz, SITE.vent.toneMs, 0.18);
+  }
+  var api = {
+    start:function(ms){
+      if(timer && iv===ms) return;
+      api.stop();
+      AUDIO.ready(); iv=ms;
+      timer=setInterval(beat, iv); beat();
+    },
+    stop:function(){ if(timer){ clearInterval(timer); timer=null; } iv=null; },
+    running:function(){ return !!timer; },
+    interval:function(){ return iv; }
+  };
+  return api;
+})();
+
+/* The paced interval in ms, and the words that go with it. One function so the
+   display and the tone can never disagree about the rate. */
+function ventPlan(){
+  var V=SITE.vent;
+  if(isPeds()) return { ms: V.pedsPaceSec*1000, sec: V.pedsPaceSec,
+    rate: '1 breath every '+V.pedsSecLow+'–'+V.pedsSecHigh+' s ('+V.pedsPerMinLow+'–'+V.pedsPerMinHigh+'/min)',
+    paced: 'paced here at '+V.pedsPaceSec+' s', who:'paediatric' };
+  return { ms: V.adultSec*1000, sec: V.adultSec,
+    rate: '1 breath every '+V.adultSec+' s ('+V.adultPerMin+'/min)',
+    paced: 'paced here at '+V.adultSec+' s', who:'adult' };
+}
+
+/* =============================== RENDER ==================================== */
+var ACC = [
+ {id:'defib', title:'DEFIBRILLATION', body:function(d){
+   if(isPeds()){
+     if(!d.pedsKnown) return '<p>Pediatric mode is on by age, but no weight is entered — enter a weight and the energies compute here.</p>';
+     return '<p>1st shock '+SITE.peds.defibPerKg1+' J/kg = <b>'+d.e1+' J</b>. 2nd shock '+SITE.peds.defibPerKgN+
+       ' J/kg = <b>'+d.eN+' J</b>. 3rd and subsequent shocks &ge;'+SITE.peds.defibPerKgN+
+       ' J/kg, may increase per clinician judgment — max '+SITE.peds.defibMaxPerKg+' J/kg (<b>'+d.eMax+
+       ' J</b>) or the adult max, whichever is lower.</p>'+
+       '<p><b>Different manufacturer/device on your unit?</b> Use its manufacturer label instead — energies are device-specific.</p>'+
+       '<p style="margin-bottom:0"><b>Resume compressions immediately after each shock</b> — minimize the pause to &lt;10 s.</p>';
+   }
+   return '<p>Adult, '+SITE.defib.mfrShort+' rectilinear biphasic: <b>'+SITE.defib.adultJ[0]+' J</b> first shock, <b>'+
+     SITE.defib.adultJ[1]+' J</b> second, <b>'+SITE.defib.adultJ[2]+' J</b> third and subsequent.</p>'+
+     '<p><b>Different manufacturer/device on your unit?</b> Use its manufacturer label instead — energies are device-specific. If no label is visible, use the maximum available.</p>'+
+     '<p style="margin-bottom:0"><b>Resume compressions immediately after each shock</b> — minimize the pause to &lt;10 s.</p>';
+ }},
+ {id:'epi', title:'EPINEPHRINE', body:function(d){
+   if(isPeds()){
+     if(!d.pedsKnown) return '<p>Enter a weight and the pediatric epinephrine dose computes here.</p>';
+     return '<p>IV/IO (1:10,000 = '+SITE.peds.epiConc+' mg/mL): '+SITE.peds.epiPerKg+' mg/kg = <b>'+d.epiMg+' mg</b> = <b>'+
+       d.epiMl+' mL</b>, max '+SITE.peds.epiMaxMg+' mg, every '+SITE.epi.intervalMin+' min.</p>'+
+       '<p>Via ETT (2nd-line route only): '+SITE.peds.epiEttPerKg+' mg/kg = <b>'+d.epiEttMg+
+       ' mg</b>. IV/IO is preferred — if IV access is not rapidly achieved, proceed to IO without delay.</p>'+
+       '<p style="margin-bottom:0">Give as early as possible for non-shockable rhythms — do not delay compressions to get access.</p>';
+   }
+   return '<p><b>'+SITE.epi.adultMg+' mg</b> = <b>'+d.epiMl+' mL</b> IV/IO of the '+SITE.epi.conc+
+     ' mg/mL prefilled syringe (labelled &ldquo;1:10,000&rdquo;), every '+SITE.epi.intervalMin+' min.</p>'+
+     '<p>Both numbers are printed because the syringe is labelled one way and the order is written the other — the mismatch is where tenfold errors happen. '+
+     'The <b>1 mg/mL</b> ampoule (&ldquo;1:1000&rdquo;) is the IM anaphylaxis concentration, not this one.</p>'+
+     '<p style="margin-bottom:0">Give as early as possible for non-shockable rhythms — do not delay compressions to get access.</p>';
+ }},
+ {id:'anti', title:'ANTIARRHYTHMIC', body:function(d){
+   if(isPeds()){
+     if(!d.pedsKnown) return '<p>Enter a weight and the pediatric antiarrhythmic doses compute here.</p>';
+     return '<p><b>Amiodarone</b> (refractory VF/pVT) — '+SITE.peds.amioPerKgDose1+' mg/kg = <b>'+d.amioMg+
+       ' mg</b>, max '+SITE.peds.amioMaxMgDose+' mg/dose, may repeat &times;2 — max '+SITE.peds.amioMaxDoses+
+       ' doses total (&le;15 mg/kg).</p>'+
+       '<p style="margin-bottom:0"><b>Lidocaine</b> (alternative) — '+SITE.peds.lidoPerKg1+' mg/kg = <b>'+d.lidoMg+
+       ' mg</b>; repeat '+SITE.peds.lidoPerKg2+' mg/kg = <b>'+d.lido2Mg+' mg</b> if needed.</p>';
+   }
+   return '<p><b>Amiodarone</b> (refractory VF/pVT) — <b>'+SITE.amio.adultDose1+' mg</b> first dose, <b>'+
+     SITE.amio.adultDose2+' mg</b> second.</p>'+
+     '<p style="margin-bottom:0"><b>Lidocaine</b> (alternative) — 1&ndash;1.5 mg/kg first dose, then 0.5&ndash;0.75 mg/kg.</p>';
+ }},
+ {id:'cpr', title:'HIGH-QUALITY CPR TARGETS', body:function(){
+   return '<p><b>Rate '+SITE.cpr.rateLow+'&ndash;'+SITE.cpr.rateHigh+'/min</b>, all ages. <b>Depth</b> &ge;&#8531; AP chest '+
+     'diameter — ~4 cm infants, ~5 cm children; post-puberty use adult depth (&ge;5 cm, &le;6 cm).</p>'+
+     '<p>Full recoil between compressions · rotate compressor every '+SITE.cpr.rotateMin+' min · minimize pauses to &lt;10 s.</p>'+
+     '<p style="margin-bottom:0"><b>No advanced airway:</b> 30:2. <b>Advanced airway:</b> continuous compressions, plus a breath every '+
+     SITE.vent.adultSec+' s in an adult ('+SITE.vent.adultPerMin+'/min) or every '+SITE.vent.pedsSecLow+'&ndash;'+SITE.vent.pedsSecHigh+
+     ' s in a child ('+SITE.vent.pedsPerMinLow+'&ndash;'+SITE.vent.pedsPerMinHigh+'/min). The child rate is faster than the adult one — '+
+     'this is the number most often got wrong.</p>';
+ }},
+ {id:'vent', title:'RESCUE BREATHING — PULSE, NO BREATHING', body:function(){
+   var v=ventPlan(), V=SITE.vent;
+   return '<p>A pulse with no breathing is <b>not</b> a cardiac arrest and <b>not</b> a difficult airway. It has its own rate, and '+
+     'holding that rate is the entire intervention.</p>'+
+     '<div style="display:grid;gap:6px;margin:10px 0">'+
+     '<div><b>Adult</b> — 1 breath every <b>'+V.adultSec+' s</b> ('+V.adultPerMin+'/min). '+
+     '<span style="color:var(--ink2)">AHA 2025 Part 7, Adult BLS — Class 2a, LOE C-LD.</span></div>'+
+     '<div><b>Infant / child</b> — 1 breath every <b>'+V.pedsSecLow+'&ndash;'+V.pedsSecHigh+' s</b> ('+
+     V.pedsPerMinLow+'&ndash;'+V.pedsPerMinHigh+'/min). '+
+     '<span style="color:var(--ink2)">AHA/AAP 2025 Part 6, Pediatric BLS — Class 2a, LOE C-EO.</span></div>'+
+     '</div>'+
+     '<p>This screen is currently pacing the <b>'+v.who+'</b> rate: '+v.rate+', '+v.paced+'. '+
+     'The paediatric guideline gives a range and a metronome has to choose; the choice here is the <b>slow end</b>, because '+
+     'over-ventilating a small chest is the commoner error. That single number lives in the SITE CONFIG block.</p>'+
+     '<p>Recheck the pulse every <b>'+Math.round(V.pulseCheckSec/60)+' minutes</b>, ten seconds at most. In a child, a rate below <b>'+
+     SITE.brady.pedsHrCpr+'/min with poor perfusion</b> despite oxygenation and ventilation means compressions, pulse or no pulse.</p>'+
+     '<p style="margin-bottom:0"><b>Sources:</b> Part 7: Adult Basic Life Support, <i>Circulation</i> 2025 (doi:10.1161/CIR.0000000000001369) · '+
+     'Part 6: Pediatric Basic Life Support, <i>Circulation</i> / <i>Pediatrics</i> 2025 (doi:10.1161/CIR.0000000000001370). '+
+     'Neither the arrest algorithm nor DAS 2025 covers this patient — that gap is why this section exists.</p>';
+ }},
+ {id:'met', title:'COMPRESSION METRONOME', body:function(){
+   return '<button id="metbtn" type="button" style="width:100%;min-height:56px;border:none;border-radius:12px;background:'+
+     (MET.running()?'var(--gray)':'var(--accent)')+';color:var(--accentInk);font:800 15px var(--sans);cursor:pointer;margin:10px 0">'+
+     (MET.running()?'■ STOP METRONOME':'▶ START METRONOME — '+SITE.cpr.bpm+'/min')+'</button>'+
+     '<p style="margin-bottom:0;color:var(--ink2);font-size:13px">It starts automatically with the code clock. Paces rate only ('+
+     SITE.cpr.bpm+'/min) — it does not model the two-rescuer ratio or age-based depth. See HIGH-QUALITY CPR TARGETS for the exact pediatric numbers.</p>';
+ }},
+ {id:'causes', title:"REVERSIBLE CAUSES — H's & T's", body:function(){ return '<p><b>Ask these out loud during compressions, not after.</b> In a non-shockable arrest they are most of the treatment.</p>'+'<div style="display:grid;grid-template-columns:1fr;gap:6px;margin:10px 0">'+'<div><b>Hypovolaemia</b> <span style="color:var(--ink2)">— bleeding, sepsis, anaphylaxis. Give volume, find the source.</span></div>'+'<div><b>Hypoxia</b> <span style="color:var(--ink2)">— airway in? Both sides ventilating? Capnography?</span></div>'+'<div><b>Hydrogen ion — acidosis</b> <span style="color:var(--ink2)">— VBG, ventilate, consider bicarbonate.</span></div>'+'<div><b>Hypo / hyperkalaemia</b> <span style="color:var(--ink2)">— dialysis patient, crush, DKA. Calcium first if suspected — see Codes card 11.</span></div>'+'<div><b>Hypothermia</b> <span style="color:var(--ink2)">— check a real core temperature. Nobody is dead until warm and dead.</span></div>'+'<div><b>Tension pneumothorax</b> <span style="color:var(--ink2)">— trauma, ventilated, central line. Decompress on suspicion, not on imaging.</span></div>'+'<div><b>Tamponade</b> <span style="color:var(--ink2)">— penetrating chest, post-cardiac-surgery, uraemia. Ultrasound during the rhythm check.</span></div>'+'<div><b>Toxins</b> <span style="color:var(--ink2)">— opioid, beta-blocker, calcium-channel blocker, TCA, local anaesthetic.</span></div>'+'<div><b>Thrombosis — pulmonary</b> <span style="color:var(--ink2)">— sudden collapse, right heart strain. Consider thrombolysis and prolonged CPR.</span></div>'+'<div><b>Thrombosis — coronary</b> <span style="color:var(--ink2)">— the commonest one. Post-ROSC 12-lead, cath-lab transfer.</span></div>'+'</div>'+'<p style="margin-bottom:0">Ultrasound during the pulse check answers four of these at once — volume, tamponade, right heart, and lung sliding. Keep it under the 10-second pause.</p>'; }},
+ {id:'rvf', title:'REFRACTORY VF — VECTOR CHANGE / DSED', body:function(){ return '<p><b>Refractory VF = still in VF after 3 consecutive standard shocks</b> at maximum energy with 2-minute cycles between. That is the DOSE-VF definition and it is where these two options enter.</p>'+'<p>Roughly 80% of &ldquo;persistent&rdquo; VF is <i>recurrent</i>, not incessant — and the DSED benefit appeared only in the incessant group. Before either option: check pad contact and skin prep, reversible causes, epinephrine timing, and consider esmolol.</p>'+'<p><b>Vector change</b> — move the pads from anterior-lateral to anterior-posterior and deliver all subsequent shocks that way. No extra equipment.</p>'+'<p><b>DSED</b> — leave the first pads on, add a second anterior-posterior set from a <b>second, identical</b> defibrillator. One operator presses both, anterior-lateral first, <b>sequential, not simultaneous</b>. Pads close but never touching. Do not mix brands or models.</p>'+'<p>DOSE-VF (Cheskes, NEJM 2022, n=405): survival to discharge <b>DSED 30.4%</b>, <b>vector change 21.7%</b>, <b>standard 13.3%</b>. Stopped early at ~44% of target, unblinded, and the vector-change result has a fragility index of 1.</p>'+'<p style="margin-bottom:0"><b>AHA 2025 rates both Class 2b, &ldquo;usefulness has not been established&rdquo;</b>, and the highlights document says they are not recommended. This is an option offered, not a step instructed — and DSED needs two identical defibrillators, a second pad set, a designated operator and a post-use device check, so decide in advance whether it is in scope here at all.</p>'; }},
+ {id:'log', title:'EVENT LOG', body:function(){
+   if(!S.events.length) return '<div style="font-size:13.5px;color:var(--ink2);padding:8px 0">Nothing logged yet.</div>';
+   var h='';
+   for(var i=0;i<S.events.length;i++){
+     h+='<div class="evrow"><span class="mono" style="font-weight:700;color:var(--accent);flex:none">'+S.events[i].t+
+        '</span><span style="line-height:1.4">'+S.events[i].label+'</span></div>';
+   }
+   return h;
+ }}
+];
+
+function renderAccordions(d){
+  var h='';
+  for(var i=0;i<ACC.length;i++){
+    var a=ACC[i], open=(S.open===a.id);
+    var count = (a.id==='log' && S.events.length) ? ' <span style="font-weight:600;color:var(--ink2);letter-spacing:0">· '+S.events.length+'</span>' : '';
+    h+='<div class="acc"><button class="acch" type="button" data-acc="'+a.id+'">'+a.title+count+
+       '<span style="color:var(--ink2)">'+(open?'−':'+')+'</span></button>'+
+       (open ? '<div class="accb">'+a.body(d)+'</div>' : '')+'</div>';
+  }
+  $('accordions').innerHTML=h;
+}
+
+/* The header label is the algorithm's name, and it stays honestly vague until a
+   rhythm has actually been seen. Saying "VF/VT" over a patient nobody has
+   looked at yet is the exact error the code blue front door exists to stop. */
+function planLabel(){
+  if(S.phase==='cpr'){
+    if(S.rhythm==='shockable')    return 'CODE BLUE · SHOCKABLE — VF / pVT';
+    if(S.rhythm==='nonshockable') return 'CODE BLUE · NON-SHOCKABLE — PEA / ASYSTOLE';
+    return 'CODE BLUE · RHYTHM NOT YET KNOWN';
+  }
+  if(S.phase==='resp') return 'RESPIRATORY ARREST · PULSE PRESENT';
+  if(S.phase==='rosc') return 'ROSC · POST-ARREST CARE';
+  return 'CODE BLUE · CHECK A PULSE';
+}
+
+function paint(){
+  var d=doses(), running=(S.phase==='cpr');
+  applyAccent();
+
+  $('clock').textContent = clockNow();
+  $('rundot').style.display = (running || S.phase==='resp') ? '' : 'none';
+  $('statusword').textContent = S.phase==='idle' ? 'READY'
+    : S.phase==='rosc' ? 'ROSC'
+    : S.phase==='resp' ? 'RESCUE BREATHING' : 'CODE RUNNING';
+  $('plabel').textContent = planLabel();
+  $('themebtn').textContent = S.theme==='dark' ? 'LIGHT' : 'DARK';
+  $('resetbtn').textContent = S.resetArm ? 'SURE?' : 'RESET';
+  $('resetbtn').style.background = S.resetArm ? 'var(--red)' : 'var(--card)';
+  $('resetbtn').style.color = S.resetArm ? '#fff' : 'var(--ink2)';
+  $('resetbtn').style.borderColor = S.resetArm ? 'var(--red)' : 'var(--line)';
+
+  var k=kg();
+  $('wnote').textContent = k!==null ? (k+' kg · '+(isPeds()?'pediatric':'adult'))
+                         : (autoPeds() ? 'pediatric by age — enter kg' : 'enter weight');
+
+  var b=band(), showPeds = isPeds() && !S.pedsDismissed;
+  $('pedsbanner').style.display = showPeds ? 'flex' : 'none';
+  if(showPeds){
+    $('pedstext').innerHTML = '<b>Pediatric mode — '+(k!==null?k+' kg':'by age')+
+      ' ('+(b?b.name:'PALS dosing')+').</b> Doses and defib energy below are weight-based PALS.';
+  }
+  $('overridebar').style.display = (autoPeds() && S.override) ? 'flex' : 'none';
+
+  $('idle').style.display = S.phase==='idle' ? '' : 'none';
+  $('cpr').style.display  = running ? '' : 'none';
+  $('resp').style.display = S.phase==='resp' ? '' : 'none';
+  $('rosc').style.display = S.phase==='rosc' ? '' : 'none';
+
+  $('breathn').textContent = S.breaths;
+  $('bradygate').style.display = (S.phase==='idle' && isPeds()) ? '' : 'none';
+  $('bradyhr').textContent  = SITE.brady.pedsHrCpr;
+  $('bradyhr2').textContent = SITE.brady.pedsHrCpr;
+
+  if(running){
+    var remain = S.cycleStart ? SITE.cpr.cycleSec - (Date.now()-S.cycleStart)/1000 : SITE.cpr.cycleSec;
+    var due = remain<=0;
+    $('cycleclock').textContent = fmt(remain);
+    $('cycleclock').style.color = due ? 'var(--amber)' : 'var(--ink)';
+    $('cyclecard').style.border = due ? '2px solid var(--amber)' : '1px solid var(--line)';
+    $('shockn').textContent = S.shocks;
+    $('modelabel').textContent = (S.airway ? 'continuous · breath q6s · ' : '30:2 · ') + SITE.cpr.bpm + '/min';
+    $('duebtn').style.display = due ? '' : 'none';
+    $('shockbtn').style.display = due ? 'none' : '';
+
+    var j=shockJ();
+    $('shocklabel').textContent = j===null ? 'SHOCK — ENTER WEIGHT' : ('SHOCK '+j+' J — LOG IT');
+    $('shocksub').textContent = (S.shocks===0?'1st shock':'shock #'+(S.shocks+1))+' — resume compressions immediately, pause <10 s';
+
+    $('epilabel').textContent = d.pedsKnown ? ('EPI '+d.epiMg+' mg') : 'EPI — ENTER WEIGHT';
+    var sinceEpi = S.lastEpiAt ? (Date.now()-S.lastEpiAt)/1000 : null;
+    var epiIn = sinceEpi!==null ? SITE.epi.suggestSec - sinceEpi : null;
+    $('episub').textContent = S.epiN===0 ? 'IV/IO — give now if non-shockable'
+                            : (epiIn>0 ? ('next due in '+fmt(epiIn)) : ('DUE NOW — dose #'+(S.epiN+1)));
+    $('episub').style.color = (S.epiN>0 && epiIn<=0) ? 'var(--amber)' : 'var(--ink2)';
+
+    $('amiolabel').textContent = d.pedsKnown ? ('AMIO '+d.amioMg+' mg') : 'AMIO — ENTER WEIGHT';
+    $('amiosub').textContent = S.amioN>=SITE.peds.amioMaxDoses ? 'max 3 doses reached' : ('dose '+(S.amioN+1)+' of 3');
+
+    $('rolesstep').style.display = S.roles ? 'none' : '';
+    $('airwaystep').style.display = (S.roles && !S.airway) ? 'flex' : 'none';
+    $('customrow').style.display = S.showCustom ? 'flex' : 'none';
+
+    /* Code blue front door: unknown until seen, then the named algorithm. */
+    $('unknownbar').style.display = S.rhythm===null ? '' : 'none';
+    $('rhythmbar').style.display  = S.rhythm===null ? 'none' : 'flex';
+    if(S.rhythm!==null){
+      var sh = S.rhythm==='shockable';
+      $('rhythmbar').style.borderColor = sh ? 'var(--red)' : 'var(--gray)';
+      $('rhythmtext').innerHTML = sh
+        ? '<b>Shockable — VF / pVT.</b> Shock, then compressions immediately. Epinephrine after the second shock; amiodarone after the third.'
+        : '<b>Non-shockable — PEA / asystole.</b> Epinephrine as early as possible. No shock. The H&rsquo;s and T&rsquo;s are most of the treatment.';
+    }
+    /* Once a rhythm is named, the screen stops presenting every option with
+       equal weight. Nothing is disabled — CLAUDE.md and the bedside both want
+       everything tappable — but in PEA/asystole the shock button and the
+       antiarrhythmic stop LOOKING like the next thing to do, and epinephrine
+       starts to. A big red SHOCK button under a bar that reads "no shock" is
+       the sort of contradiction a tired person resolves by tapping. */
+    var nonSh = (S.rhythm==='nonshockable');
+    $('amiobtn').style.opacity = nonSh ? '0.45' : '1';
+    if(nonSh) $('amiosub').textContent = 'shockable rhythms only';
+
+    /* Demoted by COLOUR, not by opacity — the design system's 4.5:1 floor
+       applies to text nobody is meant to press just as much as to text they
+       are. Fading red text on red fails it; grey-on-card does not. */
+    $('shockbtn').style.background = nonSh ? 'var(--card2)' : 'var(--red)';
+    $('shockbtn').style.color      = nonSh ? 'var(--ink2)' : '#fff';
+    $('shockbtn').style.border     = nonSh ? '1px solid var(--line)' : 'none';
+    if(nonSh){
+      $('shocklabel').textContent = 'SHOCK — NOT FOR THIS RHYTHM';
+      $('shocksub').textContent = 'PEA and asystole are not shocked. Here only if the rhythm has changed.';
+    }
+
+    $('epibtn').style.borderColor = nonSh ? 'var(--accent)' : 'var(--line)';
+    $('epibtn').style.borderWidth = nonSh ? '2px' : '1px';
+    if(nonSh && S.epiN===0) $('episub').textContent = 'GIVE NOW — as early as possible, do not delay compressions';
+  }
+
+  /* ---- RESCUE BREATHING ---------------------------------------------------- */
+  if(S.phase==='resp'){
+    var v=ventPlan();
+    if(!S.respSpont) VENT.start(v.ms); else VENT.stop();
+
+    var since = S.lastBeatAt ? (Date.now()-S.lastBeatAt)/1000 : 0;
+    var left  = Math.max(0, v.sec - since);
+    $('ventclock').textContent = left<10 ? left.toFixed(1) : fmt(left);
+    $('ventlabel').innerHTML = 's to the next breath<br>' + v.rate + ' · ' + v.who;
+
+    var cueOn = !S.respSpont && (since*1000 < SITE.vent.cueMs);
+    $('ventcue').style.background = cueOn ? 'var(--blue)' : 'var(--card2)';
+    $('ventcue').style.color      = cueOn ? '#fff' : 'var(--ink2)';
+    $('ventcue').textContent      = S.respSpont ? 'TONE STOPPED' : (cueOn ? 'BREATHE NOW' : 'BREATHE');
+
+    $('venttoggle').textContent = S.ventMuted ? 'UNMUTE TONE' : 'MUTE TONE';
+    $('spontcard').style.display = S.respSpont ? '' : 'none';
+    $('ventcard').style.opacity  = S.respSpont ? '0.55' : '1';
+    $('bradycard').style.display = isPeds() ? '' : 'none';
+
+    var pdue = !S.respSpont && S.pulseFrom && (Date.now()-S.pulseFrom)/1000 >= SITE.vent.pulseCheckSec;
+    $('pulsedue').style.display = pdue ? '' : 'none';
+    $('pulsedueat').textContent = Math.round(SITE.vent.pulseCheckSec/60);
+    $('customrow2').style.display = S.showCustom ? 'flex' : 'none';
+  } else if(VENT.running()){
+    VENT.stop();
+  }
+
+  if(S.phase==='rosc') $('roscat').textContent = S.roscAt || clockNow();
+
+  $('sheet').style.display = S.rcOpen ? 'flex' : 'none';
+  if(S.rcOpen){
+    $('rcmain').style.display = S.rcOrg ? 'none' : '';
+    $('rcorgstep').style.display = S.rcOrg ? '' : 'none';
+    var jj=shockJ();
+    $('rcshocksub').textContent = jj===null ? 'Enter a weight to compute the energy'
+      : ('Charge '+jj+' J → shock → resume compressions immediately');
+  }
+
+  $('cyclemin').textContent = fmt(SITE.cpr.cycleSec);
+  $('verstamp').textContent = 'v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
+  renderAccordions(d);
+}
+
+/* =============================== ACTIONS =================================== */
+function ensureStarted(){
+  if(!S.codeStart){
+    var n=Date.now();
+    S.codeStart=n; S.cycleStart=n; S.phase='cpr';
+    MET.start();
+  }
+}
+function startCode(){
+  var n=Date.now(); S.codeStart=n; S.cycleStart=n; S.phase='cpr'; S.rhythm=null;
+  VENT.stop(); MET.start();
+  log('Code blue called — no pulse, CPR started, defibrillator attached, rhythm not yet known');
+  paint();
+}
+/* The two crossings between the algorithms. Both keep the code clock and the
+   log — the patient did not restart, only the treatment did. */
+function toResp(why){
+  var n=Date.now();
+  if(!S.codeStart) S.codeStart=n;
+  MET.stop();
+  S.phase='resp'; S.respSpont=false; S.pulseFrom=n; S.breaths=0; S.lastBeatAt=null;
+  S.rcOpen=false; S.rcOrg=false; S.showCustom=false;
+  var v=ventPlan(); VENT.start(v.ms);
+  log(why+' — rescue breathing at '+v.rate);
+  paint();
+}
+function toCPR(why){
+  var n=Date.now();
+  if(!S.codeStart) S.codeStart=n;
+  VENT.stop();
+  S.phase='cpr'; S.cycleStart=n; S.rcOpen=false; S.rcOrg=false; S.showCustom=false;
+  MET.start();
+  log(why); paint();
+}
+function doReset(){
+  MET.stop(); VENT.stop();
+  S = { theme:S.theme, kg:null, ageY:null, phase:'idle', codeStart:null, cycleStart:null,
+        shocks:0, epiN:0, lastEpiAt:null, amioN:0, airway:false, roles:false,
+        override:false, pedsDismissed:false, events:[], open:null, met:false,
+        resetArm:false, roscAt:null, rcOpen:false, rcOrg:false, showCustom:false,
+        rhythm:null, breaths:0, lastBeatAt:null, pulseFrom:null,
+        respSpont:false, ventMuted:false };
+  $('wIn').value=''; $('aIn').value=''; $('customin').value=''; $('customin2').value='';
+  paint();
+}
+
+function wire(){
+  $('themebtn').addEventListener('click', function(){
+    S.theme = S.theme==='dark' ? 'light' : 'dark';
+    document.body.dataset.theme = S.theme; paint();
+  });
+  $('resetbtn').addEventListener('click', function(){
+    if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){ S.resetArm=false; paint(); },2500); return; }
+    doReset();
+  });
+  $('wIn').addEventListener('input', function(e){ var v=parseFloat(e.target.value); S.kg = v>0?v:null; paint(); });
+  $('aIn').addEventListener('input', function(e){ var v=parseFloat(e.target.value); S.ageY = (v>=0&&v<130)?v:null; paint(); });
+  $('estbtn').addEventListener('click', function(){
+    var a=S.ageY; if(!(a>=0)) return;
+    /* Age-to-weight, the manual's own rule: under 1 y from months, otherwise
+       2 x age + 8, capped. An estimate is always worse than a scale — it is
+       logged as an estimate so the record says which it was. */
+    var est = a<1 ? (4 + Math.round(a*12)*0.5) : Math.min(2*a+8, 70);
+    est = Math.round(est*10)/10;
+    S.kg = est; $('wIn').value = String(est);
+    log('Weight ESTIMATED from age — '+est+' kg (not measured)');
+    paint();
+  });
+  $('dismisspeds').addEventListener('click', function(){
+    S.override=true; S.pedsDismissed=true;
+    log('Pediatric trigger overridden — treating as adult');
+    paint();
+  });
+  $('undooverride').addEventListener('click', function(){
+    S.override=false; S.pedsDismissed=false;
+    log('Adult override undone — back to pediatric dosing');
+    paint();
+  });
+  $('startbtn').addEventListener('click', startCode);
+
+  $('shockbtn').addEventListener('click', function(){
+    ensureStarted();
+    var j=shockJ();
+    S.shocks++; S.cycleStart=Date.now(); S.rcOpen=false; S.rcOrg=false;
+    log('SHOCK '+(j===null?'(energy not computed — no weight)':j+' J')+' delivered (#'+S.shocks+') — compressions resumed');
+    paint();
+  });
+  $('epibtn').addEventListener('click', function(){
+    ensureStarted(); var d=doses();
+    S.epiN++; S.lastEpiAt=Date.now();
+    log('EPI '+(d.pedsKnown?d.epiMg+' mg':'(dose not computed — no weight)')+' IV/IO (dose #'+S.epiN+')');
+    paint();
+  });
+  $('amiobtn').addEventListener('click', function(){
+    ensureStarted(); var d=doses();
+    S.amioN++;
+    log('AMIODARONE '+(d.pedsKnown?d.amioMg+' mg':'(dose not computed — no weight)')+' IV/IO (dose #'+S.amioN+
+        (S.amioN>SITE.peds.amioMaxDoses?' — beyond max 3':'')+')');
+    paint();
+  });
+  $('rolesbtn').addEventListener('click', function(){
+    S.roles=true; log('Roles assigned — compressor, airway, meds, defib, recorder'); paint();
+  });
+  $('airwaybtn').addEventListener('click', function(){
+    S.airway=true; log('Advanced airway placed — continuous compressions + breath q6s'); paint();
+  });
+  $('roscbtn').addEventListener('click', function(){
+    S.phase='rosc'; S.roscAt=clockNow(); S.rcOpen=false; S.rcOrg=false; MET.stop();
+    log('ROSC — pulse returned'); paint();
+  });
+  $('rearrestbtn').addEventListener('click', function(){
+    S.rhythm=null; toCPR('RE-ARREST — CPR resumed, rhythm not yet known');
+  });
+
+  $('respstartbtn').addEventListener('click', function(){
+    toResp('Respiratory arrest — pulse present, not breathing');
+  });
+  $('roscvent').addEventListener('click', function(){
+    toResp('Post-arrest — pulse present but not breathing adequately');
+  });
+  $('respcpr').addEventListener('click', function(){
+    toCPR('Pulse LOST during rescue breathing — CPR started, rhythm not yet known');
+    S.rhythm=null; paint();
+  });
+  $('respok').addEventListener('click', function(){
+    S.respSpont=true; VENT.stop();
+    log('Spontaneous breathing returned — paced tone stopped'); paint();
+  });
+  $('respresume').addEventListener('click', function(){
+    S.respSpont=false; S.pulseFrom=Date.now();
+    log('Apnoeic again — rescue breathing resumed'); paint();
+  });
+  $('venttoggle').addEventListener('click', function(){
+    S.ventMuted=!S.ventMuted;
+    log(S.ventMuted ? 'Breath tone muted — the rate on screen still stands' : 'Breath tone unmuted'); paint();
+  });
+  $('pulsebtn').addEventListener('click', function(){
+    S.pulseFrom=Date.now(); log('Pulse checked — still present, rescue breathing continued'); paint();
+  });
+  $('pulseyes').addEventListener('click', function(){
+    S.pulseFrom=Date.now(); log('2-minute pulse check — pulse still present'); paint();
+  });
+  $('pulseno').addEventListener('click', function(){
+    toCPR('2-minute pulse check — NO PULSE. CPR started, rhythm not yet known');
+    S.rhythm=null; paint();
+  });
+
+  function toggleCustom(){ S.showCustom=!S.showCustom; paint();
+    if(S.showCustom) setTimeout(function(){ var el = S.phase==='resp' ? $('customin2') : $('customin'); if(el) el.focus(); },30); }
+  $('logtoggle').addEventListener('click', toggleCustom);
+  $('resplog').addEventListener('click', toggleCustom);
+
+  /* One PHI contract, two input fields — the guard cannot be bypassed by being
+     in the other phase. */
+  function submitCustom(inId, warnId){
+    var t=$(inId).value.trim(); if(!t) return;
+    var why=phiReason(t);
+    if(why){
+      $(warnId).style.display='';
+      $(warnId).textContent='Not logged — that text '+why+'. This aid never stores patient identifiers. Describe the event, not the patient.';
+      return;
+    }
+    $(warnId).style.display='none';
+    if(S.phase!=='resp') ensureStarted();
+    log(t); $(inId).value=''; S.showCustom=false; paint();
+  }
+  $('customlog').addEventListener('click', function(){ submitCustom('customin','customwarn'); });
+  $('customin').addEventListener('keydown', function(e){ if(e.key==='Enter') submitCustom('customin','customwarn'); });
+  $('customlog2').addEventListener('click', function(){ submitCustom('customin2','customwarn2'); });
+  $('customin2').addEventListener('keydown', function(e){ if(e.key==='Enter') submitCustom('customin2','customwarn2'); });
+
+  $('rcbtn').addEventListener('click', function(){ S.rcOpen=true; S.rcOrg=false; paint(); });
+  $('duebtn').addEventListener('click', function(){ S.rcOpen=true; S.rcOrg=false; paint(); });
+  $('firstrcbtn').addEventListener('click', function(){ S.rcOpen=true; S.rcOrg=false; paint(); });
+  $('rhythmchange').addEventListener('click', function(){ S.rcOpen=true; S.rcOrg=false; paint(); });
+  $('rccancel').addEventListener('click', function(){ S.rcOpen=false; S.rcOrg=false; paint(); });
+  $('sheet').addEventListener('click', function(e){ if(e.target===$('sheet')){ S.rcOpen=false; S.rcOrg=false; paint(); } });
+  $('rcshock').addEventListener('click', function(){
+    var j=shockJ(); S.rcOpen=false; S.rhythm='shockable';
+    log('Rhythm check: SHOCKABLE (VF/pVT) — charging '+(j===null?'(no weight)':j+' J')); paint();
+  });
+  $('rcnon').addEventListener('click', function(){
+    S.rcOpen=false; S.cycleStart=Date.now(); S.rhythm='nonshockable';
+    log('Rhythm check: Non-shockable (PEA/asystole) — CPR resumed, epi ASAP'); paint();
+  });
+  $('rcorg').addEventListener('click', function(){ S.rcOrg=true; paint(); });
+  $('rcpulse').addEventListener('click', function(){
+    S.phase='rosc'; S.roscAt=clockNow(); S.rcOpen=false; S.rcOrg=false; MET.stop(); VENT.stop();
+    log('Rhythm check: organized rhythm WITH pulse — ROSC'); paint();
+  });
+  $('rcpulsenobreath').addEventListener('click', function(){
+    S.roscAt=clockNow();
+    toResp('Rhythm check: organized rhythm, pulse present, still not breathing');
+  });
+  $('rcnopulse').addEventListener('click', function(){
+    S.rcOpen=false; S.rcOrg=false; S.cycleStart=Date.now(); S.rhythm='nonshockable';
+    log('Rhythm check: organized rhythm, NO pulse — PEA, CPR resumed'); paint();
+  });
+
+  document.addEventListener('click', function(e){
+    var t=e.target.closest ? e.target.closest('[data-acc]') : null;
+    if(t){ var id=t.getAttribute('data-acc'); S.open = (S.open===id ? null : id); paint(); return; }
+    if(e.target && e.target.id==='metbtn'){ MET.running() ? MET.stop() : MET.start(); paint(); }
+  });
+}
+
+wire();
+paint();
+setInterval(paint, 200);
+})();
+</script>
+</body>
+</html>
