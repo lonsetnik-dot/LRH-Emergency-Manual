@@ -19,12 +19,34 @@
 <meta property="og:url" content="https://lrhemergencymanual.net/ob-neonatal/">
 <meta name="twitter:card" content="summary">
 <style>
-  /* --sticky-h: the real, current height of nav.bar (the only position:sticky element pinned
-     to top:0 here), measured in JS and kept live — see the "measure the sticky header" script
-     near the end of <body>. The 54px here is only a pre-JS fallback. Ported from codes/index.html
-     alongside its checklist-persistence engine (same review finding: both tools hardcoded a
+  /* --sticky-h: the real, current height of #stickytop (the .lrh-hdr strip +
+     nav.bar together — the only position:sticky element pinned to top:0
+     here), measured in JS and kept live — see the "measure the sticky
+     header" script near the end of <body>. The 54px here is only a pre-JS
+     fallback. Ported from codes/index.html alongside its checklist-
+     persistence engine (same review finding: both tools hardcoded a
      guessed header height instead of measuring it). */
   html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; --sticky-h:54px; }
+  /* Design-language chrome tokens — header only, step 1. No Google Fonts;
+     system stacks only (offline requirement, CLAUDE.md rule 1). Same pattern
+     as codes/index.html. */
+  body[data-theme]{ --lrh-bg:#0D1420; --lrh-card:#161F2E; --lrh-ink2:#8FA0B5; --lrh-line:rgba(255,255,255,.10); }
+  body[data-theme="light"]{ --lrh-bg:#EFF2F5; --lrh-card:#FFFFFF; --lrh-ink2:#5A6A7D; --lrh-line:rgba(15,35,60,.13); }
+  .lrh-hdr{display:flex;align-items:center;gap:10px;background:var(--lrh-bg);padding:8px 14px;
+    border-bottom:1px solid var(--lrh-line)}
+  .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;
+    color:var(--lrh-ink2);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
+  .lrh-hdr button{background:var(--lrh-card);border:1px solid var(--lrh-line);color:var(--lrh-ink2);
+    font:700 11px "Helvetica Neue",Helvetica,Arial,sans-serif;letter-spacing:.08em;padding:8px 11px;
+    border-radius:9px;cursor:pointer;min-height:36px;white-space:nowrap}
+  /* #stickytop: new synthetic sticky wrapper. This tool had no #stickytop
+     before — nav.bar was itself position:sticky;top:0. Introducing .lrh-hdr
+     as a sibling above it would have made both fight to stick at top:0
+     independently and overlap. Wrapping both in #stickytop (and removing
+     nav.bar's own position:sticky below) makes them stack as one sticky
+     unit, matching the #stickytop pattern already used by codes/peds/
+     trauma/procedures/debrief. */
+  #stickytop{position:sticky;top:0;z-index:5}
   body { margin:0; background:#eceff3; color:#16324f; font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; font-size:16.5px; line-height:1.4; text-wrap:pretty; }
   main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
   article { scroll-margin-top:var(--sticky-h,54px); margin-top:12px; }
@@ -65,12 +87,12 @@
     .card-split { display:grid; grid-template-columns:minmax(300px,420px) 1fr; gap:16px; align-items:start; }
     .twoup { display:grid; grid-template-columns:1fr 1fr; gap:0 20px; } .twoup > li { min-width:0; } .twoup li label { min-width:0; } .twoup li label > span { min-width:0; overflow-wrap:break-word; } .cs-unarmed { opacity:.45; pointer-events:none; }
   }
-  nav.bar { position:sticky; top:0; z-index:5; display:flex; align-items:center; gap:10px; padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px; background:#005596; color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.1em; }
+  nav.bar { display:flex; align-items:center; gap:10px; padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px; background:#005596; color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.1em; }
   nav.bar a, nav.bar button { color:#fffefb; background:none; text-decoration:none; border:1px solid rgba(255,255,255,0.4); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center; }
   nav.bar #resetnote { flex:1; text-align:right; font-size:10.5px; color:#a9c2dc; letter-spacing:0.08em; }
   @media print {
     body { background:#fffefb; }
-    nav.bar, #betasplash, a[href="#top"], #startnewcasebtn { display:none; }
+    nav.bar, #betasplash, a[href="#top"], #startnewcasebtn, .lrh-hdr, #stickytop { display:none; }
     article { break-before:page; }
     .nca { grid-template-columns:1.05fr 1fr 1fr; }
     .steps { grid-template-columns:repeat(3,1fr); }
@@ -79,6 +101,10 @@
 </style>
 </head>
 <body>
+<script>
+try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+catch(e){ document.body.dataset.theme='dark'; }
+</script>
 <template id="__bundler_thumbnail" data-bg-color="#16324f"><svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg"><rect width="1200" height="800" fill="#16324f"/><rect x="480" y="180" width="240" height="440" rx="28" fill="#fffefb"/><rect x="480" y="180" width="240" height="70" rx="28" fill="#9b1c2e"/><g stroke="#16324f" stroke-width="12" stroke-linecap="round"><path d="M516 320h168M516 380h168M516 440h110"/></g></svg></template>
 <div id="betasplash" style="position:fixed; inset:0; z-index:999; background:linear-gradient(135deg,#005596,#003e6e); color:#fffefb; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
   <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:#a9c2dc;">LRH · EMERGENCY DEPARTMENT</div>
@@ -88,7 +114,23 @@
   <div style="max-width:460px; font-size:14.5px; line-height:1.35; color:#a9c2dc;">Content is unverified and unapproved. Every situation requires nuance; use your professional judgment and your department's policies.</div>
   <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
 </div>
+<div id="stickytop">
+<div class="lrh-hdr"><div class="crumb">OB &amp; NEONATAL</div><button type="button" id="lrhThemeBtn">LIGHT</button></div>
 <nav class="bar"><a href="../?from=tool" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a><button id="backbtn" type="button" style="display:none; color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px;">◀ BACK</button><button id="summarybtn" type="button" style="color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center;">TIMELINE</button><button id="resetbtn" type="button" style="display:none;">RESET FOR NEXT CASE</button><span id="resetnote"></span></nav>
+</div>
+<script>
+(function(){
+  var b=document.getElementById('lrhThemeBtn');
+  if(!b) return;
+  b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
+  b.addEventListener('click', function(){
+    var dark = document.body.dataset.theme!=='light';
+    document.body.dataset.theme = dark ? 'light' : 'dark';
+    b.textContent = dark ? 'DARK' : 'LIGHT';
+    try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
+  });
+})();
+</script>
 <script>
 /* ---- WS2.4 — the one destructive control, gated behind a confirm ----
    Same pattern as codes/peds/trauma (contract, not shared code — see
@@ -1849,15 +1891,19 @@ var CASESTATE = (function(){
    shown only when the guard above actually cleared something on this load. */
 (function(){
   if(!window.__lrhStaleCleared) return;
-  var nav=document.querySelector('nav.bar');
-  if(!nav) return;
+  /* Insert after #stickytop (not nav.bar directly) so the banner scrolls
+     normally below the sticky header+nav unit, same placement/behavior as
+     before #stickytop existed (nav.bar used to be the sticky element
+     itself; now #stickytop is). */
+  var anchor=document.getElementById('stickytop') || document.querySelector('nav.bar');
+  if(!anchor) return;
   var bar=document.createElement('div');
   bar.id='staleclearednotice';
   bar.style.cssText='padding:9px 14px; background:#fdf3cf; color:#6b5410; font-size:12.5px; line-height:1.4; border-bottom:1px solid #eadfbf; display:flex; align-items:center; gap:10px;';
   bar.innerHTML =
     '<span style="flex:1;">Cleared — no activity anywhere in the manual for over an hour. Weight, clocks, checks, and the log all started clean for a new case.</span>'
     +'<button type="button" id="staleclearedok" style="flex:none; min-height:32px; padding:0 10px; background:none; border:1px solid #6b5410; color:#6b5410; font:inherit; font-weight:700; letter-spacing:0.04em; cursor:pointer;">OK</button>';
-  nav.parentNode.insertBefore(bar, nav.nextSibling);
+  anchor.parentNode.insertBefore(bar, anchor.nextSibling);
   document.getElementById('staleclearedok').addEventListener('click', function(){ bar.remove(); });
 })();
 </script>
@@ -1886,13 +1932,14 @@ var CASESTATE = (function(){
   restore();
 })();</script>
 <script>
-/* ---- Measure the real nav-bar height into --sticky-h, live ----
+/* ---- Measure the real sticky-header height into --sticky-h, live ----
    Ported from codes/index.html's identical fix (same review finding: a hardcoded
-   scroll-margin-top / banner-offset guess instead of a measured one). nav.bar is the only
-   element pinned to top:0 here; every per-card sticky banner (#pcclock and its siblings)
+   scroll-margin-top / banner-offset guess instead of a measured one). #stickytop
+   (the new .lrh-hdr strip + nav.bar together) is the only element pinned to
+   top:0 here now; every per-card sticky banner (#pcclock and its siblings)
    stacks directly below it, and every article/cart/drawer scroll-margin-top has to clear it. */
 (function(){
-  var el = document.querySelector('nav.bar');
+  var el = document.getElementById('stickytop') || document.querySelector('nav.bar');
   if(!el) return;
   function update(){
     var h = el.offsetHeight;

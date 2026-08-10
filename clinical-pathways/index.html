@@ -12,6 +12,25 @@
     --ink:#1f2933; --muted:#5b6672; --line:#e2e7ec; --panel:#fff; --page:#eef2f5;
     --section:#2f7a3f; /* Clinical Pathways = green */
   }
+  /* Design-language chrome tokens — header only, step 1. See index.html for
+     the full note; same rule here: no Google Fonts, system stacks only. */
+  body[data-theme]{
+    --lrh-bg:#0D1420; --lrh-card:#161F2E; --lrh-ink2:#8FA0B5; --lrh-line:rgba(255,255,255,.10);
+  }
+  body[data-theme="light"]{
+    --lrh-bg:#EFF2F5; --lrh-card:#FFFFFF; --lrh-ink2:#5A6A7D; --lrh-line:rgba(15,35,60,.13);
+  }
+  .lrh-hdr{position:sticky;top:0;z-index:30;background:var(--lrh-bg);padding:12px 14px 10px;
+    border-bottom:1px solid var(--lrh-line);display:flex;align-items:center;gap:10px}
+  .lrh-hdr a.lrh-back{background:var(--lrh-card);border:1px solid var(--lrh-line);color:var(--lrh-ink2);
+    font:700 11px inherit;letter-spacing:.06em;padding:9px 12px;border-radius:10px;text-decoration:none;
+    min-height:38px;display:inline-flex;align-items:center;white-space:nowrap}
+  .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;
+    color:var(--lrh-ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lrh-hdr button{background:var(--lrh-card);border:1px solid var(--lrh-line);color:var(--lrh-ink2);
+    font:700 11px inherit;letter-spacing:.08em;padding:9px 12px;border-radius:10px;cursor:pointer;
+    min-height:38px;white-space:nowrap}
+  .lrh-hdr button:hover{color:var(--lrh-ink,#141E2B)}
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -51,7 +70,12 @@
   footer{text-align:center; color:var(--muted); font-size:.76rem; margin-top:22px}
 </style>
 </head>
-<body>
+<body data-theme="dark">
+<div class="lrh-hdr">
+  <a class="lrh-back" href="../?from=tool">&larr; MANUAL</a>
+  <div class="crumb">CLINICAL PATHWAYS</div>
+  <button type="button" id="lrhThemeBtn">LIGHT</button>
+</div>
 <header class="top">
   <div class="inner">
     <div class="logo">LRH</div>
@@ -63,7 +87,6 @@
 </header>
 
 <div class="wrap">
-  <p class="crumb"><a href="../?from=tool">&larr; Emergency Manual</a></p>
   <p class="intro">Accelerated diagnostic and treatment pathways. Tap a pathway to open it.</p>
 
   <div class="grid">
@@ -103,5 +126,18 @@
 
   <footer>Littleton Regional Hospital Emergency Manual &mdash; personal, unofficial reference &middot; Beta</footer>
 </div>
+<script>
+/* Theme toggle, chrome only — this page stores nothing, so the choice is not
+   persisted (matches its current no-storage architecture). Dark by default. */
+(function(){
+  var b=document.getElementById('lrhThemeBtn');
+  if(!b) return;
+  b.addEventListener('click', function(){
+    var dark = document.body.dataset.theme!=='light';
+    document.body.dataset.theme = dark ? 'light' : 'dark';
+    b.textContent = dark ? 'DARK' : 'LIGHT';
+  });
+})();
+</script>
 </body>
 </html>
