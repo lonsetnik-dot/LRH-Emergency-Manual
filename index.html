@@ -14,6 +14,32 @@
     --ink:#1f2933; --muted:#5b6672; --line:#e2e7ec; --panel:#fff; --page:#eef2f5;
     --section:var(--brand-secondary); /* header stripe = which part of the manual; home = brand green */
   }
+  /* =====================================================================
+     DESIGN LANGUAGE TOKENS — new sitewide chrome only (header below). The
+     rest of this page (search, category grid, footer) is unchanged for
+     step 1 — that's step 2 of the migration (DESIGN_LANGUAGE.md), not this
+     pass. Dark is the default; body[data-theme="light"] overrides.
+     System font stacks only — no Google Fonts link. CLAUDE.md rule 1 is
+     "no external dependencies; must work offline," which a font CDN
+     violates outright on a cart with no signal.
+     ===================================================================== */
+  body[data-theme]{
+    --lrh-bg:#0D1420; --lrh-card:#161F2E; --lrh-card2:#1D2A3C; --lrh-ink:#EAF0F7; --lrh-ink2:#8FA0B5;
+    --lrh-line:rgba(255,255,255,.10); --lrh-accent:#2FA372; --lrh-accentInk:#fff;
+  }
+  body[data-theme="light"]{
+    --lrh-bg:#EFF2F5; --lrh-card:#FFFFFF; --lrh-card2:#F4F6F9; --lrh-ink:#141E2B; --lrh-ink2:#5A6A7D;
+    --lrh-line:rgba(15,35,60,.13); --lrh-accent:#00693E; --lrh-accentInk:#fff;
+  }
+  .lrh-sans{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
+  .lrh-hdr{position:sticky;top:0;z-index:30;background:var(--lrh-bg);padding:12px 14px 10px;
+    border-bottom:1px solid var(--lrh-line);display:flex;align-items:center;gap:10px}
+  .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;
+    color:var(--lrh-ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lrh-hdr button{background:var(--lrh-card);border:1px solid var(--lrh-line);color:var(--lrh-ink2);
+    font:700 11px inherit;letter-spacing:.08em;padding:9px 12px;border-radius:10px;cursor:pointer;
+    min-height:38px;white-space:nowrap}
+  .lrh-hdr button:hover{color:var(--lrh-ink)}
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
@@ -116,7 +142,7 @@
   #betasplash button:hover{background:#eaf2f9}
 </style>
 </head>
-<body>
+<body data-theme="dark">
 
 <!-- ===== SITE BETA SPLASH — first thing you see; dismiss to reveal the menu ===== -->
 <div id="betasplash" role="dialog" aria-modal="true" aria-label="Beta notice">
@@ -126,6 +152,11 @@
   <div class="lead">Not yet ready for clinical use. Shared for feedback and practice only &mdash; do not use it to direct the care of a patient.</div>
   <div class="fine">A personal, unofficial reference &mdash; not part of the LRH IT system / EHR, and not a substitute for clinical judgment. Content is unverified; verify every value against local protocols and assays.</div>
   <button type="button" id="betago">I UNDERSTAND &mdash; CONTINUE</button>
+</div>
+
+<div class="lrh-hdr">
+  <div class="crumb">LRH EMERGENCY MANUAL</div>
+  <button type="button" id="lrhThemeBtn">LIGHT</button>
 </div>
 
 <header class="top">
@@ -290,6 +321,18 @@
 </div>
 
 <script>
+/* ---- Theme toggle, chrome only. This page has no CASESTATE and stores
+   nothing (see the START NEW CASE note above) — the choice is NOT persisted,
+   matching that. Dark is the default every load. ---- */
+(function(){
+  var b=document.getElementById('lrhThemeBtn');
+  if(!b) return;
+  b.addEventListener('click', function(){
+    var dark = document.body.dataset.theme!=='light';
+    document.body.dataset.theme = dark ? 'light' : 'dark';
+    b.textContent = dark ? 'DARK' : 'LIGHT';
+  });
+})();
 /* ---- Beta splash: dismiss on tap. Stores nothing (shows every visit). ---- */
 (function(){
   function boot(){
