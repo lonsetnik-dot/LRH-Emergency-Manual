@@ -17,10 +17,27 @@
 <meta property="og:url" content="https://lrhemergencymanual.net/procedures/">
 <meta name="twitter:card" content="summary">
 <style>
-  html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
+  html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; --sticky-h:54px; }
+  /* Design-language chrome tokens — header only, step 1. No Google Fonts;
+     system stacks only (offline requirement, CLAUDE.md rule 1). Same
+     pattern as codes/index.html. --sticky-h is measured live off
+     #stickytop (see the ResizeObserver script near the header) so the
+     new .lrh-hdr strip's height is automatically accounted for in
+     scroll-margin-top below; 54px stays as the pre-JS fallback. This page
+     has zero localStorage refs, so the theme choice is not persisted
+     (matches its current no-storage architecture). */
+  body[data-theme]{ --lrh-bg:#0D1420; --lrh-card:#161F2E; --lrh-ink2:#8FA0B5; --lrh-line:rgba(255,255,255,.10); }
+  body[data-theme="light"]{ --lrh-bg:#EFF2F5; --lrh-card:#FFFFFF; --lrh-ink2:#5A6A7D; --lrh-line:rgba(15,35,60,.13); }
+  .lrh-hdr{display:flex;align-items:center;gap:10px;background:var(--lrh-bg);padding:8px 14px;
+    border-bottom:1px solid var(--lrh-line)}
+  .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;
+    color:var(--lrh-ink2);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
+  .lrh-hdr button{background:var(--lrh-card);border:1px solid var(--lrh-line);color:var(--lrh-ink2);
+    font:700 11px "Helvetica Neue",Helvetica,Arial,sans-serif;letter-spacing:.08em;padding:8px 11px;
+    border-radius:9px;cursor:pointer;min-height:36px;white-space:nowrap}
   body { margin:0; background:#eceff3; color:#16324f; font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; font-size:16.5px; line-height:1.4; text-wrap:pretty; }
   main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
-  article { scroll-margin-top:54px; margin-top:12px; }
+  article { scroll-margin-top:var(--sticky-h,54px); margin-top:12px; }
   a { color:#2f62a8; }
   a:hover { color:#16324f; }
   a[href^="#"] { -webkit-tap-highlight-color:rgba(47,98,168,0.2); }
@@ -63,14 +80,14 @@
   #stickytop { position:sticky; top:0; z-index:5; }
   @media print {
     body { background:#fffefb; }
-    nav.bar, #betasplash, a[href="#top"] { display:none; }
+    nav.bar, #betasplash, a[href="#top"], .lrh-hdr { display:none; }
     article { break-before:page; }
     .steps { grid-template-columns:repeat(3,1fr); }
     .figs { grid-template-columns:repeat(3,1fr); }
   }
 </style>
 </head>
-<body>
+<body data-theme="dark">
 <div id="betasplash" style="position:fixed; inset:0; z-index:999; background:linear-gradient(135deg,#005596,#003e6e); color:#fffefb; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
   <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:#a9c2dc;">LRH · EMERGENCY DEPARTMENT</div>
   <div style="font-size:30px; line-height:1.06; letter-spacing:-0.02em; font-weight:700;">Procedures</div>
@@ -80,7 +97,42 @@
   <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
 </div>
 <div id="stickytop">
+<div class="lrh-hdr"><div class="crumb">PROCEDURES</div><button type="button" id="lrhThemeBtn">LIGHT</button></div>
 <nav class="bar"><a href="../?from=tool" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a><button id="backbtn" type="button" style="display:none; color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px;">◀ BACK</button></nav>
+<script>
+(function(){
+  var b=document.getElementById('lrhThemeBtn');
+  if(!b) return;
+  b.addEventListener('click', function(){
+    var dark = document.body.dataset.theme!=='light';
+    document.body.dataset.theme = dark ? 'light' : 'dark';
+    b.textContent = dark ? 'DARK' : 'LIGHT';
+  });
+})();
+</script>
+<script>
+/* ---- Measure the real sticky-header height into --sticky-h, live ----
+   Ported from codes/index.html's identical fix (same review finding: a
+   hardcoded scroll-margin-top guess instead of a measured one). #stickytop
+   (the new .lrh-hdr strip + nav.bar + section-stripe together) is the
+   only element pinned to top:0 here; every article's scroll-margin-top
+   has to clear it. */
+(function(){
+  var el = document.getElementById('stickytop');
+  if(!el) return;
+  function update(){
+    var h = el.offsetHeight;
+    if(h>0) document.documentElement.style.setProperty('--sticky-h', h+'px');
+  }
+  update();
+  if(window.ResizeObserver){
+    new ResizeObserver(update).observe(el);
+  } else {
+    window.addEventListener('resize', update, false);
+    window.addEventListener('orientationchange', update, false);
+  }
+})();
+</script>
 <div class="section-stripe"></div>
 </div>
 

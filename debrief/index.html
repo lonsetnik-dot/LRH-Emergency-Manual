@@ -36,22 +36,39 @@
      .console ancestor. See LAYOUT.md. debrief is "seated" mode (read after
      the fact, not at the bedside) and isn't expected to ever use these, but
      the shared vocabulary stays identical across all six tools regardless. */
-  .console { --cs-destructive:72px; --cs-router:62px; --cs-secondary:56px; --cs-check:44px; --cs-numeric:44px; }
+  .console { --cs-destructive:72px; --cs-router:62px; --cs-router-font:13.5px; --cs-secondary:56px; --cs-check:44px; --cs-numeric:44px; }
   .console .cs-destructive { min-height:var(--cs-destructive); }
-  .console .cs-router { min-height:var(--cs-router); }
+  .console .cs-router { min-height:var(--cs-router); font-size:var(--cs-router-font); text-align:left; padding:0 16px; }
   .console .cs-secondary { min-height:var(--cs-secondary); }
   .console .cs-check { min-height:var(--cs-check); }
   .console .cs-numeric { font-size:var(--cs-numeric); }
+  /* WS11.5 — greyed-until-armed styling hook for decision-router panels that are
+     visible before a case is really underway (e.g. card 01's rhythm panel before
+     the CPR clock starts). Pure CSS presentation, toggled by a plain class the
+     existing paint logic already sets — no arm/disarm behavior changes. No-op
+     below 760px by design (see LAYOUT.md / the WS11.0 decision record). */
+  .console .cs-unarmed { }
   @media (min-width:760px) {
     .steps { grid-template-columns:repeat(auto-fit,minmax(300px,1fr)); }
-    .console { --cs-destructive:88px; --cs-router:74px; --cs-secondary:64px; --cs-check:44px; --cs-numeric:60px; }
+    .console { --cs-destructive:88px; --cs-router:74px; --cs-router-font:16px; --cs-secondary:64px; --cs-check:44px; --cs-numeric:60px; }
     .card-split { display:grid; grid-template-columns:minmax(300px,420px) 1fr; gap:16px; align-items:start; }
-    .twoup { display:grid; grid-template-columns:1fr 1fr; gap:0 20px; } .twoup > li { min-width:0; } .twoup li label { min-width:0; } .twoup li label > span { min-width:0; overflow-wrap:break-word; }
+    .twoup { display:grid; grid-template-columns:1fr 1fr; gap:0 20px; } .twoup > li { min-width:0; } .twoup li label { min-width:0; } .twoup li label > span { min-width:0; overflow-wrap:break-word; } .cs-unarmed { opacity:.45; pointer-events:none; }
   }
   nav.bar { position:relative; display:flex; align-items:center; gap:10px; padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px; background:#005596; color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.1em; }
   nav.bar a { color:#fffefb; background:none; text-decoration:none; border:1px solid rgba(255,255,255,0.4); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center; }
   .section-stripe { height:5px; background:#5a6a78; } /* Debrief = slate (matches the landing-page area color) */
   #stickytop { position:sticky; top:0; z-index:5; }
+  /* Design-language chrome — a new slim strip on top of the existing nav, not a
+     replacement. Header/theme-toggle only for step 1; see index.html's note. */
+  body[data-theme]{ --lrh-bg:#0D1420; --lrh-card:#161F2E; --lrh-ink2:#8FA0B5; --lrh-line:rgba(255,255,255,.10); }
+  body[data-theme="light"]{ --lrh-bg:#EFF2F5; --lrh-card:#FFFFFF; --lrh-ink2:#5A6A7D; --lrh-line:rgba(15,35,60,.13); }
+  .lrh-hdr{display:flex;align-items:center;gap:10px;background:var(--lrh-bg);padding:8px 14px;
+    border-bottom:1px solid var(--lrh-line)}
+  .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;
+    color:var(--lrh-ink2);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  .lrh-hdr button{background:var(--lrh-card);border:1px solid var(--lrh-line);color:var(--lrh-ink2);
+    font:700 11px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:.08em;
+    padding:8px 11px;border-radius:9px;cursor:pointer;min-height:36px;white-space:nowrap}
   @media print {
     body { background:#fffefb; }
     nav.bar, #betasplash { display:none; }
@@ -60,7 +77,7 @@
   }
 </style>
 </head>
-<body>
+<body data-theme="dark">
 <div id="betasplash" style="position:fixed; inset:0; z-index:999; background:linear-gradient(135deg,#005596,#003e6e); color:#fffefb; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
   <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:#a9c2dc;">LRH · EMERGENCY DEPARTMENT</div>
   <div style="font-size:30px; line-height:1.06; letter-spacing:-0.02em; font-weight:700;">Debrief</div>
@@ -70,6 +87,7 @@
   <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
 </div>
 <div id="stickytop">
+<div class="lrh-hdr"><div class="crumb">DEBRIEF</div><button type="button" id="lrhThemeBtn">LIGHT</button></div>
 <nav class="bar"><a href="../?from=tool" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a><button id="backbtn" type="button" style="display:none; color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px;">◀ BACK</button></nav>
 <div class="section-stripe"></div>
 </div>
@@ -159,6 +177,18 @@ var SITE = { version: "0.4", lastReviewed: "2026-08-07" };
   window.addEventListener('hashchange', maybeShow, false);
   maybeShow();
   b.addEventListener('click', function(){ history.back(); }, false);
+})();
+
+/* Theme toggle, chrome only — this page has no CASESTATE and stores nothing,
+   so the choice is not persisted. Dark by default every load. */
+(function(){
+  var b=document.getElementById('lrhThemeBtn');
+  if(!b) return;
+  b.addEventListener('click', function(){
+    var dark = document.body.dataset.theme!=='light';
+    document.body.dataset.theme = dark ? 'light' : 'dark';
+    b.textContent = dark ? 'DARK' : 'LIGHT';
+  });
 })();
 </script>
 </body>
