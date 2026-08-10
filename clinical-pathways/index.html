@@ -12,14 +12,33 @@
     --ink:#1f2933; --muted:#5b6672; --line:#e2e7ec; --panel:#fff; --page:#eef2f5;
     --section:#2f7a3f; /* Clinical Pathways = green */
   }
-  /* Design-language chrome tokens — header only, step 1. See index.html for
-     the full note; same rule here: no Google Fonts, system stacks only. */
+  /* Design-language tokens. Step 1 added header-only; step 2 (this pass)
+     moves the whole page's content onto the same token set — see the
+     "category index" pattern in DESIGN_LANGUAGE.md section 5. No Google
+     Fonts, system stacks only (CLAUDE.md rule 1). */
   body[data-theme]{
-    --lrh-bg:#0D1420; --lrh-card:#161F2E; --lrh-ink2:#8FA0B5; --lrh-line:rgba(255,255,255,.10);
+    --lrh-bg:#0D1420; --lrh-card:#161F2E; --lrh-card2:#1D2A3C; --lrh-ink:#EAF0F7; --lrh-ink2:#8FA0B5;
+    --lrh-line:rgba(255,255,255,.10); --lrh-accent:#2FA372;
   }
   body[data-theme="light"]{
-    --lrh-bg:#EFF2F5; --lrh-card:#FFFFFF; --lrh-ink2:#5A6A7D; --lrh-line:rgba(15,35,60,.13);
+    --lrh-bg:#EFF2F5; --lrh-card:#FFFFFF; --lrh-card2:#F4F6F9; --lrh-ink:#141E2B; --lrh-ink2:#5A6A7D;
+    --lrh-line:rgba(15,35,60,.13); --lrh-accent:#00693E;
   }
+  .lrh-mono{font-family:ui-monospace,"SF Mono",Menlo,"JetBrains Mono",monospace}
+  .lrh-idx-h1{font-size:26px;font-weight:800;margin:20px 2px 4px;color:var(--lrh-ink)}
+  .lrh-idx-sub{font-size:15px;line-height:1.55;color:var(--lrh-ink2);margin:0 2px 16px;max-width:56ch}
+  .lrh-group-hd{display:flex;align-items:center;gap:9px;margin:18px 2px 8px}
+  .lrh-group-hd .dot{width:10px;height:10px;border-radius:3px;background:var(--lrh-accent);flex:none}
+  .lrh-group-hd .label{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--lrh-ink2)}
+  .lrh-group-hd .rule{flex:1;height:1px;background:var(--lrh-line)}
+  .lrh-row-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:8px}
+  .lrh-row{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--lrh-ink);
+    background:var(--lrh-card);border:1px solid var(--lrh-line);border-left:4px solid var(--lrh-accent);
+    border-radius:12px;padding:14px;min-height:62px;cursor:pointer}
+  .lrh-row .n{font-size:15px;font-weight:700;color:var(--lrh-accent);flex:none}
+  .lrh-row .t{font-size:16.5px;font-weight:700;line-height:1.3}
+  .lrh-row .spacer{flex:1}
+  .lrh-row .tag{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--lrh-ink2);white-space:nowrap}
   .lrh-hdr{position:sticky;top:0;z-index:30;background:var(--lrh-bg);padding:12px 14px 10px;
     border-bottom:1px solid var(--lrh-line);display:flex;align-items:center;gap:10px}
   .lrh-hdr a.lrh-back{background:var(--lrh-card);border:1px solid var(--lrh-line);color:var(--lrh-ink2);
@@ -34,7 +53,7 @@
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--page); color:var(--ink); line-height:1.45; font-size:16px; min-height:100vh}
+    background:var(--lrh-bg); color:var(--lrh-ink); line-height:1.45; font-size:16px; min-height:100vh}
   .wrap{max-width:840px; margin:0 auto; padding:0 16px 56px}
 
   header.top{background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-dark));
@@ -65,9 +84,9 @@
   .badge{display:inline-block; font-size:.68rem; font-weight:700; text-transform:uppercase;
     letter-spacing:.5px; background:#eef2f5; color:var(--muted); padding:2px 8px; border-radius:20px; margin-left:8px; vertical-align:middle}
 
-  .note{background:#fff8e1; border:1px solid #f2d999; color:#6d4c00; font-size:.8rem;
-    border-radius:9px; padding:12px 15px; margin-top:26px}
-  footer{text-align:center; color:var(--muted); font-size:.76rem; margin-top:22px}
+  .note{background:var(--lrh-card2); border:1px solid var(--lrh-line); border-left:4px solid #F0B429;
+    color:var(--lrh-ink); font-size:.8rem; border-radius:9px; padding:12px 15px; margin-top:26px}
+  footer{text-align:center; color:var(--lrh-ink2); font-size:.76rem; margin-top:22px}
 </style>
 </head>
 <body data-theme="dark">
@@ -87,35 +106,41 @@
 </header>
 
 <div class="wrap">
-  <p class="intro">Accelerated diagnostic and treatment pathways. Tap a pathway to open it.</p>
+  <h1 class="lrh-idx-h1">Clinical Pathways</h1>
+  <p class="lrh-idx-sub">Accelerated diagnostic and treatment pathways. Tap a pathway to open it.</p>
 
-  <div class="grid">
+  <div class="lrh-group-hd"><span class="dot"></span><span class="label">PATHWAYS</span><span class="rule"></span></div>
+  <div class="lrh-row-grid">
 
     <!-- ===== HEART pathway (live) -> /clinical-pathways/heart/ ===== -->
-    <a class="tool" href="heart/">
-      <div class="name">Chest Pain &middot; hs-Troponin HEART Pathway</div>
-      <div class="desc">ED 0/1-hour accelerated diagnostic pathway for suspected ACS, with HEART score and disposition.</div>
-      <div class="go">Open</div>
+    <a class="lrh-row" href="heart/">
+      <span class="n lrh-mono">01</span>
+      <span class="t">Chest Pain &middot; hs-Troponin HEART Pathway</span>
+      <span class="spacer"></span>
+      <span class="tag">LIVE</span>
     </a>
 
     <!-- ===== CROSS-LINK: Brain Injury Guidelines — lives in /trauma/, linked here so it
          shows up as a pathway too. Not duplicated; same source, same card. ===== -->
-    <a class="tool" href="../trauma/?from=home#c01">
-      <div class="name">Brain Injury Guidelines (BIG) <span class="badge">Trauma tool</span></div>
-      <div class="desc">Minor-TBI risk stratification (mBIG-1/2/3) — neurosurgery consult, repeat-CT, and admission-level pathway. Opens in the Trauma tool.</div>
-      <div class="go">Open</div>
+    <a class="lrh-row" href="../trauma/?from=home#c01">
+      <span class="n lrh-mono">02</span>
+      <span class="t">Brain Injury Guidelines (BIG)</span>
+      <span class="spacer"></span>
+      <span class="tag">OPENS IN TRAUMA</span>
     </a>
 
     <!-- ===== CROSS-LINK: Massive Transfusion Protocol — lives in /codes/ card 12,
          linked here so it shows up as a pathway too. Not duplicated. ===== -->
-    <a class="tool" href="../codes/?from=home#c12">
-      <div class="name">Massive Transfusion Protocol (MTP) <span class="badge">Codes tool</span></div>
-      <div class="desc">Activation criteria and a live product-tally counter for balanced blood-product resuscitation. Opens in the Codes tool.</div>
-      <div class="go">Open</div>
+    <a class="lrh-row" href="../codes/?from=home#c12">
+      <span class="n lrh-mono">03</span>
+      <span class="t">Massive Transfusion Protocol (MTP)</span>
+      <span class="spacer"></span>
+      <span class="tag">OPENS IN CODES</span>
     </a>
 
     <!-- ===== Add a pathway: create clinical-pathways/<tool>/index.html, copy a
-         card above with href "<tool>/", and add it to the home search index. ===== -->
+         row above with href "<tool>/", the next mono number, and add it to the
+         home search index. ===== -->
 
   </div>
 

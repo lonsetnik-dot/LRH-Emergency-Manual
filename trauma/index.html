@@ -24,8 +24,10 @@
      #stickytop (see the ResizeObserver script near the header) so the
      new .lrh-hdr strip's height is automatically accounted for in
      scroll-margin-top below; 54px stays as the pre-JS fallback. */
-  body[data-theme]{ --lrh-bg:#0D1420; --lrh-card:#161F2E; --lrh-ink2:#8FA0B5; --lrh-line:rgba(255,255,255,.10); }
-  body[data-theme="light"]{ --lrh-bg:#EFF2F5; --lrh-card:#FFFFFF; --lrh-ink2:#5A6A7D; --lrh-line:rgba(15,35,60,.13); }
+  body[data-theme]{ --lrh-bg:#0D1420; --lrh-card:#161F2E; --lrh-card2:#1D2A3C; --lrh-ink:#EAF0F7; --lrh-ink2:#8FA0B5; --lrh-line:rgba(255,255,255,.10); --lrh-accent:#2FA372;
+    --lrh-red:#E5484D; --lrh-amber:#F0B429; --lrh-blue:#4C8DDA; --lrh-green:#3DA35D; --lrh-gray:#5C6B7E; --lrh-purple:#9B7BD4; --lrh-teal:#3AA6A6; --lrh-orange:#E08A3C; }
+  body[data-theme="light"]{ --lrh-bg:#EFF2F5; --lrh-card:#FFFFFF; --lrh-card2:#F4F6F9; --lrh-ink:#141E2B; --lrh-ink2:#5A6A7D; --lrh-line:rgba(15,35,60,.13); --lrh-accent:#00693E;
+    --lrh-red:#C63238; --lrh-amber:#B07E13; --lrh-blue:#2F6FB5; --lrh-green:#1F7F49; --lrh-gray:#6B7A8D; --lrh-purple:#6C4FA3; --lrh-teal:#1F7E7E; --lrh-orange:#B4661F; }
   .lrh-hdr{display:flex;align-items:center;gap:10px;background:var(--lrh-bg);padding:8px 14px;
     border-bottom:1px solid var(--lrh-line)}
   .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;
@@ -33,6 +35,29 @@
   .lrh-hdr button{background:var(--lrh-card);border:1px solid var(--lrh-line);color:var(--lrh-ink2);
     font:700 11px "Helvetica Neue",Helvetica,Arial,sans-serif;letter-spacing:.08em;padding:8px 11px;
     border-radius:9px;cursor:pointer;min-height:36px;white-space:nowrap}
+  /* ---- step 2 — the card-selection menu is this tool's "category index"
+     (DESIGN_LANGUAGE.md section 5): same themed-wrapper/row pattern as the
+     home hub, clinical-pathways index, codes/index.html, and peds/index.html.
+     Card content below the menu (article#c01 etc.) is untouched — step 3/4
+     scope. */
+  .lrh-menuwrap{background:var(--lrh-bg);padding:16px 14px 26px}
+  .lrh-menuwrap .inner{max-width:1400px;margin:0 auto}
+  .lrh-eyebrow{font-size:11.5px;letter-spacing:.14em;color:var(--lrh-accent);font-weight:700}
+  .lrh-idx-h1{margin:4px 0 2px;font-size:26px;letter-spacing:-.01em;font-weight:800;color:var(--lrh-ink)}
+  .lrh-idx-sub{margin:0;color:var(--lrh-ink2);font-size:14.5px}
+  .lrh-startnew-btn{margin-top:10px;min-height:44px;padding:0 16px;background:var(--lrh-card2);
+    color:var(--lrh-ink);border:2px solid var(--lrh-line);font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+    font-size:12px;font-weight:700;letter-spacing:.08em;cursor:pointer;border-radius:10px}
+  .lrh-startnew-btn:hover{border-color:var(--lrh-accent);color:var(--lrh-accent)}
+  .lrh-mono{font-family:ui-monospace,"SF Mono",Menlo,"JetBrains Mono",monospace}
+  .lrh-row{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--lrh-ink);
+    background:var(--lrh-card);border:1px solid var(--lrh-line);border-left:4px solid var(--cc,var(--lrh-accent));
+    border-radius:12px;padding:14px;min-height:56px;cursor:pointer}
+  .lrh-row .n{font-size:15px;font-weight:700;color:var(--cc,var(--lrh-accent));flex:none;width:24px}
+  .lrh-row .t{font-size:16.5px;font-weight:700;line-height:1.25}
+  .lrh-row .spacer{flex:1}
+  .lrh-row .tag{font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--lrh-ink2);white-space:nowrap;flex:none}
+  .lrh-row:hover, .lrh-row:focus-visible{color:var(--lrh-ink)}
   body { margin:0; background:#eceff3; color:#16324f; font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; font-size:16.5px; line-height:1.4; text-wrap:pretty; }
   main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
   article { scroll-margin-top:var(--sticky-h,54px); margin-top:12px; }
@@ -202,24 +227,26 @@ catch(e){ document.body.dataset.theme='dark'; }
 </div>
 
 <main>
-  <div style="padding:16px 14px 6px;">
-    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:#c26a1b; font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
-    <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Trauma</h1>
-    <p style="margin:0; color:#5a6a78; font-size:14.5px;">Tap a card to open. Massive Transfusion Protocol and Front of Neck Access live in the Codes tool — the cards below link straight there so nothing is duplicated.</p>
-    <button type="button" id="startnewcasebtn" style="margin-top:10px; min-height:44px; padding:0 16px; background:#16324f; color:#fffefb; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">START NEW CASE</button>
-  </div>
+  <div class="lrh-menuwrap">
+    <div class="inner">
+      <div class="lrh-eyebrow lrh-mono">LRH · EMERGENCY DEPARTMENT</div>
+      <h1 class="lrh-idx-h1">Trauma</h1>
+      <p class="lrh-idx-sub">Tap a card to open. Massive Transfusion Protocol and Front of Neck Access live in the Codes tool — the cards below link straight there so nothing is duplicated.</p>
+      <button type="button" id="startnewcasebtn" class="lrh-startnew-btn">START NEW CASE</button>
 
-  <!-- ============ CARD MENU ============ -->
-  <div id="menu" class="menu" style="margin:14px 0 24px;">
-    <a href="#c01" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">01</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Brain Injury Guidelines (BIG)</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,20 40,20 44,2 48,38 52,20 92,20" fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-    <a href="#c02" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">02</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Level 1 Trauma Activation</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><circle cx="46" cy="20" r="10" fill="none" stroke="#9b1c2e" stroke-width="3"/><line x1="46" y1="2" x2="46" y2="8" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/><line x1="46" y1="32" x2="46" y2="38" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/><line x1="20" y1="20" x2="26" y2="20" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/><line x1="66" y1="20" x2="72" y2="20" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/><line x1="27" y1="1" x2="31" y2="7" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/><line x1="65" y1="1" x2="61" y2="7" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/><line x1="27" y1="39" x2="31" y2="33" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/><line x1="65" y1="39" x2="61" y2="33" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/></svg></span></a>
-    <a href="#c03" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">03</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Blunt Polytrauma</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><circle cx="24" cy="10" r="6" fill="none" stroke="#16324f" stroke-width="3"/><line x1="24" y1="16" x2="24" y2="30" stroke="#16324f" stroke-width="3" stroke-linecap="round"/><line x1="24" y1="20" x2="12" y2="26" stroke="#16324f" stroke-width="3" stroke-linecap="round"/><line x1="24" y1="20" x2="36" y2="26" stroke="#16324f" stroke-width="3" stroke-linecap="round"/><line x1="24" y1="30" x2="16" y2="38" stroke="#16324f" stroke-width="3" stroke-linecap="round"/><line x1="24" y1="30" x2="32" y2="38" stroke="#16324f" stroke-width="3" stroke-linecap="round"/><path d="M58 6 L62 14 L54 14 Z" fill="#16324f"/><path d="M74 20 L79 27 L69 27 Z" fill="#16324f"/><path d="M58 30 L63 37 L53 37 Z" fill="#16324f"/></svg></span></a>
-    <a href="#c04" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">04</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Penetrating Trauma</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><rect x="20" y="6" width="52" height="28" rx="10" fill="none" stroke="#9b1c2e" stroke-width="3"/><line x1="4" y1="4" x2="40" y2="20" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/><path d="M4 4 L14 6 L7 13 Z" fill="#9b1c2e"/><circle cx="46" cy="20" r="4" fill="#9b1c2e"/></svg></span></a>
-    <a href="#c05" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #c26a1b; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#c26a1b;">05</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Burn</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><path d="M46 4 C34 16 28 26 34 34 C38 39 54 39 58 34 C64 26 58 20 54 24 C56 14 50 8 46 4 Z" fill="none" stroke="#c26a1b" stroke-width="3" stroke-linejoin="round"/></svg></span></a>
-    <a href="#c06" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">06</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Isolated Head Trauma</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><circle cx="38" cy="20" r="17" fill="none" stroke="#16324f" stroke-width="3"/><path d="M62 6 L54 20 L62 20 L56 34 L72 16 L62 16 Z" fill="#16324f"/></svg></span></a>
-    <a href="#c07" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">07</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Mangled / Amputated Extremity</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><line x1="4" y1="20" x2="34" y2="20" stroke="#16324f" stroke-width="3" stroke-linecap="round"/><path d="M34 8 L44 32 L54 8" fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/><line x1="58" y1="20" x2="88" y2="20" stroke="#16324f" stroke-width="3" stroke-linecap="round" stroke-dasharray="3 5"/></svg></span></a>
-    <a href="../codes/?from=home#c12" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">→</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Massive Transfusion Protocol<br><span style="font-size:11px; font-weight:400; color:#8a8578; letter-spacing:0.04em;">opens in Codes</span></span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,20 10,20 15,30 20,20 30,20 40,20 45,30 50,20 60,20 70,20 75,30 80,20 92,20" fill="none" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-    <a href="../codes/?from=home#c18" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">→</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Front of Neck Access (FONA)<br><span style="font-size:11px; font-weight:400; color:#8a8578; letter-spacing:0.04em;">opens in Codes</span></span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><circle cx="46" cy="20" r="15" fill="none" stroke="#9b1c2e" stroke-width="3"/><line x1="36" y1="20" x2="56" y2="20" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/></svg></span></a>
+      <!-- ============ CARD MENU ============ -->
+      <div id="menu" class="menu" style="padding:0; margin:18px 0 0;">
+        <a href="#c01" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">01</span><span class="t">Brain Injury Guidelines (BIG)</span></a>
+        <a href="#c02" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">02</span><span class="t">Level 1 Trauma Activation</span></a>
+        <a href="#c03" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">03</span><span class="t">Blunt Polytrauma</span></a>
+        <a href="#c04" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">04</span><span class="t">Penetrating Trauma</span></a>
+        <a href="#c05" class="lrh-row" style="--cc:var(--lrh-orange)"><span class="n lrh-mono">05</span><span class="t">Burn</span></a>
+        <a href="#c06" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">06</span><span class="t">Isolated Head Trauma</span></a>
+        <a href="#c07" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">07</span><span class="t">Mangled / Amputated Extremity</span></a>
+        <a href="../codes/?from=home#c12" class="lrh-row" style="--cc:var(--lrh-red)"><span class="t">Massive Transfusion Protocol</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; CODES</span></a>
+        <a href="../codes/?from=home#c18" class="lrh-row" style="--cc:var(--lrh-red)"><span class="t">Front of Neck Access (FONA)</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; CODES</span></a>
+      </div>
+    </div>
   </div>
 
   <!-- ============ CARD 01 · BRAIN INJURY GUIDELINES (BIG) ============ -->
