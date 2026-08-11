@@ -47,11 +47,13 @@
      home hub, clinical-pathways index, codes/index.html, and peds/index.html.
      Card content below the menu (article#c01 etc.) is untouched — step 3/4
      scope. */
-  .lrh-menuwrap{background:var(--bg);padding:16px 14px 26px}
+  .lrh-menuwrap{background:var(--bg);padding:8px 14px 26px}
   .lrh-menuwrap .inner{max-width:1400px;margin:0 auto}
-  .lrh-eyebrow{font-size:11.5px;letter-spacing:.14em;color:var(--accent);font-weight:700}
-  .lrh-idx-h1{margin:4px 0 2px;font-size:26px;letter-spacing:-.01em;font-weight:800;color:var(--ink)}
-  .lrh-idx-sub{margin:0;color:var(--ink2);font-size:14.5px}
+  /* The chrome bar already labels this section "PROCEDURES", so the old eyebrow +
+     big <h1> + description are dropped to land straight on search + cards. The
+     <h1> is kept for screen readers/document outline via .sr-only. */
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0}
   .lrh-mono{font-family:ui-monospace,"SF Mono",Menlo,"JetBrains Mono",monospace}
   .lrh-row{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);
     background:var(--card);border:1px solid var(--line);border-left:4px solid var(--cc,var(--accent));
@@ -62,7 +64,7 @@
   .lrh-row .tag{font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--ink2);white-space:nowrap;flex:none}
   .lrh-row:hover, .lrh-row:focus-visible{color:var(--ink)}
   .lrh-filter{display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);
-    border-radius:14px;padding:4px 6px 4px 14px;margin:18px 2px 14px}
+    border-radius:14px;padding:4px 6px 4px 14px;margin:0 2px 14px}
   .lrh-filter .ico{color:var(--ink2);font-size:16px;flex:none}
   .lrh-filter input{flex:1;background:none;border:none;color:var(--ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit;-webkit-appearance:none}
   .lrh-filter input::-webkit-search-cancel-button{-webkit-appearance:none}
@@ -181,9 +183,7 @@ catch(e){ document.body.dataset.theme='dark'; }
 <main id="top">
   <div class="lrh-menuwrap">
     <div class="inner">
-      <div class="lrh-eyebrow lrh-mono">LRH · EMERGENCY DEPARTMENT</div>
-      <h1 class="lrh-idx-h1">Procedures</h1>
-      <p class="lrh-idx-sub">Rare, high-stakes procedures — high-level checklists with anatomy figures. Procedures that already live in another tool link straight there; nothing is duplicated.</p>
+      <h1 class="sr-only">Procedures</h1>
 
       <!-- ============ FILTER ============ -->
       <div class="lrh-filter">
