@@ -287,15 +287,15 @@ ck('14. no second adult breath inside 3.6 s', await nBreaths(), adultAt0);
 await pg.waitForTimeout(2900);
 ck('14. the second adult breath lands by 6.5 s', await nBreaths(), adultAt0 + 1);
 
-/* ---- 15. rescue breathing — the paediatric rate ----------------------------
+/* ---- 15. rescue breathing — the pediatric rate ----------------------------
    AHA/AAP 2025 Part 6: 1 breath every 2-3 s, 20-30/min. Class 2a, LOE C-EO.
    Faster than the adult rate, which is the number most often got wrong. */
 await fresh();
 await pg.fill('#wIn', '18'); await pg.waitForTimeout(200);
 await pg.click('#respstartbtn'); await pg.waitForTimeout(300);
 ck('15. the child rate is 1 breath every 2–3 s, 20–30/min',
-  /1 breath every 2–3 s \(20–30\/min\) · paediatric/.test(await txt('#ventlabel')), true);
-ck('15. the paediatric bradycardia card is showing', await vis('#bradycard'), true);
+  /1 breath every 2–3 s \(20–30\/min\) · pediatric/.test(await txt('#ventlabel')), true);
+ck('15. the pediatric bradycardia card is showing', await vis('#bradycard'), true);
 ck('15. it says compressions despite a palpable pulse', /even though you can feel a pulse/i.test(await txt('#bradycard')), true);
 const pedsAt0 = await nBreaths();
 await pg.waitForTimeout(3400);
@@ -372,7 +372,7 @@ ck('19. adult 6 s / 10 per min with its class', /1 breath every 6 s \(10\/min\)\
 ck('19. child 2–3 s / 20–30 per min with its class', /1 breath every 2–3 s \(20–30\/min\)\. AHA\/AAP 2025 Part 6, Pediatric BLS — Class 2a, LOE C-EO/.test(ventAcc), true);
 ck('19. says which number the metronome picked and why', /slow end, because over-ventilating a small chest is the commoner error/i.test(ventAcc), true);
 ck('19. cites the adult DOI', /10\.1161\/CIR\.0000000000001369/.test(ventAcc), true);
-ck('19. cites the paediatric DOI', /10\.1161\/CIR\.0000000000001370/.test(ventAcc), true);
+ck('19. cites the pediatric DOI', /10\.1161\/CIR\.0000000000001370/.test(ventAcc), true);
 ck('19. names the gap it exists to fill', /Neither the arrest algorithm nor DAS 2025 covers this patient/.test(ventAcc), true);
 const cprAcc = await openAcc('cpr');
 ck('19. the advanced-airway line now carries both rates',
