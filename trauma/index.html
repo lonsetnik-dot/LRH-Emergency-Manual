@@ -219,6 +219,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <a href="#c05" data-k="burn tbsa rule of nines parkland fluid resuscitation inhalation injury carbon monoxide cyanide burn center transfer" class="lrh-row" style="--cc:var(--orange)"><span class="n lrh-mono">05</span><span class="t">Burn</span></a>
         <a href="#c06" data-k="head trauma tbi gcs canadian ct head rule new orleans criteria herniation mannitol hypertonic saline hypoxia hypotension" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">06</span><span class="t">Isolated Head Trauma</span></a>
         <a href="#c07" data-k="mangled amputated extremity mess score replantation limb salvage vascular injury compartment syndrome tourniquet" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">07</span><span class="t">Mangled / Amputated Extremity</span></a>
+        <a href="#c08" data-k="bcvi blunt cerebrovascular injury screening denver expanded universal carotid vertebral artery cta neck seatbelt le fort cervical spine fracture stroke horner" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">08</span><span class="t">BCVI Screening</span></a>
         <a href="../codes/?from=home#c12" data-k="mtp massive transfusion protocol blood products prbc plasma platelets cryo hemorrhagic shock trauma" class="lrh-row" style="--cc:var(--red)"><span class="t">Massive Transfusion Protocol</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; CODES</span></a>
         <a href="../codes/?from=home#c18" data-k="fona cricothyroidotomy cico front of neck access surgical airway difficult airway das trauma" class="lrh-row" style="--cc:var(--red)"><span class="t">Front of Neck Access (FONA)</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; CODES</span></a>
       </div>
@@ -335,10 +336,59 @@ catch(e){ document.body.dataset.theme='dark'; }
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-12" class="t-ck"><span><b>Imaging:</b> unstable → bedside FAST/CXR/pelvis X-ray, no CT, treat a positive FAST as go-to-OR/transfer. Stable → selective imaging vs. whole-body CT is an institutional judgment call; REACT-2 (Lancet 2016) found no mortality difference between the two strategies.</span></label></li>
         </ul>
       </details>
+      <details class="t-box-neutral">
+        <summary class="t-head t-head-neutral">AFTER ACTIVATION — MECHANISM BRANCH</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-13" class="t-ck"><span><b>Name the mechanism out loud</b> and open the matching card for injury-specific detail — <a href="#c03">Blunt Polytrauma</a> or <a href="#c04">Penetrating Trauma</a>. The primary survey below is common to both; the CT guidance at the bottom splits blunt vs penetrating.</span></label></li>
+        </ul>
+      </details>
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PRIMARY SURVEY · &lt;C&gt;ABCDE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-14" class="t-ck"><span><b>&lt;C&gt; Catastrophic hemorrhage</b> — control compressible bleeding first: direct pressure, wound packing, <a href="../procedures/?from=home#c10">tourniquet</a>, <a href="../procedures/?from=home#c09">pelvic binder</a>.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-15" class="t-ck"><span><b>A · Airway + C-spine</b> — manual in-line stabilization; jaw thrust, suction, adjuncts; definitive airway if GCS &le;8 or the airway is not protected.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-16" class="t-ck"><span><b>B · Breathing</b> — expose the chest; rate, SpO2, auscultate both sides; decompress a tension pneumothorax on clinical suspicion (finger thoracostomy); seal an open chest wound.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-17" class="t-ck"><span><b>C · Circulation</b> — two large-bore IV or IO; eFAST + pelvis; hypotension → blood, not crystalloid (<a href="../codes/?from=home#c12">MTP</a>); permissive hypotension <b>unless</b> TBI; <b>TXA</b> 1 g within 3 h of injury.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-18" class="t-ck"><span><b>D · Disability</b> — <b>GCS</b>, <b>pupils</b> (size + reactivity), <b>lateralizing / focal signs</b>, and a glucose. A falling GCS or a new fixed dilated pupil is herniation until proven otherwise — see <a href="#c06">Isolated Head Trauma</a>.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-19" class="t-ck"><span><b>E · Exposure / Environment</b> — fully undress, log-roll to inspect the back, then cover: warm blankets, warmed fluids, warm room. Hypothermia is one of the lethal triad.</span></label></li>
+        </ul>
+      </details>
+      <details class="t-box-info">
+        <summary class="t-head t-head-info">ADJUNCTS TO THE PRIMARY SURVEY</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-20" class="t-ck"><span><b>eFAST</b> — perihepatic, perisplenic, pelvic, pericardial, and both lung fields. A positive FAST in an unstable patient means OR/transfer, not the CT scanner.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-21" class="t-ck"><span><b>Portable X-ray in the bay</b> — chest and pelvis; add extremity films as directed by the exam.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-22" class="t-ck"><span><b>Labs + lines</b> — type &amp; crossmatch, ABG/lactate/base deficit, CBC, coags, &beta;-hCG; monitors + ECG; foley and gastric tube unless contraindicated (use an <b>oro</b>gastric tube if a basilar skull fracture is suspected).</span></label></li>
+        </ul>
+      </details>
+      <details class="t-box-neutral">
+        <summary class="t-head t-head-neutral">SECONDARY SURVEY — HEAD TO TOE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-23" class="t-ck"><span>Start only once the primary survey is complete and resuscitation is underway. <b>AMPLE</b> history — Allergies, Medications, Past history, Last meal, Events/environment.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-24" class="t-ck"><span><b>Examine head to toe</b> — scalp/face, eyes/pupils, ENT (hemotympanum, CSF leak), neck, chest, abdomen, pelvis (do not spring), perineum + rectal/genital as indicated, log-roll the back/spine, all four extremities with pulses, and a full neuro exam.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-25" class="t-ck"><span>Splint fractures, dress wounds, tetanus, antibiotics for open fractures. <b>Re-examine continuously</b> — any deterioration sends you back to A. Never let the secondary survey delay transfer of an unstable patient.</span></label></li>
+        </ul>
+      </details>
+      <details class="t-box-info">
+        <summary class="t-head t-head-info">CT GUIDANCE — BLUNT</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-26" class="t-ck"><span><b>Unstable → no CT.</b> Resuscitate; positive FAST/instability is a go-to-OR or transfer decision, not an imaging one.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-27" class="t-ck"><span><b>Stable adult</b> — CT head; CT C-spine (image, don't clear, if <a href="https://www.mdcalc.com/calc/517/canadian-c-spine-rule">Canadian C-Spine</a>/NEXUS can't clear it clinically); CT chest/abdomen/pelvis with IV contrast for a significant mechanism. Whole-body &ldquo;pan-scan&rdquo; vs. selective CT is an institutional call — REACT-2 found no mortality difference.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-28" class="t-ck"><span><b>CTA neck for BCVI</b> if screening criteria are met — see <a href="#c08">BCVI Screening</a>.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-29" class="t-ck"><span><b>Stable child</b> — minimize radiation: <a href="https://www.mdcalc.com/calc/589/pecarn-pediatric-head-injury-trauma-algorithm">PECARN</a> for the head, FAST/observation and selective abdominal CT rather than reflexive pan-scan. Image on a clear indication, not by default.</span></label></li>
+        </ul>
+      </details>
+      <details class="t-box-info">
+        <summary class="t-head t-head-info">CT GUIDANCE — PENETRATING</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-30" class="t-ck"><span><b>Unstable, peritonitis, or evisceration → OR/transfer, not CT.</b></span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-31" class="t-ck"><span><b>Stable</b> — CT with contrast to define the trajectory and injured structures; <b>neck → CTA</b> (see <a href="../procedures/?from=home#c11">Penetrating Neck Trauma</a> zones). Don't delay transfer for imaging you can't act on locally.</span></label></li>
+        </ul>
+      </details>
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> National Guideline for the Field Triage of Injured Patients, 2021 (CDC/ACS-COT National Expert Panel on Field Triage), <i>J Trauma Acute Care Surg</i>, DOI 10.1097/TA.0000000000003627. ACS Committee on Trauma, <i>Resources for Optimal Care of the Injured Patient</i>, 2022 Standards, Standards 5.3–5.4 (levels of activation / surgeon response). Illustrative hospital protocols citing these standards: UW Medicine and Froedtert Hospital trauma activation criteria (GCS&lt;9 local convention). Nunez TC, et al. "Early prediction of massive transfusion in trauma: simple as ABC?" <i>J Trauma</i> 2009;66(2):346-352 (ABC score). Sierink JC, et al. (REACT-2), <i>Lancet</i> 2016;388(10045):673-83. Geriatric/anticoagulant overtriage: PubMed 31030991. Age-65 SBP threshold and low-level-fall escalation per the CDC/ACS field-triage algorithm above.
+      <b>Sources:</b> National Guideline for the Field Triage of Injured Patients, 2021 (CDC/ACS-COT National Expert Panel on Field Triage), <i>J Trauma Acute Care Surg</i>, DOI 10.1097/TA.0000000000003627. ACS Committee on Trauma, <i>Resources for Optimal Care of the Injured Patient</i>, 2022 Standards, Standards 5.3–5.4 (levels of activation / surgeon response). Illustrative hospital protocols citing these standards: UW Medicine and Froedtert Hospital trauma activation criteria (GCS&lt;9 local convention). Nunez TC, et al. "Early prediction of massive transfusion in trauma: simple as ABC?" <i>J Trauma</i> 2009;66(2):346-352 (ABC score). Sierink JC, et al. (REACT-2), <i>Lancet</i> 2016;388(10045):673-83. Geriatric/anticoagulant overtriage: PubMed 31030991. Age-65 SBP threshold and low-level-fall escalation per the CDC/ACS field-triage algorithm above. Primary/secondary survey, adjuncts, and the &lt;C&gt;ABCDE sequence per <i>ATLS Student Course Manual</i>, 11th ed. (American College of Surgeons, 2024). C-spine imaging decision per the Canadian C-Spine Rule (Stiell, <i>JAMA</i> 2001) and NEXUS (Hoffman, <i>NEJM</i> 2000). Pediatric head-CT selection per PECARN (Kuppermann, <i>Lancet</i> 2009). BCVI screening → card 08.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -637,6 +687,68 @@ catch(e){ document.body.dataset.theme='dark'; }
 
     <div class="t-sub">
       <b>Sources:</b> TCCC Guidelines, current edition, Committee on TCCC (tourniquet-first hemorrhage control). Johansen K, et al. (MESS), <i>J Trauma</i> 1990;30(5):568-72; Aldabagh et al., systematic review, <i>Open Access Maced J Med Sci</i> 2023; Abdo et al., <i>Vasc Endovascular Surg</i> 2023 (MESS reliability, upper- vs. lower-extremity). StatPearls, "Digit Amputation" (preservation/replantation). ILCOR scoping review, "Preservation of Traumatic Amputated Body Parts," Oct 2024. EAST PMG, Penetrating Lower Extremity Arterial Trauma (2002, hard/soft signs, 6h window). Romagnoli AN, et al., "Hard Signs Gone Soft," <i>J Trauma Acute Care Surg</i> 2021. StatPearls, "Acute Compartment Syndrome." EAST PMG, Prophylactic Antibiotics in Open Fractures (2011).
+    </div>
+    <div class="t-foot">
+      <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
+    </div>
+  </article>
+
+  <!-- ============ CARD 08 · BCVI SCREENING ============ -->
+  <article id="c08">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">08</span>BCVI Screening</h2>
+        <span class="t-mono-r">BLUNT CEREBROVASCULAR INJURY — WHO GETS A CTA NECK</span>
+      </div>
+      <div class="t-note2">Screening for blunt carotid or vertebral artery injury. The point is to catch it <b>before</b> it strokes — most BCVI strokes happen hours to days later and are largely preventable with early antithrombotic therapy. <b>CTA neck</b> is the screening test.</div>
+    </div>
+
+    <div class="t-localize">
+      ⚠ <b>LOCALIZE THIS CARD:</b> LRH is not a trauma center — a positive screen or a confirmed BCVI is a transfer + neurosurgery/vascular/stroke conversation. Confirm local CTA availability and the receiving center's antithrombotic preference. The three criteria sets below are published screening tools to adopt, not an LRH protocol; pick one deliberately.
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">SIGNS / SYMPTOMS — IMAGE NOW, ANY CRITERIA</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c08-1" class="t-ck"><span>Arterial hemorrhage from the neck, nose, or mouth · expanding cervical hematoma · cervical bruit or thrill in a patient &lt;50.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c08-2" class="t-ck"><span>Focal neurologic deficit — TIA, hemiparesis, vertebrobasilar symptoms, or Horner syndrome · a neuro exam <b>not explained</b> by the head CT · ischemic stroke on CT/MRI.</span></label></li>
+        </ul>
+      </details>
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">DENVER CRITERIA — RISK FACTORS (SCREEN IF PRESENT)</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c08-3" class="t-ck"><span><b>Le Fort II or III</b> facial fracture.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c08-4" class="t-ck"><span><b>Cervical spine fracture:</b> C1–C3, any fracture through the transverse foramen, or subluxation/ligamentous injury.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c08-5" class="t-ck"><span><b>Basilar skull fracture</b> involving the carotid canal · <b>diffuse axonal injury</b> with GCS &lt;6.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c08-6" class="t-ck"><span><b>Near-hanging</b> with anoxic brain injury · <b>clothesline injury or a seatbelt sign of the neck</b> with pain, swelling, or altered mental status.</span></label></li>
+        </ul>
+      </details>
+      <details class="t-box-info">
+        <summary class="t-head t-head-info">EXPANDED DENVER CRITERIA (ADDS)</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c08-7" class="t-ck"><span>Broadens the net: <b>any</b> cervical spine fracture (not only C1–C3/transverse foramen) · <b>mandible fracture</b> · complex or occipital-condyle skull fracture · scalp degloving.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c08-8" class="t-ck"><span>TBI with a thoracic injury · thoracic vascular injury · blunt cardiac rupture · upper (1st/2nd) rib fractures.</span></label></li>
+        </ul>
+      </details>
+      <details class="t-box-neutral">
+        <summary class="t-head t-head-neutral">UNIVERSAL SCREENING</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c08-9" class="t-ck"><span><b>CTA neck on every blunt trauma patient</b>, regardless of criteria. Rationale: criteria-based screening still misses a meaningful fraction of BCVI (asymptomatic, no risk factor), and modern multi-detector CTA is fast, low-risk, and inexpensive.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c08-10" class="t-ck"><span>Trade-off: more scans, contrast load, incidental findings, and false positives. Whether to screen universally vs. by criteria is an <b>institutional decision</b> — adopt one and apply it consistently.</span></label></li>
+        </ul>
+      </details>
+      <details class="t-box-neutral">
+        <summary class="t-head t-head-neutral">IF THE SCREEN IS POSITIVE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c08-11" class="t-ck"><span><b>Start an antithrombotic</b> (aspirin, or heparin) unless contraindicated by other bleeding/TBI — even low-grade injuries; this is what prevents the stroke. Balance against hemorrhage risk with the trauma/neurosurgery team.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c08-12" class="t-ck"><span>Grade the injury (Biffl/Denver I–V), involve neurosurgery/vascular/stroke, and transfer. High-grade (pseudoaneurysm, occlusion, transection) may need endovascular or surgical intervention; repeat imaging per the specialist.</span></label></li>
+        </ul>
+      </details>
+    </div>
+
+    <div class="t-sub">
+      <b>Sources:</b> Biffl WL, et al. "Blunt carotid arterial injuries: implications of a new grading scale," <i>J Trauma</i> 1999;47(5):845-53 (Denver grading); Biffl WL, et al., <i>Ann Surg</i> 1998 (Denver screening criteria). Burlew CC, et al. "Blunt cerebrovascular injuries: redefining screening criteria in the era of noninvasive diagnosis," <i>J Trauma Acute Care Surg</i> 2012;72(2):330-7 (Expanded Denver criteria). Kim DY, et al. EAST Practice Management Guideline, "Evaluation and management of blunt cerebrovascular injury," <i>J Trauma Acute Care Surg</i> 2020;88(6):875-887. Western Trauma Association BCVI algorithm. Universal-screening discussion: e.g. Black JA, et al., <i>J Trauma Acute Care Surg</i> 2021 and related single-center series. Criteria and grades vary between published tools — verify against your local trauma-center protocol before adopting one.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
