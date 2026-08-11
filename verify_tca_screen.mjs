@@ -35,8 +35,8 @@ ok(await vis('#idle'), 'idle screen visible');
 ok(!(await vis('#active')), 'active screen hidden at idle');
 ok((await txt('plabel')).includes('TRAUMATIC CARDIAC ARREST'), 'protocol label set');
 
-// default mode = sequential
-ok((await txt('modenote')).toLowerCase().includes('limited team'), 'default mode note = sequential/limited team');
+// team model is a localization setting, not a bedside toggle — the toggle must be gone
+ok((await page.$('#modeSeq')) === null && (await page.$('#modeSim')) === null, 'no bedside mode toggle present');
 
 // --- weight-based dose math (checked before entering, via internal fns) -------
 // Recreate the dose expectations and read them off the rendered dose box after start.
@@ -112,12 +112,34 @@ await page.click('[data-acc="log"]'); // close
 let firstBox = await page.$eval('#worksteps .wrow .wbox', e => e.textContent);
 ok(firstBox === '✓', 'checked box shows tick');
 
-// --- simultaneous mode toggle ------------------------------------------------
-await page.click('#modeSim');
-await page.waitForTimeout(150);
-ok((await txt('modenote')).toLowerCase().includes('full trauma team'), 'simultaneous mode note updates');
-ok((await txt('worktitle')).includes('PARALLEL'), 'simultaneous worktitle mentions parallel');
-ok((await txt('plabel')).includes('SIMULTANEOUS'), 'plabel reflects simultaneous mode');
+// --- sequential framing (the shipped LRH default) ----------------------------
+ok((await txt('worktitle')).includes('ORDER'), 'sequential worktitle mentions priority order');
+ok((await txt('plabel')).includes('SEQUENTIAL'), 'plabel reflects the configured sequential mode');
+ok((await txt('cprnote')).toLowerCase().includes('pause'), 'CPR-in-progress pause note present');
+
+// --- simultaneous rendering via a config-swapped copy (proves the other model
+//     works when a site sets SITE.mode:"simultaneous" at localization) ---------
+{
+  const fs = await import('fs');
+  const src = fs.readFileSync(join(__dirname, 'tca', 'index.html'), 'utf8');
+  const swapped = src.replace('mode: "sequential"', 'mode: "simultaneous"');
+  ok(swapped !== src, 'SITE.mode config swap point present');
+  const tmp = join(__dirname, 'tca', '_verify_simultaneous.html');
+  fs.writeFileSync(tmp, swapped);
+  const p2 = await browser.newPage();
+  await p2.goto('file://' + tmp);
+  await p2.waitForTimeout(200);
+  await p2.click('#startbtn');
+  await p2.waitForTimeout(200);
+  const wt = await p2.$eval('#worktitle', e => e.textContent);
+  const pl = await p2.$eval('#plabel', e => e.textContent);
+  const cn = await p2.$eval('#cprnote', e => e.textContent.toLowerCase());
+  ok(wt.includes('PARALLEL'), 'simultaneous config: worktitle mentions parallel');
+  ok(pl.includes('SIMULTANEOUS'), 'simultaneous config: plabel reflects simultaneous');
+  ok(cn.includes('concurrent'), 'simultaneous config: CPR note says concurrent');
+  await p2.close();
+  fs.unlinkSync(tmp);
+}
 
 // --- pregnancy flag reveals obstetric workstream -----------------------------
 // go back to idle via reset to toggle pregnancy cleanly, then re-declare

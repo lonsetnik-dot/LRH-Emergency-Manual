@@ -97,19 +97,7 @@ a{color:var(--blue);text-decoration:none}
     <button class="ghost" id="resetbtn" type="button" data-noprint="1">RESET</button>
   </div>
 
-  <!-- ===== MODE — the localization control. Default from SITE.defaultMode ===== -->
-  <div class="card" style="margin-top:12px;padding:10px 12px" data-noprint="1">
-    <div style="display:flex;align-items:center;gap:8px;flex-wrap:wrap">
-      <span class="sec" style="flex:none">TEAM</span>
-      <div style="display:flex;gap:6px;flex:1;min-width:200px">
-        <button id="modeSeq" type="button" class="btn" style="flex:1;min-height:44px;font:800 12.5px var(--sans);letter-spacing:.04em;padding:6px 4px">SEQUENTIAL<div style="font-size:10.5px;font-weight:700;color:var(--ink2);margin-top:2px">rural · limited team</div></button>
-        <button id="modeSim" type="button" class="btn" style="flex:1;min-height:44px;font:800 12.5px var(--sans);letter-spacing:.04em;padding:6px 4px">SIMULTANEOUS<div style="font-size:10.5px;font-weight:700;color:var(--ink2);margin-top:2px">full trauma team</div></button>
-      </div>
-    </div>
-    <div id="modenote" style="font-size:12.5px;line-height:1.45;color:var(--ink2);margin-top:8px"></div>
-  </div>
-
-  <div class="card" style="display:flex;gap:8px;align-items:center;margin-top:10px;padding:10px 12px;flex-wrap:wrap">
+  <div class="card" style="display:flex;gap:8px;align-items:center;margin-top:12px;padding:10px 12px;flex-wrap:wrap">
     <span class="sec">WEIGHT</span>
     <input class="inp" id="wIn" inputmode="decimal" style="width:64px" aria-label="Weight in kg">
     <span style="font-size:13px;color:var(--ink2)">kg &nbsp;·&nbsp; or age</span>
@@ -269,11 +257,17 @@ a{color:var(--blue);text-decoration:none}
    MODE: 'sequential' models a rural / limited team working the reversible
    causes in priority order; 'simultaneous' models a full trauma team working
    them in parallel. The guideline makes resource availability the deciding
-   factor, so this is a bedside toggle with a per-site default here.
+   factor, so each site picks ONE model here at localization — see SITE.mode.
    ========================================================================== */
 var SITE = {
-  version: "0.1", lastReviewed: "2026-08-11",
-  defaultMode: "sequential",            /* LRH is rural critical-access → sequential */
+  version: "0.2", lastReviewed: "2026-08-11",
+  /* TEAM MODEL — chosen ONCE per site at localization; NOT a bedside control.
+     'sequential'   = rural / limited team: reversible causes in priority order,
+                      conventional CPR is a secondary priority.
+     'simultaneous' = full trauma team: workstreams assigned and worked in
+                      parallel, CPR concurrent.
+     LRH is a rural critical-access hospital → sequential. */
+  mode: "sequential",
   noSignsOfLifeMin: 10,                  /* DNR if no signs of life beyond this */
   cprPauseMaxMin: 2,                     /* pause CPR in progress for at most this */
   conventionalResusMin: 10,              /* conventional BLS/ALS ± compressions window */
@@ -332,7 +326,7 @@ var WORK = [
  ]}
 ];
 
-var S = { theme:'dark', mode:SITE.defaultMode, kg:null, ageY:null,
+var S = { theme:'dark', mode:SITE.mode, kg:null, ageY:null,
           phase:'idle', codeStart:null, checked:{}, pregnant:false,
           reversibleAddressed:false, addressedAt:null,
           events:[], open:null, resetArm:false, showCustom:false,
@@ -448,8 +442,10 @@ var ACC = [
      '<p style="margin-bottom:0">So the priority is rapid correction of the <b>two H&rsquo;s &amp; two T&rsquo;s — Hypoxia, Hypovolemia, Tension &amp; Tamponade</b>. '+
      'Hemorrhage control, volume replacement, airway management and chest decompression come <b>before</b> conventional CPR — unless a medical cause is suspected.</p>';
  }},
- {id:'seqsim', title:'SEQUENTIAL vs SIMULTANEOUS — WHICH MODE', body:function(){
-   return '<p>The reversible causes should ideally be corrected <b>at the same time</b>. Whether you can depends on how many hands you have.</p>'+
+ {id:'seqsim', title:'SEQUENTIAL vs SIMULTANEOUS — HOW THIS SITE IS SET', body:function(){
+   var seq=(S.mode==='sequential');
+   return '<p>The reversible causes should ideally be corrected <b>at the same time</b>. Whether you can depends on how many hands you have — so each site is configured for <b>one</b> model at setup, not switched at the bedside.</p>'+
+     '<p><b>This aid is set to '+(seq?'SEQUENTIAL':'SIMULTANEOUS')+'</b> for LRH. To change it for another site, set <code>SITE.mode</code> in the config block.</p>'+
      '<p><b>Simultaneous (full trauma team):</b> assign hemorrhage, airway, breathing, cardiac and obstetric to separate people and work them in parallel. '+
      'These priorities are met quickly and CPR can run concurrently.</p>'+
      '<p><b>Sequential (rural / limited team):</b> one or two clinicians cannot do everything at once, so work the priorities in order — '+
@@ -546,13 +542,8 @@ function paint(){
   $('resetbtn').style.color = S.resetArm ? '#fff' : 'var(--ink2)';
   $('resetbtn').style.borderColor = S.resetArm ? 'var(--red)' : 'var(--line)';
 
-  /* mode toggle */
+  /* Team model is fixed per site at localization (SITE.mode) — no bedside toggle. */
   var seq=(S.mode==='sequential');
-  styleMode($('modeSeq'), seq);
-  styleMode($('modeSim'), !seq);
-  $('modenote').innerHTML = seq
-    ? '<b>Rural / limited team.</b> Work the reversible causes in priority order. CPR is secondary — expect little benefit until bleeding is controlled and volume restored.'
-    : '<b>Full trauma team.</b> Assign each workstream to a person and work them in parallel; CPR can run concurrently.';
 
   var k=kg();
   $('wnote').textContent = k!==null ? (k+' kg · '+(isPeds()?'pediatric':'adult'))
@@ -599,12 +590,6 @@ function paint(){
 }
 
 function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
-function styleMode(btn, active){
-  btn.style.borderColor = active ? 'var(--accent)' : 'var(--line)';
-  btn.style.borderWidth = active ? '2px' : '1px';
-  btn.style.background  = active ? 'var(--card)' : 'var(--card2)';
-  btn.style.color       = active ? 'var(--accent)' : 'var(--ink2)';
-}
 
 /* =============================== ACTIONS =================================== */
 function startTCA(){
@@ -633,8 +618,6 @@ function wire(){
     if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){ S.resetArm=false; paint(); },2500); return; }
     doReset();
   });
-  $('modeSeq').addEventListener('click', function(){ if(S.mode!=='sequential'){ S.mode='sequential'; if(S.phase!=='idle') log('Mode → sequential / limited team'); paint(); } });
-  $('modeSim').addEventListener('click', function(){ if(S.mode!=='simultaneous'){ S.mode='simultaneous'; if(S.phase!=='idle') log('Mode → simultaneous / full team'); paint(); } });
 
   $('wIn').addEventListener('input', function(e){ var v=parseFloat(e.target.value); S.kg = v>0?v:null; paint(); });
   $('aIn').addEventListener('input', function(e){ var v=parseFloat(e.target.value); S.ageY = (v>=0&&v<130)?v:null; paint(); });
