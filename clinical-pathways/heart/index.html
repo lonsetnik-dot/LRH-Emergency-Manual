@@ -5,22 +5,16 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>LRH Chest Pain / hs-Troponin ADP + HEART Pathway</title>
 <style>
-  /* =====================================================================
-     DESIGN-LANGUAGE TOKENS — dark default, light via body[data-theme="light"].
-     Canonical neutral/accent values match arrest/ and the rest of the manual
-     (Phase 1 token migration). Dark is the site-wide default; a persisted
-     "light" choice (lrh-pref-theme) is applied before paint by the inline
-     script right after <body>, so the page never flashes the wrong theme.
-
-     To adapt colors for another site, edit the two blocks below. The brand
-     accent and the four flowchart result colors are theme-aware so they stay
-     legible on both grounds.
-     ===================================================================== */
+  /* @design-system */
+  /* ---- HEART-pathway-specific design tokens. The shared neutrals, the .hdr
+     chrome bar and the themed <body> come from design-system.css injected at the
+     marker above (build.mjs) — edited once for the whole manual. Only the
+     interactive brand accent and the four flowchart result-box colors are unique
+     to this pathway, so those are the only tokens kept here; a fork re-skins the
+     pathway's colors in this one block. Dark is the site default; a persisted
+     "light" choice (lrh-pref-theme) is applied before paint. --note-bg/--note-tx
+     also come from the shared system now; only --note-br is local. ---- */
   :root{
-    /* neutrals */
-    --bg:#0D1420; --card:#161F2E; --card2:#1D2A3C; --ink:#EAF0F7; --ink2:#8FA0B5;
-    --line:rgba(255,255,255,.10); --accent:#2FA372;
-    --red:#E5484D; --amber:#F0B429; --blue:#4C8DDA; --green:#3DA35D; --gray:#5C6B7E;
     /* interactive brand accent — lightened on dark so the pathway's blue stays legible */
     --brand-primary:#4C8DDA; --brand-primary-dark:#7FB0E6; --brand-secondary:#6cb33f;
     --section:#3DA35D; /* Clinical Pathways = green */
@@ -29,14 +23,11 @@
     --dc:#6db3f2;  --dc-bg:rgba(76,141,218,.15);  --dc-br:rgba(76,141,218,.5);  /* BLUE  discharge           */
     --ref:#f0b429; --ref-bg:rgba(240,180,41,.15); --ref-br:rgba(240,180,41,.5); /* AMBER reflex / gray zone  */
     --out:#5dd48a; --out-bg:rgba(61,163,93,.16);  --out-br:rgba(61,163,93,.5);  /* GREEN AMI ruled out       */
-    /* selected option + caution-note tints */
+    /* selected option + caution-note border */
     --sel-bg:rgba(76,141,218,.14);
-    --note-bg:rgba(240,180,41,.12); --note-br:rgba(240,180,41,.40); --note-tx:#f0cf7a;
+    --note-br:rgba(240,180,41,.40);
   }
   body[data-theme="light"]{
-    --bg:#EFF2F5; --card:#FFFFFF; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D;
-    --line:rgba(15,35,60,.13); --accent:#00693E;
-    --red:#C63238; --amber:#B07E13; --blue:#2F6FB5; --green:#1F7F49; --gray:#6B7A8D;
     --brand-primary:#005596; --brand-primary-dark:#003e6e; --brand-secondary:#6cb33f;
     --section:#2f7a3f;
     --in:#c62828; --in-bg:#fdecea; --in-br:#f4b8b0;   /* RED   rule in / STEMI     */
@@ -44,7 +35,7 @@
     --ref:#b26a00; --ref-bg:#fff5e0; --ref-br:#f2d999; /* ORANGE reflex / gray zone */
     --out:#2e7d32; --out-bg:#e8f5e9; --out-br:#b6dab9; /* GREEN AMI ruled out       */
     --sel-bg:#f1f7fc;
-    --note-bg:#fff8e1; --note-br:#f2d999; --note-tx:#6d4c00;
+    --note-br:#f2d999;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
@@ -52,18 +43,10 @@
     background:var(--bg); color:var(--ink); line-height:1.45; font-size:16px}
   .wrap{max-width:900px; margin:0 auto; padding:0 16px 64px}
 
-  header.top{background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-dark));
-    color:#fff; padding:22px 16px; border-bottom:5px solid var(--section)}
-  header.top .inner{max-width:900px; margin:0 auto; display:flex; align-items:center; gap:16px}
-  .logo{width:52px;height:52px;border-radius:10px;background:#fff;flex:0 0 auto;display:flex;
-    align-items:center;justify-content:center;font-weight:800;color:var(--brand-primary);
-    font-size:19px;letter-spacing:.5px;box-shadow:0 1px 3px rgba(0,0,0,.25)}
-  header.top h1{font-size:1.25rem; margin:0 0 2px}
-  header.top p{margin:0; opacity:.9; font-size:.84rem}
-  .theme-toggle{margin-left:auto; flex:0 0 auto; align-self:flex-start; background:rgba(255,255,255,.12);
-    border:1px solid rgba(255,255,255,.55); color:#fff; font:700 11px inherit; letter-spacing:.08em;
-    padding:8px 12px; border-radius:9px; cursor:pointer; min-height:38px; white-space:nowrap}
-  .theme-toggle:hover{background:rgba(255,255,255,.22)}
+  /* Page title block (replaces the old gradient masthead — the .hdr bar now
+     carries the section label + back + theme toggle). */
+  .page-title{font-size:1.25rem; line-height:1.2; margin:18px 2px 3px; color:var(--ink)}
+  .page-sub{margin:0 2px 4px; color:var(--ink2); font-size:.84rem}
 
   .disclaimer{background:var(--note-bg); border:1px solid var(--note-br); color:var(--note-tx); font-size:.82rem;
     border-radius:8px; padding:11px 14px; margin:18px 0 10px}
@@ -146,7 +129,11 @@
        force background printing so the color-coded result boxes and header
        survive (DESIGN-SYSTEM.md §2). */
     *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
-    :root{
+    /* Force the light palette on paper regardless of the on-screen theme. Target
+       body[data-theme] (not :root) so these beat the higher-specificity injected
+       neutrals from design-system.css; placed last in source so it also wins the
+       tie against body[data-theme="light"]. */
+    body[data-theme]{
       --bg:#fff; --card:#fff; --card2:#f5f8fb; --ink:#1f2933; --ink2:#5b6672; --line:#e2e7ec;
       --brand-primary:#005596; --brand-primary-dark:#003e6e; --section:#2f7a3f;
       --in:#c62828; --in-bg:#fdecea; --in-br:#f4b8b0; --dc:#1565c0; --dc-bg:#e7f0fb; --dc-br:#b3ceee;
@@ -154,7 +141,7 @@
       --sel-bg:#f1f7fc; --note-bg:#fff8e1; --note-br:#f2d999; --note-tx:#6d4c00;
     }
     body{background:#fff}
-    .btnrow,details.ref,.theme-toggle{display:none}
+    .btnrow,details.ref,.hdr{display:none}
     .card{break-inside:avoid; box-shadow:none}
   }
 </style>
@@ -167,16 +154,11 @@
 try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
 catch(e){ document.body.dataset.theme='dark'; }
 </script>
-<header class="top">
-  <div class="inner">
-    <div class="logo">LRH</div>
-    <div>
-      <h1>Chest Pain &middot; hs-Troponin 0/1-hr ADP + HEART Pathway</h1>
-      <p>Littleton Regional Hospital &mdash; ED accelerated diagnostic pathway for suspected ACS</p>
-    </div>
-    <button type="button" id="lrhThemeBtn" class="theme-toggle">LIGHT</button>
-  </div>
-</header>
+<div class="hdr">
+  <a class="ghost" href="../?from=tool">&#9664; PATHWAYS</a>
+  <span class="plabel">CHEST PAIN &middot; HEART</span>
+  <button type="button" id="lrhThemeBtn" class="ghost">LIGHT</button>
+</div>
 <script>
 (function(){
   var b=document.getElementById('lrhThemeBtn');
@@ -193,7 +175,8 @@ catch(e){ document.body.dataset.theme='dark'; }
 
 <div class="wrap">
 
-  <p style="margin:14px 2px 2px; font-size:.85rem;"><a href="../../?from=tool" style="color:var(--brand-primary); text-decoration:none;">&larr; Emergency Manual</a> <span style="color:var(--ink2);">&middot;</span> <a href="../" style="color:var(--brand-primary); text-decoration:none;">Clinical Pathways</a></p>
+  <h1 class="page-title">Chest Pain &middot; hs-Troponin 0/1-hr ADP + HEART Pathway</h1>
+  <p class="page-sub">Littleton Regional Hospital &mdash; ED accelerated diagnostic pathway for suspected ACS</p>
 
   <div class="disclaimer">
     <strong>Not a substitute for clinical judgment.</strong>
