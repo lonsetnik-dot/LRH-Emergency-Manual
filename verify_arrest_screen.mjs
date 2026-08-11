@@ -161,8 +161,10 @@ ck('8. a clinical note is accepted', await pg.locator('#customwarn').isVisible()
 await pg.click('[data-acc="log"]'); await pg.waitForTimeout(250);
 ck('8. it reaches the log', /IO placed right tibia/.test(await txt('.accb')), true);
 ck('8. the refused text never reached the log', /4471129/.test(await txt('.accb')), false);
-ck('8. nothing is persisted to storage', await pg.evaluate(() => {
-  let n = 0; for (let i = 0; i < localStorage.length; i++) n++; return n; }), 0);
+/* The tool joins the manual's shared theme pref (lrh-pref-theme) but persists no
+   case data or PHI. Assert that nothing OTHER than that shared pref is written. */
+ck('8. no case data or PHI is persisted to storage', await pg.evaluate(() =>
+  Object.keys(localStorage).filter(k => k !== 'lrh-pref-theme').length), 0);
 
 /* ---- 9. metronome starts with the code clock ---- */
 await fresh();
@@ -341,7 +343,8 @@ await pg.fill('#customin2', 'naloxone 0.4 mg IV, chest rising');
 await pg.click('#customlog2'); await pg.waitForTimeout(250);
 ck('18. a clinical note is accepted', await vis('#customrow2'), false);
 ck('18. and reaches the shared log', /naloxone 0\.4 mg IV, chest rising/.test(await openAcc('log')), true);
-ck('18. nothing was written to localStorage', await pg.evaluate(() => localStorage.length), 0);
+ck('18. nothing but the shared theme pref was written to localStorage', await pg.evaluate(() =>
+  Object.keys(localStorage).filter(k => k !== 'lrh-pref-theme').length), 0);
 
 /* ---- 19. the rescue-breathing reference, with its sources ------------------ */
 await fresh();
