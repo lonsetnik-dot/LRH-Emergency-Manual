@@ -9,7 +9,7 @@
   /* Shared skeleton — same variables/classes as the landing page and tools. */
   :root{
     --brand-primary:#005596; --brand-primary-dark:#003e6e; --brand-secondary:#6cb33f;
-    --ink:#1f2933; --muted:#5b6672; --line:#e2e7ec; --panel:#fff; --page:#eef2f5;
+    --brand-ink:#1f2933; --muted:#5b6672; --brand-line:#e2e7ec; --panel:#fff; --page:#eef2f5;
     --section:#2f7a3f; /* Clinical Pathways = green */
   }
   /* Design-language tokens. Step 1 added header-only; step 2 (this pass)
@@ -17,43 +17,43 @@
      "category index" pattern in DESIGN_LANGUAGE.md section 5. No Google
      Fonts, system stacks only (CLAUDE.md rule 1). */
   body[data-theme]{
-    --lrh-bg:#0D1420; --lrh-card:#161F2E; --lrh-card2:#1D2A3C; --lrh-ink:#EAF0F7; --lrh-ink2:#8FA0B5;
-    --lrh-line:rgba(255,255,255,.10); --lrh-accent:#2FA372;
+    --bg:#0D1420; --card:#161F2E; --card2:#1D2A3C; --ink:#EAF0F7; --ink2:#8FA0B5;
+    --line:rgba(255,255,255,.10); --accent:#2FA372;
   }
   body[data-theme="light"]{
-    --lrh-bg:#EFF2F5; --lrh-card:#FFFFFF; --lrh-card2:#F4F6F9; --lrh-ink:#141E2B; --lrh-ink2:#5A6A7D;
-    --lrh-line:rgba(15,35,60,.13); --lrh-accent:#00693E;
+    --bg:#EFF2F5; --card:#FFFFFF; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D;
+    --line:rgba(15,35,60,.13); --accent:#00693E;
   }
   .lrh-mono{font-family:ui-monospace,"SF Mono",Menlo,"JetBrains Mono",monospace}
-  .lrh-idx-h1{font-size:26px;font-weight:800;margin:20px 2px 4px;color:var(--lrh-ink)}
-  .lrh-idx-sub{font-size:15px;line-height:1.55;color:var(--lrh-ink2);margin:0 2px 16px;max-width:56ch}
+  .lrh-idx-h1{font-size:26px;font-weight:800;margin:20px 2px 4px;color:var(--ink)}
+  .lrh-idx-sub{font-size:15px;line-height:1.55;color:var(--ink2);margin:0 2px 16px;max-width:56ch}
   .lrh-group-hd{display:flex;align-items:center;gap:9px;margin:18px 2px 8px}
-  .lrh-group-hd .dot{width:10px;height:10px;border-radius:3px;background:var(--lrh-accent);flex:none}
-  .lrh-group-hd .label{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--lrh-ink2)}
-  .lrh-group-hd .rule{flex:1;height:1px;background:var(--lrh-line)}
+  .lrh-group-hd .dot{width:10px;height:10px;border-radius:3px;background:var(--accent);flex:none}
+  .lrh-group-hd .label{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--ink2)}
+  .lrh-group-hd .rule{flex:1;height:1px;background:var(--line)}
   .lrh-row-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:8px}
-  .lrh-row{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--lrh-ink);
-    background:var(--lrh-card);border:1px solid var(--lrh-line);border-left:4px solid var(--lrh-accent);
+  .lrh-row{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);
     border-radius:12px;padding:14px;min-height:62px;cursor:pointer}
-  .lrh-row .n{display:none;font-size:15px;font-weight:700;color:var(--lrh-accent);flex:none}
+  .lrh-row .n{display:none;font-size:15px;font-weight:700;color:var(--accent);flex:none}
   .lrh-row .t{font-size:16.5px;font-weight:700;line-height:1.3}
   .lrh-row .spacer{flex:1}
-  .lrh-row .tag{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--lrh-ink2);white-space:nowrap}
-  .lrh-hdr{position:sticky;top:0;z-index:30;background:var(--lrh-bg);padding:12px 14px 10px;
-    border-bottom:1px solid var(--lrh-line);display:flex;align-items:center;gap:10px}
-  .lrh-hdr a.lrh-back{background:var(--lrh-card);border:1px solid var(--lrh-line);color:var(--lrh-ink2);
+  .lrh-row .tag{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--ink2);white-space:nowrap}
+  .lrh-hdr{position:sticky;top:0;z-index:30;background:var(--bg);padding:12px 14px 10px;
+    border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
+  .lrh-hdr a.lrh-back{background:var(--card);border:1px solid var(--line);color:var(--ink2);
     font:700 11px inherit;letter-spacing:.06em;padding:9px 12px;border-radius:10px;text-decoration:none;
     min-height:38px;display:inline-flex;align-items:center;white-space:nowrap}
   .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;
-    color:var(--lrh-ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .lrh-hdr button{background:var(--lrh-card);border:1px solid var(--lrh-line);color:var(--lrh-ink2);
+    color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lrh-hdr button{background:var(--card);border:1px solid var(--line);color:var(--ink2);
     font:700 11px inherit;letter-spacing:.08em;padding:9px 12px;border-radius:10px;cursor:pointer;
     min-height:38px;white-space:nowrap}
-  .lrh-hdr button:hover{color:var(--lrh-ink,#141E2B)}
+  .lrh-hdr button:hover{color:var(--ink,#141E2B)}
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--lrh-bg); color:var(--lrh-ink); line-height:1.45; font-size:16px; min-height:100vh}
+    background:var(--bg); color:var(--ink); line-height:1.45; font-size:16px; min-height:100vh}
   .wrap{max-width:840px; margin:0 auto; padding:0 16px 56px}
 
   header.top{background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-dark));
@@ -74,7 +74,7 @@
   @media(min-width:600px){.grid{grid-template-columns:1fr 1fr}}
 
   a.tool{display:flex; flex-direction:column; text-decoration:none; color:inherit;
-    background:var(--panel); border:1px solid var(--line); border-left:5px solid var(--brand-primary);
+    background:var(--panel); border:1px solid var(--brand-line); border-left:5px solid var(--brand-primary);
     border-radius:12px; padding:17px 18px; box-shadow:0 1px 2px rgba(16,42,67,.05); transition:.14s}
   a.tool:hover{transform:translateY(-2px); box-shadow:0 6px 18px rgba(16,42,67,.10); border-left-color:var(--brand-secondary)}
   a.tool .name{font-weight:700; font-size:1.02rem; color:var(--brand-primary-dark); margin-bottom:4px}
@@ -84,9 +84,9 @@
   .badge{display:inline-block; font-size:.68rem; font-weight:700; text-transform:uppercase;
     letter-spacing:.5px; background:#eef2f5; color:var(--muted); padding:2px 8px; border-radius:20px; margin-left:8px; vertical-align:middle}
 
-  .note{background:var(--lrh-card2); border:1px solid var(--lrh-line); border-left:4px solid #F0B429;
-    color:var(--lrh-ink); font-size:.8rem; border-radius:9px; padding:12px 15px; margin-top:26px}
-  footer{text-align:center; color:var(--lrh-ink2); font-size:.76rem; margin-top:22px}
+  .note{background:var(--card2); border:1px solid var(--line); border-left:4px solid #F0B429;
+    color:var(--ink); font-size:.8rem; border-radius:9px; padding:12px 15px; margin-top:26px}
+  footer{text-align:center; color:var(--ink2); font-size:.76rem; margin-top:22px}
 </style>
 </head>
 <body data-theme="dark">

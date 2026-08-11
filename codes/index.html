@@ -28,15 +28,15 @@
      via the existing ResizeObserver). The nav bar, weight bar, heads-up strip
      and timeline modal below keep their current styling/ids/JS untouched —
      step 1 added the crumb + theme toggle only. See DESIGN_LANGUAGE.md step 1. */
-  body[data-theme]{ --lrh-bg:#0D1420; --lrh-card:#161F2E; --lrh-card2:#1D2A3C; --lrh-ink:#EAF0F7; --lrh-ink2:#8FA0B5; --lrh-line:rgba(255,255,255,.10); --lrh-accent:#2FA372;
-    --lrh-red:#E5484D; --lrh-amber:#F0B429; --lrh-blue:#4C8DDA; --lrh-green:#3DA35D; --lrh-gray:#5C6B7E; --lrh-purple:#9B7BD4; --lrh-teal:#3AA6A6; --lrh-orange:#E08A3C; }
-  body[data-theme="light"]{ --lrh-bg:#EFF2F5; --lrh-card:#FFFFFF; --lrh-card2:#F4F6F9; --lrh-ink:#141E2B; --lrh-ink2:#5A6A7D; --lrh-line:rgba(15,35,60,.13); --lrh-accent:#00693E;
-    --lrh-red:#C63238; --lrh-amber:#B07E13; --lrh-blue:#2F6FB5; --lrh-green:#1F7F49; --lrh-gray:#6B7A8D; --lrh-purple:#6C4FA3; --lrh-teal:#1F7E7E; --lrh-orange:#B4661F; }
-  .lrh-hdr{display:flex;align-items:center;gap:10px;background:var(--lrh-bg);padding:8px 14px;
-    border-bottom:1px solid var(--lrh-line)}
+  body[data-theme]{ --bg:#0D1420; --card:#161F2E; --card2:#1D2A3C; --ink:#EAF0F7; --ink2:#8FA0B5; --line:rgba(255,255,255,.10); --accent:#2FA372;
+    --red:#E5484D; --amber:#F0B429; --blue:#4C8DDA; --green:#3DA35D; --gray:#5C6B7E; --purple:#9B7BD4; --teal:#3AA6A6; --orange:#E08A3C; }
+  body[data-theme="light"]{ --bg:#EFF2F5; --card:#FFFFFF; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D; --line:rgba(15,35,60,.13); --accent:#00693E;
+    --red:#C63238; --amber:#B07E13; --blue:#2F6FB5; --green:#1F7F49; --gray:#6B7A8D; --purple:#6C4FA3; --teal:#1F7E7E; --orange:#B4661F; }
+  .lrh-hdr{display:flex;align-items:center;gap:10px;background:var(--bg);padding:8px 14px;
+    border-bottom:1px solid var(--line)}
   .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;
-    color:var(--lrh-ink2);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
-  .lrh-hdr button{background:var(--lrh-card);border:1px solid var(--lrh-line);color:var(--lrh-ink2);
+    color:var(--ink2);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
+  .lrh-hdr button{background:var(--card);border:1px solid var(--line);color:var(--ink2);
     font:700 11px "Helvetica Neue",Helvetica,Arial,sans-serif;letter-spacing:.08em;padding:8px 11px;
     border-radius:9px;cursor:pointer;min-height:36px;white-space:nowrap}
   /* ---- step 2 — the card-selection menu is this tool's "category index"
@@ -44,32 +44,32 @@
      home hub and clinical-pathways index, so the toggle now restyles this
      whole top section, not just the crumb strip. Card content below the menu
      (article#c01 etc.) is untouched here — that's step 3/4 scope. */
-  .lrh-menuwrap{background:var(--lrh-bg);padding:16px 14px 26px}
+  .lrh-menuwrap{background:var(--bg);padding:16px 14px 26px}
   .lrh-menuwrap .inner{max-width:1400px;margin:0 auto}
-  .lrh-eyebrow{font-size:11.5px;letter-spacing:.14em;color:var(--lrh-accent);font-weight:700}
-  .lrh-idx-h1{margin:4px 0 2px;font-size:26px;letter-spacing:-.01em;font-weight:800;color:var(--lrh-ink)}
-  .lrh-idx-sub{margin:0;color:var(--lrh-ink2);font-size:14.5px}
-  .lrh-startnew-btn{margin-top:10px;min-height:44px;padding:0 16px;background:var(--lrh-card2);
-    color:var(--lrh-ink);border:2px solid var(--lrh-line);font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+  .lrh-eyebrow{font-size:11.5px;letter-spacing:.14em;color:var(--accent);font-weight:700}
+  .lrh-idx-h1{margin:4px 0 2px;font-size:26px;letter-spacing:-.01em;font-weight:800;color:var(--ink)}
+  .lrh-idx-sub{margin:0;color:var(--ink2);font-size:14.5px}
+  .lrh-startnew-btn{margin-top:10px;min-height:44px;padding:0 16px;background:var(--card2);
+    color:var(--ink);border:2px solid var(--line);font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
     font-size:12px;font-weight:700;letter-spacing:.08em;cursor:pointer;border-radius:10px}
-  .lrh-startnew-btn:hover{border-color:var(--lrh-accent);color:var(--lrh-accent)}
+  .lrh-startnew-btn:hover{border-color:var(--accent);color:var(--accent)}
   .lrh-mono{font-family:ui-monospace,"SF Mono",Menlo,"JetBrains Mono",monospace}
-  .lrh-row{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--lrh-ink);
-    background:var(--lrh-card);border:1px solid var(--lrh-line);border-left:4px solid var(--cc,var(--lrh-accent));
+  .lrh-row{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--cc,var(--accent));
     border-radius:12px;padding:14px;min-height:56px;cursor:pointer}
-  .lrh-row .n{display:none;font-size:15px;font-weight:700;color:var(--cc,var(--lrh-accent));flex:none;width:24px}
+  .lrh-row .n{display:none;font-size:15px;font-weight:700;color:var(--cc,var(--accent));flex:none;width:24px}
   .lrh-row .t{font-size:16.5px;font-weight:700;line-height:1.25}
   /* Beats the page's pre-existing "a:hover{color:#16324f}" rule (higher specificity
      than a single class) which would otherwise turn row text dark-on-dark on hover
      in the dark theme. */
-  .lrh-row:hover, .lrh-row:focus-visible{color:var(--lrh-ink)}
-  .lrh-filter{display:flex;gap:8px;align-items:center;background:var(--lrh-card);border:1px solid var(--lrh-line);
+  .lrh-row:hover, .lrh-row:focus-visible{color:var(--ink)}
+  .lrh-filter{display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);
     border-radius:14px;padding:4px 6px 4px 14px;margin:18px 2px 14px}
-  .lrh-filter .ico{color:var(--lrh-ink2);font-size:16px;flex:none}
-  .lrh-filter input{flex:1;background:none;border:none;color:var(--lrh-ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit;-webkit-appearance:none}
+  .lrh-filter .ico{color:var(--ink2);font-size:16px;flex:none}
+  .lrh-filter input{flex:1;background:none;border:none;color:var(--ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit;-webkit-appearance:none}
   .lrh-filter input::-webkit-search-cancel-button{-webkit-appearance:none}
-  .lrh-filter-empty{margin:0 2px 14px;padding:12px 14px;color:var(--lrh-ink2);font-size:.88rem;background:var(--lrh-card);
-    border:1px solid var(--lrh-line);border-radius:14px}
+  .lrh-filter-empty{margin:0 2px 14px;padding:12px 14px;color:var(--ink2);font-size:.88rem;background:var(--card);
+    border:1px solid var(--line);border-radius:14px}
   .lrh-filter-empty[hidden]{display:none}
   main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
   article { scroll-margin-top:var(--sticky-h,54px); margin-top:12px; }
@@ -354,33 +354,33 @@ catch(e){ document.body.dataset.theme='dark'; }
 
       <!-- ============ CARD MENU ============ -->
       <div id="menu" class="menu" style="padding:0; margin:18px 0 0;">
-        <a href="#c01" data-k="code cart cardiac arrest ventricular fibrillation tachycardia defibrillation shock epinephrine amiodarone lidocaine cpr acls pea asystole non-shockable reversible causes h's and t's pals pediatric weight-based broselow resuscitation" id="menu-c01" class="lrh-row" style="--cc:var(--lrh-blue)"><span class="n lrh-mono">01</span><span class="t">Pulseless VF / VT</span></a>
-        <a href="#c02" id="menu-c02" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">02</span><span class="t">PEA / Asystole</span></a>
-        <a href="#c22" data-k="post rosc return of spontaneous circulation post arrest care post-arrest first 20 minutes after arrest targeted temperature management ttm cooling oxygenation ventilation blood pressure map 12-lead ekg neuroprognostication code" id="menu-c22" class="lrh-row" style="--cc:var(--lrh-green)"><span class="n lrh-mono">22</span><span class="t">Post-ROSC Care</span></a>
-        <a href="#c03" data-k="bradycardia atropine transcutaneous pacing pacer heart block slow heart rate symptomatic code" class="lrh-row" style="--cc:var(--lrh-blue)"><span class="n lrh-mono">03</span><span class="t">Symptomatic Bradycardia</span></a>
-        <a href="#c04" data-k="stroke code stroke tpa tnk tenecteplase alteplase thrombectomy last known well nihss ct head lytic omnicell" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">04</span><span class="t">Suspected Acute Stroke</span></a>
-        <a href="#c21" data-k="stemi st elevation mi myocardial infarction chest pain heart cognitive aid mimics aspirin heparin enoxaparin atorvastatin tenecteplase tnk weight band pressor norepinephrine dobutamine cardiogenic shock reperfusion arrhythmia aivr transfer dartmouth concord omnicell code" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">21</span><span class="t">STEMI</span></a>
-        <a href="#c05" data-k="respiratory arrest apnea bag mask ventilation bvm reversible causes naloxone code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">05</span><span class="t">Respiratory Arrest</span></a>
-        <a href="#c06" data-k="intubation rsi rapid sequence intubation checklist airway induction paralytic sedation etomidate ketamine propofol rocuronium succinylcholine capnography preoxygenation cico emcrit push dose timer" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">06</span><span class="t">Intubation / RSI Checklist</span></a>
-        <a href="#c07" data-k="intracranial hemorrhage ich subarachnoid subdural blood pressure control anticoagulation reversal neurosurgery code" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">07</span><span class="t">Intracranial Hemorrhage</span></a>
-        <a href="#c08" data-k="anaphylaxis epinephrine allergic reaction angioedema stridor epi im code omnicell" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">08</span><span class="t">Anaphylaxis</span></a>
-        <a href="#c09" data-k="bleeding hemorrhagic shock trauma resuscitation blood products lethal triad tranexamic txa code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">09</span><span class="t">Bleeding / Hemorrhagic Shock</span></a>
-        <a href="#c10" data-k="anticoagulant reversal warfarin coumadin doac apixaban rivaroxaban dabigatran heparin vitamin k prothrombin complex concentrate pcc andexanet idarucizumab protamine code" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">10</span><span class="t">Reversal of Anticoagulants</span></a>
-        <a href="#c11" data-k="hyperkalemia potassium calcium gluconate insulin dextrose albuterol kayexalate dialysis peaked t waves ecg code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">11</span><span class="t">Hyperkalemia (Crash Protocol)</span></a>
-        <a href="#c12" data-k="mtp massive transfusion protocol blood products prbc plasma platelets cryo hemorrhagic shock trauma" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">12</span><span class="t">Massive Transfusion Protocol</span></a>
-        <a href="#c23" data-k="hematemesis massive gi bleed upper gastrointestinal bleeding vomiting blood coffee ground variceal varices esophageal cirrhosis liver portal hypertension octreotide ceftriaxone ppi pantoprazole txa halt-it blakemore sengstaken minnesota balloon tamponade endoscopy egd salad suction aortoenteric fistula transfusion mtp exsanguinating code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">23</span><span class="t">Massive Hematemesis</span></a>
-        <a href="#c24" data-k="hemoptysis massive coughing up blood lung bleeding bronchial artery embolization bae lung isolation mainstem bronchial blocker double lumen tube nebulized txa tranexamic bleeding side down asphyxiation ett 8.0 code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">24</span><span class="t">Massive Hemoptysis</span></a>
-        <a href="#c25" data-k="epistaxis nosebleed nose bleed anterior posterior kiesselbach little area silver nitrate cautery packing merocel rapid rhino rhino rocket foley balloon topical txa tranexamic oxymetazoline afrin nasal ent" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">25</span><span class="t">Epistaxis</span></a>
-        <a href="#c26" data-k="pacemaker icd aicd defibrillator magnet electrical storm vt storm inappropriate shock failure to capture undersensing oversensing pacemaker mediated tachycardia pmt runaway twiddler device interrogation esmolol procainamide stellate ganglion" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">26</span><span class="t">Pacemaker / ICD Emergencies</span></a>
-        <a href="#c13" data-k="status epilepticus seizure benzodiazepine lorazepam midazolam levetiracetam fosphenytoin second line code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">13</span><span class="t">Status Epilepticus</span></a>
-        <a href="#c14" data-k="vent ventilator dope displacement obstruction pneumothorax equipment failure decompensation intubated patient code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">14</span><span class="t">Unstable on the Vent (DOPE)</span></a>
-        <a href="#c15" data-k="status asthmaticus asthma albuterol ipratropium magnesium bipap severe exacerbation wheeze code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">15</span><span class="t">Status Asthmaticus</span></a>
-        <a href="#c16" data-k="angioedema ace inhibitor bradykinin histaminergic airway swelling icatibant tranexamic code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">16</span><span class="t">Angioedema</span></a>
-        <a href="#c17" data-k="tracheostomy emergency laryngectomy stoma decannulation trach tube obstruction code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">17</span><span class="t">Tracheostomy Emergency</span></a>
-        <a href="#c18" data-k="fona cricothyroidotomy cico front of neck access surgical airway difficult airway das trauma" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">18</span><span class="t">Front of Neck Access (FONA)</span></a>
-        <a href="#c19" data-k="lvad ventricular assist device heartmate heartware pump hum driveline alarm map doppler thrombosis vad" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">19</span><span class="t">LVAD — Responsive (Pump Running)</span></a>
-        <a href="#c20" data-k="lvad ventricular assist device pump not running no hum restart battery controller driveline arrest cpr vad" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">20</span><span class="t">LVAD — Unresponsive (Pump NOT Running)</span></a>
-        <a href="#cart" class="lrh-row lrh-row-cart" style="--cc:var(--lrh-gray)"><span class="t">Code cart — what is in each drawer</span></a>
+        <a href="#c01" data-k="code cart cardiac arrest ventricular fibrillation tachycardia defibrillation shock epinephrine amiodarone lidocaine cpr acls pea asystole non-shockable reversible causes h's and t's pals pediatric weight-based broselow resuscitation" id="menu-c01" class="lrh-row" style="--cc:var(--blue)"><span class="n lrh-mono">01</span><span class="t">Pulseless VF / VT</span></a>
+        <a href="#c02" id="menu-c02" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">02</span><span class="t">PEA / Asystole</span></a>
+        <a href="#c22" data-k="post rosc return of spontaneous circulation post arrest care post-arrest first 20 minutes after arrest targeted temperature management ttm cooling oxygenation ventilation blood pressure map 12-lead ekg neuroprognostication code" id="menu-c22" class="lrh-row" style="--cc:var(--green)"><span class="n lrh-mono">22</span><span class="t">Post-ROSC Care</span></a>
+        <a href="#c03" data-k="bradycardia atropine transcutaneous pacing pacer heart block slow heart rate symptomatic code" class="lrh-row" style="--cc:var(--blue)"><span class="n lrh-mono">03</span><span class="t">Symptomatic Bradycardia</span></a>
+        <a href="#c04" data-k="stroke code stroke tpa tnk tenecteplase alteplase thrombectomy last known well nihss ct head lytic omnicell" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">04</span><span class="t">Suspected Acute Stroke</span></a>
+        <a href="#c21" data-k="stemi st elevation mi myocardial infarction chest pain heart cognitive aid mimics aspirin heparin enoxaparin atorvastatin tenecteplase tnk weight band pressor norepinephrine dobutamine cardiogenic shock reperfusion arrhythmia aivr transfer dartmouth concord omnicell code" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">21</span><span class="t">STEMI</span></a>
+        <a href="#c05" data-k="respiratory arrest apnea bag mask ventilation bvm reversible causes naloxone code" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">05</span><span class="t">Respiratory Arrest</span></a>
+        <a href="#c06" data-k="intubation rsi rapid sequence intubation checklist airway induction paralytic sedation etomidate ketamine propofol rocuronium succinylcholine capnography preoxygenation cico emcrit push dose timer" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">06</span><span class="t">Intubation / RSI Checklist</span></a>
+        <a href="#c07" data-k="intracranial hemorrhage ich subarachnoid subdural blood pressure control anticoagulation reversal neurosurgery code" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">07</span><span class="t">Intracranial Hemorrhage</span></a>
+        <a href="#c08" data-k="anaphylaxis epinephrine allergic reaction angioedema stridor epi im code omnicell" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">08</span><span class="t">Anaphylaxis</span></a>
+        <a href="#c09" data-k="bleeding hemorrhagic shock trauma resuscitation blood products lethal triad tranexamic txa code" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">09</span><span class="t">Bleeding / Hemorrhagic Shock</span></a>
+        <a href="#c10" data-k="anticoagulant reversal warfarin coumadin doac apixaban rivaroxaban dabigatran heparin vitamin k prothrombin complex concentrate pcc andexanet idarucizumab protamine code" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">10</span><span class="t">Reversal of Anticoagulants</span></a>
+        <a href="#c11" data-k="hyperkalemia potassium calcium gluconate insulin dextrose albuterol kayexalate dialysis peaked t waves ecg code" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">11</span><span class="t">Hyperkalemia (Crash Protocol)</span></a>
+        <a href="#c12" data-k="mtp massive transfusion protocol blood products prbc plasma platelets cryo hemorrhagic shock trauma" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">12</span><span class="t">Massive Transfusion Protocol</span></a>
+        <a href="#c23" data-k="hematemesis massive gi bleed upper gastrointestinal bleeding vomiting blood coffee ground variceal varices esophageal cirrhosis liver portal hypertension octreotide ceftriaxone ppi pantoprazole txa halt-it blakemore sengstaken minnesota balloon tamponade endoscopy egd salad suction aortoenteric fistula transfusion mtp exsanguinating code" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">23</span><span class="t">Massive Hematemesis</span></a>
+        <a href="#c24" data-k="hemoptysis massive coughing up blood lung bleeding bronchial artery embolization bae lung isolation mainstem bronchial blocker double lumen tube nebulized txa tranexamic bleeding side down asphyxiation ett 8.0 code" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">24</span><span class="t">Massive Hemoptysis</span></a>
+        <a href="#c25" data-k="epistaxis nosebleed nose bleed anterior posterior kiesselbach little area silver nitrate cautery packing merocel rapid rhino rhino rocket foley balloon topical txa tranexamic oxymetazoline afrin nasal ent" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">25</span><span class="t">Epistaxis</span></a>
+        <a href="#c26" data-k="pacemaker icd aicd defibrillator magnet electrical storm vt storm inappropriate shock failure to capture undersensing oversensing pacemaker mediated tachycardia pmt runaway twiddler device interrogation esmolol procainamide stellate ganglion" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">26</span><span class="t">Pacemaker / ICD Emergencies</span></a>
+        <a href="#c13" data-k="status epilepticus seizure benzodiazepine lorazepam midazolam levetiracetam fosphenytoin second line code" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">13</span><span class="t">Status Epilepticus</span></a>
+        <a href="#c14" data-k="vent ventilator dope displacement obstruction pneumothorax equipment failure decompensation intubated patient code" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">14</span><span class="t">Unstable on the Vent (DOPE)</span></a>
+        <a href="#c15" data-k="status asthmaticus asthma albuterol ipratropium magnesium bipap severe exacerbation wheeze code" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">15</span><span class="t">Status Asthmaticus</span></a>
+        <a href="#c16" data-k="angioedema ace inhibitor bradykinin histaminergic airway swelling icatibant tranexamic code" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">16</span><span class="t">Angioedema</span></a>
+        <a href="#c17" data-k="tracheostomy emergency laryngectomy stoma decannulation trach tube obstruction code" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">17</span><span class="t">Tracheostomy Emergency</span></a>
+        <a href="#c18" data-k="fona cricothyroidotomy cico front of neck access surgical airway difficult airway das trauma" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">18</span><span class="t">Front of Neck Access (FONA)</span></a>
+        <a href="#c19" data-k="lvad ventricular assist device heartmate heartware pump hum driveline alarm map doppler thrombosis vad" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">19</span><span class="t">LVAD — Responsive (Pump Running)</span></a>
+        <a href="#c20" data-k="lvad ventricular assist device pump not running no hum restart battery controller driveline arrest cpr vad" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">20</span><span class="t">LVAD — Unresponsive (Pump NOT Running)</span></a>
+        <a href="#cart" class="lrh-row lrh-row-cart" style="--cc:var(--gray)"><span class="t">Code cart — what is in each drawer</span></a>
       </div>
     </div>
   </div>

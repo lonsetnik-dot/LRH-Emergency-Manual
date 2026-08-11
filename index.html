@@ -11,7 +11,7 @@
      ===================================================================== */
   :root{
     --brand-primary:#005596; --brand-primary-dark:#003e6e; --brand-secondary:#6cb33f;
-    --ink:#1f2933; --muted:#5b6672; --line:#e2e7ec; --panel:#fff; --page:#eef2f5;
+    --brand-ink:#1f2933; --muted:#5b6672; --brand-line:#e2e7ec; --panel:#fff; --page:#eef2f5;
     --section:var(--brand-secondary); /* header stripe = which part of the manual; home = brand green */
   }
   /* =====================================================================
@@ -24,16 +24,16 @@
      violates outright on a cart with no signal.
      ===================================================================== */
   body[data-theme]{
-    --lrh-bg:#0D1420; --lrh-card:#161F2E; --lrh-card2:#1D2A3C; --lrh-ink:#EAF0F7; --lrh-ink2:#8FA0B5;
-    --lrh-line:rgba(255,255,255,.10); --lrh-accent:#2FA372; --lrh-accentInk:#fff;
-    --lrh-red:#E5484D; --lrh-amber:#F0B429; --lrh-blue:#4C8DDA; --lrh-green:#3DA35D;
-    --lrh-gray:#5C6B7E; --lrh-purple:#9B7BD4; --lrh-teal:#3AA6A6; --lrh-orange:#E08A3C;
+    --bg:#0D1420; --card:#161F2E; --card2:#1D2A3C; --ink:#EAF0F7; --ink2:#8FA0B5;
+    --line:rgba(255,255,255,.10); --accent:#2FA372; --accentInk:#fff;
+    --red:#E5484D; --amber:#F0B429; --blue:#4C8DDA; --green:#3DA35D;
+    --gray:#5C6B7E; --purple:#9B7BD4; --teal:#3AA6A6; --orange:#E08A3C;
   }
   body[data-theme="light"]{
-    --lrh-bg:#EFF2F5; --lrh-card:#FFFFFF; --lrh-card2:#F4F6F9; --lrh-ink:#141E2B; --lrh-ink2:#5A6A7D;
-    --lrh-line:rgba(15,35,60,.13); --lrh-accent:#00693E; --lrh-accentInk:#fff;
-    --lrh-red:#C63238; --lrh-amber:#B07E13; --lrh-blue:#2F6FB5; --lrh-green:#1F7F49;
-    --lrh-gray:#6B7A8D; --lrh-purple:#6C4FA3; --lrh-teal:#1F7E7E; --lrh-orange:#B4661F;
+    --bg:#EFF2F5; --card:#FFFFFF; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D;
+    --line:rgba(15,35,60,.13); --accent:#00693E; --accentInk:#fff;
+    --red:#C63238; --amber:#B07E13; --blue:#2F6FB5; --green:#1F7F49;
+    --gray:#6B7A8D; --purple:#6C4FA3; --teal:#1F7E7E; --orange:#B4661F;
   }
   /* ===== Home-hub pattern (design language step 2 — LRH_Design_Language.dc.html
      "Home" screen). Category identity is a 4px left bar + a small color dot,
@@ -41,59 +41,59 @@
      on retiring filled tiles. Mono numerals/counts use the system mono stack
      (no Google Fonts — CLAUDE.md rule 1). ===== */
   .lrh-mono{font-family:ui-monospace,"SF Mono",Menlo,"JetBrains Mono",monospace}
-  .lrh-home-h1{font-size:28px;font-weight:800;letter-spacing:-.01em;margin:20px 2px 6px;color:var(--lrh-ink)}
-  .lrh-home-sub{font-size:15.5px;line-height:1.55;color:var(--lrh-ink2);margin:0 2px 16px;max-width:56ch}
+  .lrh-home-h1{font-size:28px;font-weight:800;letter-spacing:-.01em;margin:20px 2px 6px;color:var(--ink)}
+  .lrh-home-sub{font-size:15.5px;line-height:1.55;color:var(--ink2);margin:0 2px 16px;max-width:56ch}
   .lrh-startnew{display:inline-flex;align-items:center;margin:0 2px 16px;min-height:44px;padding:0 16px;
-    border-radius:10px;background:var(--lrh-card2);border:1px solid var(--lrh-line);color:var(--lrh-ink);
+    border-radius:10px;background:var(--card2);border:1px solid var(--line);color:var(--ink);
     text-decoration:none;font-weight:700;font-size:.85rem;letter-spacing:.02em}
-  .lrh-startnew:hover{border-color:var(--lrh-accent);color:var(--lrh-accent)}
-  .lrh-search{display:flex;gap:8px;align-items:center;background:var(--lrh-card);border:1px solid var(--lrh-line);
+  .lrh-startnew:hover{border-color:var(--accent);color:var(--accent)}
+  .lrh-search{display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);
     border-radius:14px;padding:4px 6px 4px 14px;margin:0 2px}
-  .lrh-search .ico{color:var(--lrh-ink2);font-size:16px;flex:none}
-  .lrh-search input{flex:1;background:none;border:none;color:var(--lrh-ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit}
-  .lrh-results{list-style:none;margin:8px 2px 0;padding:0;border:1px solid var(--lrh-line);border-radius:14px;
-    overflow:hidden;background:var(--lrh-card);box-shadow:0 4px 14px rgba(0,0,0,.18)}
+  .lrh-search .ico{color:var(--ink2);font-size:16px;flex:none}
+  .lrh-search input{flex:1;background:none;border:none;color:var(--ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit}
+  .lrh-results{list-style:none;margin:8px 2px 0;padding:0;border:1px solid var(--line);border-radius:14px;
+    overflow:hidden;background:var(--card);box-shadow:0 4px 14px rgba(0,0,0,.18)}
   .lrh-results[hidden]{display:none}
   .lrh-results li{margin:0}
   .lrh-results a{display:flex;align-items:baseline;gap:10px;justify-content:space-between;text-decoration:none;
-    color:inherit;padding:12px 14px;border-top:1px solid var(--lrh-line)}
+    color:inherit;padding:12px 14px;border-top:1px solid var(--line)}
   .lrh-results li:first-child a{border-top:none}
-  .lrh-results a:hover,.lrh-results a:focus{background:var(--lrh-card2);outline:none}
-  .lrh-results .r-title{font-weight:700;color:var(--lrh-ink);font-size:.95rem}
-  .lrh-results .r-cat{font-size:.72rem;color:var(--lrh-ink2);white-space:nowrap;text-transform:uppercase;letter-spacing:.4px}
-  .lrh-results .r-none{padding:12px 14px;color:var(--lrh-ink2);font-size:.88rem}
+  .lrh-results a:hover,.lrh-results a:focus{background:var(--card2);outline:none}
+  .lrh-results .r-title{font-weight:700;color:var(--ink);font-size:.95rem}
+  .lrh-results .r-cat{font-size:.72rem;color:var(--ink2);white-space:nowrap;text-transform:uppercase;letter-spacing:.4px}
+  .lrh-results .r-none{padding:12px 14px;color:var(--ink2);font-size:.88rem}
   .lrh-cat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px;margin-top:14px}
-  .lrh-cat{display:flex;flex-direction:column;text-decoration:none;color:var(--lrh-ink);background:var(--lrh-card);
-    border:1px solid var(--lrh-line);border-left:4px solid var(--cc,var(--lrh-accent));border-radius:14px;
+  .lrh-cat{display:flex;flex-direction:column;text-decoration:none;color:var(--ink);background:var(--card);
+    border:1px solid var(--line);border-left:4px solid var(--cc,var(--accent));border-radius:14px;
     padding:14px;min-height:88px;cursor:pointer;transition:.14s}
   .lrh-cat:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.22)}
   .lrh-cat .row{display:flex;align-items:center;gap:12px}
-  .lrh-cat .dot{width:12px;height:12px;border-radius:3px;background:var(--cc,var(--lrh-accent));flex:none}
+  .lrh-cat .dot{width:12px;height:12px;border-radius:3px;background:var(--cc,var(--accent));flex:none}
   .lrh-cat .name{font-size:19px;font-weight:800}
   .lrh-cat .spacer{flex:1}
-  .lrh-cat .count{font-size:12px;font-weight:700;color:var(--lrh-ink2)}
-  .lrh-cat .desc{font-size:14px;line-height:1.5;color:var(--lrh-ink2);margin-top:6px}
+  .lrh-cat .count{font-size:12px;font-weight:700;color:var(--ink2)}
+  .lrh-cat .desc{font-size:14px;line-height:1.5;color:var(--ink2);margin-top:6px}
   .lrh-cat.soon{pointer-events:none;cursor:default;opacity:.55}
-  .lrh-note{background:var(--lrh-card2);border-left:4px solid var(--lrh-amber);border:1px solid var(--lrh-line);
-    color:var(--lrh-ink);font-size:.8rem;border-radius:12px;padding:12px 15px;margin-top:26px}
-  .lrh-footer{text-align:center;color:var(--lrh-ink2);font-size:.76rem;margin-top:22px}
+  .lrh-note{background:var(--card2);border-left:4px solid var(--amber);border:1px solid var(--line);
+    color:var(--ink);font-size:.8rem;border-radius:12px;padding:12px 15px;margin-top:26px}
+  .lrh-footer{text-align:center;color:var(--ink2);font-size:.76rem;margin-top:22px}
   .lrh-sans{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  .lrh-hdr{position:sticky;top:0;z-index:30;background:var(--lrh-bg);padding:12px 14px 10px;
-    border-bottom:1px solid var(--lrh-line);display:flex;align-items:center;gap:10px}
+  .lrh-hdr{position:sticky;top:0;z-index:30;background:var(--bg);padding:12px 14px 10px;
+    border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
   .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;
-    color:var(--lrh-ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .lrh-hdr button{background:var(--lrh-card);border:1px solid var(--lrh-line);color:var(--lrh-ink2);
+    color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lrh-hdr button{background:var(--card);border:1px solid var(--line);color:var(--ink2);
     font:700 11px inherit;letter-spacing:.08em;padding:9px 12px;border-radius:10px;cursor:pointer;
     min-height:38px;white-space:nowrap}
-  .lrh-hdr button:hover{color:var(--lrh-ink)}
+  .lrh-hdr button:hover{color:var(--ink)}
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
-  /* Body background/text now follow the --lrh- theme tokens, not the old
-     --page/--ink brand tokens — step 2 moves this whole page's content
+  /* Body background/text now follow the -- theme tokens, not the old
+     --page/--brand-ink brand tokens — step 2 moves this whole page's content
      (not just the header chrome from step 1) onto the new design language,
      so it has to track the theme toggle everywhere, not just in .lrh-hdr. */
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--lrh-bg); color:var(--lrh-ink); line-height:1.45; font-size:16px; min-height:100vh}
+    background:var(--bg); color:var(--ink); line-height:1.45; font-size:16px; min-height:100vh}
   .wrap{max-width:840px; margin:0 auto; padding:0 16px 56px}
 
   header.top{background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-dark));
@@ -121,16 +121,16 @@
 
   /* ---- Search ---- */
   .search{position:relative; margin:0 0 20px}
-  .search input{width:100%; font-size:1rem; padding:13px 42px 13px 15px; border:1px solid var(--line);
-    border-radius:11px; background:var(--panel); color:var(--ink); box-shadow:0 1px 2px rgba(16,42,67,.05)}
+  .search input{width:100%; font-size:1rem; padding:13px 42px 13px 15px; border:1px solid var(--brand-line);
+    border-radius:11px; background:var(--panel); color:var(--brand-ink); box-shadow:0 1px 2px rgba(16,42,67,.05)}
   .search input:focus{outline:none; border-color:var(--brand-primary); box-shadow:0 0 0 3px rgba(0,85,150,.12)}
   .search .ico{position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:1.05rem; pointer-events:none}
-  .results{list-style:none; margin:8px 0 0; padding:0; border:1px solid var(--line); border-radius:11px;
+  .results{list-style:none; margin:8px 0 0; padding:0; border:1px solid var(--brand-line); border-radius:11px;
     overflow:hidden; background:var(--panel); box-shadow:0 4px 14px rgba(16,42,67,.08)}
   .results[hidden]{display:none}
   .results li{margin:0}
   .results a{display:flex; align-items:baseline; gap:10px; justify-content:space-between; text-decoration:none;
-    color:inherit; padding:11px 14px; border-top:1px solid var(--line)}
+    color:inherit; padding:11px 14px; border-top:1px solid var(--brand-line)}
   .results li:first-child a{border-top:none}
   .results a:hover,.results a:focus{background:#f2f7fb; outline:none}
   .results .r-title{font-weight:600; color:var(--brand-primary-dark); font-size:.95rem}
@@ -152,7 +152,7 @@
   a.tool.cat-posters{--c:#8a6011}    /* gold   · printable wall/cart posters */
 
   a.tool{--c:var(--brand-primary); display:flex; flex-direction:column; text-decoration:none; color:inherit;
-    background:var(--panel); border:1px solid var(--line); border-left:6px solid var(--c);
+    background:var(--panel); border:1px solid var(--brand-line); border-left:6px solid var(--c);
     border-radius:12px; padding:16px 18px; box-shadow:0 1px 2px rgba(16,42,67,.05); transition:.14s}
   a.tool:hover{transform:translateY(-2px); box-shadow:0 6px 18px rgba(16,42,67,.10)}
   .cardhead{display:flex; align-items:center; gap:13px; margin-bottom:9px}
@@ -236,55 +236,55 @@
   <div class="lrh-cat-grid">
 
     <!-- ===== CATEGORY: Codes & Resuscitation (beta · RED) -> /codes/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--lrh-red)" href="codes/?from=home">
+    <a class="lrh-cat" style="--cc:var(--red)" href="codes/?from=home">
       <div class="row"><span class="dot"></span><span class="name">Codes</span><span class="spacer"></span><span class="count lrh-mono">26 cards</span></div>
       <div class="desc">Code / resuscitation reference, including the ED code-cart drawer contents.</div>
     </a>
 
     <!-- ===== CATEGORY: Pediatric Emergencies (beta · PURPLE) -> /peds/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--lrh-purple)" href="peds/?from=home">
+    <a class="lrh-cat" style="--cc:var(--purple)" href="peds/?from=home">
       <div class="row"><span class="dot"></span><span class="name">Pediatric Emergencies</span><span class="spacer"></span><span class="count lrh-mono">14 cards</span></div>
       <div class="desc">Shared weight/age-based dosing engine plus 14 pediatric ED topics — PALS, anaphylaxis, status epilepticus, DKA, and more.</div>
     </a>
 
     <!-- ===== CATEGORY: OB & Neonatal (live · BLUE) -> /ob-neonatal/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--lrh-blue)" href="ob-neonatal/?from=home">
+    <a class="lrh-cat" style="--cc:var(--blue)" href="ob-neonatal/?from=home">
       <div class="row"><span class="dot"></span><span class="name">OB &amp; Neonatal Emergencies</span><span class="spacer"></span><span class="count lrh-mono">9 cards</span></div>
       <div class="desc">Obstetric and neonatal emergency manual with timers, checklists, and cart-drawer reference.</div>
     </a>
 
     <!-- ===== CATEGORY: Procedures (beta · TEAL) -> /procedures/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--lrh-teal)" href="procedures/?from=home">
+    <a class="lrh-cat" style="--cc:var(--teal)" href="procedures/?from=home">
       <div class="row"><span class="dot"></span><span class="name">Procedures</span><span class="spacer"></span><span class="count lrh-mono">15 cards</span></div>
       <div class="desc">Rare, high-stakes procedures — chest tube, thoracotomy, burr hole, canthotomy, CVC, transvenous pacing, escharotomy — with equipment lists and anatomy figures. (Resuscitative hysterotomy lives in OB &amp; Neonatal.)</div>
     </a>
 
     <!-- ===== CATEGORY: Clinical Pathways (live · ACCENT) -> /clinical-pathways/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--lrh-accent)" href="clinical-pathways/">
+    <a class="lrh-cat" style="--cc:var(--accent)" href="clinical-pathways/">
       <div class="row"><span class="dot"></span><span class="name">Clinical Pathways</span><span class="spacer"></span><span class="count lrh-mono">3 pathways</span></div>
       <div class="desc">Accelerated diagnostic and treatment pathways. Includes the Chest Pain / hs-Troponin HEART pathway.</div>
     </a>
 
     <!-- ===== CATEGORY: Trauma (beta · ORANGE) -> /trauma/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--lrh-orange)" href="trauma/?from=home">
+    <a class="lrh-cat" style="--cc:var(--orange)" href="trauma/?from=home">
       <div class="row"><span class="dot"></span><span class="name">Trauma</span><span class="spacer"></span><span class="count lrh-mono">7 cards</span></div>
       <div class="desc">Brain Injury Guidelines (BIG) for minor TBI, plus quick links to the Massive Transfusion Protocol and Front of Neck Access (FONA).</div>
     </a>
 
     <!-- ===== CATEGORY: Posters (beta · AMBER) -> /posters/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--lrh-amber)" href="posters/?from=home">
+    <a class="lrh-cat" style="--cc:var(--amber)" href="posters/?from=home">
       <div class="row"><span class="dot"></span><span class="name">Posters</span><span class="spacer"></span><span class="count lrh-mono">10 posters</span></div>
       <div class="desc">Print-ready one-pagers for the resuscitation-bay walls and carts — TVP, chest tube, thoracotomy, burr hole. Letter portrait, one page each.</div>
     </a>
 
     <!-- ===== CATEGORY: Debrief (beta · GRAY · keep last) -> /debrief/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--lrh-gray)" href="debrief/?from=home">
+    <a class="lrh-cat" style="--cc:var(--gray)" href="debrief/?from=home">
       <div class="row"><span class="dot"></span><span class="name">Debrief</span><span class="spacer"></span><span class="count lrh-mono">1 tool</span></div>
       <div class="desc">A short structure for the team conversation after a code or critical event — basic assumption, what did you see, plus/delta/plus.</div>
     </a>
 
     <!-- ===== Add a category/tool: create a lowercase, hyphenated folder with an
-         index.html, add a card above (href to that folder, --cc to a --lrh- token),
+         index.html, add a card above (href to that folder, --cc to a -- token),
          and add matching entries to the SEARCH INDEX in the script below. ===== -->
 
   </div>
