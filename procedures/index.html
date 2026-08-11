@@ -18,20 +18,30 @@
 <meta name="twitter:card" content="summary">
 <style>
   html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; --sticky-h:54px; }
-  /* Design-language chrome tokens — header only, step 1. No Google Fonts;
-     system stacks only (offline requirement, CLAUDE.md rule 1). Same
-     pattern as codes/index.html. --sticky-h is measured live off
-     #stickytop (see the ResizeObserver script near the header) so the
-     new .lrh-hdr strip's height is automatically accounted for in
-     scroll-margin-top below; 54px stays as the pre-JS fallback. This page
-     has zero localStorage refs, so the theme choice is not persisted
-     (matches its current no-storage architecture). */
+  /* Design-language chrome tokens. No Google Fonts; system stacks only
+     (offline requirement, CLAUDE.md rule 1). Same token set as arrest/ and
+     codes/index.html. --sticky-h is measured live off #stickytop (see the
+     ResizeObserver script near the header) so the single .hdr bar's height is
+     automatically accounted for in scroll-margin-top below; 54px stays as the
+     pre-JS fallback. Theme choice persists via the shared lrh-pref-theme key
+     (Phase 2), matching the rest of the manual. */
   body[data-theme]{ --bg:#0D1420; --card:#161F2E; --card2:#1D2A3C; --ink:#EAF0F7; --ink2:#8FA0B5; --line:rgba(255,255,255,.10); --accent:#2FA372;
     --red:#E5484D; --amber:#F0B429; --blue:#4C8DDA; --green:#3DA35D; --gray:#5C6B7E; --purple:#9B7BD4; --teal:#3AA6A6; --orange:#E08A3C; }
   body[data-theme="light"]{ --bg:#EFF2F5; --card:#FFFFFF; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D; --line:rgba(15,35,60,.13); --accent:#00693E;
     --red:#C63238; --amber:#B07E13; --blue:#2F6FB5; --green:#1F7F49; --gray:#6B7A8D; --purple:#6C4FA3; --teal:#1F7E7E; --orange:#B4661F; }
-  .lrh-hdr{display:flex;align-items:center;gap:10px;background:var(--bg);padding:8px 14px;
+  /* ---- Phase 2 — single sticky chrome bar (replaces the old .lrh-hdr strip +
+     blue nav.bar + section-stripe stack). One focused row: back · section label
+     · theme toggle, matching arrest/ and airway/. ---- */
+  .hdr{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;
+    padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px;background:var(--bg);
     border-bottom:1px solid var(--line)}
+  .hdr .plabel{flex:1;min-width:0;font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--accent);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hdr .ghost{background:var(--card);border:1px solid var(--line);color:var(--ink2);
+    font:700 11px "Helvetica Neue",Helvetica,Arial,sans-serif;letter-spacing:.08em;padding:9px 12px;
+    border-radius:10px;cursor:pointer;min-height:38px;white-space:nowrap;text-decoration:none;
+    display:inline-flex;align-items:center;gap:4px}
+  .hdr .ghost:hover,.hdr .ghost:focus-visible{color:var(--ink);border-color:var(--accent)}
   /* ---- step 2 — the card-selection menu is this tool's "category index"
      (DESIGN_LANGUAGE.md section 5): same themed-wrapper/row pattern as the
      home hub, clinical-pathways index, codes/index.html, and peds/index.html.
@@ -59,11 +69,6 @@
   .lrh-filter-empty{margin:0 2px 14px;padding:12px 14px;color:var(--ink2);font-size:.88rem;background:var(--card);
     border:1px solid var(--line);border-radius:14px}
   .lrh-filter-empty[hidden]{display:none}
-  .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;
-    color:var(--ink2);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
-  .lrh-hdr button{background:var(--card);border:1px solid var(--line);color:var(--ink2);
-    font:700 11px "Helvetica Neue",Helvetica,Arial,sans-serif;letter-spacing:.08em;padding:8px 11px;
-    border-radius:9px;cursor:pointer;min-height:36px;white-space:nowrap}
   body { margin:0; background:#eceff3; color:#16324f; font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; font-size:16.5px; line-height:1.4; text-wrap:pretty; }
   main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
   article { scroll-margin-top:var(--sticky-h,54px); margin-top:12px; }
@@ -103,13 +108,10 @@
     .card-split { display:grid; grid-template-columns:minmax(300px,420px) 1fr; gap:16px; align-items:start; }
     .twoup { display:grid; grid-template-columns:1fr 1fr; gap:0 20px; } .twoup > li { min-width:0; } .twoup li label { min-width:0; } .twoup li label > span { min-width:0; overflow-wrap:break-word; } .cs-unarmed { opacity:.45; pointer-events:none; }
   }
-  nav.bar { position:relative; display:flex; align-items:center; gap:10px; padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px; background:#005596; color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.1em; }
-  nav.bar a { color:#fffefb; background:none; text-decoration:none; border:1px solid rgba(255,255,255,0.4); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center; }
-  .section-stripe { height:5px; background:#0f7a86; }
   #stickytop { position:sticky; top:0; z-index:5; }
   @media print {
     body { background:#fffefb; }
-    nav.bar, #betasplash, a[href="#top"], .lrh-hdr { display:none; }
+    .hdr, #betasplash, a[href="#top"] { display:none; }
     article { break-before:page; }
     .steps { grid-template-columns:repeat(3,1fr); }
     .figs { grid-template-columns:repeat(3,1fr); }
@@ -117,6 +119,13 @@
 </style>
 </head>
 <body data-theme="dark">
+<script>
+/* Apply a persisted theme before the page paints (shared lrh-pref- namespace;
+   outside any RESET prefix sweep — CASE-STATE.md). Keeps the theme choice in
+   sync with the rest of the manual and avoids a dark-then-light flash. */
+try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+catch(e){ document.body.dataset.theme='dark'; }
+</script>
 <div id="betasplash" style="position:fixed; inset:0; z-index:999; background:linear-gradient(135deg,#005596,#003e6e); color:#fffefb; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
   <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:#a9c2dc;">LRH · EMERGENCY DEPARTMENT</div>
   <div style="font-size:30px; line-height:1.06; letter-spacing:-0.02em; font-weight:700;">Procedures</div>
@@ -126,16 +135,22 @@
   <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
 </div>
 <div id="stickytop">
-<div class="lrh-hdr"><div class="crumb">PROCEDURES</div><button type="button" id="lrhThemeBtn">LIGHT</button></div>
-<nav class="bar"><a href="../?from=tool" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a><button id="backbtn" type="button" style="display:none; color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px;">◀ BACK</button></nav>
+<div class="hdr">
+  <a class="ghost" href="../?from=tool">◀ MANUAL</a>
+  <button class="ghost" id="backbtn" type="button" style="display:none">◀ BACK</button>
+  <div class="plabel">PROCEDURES</div>
+  <button class="ghost" id="lrhThemeBtn" type="button">LIGHT</button>
+</div>
 <script>
 (function(){
   var b=document.getElementById('lrhThemeBtn');
   if(!b) return;
+  b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
   b.addEventListener('click', function(){
     var dark = document.body.dataset.theme!=='light';
     document.body.dataset.theme = dark ? 'light' : 'dark';
     b.textContent = dark ? 'DARK' : 'LIGHT';
+    try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
   });
 })();
 </script>
@@ -143,9 +158,8 @@
 /* ---- Measure the real sticky-header height into --sticky-h, live ----
    Ported from codes/index.html's identical fix (same review finding: a
    hardcoded scroll-margin-top guess instead of a measured one). #stickytop
-   (the new .lrh-hdr strip + nav.bar + section-stripe together) is the
-   only element pinned to top:0 here; every article's scroll-margin-top
-   has to clear it. */
+   (the single .hdr chrome bar) is the only element pinned to top:0 here;
+   every article's scroll-margin-top has to clear it. */
 (function(){
   var el = document.getElementById('stickytop');
   if(!el) return;
@@ -162,7 +176,6 @@
   }
 })();
 </script>
-<div class="section-stripe"></div>
 </div>
 
 <main id="top">
