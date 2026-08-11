@@ -130,7 +130,7 @@ a{color:var(--blue);text-decoration:none}
       <label style="display:flex;align-items:center;gap:12px;cursor:pointer;min-height:44px">
         <span id="pregboxIdle" class="wbox" style="margin-top:0"></span>
         <span style="font-size:14px;line-height:1.4"><b>Pregnant, uterus at or above the umbilicus</b> (about 20 weeks)?
-        <span style="color:var(--ink2)">— call OB + neonatal now; plan resuscitative hysterotomy within 10 min.</span></span>
+        <span style="color:var(--ink2)">— call OB + neonatal now; plan resuscitative hysterotomy within <span id="hystmin">5</span> min.</span></span>
       </label>
     </div>
 
@@ -273,7 +273,7 @@ var SITE = {
   cprPauseMaxMin: 2,                     /* pause CPR in progress for at most this */
   conventionalResusMin: 10,              /* conventional BLS/ALS ± compressions window */
   pregGestWeeks: 20,                     /* uterus at/above umbilicus ≈ this gestation */
-  hysterotomyByMin: 10,                  /* aim to deliver within this from arrest */
+  hysterotomyByMin: 5,                   /* aim to deliver within this from arrest */
   fluid: { crystalloidMlPerKg: 20, bloodRatio: "1:1:1" },
   txa:  { adult: "1 g IV over 10 min, then 1 g over 8 h", pedsMgPerKg: 15, pedsMaxMg: 1000 },
   /* Calcium: adults get an empiric fixed dose with transfusion; children are
@@ -590,6 +590,7 @@ function paint(){
 
   $('soltxt').textContent = SITE.noSignsOfLifeMin;
   $('soltxt2').textContent = SITE.noSignsOfLifeMin;
+  $('hystmin').textContent = SITE.hysterotomyByMin;
   $('convmin').textContent = SITE.conventionalResusMin;
   $('rbp1').textContent=SITE.bp.sbp; $('rmap1').textContent=SITE.bp.mapLow+'–'+SITE.bp.mapHigh;
   $('rbp2').textContent=SITE.bp.tbiSbp; $('rmap2').textContent=SITE.bp.tbiMap;
