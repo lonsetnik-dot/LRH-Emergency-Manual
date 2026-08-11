@@ -22,29 +22,36 @@
      system stacks only (offline requirement, CLAUDE.md rule 1). Same
      pattern as codes/index.html. --sticky-h is measured live off
      #stickytop (see the ResizeObserver script near the header) so the
-     new .lrh-hdr strip's height is automatically accounted for in
+     single .hdr bar's height is automatically accounted for in
      scroll-margin-top below; 54px stays as the pre-JS fallback. */
   body[data-theme]{ --bg:#0D1420; --card:#161F2E; --card2:#1D2A3C; --ink:#EAF0F7; --ink2:#8FA0B5; --line:rgba(255,255,255,.10); --accent:#2FA372;
     --red:#E5484D; --amber:#F0B429; --blue:#4C8DDA; --green:#3DA35D; --gray:#5C6B7E; --purple:#9B7BD4; --teal:#3AA6A6; --orange:#E08A3C; }
   body[data-theme="light"]{ --bg:#EFF2F5; --card:#FFFFFF; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D; --line:rgba(15,35,60,.13); --accent:#00693E;
     --red:#C63238; --amber:#B07E13; --blue:#2F6FB5; --green:#1F7F49; --gray:#6B7A8D; --purple:#6C4FA3; --teal:#1F7E7E; --orange:#B4661F; }
-  .lrh-hdr{display:flex;align-items:center;gap:10px;background:var(--bg);padding:8px 14px;
+  /* ---- Phase 3 — single sticky chrome bar (replaces the old .lrh-hdr strip +
+     blue nav.bar + section-stripe). One row: back · section label · RESET ·
+     theme, matching arrest/, airway/ and procedures/. ---- */
+  .hdr{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;
+    padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px;background:var(--bg);
     border-bottom:1px solid var(--line)}
-  .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;
-    color:var(--ink2);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
-  .lrh-hdr button{background:var(--card);border:1px solid var(--line);color:var(--ink2);
-    font:700 11px "Helvetica Neue",Helvetica,Arial,sans-serif;letter-spacing:.08em;padding:8px 11px;
-    border-radius:9px;cursor:pointer;min-height:36px;white-space:nowrap}
+  .hdr .plabel{flex:1;min-width:0;font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--accent);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hdr .ghost{background:var(--card);border:1px solid var(--line);color:var(--ink2);
+    font:700 11px "Helvetica Neue",Helvetica,Arial,sans-serif;letter-spacing:.08em;padding:9px 12px;
+    border-radius:10px;cursor:pointer;min-height:38px;white-space:nowrap;text-decoration:none;
+    display:inline-flex;align-items:center;gap:4px}
+  .hdr .ghost:hover,.hdr .ghost:focus-visible{color:var(--ink);border-color:var(--accent)}
+  .hdr .ghost.danger{color:var(--red)}
+  .hdr .ghost.danger:hover,.hdr .ghost.danger:focus-visible{color:var(--red);border-color:var(--red)}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0}
   /* ---- step 2 — the card-selection menu is this tool's "category index"
      (DESIGN_LANGUAGE.md section 5): same themed-wrapper/row pattern as the
      home hub, clinical-pathways index, codes/index.html, and peds/index.html.
      Card content below the menu (article#c01 etc.) is untouched — step 3/4
      scope. */
-  .lrh-menuwrap{background:var(--bg);padding:16px 14px 26px}
+  .lrh-menuwrap{background:var(--bg);padding:8px 14px 26px}
   .lrh-menuwrap .inner{max-width:1400px;margin:0 auto}
-  .lrh-eyebrow{font-size:11.5px;letter-spacing:.14em;color:var(--accent);font-weight:700}
-  .lrh-idx-h1{margin:4px 0 2px;font-size:26px;letter-spacing:-.01em;font-weight:800;color:var(--ink)}
-  .lrh-idx-sub{margin:0;color:var(--ink2);font-size:14.5px}
   .lrh-startnew-btn{margin-top:10px;min-height:44px;padding:0 16px;background:var(--card2);
     color:var(--ink);border:2px solid var(--line);font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
     font-size:12px;font-weight:700;letter-spacing:.08em;cursor:pointer;border-radius:10px}
@@ -59,7 +66,7 @@
   .lrh-row .tag{font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--ink2);white-space:nowrap;flex:none}
   .lrh-row:hover, .lrh-row:focus-visible{color:var(--ink)}
   .lrh-filter{display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);
-    border-radius:14px;padding:4px 6px 4px 14px;margin:18px 2px 14px}
+    border-radius:14px;padding:4px 6px 4px 14px;margin:0 2px 14px}
   .lrh-filter .ico{color:var(--ink2);font-size:16px;flex:none}
   .lrh-filter input{flex:1;background:none;border:none;color:var(--ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit;-webkit-appearance:none}
   .lrh-filter input::-webkit-search-cancel-button{-webkit-appearance:none}
@@ -103,13 +110,10 @@
     .card-split { display:grid; grid-template-columns:minmax(300px,420px) 1fr; gap:16px; align-items:start; }
     .twoup { display:grid; grid-template-columns:1fr 1fr; gap:0 20px; } .twoup > li { min-width:0; } .twoup li label { min-width:0; } .twoup li label > span { min-width:0; overflow-wrap:break-word; } .cs-unarmed { opacity:.45; pointer-events:none; }
   }
-  nav.bar { position:relative; display:flex; align-items:center; gap:10px; padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px; background:#005596; color:#fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.1em; }
-  nav.bar a, nav.bar button { color:#fffefb; background:none; text-decoration:none; border:1px solid rgba(255,255,255,0.4); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px; display:inline-flex; align-items:center; }
-  .section-stripe { height:5px; background:#c26a1b; } /* Trauma = orange (matches the landing-page area color) */
   #stickytop { position:sticky; top:0; z-index:5; }
   @media print {
     body { background:#fffefb; }
-    nav.bar, #betasplash, #startnewcasebtn, .lrh-hdr { display:none; }
+    .hdr, #betasplash, #startnewcasebtn { display:none; }
     article { break-before:page; }
     .steps { grid-template-columns:repeat(3,1fr); }
   }
@@ -129,8 +133,13 @@ catch(e){ document.body.dataset.theme='dark'; }
   <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
 </div>
 <div id="stickytop">
-<div class="lrh-hdr"><div class="crumb">TRAUMA</div><button type="button" id="lrhThemeBtn">LIGHT</button></div>
-<nav class="bar"><a href="../?from=tool" style="border-color:rgba(255,255,255,0.7);">◀ MANUAL</a><button id="backbtn" type="button" style="display:none; color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.5); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px;">◀ BACK</button><button id="resetbtn" type="button" style="margin-left:auto; color:#fffefb; background:none; border:1px solid rgba(255,255,255,0.4); padding:8px 12px; font:inherit; letter-spacing:0.1em; cursor:pointer; min-height:38px;">RESET FOR NEXT CASE</button></nav>
+<div class="hdr">
+  <a class="ghost" href="../?from=tool">◀ MANUAL</a>
+  <button class="ghost" id="backbtn" type="button" style="display:none">◀ BACK</button>
+  <div class="plabel">TRAUMA</div>
+  <button class="ghost danger" id="resetbtn" type="button">RESET</button>
+  <button class="ghost" id="lrhThemeBtn" type="button">LIGHT</button>
+</div>
 <script>
 (function(){
   var b=document.getElementById('lrhThemeBtn');
@@ -148,7 +157,7 @@ catch(e){ document.body.dataset.theme='dark'; }
 /* ---- Measure the real sticky-header height into --sticky-h, live ----
    Ported from codes/index.html's identical fix (same review finding: a
    hardcoded scroll-margin-top guess instead of a measured one). #stickytop
-   (the new .lrh-hdr strip + nav.bar together) is the only element pinned
+   (the single .hdr chrome bar) is the only element pinned
    to top:0 here; every article's scroll-margin-top has to clear it. */
 (function(){
   var el = document.getElementById('stickytop');
@@ -231,15 +240,12 @@ catch(e){ document.body.dataset.theme='dark'; }
   try{ if(/(^|[?&])startnewcase=1(&|$)/.test(location.search)) openModal(); }catch(e){}
 })();
 </script>
-<div class="section-stripe"></div>
 </div>
 
 <main>
   <div class="lrh-menuwrap">
     <div class="inner">
-      <div class="lrh-eyebrow lrh-mono">LRH · EMERGENCY DEPARTMENT</div>
-      <h1 class="lrh-idx-h1">Trauma</h1>
-      <p class="lrh-idx-sub">Tap a card to open. Massive Transfusion Protocol and Front of Neck Access live in the Codes tool — the cards below link straight there so nothing is duplicated.</p>
+      <h1 class="sr-only">Trauma</h1>
       <button type="button" id="startnewcasebtn" class="lrh-startnew-btn">START NEW CASE</button>
 
       <!-- ============ FILTER ============ -->
@@ -797,7 +803,7 @@ var CASESTATE = (function(){
    shown only when the guard above actually cleared something on this load. */
 (function(){
   if(!window.__lrhStaleCleared) return;
-  var nav=document.querySelector('nav.bar');
+  var nav=document.querySelector('.hdr');
   if(!nav) return;
   var bar=document.createElement('div');
   bar.id='staleclearednotice';
