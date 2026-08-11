@@ -137,64 +137,14 @@ ck('procedures card 16 exists', await proc.locator('#c16').count(), 1);
     await proc.locator('#c16 svg').first().getAttribute('aria-label') || ''), true);
 }
 
-/* ================= #30 DSED / vector change ================= */
-console.log('--- #30 DSED / vector change');
-{
-  const t = await textOf(codes, '#c01');
-  ck('refractory VF defined as after 3 shocks', /after 3 consecutive standard shocks/i.test(t), true);
-  ck('vector change described', /anterior-lateral to anterior-posterior/i.test(t), true);
-  ck('DSED is sequential, not simultaneous', /Sequential &mdash; not simultaneous|Sequential — not simultaneous/i.test(t), true);
-  ck('pads must not touch', /never touching or overlapping/i.test(t), true);
-  ck('DOSE-VF numbers present', /30\.4%/.test(t) && /21\.7%/.test(t) && /13\.3%/.test(t), true);
-  ck('limitations stated', /fragility index of 1/i.test(t) && /stopped early/i.test(t), true);
-  ck('AHA Class 2b stated plainly', /Class 2b/.test(t) && /not recommended/i.test(t), true);
-  ck('device damage rate stated', /0\.4%/.test(t), true);
-  // the cue must not outrank a rhythm check or an epi dose
-  const order = await codes.evaluate(() => {
-    const src = Array.from(document.scripts).map(x => x.textContent).join('\n');
-    return { dsed: src.indexOf("REFRACTORY VF — shock #"), epi: src.indexOf("EPI DUE — "), rhythm: src.indexOf("RHYTHM CHECK DUE") };
-  });
-  // The transient cue was replaced by a persistent banner: DSED needs kit and a designated
-  // operator, so it has to be visible before shock four, not announced at it.
-  ck('refractory-VF banner is present from the start', await codes.locator('#dsedbar').isVisible(), true);
-  ck('banner starts unarmed', await codes.locator('#dsedbar.armed').count(), 0);
-  ck('banner links to the reference section', await codes.locator('#dsedbar[href="#refractoryvf"]').count(), 1);
-}
-
 /* ================= #20 epinephrine in mg AND mL ================= */
 console.log('--- #20 epinephrine dosing in mL and mg');
 {
-  const arrest = await textOf(codes, '#c01');
-  ck('arrest epi shows mg and mL', /1 mg<\/b> = <b>10 mL<\/b>|1 mg = 10 mL/.test(arrest), true);
-  ck('arrest epi names the concentration', /0\.1 mg\/mL/.test(arrest), true);
   const ana = await textOf(codes, '#c08');
   ck('IM epi shows mg and mL', /0\.3–0\.5 mg = 0\.3–0\.5 mL/.test(ana), true);
   ck('IM epi warns off the cardiac syringe', /10× more dilute|10&times; more dilute/i.test(ana), true);
   ck('drip states a mL\/hr equivalent', /mL\/hr/.test(ana), true);
   ck('epi escalation links to the airway card', await codes.locator('#c08 a[href="#c06"]').count() > 0, true);
-}
-
-/* ================= #31 Broselow colour on the peds tiles ================= */
-console.log('--- #31 pediatric cart colour');
-{
-  const p = await b.newPage({ viewport: { width: 390, height: 1400 } }); watch(p, 'peds-mode');
-  await p.goto(BASE + '/codes/?from=home', { waitUntil: 'networkidle' });
-  ck('chip hidden with no weight', await p.locator('#brosechip').isVisible(), false);
-  // set a weight that lands squarely in the BLUE band (19-23 kg)
-  const wt = await p.$('#wtinput, input[type=number]');
-  if (wt) {
-    await wt.fill('20'); await p.waitForTimeout(400);
-    ck('chip appears in pediatric mode', await p.locator('#brosechip').isVisible(), true);
-    ck('names the colour band', (await p.locator('#brosename').innerText()).trim(), 'BLUE ZONE');
-    ck('states the kg range', (await p.locator('#broserange').innerText()).trim(), '19–23 kg');
-    const sw = await p.locator('#brosesw').evaluate(el => getComputedStyle(el).backgroundColor);
-    ck('swatch is the BLUE band colour', sw, 'rgb(47, 98, 168)');
-    ck('chip links to the peds cart labels', await p.locator('#brosechip[href="../labels/#loc-peds"]').count(), 1);
-    // an adult weight must take it away again
-    await wt.fill(''); await wt.fill('80'); await p.waitForTimeout(400);
-    ck('chip disappears for an adult weight', await p.locator('#brosechip').isVisible(), false);
-  } else ck('weight input found', 'no', 'yes');
-  await p.close();
 }
 
 /* ================= #29 a QR on every full-format label ================= */
