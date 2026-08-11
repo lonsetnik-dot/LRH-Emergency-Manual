@@ -1,0 +1,90 @@
+/* ===========================================================================
+   design-system.css - LRH Emergency Manual shared design language.
+
+   SINGLE SOURCE OF TRUTH for the tokens, chrome, menu and card-interior
+   classes shared by every tool. build.mjs injects this wherever a tool's
+   <style> contains the marker  (slash-star) @design-system (star-slash) ,
+   so the deployed files in dist/ stay fully self-contained and work
+   offline (CLAUDE.md rule 1). Edit the design ONCE here.
+   =========================================================================== */
+  body[data-theme]{ --bg:#0D1420; --card:#161F2E; --card2:#1D2A3C; --ink:#EAF0F7; --ink2:#8FA0B5; --line:rgba(255,255,255,.10); --accent:#2FA372;
+    --red:#E5484D; --amber:#F0B429; --blue:#4C8DDA; --green:#3DA35D; --gray:#5C6B7E; --purple:#9B7BD4; --teal:#3AA6A6; --orange:#E08A3C;
+    /* Card-interior semantics (Phase 4). Severity fills are white-text bars that
+       read on either ground, so they're constant across themes; note (LOCALIZE)
+       tints and the checklist stamp vary per theme. --on-sev = text on a fill. */
+    --sev-crit:#9b1c2e; --sev-caution:#8a6d1f; --sev-info:#2f62a8; --on-sev:#fffefb;
+    --note-bg:rgba(240,180,41,.12); --note-tx:#f0cf7a; }
+  body[data-theme="light"]{ --bg:#EFF2F5; --card:#FFFFFF; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D; --line:rgba(15,35,60,.13); --accent:#00693E;
+    --red:#C63238; --amber:#B07E13; --blue:#2F6FB5; --green:#1F7F49; --gray:#6B7A8D; --purple:#6C4FA3; --teal:#1F7E7E; --orange:#B4661F;
+    --note-bg:#fdf3cf; --note-tx:#6b5410; }
+  /* ---- Phase 3 — single sticky chrome bar (replaces the old .lrh-hdr strip +
+     blue nav.bar + section-stripe). One row: back · section label · RESET ·
+     theme, matching arrest/, airway/ and procedures/. ---- */
+  .hdr{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;
+    padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px;background:var(--bg);
+    border-bottom:1px solid var(--line)}
+  .hdr .plabel{flex:1;min-width:0;font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--accent);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hdr .ghost{background:var(--card);border:1px solid var(--line);color:var(--ink2);
+    font:700 11px "Helvetica Neue",Helvetica,Arial,sans-serif;letter-spacing:.08em;padding:9px 12px;
+    border-radius:10px;cursor:pointer;min-height:38px;white-space:nowrap;text-decoration:none;
+    display:inline-flex;align-items:center;gap:4px}
+  .hdr .ghost:hover,.hdr .ghost:focus-visible{color:var(--ink);border-color:var(--accent)}
+  .hdr .ghost.danger{color:var(--red)}
+  .hdr .ghost.danger:hover,.hdr .ghost.danger:focus-visible{color:var(--red);border-color:var(--red)}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  /* ---- step 2 — the card-selection menu is this tool's "category index"
+     (DESIGN_LANGUAGE.md section 5): same themed-wrapper/row pattern as the
+     home hub, clinical-pathways index, codes/index.html, and peds/index.html.
+     Card content below the menu (article#c01 etc.) is untouched — step 3/4
+     scope. */
+  .lrh-menuwrap{background:var(--bg);padding:8px 14px 26px}
+  .lrh-menuwrap .inner{max-width:1400px;margin:0 auto}
+  .lrh-startnew-btn{margin-top:10px;min-height:44px;padding:0 16px;background:var(--card2);
+    color:var(--ink);border:2px solid var(--line);font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+    font-size:12px;font-weight:700;letter-spacing:.08em;cursor:pointer;border-radius:10px}
+  .lrh-startnew-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .lrh-mono{font-family:ui-monospace,"SF Mono",Menlo,"JetBrains Mono",monospace}
+  .lrh-row{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--cc,var(--accent));
+    border-radius:12px;padding:14px;min-height:56px;cursor:pointer}
+  .lrh-row .n{display:none;font-size:15px;font-weight:700;color:var(--cc,var(--accent));flex:none;width:24px}
+  .lrh-row .t{font-size:16.5px;font-weight:700;line-height:1.25}
+  .lrh-row .spacer{flex:1}
+  .lrh-row .tag{font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--ink2);white-space:nowrap;flex:none}
+  .lrh-row:hover, .lrh-row:focus-visible{color:var(--ink)}
+  .lrh-filter{display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);
+    border-radius:14px;padding:4px 6px 4px 14px;margin:0 2px 14px}
+  .lrh-filter .ico{color:var(--ink2);font-size:16px;flex:none}
+  .lrh-filter input{flex:1;background:none;border:none;color:var(--ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit;-webkit-appearance:none}
+  .lrh-filter input::-webkit-search-cancel-button{-webkit-appearance:none}
+  .lrh-filter-empty{margin:0 2px 14px;padding:12px 14px;color:var(--ink2);font-size:.88rem;background:var(--card);
+    border:1px solid var(--line);border-radius:14px}
+  .lrh-filter-empty[hidden]{display:none}
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; font-size:16.5px; line-height:1.4; text-wrap:pretty; }
+  /* ===== Phase 4 — card-interior component classes. The card bodies were
+     legacy inline-hardcoded colors (authored before the token system); these
+     token-based classes replace the repeated inline styles so the content is
+     theme-aware and a fork re-skins in one place. ===== */
+  .t-ck{width:20px;height:20px;margin:2px 0 0;accent-color:var(--accent);flex:none}
+  .t-div{border-top:1px solid var(--line)}
+  /* Rounded corners on every interior panel, to match the bar/menu radius.
+     overflow:hidden clips the colored header fill to the rounded top corners. */
+  .t-box-crit,.t-box-caution,.t-box-info,.t-box-neutral{border-radius:12px;overflow:hidden}
+  .t-box-crit{border:2px solid var(--sev-crit)}
+  .t-box-caution{border:2px solid var(--sev-caution)}
+  .t-box-info{border:2px solid var(--sev-info)}
+  .t-box-neutral{border:2px solid var(--gray)}
+  .t-head{color:var(--on-sev);padding:10px 12px;font-size:14px;font-weight:700;letter-spacing:.03em;cursor:pointer;list-style:none}
+  .t-head-crit{background:var(--sev-crit)}
+  .t-head-caution{background:var(--sev-caution)}
+  .t-head-info{background:var(--sev-info)}
+  .t-head-neutral{background:var(--gray)}
+  .t-sub{padding:16px 14px 6px;font-size:12.5px;line-height:1.4;color:var(--ink2)}
+  .t-foot{padding:0 14px 20px;font-size:12px;color:var(--ink2)}
+  .t-note2{margin-top:2px;font-size:12.5px;color:var(--ink2)}
+  .t-mono-r{font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.08em;color:var(--ink2);text-align:right}
+  .t-mono-n{font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;color:var(--ink);font-size:16px;margin-right:8px}
+  .t-localize{margin:14px 14px 0;border:2px solid var(--sev-caution);background:var(--note-bg);color:var(--note-tx);padding:11px 14px;font-size:13px;line-height:1.4;border-radius:12px}
+  .t-notebtn{flex:none;min-height:32px;padding:0 10px;background:none;border:1px solid var(--note-tx);color:var(--note-tx);font:inherit;font-weight:700;letter-spacing:.04em;cursor:pointer}

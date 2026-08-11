@@ -22,7 +22,10 @@ BASE="http://127.0.0.1:${PORT}"
 rm -f /tmp/qr_*.png /tmp/qr_*.want 2>/dev/null || true
 
 # --- static server -----------------------------------------------------------
-python3 -m http.server "$PORT" --bind 127.0.0.1 >/tmp/lrh-httpd.log 2>&1 &
+# Build the site (inlines design-system.css into marked tools) and test the
+# actual deployed output in dist/, not the source — so CI catches a broken build.
+node build.mjs
+python3 -m http.server "$PORT" --bind 127.0.0.1 --directory dist >/tmp/lrh-httpd.log 2>&1 &
 SERVER_PID=$!
 cleanup() { kill "$SERVER_PID" 2>/dev/null || true; }
 trap cleanup EXIT
