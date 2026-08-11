@@ -88,3 +88,35 @@ US term first, then the common Commonwealth/international alias.
 None of the alias-column terms above were found in the current codebase as of
 this audit — this table exists so the next reviewer (or a non-US fork) has a
 ready checklist instead of re-deriving it.
+
+## LOCALE layer — `arrest/index.html` (the VF/arrest engine)
+
+`arrest/` is the first tool with a **runtime locale switch** for the parts of
+its content that are generated in JavaScript (dose strings, the reference
+accordions, status labels). Instead of hunting those terms through the logic, a
+fork edits one block near the top of the script:
+
+```js
+var LOCALE = {
+  epinephrine: 'epinephrine',   // UK: adrenaline
+  lidocaine:   'lidocaine',     // UK: lignocaine
+  amiodarone:  'amiodarone',    // (same)
+  pediatric:   'pediatric',     // UK: paediatric
+  anesthetic:  'anesthetic'     // UK: anaesthetic
+};
+```
+
+Every dynamic string reads these through `L()` (lowercase), `Lc()`
+(Capitalized) or `Lu()` (UPPERCASE), so changing a value here re-localizes all
+JS-generated content on the next paint — verified: setting `adrenaline` /
+`lignocaine` / `paediatric` flips the epinephrine accordion, the antiarrhythmic
+doses and the pediatric-mode banner together. **Scope:** this covers the
+JS-generated content only. **Static HTML prose** in the same file (the idle
+pulse-check gate, the ROSC checklist, the rhythm-check sheet) is still swept to
+the site's dialect by hand — the US default is what ships. Direct citations and
+proper names (AHA "Part 6, Pediatric BLS", journal titles) are left exact in
+both layers, per the exemptions above.
+
+This is the "isolate site-specific values" rule (CLAUDE.md rule 2) applied to
+terminology: clinical thresholds live in `SITE`, and locale-specific wording
+lives in `LOCALE`, both editable in one place per tool.

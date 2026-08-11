@@ -41,7 +41,16 @@ await pg.addInitScript(() => {
 const skew = async ms => { await pg.evaluate(v => { window.__skew = v; }, ms); await pg.waitForTimeout(400); };
 
 const txt = async sel => (await pg.locator(sel).innerText()).replace(/\s+/g, ' ').trim();
-const fresh = async () => { await pg.goto(BASE + '/arrest/', { waitUntil: 'networkidle' }); await pg.waitForTimeout(300); };
+/* A clean slate per test group. The tool now shares the manual's lrh- case
+   state (weight, timeline, lastactive), so isolation requires clearing storage
+   between groups — otherwise a weight or log entry set in one group leaks into
+   the next through the shared keys. */
+const fresh = async () => {
+  await pg.goto(BASE + '/arrest/', { waitUntil: 'networkidle' });
+  await pg.evaluate(() => localStorage.clear());
+  await pg.reload({ waitUntil: 'networkidle' });
+  await pg.waitForTimeout(300);
+};
 const vis = async sel => pg.locator(sel).isVisible();
 const nBreaths = async () => parseInt(await txt('#breathn'), 10);
 const openAcc = async id => { await pg.click('[data-acc="' + id + '"]'); await pg.waitForTimeout(250);
@@ -161,8 +170,16 @@ ck('8. a clinical note is accepted', await pg.locator('#customwarn').isVisible()
 await pg.click('[data-acc="log"]'); await pg.waitForTimeout(250);
 ck('8. it reaches the log', /IO placed right tibia/.test(await txt('.accb')), true);
 ck('8. the refused text never reached the log', /4471129/.test(await txt('.accb')), false);
-ck('8. nothing is persisted to storage', await pg.evaluate(() => {
-  let n = 0; for (let i = 0; i < localStorage.length; i++) n++; return n; }), 0);
+/* The tool now shares the manual's ONE timeline: the accepted note lands in the
+   shared, PHI-guarded lrh-case-log (tagged as the Codes arrest card); the
+   refused identifier reaches neither the log nor storage; and only documented
+   case/pref keys are ever written — no raw PHI, no undocumented key. */
+const s8 = JSON.parse(await pg.evaluate(() => JSON.stringify({
+  log: localStorage.getItem('lrh-case-log') || '', keys: Object.keys(localStorage) })));
+ck('8. the accepted note reached the shared timeline', /IO placed right tibia/.test(s8.log), true);
+ck('8. the refused identifier never reached the shared timeline', /4471129/.test(s8.log), false);
+ck('8. only documented case/pref keys are persisted',
+  s8.keys.every(k => k.startsWith('lrh-case-') || k.startsWith('lrh-pref-')), true);
 
 /* ---- 9. metronome starts with the code clock ---- */
 await fresh();
@@ -270,15 +287,15 @@ ck('14. no second adult breath inside 3.6 s', await nBreaths(), adultAt0);
 await pg.waitForTimeout(2900);
 ck('14. the second adult breath lands by 6.5 s', await nBreaths(), adultAt0 + 1);
 
-/* ---- 15. rescue breathing — the paediatric rate ----------------------------
+/* ---- 15. rescue breathing — the pediatric rate ----------------------------
    AHA/AAP 2025 Part 6: 1 breath every 2-3 s, 20-30/min. Class 2a, LOE C-EO.
    Faster than the adult rate, which is the number most often got wrong. */
 await fresh();
 await pg.fill('#wIn', '18'); await pg.waitForTimeout(200);
 await pg.click('#respstartbtn'); await pg.waitForTimeout(300);
 ck('15. the child rate is 1 breath every 2–3 s, 20–30/min',
-  /1 breath every 2–3 s \(20–30\/min\) · paediatric/.test(await txt('#ventlabel')), true);
-ck('15. the paediatric bradycardia card is showing', await vis('#bradycard'), true);
+  /1 breath every 2–3 s \(20–30\/min\) · pediatric/.test(await txt('#ventlabel')), true);
+ck('15. the pediatric bradycardia card is showing', await vis('#bradycard'), true);
 ck('15. it says compressions despite a palpable pulse', /even though you can feel a pulse/i.test(await txt('#bradycard')), true);
 const pedsAt0 = await nBreaths();
 await pg.waitForTimeout(3400);
@@ -340,8 +357,12 @@ ck('18. with the same explanation', /mentions a record or account number/.test(a
 await pg.fill('#customin2', 'naloxone 0.4 mg IV, chest rising');
 await pg.click('#customlog2'); await pg.waitForTimeout(250);
 ck('18. a clinical note is accepted', await vis('#customrow2'), false);
-ck('18. and reaches the shared log', /naloxone 0\.4 mg IV, chest rising/.test(await openAcc('log')), true);
-ck('18. nothing was written to localStorage', await pg.evaluate(() => localStorage.length), 0);
+ck('18. and reaches the in-tool log', /naloxone 0\.4 mg IV, chest rising/.test(await openAcc('log')), true);
+const s18 = JSON.parse(await pg.evaluate(() => JSON.stringify({
+  log: localStorage.getItem('lrh-case-log') || '', keys: Object.keys(localStorage) })));
+ck('18. and the shared manual-wide timeline', /naloxone 0\.4 mg IV, chest rising/.test(s18.log), true);
+ck('18. only documented case/pref keys are persisted',
+  s18.keys.every(k => k.startsWith('lrh-case-') || k.startsWith('lrh-pref-')), true);
 
 /* ---- 19. the rescue-breathing reference, with its sources ------------------ */
 await fresh();
@@ -351,7 +372,7 @@ ck('19. adult 6 s / 10 per min with its class', /1 breath every 6 s \(10\/min\)\
 ck('19. child 2–3 s / 20–30 per min with its class', /1 breath every 2–3 s \(20–30\/min\)\. AHA\/AAP 2025 Part 6, Pediatric BLS — Class 2a, LOE C-EO/.test(ventAcc), true);
 ck('19. says which number the metronome picked and why', /slow end, because over-ventilating a small chest is the commoner error/i.test(ventAcc), true);
 ck('19. cites the adult DOI', /10\.1161\/CIR\.0000000000001369/.test(ventAcc), true);
-ck('19. cites the paediatric DOI', /10\.1161\/CIR\.0000000000001370/.test(ventAcc), true);
+ck('19. cites the pediatric DOI', /10\.1161\/CIR\.0000000000001370/.test(ventAcc), true);
 ck('19. names the gap it exists to fill', /Neither the arrest algorithm nor DAS 2025 covers this patient/.test(ventAcc), true);
 const cprAcc = await openAcc('cpr');
 ck('19. the advanced-airway line now carries both rates',

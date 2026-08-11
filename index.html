@@ -6,43 +6,20 @@
 <meta name="theme-color" content="#005596">
 <title>LRH Emergency Manual</title>
 <style>
-  /* =====================================================================
-     LRH BRAND COLORS -- edit to match exactly (same variables as the tools)
-     ===================================================================== */
+  /* Landing page. The theme tokens, the .hdr chrome bar, .sr-only, .lrh-mono and
+     the themed body all come from the shared design-system.css injected at the
+     marker below (build.mjs) — edited once for the whole manual. Only this page's
+     search box, category grid, note and the beta-splash front door live here. */
   :root{
+    /* The beta-splash front door stays brand-blue regardless of theme — it's the
+       only remaining consumer of the legacy brand vars. */
     --brand-primary:#005596; --brand-primary-dark:#003e6e; --brand-secondary:#6cb33f;
-    --brand-ink:#1f2933; --muted:#5b6672; --brand-line:#e2e7ec; --panel:#fff; --page:#eef2f5;
-    --section:var(--brand-secondary); /* header stripe = which part of the manual; home = brand green */
   }
-  /* =====================================================================
-     DESIGN LANGUAGE TOKENS — new sitewide chrome only (header below). The
-     rest of this page (search, category grid, footer) is unchanged for
-     step 1 — that's step 2 of the migration (DESIGN_LANGUAGE.md), not this
-     pass. Dark is the default; body[data-theme="light"] overrides.
-     System font stacks only — no Google Fonts link. CLAUDE.md rule 1 is
-     "no external dependencies; must work offline," which a font CDN
-     violates outright on a cart with no signal.
-     ===================================================================== */
-  body[data-theme]{
-    --bg:#0D1420; --card:#161F2E; --card2:#1D2A3C; --ink:#EAF0F7; --ink2:#8FA0B5;
-    --line:rgba(255,255,255,.10); --accent:#2FA372; --accentInk:#fff;
-    --red:#E5484D; --amber:#F0B429; --blue:#4C8DDA; --green:#3DA35D;
-    --gray:#5C6B7E; --purple:#9B7BD4; --teal:#3AA6A6; --orange:#E08A3C;
-  }
-  body[data-theme="light"]{
-    --bg:#EFF2F5; --card:#FFFFFF; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D;
-    --line:rgba(15,35,60,.13); --accent:#00693E; --accentInk:#fff;
-    --red:#C63238; --amber:#B07E13; --blue:#2F6FB5; --green:#1F7F49;
-    --gray:#6B7A8D; --purple:#6C4FA3; --teal:#1F7E7E; --orange:#B4661F;
-  }
-  /* ===== Home-hub pattern (design language step 2 — LRH_Design_Language.dc.html
-     "Home" screen). Category identity is a 4px left bar + a small color dot,
-     never a filled icon tile — see DESIGN_LANGUAGE.md section 5 and the note
-     on retiring filled tiles. Mono numerals/counts use the system mono stack
-     (no Google Fonts — CLAUDE.md rule 1). ===== */
-  .lrh-mono{font-family:ui-monospace,"SF Mono",Menlo,"JetBrains Mono",monospace}
-  .lrh-home-h1{font-size:28px;font-weight:800;letter-spacing:-.01em;margin:20px 2px 6px;color:var(--ink)}
-  .lrh-home-sub{font-size:15.5px;line-height:1.55;color:var(--ink2);margin:0 2px 16px;max-width:56ch}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  /* @design-system */
+  body{min-height:100vh}
+  .wrap{max-width:840px; margin:0 auto; padding:0 16px 56px}
   .lrh-startnew{display:inline-flex;align-items:center;margin:0 2px 16px;min-height:44px;padding:0 16px;
     border-radius:10px;background:var(--card2);border:1px solid var(--line);color:var(--ink);
     text-decoration:none;font-weight:700;font-size:.85rem;letter-spacing:.02em}
@@ -77,104 +54,6 @@
   .lrh-note{background:var(--card2);border-left:4px solid var(--amber);border:1px solid var(--line);
     color:var(--ink);font-size:.8rem;border-radius:12px;padding:12px 15px;margin-top:26px}
   .lrh-footer{text-align:center;color:var(--ink2);font-size:.76rem;margin-top:22px}
-  .lrh-sans{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
-  .lrh-hdr{position:sticky;top:0;z-index:30;background:var(--bg);padding:12px 14px 10px;
-    border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
-  .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;
-    color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .lrh-hdr button{background:var(--card);border:1px solid var(--line);color:var(--ink2);
-    font:700 11px inherit;letter-spacing:.08em;padding:9px 12px;border-radius:10px;cursor:pointer;
-    min-height:38px;white-space:nowrap}
-  .lrh-hdr button:hover{color:var(--ink)}
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
-  /* Body background/text now follow the -- theme tokens, not the old
-     --page/--brand-ink brand tokens — step 2 moves this whole page's content
-     (not just the header chrome from step 1) onto the new design language,
-     so it has to track the theme toggle everywhere, not just in .lrh-hdr. */
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--bg); color:var(--ink); line-height:1.45; font-size:16px; min-height:100vh}
-  .wrap{max-width:840px; margin:0 auto; padding:0 16px 56px}
-
-  header.top{background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-dark));
-    color:#fff; padding:26px 16px; border-bottom:5px solid var(--section)}
-  header.top .inner{max-width:840px; margin:0 auto; display:flex; align-items:center; gap:16px}
-  .logo{width:56px;height:56px;border-radius:11px;background:#fff;flex:0 0 auto;display:flex;
-    align-items:center;justify-content:center;font-weight:800;color:var(--brand-primary);
-    font-size:20px;letter-spacing:.5px;box-shadow:0 1px 3px rgba(0,0,0,.25)}
-  header.top h1{font-size:1.4rem; margin:0 0 3px}
-  header.top p{margin:0; opacity:.9; font-size:.88rem}
-
-  .intro{color:var(--muted); font-size:.9rem; margin:22px 2px 14px}
-
-  /* WS10.3 — "START NEW CASE": a motivated entry point to the same single destructive
-     control every tool already has (its own #resetmodal confirm + lrh- prefix sweep,
-     see CASE-STATE.md). This page has no CASESTATE of its own — nothing here reads or
-     writes localStorage — so it can't run that sweep directly; it links into a tool
-     with ?startnewcase=1, which that tool's own existing gate script reads on load to
-     open its own confirm. No second clearing path — see codes/peds/ob-neonatal/trauma's
-     matching WS10.3 note. */
-  .startnewcasebtn{display:inline-block; margin-top:12px; padding:11px 18px; border-radius:10px;
-    background:var(--brand-primary-dark); color:#fff; text-decoration:none; font-weight:700;
-    font-size:.85rem; letter-spacing:.02em}
-  .startnewcasebtn:hover{background:var(--brand-primary)}
-
-  /* ---- Search ---- */
-  .search{position:relative; margin:0 0 20px}
-  .search input{width:100%; font-size:1rem; padding:13px 42px 13px 15px; border:1px solid var(--brand-line);
-    border-radius:11px; background:var(--panel); color:var(--brand-ink); box-shadow:0 1px 2px rgba(16,42,67,.05)}
-  .search input:focus{outline:none; border-color:var(--brand-primary); box-shadow:0 0 0 3px rgba(0,85,150,.12)}
-  .search .ico{position:absolute; right:14px; top:50%; transform:translateY(-50%); color:var(--muted); font-size:1.05rem; pointer-events:none}
-  .results{list-style:none; margin:8px 0 0; padding:0; border:1px solid var(--brand-line); border-radius:11px;
-    overflow:hidden; background:var(--panel); box-shadow:0 4px 14px rgba(16,42,67,.08)}
-  .results[hidden]{display:none}
-  .results li{margin:0}
-  .results a{display:flex; align-items:baseline; gap:10px; justify-content:space-between; text-decoration:none;
-    color:inherit; padding:11px 14px; border-top:1px solid var(--brand-line)}
-  .results li:first-child a{border-top:none}
-  .results a:hover,.results a:focus{background:#f2f7fb; outline:none}
-  .results .r-title{font-weight:600; color:var(--brand-primary-dark); font-size:.95rem}
-  .results .r-cat{font-size:.72rem; color:var(--muted); white-space:nowrap; text-transform:uppercase; letter-spacing:.4px}
-  .results .r-none{padding:12px 14px; color:var(--muted); font-size:.88rem}
-
-  .grid{display:grid; gap:14px; grid-template-columns:1fr}
-  @media(min-width:600px){.grid{grid-template-columns:1fr 1fr}}
-
-  /* ---- AREA COLORS — one per category; edit here to recolor an area ----
-     (selectors are qualified with a.tool so they override the default below) */
-  a.tool.cat-pathways{--c:#2f7a3f}   /* green  · flow charts / clinical pathways */
-  a.tool.cat-ob{--c:#9b1c2e}         /* red    · OB & neonatal */
-  a.tool.cat-codes{--c:#2f62a8}      /* blue   · codes / resuscitation */
-  a.tool.cat-trauma{--c:#c26a1b}     /* orange · trauma */
-  a.tool.cat-peds{--c:#7a3fa0}       /* purple · pediatrics */
-  a.tool.cat-debrief{--c:#5a6a78}    /* slate  · debrief / team reflection */
-  a.tool.cat-procedures{--c:#0f7a86} /* teal   · rare high-stakes procedures */
-  a.tool.cat-posters{--c:#8a6011}    /* gold   · printable wall/cart posters */
-
-  a.tool{--c:var(--brand-primary); display:flex; flex-direction:column; text-decoration:none; color:inherit;
-    background:var(--panel); border:1px solid var(--brand-line); border-left:6px solid var(--c);
-    border-radius:12px; padding:16px 18px; box-shadow:0 1px 2px rgba(16,42,67,.05); transition:.14s}
-  a.tool:hover{transform:translateY(-2px); box-shadow:0 6px 18px rgba(16,42,67,.10)}
-  .cardhead{display:flex; align-items:center; gap:13px; margin-bottom:9px}
-  .ic{flex:0 0 auto; width:46px; height:46px; border-radius:11px; background:var(--c);
-    display:flex; align-items:center; justify-content:center}
-  .ic svg{width:30px; height:30px; display:block}
-  a.tool .name{font-weight:700; font-size:1.06rem; color:var(--brand-primary-dark); margin:0}
-  a.tool .desc{font-size:.85rem; color:var(--muted); flex:1}
-  a.tool .go{margin-top:12px; font-size:.82rem; font-weight:700; color:var(--c)}
-  a.tool .go::after{content:" \2192"}
-
-  /* Coming-soon: entire button grayed out (its area color returns when it goes live) */
-  .tool.soon{pointer-events:none; cursor:default; background:#eef1f4; border-left-color:#c3ccd4; box-shadow:none}
-  .tool.soon .ic{background:#aeb7c0}
-  .tool.soon .name{color:#8a949d}
-  .tool.soon .desc{color:#a3acb4}
-  .badge{display:inline-block; font-size:.66rem; font-weight:700; text-transform:uppercase;
-    letter-spacing:.5px; background:#e2e7ec; color:var(--muted); padding:2px 8px; border-radius:20px; margin-left:8px; vertical-align:middle}
-
-  .note{background:#fff8e1; border:1px solid #f2d999; color:#6d4c00; font-size:.8rem;
-    border-radius:9px; padding:12px 15px; margin-top:26px}
-  footer{text-align:center; color:var(--muted); font-size:.76rem; margin-top:22px}
 
   /* ---- Beta splash (site front door; shown every visit, stores nothing) ---- */
   #betasplash{position:fixed; inset:0; z-index:999; display:flex; flex-direction:column;
@@ -193,6 +72,13 @@
 </style>
 </head>
 <body data-theme="dark">
+<script>
+/* Apply a persisted theme before the page paints (shared lrh-pref- namespace;
+   outside any RESET prefix sweep — CASE-STATE.md). Keeps the theme choice in
+   sync across the whole manual and avoids a flash. */
+try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+catch(e){ document.body.dataset.theme='dark'; }
+</script>
 
 <!-- ===== SITE BETA SPLASH — first thing you see; dismiss to reveal the menu ===== -->
 <div id="betasplash" role="dialog" aria-modal="true" aria-label="Beta notice">
@@ -204,24 +90,13 @@
   <button type="button" id="betago">I UNDERSTAND &mdash; CONTINUE</button>
 </div>
 
-<div class="lrh-hdr">
-  <div class="crumb">LRH EMERGENCY MANUAL</div>
-  <button type="button" id="lrhThemeBtn">LIGHT</button>
+<div class="hdr">
+  <span class="plabel">EMERGENCY MANUAL</span>
+  <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
 </div>
 
-<header class="top">
-  <div class="inner">
-    <div class="logo">LRH</div>
-    <div>
-      <h1>Emergency Manual</h1>
-      <p>Littleton Regional Hospital &mdash; bedside decision-support aids</p>
-    </div>
-  </div>
-</header>
-
 <div class="wrap">
-  <h1 class="lrh-home-h1">LRH Emergency Manual</h1>
-  <p class="lrh-home-sub">Choose a category or search. Every tool shares one weight, one case clock, and one timeline.</p>
+  <h1 class="sr-only">LRH Emergency Manual</h1>
   <a class="lrh-startnew" href="codes/?from=home&amp;startnewcase=1#top">START NEW CASE</a>
 
   <!-- ===== SEARCH ===== -->
@@ -298,16 +173,18 @@
 </div>
 
 <script>
-/* ---- Theme toggle, chrome only. This page has no CASESTATE and stores
-   nothing (see the START NEW CASE note above) — the choice is NOT persisted,
-   matching that. Dark is the default every load. ---- */
+/* ---- Theme toggle. Persists via the shared lrh-pref-theme key (read before
+   paint by the inline script after <body>), so the choice follows you across
+   every tool in the manual. ---- */
 (function(){
   var b=document.getElementById('lrhThemeBtn');
   if(!b) return;
+  b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
   b.addEventListener('click', function(){
     var dark = document.body.dataset.theme!=='light';
     document.body.dataset.theme = dark ? 'light' : 'dark';
     b.textContent = dark ? 'DARK' : 'LIGHT';
+    try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
   });
 })();
 /* ---- Beta splash: dismiss on tap. Stores nothing (shows every visit). ---- */
@@ -342,7 +219,7 @@
     {t:"Umbilical cord prolapse", c:"OB & Neonatal", k:"cord prolapse presenting", u:"ob-neonatal/?from=home#c09"},
     {t:"OB / neonatal cart — drawer contents", c:"OB & Neonatal", k:"cart drawer equipment supplies where is", u:"ob-neonatal/?from=home#cart"},
     {t:"Code cart — drawer contents", c:"Codes", k:"code cart drawer equipment supplies where is intubation IV medications suction surgical omnicell anaphylaxis stemi stroke box", u:"codes/?from=home#cart"},
-    {t:"Cardiac Arrest — VF/VT · PEA/Asystole (adult & pediatric/PALS)", c:"Codes", k:"code cart cardiac arrest ventricular fibrillation tachycardia defibrillation shock epinephrine amiodarone lidocaine cpr acls pea asystole non-shockable reversible causes h's and t's pals pediatric weight-based broselow resuscitation", u:"codes/?from=home#c01"},
+    {t:"Cardiac Arrest — VF/VT · PEA/Asystole (adult & pediatric/PALS)", c:"Arrest", k:"code cart cardiac arrest ventricular fibrillation tachycardia defibrillation shock epinephrine amiodarone lidocaine cpr acls pea asystole non-shockable reversible causes h's and t's pals pediatric weight-based broselow resuscitation rescue breathing apnea dsed vector change refractory", u:"arrest/?from=home"},
     {t:"Post-ROSC Care", c:"Codes", k:"post rosc return of spontaneous circulation post arrest care post-arrest first 20 minutes after arrest targeted temperature management ttm cooling oxygenation ventilation blood pressure map 12-lead ekg neuroprognostication code", u:"codes/?from=home#c22"},
     {t:"Massive Hematemesis", c:"Codes", k:"hematemesis massive gi bleed upper gastrointestinal bleeding vomiting blood coffee ground variceal varices esophageal cirrhosis liver portal hypertension octreotide ceftriaxone ppi pantoprazole txa halt-it blakemore sengstaken minnesota balloon tamponade endoscopy egd salad suction aortoenteric fistula transfusion mtp exsanguinating code", u:"codes/?from=home#c23"},
     {t:"Massive Hemoptysis", c:"Codes", k:"hemoptysis massive coughing up blood lung bleeding bronchial artery embolization bae lung isolation mainstem bronchial blocker double lumen tube nebulized txa tranexamic bleeding side down asphyxiation ett 8.0 code", u:"codes/?from=home#c24"},

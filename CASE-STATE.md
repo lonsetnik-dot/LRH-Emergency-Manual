@@ -30,6 +30,31 @@ Every key here is device-local and PHI-free — see the PHI guard note under
 | `lrh-case-lastactive` | epoch ms (string) | codes, ob, peds, trauma | codes, ob, peds, trauma | As of WS2.5, every tool touches this on load and on every click — not just peds. Drives each tool's inactivity auto-clear guard: past 60 minutes stale AND `CASESTATE.anyClockRunning()` false (checked across *all* tools' `lrh-case-clocks`, not just the current one) triggers the same `lrh-` prefix sweep RESET FOR NEXT CASE uses (WS2.4), with a dismissible banner instead of a silent clear. See the "Inactivity auto-clear" section below. |
 | `lrh-pref-mute` | `'0'` \| `'1'` | codes | codes | A **preference**, not case state — survives RESET. Only codes persists a mute setting today; ob-neonatal's mute is in-memory only (resets on reload) and peds has no mute control. Extending persistence to ob/peds is new functionality, not migration, and was left out of WS0. |
 
+### arrest/ — the standalone VF/arrest engine
+
+`arrest/index.html` is the redesigned cardiac-arrest cognitive aid and is the
+same clinical card as Codes `#c01` (the hand-off points `#c01` at it). It
+participates in the shared contract like every other tool, via its own
+independently-copied bridge (the `SS` object in that file):
+
+- **Reads** `lrh-case-wtkg`, `lrh-case-ageyrs`, `lrh-case-adultoverride` on load,
+  so a weight/age/override set anywhere in the manual carries in.
+- **Writes** `lrh-case-wtkg` + `lrh-case-wtsrc` (`measured`|`estimated`) +
+  `lrh-case-wtms` when weight is entered/estimated, `lrh-case-ageyrs` on age
+  entry, and `lrh-case-adultoverride` on the adult-override toggle.
+- **Writes** `lrh-case-log` for every logged event, tagged `tool:'codes',
+  card:'01'` (it *is* the Codes arrest card), through the same PHI guard
+  (weight-shaped / 6+-digit labels refused). Its in-tool EVENT LOG accordion is a
+  separate in-memory view of the same events.
+- **Touches** `lrh-case-lastactive` on load and every click (WS2.5).
+- **RESET** runs the shared `lrh-` prefix sweep (preserving `lrh-pref-`), same as
+  every other tool's RESET FOR NEXT CASE (re-inits its state in memory rather
+  than reloading — its single module needs no reload to re-read empty state).
+- **Does not yet** write the running-code `lrh-case-clocks`
+  (`cprCycle`/`epi`/`rosc`), `lrh-case-counts` (`shocks`/`epi`/`amio`), or
+  `lrh-case-startms` — a mid-code reload still restarts the engine. That
+  resilience step is deferred (arrest integration plan, later PR).
+
 ### Clock names currently in `lrh-case-clocks`
 
 | Name | Set by | Meaning |

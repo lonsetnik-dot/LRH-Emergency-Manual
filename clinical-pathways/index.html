@@ -2,112 +2,45 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#005596">
 <title>Clinical Pathways &middot; LRH Emergency Manual</title>
 <style>
-  /* Shared skeleton — same variables/classes as the landing page and tools. */
-  :root{
-    --brand-primary:#005596; --brand-primary-dark:#003e6e; --brand-secondary:#6cb33f;
-    --brand-ink:#1f2933; --muted:#5b6672; --brand-line:#e2e7ec; --panel:#fff; --page:#eef2f5;
-    --section:#2f7a3f; /* Clinical Pathways = green */
-  }
-  /* Design-language tokens. Step 1 added header-only; step 2 (this pass)
-     moves the whole page's content onto the same token set — see the
-     "category index" pattern in DESIGN_LANGUAGE.md section 5. No Google
-     Fonts, system stacks only (CLAUDE.md rule 1). */
-  body[data-theme]{
-    --bg:#0D1420; --card:#161F2E; --card2:#1D2A3C; --ink:#EAF0F7; --ink2:#8FA0B5;
-    --line:rgba(255,255,255,.10); --accent:#2FA372;
-  }
-  body[data-theme="light"]{
-    --bg:#EFF2F5; --card:#FFFFFF; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D;
-    --line:rgba(15,35,60,.13); --accent:#00693E;
-  }
-  .lrh-mono{font-family:ui-monospace,"SF Mono",Menlo,"JetBrains Mono",monospace}
-  .lrh-idx-h1{font-size:26px;font-weight:800;margin:20px 2px 4px;color:var(--ink)}
-  .lrh-idx-sub{font-size:15px;line-height:1.55;color:var(--ink2);margin:0 2px 16px;max-width:56ch}
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  /* @design-system */
+  /* ---- Page-specific layout. Tokens, the .hdr chrome bar, .sr-only, .lrh-mono,
+     the .lrh-row menu rows and the themed body all come from the shared
+     design-system.css injected at the marker above (build.mjs) — edited once,
+     for the whole manual. Only this index page's own grid/group-heading/note
+     live here. ---- */
+  .wrap{max-width:840px; margin:0 auto; padding:0 16px 56px}
   .lrh-group-hd{display:flex;align-items:center;gap:9px;margin:18px 2px 8px}
   .lrh-group-hd .dot{width:10px;height:10px;border-radius:3px;background:var(--accent);flex:none}
   .lrh-group-hd .label{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--ink2)}
   .lrh-group-hd .rule{flex:1;height:1px;background:var(--line)}
   .lrh-row-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:8px}
-  .lrh-row{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);
-    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);
-    border-radius:12px;padding:14px;min-height:62px;cursor:pointer}
-  .lrh-row .n{display:none;font-size:15px;font-weight:700;color:var(--accent);flex:none}
-  .lrh-row .t{font-size:16.5px;font-weight:700;line-height:1.3}
-  .lrh-row .spacer{flex:1}
-  .lrh-row .tag{font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--ink2);white-space:nowrap}
-  .lrh-hdr{position:sticky;top:0;z-index:30;background:var(--bg);padding:12px 14px 10px;
-    border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
-  .lrh-hdr a.lrh-back{background:var(--card);border:1px solid var(--line);color:var(--ink2);
-    font:700 11px inherit;letter-spacing:.06em;padding:9px 12px;border-radius:10px;text-decoration:none;
-    min-height:38px;display:inline-flex;align-items:center;white-space:nowrap}
-  .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;
-    color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .lrh-hdr button{background:var(--card);border:1px solid var(--line);color:var(--ink2);
-    font:700 11px inherit;letter-spacing:.08em;padding:9px 12px;border-radius:10px;cursor:pointer;
-    min-height:38px;white-space:nowrap}
-  .lrh-hdr button:hover{color:var(--ink,#141E2B)}
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0}
-  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--bg); color:var(--ink); line-height:1.45; font-size:16px; min-height:100vh}
-  .wrap{max-width:840px; margin:0 auto; padding:0 16px 56px}
-
-  header.top{background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-dark));
-    color:#fff; padding:26px 16px; border-bottom:5px solid var(--section)}
-  header.top .inner{max-width:840px; margin:0 auto; display:flex; align-items:center; gap:16px}
-  .logo{width:56px;height:56px;border-radius:11px;background:#fff;flex:0 0 auto;display:flex;
-    align-items:center;justify-content:center;font-weight:800;color:var(--brand-primary);
-    font-size:20px;letter-spacing:.5px;box-shadow:0 1px 3px rgba(0,0,0,.25)}
-  header.top h1{font-size:1.4rem; margin:0 0 3px}
-  header.top p{margin:0; opacity:.9; font-size:.88rem}
-
-  .crumb{margin:18px 2px 4px; font-size:.85rem}
-  .crumb a{color:var(--brand-primary); text-decoration:none}
-  .crumb a:hover{text-decoration:underline}
-  .intro{color:var(--muted); font-size:.9rem; margin:8px 2px 18px}
-
-  .grid{display:grid; gap:14px; grid-template-columns:1fr}
-  @media(min-width:600px){.grid{grid-template-columns:1fr 1fr}}
-
-  a.tool{display:flex; flex-direction:column; text-decoration:none; color:inherit;
-    background:var(--panel); border:1px solid var(--brand-line); border-left:5px solid var(--brand-primary);
-    border-radius:12px; padding:17px 18px; box-shadow:0 1px 2px rgba(16,42,67,.05); transition:.14s}
-  a.tool:hover{transform:translateY(-2px); box-shadow:0 6px 18px rgba(16,42,67,.10); border-left-color:var(--brand-secondary)}
-  a.tool .name{font-weight:700; font-size:1.02rem; color:var(--brand-primary-dark); margin-bottom:4px}
-  a.tool .desc{font-size:.85rem; color:var(--muted); flex:1}
-  a.tool .go{margin-top:12px; font-size:.82rem; font-weight:600; color:var(--brand-primary)}
-  a.tool .go::after{content:" \2192"}
-  .badge{display:inline-block; font-size:.68rem; font-weight:700; text-transform:uppercase;
-    letter-spacing:.5px; background:#eef2f5; color:var(--muted); padding:2px 8px; border-radius:20px; margin-left:8px; vertical-align:middle}
-
-  .note{background:var(--card2); border:1px solid var(--line); border-left:4px solid #F0B429;
+  .note{background:var(--card2); border:1px solid var(--line); border-left:4px solid var(--amber);
     color:var(--ink); font-size:.8rem; border-radius:9px; padding:12px 15px; margin-top:26px}
   footer{text-align:center; color:var(--ink2); font-size:.76rem; margin-top:22px}
 </style>
 </head>
 <body data-theme="dark">
-<div class="lrh-hdr">
-  <a class="lrh-back" href="../?from=tool">&larr; MANUAL</a>
-  <div class="crumb">CLINICAL PATHWAYS</div>
-  <button type="button" id="lrhThemeBtn">LIGHT</button>
+<script>
+/* Apply a persisted theme before the page paints (shared lrh-pref- namespace;
+   outside any RESET prefix sweep — CASE-STATE.md). Keeps the theme choice in
+   sync with the rest of the manual and avoids a flash. */
+try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+catch(e){ document.body.dataset.theme='dark'; }
+</script>
+<div class="hdr">
+  <a class="ghost" href="../?from=tool">◀ MANUAL</a>
+  <span class="plabel">CLINICAL PATHWAYS</span>
+  <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
 </div>
-<header class="top">
-  <div class="inner">
-    <div class="logo">LRH</div>
-    <div>
-      <h1>Clinical Pathways</h1>
-      <p>Littleton Regional Hospital Emergency Manual</p>
-    </div>
-  </div>
-</header>
 
 <div class="wrap">
-  <h1 class="lrh-idx-h1">Clinical Pathways</h1>
-  <p class="lrh-idx-sub">Accelerated diagnostic and treatment pathways. Tap a pathway to open it.</p>
+  <h1 class="sr-only">Clinical Pathways</h1>
 
   <div class="lrh-group-hd"><span class="dot"></span><span class="label">PATHWAYS</span><span class="rule"></span></div>
   <div class="lrh-row-grid">
@@ -152,15 +85,17 @@
   <footer>Littleton Regional Hospital Emergency Manual &mdash; personal, unofficial reference &middot; Beta</footer>
 </div>
 <script>
-/* Theme toggle, chrome only — this page stores nothing, so the choice is not
-   persisted (matches its current no-storage architecture). Dark by default. */
+/* Theme toggle — persists via the shared lrh-pref-theme key (read before paint
+   by the inline script after <body>), matching the rest of the manual. */
 (function(){
   var b=document.getElementById('lrhThemeBtn');
   if(!b) return;
+  b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
   b.addEventListener('click', function(){
     var dark = document.body.dataset.theme!=='light';
     document.body.dataset.theme = dark ? 'light' : 'dark';
     b.textContent = dark ? 'DARK' : 'LIGHT';
+    try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
   });
 })();
 </script>
