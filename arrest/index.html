@@ -432,7 +432,48 @@ var PHI = [
 ];
 function phiReason(t){ for(var i=0;i<PHI.length;i++){ if(PHI[i].re.test(t)) return PHI[i].why; } return null; }
 
-function log(label){ S.events.unshift({ t: clockNow(), label: label }); }
+/* ---- SHARED CASE-STATE bridge (CASE-STATE.md) -----------------------------
+   arrest/ is the manual's VF/arrest engine, so it shares the SAME cross-tool
+   localStorage contract every other tool uses: one weight, one timeline, one
+   RESET. It touches ONLY the documented keys and value shapes. Its log entries
+   are tagged tool:'codes', card:'01' because this IS the Codes arrest card
+   (the standalone page and codes #c01 are the same clinical card). It does NOT
+   yet persist the running-code clocks/counts — that's the deferred resilience
+   step; a mid-code reload still restarts here, unchanged from before. */
+var SS = {
+  get:function(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set:function(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+  del:function(k){ try{ localStorage.removeItem(k); }catch(e){} },
+  loadWeight:function(){
+    var w=parseFloat(SS.get('lrh-case-wtkg')); S.kg=(w>0&&w<300)?w:null;
+    var a=parseFloat(SS.get('lrh-case-ageyrs')); S.ageY=(a>=0&&a<130)?a:null;
+    S.override = SS.get('lrh-case-adultoverride')==='1';
+  },
+  saveWeight:function(src){
+    if(S.kg!==null){ SS.set('lrh-case-wtkg',String(S.kg)); SS.set('lrh-case-wtsrc',src||'measured'); SS.set('lrh-case-wtms',String(Date.now())); }
+    else { SS.del('lrh-case-wtkg'); SS.del('lrh-case-wtsrc'); SS.del('lrh-case-wtms'); }
+    if(S.ageY!==null) SS.set('lrh-case-ageyrs',String(S.ageY)); else SS.del('lrh-case-ageyrs');
+  },
+  saveOverride:function(){ if(S.override) SS.set('lrh-case-adultoverride','1'); else SS.del('lrh-case-adultoverride'); },
+  /* Shared timeline. Same PHI guard shape as every tool's CASESTATE.addLog:
+     refuse weight-shaped labels and long digit runs so nothing identifying,
+     and no bare patient weight, ever lands in the shared record. */
+  addLog:function(label){
+    if(/\d+(\.\d+)?\s*(kg|lb)/i.test(label)) return;
+    if(/\d{6,}/.test(label)) return;
+    var arr; try{ arr=JSON.parse(SS.get('lrh-case-log')||'[]'); }catch(e){ arr=[]; }
+    if(!Array.isArray(arr)) arr=[];
+    arr.push({ tMs:Date.now(), tool:'codes', card:'01', label:label });
+    SS.set('lrh-case-log', JSON.stringify(arr));
+  },
+  sweep:function(){ try{ for(var i=localStorage.length-1;i>=0;i--){ var k=localStorage.key(i);
+    if(k && k.indexOf('lrh-')===0 && k.indexOf('lrh-pref-')!==0) localStorage.removeItem(k); } }catch(e){} },
+  touchActive:function(){ SS.set('lrh-case-lastactive', String(Date.now())); }
+};
+
+/* Every logged event goes to BOTH the in-tool event-log accordion (in-memory
+   S.events) and the shared manual-wide timeline (lrh-case-log, PHI-guarded). */
+function log(label){ S.events.unshift({ t: clockNow(), label: label }); SS.addLog(label); }
 
 function kg(){ var k=S.kg; return (k>0 && k<300) ? k : null; }
 function autoPeds(){ var k=kg(); return (k!==null && k<SITE.trigger.maxKg) || (S.ageY!==null && S.ageY<=SITE.trigger.maxAgeYrs); }
@@ -860,6 +901,11 @@ function toCPR(why){
 }
 function doReset(){
   MET.stop(); VENT.stop();
+  /* One case, one reset: sweep the shared lrh- namespace (preserving the
+     lrh-pref- preferences) so a reset here clears weight, timeline and every
+     other tool's case state too — the same sweep RESET FOR NEXT CASE runs
+     everywhere else (CASE-STATE.md). Then re-init this tool in memory. */
+  SS.sweep();
   S = { theme:S.theme, kg:null, ageY:null, phase:'idle', codeStart:null, cycleStart:null,
         shocks:0, epiN:0, lastEpiAt:null, amioN:0, airway:false, roles:false,
         override:false, pedsDismissed:false, events:[], open:null, met:false,
@@ -867,6 +913,7 @@ function doReset(){
         rhythm:null, breaths:0, lastBeatAt:null, pulseFrom:null,
         respSpont:false, ventMuted:false };
   $('wIn').value=''; $('aIn').value=''; $('customin').value=''; $('customin2').value='';
+  SS.touchActive();
   paint();
 }
 
@@ -889,8 +936,9 @@ function wire(){
     if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){ S.resetArm=false; paint(); },2500); return; }
     doReset();
   });
-  $('wIn').addEventListener('input', function(e){ var v=parseFloat(e.target.value); S.kg = v>0?v:null; paint(); });
-  $('aIn').addEventListener('input', function(e){ var v=parseFloat(e.target.value); S.ageY = (v>=0&&v<130)?v:null; paint(); });
+  $('wIn').addEventListener('input', function(e){ var v=parseFloat(e.target.value); S.kg = v>0?v:null; SS.saveWeight('measured'); paint(); });
+  $('aIn').addEventListener('input', function(e){ var v=parseFloat(e.target.value); S.ageY = (v>=0&&v<130)?v:null;
+    if(S.ageY!==null) SS.set('lrh-case-ageyrs',String(S.ageY)); else SS.del('lrh-case-ageyrs'); paint(); });
   $('estbtn').addEventListener('click', function(){
     var a=S.ageY; if(!(a>=0)) return;
     /* Age-to-weight, the manual's own rule: under 1 y from months, otherwise
@@ -899,16 +947,19 @@ function wire(){
     var est = a<1 ? (4 + Math.round(a*12)*0.5) : Math.min(2*a+8, 70);
     est = Math.round(est*10)/10;
     S.kg = est; $('wIn').value = String(est);
+    SS.saveWeight('estimated');
     log('Weight ESTIMATED from age — '+est+' kg (not measured)');
     paint();
   });
   $('dismisspeds').addEventListener('click', function(){
     S.override=true; S.pedsDismissed=true;
+    SS.saveOverride();
     log('Pediatric trigger overridden — treating as adult');
     paint();
   });
   $('undooverride').addEventListener('click', function(){
     S.override=false; S.pedsDismissed=false;
+    SS.saveOverride();
     log('Adult override undone — back to pediatric dosing');
     paint();
   });
@@ -1040,6 +1091,13 @@ function wire(){
   });
 }
 
+/* Join the shared case: pick up a weight/age set in another tool, and keep the
+   manual-wide "last active" heartbeat fresh on load and on every tap (WS2.5). */
+SS.loadWeight();
+if(S.kg!==null) $('wIn').value = String(S.kg);
+if(S.ageY!==null) $('aIn').value = String(S.ageY);
+SS.touchActive();
+document.addEventListener('click', SS.touchActive, true);
 wire();
 paint();
 setInterval(paint, 200);

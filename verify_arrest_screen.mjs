@@ -41,7 +41,16 @@ await pg.addInitScript(() => {
 const skew = async ms => { await pg.evaluate(v => { window.__skew = v; }, ms); await pg.waitForTimeout(400); };
 
 const txt = async sel => (await pg.locator(sel).innerText()).replace(/\s+/g, ' ').trim();
-const fresh = async () => { await pg.goto(BASE + '/arrest/', { waitUntil: 'networkidle' }); await pg.waitForTimeout(300); };
+/* A clean slate per test group. The tool now shares the manual's lrh- case
+   state (weight, timeline, lastactive), so isolation requires clearing storage
+   between groups — otherwise a weight or log entry set in one group leaks into
+   the next through the shared keys. */
+const fresh = async () => {
+  await pg.goto(BASE + '/arrest/', { waitUntil: 'networkidle' });
+  await pg.evaluate(() => localStorage.clear());
+  await pg.reload({ waitUntil: 'networkidle' });
+  await pg.waitForTimeout(300);
+};
 const vis = async sel => pg.locator(sel).isVisible();
 const nBreaths = async () => parseInt(await txt('#breathn'), 10);
 const openAcc = async id => { await pg.click('[data-acc="' + id + '"]'); await pg.waitForTimeout(250);
@@ -161,10 +170,16 @@ ck('8. a clinical note is accepted', await pg.locator('#customwarn').isVisible()
 await pg.click('[data-acc="log"]'); await pg.waitForTimeout(250);
 ck('8. it reaches the log', /IO placed right tibia/.test(await txt('.accb')), true);
 ck('8. the refused text never reached the log', /4471129/.test(await txt('.accb')), false);
-/* The tool joins the manual's shared theme pref (lrh-pref-theme) but persists no
-   case data or PHI. Assert that nothing OTHER than that shared pref is written. */
-ck('8. no case data or PHI is persisted to storage', await pg.evaluate(() =>
-  Object.keys(localStorage).filter(k => k !== 'lrh-pref-theme').length), 0);
+/* The tool now shares the manual's ONE timeline: the accepted note lands in the
+   shared, PHI-guarded lrh-case-log (tagged as the Codes arrest card); the
+   refused identifier reaches neither the log nor storage; and only documented
+   case/pref keys are ever written — no raw PHI, no undocumented key. */
+const s8 = JSON.parse(await pg.evaluate(() => JSON.stringify({
+  log: localStorage.getItem('lrh-case-log') || '', keys: Object.keys(localStorage) })));
+ck('8. the accepted note reached the shared timeline', /IO placed right tibia/.test(s8.log), true);
+ck('8. the refused identifier never reached the shared timeline', /4471129/.test(s8.log), false);
+ck('8. only documented case/pref keys are persisted',
+  s8.keys.every(k => k.startsWith('lrh-case-') || k.startsWith('lrh-pref-')), true);
 
 /* ---- 9. metronome starts with the code clock ---- */
 await fresh();
@@ -342,9 +357,12 @@ ck('18. with the same explanation', /mentions a record or account number/.test(a
 await pg.fill('#customin2', 'naloxone 0.4 mg IV, chest rising');
 await pg.click('#customlog2'); await pg.waitForTimeout(250);
 ck('18. a clinical note is accepted', await vis('#customrow2'), false);
-ck('18. and reaches the shared log', /naloxone 0\.4 mg IV, chest rising/.test(await openAcc('log')), true);
-ck('18. nothing but the shared theme pref was written to localStorage', await pg.evaluate(() =>
-  Object.keys(localStorage).filter(k => k !== 'lrh-pref-theme').length), 0);
+ck('18. and reaches the in-tool log', /naloxone 0\.4 mg IV, chest rising/.test(await openAcc('log')), true);
+const s18 = JSON.parse(await pg.evaluate(() => JSON.stringify({
+  log: localStorage.getItem('lrh-case-log') || '', keys: Object.keys(localStorage) })));
+ck('18. and the shared manual-wide timeline', /naloxone 0\.4 mg IV, chest rising/.test(s18.log), true);
+ck('18. only documented case/pref keys are persisted',
+  s18.keys.every(k => k.startsWith('lrh-case-') || k.startsWith('lrh-pref-')), true);
 
 /* ---- 19. the rescue-breathing reference, with its sources ------------------ */
 await fresh();
