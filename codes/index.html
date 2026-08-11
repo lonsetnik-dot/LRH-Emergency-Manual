@@ -57,7 +57,7 @@
   .lrh-row{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--lrh-ink);
     background:var(--lrh-card);border:1px solid var(--lrh-line);border-left:4px solid var(--cc,var(--lrh-accent));
     border-radius:12px;padding:14px;min-height:56px;cursor:pointer}
-  .lrh-row .n{font-size:15px;font-weight:700;color:var(--cc,var(--lrh-accent));flex:none;width:24px}
+  .lrh-row .n{display:none;font-size:15px;font-weight:700;color:var(--cc,var(--lrh-accent));flex:none;width:24px}
   .lrh-row .t{font-size:16.5px;font-weight:700;line-height:1.25}
   /* Beats the page's pre-existing "a:hover{color:#16324f}" rule (higher specificity
      than a single class) which would otherwise turn row text dark-on-dark on hover
@@ -348,7 +348,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <div class="lrh-filter">
         <span class="ico" aria-hidden="true">&#8981;</span>
         <input type="search" id="menuFilter" autocomplete="off" spellcheck="false" autofocus
-          placeholder="Filter this list&hellip;" aria-label="Filter this list" aria-controls="menu">
+          placeholder="Search&hellip;" aria-label="Search" aria-controls="menu">
       </div>
       <p class="lrh-filter-empty" id="menuFilterEmpty" hidden>No matches. Try a different term.</p>
 
