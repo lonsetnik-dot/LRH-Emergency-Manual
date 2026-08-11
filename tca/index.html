@@ -160,7 +160,7 @@ a{color:var(--blue);text-decoration:none}
     <div id="worksteps"></div>
 
     <!-- computed doses / targets -->
-    <div class="sec" style="margin-top:18px;letter-spacing:.12em">DOSES &amp; TARGETS</div>
+    <div class="sec" style="margin-top:18px;letter-spacing:.12em">BLOOD-PRESSURE TARGET</div>
     <div class="card" style="margin-top:8px;overflow:hidden" id="dosebox"></div>
 
     <!-- decision point -->
@@ -276,8 +276,13 @@ var SITE = {
   hysterotomyByMin: 10,                  /* aim to deliver within this from arrest */
   fluid: { crystalloidMlPerKg: 20, bloodRatio: "1:1:1" },
   txa:  { adult: "1 g IV over 10 min, then 1 g over 8 h", pedsMgPerKg: 15, pedsMaxMg: 1000 },
+  /* Calcium: adults get an empiric fixed dose with transfusion; children are
+     weight-based. CaCl2 10% 20 mg/kg (max 1 g) or Ca gluconate 10% 50 mg/kg
+     (max 3 g). Target ionized calcium 1.1–1.3 mmol/L. */
   cal:  { ionizedLow: 1.1, ionizedHigh: 1.3,
-          give: "1 g calcium chloride (or 3 g calcium gluconate) IV with transfusion" },
+          adultChlorideG: 1, adultGluconateG: 3,
+          pedsChlorideMgPerKg: 20, pedsChlorideMaxMg: 1000,
+          pedsGluconateMgPerKg: 50, pedsGluconateMaxMg: 3000 },
   bp:   { sbp: 90, mapLow: 50, mapHigh: 60, tbiSbp: 110, tbiMap: 80 },
   trigger: { maxKg: 50, maxAgeYrs: 12 }, /* weight-based (peds) dosing threshold */
   /* ---- Site-specific strings — genericized from the RMH original ---------- */
@@ -316,9 +321,10 @@ var WORK = [
  ]},
  { id:'V', name:'CIRCULATION — ACCESS & REPLACE', color:'var(--amber)', aim:'Get big access and replace with blood', tasks:[
    'Access — AVA 3Xi / large-bore resuscitation line, or IO (humeral head first)',
-   'Massive transfusion protocol — blood {ratio}, lead with blood products',
+   'Crystalloid {crystalloid} — the max while waiting for blood',
+   'Massive transfusion — blood {ratio}, lead with blood products',
    'Tranexamic acid — {txa}',
-   'Keep ionized calcium {caLow}–{caHigh} mmol/L — {calGive}'
+   'Calcium — {calcium}; keep ionized {caLow}–{caHigh} mmol/L'
  ], links:[
    {label:'AVA 3Xi / resus line', href:'../procedures/?from=home#c14'},
    {label:'Massive transfusion', href:'../codes/?from=home#c12'}
@@ -379,9 +385,19 @@ function doseModel(){
   } else {
     txa = SITE.txa.adult;
   }
-  return { crystalloid:crystalloid, txa:txa,
+  /* Calcium: weight-based in children (CaCl2 20 mg/kg max 1 g, or Ca gluconate
+     50 mg/kg max 3 g); adults get the empiric fixed dose with transfusion. */
+  var C=SITE.cal, calcium;
+  if(p){
+    calcium = k!==null
+      ? ('CaCl₂ '+Math.round(Math.min(C.pedsChlorideMgPerKg*k, C.pedsChlorideMaxMg))+' mg ('+C.pedsChlorideMgPerKg+' mg/kg) or Ca gluconate '+
+         Math.round(Math.min(C.pedsGluconateMgPerKg*k, C.pedsGluconateMaxMg))+' mg ('+C.pedsGluconateMgPerKg+' mg/kg)')
+      : ('CaCl₂ '+C.pedsChlorideMgPerKg+' mg/kg (max '+C.pedsChlorideMaxMg+' mg) or Ca gluconate '+C.pedsGluconateMgPerKg+' mg/kg (max '+C.pedsGluconateMaxMg+' mg)');
+  } else {
+    calcium = C.adultChlorideG+' g calcium chloride (or '+C.adultGluconateG+' g calcium gluconate) IV';
+  }
+  return { crystalloid:crystalloid, txa:txa, calcium:calcium,
     blood:'Blood products '+SITE.fluid.bloodRatio+' — lead with blood, not crystalloid',
-    calcium:SITE.cal.give+' — keep ionized calcium '+SITE.cal.ionizedLow+'–'+SITE.cal.ionizedHigh+' mmol/L',
     bp:'SBP '+SITE.bp.sbp+' (MAP '+SITE.bp.mapLow+'–'+SITE.bp.mapHigh+'); head injury SBP '+SITE.bp.tbiSbp+' (MAP '+SITE.bp.tbiMap+')' };
 }
 
@@ -389,9 +405,10 @@ function doseModel(){
 function fillTokens(t){
   var dm=doseModel();
   return t.replace('{ratio}', SITE.fluid.bloodRatio)
+          .replace('{crystalloid}', dm.crystalloid)
           .replace('{txa}', dm.txa)
+          .replace('{calcium}', dm.calcium)
           .replace('{caLow}', SITE.cal.ionizedLow).replace('{caHigh}', SITE.cal.ionizedHigh)
-          .replace('{calGive}', SITE.cal.give)
           .replace('{surgeon}', SITE.local.surgeon)
           .replace('{gest}', SITE.pregGestWeeks).replace('{hyst}', SITE.hysterotomyByMin);
 }
@@ -415,6 +432,15 @@ function renderWork(){
          '</div>'+
          '<span class="mono" style="font-size:12px;color:var(--ink2);flex:none">'+done+'/'+total+'</span>'+
        '</div>';
+    /* Links sit directly under the header (mid-box), highlighted — not buried
+       at the bottom past all the checkboxes. */
+    if(it.links && it.links.length){
+      h+='<div style="display:flex;flex-wrap:wrap;gap:8px;padding:0 14px 12px">';
+      for(var L=0; L<it.links.length; L++){
+        h+='<a href="'+it.links[L].href+'" class="wlink" style="border-color:'+it.color+';color:'+it.color+'">'+it.links[L].label+' &rsaquo;</a>';
+      }
+      h+='</div>';
+    }
     for(var i=0;i<total;i++){
       var key=it.id+i, on=!!S.checked[key], txt=fillTokens(it.tasks[i]);
       h+='<button class="wrow" type="button" data-task="'+key+'">'+
@@ -422,25 +448,18 @@ function renderWork(){
            '<span class="wtext" style="'+(on?'opacity:.5;text-decoration:line-through':'')+'">'+txt+'</span>'+
          '</button>';
     }
-    if(it.links && it.links.length){
-      h+='<div style="display:flex;flex-wrap:wrap;gap:8px;padding:11px 14px;border-top:1px solid var(--line)">';
-      for(var L=0; L<it.links.length; L++){
-        h+='<a href="'+it.links[L].href+'" class="wlink" style="border-color:'+it.color+';color:'+it.color+'">'+it.links[L].label+' &rsaquo;</a>';
-      }
-      h+='</div>';
-    }
     h+='</div>';
   }
   $('worksteps').innerHTML=h;
 }
 
+/* The weight-based fluid/med numbers now live inline in the CIRCULATION card.
+   This box carries the one thing that is a target rather than a task — the
+   resuscitation blood pressure, which also matters post-ROSC. */
 function renderDoses(){
-  var dm=doseModel(), rows=[
-    ['Crystalloid', dm.crystalloid, 'the max while waiting for blood — switch to blood as soon as it arrives', 'var(--amber)'],
-    ['Blood', 'Products '+SITE.fluid.bloodRatio, 'lead with blood, not crystalloid', 'var(--red)'],
-    ['TXA', dm.txa, 'give early', 'var(--red)'],
-    ['Calcium', SITE.cal.give, 'keep ionized '+SITE.cal.ionizedLow+'–'+SITE.cal.ionizedHigh+' mmol/L', 'var(--blue)'],
-    ['BP target', 'SBP '+SITE.bp.sbp+' · MAP '+SITE.bp.mapLow+'–'+SITE.bp.mapHigh, 'head injury: SBP '+SITE.bp.tbiSbp+' · MAP '+SITE.bp.tbiMap, 'var(--green)']
+  var rows=[
+    ['BP target', 'SBP '+SITE.bp.sbp+' · MAP '+SITE.bp.mapLow+'–'+SITE.bp.mapHigh, 'permissive hypotension until bleeding is controlled', 'var(--green)'],
+    ['If head injury', 'SBP '+SITE.bp.tbiSbp+' · MAP '+SITE.bp.tbiMap, 'do not run low with a suspected TBI', 'var(--amber)']
   ], h='';
   for(var i=0;i<rows.length;i++){
     h+='<div style="display:flex;gap:12px;align-items:baseline;padding:12px 14px;'+(i<rows.length-1?'border-bottom:1px solid var(--line)':'')+'">'+
@@ -481,7 +500,7 @@ var ACC = [
      '<p><b>Access:</b> place <b>big</b> access early — an <a href="../procedures/?from=home#c14">AVA 3Xi / large-bore resuscitation line</a>, or two large-bore IVs. If the shocked state makes peripheral access slow, go to <b>IO — humeral head first</b> '+
      '(faster flow than the tibia, and it avoids blood loss into the pelvic/splanchnic circulation).</p>'+
      '<p><b>Replace with blood.</b> Crystalloid <b>'+dm.crystalloid+'</b> is the <b>max while waiting for blood</b> — switch to <a href="../codes/?from=home#c12">massive transfusion</a> as soon as it arrives, '+
-     'blood products <b>'+SITE.fluid.bloodRatio+'</b>, leading with blood. Keep <b>ionized calcium '+SITE.cal.ionizedLow+'–'+SITE.cal.ionizedHigh+' mmol/L</b> ('+SITE.cal.give+') and run '+SITE.local.viscoelastic+' early.</p>'+
+     'blood products <b>'+SITE.fluid.bloodRatio+'</b>, leading with blood. Keep <b>ionized calcium '+SITE.cal.ionizedLow+'–'+SITE.cal.ionizedHigh+' mmol/L</b> ('+dm.calcium+') and run '+SITE.local.viscoelastic+' early.</p>'+
      '<p style="margin-bottom:0"><b>Tranexamic acid — '+dm.txa+'</b>, given early.</p>';
  }},
  {id:'chest', title:'CHEST — FINGER THORACOSTOMY', body:function(){
@@ -708,9 +727,22 @@ function wire(){
   });
 }
 
+/* Time-only heartbeat. The full paint() rebuilds the workstream and accordion
+   DOM, so running it on a 250 ms timer was destroying and recreating the very
+   rows being tapped — a tap that landed mid-rebuild was lost. paint() now runs
+   ONLY on state changes (user actions); this tick just advances the clocks. */
+function tick(){
+  $('clock').textContent = clockNow();
+  if(S.phase==='active' && S.reversibleAddressed && S.addressedAt){
+    var remain = SITE.conventionalResusMin*60 - (Date.now()-S.addressedAt)/1000;
+    $('convclock').textContent = fmt(remain);
+    $('convclock').style.color = remain<=0 ? 'var(--amber)' : 'var(--ink)';
+  }
+}
+
 wire();
 paint();
-setInterval(paint, 250);
+setInterval(tick, 250);
 })();
 </script>
 </body>

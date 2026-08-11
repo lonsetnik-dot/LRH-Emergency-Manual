@@ -49,6 +49,13 @@ async function doseRowText(label) {
     return '';
   }, label);
 }
+// The weight-based fluid/med numbers are inline in the CIRCULATION workstream.
+async function circText() {
+  return page.evaluate(() => {
+    const c = [...document.querySelectorAll('#worksteps .wcard')].find(e => /CIRCULATION/.test(e.textContent));
+    return c ? c.textContent : '';
+  });
+}
 
 // Start as adult, no weight
 await page.click('#startbtn');
@@ -57,10 +64,10 @@ ok(await vis('#active'), 'active screen visible after declare');
 ok((await txt('statusword')) === 'RESUS RUNNING', 'status RESUS RUNNING when active');
 ok(errors.length === 0, 'no JS errors after start: ' + errors.join(' | '));
 
-let cry = await doseRowText('Crystalloid');
-ok(cry.includes('20 mL/kg'), 'no-weight crystalloid shows per-kg: ' + cry);
-let txa = await doseRowText('TXA');
-ok(txa.includes('1 g IV over 10 min'), 'adult TXA fixed: ' + txa);
+let circ = await circText();
+ok(circ.includes('20 mL/kg'), 'no-weight crystalloid shows per-kg inline in circulation: ' + circ.slice(0,120));
+ok(circ.includes('1 g IV over 10 min'), 'adult TXA fixed inline in circulation');
+ok(circ.includes('1 g calcium chloride'), 'adult calcium fixed 1 g CaCl2 inline');
 
 // workstreams present, obstetric hidden (not pregnant)
 let names = await page.$$eval('#worksteps .wcard', els => els.map(e => e.textContent));
@@ -72,8 +79,11 @@ ok(names[3].includes('CIRCULATION'), 'fourth workstream is CIRCULATION (access &
 ok(!names.join('').includes('OBSTETRIC'), 'OBSTETRIC hidden when not pregnant');
 
 // hemorrhage control is lean — no MTP/TXA/calcium in the control card
-ok(!names[0].includes('massive transfusion') && !names[0].toLowerCase().includes('tranexamic'),
+ok(!names[0].toLowerCase().includes('massive transfusion') && !names[0].toLowerCase().includes('tranexamic'),
   'hemorrhage control card holds only mechanical control (no MTP/TXA)');
+// circulation carries the weight-based fluid/med numbers inline
+ok(/CIRCULATION[\s\S]*Crystalloid[\s\S]*Tranexamic[\s\S]*Calcium/i.test(names[3]),
+  'circulation card carries crystalloid + TXA + calcium inline');
 // airway uses i-gel, not LMA
 ok(names[1].includes('i-gel') && !names[1].includes('LMA'), 'airway names i-gel, not LMA');
 // breathing forbids chest tube/drain/ICC
@@ -91,31 +101,31 @@ ok(hasLink('Tourniquet', 'procedures/?from=home#c10'), 'tourniquet link present'
 let hasNum = await page.$eval('#worksteps', e => /1|2|3/.test(e.textContent));
 ok(hasNum, 'sequential mode shows priority numbers');
 
-// --- pediatric weight: 20 kg -> crystalloid 400 mL, TXA 15 mg/kg=300 mg -------
+// --- pediatric weight 20 kg: crystalloid 400 mL, TXA 300 mg, calcium 400/1000 -
 await page.fill('#wIn', '20');
 await page.waitForTimeout(200);
-cry = await doseRowText('Crystalloid');
-ok(cry.includes('400 mL'), 'peds 20kg crystalloid = 400 mL: ' + cry);
-txa = await doseRowText('TXA');
-ok(txa.includes('300 mg'), 'peds 20kg TXA = 300 mg (15 mg/kg): ' + txa);
+circ = await circText();
+ok(circ.includes('400 mL'), 'peds 20kg crystalloid = 400 mL inline: ' + circ.slice(0,140));
+ok(circ.includes('300 mg'), 'peds 20kg TXA = 300 mg (15 mg/kg) inline');
+ok(circ.includes('CaCl₂ 400 mg') && circ.includes('Ca gluconate 1000 mg'),
+  'peds 20kg calcium computes: CaCl2 400 mg (20 mg/kg) + gluconate 1000 mg (50 mg/kg)');
 ok((await txt('wnote')).includes('pediatric'), 'wnote flags pediatric at 20kg');
 
-// TXA peds cap: 80 kg is adult; 49 kg peds -> 15*49=735; 70kg would be adult.
+// peds TXA cap: 49 kg peds -> 15*49 = 735 mg
 await page.fill('#wIn', '49');
 await page.waitForTimeout(150);
-txa = await doseRowText('TXA');
-ok(txa.includes('735 mg'), 'peds 49kg TXA = 735 mg: ' + txa);
-// cap check at high peds weight just under threshold won't exceed 1000 here; test explicit cap via age route:
+circ = await circText();
+ok(circ.includes('735 mg'), 'peds 49kg TXA = 735 mg inline');
 await page.fill('#wIn', '');
 await page.waitForTimeout(100);
 
-// --- adult weight 80 kg: crystalloid 1600 mL, TXA fixed ----------------------
+// --- adult weight 80 kg: crystalloid 1600 mL, TXA fixed, calcium fixed --------
 await page.fill('#wIn', '80');
 await page.waitForTimeout(150);
-cry = await doseRowText('Crystalloid');
-ok(cry.includes('1600 mL'), 'adult 80kg crystalloid = 1600 mL: ' + cry);
-txa = await doseRowText('TXA');
-ok(txa.includes('1 g IV'), 'adult 80kg TXA fixed 1 g: ' + txa);
+circ = await circText();
+ok(circ.includes('1600 mL'), 'adult 80kg crystalloid = 1600 mL inline');
+ok(circ.includes('1 g IV over 10 min'), 'adult 80kg TXA fixed 1 g inline');
+ok(circ.includes('1 g calcium chloride'), 'adult 80kg calcium fixed 1 g CaCl2 inline (not weight-scaled)');
 
 // --- checklist logs to timeline ----------------------------------------------
 await page.click('#worksteps .wrow');   // first hemorrhage task
