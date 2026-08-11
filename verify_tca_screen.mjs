@@ -64,9 +64,28 @@ ok(txa.includes('1 g IV over 10 min'), 'adult TXA fixed: ' + txa);
 
 // workstreams present, obstetric hidden (not pregnant)
 let names = await page.$$eval('#worksteps .wcard', els => els.map(e => e.textContent));
-ok(names.length === 4, 'four workstreams when not pregnant (obstetric hidden), got ' + names.length);
-ok(names[0].includes('HEMORRHAGE'), 'first workstream is HEMORRHAGE (sequential priority)');
+ok(names.length === 5, 'five workstreams when not pregnant (obstetric hidden), got ' + names.length);
+ok(names[0].includes('HEMORRHAGE CONTROL'), 'first workstream is HEMORRHAGE CONTROL (lean, control-only)');
+ok(names[1].includes('AIRWAY'), 'second workstream is AIRWAY');
+ok(names[2].includes('BREATHING'), 'third workstream is BREATHING');
+ok(names[3].includes('CIRCULATION'), 'fourth workstream is CIRCULATION (access & replace)');
 ok(!names.join('').includes('OBSTETRIC'), 'OBSTETRIC hidden when not pregnant');
+
+// hemorrhage control is lean — no MTP/TXA/calcium in the control card
+ok(!names[0].includes('massive transfusion') && !names[0].toLowerCase().includes('tranexamic'),
+  'hemorrhage control card holds only mechanical control (no MTP/TXA)');
+// airway uses i-gel, not LMA
+ok(names[1].includes('i-gel') && !names[1].includes('LMA'), 'airway names i-gel, not LMA');
+// breathing forbids chest tube/drain/ICC
+ok(/no chest tube, drain or ICC/i.test(names[2]), 'breathing says no chest tube/drain/ICC');
+
+// links present and correct
+const links = await page.$$eval('#worksteps a.wlink', as => as.map(a => ({t:a.textContent.trim(), h:a.getAttribute('href')})));
+const hasLink = (t, h) => links.some(l => l.t.includes(t) && l.h.includes(h));
+ok(hasLink('AVA 3Xi', 'procedures/?from=home#c14'), 'AVA 3Xi access link present');
+ok(hasLink('Massive transfusion', 'codes/?from=home#c12'), 'MTP link present');
+ok(hasLink('Resuscitative thoracotomy', 'procedures/?from=home#c02'), 'thoracotomy link present');
+ok(hasLink('Tourniquet', 'procedures/?from=home#c10'), 'tourniquet link present');
 
 // numbering visible in sequential mode
 let hasNum = await page.$eval('#worksteps', e => /1|2|3/.test(e.textContent));
@@ -105,7 +124,7 @@ await page.waitForTimeout(150);
 await page.click('[data-acc="log"]');
 await page.waitForTimeout(150);
 let logtext = await page.$eval('.accb', e => e.textContent).catch(()=>'');
-ok(logtext.includes('Direct pressure'), 'checking a task logs it to the timeline');
+ok(logtext.includes('Compress external bleeding'), 'checking a task logs it to the timeline');
 await page.click('[data-acc="log"]'); // close
 
 // checkbox toggles back off
@@ -151,8 +170,10 @@ await page.waitForTimeout(100);
 await page.click('#startbtn');
 await page.waitForTimeout(200);
 names = await page.$$eval('#worksteps .wcard', els => els.map(e => e.textContent));
-ok(names.length === 5, 'five workstreams when pregnant, got ' + names.length);
+ok(names.length === 6, 'six workstreams when pregnant, got ' + names.length);
 ok(names.join('').includes('OBSTETRIC'), 'OBSTETRIC shown when pregnant');
+const plinks = await page.$$eval('#worksteps a.wlink', as => as.map(a => a.getAttribute('href')));
+ok(plinks.some(h => h.includes('ob-neonatal/?from=home#c10')), 'resuscitative hysterotomy link present when pregnant');
 
 // --- reversible addressed -> conventional window -----------------------------
 await page.click('#addressedbtn');

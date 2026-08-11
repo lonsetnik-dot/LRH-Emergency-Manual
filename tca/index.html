@@ -64,6 +64,7 @@ a{color:var(--blue);text-decoration:none}
 .wrow{display:flex;gap:12px;align-items:flex-start;width:100%;background:none;border:none;border-top:1px solid var(--line);padding:14px;cursor:pointer;text-align:left;font:inherit;color:var(--ink);min-height:54px}
 .wbox{width:22px;height:22px;border-radius:6px;border:2px solid var(--line);background:transparent;color:#fff;font:700 13px var(--sans);display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px}
 .wtext{font-size:14.5px;line-height:1.5}
+.wlink{display:inline-flex;align-items:center;gap:4px;min-height:40px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--card2);font:800 12.5px var(--sans);letter-spacing:.03em;text-decoration:none;white-space:nowrap}
 /* Only overdue things move — motion is a signal here, not decoration. */
 @keyframes duepulse{0%,100%{opacity:1}50%{opacity:.45}}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
@@ -293,36 +294,48 @@ var SITE = {
    here is the sequential (rural) priority order: catastrophic hemorrhage
    first, then <C>ABC, then the pump, then obstetric. */
 var WORK = [
- { id:'H', name:'HEMORRHAGE', color:'var(--red)', aim:'Control the bleeding and replace volume', tasks:[
-   'Direct pressure to compressible bleeding — do not remove impaled objects',
+ { id:'H', name:'HEMORRHAGE CONTROL', color:'var(--red)', aim:'Stop the external bleeding', tasks:[
+   'Compress external bleeding — firm direct pressure; do not remove impaled objects',
    'Tourniquet 5–7 cm above uncontrolled limb bleeding — note the time',
    'Pelvic binder at the greater trochanters for a suspected pelvic fracture',
-   'Splint long-bone fractures',
-   'Two large-bore IVs — or IO (humeral head first) if access is slow',
-   'Start the massive transfusion protocol — blood {ratio}, lead with blood products',
-   'Tranexamic acid — {txa}',
-   'Keep ionized calcium {caLow}–{caHigh} mmol/L — {calGive}'
+   'Splint long-bone fractures'
+ ], links:[
+   {label:'Tourniquet', href:'../procedures/?from=home#c10'},
+   {label:'Pelvic binder', href:'../procedures/?from=home#c09'}
  ]},
  { id:'A', name:'AIRWAY', color:'var(--blue)', aim:'Open the airway and ventilate; protect the C-spine', tasks:[
    'Open the airway — jaw thrust with manual in-line stabilization',
    'Ventilate with BVM + high-flow oxygen; two-person seal',
-   'Definitive airway when able — ETT / LMA / front-of-neck access',
+   'Supraglottic airway — i-gel — or ETT; front-of-neck access if needed',
    'Confirm placement with waveform capnography'
  ]},
  { id:'B', name:'BREATHING', color:'var(--teal)', aim:'Decompress the chest', tasks:[
    'Bilateral finger thoracostomies — start on the most affected side',
    '4th intercostal space, anterior to the mid-axillary line; blunt-dissect to the pleura',
-   'No chest drains yet — insert the ICCs once ROSC is established'
+   'Finger thoracostomy only — no chest tube, drain or ICC now; place once ROSC returns'
+ ]},
+ { id:'V', name:'CIRCULATION — ACCESS & REPLACE', color:'var(--amber)', aim:'Get big access and replace with blood', tasks:[
+   'Access — AVA 3Xi / large-bore resuscitation line, or IO (humeral head first)',
+   'Massive transfusion protocol — blood {ratio}, lead with blood products',
+   'Tranexamic acid — {txa}',
+   'Keep ionized calcium {caLow}–{caHigh} mmol/L — {calGive}'
+ ], links:[
+   {label:'AVA 3Xi / resus line', href:'../procedures/?from=home#c14'},
+   {label:'Massive transfusion', href:'../codes/?from=home#c12'}
  ]},
  { id:'C', name:'CARDIAC', color:'var(--purple)', aim:'Check the pump', tasks:[
    'Cardiac ultrasound (eFAST) — look for tamponade and for any cardiac activity',
    'Pericardial tamponade → resuscitative (ED) thoracotomy',
    'Discuss other thoracotomy indications with the {surgeon} — e.g. aortic cross-clamp'
+ ], links:[
+   {label:'Resuscitative thoracotomy', href:'../procedures/?from=home#c02'}
  ]},
  { id:'O', name:'OBSTETRIC', color:'var(--orange)', aim:'Maximize preload if pregnant', tasks:[
    'Supine — manually displace the uterus to the left',
    'Fundus at/above the umbilicus (~{gest} wk) → resuscitative hysterotomy, aim < {hyst} min',
    'Call OB + the neonatal team early'
+ ], links:[
+   {label:'Resuscitative hysterotomy', href:'../ob-neonatal/?from=home#c10'}
  ]}
 ];
 
@@ -409,6 +422,13 @@ function renderWork(){
            '<span class="wtext" style="'+(on?'opacity:.5;text-decoration:line-through':'')+'">'+txt+'</span>'+
          '</button>';
     }
+    if(it.links && it.links.length){
+      h+='<div style="display:flex;flex-wrap:wrap;gap:8px;padding:11px 14px;border-top:1px solid var(--line)">';
+      for(var L=0; L<it.links.length; L++){
+        h+='<a href="'+it.links[L].href+'" class="wlink" style="border-color:'+it.color+';color:'+it.color+'">'+it.links[L].label+' &rsaquo;</a>';
+      }
+      h+='</div>';
+    }
     h+='</div>';
   }
   $('worksteps').innerHTML=h;
@@ -453,13 +473,13 @@ var ACC = [
      'start compressions after the airway is managed and tamponade is corrected, and expect little benefit until volume is restored.</p>'+
      '<p style="margin-bottom:0">If CPR is already in progress on arrival, <b>pause it for at most '+SITE.cprPauseMaxMin+' minutes</b> to correct the reversible causes.</p>';
  }},
- {id:'hem', title:'HEMORRHAGE — CONTROL & REPLACE', body:function(){
+ {id:'hem', title:'HEMORRHAGE CONTROL, ACCESS & REPLACE', body:function(){
    var dm=doseModel();
-   return '<p><b>Stop the bleeding first.</b> Direct pressure with a hand or pad is the fastest, most effective method — do not remove impaled objects. '+
+   return '<p><b>Control the external bleeding first.</b> Firm direct pressure with a hand or pad is the fastest, most effective method — do not remove impaled objects. '+
      '<a href="../procedures/?from=home#c10">Tourniquet</a> only for life-threatening limb bleeding not controlled by pressure: 5–7 cm above the point, tighten until bleeding stops, note the time. '+
      'A <a href="../procedures/?from=home#c09">pelvic binder</a> at the greater trochanters for suspected pelvic fracture; splint long bones.</p>'+
-     '<p><b>Access:</b> two large-bore IVs as soon as possible. If the shocked state makes peripheral access slow, go to <b>IO — humeral head first</b> '+
-     '(faster flow than the tibia, and it avoids blood loss into the pelvic/splanchnic circulation) or place a large-bore resuscitation line.</p>'+
+     '<p><b>Access:</b> place <b>big</b> access early — an <a href="../procedures/?from=home#c14">AVA 3Xi / large-bore resuscitation line</a>, or two large-bore IVs. If the shocked state makes peripheral access slow, go to <b>IO — humeral head first</b> '+
+     '(faster flow than the tibia, and it avoids blood loss into the pelvic/splanchnic circulation).</p>'+
      '<p><b>Replace:</b> crystalloid <b>'+dm.crystalloid+'</b> as a rapid start, then move to <a href="../codes/?from=home#c12">massive transfusion</a> — '+
      'blood products <b>'+SITE.fluid.bloodRatio+'</b>, leading with blood. Keep <b>ionized calcium '+SITE.cal.ionizedLow+'–'+SITE.cal.ionizedHigh+' mmol/L</b> ('+SITE.cal.give+') and run '+SITE.local.viscoelastic+' early.</p>'+
      '<p style="margin-bottom:0"><b>Tranexamic acid — '+dm.txa+'</b>, given early.</p>';
@@ -467,7 +487,7 @@ var ACC = [
  {id:'chest', title:'CHEST — FINGER THORACOSTOMY', body:function(){
    return '<p>TCA with suspected chest trauma not responding to airway and volume needs <b>bilateral finger thoracostomies</b> — start on the most affected side.</p>'+
      '<p>Make a <b>3–4 cm incision at the 4th intercostal space, anterior to the mid-axillary line</b>, then blunt-dissect through to the pleura and sweep a finger into the pleural space.</p>'+
-     '<p style="margin-bottom:0"><b>No rush to place chest drains</b> while the patient is on positive-pressure ventilation (BVM, ETT or LMA). '+
+     '<p style="margin-bottom:0"><b>Finger thoracostomy only — do not place a chest tube, drain or ICC now</b> while the patient is on positive-pressure ventilation (BVM, i-gel or ETT). '+
      'Insert the intercostal catheters and connect underwater seals <b>once ROSC is established</b>. See <a href="../procedures/?from=home#c01">Chest Tube</a> / <a href="../procedures/?from=home#c16">Pigtail</a>.</p>';
  }},
  {id:'edt', title:'CARDIAC — eFAST & ED THORACOTOMY', body:function(){
