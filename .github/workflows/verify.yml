@@ -1,0 +1,47 @@
+name: verify
+
+# Runs the full bedside-tool verify suite on every pull request and on pushes to
+# main, so a broken calculator, a poster that spills to a second page, a drifted
+# kit label, or a QR that decodes to nothing is caught before it reaches Lon or
+# production - not after. Also runnable on demand from the Actions tab.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # Node + the Playwright dev dependency, then the chromium browser the
+      # verify scripts drive.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps chromium
+
+      # Python + pyzbar for the QR decode check (verify_qr_decode.py).
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Install QR-decode dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libzbar0
+          python -m pip install --upgrade pip
+          pip install pyzbar pillow
+
+      # One command runs the server, the whole verify_*.mjs suite, and the QR
+      # decode. STRICT_QR makes a missing pyzbar a hard failure here (it must
+      # never be silently skipped in CI), even though it is allowed to skip
+      # locally.
+      - name: Run verify suite
+        env:
+          STRICT_QR: '1'
+        run: bash run-tests.sh
