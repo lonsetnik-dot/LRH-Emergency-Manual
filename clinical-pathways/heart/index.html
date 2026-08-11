@@ -52,18 +52,22 @@
     background:var(--bg); color:var(--ink); line-height:1.45; font-size:16px}
   .wrap{max-width:900px; margin:0 auto; padding:0 16px 64px}
 
-  header.top{background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-dark));
-    color:#fff; padding:22px 16px; border-bottom:5px solid var(--section)}
-  header.top .inner{max-width:900px; margin:0 auto; display:flex; align-items:center; gap:16px}
-  .logo{width:52px;height:52px;border-radius:10px;background:#fff;flex:0 0 auto;display:flex;
-    align-items:center;justify-content:center;font-weight:800;color:var(--brand-primary);
-    font-size:19px;letter-spacing:.5px;box-shadow:0 1px 3px rgba(0,0,0,.25)}
-  header.top h1{font-size:1.25rem; margin:0 0 2px}
-  header.top p{margin:0; opacity:.9; font-size:.84rem}
-  .theme-toggle{margin-left:auto; flex:0 0 auto; align-self:flex-start; background:rgba(255,255,255,.12);
-    border:1px solid rgba(255,255,255,.55); color:#fff; font:700 11px inherit; letter-spacing:.08em;
-    padding:8px 12px; border-radius:9px; cursor:pointer; min-height:38px; white-space:nowrap}
-  .theme-toggle:hover{background:rgba(255,255,255,.22)}
+  /* ---- Standard chrome bar (DESIGN_LANGUAGE.md §4) — replaces the old blue LRH
+     masthead (issue #68). Same .hdr the migrated tools use; hand-inlined here so
+     this leaf tool stays self-contained and offline (CLAUDE.md rule 1). ---- */
+  .hdr{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;
+    padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px;background:var(--bg);
+    border-bottom:1px solid var(--line)}
+  .hdr .plabel{flex:1;min-width:0;font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--accent);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .hdr .ghost{background:var(--card);border:1px solid var(--line);color:var(--ink2);
+    font:700 11px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    letter-spacing:.08em;padding:9px 12px;border-radius:10px;cursor:pointer;min-height:38px;
+    white-space:nowrap;text-decoration:none;display:inline-flex;align-items:center;gap:4px}
+  .hdr .ghost:hover,.hdr .ghost:focus-visible{color:var(--ink);border-color:var(--accent)}
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+  .page-title{font-size:1.55rem;font-weight:800;letter-spacing:-.01em;line-height:1.15;margin:16px 2px 2px}
+  .page-sub{margin:0 2px 2px;color:var(--ink2);font-size:.9rem;line-height:1.4}
 
   .disclaimer{background:var(--note-bg); border:1px solid var(--note-br); color:var(--note-tx); font-size:.82rem;
     border-radius:8px; padding:11px 14px; margin:18px 0 10px}
@@ -154,7 +158,7 @@
       --sel-bg:#f1f7fc; --note-bg:#fff8e1; --note-br:#f2d999; --note-tx:#6d4c00;
     }
     body{background:#fff}
-    .btnrow,details.ref,.theme-toggle{display:none}
+    .btnrow,details.ref,.hdr{display:none}
     .card{break-inside:avoid; box-shadow:none}
   }
 </style>
@@ -167,16 +171,11 @@
 try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
 catch(e){ document.body.dataset.theme='dark'; }
 </script>
-<header class="top">
-  <div class="inner">
-    <div class="logo">LRH</div>
-    <div>
-      <h1>Chest Pain &middot; hs-Troponin 0/1-hr ADP + HEART Pathway</h1>
-      <p>Littleton Regional Hospital &mdash; ED accelerated diagnostic pathway for suspected ACS</p>
-    </div>
-    <button type="button" id="lrhThemeBtn" class="theme-toggle">LIGHT</button>
-  </div>
-</header>
+<div class="hdr">
+  <a class="ghost" href="../?from=tool">&#9664; PATHWAYS</a>
+  <span class="plabel">CHEST PAIN &middot; HEART</span>
+  <button type="button" id="lrhThemeBtn" class="ghost">LIGHT</button>
+</div>
 <script>
 (function(){
   var b=document.getElementById('lrhThemeBtn');
@@ -193,7 +192,8 @@ catch(e){ document.body.dataset.theme='dark'; }
 
 <div class="wrap">
 
-  <p style="margin:14px 2px 2px; font-size:.85rem;"><a href="../../?from=tool" style="color:var(--brand-primary); text-decoration:none;">&larr; Emergency Manual</a> <span style="color:var(--ink2);">&middot;</span> <a href="../" style="color:var(--brand-primary); text-decoration:none;">Clinical Pathways</a></p>
+  <h1 class="page-title">Chest Pain &middot; hs-Troponin ADP + HEART Pathway</h1>
+  <p class="page-sub">Littleton Regional Hospital &mdash; ED accelerated diagnostic pathway for suspected ACS</p>
 
   <div class="disclaimer">
     <strong>Not a substitute for clinical judgment.</strong>
