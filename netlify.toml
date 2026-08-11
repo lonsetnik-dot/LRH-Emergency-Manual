@@ -1,8 +1,9 @@
-# Netlify config for a plain static site (no build step).
-# Publishes the repository root, where the landing index.html lives.
+# Netlify config. The build (build.mjs) inlines design-system.css into each tool
+# that carries the marker, then publishes the self-contained result from dist/.
+# Tools without the marker are copied verbatim, so the migration is incremental.
 [build]
-  publish = "."
-  command = ""
+  publish = "dist"
+  command = "node build.mjs"
 
 # --- OB & neonatal app: never let a phone hold a stale shell or worker ---
 [[headers]]
