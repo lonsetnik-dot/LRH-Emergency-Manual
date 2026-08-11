@@ -86,6 +86,9 @@
      theme-aware and a fork re-skins in one place. ===== */
   .t-ck{width:20px;height:20px;margin:2px 0 0;accent-color:var(--accent);flex:none}
   .t-div{border-top:1px solid var(--line)}
+  /* Rounded corners on every interior panel, to match the bar/menu radius.
+     overflow:hidden clips the colored header fill to the rounded top corners. */
+  .t-box-crit,.t-box-caution,.t-box-info,.t-box-neutral{border-radius:12px;overflow:hidden}
   .t-box-crit{border:2px solid var(--sev-crit)}
   .t-box-caution{border:2px solid var(--sev-caution)}
   .t-box-info{border:2px solid var(--sev-info)}
@@ -100,7 +103,7 @@
   .t-note2{margin-top:2px;font-size:12.5px;color:var(--ink2)}
   .t-mono-r{font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.08em;color:var(--ink2);text-align:right}
   .t-mono-n{font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;color:var(--ink);font-size:16px;margin-right:8px}
-  .t-localize{margin:14px 14px 0;border:2px solid var(--sev-caution);background:var(--note-bg);color:var(--note-tx);padding:11px 14px;font-size:13px;line-height:1.4}
+  .t-localize{margin:14px 14px 0;border:2px solid var(--sev-caution);background:var(--note-bg);color:var(--note-tx);padding:11px 14px;font-size:13px;line-height:1.4;border-radius:12px}
   .t-notebtn{flex:none;min-height:32px;padding:0 10px;background:none;border:1px solid var(--note-tx);color:var(--note-tx);font:inherit;font-weight:700;letter-spacing:.04em;cursor:pointer}
   main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
   article { scroll-margin-top:var(--sticky-h,54px); margin-top:12px; }
