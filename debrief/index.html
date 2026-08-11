@@ -60,13 +60,13 @@
   #stickytop { position:sticky; top:0; z-index:5; }
   /* Design-language chrome — a new slim strip on top of the existing nav, not a
      replacement. Header/theme-toggle only for step 1; see index.html's note. */
-  body[data-theme]{ --lrh-bg:#0D1420; --lrh-card:#161F2E; --lrh-ink2:#8FA0B5; --lrh-line:rgba(255,255,255,.10); }
-  body[data-theme="light"]{ --lrh-bg:#EFF2F5; --lrh-card:#FFFFFF; --lrh-ink2:#5A6A7D; --lrh-line:rgba(15,35,60,.13); }
-  .lrh-hdr{display:flex;align-items:center;gap:10px;background:var(--lrh-bg);padding:8px 14px;
-    border-bottom:1px solid var(--lrh-line)}
+  body[data-theme]{ --bg:#0D1420; --card:#161F2E; --ink2:#8FA0B5; --line:rgba(255,255,255,.10); }
+  body[data-theme="light"]{ --bg:#EFF2F5; --card:#FFFFFF; --ink2:#5A6A7D; --line:rgba(15,35,60,.13); }
+  .lrh-hdr{display:flex;align-items:center;gap:10px;background:var(--bg);padding:8px 14px;
+    border-bottom:1px solid var(--line)}
   .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;
-    color:var(--lrh-ink2);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
-  .lrh-hdr button{background:var(--lrh-card);border:1px solid var(--lrh-line);color:var(--lrh-ink2);
+    color:var(--ink2);font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif}
+  .lrh-hdr button{background:var(--card);border:1px solid var(--line);color:var(--ink2);
     font:700 11px -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;letter-spacing:.08em;
     padding:8px 11px;border-radius:9px;cursor:pointer;min-height:36px;white-space:nowrap}
   @media print {

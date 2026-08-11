@@ -6,27 +6,50 @@
 <title>LRH Chest Pain / hs-Troponin ADP + HEART Pathway</title>
 <style>
   /* =====================================================================
-     LRH BRAND COLORS  --  edit these to match exactly.
-     (Best approximation of Littleton Regional Healthcare blue + green.)
+     DESIGN-LANGUAGE TOKENS — dark default, light via body[data-theme="light"].
+     Canonical neutral/accent values match arrest/ and the rest of the manual
+     (Phase 1 token migration). Dark is the site-wide default; a persisted
+     "light" choice (lrh-pref-theme) is applied before paint by the inline
+     script right after <body>, so the page never flashes the wrong theme.
+
+     To adapt colors for another site, edit the two blocks below. The brand
+     accent and the four flowchart result colors are theme-aware so they stay
+     legible on both grounds.
      ===================================================================== */
   :root{
-    --brand-primary:      #005596;
-    --brand-primary-dark: #003e6e;
-    --brand-secondary:    #6cb33f;
-    --section:            #2f7a3f; /* Clinical Pathways = green */
-
-    /* functional colors mirroring the posted protocol flowchart */
-    --in:  #c62828; --in-bg: #fdecea; --in-br:#f4b8b0;   /* RED   rule in / STEMI      */
-    --dc:  #1565c0; --dc-bg: #e7f0fb; --dc-br:#b3ceee;   /* BLUE  discharge            */
-    --ref: #b26a00; --ref-bg:#fff5e0; --ref-br:#f2d999;  /* ORANGE reflex / gray zone  */
-    --out: #2e7d32; --out-bg:#e8f5e9; --out-br:#b6dab9;  /* GREEN AMI ruled out        */
-
-    --ink:#1f2933; --muted:#5b6672; --line:#e2e7ec; --panel:#fff; --page:#eef2f5;
+    /* neutrals */
+    --bg:#0D1420; --card:#161F2E; --card2:#1D2A3C; --ink:#EAF0F7; --ink2:#8FA0B5;
+    --line:rgba(255,255,255,.10); --accent:#2FA372;
+    --red:#E5484D; --amber:#F0B429; --blue:#4C8DDA; --green:#3DA35D; --gray:#5C6B7E;
+    /* interactive brand accent — lightened on dark so the pathway's blue stays legible */
+    --brand-primary:#4C8DDA; --brand-primary-dark:#7FB0E6; --brand-secondary:#6cb33f;
+    --section:#3DA35D; /* Clinical Pathways = green */
+    /* flowchart result-box semantics — translucent tint on the card in dark */
+    --in:#ff6b6b;  --in-bg:rgba(229,72,77,.15);  --in-br:rgba(229,72,77,.5);   /* RED   rule in / STEMI     */
+    --dc:#6db3f2;  --dc-bg:rgba(76,141,218,.15);  --dc-br:rgba(76,141,218,.5);  /* BLUE  discharge           */
+    --ref:#f0b429; --ref-bg:rgba(240,180,41,.15); --ref-br:rgba(240,180,41,.5); /* AMBER reflex / gray zone  */
+    --out:#5dd48a; --out-bg:rgba(61,163,93,.16);  --out-br:rgba(61,163,93,.5);  /* GREEN AMI ruled out       */
+    /* selected option + caution-note tints */
+    --sel-bg:rgba(76,141,218,.14);
+    --note-bg:rgba(240,180,41,.12); --note-br:rgba(240,180,41,.40); --note-tx:#f0cf7a;
+  }
+  body[data-theme="light"]{
+    --bg:#EFF2F5; --card:#FFFFFF; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D;
+    --line:rgba(15,35,60,.13); --accent:#00693E;
+    --red:#C63238; --amber:#B07E13; --blue:#2F6FB5; --green:#1F7F49; --gray:#6B7A8D;
+    --brand-primary:#005596; --brand-primary-dark:#003e6e; --brand-secondary:#6cb33f;
+    --section:#2f7a3f;
+    --in:#c62828; --in-bg:#fdecea; --in-br:#f4b8b0;   /* RED   rule in / STEMI     */
+    --dc:#1565c0; --dc-bg:#e7f0fb; --dc-br:#b3ceee;   /* BLUE  discharge           */
+    --ref:#b26a00; --ref-bg:#fff5e0; --ref-br:#f2d999; /* ORANGE reflex / gray zone */
+    --out:#2e7d32; --out-bg:#e8f5e9; --out-br:#b6dab9; /* GREEN AMI ruled out       */
+    --sel-bg:#f1f7fc;
+    --note-bg:#fff8e1; --note-br:#f2d999; --note-tx:#6d4c00;
   }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--page); color:var(--ink); line-height:1.45; font-size:16px}
+    background:var(--bg); color:var(--ink); line-height:1.45; font-size:16px}
   .wrap{max-width:900px; margin:0 auto; padding:0 16px 64px}
 
   header.top{background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-dark));
@@ -37,60 +60,64 @@
     font-size:19px;letter-spacing:.5px;box-shadow:0 1px 3px rgba(0,0,0,.25)}
   header.top h1{font-size:1.25rem; margin:0 0 2px}
   header.top p{margin:0; opacity:.9; font-size:.84rem}
+  .theme-toggle{margin-left:auto; flex:0 0 auto; align-self:flex-start; background:rgba(255,255,255,.12);
+    border:1px solid rgba(255,255,255,.55); color:#fff; font:700 11px inherit; letter-spacing:.08em;
+    padding:8px 12px; border-radius:9px; cursor:pointer; min-height:38px; white-space:nowrap}
+  .theme-toggle:hover{background:rgba(255,255,255,.22)}
 
-  .disclaimer{background:#fff8e1; border:1px solid #f2d999; color:#6d4c00; font-size:.82rem;
+  .disclaimer{background:var(--note-bg); border:1px solid var(--note-br); color:var(--note-tx); font-size:.82rem;
     border-radius:8px; padding:11px 14px; margin:18px 0 10px}
   .disclaimer ul{margin:6px 0 0; padding-left:18px}
   .disclaimer li{margin:2px 0}
-  .disclaimer strong{color:#5c3a00}
+  .disclaimer strong{color:var(--note-tx)}
   .esrd-warn{display:none; background:var(--in-bg); border:1.5px solid var(--in-br); color:var(--in);
     font-weight:600; font-size:.85rem; border-radius:8px; padding:10px 14px; margin:0 0 16px}
   .esrd-warn.show{display:block}
-  .card{background:var(--panel); border:1px solid var(--line); border-radius:12px;
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px;
     padding:18px 18px 20px; margin-bottom:18px; box-shadow:0 1px 2px rgba(16,42,67,.04)}
   .card h2{font-size:1.02rem; margin:0 0 4px; color:var(--brand-primary-dark); display:flex; align-items:center; gap:8px}
   .card h2 .num{background:var(--brand-primary); color:#fff; width:24px;height:24px;border-radius:50%;
     font-size:.8rem; display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto}
-  .card .sub{color:var(--muted); font-size:.83rem; margin:0 0 14px}
+  .card .sub{color:var(--ink2); font-size:.83rem; margin:0 0 14px}
 
   .q{margin-bottom:15px}
   .q:last-child{margin-bottom:0}
   .q .label{font-weight:600; font-size:.92rem; margin-bottom:7px; display:block}
-  .q .hint{font-weight:400; color:var(--muted); font-size:.8rem}
+  .q .hint{font-weight:400; color:var(--ink2); font-size:.8rem}
   .opts{display:grid; gap:8px}
   .opts.two{grid-template-columns:1fr 1fr}
   @media(min-width:560px){.opts.three{grid-template-columns:1fr 1fr 1fr}}
   label.opt{display:flex; align-items:flex-start; gap:9px; border:1.5px solid var(--line); border-radius:9px;
-    padding:9px 11px; cursor:pointer; font-size:.87rem; background:#fff; transition:.12s}
+    padding:9px 11px; cursor:pointer; font-size:.87rem; background:var(--card); transition:.12s}
   label.opt:hover{border-color:var(--brand-secondary)}
   label.opt input{margin-top:2px; accent-color:var(--brand-primary); flex:0 0 auto}
-  label.opt.sel{border-color:var(--brand-primary); background:#f1f7fc; box-shadow:inset 0 0 0 1px var(--brand-primary)}
+  label.opt.sel{border-color:var(--brand-primary); background:var(--sel-bg); box-shadow:inset 0 0 0 1px var(--brand-primary)}
   label.opt .pts{margin-left:auto; font-weight:700; color:var(--brand-primary); font-size:.8rem; padding-left:6px}
 
   .troprow{display:grid; gap:12px; grid-template-columns:1fr 1fr}
   @media(min-width:620px){.troprow{grid-template-columns:1fr 1fr 1fr auto}}
   .field label{display:block; font-weight:600; font-size:.84rem; margin-bottom:5px}
   .field input[type=number]{width:100%; font-size:1.1rem; padding:10px 12px; border:1.5px solid var(--line);
-    border-radius:9px; text-align:center; font-weight:700; color:var(--brand-primary-dark)}
+    border-radius:9px; text-align:center; font-weight:700; background:var(--card); color:var(--brand-primary-dark)}
   .field input[type=number]:focus{outline:none; border-color:var(--brand-primary)}
   .field.hot input[type=number]{border-color:var(--ref); box-shadow:0 0 0 2px var(--ref-bg)}
-  .field .unit{font-weight:400; color:var(--muted); font-size:.76rem}
-  .field .opt3{font-weight:400;color:var(--muted);font-size:.72rem}
-  .delta-box{display:flex; flex-direction:column; align-items:center; justify-content:center; background:#f5f8fb;
+  .field .unit{font-weight:400; color:var(--ink2); font-size:.76rem}
+  .field .opt3{font-weight:400;color:var(--ink2);font-size:.72rem}
+  .delta-box{display:flex; flex-direction:column; align-items:center; justify-content:center; background:var(--card2);
     border:1.5px dashed var(--line); border-radius:9px; padding:8px 14px; min-width:96px}
   .delta-box .dv{font-size:1.35rem; font-weight:800; color:var(--brand-primary-dark); line-height:1.1}
-  .delta-box .dl{font-size:.68rem; color:var(--muted); text-transform:uppercase; letter-spacing:.5px}
+  .delta-box .dl{font-size:.68rem; color:var(--ink2); text-transform:uppercase; letter-spacing:.5px}
 
   .resultcard{margin-top:16px; border-radius:10px; padding:13px 15px; font-size:.9rem; border:1.5px solid}
   .resultcard .tag{font-weight:800; font-size:.95rem; letter-spacing:.3px; display:block; margin-bottom:2px}
-  .resultcard.pending{background:#f5f8fb;border-color:var(--line);color:var(--muted)}
+  .resultcard.pending{background:var(--card2);border-color:var(--line);color:var(--ink2)}
   .r-in{background:var(--in-bg); border-color:var(--in-br); color:var(--in)}
   .r-dc{background:var(--dc-bg); border-color:var(--dc-br); color:var(--dc)}
   .r-ref{background:var(--ref-bg); border-color:var(--ref-br); color:var(--ref)}
   .r-out{background:var(--out-bg); border-color:var(--out-br); color:var(--out)}
 
   .scorebar{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
-    background:#f5f8fb; border:1px solid var(--line); border-radius:9px; padding:11px 15px; margin-top:4px}
+    background:var(--card2); border:1px solid var(--line); border-radius:9px; padding:11px 15px; margin-top:4px}
   .scorebar .big{font-size:1.7rem; font-weight:800; color:var(--brand-primary-dark)}
   .scorebar .risk{font-weight:700; font-size:.9rem; padding:4px 12px; border-radius:20px}
 
@@ -99,30 +126,47 @@
   .final .verdict{font-size:1.3rem; font-weight:800; margin:3px 0 7px}
   .final .detail{font-size:.92rem}
   .final .detail b{font-weight:700}
-  .final.pending{background:#f5f8fb; border-color:var(--line); color:var(--muted)}
+  .final.pending{background:var(--card2); border-color:var(--line); color:var(--ink2)}
 
   .btnrow{display:flex; gap:10px; margin-top:14px}
-  button.btn{background:#fff; border:1.5px solid var(--brand-primary); color:var(--brand-primary);
+  button.btn{background:var(--card); border:1.5px solid var(--brand-primary); color:var(--brand-primary);
     font-weight:600; font-size:.85rem; padding:9px 18px; border-radius:8px; cursor:pointer}
-  button.btn:hover{background:#f1f7fc}
+  button.btn:hover{background:var(--sel-bg)}
 
   details.ref{margin-top:10px; font-size:.85rem}
   details.ref summary{cursor:pointer; font-weight:600; color:var(--brand-primary); padding:6px 0}
   details.ref table{width:100%; border-collapse:collapse; margin-top:6px; font-size:.8rem}
   details.ref th,details.ref td{border:1px solid var(--line); padding:6px 9px; text-align:left; vertical-align:top}
-  details.ref th{background:#f5f8fb}
+  details.ref th{background:var(--card2)}
   details.ref ul{margin:6px 0 0; padding-left:20px}
 
-  footer{text-align:center; color:var(--muted); font-size:.76rem; margin-top:26px}
+  footer{text-align:center; color:var(--ink2); font-size:.76rem; margin-top:26px}
   @media print{
+    /* Force the light palette on paper regardless of the on-screen theme, and
+       force background printing so the color-coded result boxes and header
+       survive (DESIGN-SYSTEM.md §2). */
+    *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    :root{
+      --bg:#fff; --card:#fff; --card2:#f5f8fb; --ink:#1f2933; --ink2:#5b6672; --line:#e2e7ec;
+      --brand-primary:#005596; --brand-primary-dark:#003e6e; --section:#2f7a3f;
+      --in:#c62828; --in-bg:#fdecea; --in-br:#f4b8b0; --dc:#1565c0; --dc-bg:#e7f0fb; --dc-br:#b3ceee;
+      --ref:#b26a00; --ref-bg:#fff5e0; --ref-br:#f2d999; --out:#2e7d32; --out-bg:#e8f5e9; --out-br:#b6dab9;
+      --sel-bg:#f1f7fc; --note-bg:#fff8e1; --note-br:#f2d999; --note-tx:#6d4c00;
+    }
     body{background:#fff}
-    header.top{-webkit-print-color-adjust:exact; print-color-adjust:exact}
-    .btnrow,details.ref{display:none}
+    .btnrow,details.ref,.theme-toggle{display:none}
     .card{break-inside:avoid; box-shadow:none}
   }
 </style>
 </head>
-<body>
+<body data-theme="dark">
+<script>
+/* Apply a persisted theme before the page paints, so a "light" choice doesn't
+   flash dark first. Same lrh-pref- namespace the rest of the manual uses;
+   this key is deliberately outside any RESET prefix sweep (CASE-STATE.md). */
+try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+catch(e){ document.body.dataset.theme='dark'; }
+</script>
 <header class="top">
   <div class="inner">
     <div class="logo">LRH</div>
@@ -130,12 +174,26 @@
       <h1>Chest Pain &middot; hs-Troponin 0/1-hr ADP + HEART Pathway</h1>
       <p>Littleton Regional Hospital &mdash; ED accelerated diagnostic pathway for suspected ACS</p>
     </div>
+    <button type="button" id="lrhThemeBtn" class="theme-toggle">LIGHT</button>
   </div>
 </header>
+<script>
+(function(){
+  var b=document.getElementById('lrhThemeBtn');
+  if(!b) return;
+  b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
+  b.addEventListener('click', function(){
+    var dark = document.body.dataset.theme!=='light';
+    document.body.dataset.theme = dark ? 'light' : 'dark';
+    b.textContent = dark ? 'DARK' : 'LIGHT';
+    try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
+  });
+})();
+</script>
 
 <div class="wrap">
 
-  <p style="margin:14px 2px 2px; font-size:.85rem;"><a href="../../?from=tool" style="color:var(--brand-primary); text-decoration:none;">&larr; Emergency Manual</a> <span style="color:var(--muted);">&middot;</span> <a href="../" style="color:var(--brand-primary); text-decoration:none;">Clinical Pathways</a></p>
+  <p style="margin:14px 2px 2px; font-size:.85rem;"><a href="../../?from=tool" style="color:var(--brand-primary); text-decoration:none;">&larr; Emergency Manual</a> <span style="color:var(--ink2);">&middot;</span> <a href="../" style="color:var(--brand-primary); text-decoration:none;">Clinical Pathways</a></p>
 
   <div class="disclaimer">
     <strong>Not a substitute for clinical judgment.</strong>
@@ -199,7 +257,7 @@
         <tr><td>5&ndash;49 ng/L &amp; 0/1-hr &Delta; &lt; 4</td><td><b>AMI ruled out</b> &rarr; HEART score vs discharge w/ PCP</td></tr>
         <tr><td>&lt; 50 ng/L &amp; 0/1-hr &Delta; 4&ndash;14</td><td><b>Reflex to 3 h</b>; then &Delta; &lt; 15 &rarr; HEART score, &Delta; &ge; 15 &rarr; rules in</td></tr>
       </table>
-      <p style="color:var(--muted);margin:8px 0 0">&Delta; is the absolute change between serial values. Not applicable to ESRD.</p>
+      <p style="color:var(--ink2);margin:8px 0 0">&Delta; is the absolute change between serial values. Not applicable to ESRD.</p>
     </details>
   </div>
 
@@ -253,8 +311,8 @@
     </div>
 
     <div class="scorebar">
-      <div><span class="big" id="heartScore">&ndash;</span> <span style="color:var(--muted);font-size:.85rem">/ 10 points</span></div>
-      <div class="risk" id="heartRisk" style="background:#eef2f5;color:var(--muted)">Incomplete</div>
+      <div><span class="big" id="heartScore">&ndash;</span> <span style="color:var(--ink2);font-size:.85rem">/ 10 points</span></div>
+      <div class="risk" id="heartRisk" style="background:var(--card2);color:var(--ink2)">Incomplete</div>
     </div>
   </div>
 
@@ -471,13 +529,13 @@
 
     // A 3-hr value that the current 0/1-hr result does not use is called out explicitly,
     // so a number left over from a previous patient/entry can never sit there unnoticed.
-    if(d.stray){ tr.innerHTML += '<div style="margin-top:8px; padding-top:8px; border-top:1px solid rgba(0,0,0,.15); font-weight:600;">&#9888; A 3-hr value is entered but <u>not used</u> — this result comes from the 0-hr and 1-hr values alone. Clear the 3-hr box if it is left over from another patient.</div>'; }
+    if(d.stray){ tr.innerHTML += '<div style="margin-top:8px; padding-top:8px; border-top:1px solid var(--line); font-weight:600;">&#9888; A 3-hr value is entered but <u>not used</u> — this result comes from the 0-hr and 1-hr values alone. Clear the 3-hr box if it is left over from another patient.</div>'; }
 
     // HEART score bar
     var h=heartData();
     var scoreEl=$('heartScore'), riskEl=$('heartRisk');
     if(!h.complete){ scoreEl.textContent=(h.total>0?h.total:'–'); riskEl.textContent='Incomplete';
-      riskEl.style.background='#eef2f5'; riskEl.style.color='var(--muted)'; }
+      riskEl.style.background='var(--card2)'; riskEl.style.color='var(--ink2)'; }
     else { scoreEl.textContent=h.total; var rt=tier(h.total); riskEl.textContent=rt.label;
       riskEl.style.background='var(--'+rt.cls+'-bg)'; riskEl.style.color='var(--'+rt.cls+')'; }
 

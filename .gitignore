@@ -24,3 +24,7 @@ Icon?
 
 # Netlify local state
 .netlify/
+
+# Dev-only screenshot helper (local visual QA; not part of the site)
+shot.mjs
+_pwtest.mjs
