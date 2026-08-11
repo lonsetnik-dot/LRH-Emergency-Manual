@@ -50,10 +50,14 @@ independently-copied bridge (the `SS` object in that file):
 - **RESET** runs the shared `lrh-` prefix sweep (preserving `lrh-pref-`), same as
   every other tool's RESET FOR NEXT CASE (re-inits its state in memory rather
   than reloading — its single module needs no reload to re-read empty state).
-- **Does not yet** write the running-code `lrh-case-clocks`
-  (`cprCycle`/`epi`/`rosc`), `lrh-case-counts` (`shocks`/`epi`/`amio`), or
-  `lrh-case-startms` — a mid-code reload still restarts the engine. That
-  resilience step is deferred (arrest integration plan, later PR).
+- **Writes** `lrh-case-clocks.rosc` (the ROSC instant) on ROSC / PULSE-PRESENT,
+  and clears it on a re-arrest, so **Codes card 22's live Post-ROSC clock** counts
+  up from it (card 22 reads `CASESTATE.getClock('rosc')`). This is the only shared
+  clock arrest/ writes.
+- **Does not yet** write the other running-code clocks (`cprCycle`/`epi`),
+  `lrh-case-counts` (`shocks`/`epi`/`amio`), or `lrh-case-startms` — a mid-code
+  reload still restarts the engine. That resilience step is deferred (arrest
+  integration plan, later PR).
 
 ### Clock names currently in `lrh-case-clocks`
 
@@ -61,7 +65,7 @@ independently-copied bridge (the `SS` object in that file):
 |---|---|---|
 | `cprCycle` | codes (c01) | Time of the last shock / last rhythm check — drives the 2-min rhythm-check cue. Formerly shared with peds' own arrest card (p01); as of the arrest-card merge, codes' card 01 is the one arrest interface for both populations (peds' p01 was retired — see `CLAUDE.md`/commit history), so only codes writes this now. |
 | `epi` | codes (c01) | Time of the most recent (IV/IO) epi dose — drives the 3–5 min "epi due" cue. Same retirement note as `cprCycle` above. |
-| `rosc` | codes | The ROSC instant. Freezes the c01/c02 clocks (protected behavior — do not touch) and drives the live-counting-up "time since ROSC" clock on Codes card 22. |
+| `rosc` | arrest | The ROSC instant, written by the /arrest/ engine on ROSC / PULSE-PRESENT and cleared on re-arrest. Drives the live-counting-up "time since ROSC" clock on Codes card 22 (which reads it via `CASESTATE.getClock('rosc')`). Formerly written by codes' card-01 engine, retired in the arrest hand-off. |
 | `seizure` | codes (c13), peds (p10) | Seizure/status-epilepticus clock start. Shared for the same reason as `cprCycle`/`epi`. |
 | `pph` | ob (c06) | Postpartum hemorrhage clock start. |
 | `rh` | ob (c10) | Maternal-arrest (resuscitative hysterotomy) clock start. |

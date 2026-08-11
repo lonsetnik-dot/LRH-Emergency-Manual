@@ -500,6 +500,15 @@ var SS = {
   },
   sweep:function(){ try{ for(var i=localStorage.length-1;i>=0;i--){ var k=localStorage.key(i);
     if(k && k.indexOf('lrh-')===0 && k.indexOf('lrh-pref-')!==0) localStorage.removeItem(k); } }catch(e){} },
+  /* Shared case clock (lrh-case-clocks map — same shape codes/peds use). arrest/
+     writes 'rosc' (the ROSC instant) so Codes card 22's live Post-ROSC clock can
+     count up from it; pass ms=null to clear it (re-arrest / pulse lost). */
+  setClock:function(name, ms){
+    var c; try{ c=JSON.parse(SS.get('lrh-case-clocks')||'{}'); }catch(e){ c={}; }
+    if(c===null||typeof c!=='object') c={};
+    if(ms===null||ms===undefined) delete c[name]; else c[name]=ms;
+    SS.set('lrh-case-clocks', JSON.stringify(c));
+  },
   touchActive:function(){ SS.set('lrh-case-lastactive', String(Date.now())); }
 };
 
@@ -962,6 +971,7 @@ function toCPR(why){
   if(!S.codeStart) S.codeStart=n;
   VENT.stop();
   S.phase='cpr'; S.cycleStart=n; S.rcOpen=false; S.rcOrg=false; S.showCustom=false;
+  SS.setClock('rosc', null);   /* back in arrest — no longer post-ROSC */
   MET.start();
   log(why); paint();
 }
@@ -1059,6 +1069,7 @@ function wire(){
   });
   $('roscbtn').addEventListener('click', function(){
     S.phase='rosc'; S.roscAt=clockNow(); S.rcOpen=false; S.rcOrg=false; MET.stop();
+    SS.setClock('rosc', Date.now());
     log('ROSC — pulse returned'); paint();
   });
   $('rearrestbtn').addEventListener('click', function(){
@@ -1139,6 +1150,7 @@ function wire(){
   $('rcorg').addEventListener('click', function(){ S.rcOrg=true; paint(); });
   $('rcpulse').addEventListener('click', function(){
     S.phase='rosc'; S.roscAt=clockNow(); S.rcOpen=false; S.rcOrg=false; MET.stop(); VENT.stop();
+    SS.setClock('rosc', Date.now());
     log('Rhythm check: organized rhythm WITH pulse — ROSC'); paint();
   });
   $('rcpulsenobreath').addEventListener('click', function(){
