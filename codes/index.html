@@ -190,6 +190,16 @@
 </head>
 <body>
 <script>
+/* WS-arrest-handoff: card 01 (VF/VT) and card 02 (PEA/Asystole) now open the
+   redesigned standalone /arrest/ engine — the one source of truth for the whole
+   arrest (adult + peds, shockable + non-shockable). Redirect at the earliest
+   possible moment, before any card content paints, for a bookmark / QR cart
+   label / cross-tool deep-link that arrives on #c01 or #c02. from=codes so the
+   arrest tool's back link returns here. In-session hashchange is handled by a
+   matching listener further down. */
+try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace('../arrest/?from=codes'); } }catch(e){}
+</script>
+<script>
 /* Set data-theme before the rest of body paints, so a persisted "light" choice
    doesn't flash dark first. Reads the same lrh-pref- namespace the mute toggle
    already uses — excluded from RESET's prefix sweep by design (CASE-STATE.md). */
@@ -354,8 +364,8 @@ catch(e){ document.body.dataset.theme='dark'; }
 
       <!-- ============ CARD MENU ============ -->
       <div id="menu" class="menu" style="padding:0; margin:18px 0 0;">
-        <a href="#c01" data-k="code cart cardiac arrest ventricular fibrillation tachycardia defibrillation shock epinephrine amiodarone lidocaine cpr acls pea asystole non-shockable reversible causes h's and t's pals pediatric weight-based broselow resuscitation" id="menu-c01" class="lrh-row" style="--cc:var(--blue)"><span class="n lrh-mono">01</span><span class="t">Pulseless VF / VT</span></a>
-        <a href="#c02" id="menu-c02" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">02</span><span class="t">PEA / Asystole</span></a>
+        <a href="../arrest/?from=codes" data-k="code cart cardiac arrest ventricular fibrillation tachycardia defibrillation shock epinephrine amiodarone lidocaine cpr acls pea asystole non-shockable reversible causes h's and t's pals pediatric weight-based broselow resuscitation" id="menu-c01" class="lrh-row" style="--cc:var(--blue)"><span class="n lrh-mono">01</span><span class="t">Pulseless VF / VT</span></a>
+        <a href="../arrest/?from=codes" id="menu-c02" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">02</span><span class="t">PEA / Asystole</span></a>
         <a href="#c22" data-k="post rosc return of spontaneous circulation post arrest care post-arrest first 20 minutes after arrest targeted temperature management ttm cooling oxygenation ventilation blood pressure map 12-lead ekg neuroprognostication code" id="menu-c22" class="lrh-row" style="--cc:var(--green)"><span class="n lrh-mono">22</span><span class="t">Post-ROSC Care</span></a>
         <a href="#c03" data-k="bradycardia atropine transcutaneous pacing pacer heart block slow heart rate symptomatic code" class="lrh-row" style="--cc:var(--blue)"><span class="n lrh-mono">03</span><span class="t">Symptomatic Bradycardia</span></a>
         <a href="#c04" data-k="stroke code stroke tpa tnk tenecteplase alteplase thrombectomy last known well nihss ct head lytic omnicell" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">04</span><span class="t">Suspected Acute Stroke</span></a>
@@ -3015,23 +3025,22 @@ var CardNav = (function(){
 })();
 window.__cardNav=CardNav;
 
-/* ---- WS-arrest-merge — card 02's slot redirects to the merged card 01 ----
-   Card 02 (PEA/Asystole) was retired into card 01 — its number/slot stays reserved (not
-   deleted/renumbered) so a printed cart label, a bookmark, or the "02 PEA/Asystole" menu tile
-   above (still intentionally a distinct tile — see the metronome auto-start script below,
-   which arms/doesn't-arm the shock button differently depending on which tile was tapped)
-   all still resolve to something instead of a dead link. This just finishes that hop onto
-   the real content. Handles both a page load that starts on #c02 and a live hashchange to
-   it (CardNav's own listener still fires; this fires alongside it). */
+/* ---- WS-arrest-handoff — card 01/02 slots redirect to the standalone /arrest/
+   engine (in-session hashchange path; a matching early redirect near <body> covers
+   a fresh load / deep-link). The redesigned /arrest/ tool is now the one arrest
+   cognitive aid for adult + peds, shockable + non-shockable; the #c01 and #c02
+   numbers/slots stay reserved so every bookmark, printed QR cart label and
+   cross-tool link still resolves. from=codes so the arrest tool's back link
+   returns to Codes. location.replace so no dead history entry is left behind.
+   The old inline card-01 engine markup + its scripts stay for now (unreachable
+   behind this redirect) — their removal is a separate cleanup pass. ---- */
 (function(){
-  function redirectC02(){
-    if((location.hash||'')==='#c02'){
-      if(window.CardNav && window.CardNav.go) window.CardNav.go('c01', {instant:true});
-      else location.hash='#c01';
-    }
+  function toArrest(){
+    var h=location.hash||'';
+    if(h==='#c01' || h==='#c02'){ location.replace('../arrest/?from=codes'); }
   }
-  window.addEventListener('hashchange', redirectC02, false);
-  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', redirectC02, false); } else { redirectC02(); }
+  window.addEventListener('hashchange', toArrest, false);
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', toArrest, false); } else { toArrest(); }
 })();
 
 /* ---- CPR cycle clock + shock counter + next-step suggestion engine ----
@@ -3608,9 +3617,10 @@ window.__cardNav=CardNav;
       if(rhythmLabel==='VF/VT' && window.__codeCPR.armShock) window.__codeCPR.armShock();
     }
   }
-  var menuC01=document.getElementById('menu-c01'), menuC02=document.getElementById('menu-c02');
-  if(menuC01) menuC01.addEventListener('click', function(){ autoStart3020('VF/VT'); });
-  if(menuC02) menuC02.addEventListener('click', function(){ autoStart3020('PEA/Asystole'); });
+  /* WS-arrest-handoff: the card 01/02 menu tiles now navigate to the standalone
+     /arrest/ engine (their href), so the old in-page auto-start on tap is gone —
+     /arrest/ starts its own code. autoStart3020 is left defined but unused,
+     retired with the inline engine in the separate cleanup pass. */
 })();
 
 /* ---- Card 03: Atropine dose counter + redose timer (bradycardia) — q3–5 min, max 3 mg total ---- */
