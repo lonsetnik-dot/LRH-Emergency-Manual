@@ -1,0 +1,233 @@
+// Verification for tca/index.html — traumatic cardiac arrest cognitive aid.
+// Mirrors the pattern of the other verify_*.mjs scripts: load in headless
+// Chromium, drive the UI, assert behaviour and dose-math boundaries.
+import { fileURLToPath } from 'url';
+import { dirname, join } from 'path';
+
+let chromium;
+try { ({ chromium } = await import('playwright')); }
+catch {
+  try { ({ chromium } = await import('/home/claude/.npm-global/lib/node_modules/playwright/index.mjs')); }
+  catch { ({ chromium } = await import('/opt/node22/lib/node_modules/playwright/index.mjs')); }
+}
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const url = 'file://' + join(__dirname, 'tca', 'index.html');
+
+let pass = 0, fail = 0;
+const ok = (c, m) => { if (c) { pass++; } else { fail++; console.log('  ✗ ' + m); } };
+
+const browser = await chromium.launch();
+const page = await browser.newPage();
+const errors = [];
+page.on('pageerror', e => errors.push(String(e)));
+page.on('console', m => { if (m.type() === 'error') errors.push(m.text()); });
+await page.goto(url);
+await page.waitForTimeout(300);
+
+const txt = id => page.$eval('#' + id, e => e.textContent.trim());
+const vis = sel => page.$eval(sel, e => e.offsetParent !== null).catch(() => false);
+
+// --- initial state -----------------------------------------------------------
+ok((await txt('clock')) === '0:00', 'clock starts at 0:00');
+ok((await txt('statusword')) === 'READY', 'status READY at idle');
+ok(await vis('#idle'), 'idle screen visible');
+ok(!(await vis('#active')), 'active screen hidden at idle');
+ok((await txt('plabel')).includes('TRAUMATIC CARDIAC ARREST'), 'protocol label set');
+
+// team model is a localization setting, not a bedside toggle — the toggle must be gone
+ok((await page.$('#modeSeq')) === null && (await page.$('#modeSim')) === null, 'no bedside mode toggle present');
+
+// --- weight-based dose math (checked before entering, via internal fns) -------
+// Recreate the dose expectations and read them off the rendered dose box after start.
+async function doseRowText(label) {
+  return page.evaluate(l => {
+    const rows = [...document.querySelectorAll('#dosebox > div')];
+    for (let i = 0; i < rows.length; i++) {
+      if (rows[i].textContent.includes(l)) return rows[i].textContent + ' || ' + (rows[i+1] ? rows[i+1].textContent : '');
+    }
+    return '';
+  }, label);
+}
+// The weight-based fluid/med numbers are inline in the CIRCULATION workstream.
+async function circText() {
+  return page.evaluate(() => {
+    const c = [...document.querySelectorAll('#worksteps .wcard')].find(e => /CIRCULATION/.test(e.textContent));
+    return c ? c.textContent : '';
+  });
+}
+
+// Start as adult, no weight
+await page.click('#startbtn');
+await page.waitForTimeout(200);
+ok(await vis('#active'), 'active screen visible after declare');
+ok((await txt('statusword')) === 'RESUS RUNNING', 'status RESUS RUNNING when active');
+ok(errors.length === 0, 'no JS errors after start: ' + errors.join(' | '));
+
+let circ = await circText();
+ok(circ.includes('20 mL/kg'), 'no-weight crystalloid shows per-kg inline in circulation: ' + circ.slice(0,120));
+ok(circ.includes('1 g IV over 10 min'), 'adult TXA fixed inline in circulation');
+ok(circ.includes('1 g calcium chloride'), 'adult calcium fixed 1 g CaCl2 inline');
+
+// workstreams present, obstetric hidden (not pregnant)
+let names = await page.$$eval('#worksteps .wcard', els => els.map(e => e.textContent));
+ok(names.length === 5, 'five workstreams when not pregnant (obstetric hidden), got ' + names.length);
+ok(names[0].includes('HEMORRHAGE CONTROL'), 'first workstream is HEMORRHAGE CONTROL (lean, control-only)');
+ok(names[1].includes('AIRWAY'), 'second workstream is AIRWAY');
+ok(names[2].includes('BREATHING'), 'third workstream is BREATHING');
+ok(names[3].includes('CIRCULATION'), 'fourth workstream is CIRCULATION (access & replace)');
+ok(!names.join('').includes('OBSTETRIC'), 'OBSTETRIC hidden when not pregnant');
+
+// hemorrhage control is lean — no MTP/TXA/calcium in the control card
+ok(!names[0].toLowerCase().includes('massive transfusion') && !names[0].toLowerCase().includes('tranexamic'),
+  'hemorrhage control card holds only mechanical control (no MTP/TXA)');
+// circulation carries the weight-based fluid/med numbers inline
+ok(/CIRCULATION[\s\S]*Crystalloid[\s\S]*Tranexamic[\s\S]*Calcium/i.test(names[3]),
+  'circulation card carries crystalloid + TXA + calcium inline');
+// airway uses i-gel, not LMA
+ok(names[1].includes('i-gel') && !names[1].includes('LMA'), 'airway names i-gel, not LMA');
+// breathing forbids chest tube/drain/ICC
+ok(/no chest tube now/i.test(names[2]) && !/drain or ICC/i.test(names[2]), 'breathing says no chest tube (not drain/ICC)');
+
+// links present and correct
+const links = await page.$$eval('#worksteps a.wlink', as => as.map(a => ({t:a.textContent.trim(), h:a.getAttribute('href')})));
+const hasLink = (t, h) => links.some(l => l.t.includes(t) && l.h.includes(h));
+ok(hasLink('AVA 3Xi', 'procedures/?from=home#c14'), 'AVA 3Xi access link present');
+ok(hasLink('Massive transfusion', 'codes/?from=home#c12'), 'MTP link present');
+ok(hasLink('Resuscitative thoracotomy', 'procedures/?from=home#c02'), 'thoracotomy link present');
+ok(hasLink('Tourniquet', 'procedures/?from=home#c10'), 'tourniquet link present');
+
+// numbering visible in sequential mode
+let hasNum = await page.$eval('#worksteps', e => /1|2|3/.test(e.textContent));
+ok(hasNum, 'sequential mode shows priority numbers');
+
+// --- pediatric weight 20 kg: crystalloid 400 mL, TXA 300 mg, calcium 400/1000 -
+await page.fill('#wIn', '20');
+await page.waitForTimeout(200);
+circ = await circText();
+ok(circ.includes('400 mL'), 'peds 20kg crystalloid = 400 mL inline: ' + circ.slice(0,140));
+ok(circ.includes('300 mg'), 'peds 20kg TXA = 300 mg (15 mg/kg) inline');
+ok(circ.includes('CaCl₂ 400 mg') && circ.includes('Ca gluconate 1000 mg'),
+  'peds 20kg calcium computes: CaCl2 400 mg (20 mg/kg) + gluconate 1000 mg (50 mg/kg)');
+ok((await txt('wnote')).includes('pediatric'), 'wnote flags pediatric at 20kg');
+
+// peds TXA cap: 49 kg peds -> 15*49 = 735 mg
+await page.fill('#wIn', '49');
+await page.waitForTimeout(150);
+circ = await circText();
+ok(circ.includes('735 mg'), 'peds 49kg TXA = 735 mg inline');
+await page.fill('#wIn', '');
+await page.waitForTimeout(100);
+
+// --- adult weight 80 kg: crystalloid 1600 mL, TXA fixed, calcium fixed --------
+await page.fill('#wIn', '80');
+await page.waitForTimeout(150);
+circ = await circText();
+ok(circ.includes('1600 mL'), 'adult 80kg crystalloid = 1600 mL inline');
+ok(circ.includes('1 g IV over 10 min'), 'adult 80kg TXA fixed 1 g inline');
+ok(circ.includes('1 g calcium chloride'), 'adult 80kg calcium fixed 1 g CaCl2 inline (not weight-scaled)');
+
+// --- checklist logs to timeline ----------------------------------------------
+await page.click('#worksteps .wrow');   // first hemorrhage task
+await page.waitForTimeout(150);
+// open event log accordion
+await page.click('[data-acc="log"]');
+await page.waitForTimeout(150);
+let logtext = await page.$eval('.accb', e => e.textContent).catch(()=>'');
+ok(logtext.includes('Compress external bleeding'), 'checking a task logs it to the timeline');
+await page.click('[data-acc="log"]'); // close
+
+// checkbox toggles back off
+let firstBox = await page.$eval('#worksteps .wrow .wbox', e => e.textContent);
+ok(firstBox === '✓', 'checked box shows tick');
+
+// --- sequential framing (the shipped LRH default) ----------------------------
+ok((await txt('worktitle')).includes('ORDER'), 'sequential worktitle mentions priority order');
+ok((await txt('plabel')).includes('SEQUENTIAL'), 'plabel reflects the configured sequential mode');
+ok((await txt('cprnote')).toLowerCase().includes('pause'), 'CPR-in-progress pause note present');
+
+// --- simultaneous rendering via a config-swapped copy (proves the other model
+//     works when a site sets SITE.mode:"simultaneous" at localization) ---------
+{
+  const fs = await import('fs');
+  const src = fs.readFileSync(join(__dirname, 'tca', 'index.html'), 'utf8');
+  const swapped = src.replace('mode: "sequential"', 'mode: "simultaneous"');
+  ok(swapped !== src, 'SITE.mode config swap point present');
+  const tmp = join(__dirname, 'tca', '_verify_simultaneous.html');
+  fs.writeFileSync(tmp, swapped);
+  const p2 = await browser.newPage();
+  await p2.goto('file://' + tmp);
+  await p2.waitForTimeout(200);
+  await p2.click('#startbtn');
+  await p2.waitForTimeout(200);
+  const wt = await p2.$eval('#worktitle', e => e.textContent);
+  const pl = await p2.$eval('#plabel', e => e.textContent);
+  const cn = await p2.$eval('#cprnote', e => e.textContent.toLowerCase());
+  ok(wt.includes('PARALLEL'), 'simultaneous config: worktitle mentions parallel');
+  ok(pl.includes('SIMULTANEOUS'), 'simultaneous config: plabel reflects simultaneous');
+  ok(cn.includes('concurrent'), 'simultaneous config: CPR note says concurrent');
+  await p2.close();
+  fs.unlinkSync(tmp);
+}
+
+// --- pregnancy flag reveals obstetric workstream -----------------------------
+// go back to idle via reset to toggle pregnancy cleanly, then re-declare
+await page.click('#resetbtn'); await page.click('#resetbtn');
+await page.waitForTimeout(150);
+ok(await vis('#idle'), 'reset returns to idle');
+await page.click('#pregidle');
+await page.waitForTimeout(100);
+await page.click('#startbtn');
+await page.waitForTimeout(200);
+names = await page.$$eval('#worksteps .wcard', els => els.map(e => e.textContent));
+ok(names.length === 6, 'six workstreams when pregnant, got ' + names.length);
+ok(names.join('').includes('OBSTETRIC'), 'OBSTETRIC shown when pregnant');
+const plinks = await page.$$eval('#worksteps a.wlink', as => as.map(a => a.getAttribute('href')));
+ok(plinks.some(h => h.includes('ob-neonatal/?from=home#c10')), 'resuscitative hysterotomy link present when pregnant');
+
+// --- reversible addressed -> conventional window -----------------------------
+await page.click('#addressedbtn');
+await page.waitForTimeout(150);
+ok(await vis('#convstrip'), 'conventional window appears after MARK ADDRESSED');
+ok((await txt('convclock')).startsWith('9:') || (await txt('convclock')) === '10:00', 'conventional countdown near 10:00');
+
+// --- ROSC path ---------------------------------------------------------------
+await page.click('#roscbtn');
+await page.waitForTimeout(150);
+ok(await vis('#rosc'), 'ROSC screen visible');
+ok((await txt('statusword')) === 'ROSC', 'status ROSC');
+
+// re-arrest returns to active
+await page.click('#rearrestbtn');
+await page.waitForTimeout(150);
+ok(await vis('#active'), 're-arrest returns to active');
+
+// --- cease path --------------------------------------------------------------
+await page.click('#ceasebtn');
+await page.waitForTimeout(120);
+ok(await vis('#ceasecard'), 'cessation criteria card shows');
+await page.click('#ceaseconfirm');
+await page.waitForTimeout(150);
+ok(await vis('#ceased'), 'ceased screen visible');
+ok((await txt('statusword')) === 'CEASED', 'status CEASED');
+
+// --- PHI guard ---------------------------------------------------------------
+await page.click('#resetbtn'); await page.click('#resetbtn');
+await page.click('#startbtn');
+await page.waitForTimeout(150);
+await page.click('#logtoggle');
+await page.waitForTimeout(120);
+await page.fill('#customin', 'MRN 12345678 john doe');
+await page.click('#customlog');
+await page.waitForTimeout(120);
+ok(await vis('#customwarn'), 'PHI-like text is refused with a warning');
+await page.fill('#customin', 'IO placed right humeral head');
+await page.click('#customlog');
+await page.waitForTimeout(120);
+ok(!(await vis('#customwarn')) || (await txt('customwarn')) === '', 'clean text accepted');
+
+ok(errors.length === 0, 'no JS errors overall: ' + errors.join(' | '));
+
+console.log(`\n${pass} passed, ${fail} failed`);
+await browser.close();
+process.exit(fail ? 1 : 0);
