@@ -41,8 +41,12 @@
      on retiring filled tiles. Mono numerals/counts use the system mono stack
      (no Google Fonts — CLAUDE.md rule 1). ===== */
   .lrh-mono{font-family:ui-monospace,"SF Mono",Menlo,"JetBrains Mono",monospace}
-  .lrh-home-h1{font-size:28px;font-weight:800;letter-spacing:-.01em;margin:20px 2px 6px;color:var(--ink)}
-  .lrh-home-sub{font-size:15.5px;line-height:1.55;color:var(--ink2);margin:0 2px 16px;max-width:56ch}
+  /* Home heading kept for screen readers only; the chrome bar already labels the
+     manual, so the visible title + description are dropped (slim, matches the
+     Procedures/Clinical-Pathways pattern). START NEW CASE + search + categories
+     sit directly under the bar. */
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0}
   .lrh-startnew{display:inline-flex;align-items:center;margin:0 2px 16px;min-height:44px;padding:0 16px;
     border-radius:10px;background:var(--card2);border:1px solid var(--line);color:var(--ink);
     text-decoration:none;font-weight:700;font-size:.85rem;letter-spacing:.02em}
@@ -80,8 +84,8 @@
   .lrh-sans{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
   .lrh-hdr{position:sticky;top:0;z-index:30;background:var(--bg);padding:12px 14px 10px;
     border-bottom:1px solid var(--line);display:flex;align-items:center;gap:10px}
-  .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;
-    color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lrh-hdr .crumb{flex:1;min-width:0;font-size:12px;font-weight:800;letter-spacing:.12em;
+    color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .lrh-hdr button{background:var(--card);border:1px solid var(--line);color:var(--ink2);
     font:700 11px inherit;letter-spacing:.08em;padding:9px 12px;border-radius:10px;cursor:pointer;
     min-height:38px;white-space:nowrap}
@@ -95,15 +99,6 @@
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     background:var(--bg); color:var(--ink); line-height:1.45; font-size:16px; min-height:100vh}
   .wrap{max-width:840px; margin:0 auto; padding:0 16px 56px}
-
-  header.top{background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-dark));
-    color:#fff; padding:26px 16px; border-bottom:5px solid var(--section)}
-  header.top .inner{max-width:840px; margin:0 auto; display:flex; align-items:center; gap:16px}
-  .logo{width:56px;height:56px;border-radius:11px;background:#fff;flex:0 0 auto;display:flex;
-    align-items:center;justify-content:center;font-weight:800;color:var(--brand-primary);
-    font-size:20px;letter-spacing:.5px;box-shadow:0 1px 3px rgba(0,0,0,.25)}
-  header.top h1{font-size:1.4rem; margin:0 0 3px}
-  header.top p{margin:0; opacity:.9; font-size:.88rem}
 
   .intro{color:var(--muted); font-size:.9rem; margin:22px 2px 14px}
 
@@ -193,6 +188,13 @@
 </style>
 </head>
 <body data-theme="dark">
+<script>
+/* Apply a persisted theme before the page paints (shared lrh-pref- namespace;
+   outside any RESET prefix sweep — CASE-STATE.md). Keeps the theme choice in
+   sync across the whole manual and avoids a flash. */
+try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+catch(e){ document.body.dataset.theme='dark'; }
+</script>
 
 <!-- ===== SITE BETA SPLASH — first thing you see; dismiss to reveal the menu ===== -->
 <div id="betasplash" role="dialog" aria-modal="true" aria-label="Beta notice">
@@ -209,19 +211,8 @@
   <button type="button" id="lrhThemeBtn">LIGHT</button>
 </div>
 
-<header class="top">
-  <div class="inner">
-    <div class="logo">LRH</div>
-    <div>
-      <h1>Emergency Manual</h1>
-      <p>Littleton Regional Hospital &mdash; bedside decision-support aids</p>
-    </div>
-  </div>
-</header>
-
 <div class="wrap">
-  <h1 class="lrh-home-h1">LRH Emergency Manual</h1>
-  <p class="lrh-home-sub">Choose a category or search. Every tool shares one weight, one case clock, and one timeline.</p>
+  <h1 class="sr-only">LRH Emergency Manual</h1>
   <a class="lrh-startnew" href="codes/?from=home&amp;startnewcase=1#top">START NEW CASE</a>
 
   <!-- ===== SEARCH ===== -->
@@ -298,16 +289,18 @@
 </div>
 
 <script>
-/* ---- Theme toggle, chrome only. This page has no CASESTATE and stores
-   nothing (see the START NEW CASE note above) — the choice is NOT persisted,
-   matching that. Dark is the default every load. ---- */
+/* ---- Theme toggle. Persists via the shared lrh-pref-theme key (read before
+   paint by the inline script after <body>), so the choice follows you across
+   every tool in the manual. ---- */
 (function(){
   var b=document.getElementById('lrhThemeBtn');
   if(!b) return;
+  b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
   b.addEventListener('click', function(){
     var dark = document.body.dataset.theme!=='light';
     document.body.dataset.theme = dark ? 'light' : 'dark';
     b.textContent = dark ? 'DARK' : 'LIGHT';
+    try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
   });
 })();
 /* ---- Beta splash: dismiss on tap. Stores nothing (shows every visit). ---- */

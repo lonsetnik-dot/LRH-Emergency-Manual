@@ -25,8 +25,10 @@
     --line:rgba(15,35,60,.13); --accent:#00693E;
   }
   .lrh-mono{font-family:ui-monospace,"SF Mono",Menlo,"JetBrains Mono",monospace}
-  .lrh-idx-h1{font-size:26px;font-weight:800;margin:20px 2px 4px;color:var(--ink)}
-  .lrh-idx-sub{font-size:15px;line-height:1.55;color:var(--ink2);margin:0 2px 16px;max-width:56ch}
+  /* Intro heading kept for screen readers only — the chrome bar already labels
+     the section, so the visible eyebrow/heading/description are dropped (slim). */
+  .sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0,0,0,0);white-space:nowrap;border:0}
   .lrh-group-hd{display:flex;align-items:center;gap:9px;margin:18px 2px 8px}
   .lrh-group-hd .dot{width:10px;height:10px;border-radius:3px;background:var(--accent);flex:none}
   .lrh-group-hd .label{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--ink2)}
@@ -44,8 +46,8 @@
   .lrh-hdr a.lrh-back{background:var(--card);border:1px solid var(--line);color:var(--ink2);
     font:700 11px inherit;letter-spacing:.06em;padding:9px 12px;border-radius:10px;text-decoration:none;
     min-height:38px;display:inline-flex;align-items:center;white-space:nowrap}
-  .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;
-    color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .lrh-hdr .crumb{flex:1;min-width:0;font-size:12px;font-weight:800;letter-spacing:.12em;
+    color:var(--accent);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
   .lrh-hdr button{background:var(--card);border:1px solid var(--line);color:var(--ink2);
     font:700 11px inherit;letter-spacing:.08em;padding:9px 12px;border-radius:10px;cursor:pointer;
     min-height:38px;white-space:nowrap}
@@ -55,15 +57,6 @@
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
     background:var(--bg); color:var(--ink); line-height:1.45; font-size:16px; min-height:100vh}
   .wrap{max-width:840px; margin:0 auto; padding:0 16px 56px}
-
-  header.top{background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-dark));
-    color:#fff; padding:26px 16px; border-bottom:5px solid var(--section)}
-  header.top .inner{max-width:840px; margin:0 auto; display:flex; align-items:center; gap:16px}
-  .logo{width:56px;height:56px;border-radius:11px;background:#fff;flex:0 0 auto;display:flex;
-    align-items:center;justify-content:center;font-weight:800;color:var(--brand-primary);
-    font-size:20px;letter-spacing:.5px;box-shadow:0 1px 3px rgba(0,0,0,.25)}
-  header.top h1{font-size:1.4rem; margin:0 0 3px}
-  header.top p{margin:0; opacity:.9; font-size:.88rem}
 
   .crumb{margin:18px 2px 4px; font-size:.85rem}
   .crumb a{color:var(--brand-primary); text-decoration:none}
@@ -90,24 +83,21 @@
 </style>
 </head>
 <body data-theme="dark">
+<script>
+/* Apply a persisted theme before the page paints (shared lrh-pref- namespace;
+   outside any RESET prefix sweep — CASE-STATE.md). Keeps the theme choice in
+   sync with the rest of the manual and avoids a flash. */
+try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+catch(e){ document.body.dataset.theme='dark'; }
+</script>
 <div class="lrh-hdr">
-  <a class="lrh-back" href="../?from=tool">&larr; MANUAL</a>
+  <a class="lrh-back" href="../?from=tool">◀ MANUAL</a>
   <div class="crumb">CLINICAL PATHWAYS</div>
   <button type="button" id="lrhThemeBtn">LIGHT</button>
 </div>
-<header class="top">
-  <div class="inner">
-    <div class="logo">LRH</div>
-    <div>
-      <h1>Clinical Pathways</h1>
-      <p>Littleton Regional Hospital Emergency Manual</p>
-    </div>
-  </div>
-</header>
 
 <div class="wrap">
-  <h1 class="lrh-idx-h1">Clinical Pathways</h1>
-  <p class="lrh-idx-sub">Accelerated diagnostic and treatment pathways. Tap a pathway to open it.</p>
+  <h1 class="sr-only">Clinical Pathways</h1>
 
   <div class="lrh-group-hd"><span class="dot"></span><span class="label">PATHWAYS</span><span class="rule"></span></div>
   <div class="lrh-row-grid">
@@ -152,15 +142,17 @@
   <footer>Littleton Regional Hospital Emergency Manual &mdash; personal, unofficial reference &middot; Beta</footer>
 </div>
 <script>
-/* Theme toggle, chrome only — this page stores nothing, so the choice is not
-   persisted (matches its current no-storage architecture). Dark by default. */
+/* Theme toggle — persists via the shared lrh-pref-theme key (read before paint
+   by the inline script after <body>), matching the rest of the manual. */
 (function(){
   var b=document.getElementById('lrhThemeBtn');
   if(!b) return;
+  b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
   b.addEventListener('click', function(){
     var dark = document.body.dataset.theme!=='light';
     document.body.dataset.theme = dark ? 'light' : 'dark';
     b.textContent = dark ? 'DARK' : 'LIGHT';
+    try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
   });
 })();
 </script>
