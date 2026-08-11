@@ -164,12 +164,11 @@ check('11. non-shockable management accordion present on c01', nonShockableAccor
 const defibAccordion = await page.$('text=DEFIBRILLATION');
 check('11. defibrillation accordion present on c01', defibAccordion !== null);
 
-// ---- 12. Card 02 redirect ----
+// ---- 12. Card 02 redirect (WS-arrest-handoff: now to the standalone /arrest/) ----
 await fresh();
 await page.goto('http://localhost:8123/codes/?from=home#c02', {waitUntil:'networkidle'});
 await page.waitForTimeout(300);
-const hashAfterRedirect = await page.evaluate(() => location.hash);
-check('12. #c02 redirects to #c01', hashAfterRedirect === '#c01', hashAfterRedirect);
+check('12. #c02 redirects to /arrest/', new URL(page.url()).pathname === '/arrest/', page.url());
 
 // ---- 13. H's and T's single checklist (no duplicate 02-* keys) ----
 await fresh();
@@ -192,14 +191,17 @@ const epiEntry = log.find(e => /EPI/.test(e.label));
 check('14. epi log entry tagged card 01', epiEntry && epiEntry.card === '01', epiEntry);
 check('14. peds epi log shows computed mg (0.18 mg)', epiEntry && epiEntry.label.includes('0.18 mg'), epiEntry);
 
-// ---- 15. Peds mode menu entry (PEA/Asystole tile) still starts clock without arming shock ----
+// ---- 15. WS-arrest-handoff — card 01/02 now open the standalone /arrest/ engine ----
+// The old in-page merged engine below (tests 1-14) is still present in the DOM but
+// unreachable: the menu tiles navigate to /arrest/, and #c01/#c02 deep-links redirect.
 await fresh();
 await page.click('#menu-c02');
-await page.waitForTimeout(150);
-armedAfter = await page.evaluate(() => document.getElementById('ccshock').classList.contains('flashred'));
-check('15. menu PEA/Asystole tile does not arm shock', !armedAfter);
-const clockRunning = await page.evaluate(() => document.getElementById('ccclock').textContent !== '0:00' || !!window.__codeCPR);
-check('15. menu tile still reaches c01', (await page.evaluate(()=>location.hash)) === '#c02' || (await page.evaluate(()=>location.hash)) === '#c01');
+await page.waitForLoadState('networkidle');
+check('15. the PEA/Asystole tile hands off to /arrest/', new URL(page.url()).pathname === '/arrest/');
+await page.goto('http://localhost:8123/codes/?from=home#c01', {waitUntil:'networkidle'});
+check('15. a #c01 deep-link redirects to /arrest/', new URL(page.url()).pathname === '/arrest/');
+await page.goto('http://localhost:8123/codes/#c02', {waitUntil:'networkidle'});
+check('15. a #c02 deep-link redirects to /arrest/', new URL(page.url()).pathname === '/arrest/');
 
 // ---- 16. console/page errors ----
 check('16. no console/page errors across all tests', errors.length === 0, errors.slice(0,10));

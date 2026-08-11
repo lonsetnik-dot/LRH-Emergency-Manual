@@ -69,9 +69,17 @@ button{-webkit-appearance:none;appearance:none;touch-action:manipulation;-webkit
 </style>
 </head>
 <body data-theme="dark">
+<script>
+/* Apply the shared persisted theme before paint (lrh-pref-theme namespace, the
+   same key the rest of the manual uses; outside any RESET sweep — CASE-STATE.md).
+   Keeps this tool's theme in sync with wherever the clinician came from. */
+try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+catch(e){ document.body.dataset.theme='dark'; }
+</script>
 <div class="wrap">
 
   <div class="hdr">
+    <a class="ghost" id="backlink" href="../?from=tool" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">‹ MANUAL</a>
     <div style="flex:1;min-width:0">
       <div class="plabel" id="plabel">01 · PULSELESS VF / VT</div>
       <div style="display:flex;align-items:baseline;gap:8px">
@@ -98,6 +106,16 @@ button{-webkit-appearance:none;appearance:none;touch-action:manipulation;-webkit
     <div style="flex:1;font-size:13.5px;line-height:1.4" id="pedstext"></div>
     <button class="ghost" id="dismisspeds" type="button" style="white-space:nowrap">DISMISS</button>
   </div>
+  <!-- Broselow drawer chip: which color-coded drawer to physically pull. The
+       kilograms drive every dose; the color is wayfinding to the cart only.
+       Swatch/bar follow --accent, which is the band color in pediatric mode. -->
+  <a id="brosechip" class="card" href="../labels/#loc-peds" style="display:none;align-items:center;gap:10px;margin-top:8px;padding:9px 12px;text-decoration:none;color:var(--ink);border-left:10px solid var(--accent)">
+    <span style="display:inline-block;width:22px;height:22px;flex:none;border-radius:5px;background:var(--accent);border:1px solid var(--line)"></span>
+    <span class="mono" style="font-size:12px;letter-spacing:.03em;line-height:1.45">
+      <b id="brosechipname">—</b> <span id="brosechiprange" style="color:var(--ink2)"></span><br>
+      <span style="color:var(--ink2)">PEDIATRIC CART &middot; PULL THIS DRAWER &middot; TAP FOR CART LABELS</span>
+    </span>
+  </a>
   <div id="overridebar" class="card" style="display:none;align-items:center;gap:10px;margin-top:10px;border-color:var(--amber);padding:10px 12px">
     <div style="flex:1;font-size:13.5px;line-height:1.4"><b>Adult mode — overridden.</b> Pediatric criteria are met but this is being treated as an adult. Doses below are adult.</div>
     <button class="ghost" id="undooverride" type="button" style="white-space:nowrap">UNDO</button>
@@ -247,7 +265,7 @@ button{-webkit-appearance:none;appearance:none;touch-action:manipulation;-webkit
     </div>
 
     <div id="bradycard" class="card" style="display:none;margin-top:10px;padding:12px;border-color:var(--red)">
-      <div class="sec" style="color:var(--red)">PAEDIATRIC — THE PULSE IS NOT THE WHOLE ANSWER</div>
+      <div class="sec" style="color:var(--red)">PEDIATRIC — THE PULSE IS NOT THE WHOLE ANSWER</div>
       <div style="font-size:13.5px;line-height:1.5;margin-top:4px">
         If the heart rate stays below <b><span id="bradyhr2">60</span>/min with signs of cardiopulmonary compromise</b> despite
         oxygenation and ventilation, <b>start compressions</b> — even though you can feel a pulse. In children the
@@ -258,7 +276,7 @@ button{-webkit-appearance:none;appearance:none;touch-action:manipulation;-webkit
     <div id="spontcard" class="card" style="display:none;margin-top:10px;padding:12px;border:2px solid var(--green)">
       <div class="sec" style="color:var(--green)">BREATHING ON THEIR OWN — TONE STOPPED</div>
       <div style="font-size:13.5px;line-height:1.5;margin-top:4px">
-        Stay at the head. Recheck rate, depth, saturation and end-tidal CO₂. Apnoea that resolved once will often resolve again in the other direction.
+        Stay at the head. Recheck rate, depth, saturation and end-tidal CO₂. Apnea that resolved once will often resolve again in the other direction.
       </div>
       <button class="btn" id="respresume" type="button" style="width:100%;min-height:56px;margin-top:10px;background:var(--blue);color:#fff;border:none;font:800 15px var(--sans)">APNOEIC AGAIN — RESUME RESCUE BREATHING</button>
     </div>
@@ -268,7 +286,7 @@ button{-webkit-appearance:none;appearance:none;touch-action:manipulation;-webkit
       <div style="font-size:13.5px;line-height:1.55;margin-top:6px">
         <div style="margin-bottom:5px"><b>Opioid</b> <span style="color:var(--ink2)">— pinpoint pupils, slow shallow rate. Ventilate first, naloxone second; titrate to breathing, not to consciousness.</span></div>
         <div style="margin-bottom:5px"><b>Glucose</b> <span style="color:var(--ink2)">— check one on everybody. It costs a finger-prick and it is the cause you will otherwise miss.</span></div>
-        <div style="margin-bottom:5px"><b>Postictal or still seizing</b> <span style="color:var(--ink2)">— apnoea after a tonic-clonic is usually short. Support and watch; a prolonged one is status until proven otherwise.</span></div>
+        <div style="margin-bottom:5px"><b>Postictal or still seizing</b> <span style="color:var(--ink2)">— apnea after a tonic-clonic is usually short. Support and watch; a prolonged one is status until proven otherwise.</span></div>
         <div style="margin-bottom:5px"><b>CO₂ narcosis</b> <span style="color:var(--ink2)">— COPD, obesity hypoventilation, sedatives on board. Ventilate; consider NIV once they are protecting.</span></div>
         <div style="margin-bottom:5px"><b>Brainstem</b> <span style="color:var(--ink2)">— stroke, bleed, raised ICP. Irregular pattern, hypertension, bradycardia. Needs a scanner, not a ward bed.</span></div>
         <div style="margin-bottom:5px"><b>Neuromuscular</b> <span style="color:var(--ink2)">— Guillain-Barré, myasthenia, high cord injury. The diaphragm tires long before the saturation falls.</span></div>
@@ -302,7 +320,8 @@ button{-webkit-appearance:none;appearance:none;touch-action:manipulation;-webkit
         · 12-lead ECG · glucose · temperature management<br>
         · Find and treat the cause (H's &amp; T's)
       </div>
-      <button id="roscvent" type="button" style="width:100%;margin-top:12px;min-height:60px;border:2px solid var(--blue);border-radius:12px;background:transparent;color:var(--blue);font:800 16px var(--sans);cursor:pointer">NOT BREATHING ADEQUATELY — RESCUE BREATHING</button>
+      <a href="../codes/?from=home#c22" class="btn" style="display:flex;align-items:center;justify-content:center;width:100%;margin-top:12px;min-height:52px;text-decoration:none;border:1px solid var(--line);border-radius:12px;background:var(--card2);color:var(--ink);font:800 14px var(--sans);letter-spacing:.02em">FULL POST-ARREST CARE — CODES CARD 22 →</a>
+      <button id="roscvent" type="button" style="width:100%;margin-top:8px;min-height:60px;border:2px solid var(--blue);border-radius:12px;background:transparent;color:var(--blue);font:800 16px var(--sans);cursor:pointer">NOT BREATHING ADEQUATELY — RESCUE BREATHING</button>
       <button id="rearrestbtn" type="button" style="width:100%;margin-top:8px;min-height:60px;border:none;border-radius:12px;background:var(--red);color:#fff;font:800 17px var(--sans);cursor:pointer">RE-ARREST — RESUME CPR</button>
     </div>
   </div>
@@ -368,7 +387,7 @@ var SITE = {
      Adult: AHA 2025 Part 7 (Adult BLS) — "it is reasonable for the health care
      professional to give 1 ventilation every 6 s, or 10 breaths/min." Class 2a,
      LOE C-LD.
-     Paediatric: AHA/AAP 2025 Part 6 (Pediatric BLS) — "For infants and children
+     Pediatric: AHA/AAP 2025 Part 6 (Pediatric BLS) — "For infants and children
      with a pulse but absent or inadequate respiratory effort, it is reasonable
      to give 1 breath every 2 to 3 s (20-30 breaths/min)." Class 2a, LOE C-EO.
      The guideline gives a RANGE for children; a metronome has to pick one
@@ -379,7 +398,7 @@ var SITE = {
            pedsSecLow:2, pedsSecHigh:3, pedsPerMinLow:20, pedsPerMinHigh:30,
            pedsPaceSec:3,
            pulseCheckSec:120, toneHz:523, toneMs:280, cueMs:900 },
-  /* Paediatric bradycardia: HR <60 with signs of cardiopulmonary compromise
+  /* Pediatric bradycardia: HR <60 with signs of cardiopulmonary compromise
      despite oxygenation and ventilation — start compressions even though a
      pulse is palpable (AHA/AAP 2025 Pediatric). Adults have no equivalent
      rule, which is why this is inside peds-only display logic. */
@@ -388,17 +407,38 @@ var SITE = {
      small child from a small frail adult, which is why the age arm exists and
      why the override below is loud and reversible rather than silent. */
   trigger: { maxKg:50, maxAgeYrs:12 },
-  /* Broselow-Luten bands (WikEM). Wayfinding and accent colour only — every
+  /* Broselow-Luten bands (WikEM). Wayfinding and accent color only — every
      dose on this screen computes from the exact kg entered, never from a band. */
   bands: [[5,'#8E8E93','Grey'],[7,'#E75480','Pink'],[9,'#D22B2B','Red'],[11,'#7D3C98','Purple'],
           [14,'#D4AC0D','Yellow'],[18,'#B9BEC4','White'],[23,'#2E86C1','Blue'],
           [29,'#E67E22','Orange'],[36,'#229954','Green']]
 };
 
+/* =============================== LOCALE ====================================
+   Spelling and drug nomenclature for the JS-GENERATED content below (dose
+   strings, reference accordions, status labels). US English / LRH is the
+   default; a fork localizes by editing the values here — one place, and every
+   dynamic string re-reads it on the next paint. Static HTML prose in this file
+   is maintained separately in the site's dialect (see TERMINOLOGY.md). Give the
+   term lowercase; L()/Lc()/Lu() apply whatever casing the UI needs.
+   ========================================================================== */
+var LOCALE = {
+  /* Drug nomenclature (INN / US). UK & Commonwealth aliases in the comments. */
+  epinephrine: 'epinephrine',   /* UK: adrenaline  */
+  lidocaine:   'lidocaine',     /* UK: lignocaine  */
+  amiodarone:  'amiodarone',    /* (same)          */
+  /* English-variant spelling that appears in generated strings. */
+  pediatric:   'pediatric',     /* UK: paediatric  */
+  anesthetic:  'anesthetic'     /* UK: anaesthetic */
+};
+function L(k){ return LOCALE.hasOwnProperty(k) ? LOCALE[k] : k; }        /* lowercase term */
+function Lc(k){ var s=L(k); return s.charAt(0).toUpperCase()+s.slice(1); } /* Capitalized   */
+function Lu(k){ return L(k).toUpperCase(); }                              /* UPPERCASE     */
+
 /* phase: 'idle' | 'cpr' | 'resp' | 'rosc'
    rhythm: null until the first rhythm check — the whole point of the code blue
    front door is that the algorithm is NOT chosen at the moment CPR starts. */
-var S = { theme:'dark', kg:null, ageY:null, phase:'idle', codeStart:null, cycleStart:null,
+var S = { theme:(document.body.dataset.theme==='light'?'light':'dark'), kg:null, ageY:null, phase:'idle', codeStart:null, cycleStart:null,
           shocks:0, epiN:0, lastEpiAt:null, amioN:0, airway:false, roles:false,
           override:false, pedsDismissed:false, events:[], open:null, met:false,
           resetArm:false, roscAt:null, rcOpen:false, rcOrg:false, showCustom:false,
@@ -424,13 +464,57 @@ var PHI = [
 ];
 function phiReason(t){ for(var i=0;i<PHI.length;i++){ if(PHI[i].re.test(t)) return PHI[i].why; } return null; }
 
-function log(label){ S.events.unshift({ t: clockNow(), label: label }); }
+/* ---- SHARED CASE-STATE bridge (CASE-STATE.md) -----------------------------
+   arrest/ is the manual's VF/arrest engine, so it shares the SAME cross-tool
+   localStorage contract every other tool uses: one weight, one timeline, one
+   RESET. It touches ONLY the documented keys and value shapes. Its log entries
+   are tagged tool:'codes', card:'01' because this IS the Codes arrest card
+   (the standalone page and codes #c01 are the same clinical card). It does NOT
+   yet persist the running-code clocks/counts — that's the deferred resilience
+   step; a mid-code reload still restarts here, unchanged from before. */
+var SS = {
+  get:function(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set:function(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+  del:function(k){ try{ localStorage.removeItem(k); }catch(e){} },
+  loadWeight:function(){
+    var w=parseFloat(SS.get('lrh-case-wtkg')); S.kg=(w>0&&w<300)?w:null;
+    var a=parseFloat(SS.get('lrh-case-ageyrs')); S.ageY=(a>=0&&a<130)?a:null;
+    S.override = SS.get('lrh-case-adultoverride')==='1';
+  },
+  saveWeight:function(src){
+    if(S.kg!==null){ SS.set('lrh-case-wtkg',String(S.kg)); SS.set('lrh-case-wtsrc',src||'measured'); SS.set('lrh-case-wtms',String(Date.now())); }
+    else { SS.del('lrh-case-wtkg'); SS.del('lrh-case-wtsrc'); SS.del('lrh-case-wtms'); }
+    if(S.ageY!==null) SS.set('lrh-case-ageyrs',String(S.ageY)); else SS.del('lrh-case-ageyrs');
+  },
+  saveOverride:function(){ if(S.override) SS.set('lrh-case-adultoverride','1'); else SS.del('lrh-case-adultoverride'); },
+  /* Shared timeline. Same PHI guard shape as every tool's CASESTATE.addLog:
+     refuse weight-shaped labels and long digit runs so nothing identifying,
+     and no bare patient weight, ever lands in the shared record. */
+  addLog:function(label){
+    if(/\d+(\.\d+)?\s*(kg|lb)/i.test(label)) return;
+    if(/\d{6,}/.test(label)) return;
+    var arr; try{ arr=JSON.parse(SS.get('lrh-case-log')||'[]'); }catch(e){ arr=[]; }
+    if(!Array.isArray(arr)) arr=[];
+    arr.push({ tMs:Date.now(), tool:'codes', card:'01', label:label });
+    SS.set('lrh-case-log', JSON.stringify(arr));
+  },
+  sweep:function(){ try{ for(var i=localStorage.length-1;i>=0;i--){ var k=localStorage.key(i);
+    if(k && k.indexOf('lrh-')===0 && k.indexOf('lrh-pref-')!==0) localStorage.removeItem(k); } }catch(e){} },
+  touchActive:function(){ SS.set('lrh-case-lastactive', String(Date.now())); }
+};
+
+/* Every logged event goes to BOTH the in-tool event-log accordion (in-memory
+   S.events) and the shared manual-wide timeline (lrh-case-log, PHI-guarded). */
+function log(label){ S.events.unshift({ t: clockNow(), label: label }); SS.addLog(label); }
 
 function kg(){ var k=S.kg; return (k>0 && k<300) ? k : null; }
 function autoPeds(){ var k=kg(); return (k!==null && k<SITE.trigger.maxKg) || (S.ageY!==null && S.ageY<=SITE.trigger.maxAgeYrs); }
 function isPeds(){ return autoPeds() && !S.override; }
 function band(){ var k=kg(); if(k===null) return null;
-  for(var i=0;i<SITE.bands.length;i++){ if(k<=SITE.bands[i][0]) return {c:SITE.bands[i][1], name:'Broselow '+SITE.bands[i][2]}; }
+  for(var i=0;i<SITE.bands.length;i++){ if(k<=SITE.bands[i][0]){
+    var low = i>0 ? SITE.bands[i-1][0] : 0;
+    return {c:SITE.bands[i][1], name:'Broselow '+SITE.bands[i][2],
+            range:(low>0?low+'–':'&le;')+SITE.bands[i][0]+' kg'}; } }
   return null; }
 
 /* ---- DOSE MATH — the site's, not the prototype's --------------------------- */
@@ -515,7 +599,7 @@ var MET = (function(){
    Deliberately a different sound from the compression blip: lower pitch, four
    times as long. In a room where both have been heard, nobody should have to
    work out which one is playing. The interval is read from SITE.vent and is
-   re-armed whenever the adult/paediatric decision changes, so entering a
+   re-armed whenever the adult/pediatric decision changes, so entering a
    weight mid-run retimes the tone rather than leaving it on the adult rate. */
 var VENT = (function(){
   var timer=null, iv=null;
@@ -543,7 +627,7 @@ function ventPlan(){
   var V=SITE.vent;
   if(isPeds()) return { ms: V.pedsPaceSec*1000, sec: V.pedsPaceSec,
     rate: '1 breath every '+V.pedsSecLow+'–'+V.pedsSecHigh+' s ('+V.pedsPerMinLow+'–'+V.pedsPerMinHigh+'/min)',
-    paced: 'paced here at '+V.pedsPaceSec+' s', who:'paediatric' };
+    paced: 'paced here at '+V.pedsPaceSec+' s', who:L('pediatric') };
   return { ms: V.adultSec*1000, sec: V.adultSec,
     rate: '1 breath every '+V.adultSec+' s ('+V.adultPerMin+'/min)',
     paced: 'paced here at '+V.adultSec+' s', who:'adult' };
@@ -553,7 +637,7 @@ function ventPlan(){
 var ACC = [
  {id:'defib', title:'DEFIBRILLATION', body:function(d){
    if(isPeds()){
-     if(!d.pedsKnown) return '<p>Pediatric mode is on by age, but no weight is entered — enter a weight and the energies compute here.</p>';
+     if(!d.pedsKnown) return '<p>'+Lc('pediatric')+' mode is on by age, but no weight is entered — enter a weight and the energies compute here.</p>';
      return '<p>1st shock '+SITE.peds.defibPerKg1+' J/kg = <b>'+d.e1+' J</b>. 2nd shock '+SITE.peds.defibPerKgN+
        ' J/kg = <b>'+d.eN+' J</b>. 3rd and subsequent shocks &ge;'+SITE.peds.defibPerKgN+
        ' J/kg, may increase per clinician judgment — max '+SITE.peds.defibMaxPerKg+' J/kg (<b>'+d.eMax+
@@ -566,9 +650,9 @@ var ACC = [
      '<p><b>Different manufacturer/device on your unit?</b> Use its manufacturer label instead — energies are device-specific. If no label is visible, use the maximum available.</p>'+
      '<p style="margin-bottom:0"><b>Resume compressions immediately after each shock</b> — minimize the pause to &lt;10 s.</p>';
  }},
- {id:'epi', title:'EPINEPHRINE', body:function(d){
+ {id:'epi', title:Lu('epinephrine'), body:function(d){
    if(isPeds()){
-     if(!d.pedsKnown) return '<p>Enter a weight and the pediatric epinephrine dose computes here.</p>';
+     if(!d.pedsKnown) return '<p>Enter a weight and the '+L('pediatric')+' '+L('epinephrine')+' dose computes here.</p>';
      return '<p>IV/IO (1:10,000 = '+SITE.peds.epiConc+' mg/mL): '+SITE.peds.epiPerKg+' mg/kg = <b>'+d.epiMg+' mg</b> = <b>'+
        d.epiMl+' mL</b>, max '+SITE.peds.epiMaxMg+' mg, every '+SITE.epi.intervalMin+' min.</p>'+
        '<p>Via ETT (2nd-line route only): '+SITE.peds.epiEttPerKg+' mg/kg = <b>'+d.epiEttMg+
@@ -583,16 +667,26 @@ var ACC = [
  }},
  {id:'anti', title:'ANTIARRHYTHMIC', body:function(d){
    if(isPeds()){
-     if(!d.pedsKnown) return '<p>Enter a weight and the pediatric antiarrhythmic doses compute here.</p>';
-     return '<p><b>Amiodarone</b> (refractory VF/pVT) — '+SITE.peds.amioPerKgDose1+' mg/kg = <b>'+d.amioMg+
+     if(!d.pedsKnown) return '<p>Enter a weight and the '+L('pediatric')+' antiarrhythmic doses compute here.</p>';
+     return '<p><b>'+Lc('amiodarone')+'</b> (refractory VF/pVT) — '+SITE.peds.amioPerKgDose1+' mg/kg = <b>'+d.amioMg+
        ' mg</b>, max '+SITE.peds.amioMaxMgDose+' mg/dose, may repeat &times;2 — max '+SITE.peds.amioMaxDoses+
        ' doses total (&le;15 mg/kg).</p>'+
-       '<p style="margin-bottom:0"><b>Lidocaine</b> (alternative) — '+SITE.peds.lidoPerKg1+' mg/kg = <b>'+d.lidoMg+
+       '<p style="margin-bottom:0"><b>'+Lc('lidocaine')+'</b> (alternative) — '+SITE.peds.lidoPerKg1+' mg/kg = <b>'+d.lidoMg+
        ' mg</b>; repeat '+SITE.peds.lidoPerKg2+' mg/kg = <b>'+d.lido2Mg+' mg</b> if needed.</p>';
    }
-   return '<p><b>Amiodarone</b> (refractory VF/pVT) — <b>'+SITE.amio.adultDose1+' mg</b> first dose, <b>'+
+   return '<p><b>'+Lc('amiodarone')+'</b> (refractory VF/pVT) — <b>'+SITE.amio.adultDose1+' mg</b> first dose, <b>'+
      SITE.amio.adultDose2+' mg</b> second.</p>'+
-     '<p style="margin-bottom:0"><b>Lidocaine</b> (alternative) — 1&ndash;1.5 mg/kg first dose, then 0.5&ndash;0.75 mg/kg.</p>';
+     '<p style="margin-bottom:0"><b>'+Lc('lidocaine')+'</b> (alternative) — 1&ndash;1.5 mg/kg first dose, then 0.5&ndash;0.75 mg/kg.</p>';
+ }},
+ {id:'peaman', title:'NON-SHOCKABLE — PEA / ASYSTOLE MANAGEMENT', body:function(){
+   return '<p><b>PEA</b> (organized electrical activity, no pulse) or <b>asystole</b> (flatline) — <b>no defibrillation, no '+L('amiodarone')+' or '+L('lidocaine')+'</b> for either. The treatment is compressions, early '+L('epinephrine')+', and the reversible causes.</p>'+
+     '<div style="display:grid;gap:6px;margin:10px 0">'+
+     '<div><b>IV/IO access, '+L('epinephrine')+' as soon as available</b> <span style="color:var(--ink2)">— as early as possible; do not delay compressions to get it.</span></div>'+
+     '<div><b>Advanced airway + waveform capnography</b> <span style="color:var(--ink2)">— persistent PETCO&#8322; &lt;10 mmHg is a cue to improve CPR quality, not a reason to stop.</span></div>'+
+     '<div><b>Every ~2 min, check the rhythm.</b> <span style="color:var(--ink2)">For PEA, check the pulse at the same time (an organized rhythm may be perfusing). For asystole, only check a pulse if an organized rhythm appears.</span></div>'+
+     '<div><b>Repeat '+L('epinephrine')+' every '+SITE.epi.intervalMin+' min</b> <span style="color:var(--ink2)">and keep working the H&rsquo;s and T&rsquo;s throughout — do not save them for later.</span></div>'+
+     '</div>'+
+     '<p style="margin-bottom:0">If the rhythm becomes shockable at any check, name it at the rhythm check above and defibrillate — nothing here is locked.</p>';
  }},
  {id:'cpr', title:'HIGH-QUALITY CPR TARGETS', body:function(){
    return '<p><b>Rate '+SITE.cpr.rateLow+'&ndash;'+SITE.cpr.rateHigh+'/min</b>, all ages. <b>Depth</b> &ge;&#8531; AP chest '+
@@ -615,7 +709,7 @@ var ACC = [
      '<span style="color:var(--ink2)">AHA/AAP 2025 Part 6, Pediatric BLS — Class 2a, LOE C-EO.</span></div>'+
      '</div>'+
      '<p>This screen is currently pacing the <b>'+v.who+'</b> rate: '+v.rate+', '+v.paced+'. '+
-     'The paediatric guideline gives a range and a metronome has to choose; the choice here is the <b>slow end</b>, because '+
+     'The '+L('pediatric')+' guideline gives a range and a metronome has to choose; the choice here is the <b>slow end</b>, because '+
      'over-ventilating a small chest is the commoner error. That single number lives in the SITE CONFIG block.</p>'+
      '<p>Recheck the pulse every <b>'+Math.round(V.pulseCheckSec/60)+' minutes</b>, ten seconds at most. In a child, a rate below <b>'+
      SITE.brady.pedsHrCpr+'/min with poor perfusion</b> despite oxygenation and ventilation means compressions, pulse or no pulse.</p>'+
@@ -628,10 +722,23 @@ var ACC = [
      (MET.running()?'var(--gray)':'var(--accent)')+';color:var(--accentInk);font:800 15px var(--sans);cursor:pointer;margin:10px 0">'+
      (MET.running()?'■ STOP METRONOME':'▶ START METRONOME — '+SITE.cpr.bpm+'/min')+'</button>'+
      '<p style="margin-bottom:0;color:var(--ink2);font-size:13px">It starts automatically with the code clock. Paces rate only ('+
-     SITE.cpr.bpm+'/min) — it does not model the two-rescuer ratio or age-based depth. See HIGH-QUALITY CPR TARGETS for the exact pediatric numbers.</p>';
+     SITE.cpr.bpm+'/min) — it does not model the two-rescuer ratio or age-based depth. See HIGH-QUALITY CPR TARGETS for the exact '+L('pediatric')+' numbers.</p>';
  }},
- {id:'causes', title:"REVERSIBLE CAUSES — H's & T's", body:function(){ return '<p><b>Ask these out loud during compressions, not after.</b> In a non-shockable arrest they are most of the treatment.</p>'+'<div style="display:grid;grid-template-columns:1fr;gap:6px;margin:10px 0">'+'<div><b>Hypovolaemia</b> <span style="color:var(--ink2)">— bleeding, sepsis, anaphylaxis. Give volume, find the source.</span></div>'+'<div><b>Hypoxia</b> <span style="color:var(--ink2)">— airway in? Both sides ventilating? Capnography?</span></div>'+'<div><b>Hydrogen ion — acidosis</b> <span style="color:var(--ink2)">— VBG, ventilate, consider bicarbonate.</span></div>'+'<div><b>Hypo / hyperkalaemia</b> <span style="color:var(--ink2)">— dialysis patient, crush, DKA. Calcium first if suspected — see Codes card 11.</span></div>'+'<div><b>Hypothermia</b> <span style="color:var(--ink2)">— check a real core temperature. Nobody is dead until warm and dead.</span></div>'+'<div><b>Tension pneumothorax</b> <span style="color:var(--ink2)">— trauma, ventilated, central line. Decompress on suspicion, not on imaging.</span></div>'+'<div><b>Tamponade</b> <span style="color:var(--ink2)">— penetrating chest, post-cardiac-surgery, uraemia. Ultrasound during the rhythm check.</span></div>'+'<div><b>Toxins</b> <span style="color:var(--ink2)">— opioid, beta-blocker, calcium-channel blocker, TCA, local anaesthetic.</span></div>'+'<div><b>Thrombosis — pulmonary</b> <span style="color:var(--ink2)">— sudden collapse, right heart strain. Consider thrombolysis and prolonged CPR.</span></div>'+'<div><b>Thrombosis — coronary</b> <span style="color:var(--ink2)">— the commonest one. Post-ROSC 12-lead, cath-lab transfer.</span></div>'+'</div>'+'<p style="margin-bottom:0">Ultrasound during the pulse check answers four of these at once — volume, tamponade, right heart, and lung sliding. Keep it under the 10-second pause.</p>'; }},
- {id:'rvf', title:'REFRACTORY VF — VECTOR CHANGE / DSED', body:function(){ return '<p><b>Refractory VF = still in VF after 3 consecutive standard shocks</b> at maximum energy with 2-minute cycles between. That is the DOSE-VF definition and it is where these two options enter.</p>'+'<p>Roughly 80% of &ldquo;persistent&rdquo; VF is <i>recurrent</i>, not incessant — and the DSED benefit appeared only in the incessant group. Before either option: check pad contact and skin prep, reversible causes, epinephrine timing, and consider esmolol.</p>'+'<p><b>Vector change</b> — move the pads from anterior-lateral to anterior-posterior and deliver all subsequent shocks that way. No extra equipment.</p>'+'<p><b>DSED</b> — leave the first pads on, add a second anterior-posterior set from a <b>second, identical</b> defibrillator. One operator presses both, anterior-lateral first, <b>sequential, not simultaneous</b>. Pads close but never touching. Do not mix brands or models.</p>'+'<p>DOSE-VF (Cheskes, NEJM 2022, n=405): survival to discharge <b>DSED 30.4%</b>, <b>vector change 21.7%</b>, <b>standard 13.3%</b>. Stopped early at ~44% of target, unblinded, and the vector-change result has a fragility index of 1.</p>'+'<p style="margin-bottom:0"><b>AHA 2025 rates both Class 2b, &ldquo;usefulness has not been established&rdquo;</b>, and the highlights document says they are not recommended. This is an option offered, not a step instructed — and DSED needs two identical defibrillators, a second pad set, a designated operator and a post-use device check, so decide in advance whether it is in scope here at all.</p>'; }},
+ {id:'causes', title:"REVERSIBLE CAUSES — H's & T's", body:function(){ return '<p><b>Ask these out loud during compressions, not after.</b> In a non-shockable arrest they are most of the treatment.</p>'+'<div style="display:grid;grid-template-columns:1fr;gap:6px;margin:10px 0">'+'<div><b>Hypovolaemia</b> <span style="color:var(--ink2)">— bleeding, sepsis, anaphylaxis. Give volume, find the source.</span></div>'+'<div><b>Hypoxia</b> <span style="color:var(--ink2)">— airway in? Both sides ventilating? Capnography?</span></div>'+'<div><b>Hydrogen ion — acidosis</b> <span style="color:var(--ink2)">— VBG, ventilate, consider bicarbonate.</span></div>'+'<div><b>Hypo / hyperkalaemia</b> <span style="color:var(--ink2)">— dialysis patient, crush, DKA. Calcium first if suspected — see Codes card 11.</span></div>'+'<div><b>Hypothermia</b> <span style="color:var(--ink2)">— check a real core temperature. Nobody is dead until warm and dead.</span></div>'+'<div><b>Tension pneumothorax</b> <span style="color:var(--ink2)">— trauma, ventilated, central line. Decompress on suspicion, not on imaging.</span></div>'+'<div><b>Tamponade</b> <span style="color:var(--ink2)">— penetrating chest, post-cardiac-surgery, uraemia. Ultrasound during the rhythm check.</span></div>'+'<div><b>Toxins</b> <span style="color:var(--ink2)">— opioid, beta-blocker, calcium-channel blocker, TCA, local '+L('anesthetic')+'.</span></div>'+'<div><b>Thrombosis — pulmonary</b> <span style="color:var(--ink2)">— sudden collapse, right heart strain. Consider thrombolysis and prolonged CPR.</span></div>'+'<div><b>Thrombosis — coronary</b> <span style="color:var(--ink2)">— the commonest one. Post-ROSC 12-lead, cath-lab transfer.</span></div>'+'</div>'+'<p style="margin-bottom:0">Ultrasound during the pulse check answers four of these at once — volume, tamponade, right heart, and lung sliding. Keep it under the 10-second pause.</p>'; }},
+ {id:'rvf', title:'REFRACTORY VF — VECTOR CHANGE / DSED', body:function(){ return '<p><b>Refractory VF = still in VF after 3 consecutive standard shocks</b> at maximum energy with 2-minute cycles between. That is the DOSE-VF definition and it is where these two options enter.</p>'+'<p>Roughly 80% of &ldquo;persistent&rdquo; VF is <i>recurrent</i>, not incessant — and the DSED benefit appeared only in the incessant group. Before either option: check pad contact and skin prep, reversible causes, '+L('epinephrine')+' timing, and consider esmolol.</p>'+'<p><b>Vector change</b> — move the pads from anterior-lateral to anterior-posterior and deliver all subsequent shocks that way. No extra equipment.</p>'+'<p><b>DSED</b> — leave the first pads on, add a second anterior-posterior set from a <b>second, identical</b> defibrillator. One operator presses both, anterior-lateral first, <b>sequential, not simultaneous</b>. Pads close but never touching. Do not mix brands or models.</p>'+'<p>DOSE-VF (Cheskes, NEJM 2022, n=405): survival to discharge <b>DSED 30.4%</b>, <b>vector change 21.7%</b>, <b>standard 13.3%</b>. Stopped early at ~44% of target, unblinded, and the vector-change result has a fragility index of 1.</p>'+'<p style="margin-bottom:0"><b>AHA 2025 rates both Class 2b, &ldquo;usefulness has not been established&rdquo;</b>, and the highlights document says they are not recommended. This is an option offered, not a step instructed — and DSED needs two identical defibrillators, a second pad set, a designated operator and a post-use device check, so decide in advance whether it is in scope here at all.</p>'; }},
+ {id:'pedsairway', peds:true, title:Lu('pediatric')+' AIRWAY SIZING (age-based)', body:function(){
+   return '<p><b>Uncuffed ETT internal diameter (mm)</b> &asymp; (age in years &divide; 4) + 4. <b>Cuffed</b> &asymp; that &minus; 0.5 mm.</p>'+
+     '<p><b>Depth at the lip (cm)</b> &asymp; 3 &times; the internal tube diameter (mm).</p>'+
+     '<p style="margin-bottom:0">These are the widely-taught airway-literature formulas rather than a numbered line in the open-access AHA text — always confirm tube position with waveform capnography and a chest film, whatever the formula gave.</p>';
+ }},
+ {id:'peds2025', peds:true, title:Lu('pediatric')+' — 2025 UPDATES WORTH KNOWING', body:function(){
+   return '<div style="display:grid;gap:6px;margin:2px 0 0">'+
+     '<div>With an invasive arterial line during CPR, target diastolic BP <b>&ge;25 mmHg</b> (infants), <b>&ge;30 mmHg</b> (children &ge;1 yr).</div>'+
+     '<div>No single ETCO&#8322; cutoff should be used alone to decide to stop resuscitation.</div>'+
+     '<div><b>Post-arrest:</b> keep systolic/mean BP above the 10th percentile for age.</div>'+
+     '<div><b>No '+L('pediatric')+' intra-arrest termination-of-resuscitation checklist exists</b> — see Codes card 13 for the broader '+L('pediatric')+'-death framework.</div>'+
+     '</div>';
+ }},
  {id:'log', title:'EVENT LOG', body:function(){
    if(!S.events.length) return '<div style="font-size:13.5px;color:var(--ink2);padding:8px 0">Nothing logged yet.</div>';
    var h='';
@@ -646,7 +753,9 @@ var ACC = [
 function renderAccordions(d){
   var h='';
   for(var i=0;i<ACC.length;i++){
-    var a=ACC[i], open=(S.open===a.id);
+    var a=ACC[i];
+    if(a.peds && !isPeds()) continue;   /* peds-only reference hidden in adult mode */
+    var open=(S.open===a.id);
     var count = (a.id==='log' && S.events.length) ? ' <span style="font-weight:600;color:var(--ink2);letter-spacing:0">· '+S.events.length+'</span>' : '';
     h+='<div class="acc"><button class="acch" type="button" data-acc="'+a.id+'">'+a.title+count+
        '<span style="color:var(--ink2)">'+(open?'−':'+')+'</span></button>'+
@@ -686,14 +795,20 @@ function paint(){
   $('resetbtn').style.borderColor = S.resetArm ? 'var(--red)' : 'var(--line)';
 
   var k=kg();
-  $('wnote').textContent = k!==null ? (k+' kg · '+(isPeds()?'pediatric':'adult'))
-                         : (autoPeds() ? 'pediatric by age — enter kg' : 'enter weight');
+  $('wnote').textContent = k!==null ? (k+' kg · '+(isPeds()?L('pediatric'):'adult'))
+                         : (autoPeds() ? L('pediatric')+' by age — enter kg' : 'enter weight');
 
   var b=band(), showPeds = isPeds() && !S.pedsDismissed;
   $('pedsbanner').style.display = showPeds ? 'flex' : 'none';
   if(showPeds){
-    $('pedstext').innerHTML = '<b>Pediatric mode — '+(k!==null?k+' kg':'by age')+
+    $('pedstext').innerHTML = '<b>'+Lc('pediatric')+' mode — '+(k!==null?k+' kg':'by age')+
       ' ('+(b?b.name:'PALS dosing')+').</b> Doses and defib energy below are weight-based PALS.';
+  }
+  var showChip = showPeds && b;   /* only when weight maps to a specific color band */
+  $('brosechip').style.display = showChip ? 'flex' : 'none';
+  if(showChip){
+    $('brosechipname').textContent = b.name.replace(/^Broselow\s+/,'').toUpperCase();
+    $('brosechiprange').innerHTML = b.range;
   }
   $('overridebar').style.display = (autoPeds() && S.override) ? 'flex' : 'none';
 
@@ -743,8 +858,8 @@ function paint(){
       var sh = S.rhythm==='shockable';
       $('rhythmbar').style.borderColor = sh ? 'var(--red)' : 'var(--gray)';
       $('rhythmtext').innerHTML = sh
-        ? '<b>Shockable — VF / pVT.</b> Shock, then compressions immediately. Epinephrine after the second shock; amiodarone after the third.'
-        : '<b>Non-shockable — PEA / asystole.</b> Epinephrine as early as possible. No shock. The H&rsquo;s and T&rsquo;s are most of the treatment.';
+        ? '<b>Shockable — VF / pVT.</b> Shock, then compressions immediately. '+Lc('epinephrine')+' after the second shock; '+L('amiodarone')+' after the third.'
+        : '<b>Non-shockable — PEA / asystole.</b> '+Lc('epinephrine')+' as early as possible. No shock. The H&rsquo;s and T&rsquo;s are most of the treatment.';
     }
     /* Once a rhythm is named, the screen stops presenting every option with
        equal weight. Nothing is disabled — CLAUDE.md and the bedside both want
@@ -756,7 +871,7 @@ function paint(){
     $('amiobtn').style.opacity = nonSh ? '0.45' : '1';
     if(nonSh) $('amiosub').textContent = 'shockable rhythms only';
 
-    /* Demoted by COLOUR, not by opacity — the design system's 4.5:1 floor
+    /* Demoted by COLOR, not by opacity — the design system's 4.5:1 floor
        applies to text nobody is meant to press just as much as to text they
        are. Fading red text on red fails it; grey-on-card does not. */
     $('shockbtn').style.background = nonSh ? 'var(--card2)' : 'var(--red)';
@@ -852,6 +967,11 @@ function toCPR(why){
 }
 function doReset(){
   MET.stop(); VENT.stop();
+  /* One case, one reset: sweep the shared lrh- namespace (preserving the
+     lrh-pref- preferences) so a reset here clears weight, timeline and every
+     other tool's case state too — the same sweep RESET FOR NEXT CASE runs
+     everywhere else (CASE-STATE.md). Then re-init this tool in memory. */
+  SS.sweep();
   S = { theme:S.theme, kg:null, ageY:null, phase:'idle', codeStart:null, cycleStart:null,
         shocks:0, epiN:0, lastEpiAt:null, amioN:0, airway:false, roles:false,
         override:false, pedsDismissed:false, events:[], open:null, met:false,
@@ -859,20 +979,32 @@ function doReset(){
         rhythm:null, breaths:0, lastBeatAt:null, pulseFrom:null,
         respSpont:false, ventMuted:false };
   $('wIn').value=''; $('aIn').value=''; $('customin').value=''; $('customin2').value='';
+  SS.touchActive();
   paint();
 }
 
 function wire(){
   $('themebtn').addEventListener('click', function(){
     S.theme = S.theme==='dark' ? 'light' : 'dark';
-    document.body.dataset.theme = S.theme; paint();
+    document.body.dataset.theme = S.theme;
+    try{ localStorage.setItem('lrh-pref-theme', S.theme); }catch(e){}
+    paint();
   });
+  /* Back link: default to the manual hub, but if we were opened from a specific
+     tool (?from=<slug>), route back there instead. Forward-compatible with the
+     Codes hand-off (?from=codes). */
+  (function(){
+    var m=/[?&]from=([a-z-]+)/.exec(location.search||''); var f=m&&m[1];
+    var b=$('backlink'); if(!b||!f||f==='home'||f==='tool') return;
+    b.href='../'+f+'/?from=tool'; b.textContent='‹ '+f.toUpperCase();
+  })();
   $('resetbtn').addEventListener('click', function(){
     if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){ S.resetArm=false; paint(); },2500); return; }
     doReset();
   });
-  $('wIn').addEventListener('input', function(e){ var v=parseFloat(e.target.value); S.kg = v>0?v:null; paint(); });
-  $('aIn').addEventListener('input', function(e){ var v=parseFloat(e.target.value); S.ageY = (v>=0&&v<130)?v:null; paint(); });
+  $('wIn').addEventListener('input', function(e){ var v=parseFloat(e.target.value); S.kg = v>0?v:null; SS.saveWeight('measured'); paint(); });
+  $('aIn').addEventListener('input', function(e){ var v=parseFloat(e.target.value); S.ageY = (v>=0&&v<130)?v:null;
+    if(S.ageY!==null) SS.set('lrh-case-ageyrs',String(S.ageY)); else SS.del('lrh-case-ageyrs'); paint(); });
   $('estbtn').addEventListener('click', function(){
     var a=S.ageY; if(!(a>=0)) return;
     /* Age-to-weight, the manual's own rule: under 1 y from months, otherwise
@@ -881,17 +1013,20 @@ function wire(){
     var est = a<1 ? (4 + Math.round(a*12)*0.5) : Math.min(2*a+8, 70);
     est = Math.round(est*10)/10;
     S.kg = est; $('wIn').value = String(est);
+    SS.saveWeight('estimated');
     log('Weight ESTIMATED from age — '+est+' kg (not measured)');
     paint();
   });
   $('dismisspeds').addEventListener('click', function(){
     S.override=true; S.pedsDismissed=true;
-    log('Pediatric trigger overridden — treating as adult');
+    SS.saveOverride();
+    log(Lc('pediatric')+' trigger overridden — treating as adult');
     paint();
   });
   $('undooverride').addEventListener('click', function(){
     S.override=false; S.pedsDismissed=false;
-    log('Adult override undone — back to pediatric dosing');
+    SS.saveOverride();
+    log('Adult override undone — back to '+L('pediatric')+' dosing');
     paint();
   });
   $('startbtn').addEventListener('click', startCode);
@@ -1022,6 +1157,13 @@ function wire(){
   });
 }
 
+/* Join the shared case: pick up a weight/age set in another tool, and keep the
+   manual-wide "last active" heartbeat fresh on load and on every tap (WS2.5). */
+SS.loadWeight();
+if(S.kg!==null) $('wIn').value = String(S.kg);
+if(S.ageY!==null) $('aIn').value = String(S.ageY);
+SS.touchActive();
+document.addEventListener('click', SS.touchActive, true);
 wire();
 paint();
 setInterval(paint, 200);
