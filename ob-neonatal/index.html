@@ -412,9 +412,8 @@ catch(e){ document.body.dataset.theme='dark'; }
       </figure></div>
       <div style="padding:6px 14px 14px;">
         <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.1em; color:#16324f; margin-bottom:9px;">TAP EACH ANSWER THAT IS YES</div>
-        <a href="#c03" style="display:flex; align-items:center; justify-content:center; text-align:center; min-height:62px; margin-bottom:8px; background:#9b1c2e; color:#fffefb; text-decoration:none; border:2px solid #9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; letter-spacing:0.04em; line-height:1.15;">ANY “NO” → NEONATAL RESUSCITATION</a>
-        <a id="allyeslink" href="#c02y" style="display:flex; align-items:center; justify-content:center; text-align:center; min-height:52px; background:#eef3f6; color:#0e7c86; text-decoration:none; border:2px dashed #9fc3c7; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.04em; line-height:1.15;">ALL FOUR YES → DELAYED CORD CLAMPING</a>
-        <div id="fyesnote" style="margin-top:8px; font-size:13px; line-height:1.3; color:#5a6a78;">One “no” sends the baby to the warmer for NRP. Tap all four YES to move to cord clamping.</div>
+        <a href="#c03" style="display:flex; align-items:center; justify-content:center; text-align:center; min-height:62px; background:#9b1c2e; color:#fffefb; text-decoration:none; border:2px solid #9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; letter-spacing:0.04em; line-height:1.15;">ANY “NO” → NEONATAL RESUSCITATION</a>
+        <div id="fyesnote" style="margin-top:8px; font-size:13px; line-height:1.3; color:#5a6a78;">Tap each YES — the fourth takes you straight to delayed cord clamping below. Any one “no” → neonatal resuscitation.</div>
       </div>
     </details>
     <!-- any-NO now routes straight to card 03 (neonatal resuscitation): first 30 s → pulse check → triage -->
@@ -2825,17 +2824,14 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
     echo();
 
     /* ---- 4-YES tap gate ---- */
-    var qs=document.querySelectorAll('.fyes'), yes={}, all=document.getElementById('allyeslink'),
+    var qs=document.querySelectorAll('.fyes'), yes={},
         c02y=document.getElementById('c02y');
+    /* All four YES → the last tap advances straight to delayed cord clamping
+       (issue #41). The redundant "ALL FOUR YES → …" tile that used to sit here
+       was removed; the #c02y section is always open right below. */
     function gate(){
-      var ok=true; for(var i=0;i<qs.length;i++){ if(!yes[qs[i].getAttribute('data-q')]) ok=false; }
-      if(all){
-        all.style.background = ok ? '#0e7c86' : '#eef3f6';
-        all.style.color = ok ? '#fffefb' : '#0e7c86';
-        all.style.borderStyle = ok ? 'solid' : 'dashed';
-        all.style.borderColor = ok ? '#0e7c86' : '#9fc3c7';
-      }
-      return ok;
+      for(var i=0;i<qs.length;i++){ if(!yes[qs[i].getAttribute('data-q')]) return false; }
+      return true;
     }
     Array.prototype.forEach.call(qs, function(btn){
       var q=btn.getAttribute('data-q'), label=btn.getAttribute('data-label');
