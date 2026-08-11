@@ -27,9 +27,11 @@
      nav bar/weight bar, inside #stickytop (so --sticky-h picks it up for free
      via the existing ResizeObserver). The nav bar, weight bar, heads-up strip
      and timeline modal below keep their current styling/ids/JS untouched —
-     this pass is the crumb + theme toggle only. See DESIGN_LANGUAGE.md step 1. */
-  body[data-theme]{ --lrh-bg:#0D1420; --lrh-card:#161F2E; --lrh-ink2:#8FA0B5; --lrh-line:rgba(255,255,255,.10); }
-  body[data-theme="light"]{ --lrh-bg:#EFF2F5; --lrh-card:#FFFFFF; --lrh-ink2:#5A6A7D; --lrh-line:rgba(15,35,60,.13); }
+     step 1 added the crumb + theme toggle only. See DESIGN_LANGUAGE.md step 1. */
+  body[data-theme]{ --lrh-bg:#0D1420; --lrh-card:#161F2E; --lrh-card2:#1D2A3C; --lrh-ink:#EAF0F7; --lrh-ink2:#8FA0B5; --lrh-line:rgba(255,255,255,.10); --lrh-accent:#2FA372;
+    --lrh-red:#E5484D; --lrh-amber:#F0B429; --lrh-blue:#4C8DDA; --lrh-green:#3DA35D; --lrh-gray:#5C6B7E; --lrh-purple:#9B7BD4; --lrh-teal:#3AA6A6; --lrh-orange:#E08A3C; }
+  body[data-theme="light"]{ --lrh-bg:#EFF2F5; --lrh-card:#FFFFFF; --lrh-card2:#F4F6F9; --lrh-ink:#141E2B; --lrh-ink2:#5A6A7D; --lrh-line:rgba(15,35,60,.13); --lrh-accent:#00693E;
+    --lrh-red:#C63238; --lrh-amber:#B07E13; --lrh-blue:#2F6FB5; --lrh-green:#1F7F49; --lrh-gray:#6B7A8D; --lrh-purple:#6C4FA3; --lrh-teal:#1F7E7E; --lrh-orange:#B4661F; }
   .lrh-hdr{display:flex;align-items:center;gap:10px;background:var(--lrh-bg);padding:8px 14px;
     border-bottom:1px solid var(--lrh-line)}
   .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;
@@ -37,6 +39,38 @@
   .lrh-hdr button{background:var(--lrh-card);border:1px solid var(--lrh-line);color:var(--lrh-ink2);
     font:700 11px "Helvetica Neue",Helvetica,Arial,sans-serif;letter-spacing:.08em;padding:8px 11px;
     border-radius:9px;cursor:pointer;min-height:36px;white-space:nowrap}
+  /* ---- step 2 — the card-selection menu is this tool's "category index"
+     (DESIGN_LANGUAGE.md section 5): same themed-wrapper/row pattern as the
+     home hub and clinical-pathways index, so the toggle now restyles this
+     whole top section, not just the crumb strip. Card content below the menu
+     (article#c01 etc.) is untouched here — that's step 3/4 scope. */
+  .lrh-menuwrap{background:var(--lrh-bg);padding:16px 14px 26px}
+  .lrh-menuwrap .inner{max-width:1400px;margin:0 auto}
+  .lrh-eyebrow{font-size:11.5px;letter-spacing:.14em;color:var(--lrh-accent);font-weight:700}
+  .lrh-idx-h1{margin:4px 0 2px;font-size:26px;letter-spacing:-.01em;font-weight:800;color:var(--lrh-ink)}
+  .lrh-idx-sub{margin:0;color:var(--lrh-ink2);font-size:14.5px}
+  .lrh-startnew-btn{margin-top:10px;min-height:44px;padding:0 16px;background:var(--lrh-card2);
+    color:var(--lrh-ink);border:2px solid var(--lrh-line);font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+    font-size:12px;font-weight:700;letter-spacing:.08em;cursor:pointer;border-radius:10px}
+  .lrh-startnew-btn:hover{border-color:var(--lrh-accent);color:var(--lrh-accent)}
+  .lrh-mono{font-family:ui-monospace,"SF Mono",Menlo,"JetBrains Mono",monospace}
+  .lrh-row{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--lrh-ink);
+    background:var(--lrh-card);border:1px solid var(--lrh-line);border-left:4px solid var(--cc,var(--lrh-accent));
+    border-radius:12px;padding:14px;min-height:56px;cursor:pointer}
+  .lrh-row .n{font-size:15px;font-weight:700;color:var(--cc,var(--lrh-accent));flex:none;width:24px}
+  .lrh-row .t{font-size:16.5px;font-weight:700;line-height:1.25}
+  /* Beats the page's pre-existing "a:hover{color:#16324f}" rule (higher specificity
+     than a single class) which would otherwise turn row text dark-on-dark on hover
+     in the dark theme. */
+  .lrh-row:hover, .lrh-row:focus-visible{color:var(--lrh-ink)}
+  .lrh-filter{display:flex;gap:8px;align-items:center;background:var(--lrh-card);border:1px solid var(--lrh-line);
+    border-radius:14px;padding:4px 6px 4px 14px;margin:18px 2px 14px}
+  .lrh-filter .ico{color:var(--lrh-ink2);font-size:16px;flex:none}
+  .lrh-filter input{flex:1;background:none;border:none;color:var(--lrh-ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit;-webkit-appearance:none}
+  .lrh-filter input::-webkit-search-cancel-button{-webkit-appearance:none}
+  .lrh-filter-empty{margin:0 2px 14px;padding:12px 14px;color:var(--lrh-ink2);font-size:.88rem;background:var(--lrh-card);
+    border:1px solid var(--lrh-line);border-radius:14px}
+  .lrh-filter-empty[hidden]{display:none}
   main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
   article { scroll-margin-top:var(--sticky-h,54px); margin-top:12px; }
   section#top { scroll-margin-top:0; }
@@ -303,42 +337,52 @@ catch(e){ document.body.dataset.theme='dark'; }
 </div>
 
 <main id="top">
-  <div style="padding:16px 14px 6px;">
-    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:#2f62a8; font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
-    <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Codes &amp; Resuscitation</h1>
-    <p style="margin:0; color:#5a6a78; font-size:14.5px;">Tap a card to open. Timers, dose reminders, and a device-local case timeline — no patient data is stored.</p>
-    <button type="button" id="startnewcasebtn" style="margin-top:10px; min-height:44px; padding:0 16px; background:#16324f; color:#fffefb; border:2px solid #16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">START NEW CASE</button>
-  </div>
+  <div class="lrh-menuwrap">
+    <div class="inner">
+      <div class="lrh-eyebrow lrh-mono">LRH · EMERGENCY DEPARTMENT</div>
+      <h1 class="lrh-idx-h1">Codes &amp; Resuscitation</h1>
+      <p class="lrh-idx-sub">Tap a card to open. Timers, dose reminders, and a device-local case timeline — no patient data is stored.</p>
+      <button type="button" id="startnewcasebtn" class="lrh-startnew-btn">START NEW CASE</button>
 
-  <!-- ============ CARD MENU ============ -->
-  <div id="menu" class="menu" style="margin:14px 0 24px;">
-    <a href="#c01" id="menu-c01" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #2f62a8; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#2f62a8;">01</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Pulseless VF / VT</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,20 3,26 6,14 9,23 12,8 15,28 18,17 21,32 24,11 27,20 30,6 33,25 36,15 39,30 42,9 45,22 48,18 51,34 54,12 57,24 60,8 63,29 66,16 69,20 72,5 75,27 78,13 81,31 84,17 87,23 90,9 92,20" fill="none" stroke="#9b1c2e" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-    <a href="#c02" id="menu-c02" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #5a6a78; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#5a6a78;">02</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">PEA / Asystole</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,20 30,20 34,20 37,10 40,30 43,20 92,20" fill="none" stroke="#5a6a78" stroke-width="2.75" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-    <a href="#c22" id="menu-c22" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #2f7a3f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#2f7a3f;">22</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Post-ROSC Care</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="2,20 6,9 10,31 14,11 18,29 22,13 26,27 30,20" fill="none" stroke="#2f7a3f" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/><polyline points="30,20 46,20 50,16 54,20 58,20 60,24 64,6 68,32 72,20 92,20" fill="none" stroke="#2f7a3f" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-    <a href="#c03" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #2f62a8; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#2f62a8;">03</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Symptomatic Bradycardia</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,20 20,20 24,6 26,34 28,20 60,20 64,6 66,34 68,20 92,20" fill="none" stroke="#2f62a8" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-    <a href="#c04" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">04</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Suspected Acute Stroke</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><path d="M18 22 C16 12 24 5 34 6 C42 2 54 5 58 12 C66 15 68 24 62 30 C58 36 46 39 36 36 C26 38 19 30 18 22 Z" fill="none" stroke="#16324f" stroke-width="2.6" stroke-linejoin="round"/><path d="M38 6 C38 14 34 18 36 22 C38 26 34 31 36 37" fill="none" stroke="#16324f" stroke-width="2"/><ellipse cx="50" cy="21" rx="8.5" ry="7" fill="#5a6a78"/></svg></span></a>
-    <a href="#c21" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">21</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">STEMI</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,28 12,28 15,23 18,28 24,28 26,31 29,6 34,33 39,15 57,15 61,9 67,15 73,28 92,28" fill="none" stroke="#9b1c2e" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-    <a href="#c05" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">05</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Respiratory Arrest</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><path d="M2 20 C6 7 12 7 16 20 C20 33 26 33 30 20 C34 7 40 7 44 20 L92 20" fill="none" stroke="#2f62a8" stroke-width="2.8" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-    <a href="#c06" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">06</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Intubation / RSI Checklist</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,30 10,30 10,10 40,10 40,30 50,30 50,10 80,10 80,30 92,30" fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-    <a href="#c07" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">07</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Intracranial Hemorrhage</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><path d="M18 22 C16 12 24 5 34 6 C42 2 54 5 58 12 C66 15 68 24 62 30 C58 36 46 39 36 36 C26 38 19 30 18 22 Z" fill="none" stroke="#16324f" stroke-width="2.6" stroke-linejoin="round"/><path d="M38 6 C38 14 34 18 36 22 C38 26 34 31 36 37" fill="none" stroke="#16324f" stroke-width="2"/><ellipse cx="50" cy="21" rx="8.5" ry="7" fill="#9b1c2e"/></svg></span></a>
-    <a href="#c08" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">08</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Anaphylaxis</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><ellipse cx="54" cy="24" rx="15" ry="9.5" fill="#9b1c2e"/><path d="M47 16.5 L47 31.5 M54 15 L54 33 M61 16.5 L61 31.5" stroke="#fffefb" stroke-width="2.6" stroke-linecap="round"/><circle cx="34" cy="22" r="6" fill="#9b1c2e"/><path d="M31 17 L27 9 M37 16 L37 7" stroke="#9b1c2e" stroke-width="2" stroke-linecap="round"/><ellipse cx="50" cy="10" rx="11" ry="5" fill="none" stroke="#9b1c2e" stroke-width="2" transform="rotate(-16 50 10)"/><path d="M69 24 L78 24" stroke="#9b1c2e" stroke-width="2.6" stroke-linecap="round"/></svg></span></a>
-    <a href="#c09" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">09</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Bleeding / Hemorrhagic Shock</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,10 20,14 40,18 60,24 80,30 92,34" fill="none" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-    <a href="#c10" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">10</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Reversal of Anticoagulants</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,10 30,26 46,30 62,26 92,10" fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-    <a href="#c11" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">11</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Hyperkalemia (Crash Protocol)</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,28 10,28 14,28 18,4 22,28 30,28 40,28 44,4 48,28 56,28 66,28 70,4 74,28 82,28 92,28" fill="none" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-    <a href="#c12" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">12</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Massive Transfusion Protocol</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,20 10,20 15,30 20,20 30,20 40,20 45,30 50,20 60,20 70,20 75,30 80,20 92,20" fill="none" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-    <a href="#c23" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">23</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Massive Hematemesis</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><path d="M4 20 H86" fill="none" stroke="#9b1c2e" stroke-width="3.5" stroke-linecap="round"/><ellipse cx="40" cy="20" rx="9" ry="13" fill="none" stroke="#9b1c2e" stroke-width="3"/><circle cx="70" cy="20" r="10" fill="none" stroke="#9b1c2e" stroke-width="3"/></svg></span></a>
-    <a href="#c24" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">24</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Massive Hemoptysis</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><path d="M46 3 L46 13" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/><path d="M44 13 C33 14 25 21 25 29 C25 35 30 38 34 36 C41 33 44 27 44 19 Z" fill="#9b1c2e"/><path d="M48 13 C59 14 67 21 67 29 C67 35 62 38 58 36 C51 33 48 27 48 19 Z" fill="#9b1c2e"/><path d="M78 16 C74 23 73 26 73 28 a5 5 0 0 0 10 0 c0 -2 -1 -5 -5 -12 Z" fill="#9b1c2e"/></svg></span></a>
-    <a href="#c25" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">25</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Epistaxis</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><path d="M40 4 C40 15 31 23 26 28 C31 33 39 33 44 31" fill="none" stroke="#16324f" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/><path d="M34 30 C30 36 31 40 34 40 C37 40 38 36 34 30 Z" fill="#9b1c2e"/><circle cx="48" cy="37" r="3" fill="#9b1c2e"/></svg></span></a>
-    <a href="#c26" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">26</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Pacemaker / ICD Emergencies</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><rect x="10" y="12" width="22" height="16" rx="4" fill="none" stroke="#16324f" stroke-width="3"/><path d="M32 20 H44 L50 8 L56 32 L60 20 H84" fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-    <a href="#c13" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">13</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Status Epilepticus</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,20 3,8 6,30 9,14 12,26 15,6 18,32 21,16 24,22 27,10 30,28 33,14 36,24 39,8 42,30 45,18 48,20 51,6 54,32 57,14 60,26 63,10 66,28 69,16 72,22 75,8 78,30 81,18 84,24 87,10 90,26 92,20" fill="none" stroke="#16324f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-    <a href="#c14" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">14</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Unstable on the Vent (DOPE)</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,34 10,34 10,6 40,6 40,34 50,34 50,24 70,24 70,34 92,34" fill="none" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-    <a href="#c15" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">15</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Status Asthmaticus</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,34 6,34 14,30 22,24 30,17 36,11 40,9 42,10 44,20 46,34 52,34 60,30 68,24 76,17 82,11 86,9 88,10 90,20 92,34" fill="none" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-    <a href="#c16" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">16</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Angioedema</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,32 20,32 30,8 40,32 52,32 62,4 72,32 92,32" fill="none" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-    <a href="#c17" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">17</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Tracheostomy Emergency</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,20 26,20 26,4 26,36 26,20 66,20 66,4 66,36 66,20 92,20" fill="none" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-    <a href="#c18" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">18</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Front of Neck Access (FONA)</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><circle cx="46" cy="20" r="15" fill="none" stroke="#9b1c2e" stroke-width="3"/><line x1="36" y1="20" x2="56" y2="20" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/></svg></span></a>
-    <a href="#c19" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">19</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">LVAD — Responsive (Pump Running)</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><circle cx="46" cy="20" r="14" fill="none" stroke="#16324f" stroke-width="3"/><path d="M 46 20 L 46 9 M 46 20 L 56 26 M 46 20 L 36 26" stroke="#16324f" stroke-width="3" stroke-linecap="round"/></svg></span></a>
-    <a href="#c20" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">20</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">LVAD — Unresponsive (Pump NOT Running)</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><circle cx="46" cy="20" r="14" fill="none" stroke="#9b1c2e" stroke-width="3"/><path d="M 46 20 L 46 9 M 46 20 L 56 26 M 46 20 L 36 26" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/></svg></span></a>
-    <a href="#cart" style="display:grid; grid-template-columns:1fr auto; gap:11px; align-items:center; min-height:58px; padding:10px 12px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #8a8578; text-decoration:none; color:#16324f;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Code cart — what is in each drawer</span><span style="display:flex; gap:4px;"><span style="display:inline-flex; align-items:center; justify-content:center; width:17px; height:17px; background:#0f7a86; flex:none;"><span style="display:block; width:7.92px; height:7.92px; border:1.728px solid #fffefb; border-radius:50%; box-sizing:border-box;"></span></span><span style="display:inline-flex; align-items:center; justify-content:center; width:17px; height:17px; background:#2f62a8; flex:none;"><span style="display:block; width:6.4799999999999995px; height:6.4799999999999995px; background:#fffefb; transform:rotate(45deg);"></span></span><span style="display:inline-flex; align-items:center; justify-content:center; width:17px; height:17px; background:#6f4fa8; flex:none;"><span style="display:block; width:7.199999999999999px; height:7.199999999999999px; background:#fffefb;"></span></span><span style="display:inline-flex; align-items:center; justify-content:center; width:17px; height:17px; background:#9b1c2e; flex:none;"><span style="display:block; width:0; height:0; border-left:4.32px solid transparent; border-right:4.32px solid transparent; border-bottom:7.199999999999999px solid #fffefb;"></span></span><span style="display:inline-flex; align-items:center; justify-content:center; width:17px; height:17px; background:#8a6011; flex:none;"><span style="display:block; width:10.08px; height:4.32px; border-radius:2.16px; background:#fffefb;"></span></span><span style="display:inline-flex; align-items:center; justify-content:center; width:17px; height:17px; background:#2f7a3f; flex:none;"><span style="display:flex; flex-direction:column; gap:2.16px;"><span style="display:block; width:10.08px; height:2.16px; background:#fffefb;"></span><span style="display:block; width:10.08px; height:2.16px; background:#fffefb;"></span></span></span></span></a>
+      <!-- ============ FILTER ============ -->
+      <div class="lrh-filter">
+        <span class="ico" aria-hidden="true">&#8981;</span>
+        <input type="search" id="menuFilter" autocomplete="off" spellcheck="false" autofocus
+          placeholder="Filter this list&hellip;" aria-label="Filter this list" aria-controls="menu">
+      </div>
+      <p class="lrh-filter-empty" id="menuFilterEmpty" hidden>No matches. Try a different term.</p>
+
+      <!-- ============ CARD MENU ============ -->
+      <div id="menu" class="menu" style="padding:0; margin:18px 0 0;">
+        <a href="#c01" data-k="code cart cardiac arrest ventricular fibrillation tachycardia defibrillation shock epinephrine amiodarone lidocaine cpr acls pea asystole non-shockable reversible causes h's and t's pals pediatric weight-based broselow resuscitation" id="menu-c01" class="lrh-row" style="--cc:var(--lrh-blue)"><span class="n lrh-mono">01</span><span class="t">Pulseless VF / VT</span></a>
+        <a href="#c02" id="menu-c02" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">02</span><span class="t">PEA / Asystole</span></a>
+        <a href="#c22" data-k="post rosc return of spontaneous circulation post arrest care post-arrest first 20 minutes after arrest targeted temperature management ttm cooling oxygenation ventilation blood pressure map 12-lead ekg neuroprognostication code" id="menu-c22" class="lrh-row" style="--cc:var(--lrh-green)"><span class="n lrh-mono">22</span><span class="t">Post-ROSC Care</span></a>
+        <a href="#c03" data-k="bradycardia atropine transcutaneous pacing pacer heart block slow heart rate symptomatic code" class="lrh-row" style="--cc:var(--lrh-blue)"><span class="n lrh-mono">03</span><span class="t">Symptomatic Bradycardia</span></a>
+        <a href="#c04" data-k="stroke code stroke tpa tnk tenecteplase alteplase thrombectomy last known well nihss ct head lytic omnicell" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">04</span><span class="t">Suspected Acute Stroke</span></a>
+        <a href="#c21" data-k="stemi st elevation mi myocardial infarction chest pain heart cognitive aid mimics aspirin heparin enoxaparin atorvastatin tenecteplase tnk weight band pressor norepinephrine dobutamine cardiogenic shock reperfusion arrhythmia aivr transfer dartmouth concord omnicell code" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">21</span><span class="t">STEMI</span></a>
+        <a href="#c05" data-k="respiratory arrest apnea bag mask ventilation bvm reversible causes naloxone code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">05</span><span class="t">Respiratory Arrest</span></a>
+        <a href="#c06" data-k="intubation rsi rapid sequence intubation checklist airway induction paralytic sedation etomidate ketamine propofol rocuronium succinylcholine capnography preoxygenation cico emcrit push dose timer" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">06</span><span class="t">Intubation / RSI Checklist</span></a>
+        <a href="#c07" data-k="intracranial hemorrhage ich subarachnoid subdural blood pressure control anticoagulation reversal neurosurgery code" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">07</span><span class="t">Intracranial Hemorrhage</span></a>
+        <a href="#c08" data-k="anaphylaxis epinephrine allergic reaction angioedema stridor epi im code omnicell" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">08</span><span class="t">Anaphylaxis</span></a>
+        <a href="#c09" data-k="bleeding hemorrhagic shock trauma resuscitation blood products lethal triad tranexamic txa code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">09</span><span class="t">Bleeding / Hemorrhagic Shock</span></a>
+        <a href="#c10" data-k="anticoagulant reversal warfarin coumadin doac apixaban rivaroxaban dabigatran heparin vitamin k prothrombin complex concentrate pcc andexanet idarucizumab protamine code" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">10</span><span class="t">Reversal of Anticoagulants</span></a>
+        <a href="#c11" data-k="hyperkalemia potassium calcium gluconate insulin dextrose albuterol kayexalate dialysis peaked t waves ecg code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">11</span><span class="t">Hyperkalemia (Crash Protocol)</span></a>
+        <a href="#c12" data-k="mtp massive transfusion protocol blood products prbc plasma platelets cryo hemorrhagic shock trauma" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">12</span><span class="t">Massive Transfusion Protocol</span></a>
+        <a href="#c23" data-k="hematemesis massive gi bleed upper gastrointestinal bleeding vomiting blood coffee ground variceal varices esophageal cirrhosis liver portal hypertension octreotide ceftriaxone ppi pantoprazole txa halt-it blakemore sengstaken minnesota balloon tamponade endoscopy egd salad suction aortoenteric fistula transfusion mtp exsanguinating code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">23</span><span class="t">Massive Hematemesis</span></a>
+        <a href="#c24" data-k="hemoptysis massive coughing up blood lung bleeding bronchial artery embolization bae lung isolation mainstem bronchial blocker double lumen tube nebulized txa tranexamic bleeding side down asphyxiation ett 8.0 code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">24</span><span class="t">Massive Hemoptysis</span></a>
+        <a href="#c25" data-k="epistaxis nosebleed nose bleed anterior posterior kiesselbach little area silver nitrate cautery packing merocel rapid rhino rhino rocket foley balloon topical txa tranexamic oxymetazoline afrin nasal ent" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">25</span><span class="t">Epistaxis</span></a>
+        <a href="#c26" data-k="pacemaker icd aicd defibrillator magnet electrical storm vt storm inappropriate shock failure to capture undersensing oversensing pacemaker mediated tachycardia pmt runaway twiddler device interrogation esmolol procainamide stellate ganglion" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">26</span><span class="t">Pacemaker / ICD Emergencies</span></a>
+        <a href="#c13" data-k="status epilepticus seizure benzodiazepine lorazepam midazolam levetiracetam fosphenytoin second line code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">13</span><span class="t">Status Epilepticus</span></a>
+        <a href="#c14" data-k="vent ventilator dope displacement obstruction pneumothorax equipment failure decompensation intubated patient code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">14</span><span class="t">Unstable on the Vent (DOPE)</span></a>
+        <a href="#c15" data-k="status asthmaticus asthma albuterol ipratropium magnesium bipap severe exacerbation wheeze code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">15</span><span class="t">Status Asthmaticus</span></a>
+        <a href="#c16" data-k="angioedema ace inhibitor bradykinin histaminergic airway swelling icatibant tranexamic code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">16</span><span class="t">Angioedema</span></a>
+        <a href="#c17" data-k="tracheostomy emergency laryngectomy stoma decannulation trach tube obstruction code" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">17</span><span class="t">Tracheostomy Emergency</span></a>
+        <a href="#c18" data-k="fona cricothyroidotomy cico front of neck access surgical airway difficult airway das trauma" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">18</span><span class="t">Front of Neck Access (FONA)</span></a>
+        <a href="#c19" data-k="lvad ventricular assist device heartmate heartware pump hum driveline alarm map doppler thrombosis vad" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">19</span><span class="t">LVAD — Responsive (Pump Running)</span></a>
+        <a href="#c20" data-k="lvad ventricular assist device pump not running no hum restart battery controller driveline arrest cpr vad" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">20</span><span class="t">LVAD — Unresponsive (Pump NOT Running)</span></a>
+        <a href="#cart" class="lrh-row lrh-row-cart" style="--cc:var(--lrh-gray)"><span class="t">Code cart — what is in each drawer</span></a>
+      </div>
+    </div>
   </div>
 
   <!-- ============ CARD 01 · CARDIAC ARREST — VF/VT · PEA/ASYSTOLE (merged, WS-arrest-merge) ============
@@ -2879,11 +2923,14 @@ var SITEAUDIO = (function(){
   function boot(){
     var s=document.getElementById('betasplash'), b=document.getElementById('betago');
     if(!s||!b) return;
-    function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); }
+    /* Drop straight into the filter box once the splash is gone — but only when
+       landing on the plain menu (no #cNN deep link already taking the user to a card). */
+    function focusFilter(){ if(location.hash) return; var f=document.getElementById('menuFilter'); if(f) f.focus(); }
+    function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); focusFilter(); }
     b.addEventListener('click', go, false);
     b.addEventListener('touchend', go, false);
     /* handlers attach first so a parse failure can never leave the splash stuck */
-    try{ if(/(^|[?&])from=home(&|$)/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); } }catch(err){}
+    try{ if(/(^|[?&])from=home(&|$)/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); focusFilter(); } }catch(err){}
   }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
 })();
@@ -2905,13 +2952,15 @@ var CardNav = (function(){
   var menuLabels=null;
   function buildMenuLabels(){
     menuLabels={};
+    /* Step 2 (DESIGN_LANGUAGE.md) flattened each row to <span class="n"> (card
+       number) + <span class="t"> (title) — read those by class, not position,
+       so this stays correct regardless of markup nesting. */
     Array.prototype.forEach.call(document.querySelectorAll('#menu a[href^="#c"]'), function(a){
       var id=a.getAttribute('href').slice(1);
-      var spans=a.querySelectorAll('span'); /* [0]=card number, [1]=title-wrapper, [2]=title text */
-      var num=spans[0], titleSpan=spans[2];
-      var num2=num?num.textContent.trim():id.replace('c','');
+      var num=a.querySelector('.n'), titleSpan=a.querySelector('.t');
+      var num2=num?num.textContent.trim():'';
       var title=titleSpan?titleSpan.textContent.trim():id;
-      menuLabels[id]=num2+' '+title;
+      menuLabels[id]=num2?(num2+' '+title):title;
     });
   }
   function labelFor(id){
@@ -4722,6 +4771,51 @@ var AUDIENCE = (function(){
   if(btn) btn.addEventListener('click', clear);
   document.addEventListener('visibilitychange', function(){ if(!document.hidden) restore(); });
   restore();
+})();
+</script>
+<script>
+(function(){
+  var menu=document.getElementById('menu');
+  var fInput=document.getElementById('menuFilter');
+  if(!menu || !fInput) return;
+  var emptyMsg=document.getElementById('menuFilterEmpty');
+  var rows=Array.prototype.slice.call(menu.querySelectorAll('.lrh-row'));
+  var groups=Array.prototype.slice.call(menu.querySelectorAll('.lrh-group-hd'));
+  function norm(s){ return (s||'').toLowerCase(); }
+  var rowData=rows.map(function(r){
+    var num=r.querySelector('.n'), t=r.querySelector('.t');
+    var text=norm((num?num.textContent:'')+' '+(t?t.textContent:'')+' '+(r.getAttribute('data-k')||''));
+    return {row:r, text:text};
+  });
+  function applyFilter(){
+    var term=norm(fInput.value.trim());
+    var anyVisible=false;
+    rowData.forEach(function(rd){
+      var match=!term || rd.text.indexOf(term)!==-1;
+      rd.row.style.display=match?'':'none';
+      if(match) anyVisible=true;
+    });
+    groups.forEach(function(gh){
+      var grid=gh.nextElementSibling;
+      if(!grid) return;
+      var visRows=grid.querySelectorAll('.lrh-row');
+      var vis=false;
+      for(var i=0;i<visRows.length;i++){ if(visRows[i].style.display!=='none'){ vis=true; break; } }
+      gh.style.display=vis?'':'none';
+      grid.style.display=vis?'':'none';
+    });
+    if(emptyMsg){ emptyMsg.hidden = anyVisible || !term; }
+  }
+  fInput.addEventListener('input', applyFilter);
+  fInput.addEventListener('keydown', function(e){
+    if(e.key==='Enter'){
+      var first=null;
+      for(var i=0;i<rowData.length;i++){ if(rowData[i].row.style.display!=='none'){ first=rowData[i].row; break; } }
+      if(first){ e.preventDefault(); window.location.href=first.getAttribute('href'); }
+    } else if(e.key==='Escape'){
+      fInput.value=''; applyFilter();
+    }
+  });
 })();
 </script>
 </body>

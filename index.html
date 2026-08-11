@@ -26,11 +26,57 @@
   body[data-theme]{
     --lrh-bg:#0D1420; --lrh-card:#161F2E; --lrh-card2:#1D2A3C; --lrh-ink:#EAF0F7; --lrh-ink2:#8FA0B5;
     --lrh-line:rgba(255,255,255,.10); --lrh-accent:#2FA372; --lrh-accentInk:#fff;
+    --lrh-red:#E5484D; --lrh-amber:#F0B429; --lrh-blue:#4C8DDA; --lrh-green:#3DA35D;
+    --lrh-gray:#5C6B7E; --lrh-purple:#9B7BD4; --lrh-teal:#3AA6A6; --lrh-orange:#E08A3C;
   }
   body[data-theme="light"]{
     --lrh-bg:#EFF2F5; --lrh-card:#FFFFFF; --lrh-card2:#F4F6F9; --lrh-ink:#141E2B; --lrh-ink2:#5A6A7D;
     --lrh-line:rgba(15,35,60,.13); --lrh-accent:#00693E; --lrh-accentInk:#fff;
+    --lrh-red:#C63238; --lrh-amber:#B07E13; --lrh-blue:#2F6FB5; --lrh-green:#1F7F49;
+    --lrh-gray:#6B7A8D; --lrh-purple:#6C4FA3; --lrh-teal:#1F7E7E; --lrh-orange:#B4661F;
   }
+  /* ===== Home-hub pattern (design language step 2 — LRH_Design_Language.dc.html
+     "Home" screen). Category identity is a 4px left bar + a small color dot,
+     never a filled icon tile — see DESIGN_LANGUAGE.md section 5 and the note
+     on retiring filled tiles. Mono numerals/counts use the system mono stack
+     (no Google Fonts — CLAUDE.md rule 1). ===== */
+  .lrh-mono{font-family:ui-monospace,"SF Mono",Menlo,"JetBrains Mono",monospace}
+  .lrh-home-h1{font-size:28px;font-weight:800;letter-spacing:-.01em;margin:20px 2px 6px;color:var(--lrh-ink)}
+  .lrh-home-sub{font-size:15.5px;line-height:1.55;color:var(--lrh-ink2);margin:0 2px 16px;max-width:56ch}
+  .lrh-startnew{display:inline-flex;align-items:center;margin:0 2px 16px;min-height:44px;padding:0 16px;
+    border-radius:10px;background:var(--lrh-card2);border:1px solid var(--lrh-line);color:var(--lrh-ink);
+    text-decoration:none;font-weight:700;font-size:.85rem;letter-spacing:.02em}
+  .lrh-startnew:hover{border-color:var(--lrh-accent);color:var(--lrh-accent)}
+  .lrh-search{display:flex;gap:8px;align-items:center;background:var(--lrh-card);border:1px solid var(--lrh-line);
+    border-radius:14px;padding:4px 6px 4px 14px;margin:0 2px}
+  .lrh-search .ico{color:var(--lrh-ink2);font-size:16px;flex:none}
+  .lrh-search input{flex:1;background:none;border:none;color:var(--lrh-ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit}
+  .lrh-results{list-style:none;margin:8px 2px 0;padding:0;border:1px solid var(--lrh-line);border-radius:14px;
+    overflow:hidden;background:var(--lrh-card);box-shadow:0 4px 14px rgba(0,0,0,.18)}
+  .lrh-results[hidden]{display:none}
+  .lrh-results li{margin:0}
+  .lrh-results a{display:flex;align-items:baseline;gap:10px;justify-content:space-between;text-decoration:none;
+    color:inherit;padding:12px 14px;border-top:1px solid var(--lrh-line)}
+  .lrh-results li:first-child a{border-top:none}
+  .lrh-results a:hover,.lrh-results a:focus{background:var(--lrh-card2);outline:none}
+  .lrh-results .r-title{font-weight:700;color:var(--lrh-ink);font-size:.95rem}
+  .lrh-results .r-cat{font-size:.72rem;color:var(--lrh-ink2);white-space:nowrap;text-transform:uppercase;letter-spacing:.4px}
+  .lrh-results .r-none{padding:12px 14px;color:var(--lrh-ink2);font-size:.88rem}
+  .lrh-cat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px;margin-top:14px}
+  .lrh-cat{display:flex;flex-direction:column;text-decoration:none;color:var(--lrh-ink);background:var(--lrh-card);
+    border:1px solid var(--lrh-line);border-left:4px solid var(--cc,var(--lrh-accent));border-radius:14px;
+    padding:14px;min-height:88px;cursor:pointer;transition:.14s}
+  .lrh-cat:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.22)}
+  .lrh-cat .row{display:flex;align-items:center;gap:12px}
+  .lrh-cat .dot{width:12px;height:12px;border-radius:3px;background:var(--cc,var(--lrh-accent));flex:none}
+  .lrh-cat .name{font-size:19px;font-weight:800}
+  .lrh-cat .spacer{flex:1}
+  .lrh-cat .count{font-size:12px;font-weight:700;color:var(--lrh-ink2)}
+  .lrh-cat .desc{font-size:14px;line-height:1.5;color:var(--lrh-ink2);margin-top:6px}
+  .lrh-cat.soon{pointer-events:none;cursor:default;opacity:.55}
+  .lrh-note{background:var(--lrh-card2);border-left:4px solid var(--lrh-amber);border:1px solid var(--lrh-line);
+    color:var(--lrh-ink);font-size:.8rem;border-radius:12px;padding:12px 15px;margin-top:26px}
+  .lrh-footer{text-align:center;color:var(--lrh-ink2);font-size:.76rem;margin-top:22px}
   .lrh-sans{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif}
   .lrh-hdr{position:sticky;top:0;z-index:30;background:var(--lrh-bg);padding:12px 14px 10px;
     border-bottom:1px solid var(--lrh-line);display:flex;align-items:center;gap:10px}
@@ -42,8 +88,12 @@
   .lrh-hdr button:hover{color:var(--lrh-ink)}
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
+  /* Body background/text now follow the --lrh- theme tokens, not the old
+     --page/--ink brand tokens — step 2 moves this whole page's content
+     (not just the header chrome from step 1) onto the new design language,
+     so it has to track the theme toggle everywhere, not just in .lrh-hdr. */
   body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    background:var(--page); color:var(--ink); line-height:1.45; font-size:16px; min-height:100vh}
+    background:var(--lrh-bg); color:var(--lrh-ink); line-height:1.45; font-size:16px; min-height:100vh}
   .wrap{max-width:840px; margin:0 auto; padding:0 16px 56px}
 
   header.top{background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-dark));
@@ -170,154 +220,81 @@
 </header>
 
 <div class="wrap">
-  <p class="intro">Choose a category, or search for a topic. Each tool has its own direct link you can bookmark or share.</p>
-  <a class="startnewcasebtn" href="codes/?from=home&amp;startnewcase=1#top">START NEW CASE</a>
+  <h1 class="lrh-home-h1">LRH Emergency Manual</h1>
+  <p class="lrh-home-sub">Choose a category or search. Every tool shares one weight, one case clock, and one timeline.</p>
+  <a class="lrh-startnew" href="codes/?from=home&amp;startnewcase=1#top">START NEW CASE</a>
 
   <!-- ===== SEARCH ===== -->
-  <div class="search">
+  <div class="lrh-search">
+    <span class="ico" aria-hidden="true">&#8981;</span>
     <input type="search" id="q" autocomplete="off" spellcheck="false"
       placeholder="Search topics&hellip; e.g. HEART, shoulder dystocia, PPH, cord prolapse"
       aria-label="Search topics" aria-controls="results">
-    <span class="ico" aria-hidden="true">&#128269;</span>
-    <ul class="results" id="results" hidden></ul>
   </div>
+  <ul class="lrh-results" id="results" hidden></ul>
 
-  <div class="grid">
+  <div class="lrh-cat-grid">
 
-    <!-- ===== CATEGORY: Clinical Pathways (live · GREEN) -> /clinical-pathways/ ===== -->
-    <a class="tool cat-pathways" href="clinical-pathways/">
-      <div class="cardhead">
-        <span class="ic" aria-hidden="true"><svg viewBox="0 0 32 32" fill="none" stroke="#fff" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
-          <rect x="11" y="3" width="10" height="6" rx="1.5"/>
-          <line x1="16" y1="9" x2="16" y2="11.5"/>
-          <path d="M16 11.5 L21 16.5 L16 21.5 L11 16.5 Z"/>
-          <path d="M11 16.5 H6 V26"/><path d="M21 16.5 H26 V26"/>
-          <circle cx="6" cy="27.6" r="2.4" fill="#fff" stroke="none"/>
-          <circle cx="26" cy="27.6" r="2.4" fill="#fff" stroke="none"/>
-        </svg></span>
-        <div class="name">Clinical Pathways</div>
-      </div>
-      <div class="desc">Accelerated diagnostic and treatment pathways. Includes the Chest Pain / hs-Troponin HEART pathway.</div>
-      <div class="go">Open</div>
-    </a>
-
-    <!-- ===== CATEGORY: OB &amp; Neonatal (live · RED) -> /ob-neonatal/ ===== -->
-    <a class="tool cat-ob" href="ob-neonatal/?from=home">
-      <div class="cardhead">
-        <span class="ic" aria-hidden="true"><svg viewBox="0 0 32 32">
-          <circle cx="16" cy="11" r="6.5" fill="#fff"/>
-          <path d="M7.5 29 C 7.5 20.5 24.5 20.5 24.5 29 Z" fill="#fff"/>
-          <circle cx="13.4" cy="11" r="1.1" fill="#9b1c2e"/>
-          <circle cx="18.6" cy="11" r="1.1" fill="#9b1c2e"/>
-          <path d="M13.5 14 Q16 16 18.5 14" fill="none" stroke="#9b1c2e" stroke-width="1.3" stroke-linecap="round"/>
-        </svg></span>
-        <div class="name">OB &amp; Neonatal Emergencies</div>
-      </div>
-      <div class="desc">Obstetric and neonatal emergency manual with timers, checklists, and cart-drawer reference.</div>
-      <div class="go">Open</div>
-    </a>
-
-    <!-- ===== CATEGORY: Codes (beta · BLUE) -> /codes/ ===== -->
-    <a class="tool cat-codes" href="codes/?from=home">
-      <div class="cardhead">
-        <span class="ic" aria-hidden="true"><svg viewBox="0 0 32 32">
-          <path d="M16 27 C 4 18 7 7 16 12 C 25 7 28 18 16 27 Z" fill="#fff"/>
-          <polyline points="7,17 12,17 14.5,12.5 17.5,21 20,17 25,17" fill="none" stroke="#2f62a8" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg></span>
-        <div class="name">Codes</div>
-      </div>
+    <!-- ===== CATEGORY: Codes & Resuscitation (beta · RED) -> /codes/ ===== -->
+    <a class="lrh-cat" style="--cc:var(--lrh-red)" href="codes/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">Codes</span><span class="spacer"></span><span class="count lrh-mono">26 cards</span></div>
       <div class="desc">Code / resuscitation reference, including the ED code-cart drawer contents.</div>
-      <div class="go">Open</div>
     </a>
 
     <!-- ===== CATEGORY: Pediatric Emergencies (beta · PURPLE) -> /peds/ ===== -->
-    <a class="tool cat-peds" href="peds/?from=home">
-      <div class="cardhead">
-        <span class="ic" aria-hidden="true"><svg viewBox="0 0 32 32">
-          <circle cx="16" cy="9" r="5.4" fill="#fff"/>
-          <circle cx="14" cy="9" r="1" fill="#7a3fa0"/>
-          <circle cx="18" cy="9" r="1" fill="#7a3fa0"/>
-          <path d="M13.6 11.4 Q16 13 18.4 11.4" fill="none" stroke="#7a3fa0" stroke-width="1.1" stroke-linecap="round"/>
-          <rect x="14.4" y="13.6" width="3.2" height="4" rx="1.4" fill="#fff"/>
-          <path d="M9 27 C 9 19 23 19 23 27 Z" fill="#fff"/>
-        </svg></span>
-        <div class="name">Pediatric Emergencies</div>
-      </div>
-      <div class="desc">Shared weight/age-based dosing engine plus 15 pediatric ED topics — PALS, anaphylaxis, status epilepticus, DKA, and more.</div>
-      <div class="go">Open</div>
+    <a class="lrh-cat" style="--cc:var(--lrh-purple)" href="peds/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">Pediatric Emergencies</span><span class="spacer"></span><span class="count lrh-mono">14 cards</span></div>
+      <div class="desc">Shared weight/age-based dosing engine plus 14 pediatric ED topics — PALS, anaphylaxis, status epilepticus, DKA, and more.</div>
     </a>
 
-    <!-- ===== CATEGORY: Trauma (beta · ORANGE) -> /trauma/ ===== -->
-    <a class="tool cat-trauma" href="trauma/?from=home">
-      <div class="cardhead">
-        <span class="ic" aria-hidden="true"><svg viewBox="0 0 32 32">
-          <rect x="13" y="5" width="6" height="22" rx="2" fill="#fff"/>
-          <rect x="5" y="13" width="22" height="6" rx="2" fill="#fff"/>
-        </svg></span>
-        <div class="name">Trauma</div>
-      </div>
-      <div class="desc">Brain Injury Guidelines (BIG) for minor TBI, plus quick links to the Massive Transfusion Protocol and Front of Neck Access (FONA).</div>
-      <div class="go">Open</div>
+    <!-- ===== CATEGORY: OB & Neonatal (live · BLUE) -> /ob-neonatal/ ===== -->
+    <a class="lrh-cat" style="--cc:var(--lrh-blue)" href="ob-neonatal/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">OB &amp; Neonatal Emergencies</span><span class="spacer"></span><span class="count lrh-mono">9 cards</span></div>
+      <div class="desc">Obstetric and neonatal emergency manual with timers, checklists, and cart-drawer reference.</div>
     </a>
 
     <!-- ===== CATEGORY: Procedures (beta · TEAL) -> /procedures/ ===== -->
-    <a class="tool cat-procedures" href="procedures/?from=home">
-      <div class="cardhead">
-        <span class="ic" aria-hidden="true"><svg viewBox="0 0 32 32">
-          <path d="M6 24 L20 8 l4 4 L10 26 l-5 1 z" fill="#fff"/>
-          <line x1="19" y1="11" x2="22" y2="14" stroke="#0f7a86" stroke-width="1.6"/>
-          <circle cx="25" cy="7" r="3" fill="#fff"/>
-        </svg></span>
-        <div class="name">Procedures</div>
-      </div>
+    <a class="lrh-cat" style="--cc:var(--lrh-teal)" href="procedures/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">Procedures</span><span class="spacer"></span><span class="count lrh-mono">15 cards</span></div>
       <div class="desc">Rare, high-stakes procedures — chest tube, thoracotomy, burr hole, canthotomy, CVC, transvenous pacing, escharotomy — with equipment lists and anatomy figures. (Resuscitative hysterotomy lives in OB &amp; Neonatal.)</div>
-      <div class="go">Open</div>
     </a>
 
-    <!-- ===== CATEGORY: Posters (beta · GOLD) -> /posters/ ===== -->
-    <a class="tool cat-posters" href="posters/?from=home">
-      <div class="cardhead">
-        <span class="ic" aria-hidden="true"><svg viewBox="0 0 32 32">
-          <rect x="9" y="4" width="14" height="7" rx="1" fill="#fff"/>
-          <rect x="5" y="11" width="22" height="10" rx="2" fill="#fff"/>
-          <circle cx="23.5" cy="14" r="1.3" fill="#8a6011"/>
-          <rect x="9" y="18" width="14" height="10" rx="1" fill="#fff" stroke="#8a6011" stroke-width="1.2"/>
-          <line x1="12" y1="22" x2="20" y2="22" stroke="#8a6011" stroke-width="1.4" stroke-linecap="round"/>
-          <line x1="12" y1="25" x2="18" y2="25" stroke="#8a6011" stroke-width="1.4" stroke-linecap="round"/>
-        </svg></span>
-        <div class="name">Posters</div>
-      </div>
+    <!-- ===== CATEGORY: Clinical Pathways (live · ACCENT) -> /clinical-pathways/ ===== -->
+    <a class="lrh-cat" style="--cc:var(--lrh-accent)" href="clinical-pathways/">
+      <div class="row"><span class="dot"></span><span class="name">Clinical Pathways</span><span class="spacer"></span><span class="count lrh-mono">3 pathways</span></div>
+      <div class="desc">Accelerated diagnostic and treatment pathways. Includes the Chest Pain / hs-Troponin HEART pathway.</div>
+    </a>
+
+    <!-- ===== CATEGORY: Trauma (beta · ORANGE) -> /trauma/ ===== -->
+    <a class="lrh-cat" style="--cc:var(--lrh-orange)" href="trauma/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">Trauma</span><span class="spacer"></span><span class="count lrh-mono">7 cards</span></div>
+      <div class="desc">Brain Injury Guidelines (BIG) for minor TBI, plus quick links to the Massive Transfusion Protocol and Front of Neck Access (FONA).</div>
+    </a>
+
+    <!-- ===== CATEGORY: Posters (beta · AMBER) -> /posters/ ===== -->
+    <a class="lrh-cat" style="--cc:var(--lrh-amber)" href="posters/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">Posters</span><span class="spacer"></span><span class="count lrh-mono">10 posters</span></div>
       <div class="desc">Print-ready one-pagers for the resuscitation-bay walls and carts — TVP, chest tube, thoracotomy, burr hole. Letter portrait, one page each.</div>
-      <div class="go">Open</div>
     </a>
 
-    <!-- ===== CATEGORY: Debrief (beta · SLATE · keep last) -> /debrief/ ===== -->
-    <a class="tool cat-debrief" href="debrief/?from=home">
-      <div class="cardhead">
-        <span class="ic" aria-hidden="true"><svg viewBox="0 0 32 32">
-          <path d="M5 7 h22 v14 h-13 l-5 5 v-5 h-4 z" fill="#fff"/>
-          <circle cx="12" cy="14" r="1.8" fill="#5a6a78"/>
-          <circle cx="16" cy="14" r="1.8" fill="#5a6a78"/>
-          <circle cx="20" cy="14" r="1.8" fill="#5a6a78"/>
-        </svg></span>
-        <div class="name">Debrief</div>
-      </div>
+    <!-- ===== CATEGORY: Debrief (beta · GRAY · keep last) -> /debrief/ ===== -->
+    <a class="lrh-cat" style="--cc:var(--lrh-gray)" href="debrief/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">Debrief</span><span class="spacer"></span><span class="count lrh-mono">1 tool</span></div>
       <div class="desc">A short structure for the team conversation after a code or critical event — basic assumption, what did you see, plus/delta/plus.</div>
-      <div class="go">Open</div>
     </a>
 
     <!-- ===== Add a category/tool: create a lowercase, hyphenated folder with an
-         index.html, add a card above (href to that folder), and add matching
-         entries to the SEARCH INDEX in the script below. ===== -->
+         index.html, add a card above (href to that folder, --cc to a --lrh- token),
+         and add matching entries to the SEARCH INDEX in the script below. ===== -->
 
   </div>
 
-  <div class="note">
+  <div class="lrh-note">
     <strong>Personal decision-support aids &mdash; not part of the LRH IT system / EHR.</strong>
     Beta: content is unverified. These tools do not replace clinical judgment. Verify all values and thresholds against local protocols and assays.
   </div>
 
-  <footer>Littleton Regional Hospital Emergency Manual &mdash; personal, unofficial reference &middot; Beta</footer>
+  <footer class="lrh-footer">Littleton Regional Hospital Emergency Manual &mdash; personal, unofficial reference &middot; Beta</footer>
 </div>
 
 <script>

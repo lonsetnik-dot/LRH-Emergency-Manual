@@ -26,10 +26,39 @@
      scroll-margin-top below; 54px stays as the pre-JS fallback. This page
      has zero localStorage refs, so the theme choice is not persisted
      (matches its current no-storage architecture). */
-  body[data-theme]{ --lrh-bg:#0D1420; --lrh-card:#161F2E; --lrh-ink2:#8FA0B5; --lrh-line:rgba(255,255,255,.10); }
-  body[data-theme="light"]{ --lrh-bg:#EFF2F5; --lrh-card:#FFFFFF; --lrh-ink2:#5A6A7D; --lrh-line:rgba(15,35,60,.13); }
+  body[data-theme]{ --lrh-bg:#0D1420; --lrh-card:#161F2E; --lrh-card2:#1D2A3C; --lrh-ink:#EAF0F7; --lrh-ink2:#8FA0B5; --lrh-line:rgba(255,255,255,.10); --lrh-accent:#2FA372;
+    --lrh-red:#E5484D; --lrh-amber:#F0B429; --lrh-blue:#4C8DDA; --lrh-green:#3DA35D; --lrh-gray:#5C6B7E; --lrh-purple:#9B7BD4; --lrh-teal:#3AA6A6; --lrh-orange:#E08A3C; }
+  body[data-theme="light"]{ --lrh-bg:#EFF2F5; --lrh-card:#FFFFFF; --lrh-card2:#F4F6F9; --lrh-ink:#141E2B; --lrh-ink2:#5A6A7D; --lrh-line:rgba(15,35,60,.13); --lrh-accent:#00693E;
+    --lrh-red:#C63238; --lrh-amber:#B07E13; --lrh-blue:#2F6FB5; --lrh-green:#1F7F49; --lrh-gray:#6B7A8D; --lrh-purple:#6C4FA3; --lrh-teal:#1F7E7E; --lrh-orange:#B4661F; }
   .lrh-hdr{display:flex;align-items:center;gap:10px;background:var(--lrh-bg);padding:8px 14px;
     border-bottom:1px solid var(--lrh-line)}
+  /* ---- step 2 — the card-selection menu is this tool's "category index"
+     (DESIGN_LANGUAGE.md section 5): same themed-wrapper/row pattern as the
+     home hub, clinical-pathways index, codes/index.html, and peds/index.html.
+     Card content below the menu (article#c01 etc.) is untouched — step 3/4
+     scope. */
+  .lrh-menuwrap{background:var(--lrh-bg);padding:16px 14px 26px}
+  .lrh-menuwrap .inner{max-width:1400px;margin:0 auto}
+  .lrh-eyebrow{font-size:11.5px;letter-spacing:.14em;color:var(--lrh-accent);font-weight:700}
+  .lrh-idx-h1{margin:4px 0 2px;font-size:26px;letter-spacing:-.01em;font-weight:800;color:var(--lrh-ink)}
+  .lrh-idx-sub{margin:0;color:var(--lrh-ink2);font-size:14.5px}
+  .lrh-mono{font-family:ui-monospace,"SF Mono",Menlo,"JetBrains Mono",monospace}
+  .lrh-row{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--lrh-ink);
+    background:var(--lrh-card);border:1px solid var(--lrh-line);border-left:4px solid var(--cc,var(--lrh-accent));
+    border-radius:12px;padding:14px;min-height:56px;cursor:pointer}
+  .lrh-row .n{font-size:15px;font-weight:700;color:var(--cc,var(--lrh-accent));flex:none;width:24px}
+  .lrh-row .t{font-size:16.5px;font-weight:700;line-height:1.25}
+  .lrh-row .spacer{flex:1}
+  .lrh-row .tag{font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--lrh-ink2);white-space:nowrap;flex:none}
+  .lrh-row:hover, .lrh-row:focus-visible{color:var(--lrh-ink)}
+  .lrh-filter{display:flex;gap:8px;align-items:center;background:var(--lrh-card);border:1px solid var(--lrh-line);
+    border-radius:14px;padding:4px 6px 4px 14px;margin:18px 2px 14px}
+  .lrh-filter .ico{color:var(--lrh-ink2);font-size:16px;flex:none}
+  .lrh-filter input{flex:1;background:none;border:none;color:var(--lrh-ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit;-webkit-appearance:none}
+  .lrh-filter input::-webkit-search-cancel-button{-webkit-appearance:none}
+  .lrh-filter-empty{margin:0 2px 14px;padding:12px 14px;color:var(--lrh-ink2);font-size:.88rem;background:var(--lrh-card);
+    border:1px solid var(--lrh-line);border-radius:14px}
+  .lrh-filter-empty[hidden]{display:none}
   .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;
     color:var(--lrh-ink2);font-family:"Helvetica Neue",Helvetica,Arial,sans-serif}
   .lrh-hdr button{background:var(--lrh-card);border:1px solid var(--lrh-line);color:var(--lrh-ink2);
@@ -137,35 +166,45 @@
 </div>
 
 <main id="top">
-  <div style="padding:16px 14px 6px;">
-    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:#0f7a86; font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
-    <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Procedures</h1>
-    <p style="margin:0; color:#5a6a78; font-size:14.5px;">Rare, high-stakes procedures — high-level checklists with anatomy figures. Procedures that already live in another tool link straight there; nothing is duplicated.</p>
-  </div>
+  <div class="lrh-menuwrap">
+    <div class="inner">
+      <div class="lrh-eyebrow lrh-mono">LRH · EMERGENCY DEPARTMENT</div>
+      <h1 class="lrh-idx-h1">Procedures</h1>
+      <p class="lrh-idx-sub">Rare, high-stakes procedures — high-level checklists with anatomy figures. Procedures that already live in another tool link straight there; nothing is duplicated.</p>
 
-  <!-- ============ CARD MENU ============ -->
-  <div id="menu" class="menu" style="margin:14px 0 24px;">
-    <a href="#c06" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">06</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Central Venous Catheter (CVC)</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><rect x="28" y="3" width="36" height="9" rx="2" fill="none" stroke="#16324f" stroke-width="2.5"/><line x1="46" y1="12" x2="46" y2="17" stroke="#16324f" stroke-width="2"/><circle cx="36" cy="28" r="8" fill="none" stroke="#2b5c93" stroke-width="3"/><circle cx="58" cy="28" r="5.5" fill="none" stroke="#9b1c2e" stroke-width="3"/></svg></span></a>
-    <a href="#c01" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">01</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Chest Tube (Tube Thoracostomy)</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polygon points="30,6 76,14 46,36" fill="none" stroke="#16324f" stroke-width="3" stroke-linejoin="round"/><circle cx="52" cy="20" r="4" fill="#16324f"/></svg></span></a>
-    <a href="../ob-neonatal/?from=home#c05" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">→</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">ED C-Section<br><span style="font-size:11px; font-weight:400; color:#8a8578; letter-spacing:0.04em;">opens in OB / Neonatal</span></span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><ellipse cx="46" cy="20" rx="38" ry="17" fill="none" stroke="#9b1c2e" stroke-width="3"/><circle cx="46" cy="17" r="9" fill="#9b1c2e"/><line x1="26" y1="34" x2="66" y2="34" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/></svg></span></a>
-    <a href="#c04" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">04</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Emergency Burr Hole (Craniotomy)</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><ellipse cx="40" cy="18" rx="30" ry="16" fill="none" stroke="#16324f" stroke-width="3"/><path d="M62 26 C68 30 70 36 66 38 L60 34 L56 38 L52 34" fill="none" stroke="#16324f" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/><circle cx="30" cy="14" r="5" fill="#16324f"/></svg></span></a>
-    <a href="#c08" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">08</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Escharotomy</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><rect x="18" y="6" width="56" height="28" rx="8" fill="none" stroke="#9b1c2e" stroke-width="3"/><line x1="36" y1="10" x2="36" y2="30" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round" stroke-dasharray="5 4"/><line x1="56" y1="10" x2="56" y2="30" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round" stroke-dasharray="5 4"/></svg></span></a>
-    <a href="../codes/?from=home#c18" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">→</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Front of Neck Access (FONA)<br><span style="font-size:11px; font-weight:400; color:#8a8578; letter-spacing:0.04em;">opens in Codes</span></span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><circle cx="46" cy="20" r="15" fill="none" stroke="#9b1c2e" stroke-width="3"/><line x1="36" y1="20" x2="56" y2="20" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/></svg></span></a>
-    <a href="../codes/?from=home#c06" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">→</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Intubation / RSI Checklist<br><span style="font-size:11px; font-weight:400; color:#8a8578; letter-spacing:0.04em;">opens in Codes</span></span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><polyline points="0,30 10,30 10,10 40,10 40,30 50,30 50,10 80,10 80,30 92,30" fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/></svg></span></a>
-    <a href="#c05" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">05</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Lateral Canthotomy &amp; Cantholysis</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><path d="M8 20 Q46 2 84 20 Q46 38 8 20 Z" fill="none" stroke="#16324f" stroke-width="3" stroke-linejoin="round"/><circle cx="46" cy="20" r="6" fill="none" stroke="#16324f" stroke-width="2.5"/><line x1="78" y1="28" x2="90" y2="34" stroke="#16324f" stroke-width="3" stroke-linecap="round"/></svg></span></a>
-    <a href="../peds/?from=home#p14" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">→</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Procedural Sedation<br><span style="font-size:11px; font-weight:400; color:#8a8578; letter-spacing:0.04em;">opens in Pediatric Emergencies</span></span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><path d="M46 4 C58 18 64 26 64 32 C64 40 30 40 30 32 C30 26 34 18 46 4 Z" fill="none" stroke="#16324f" stroke-width="3" stroke-linejoin="round"/></svg></span></a>
-    <a href="../ob-neonatal/?from=home#c10" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">→</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Resuscitative Hysterotomy<br><span style="font-size:11px; font-weight:400; color:#8a8578; letter-spacing:0.04em;">opens in OB &amp; Neonatal</span></span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><ellipse cx="46" cy="24" rx="30" ry="14" fill="none" stroke="#9b1c2e" stroke-width="3"/><line x1="46" y1="10" x2="46" y2="34" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/><circle cx="46" cy="10" r="3" fill="#9b1c2e"/></svg></span></a>
-    <a href="#c02" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">02</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Resuscitative Thoracotomy</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><path d="M4 8 C4 30 20 36 46 36 C72 36 88 30 88 8" fill="none" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/><line x1="46" y1="6" x2="46" y2="30" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/></svg></span></a>
-    <a href="#c07" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">07</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Transvenous Pacing (TVP)</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><g fill="none" stroke="#16324f" stroke-width="2.5"><circle cx="18" cy="20" r="9"/><circle cx="46" cy="20" r="9"/><circle cx="74" cy="20" r="9"/></g><line x1="18" y1="20" x2="23" y2="13" stroke="#2f62a8" stroke-width="2.5" stroke-linecap="round"/><line x1="46" y1="20" x2="52" y2="15" stroke="#9b1c2e" stroke-width="2.5" stroke-linecap="round"/><line x1="74" y1="20" x2="74" y2="12" stroke="#0f7a86" stroke-width="2.5" stroke-linecap="round"/></svg></span></a>
-    <a href="../ob-neonatal/?from=home#c04" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #2f62a8; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#2f62a8;">→</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Umbilical Vein Catheterization<br><span style="font-size:11px; font-weight:400; color:#8a8578; letter-spacing:0.04em;">opens in OB / Neonatal</span></span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><circle cx="46" cy="20" r="17" fill="none" stroke="#2f62a8" stroke-width="3"/><circle cx="46" cy="12" r="4" fill="#2f62a8"/><circle cx="38" cy="26" r="4" fill="#2f62a8"/><circle cx="54" cy="26" r="4" fill="#2f62a8"/></svg></span></a>
-    <a href="#c09" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">09</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Pelvic Binder Application</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><g fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round"><path d="M20 9 Q11 19 19 27"/><path d="M72 9 Q81 19 73 27"/><path d="M31 11 Q46 6 61 11"/></g><rect x="12" y="22" width="68" height="9" rx="4.5" fill="#0f7a86"/></svg></span></a>
-    <a href="#c10" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">10</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Tourniquet Application</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><line x1="8" y1="20" x2="30" y2="20" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/><rect x="30" y="10" width="14" height="20" rx="2" fill="none" stroke="#9b1c2e" stroke-width="3"/><circle cx="37" cy="20" r="3" fill="#9b1c2e"/><line x1="44" y1="20" x2="70" y2="20" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/></svg></span></a>
-    <a href="#c11" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">11</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Penetrating Neck Trauma</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><rect x="30" y="4" width="30" height="10" fill="none" stroke="#9b1c2e" stroke-width="2.5"/><rect x="30" y="14" width="30" height="12" fill="none" stroke="#9b1c2e" stroke-width="2.5"/><rect x="30" y="26" width="30" height="10" fill="none" stroke="#9b1c2e" stroke-width="2.5"/><line x1="6" y1="20" x2="28" y2="20" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/><path d="M6 20 L16 22 L9 27 Z" fill="#9b1c2e"/></svg></span></a>
-    <a href="#c12" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">12</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Junctional Hemorrhage Control</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><rect x="6" y="6" width="30" height="28" rx="4" fill="none" stroke="#9b1c2e" stroke-width="3"/><line x1="36" y1="26" x2="66" y2="10" stroke="#9b1c2e" stroke-width="3" stroke-linecap="round"/><line x1="60" y1="6" x2="66" y2="2" stroke="#9b1c2e" stroke-width="2.5" stroke-linecap="round"/><line x1="64" y1="14" x2="72" y2="10" stroke="#9b1c2e" stroke-width="2.5" stroke-linecap="round"/><line x1="70" y1="20" x2="78" y2="18" stroke="#9b1c2e" stroke-width="2.5" stroke-linecap="round"/></svg></span></a>
-    <a href="#c13" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">13</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">JADA System Insertion</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><circle cx="46" cy="24" r="13" fill="none" stroke="#16324f" stroke-width="3"/><path d="M36 15 A13 13 0 0 1 56 15" fill="none" stroke="#0f7a86" stroke-width="3.5" stroke-linecap="round"/><path d="M56 15 A13 13 0 0 1 58 28" fill="none" stroke="#9b1c2e" stroke-width="3.5" stroke-linecap="round"/><line x1="46" y1="24" x2="46" y2="13" stroke="#16324f" stroke-width="3" stroke-linecap="round"/></svg></span></a>
-    <a href="#c14" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #9b1c2e; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#9b1c2e;">14</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Resuscitation Line (Cordis / AVA 3Xi)</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><g fill="#aab2bd"><circle cx="7" cy="12" r="4"/><path d="M9 9.6 L43 9.6 L53 12 L43 14.4 L9 14.4 Z"/></g><g fill="#1b5e9e"><circle cx="7" cy="28" r="5.5"/><path d="M10 24.2 L57 24.2 L71 28 L57 31.8 L10 31.8 Z"/></g></svg></span></a>
-    <a href="#c15" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #16324f; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#16324f;">15</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">SALAD &mdash; Contaminated Airway</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><path d="M8 8 C8 26 20 32 34 32" fill="none" stroke="#16324f" stroke-width="3.5" stroke-linecap="round"/><path d="M34 26 L48 32 L34 38 Z" fill="#16324f"/><path d="M84 8 C84 26 72 32 58 32" fill="none" stroke="#0f7a86" stroke-width="3.5" stroke-linecap="round"/><circle cx="58" cy="32" r="4" fill="#0f7a86"/><path d="M46 4 L46 16" fill="none" stroke="#8a6d1f" stroke-width="3.5" stroke-linecap="round"/><path d="M40 14 L46 22 L52 14 Z" fill="#8a6d1f"/></svg></span></a>
-    <a href="#c16" style="display:grid; grid-template-columns:30px 1fr; gap:11px; align-items:center; min-height:56px; padding:11px 14px; background:#fffefb; border:1px solid #e4e0d6; border-left:5px solid #0f7a86; text-decoration:none; color:#16324f;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; color:#0f7a86;">16</span><span style="display:flex; align-items:center; justify-content:space-between; gap:10px;"><span style="font-size:17px; font-weight:700; line-height:1.15;">Pigtail Chest Tube</span><svg width="46" height="20" viewBox="0 0 92 40" aria-hidden="true" style="flex:none;"><path d="M20 6 L20 34 M20 6 L64 6" fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round"/><path d="M64 6 L20 34" fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round"/><path d="M72 34 C86 34 86 18 74 18 C66 18 66 28 74 28" fill="none" stroke="#0f7a86" stroke-width="3" stroke-linecap="round"/></svg></span></a>
+      <!-- ============ FILTER ============ -->
+      <div class="lrh-filter">
+        <span class="ico" aria-hidden="true">&#8981;</span>
+        <input type="search" id="menuFilter" autocomplete="off" spellcheck="false" autofocus
+          placeholder="Filter this list&hellip;" aria-label="Filter this list" aria-controls="menu">
+      </div>
+      <p class="lrh-filter-empty" id="menuFilterEmpty" hidden>No matches. Try a different term.</p>
+
+      <!-- ============ CARD MENU ============ -->
+      <div id="menu" class="menu" style="padding:0; margin:18px 0 0;">
+        <a href="#c06" data-k="central line cvc internal jugular seldinger ultrasound sterile triple lumen catheter" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">06</span><span class="t">Central Venous Catheter (CVC)</span></a>
+        <a href="#c01" data-k="chest tube thoracostomy pneumothorax hemothorax pleural safe triangle finger" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">01</span><span class="t">Chest Tube (Tube Thoracostomy)</span></a>
+        <a href="../ob-neonatal/?from=home#c05" data-k="cesarean c-section section operative" class="lrh-row" style="--cc:var(--lrh-red)"><span class="t">ED C-Section</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; OB / NEONATAL</span></a>
+        <a href="#c04" data-k="burr hole craniotomy epidural subdural herniation blown pupil middle meningeal" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">04</span><span class="t">Emergency Burr Hole (Craniotomy)</span></a>
+        <a href="#c08" data-k="escharotomy burns eschar circumferential perfusion ventilation" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">08</span><span class="t">Escharotomy</span></a>
+        <a href="../codes/?from=home#c18" data-k="fona cricothyroidotomy cico front of neck access surgical airway difficult airway das trauma" class="lrh-row" style="--cc:var(--lrh-red)"><span class="t">Front of Neck Access (FONA)</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; CODES</span></a>
+        <a href="../codes/?from=home#c06" data-k="intubation rsi rapid sequence intubation checklist airway induction paralytic sedation etomidate ketamine propofol rocuronium succinylcholine capnography preoxygenation cico emcrit push dose timer" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="t">Intubation / RSI Checklist</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; CODES</span></a>
+        <a href="#c05" data-k="canthotomy cantholysis retrobulbar hematoma orbital compartment eye pressure IOP" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">05</span><span class="t">Lateral Canthotomy &amp; Cantholysis</span></a>
+        <a href="../peds/?from=home#p14" data-k="procedural sedation ketamine propofol etomidate fasting pediatric" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="t">Procedural Sedation</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; PEDIATRIC EMERGENCIES</span></a>
+        <a href="../ob-neonatal/?from=home#c10" data-k="hysterotomy perimortem c-section cesarean maternal arrest fundus umbilicus procedures" class="lrh-row" style="--cc:var(--lrh-red)"><span class="t">Resuscitative Hysterotomy</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; OB &amp; NEONATAL</span></a>
+        <a href="#c02" data-k="thoracotomy clamshell cardiac tamponade pericardiotomy trauma arrest" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">02</span><span class="t">Resuscitative Thoracotomy</span></a>
+        <a href="#c07" data-k="transvenous pacing pacemaker wire bradycardia capture threshold" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">07</span><span class="t">Transvenous Pacing (TVP)</span></a>
+        <a href="../ob-neonatal/?from=home#c04" data-k="uvc umbilical vein line venous access emergency" class="lrh-row" style="--cc:var(--lrh-blue)"><span class="t">Umbilical Vein Catheterization</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; OB / NEONATAL</span></a>
+        <a href="#c09" data-k="pelvic binder sam sling t-pod unstable pelvis fracture greater trochanters sheet wrap" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">09</span><span class="t">Pelvic Binder Application</span></a>
+        <a href="#c10" data-k="tourniquet application cat combat application windlass extremity hemorrhage stop the bleed" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">10</span><span class="t">Tourniquet Application</span></a>
+        <a href="#c11" data-k="penetrating neck trauma zones hard signs soft signs cta foley catheter balloon tamponade" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">11</span><span class="t">Penetrating Neck Trauma</span></a>
+        <a href="#c12" data-k="junctional hemorrhage groin axilla wound packing hemostatic gauze combat gauze itclamp junctional tourniquet" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">12</span><span class="t">Junctional Hemorrhage Control</span></a>
+        <a href="#c13" data-k="jada system insertion postpartum hemorrhage pph vacuum induced uterine tamponade intrauterine loop cervical seal balloon bakri" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">13</span><span class="t">JADA System Insertion</span></a>
+        <a href="#c14" data-k="resuscitation line cordis code line big line massive transfusion large bore introducer sheath ava 3xi combination catheter mtp access" class="lrh-row" style="--cc:var(--lrh-red)"><span class="n lrh-mono">14</span><span class="t">Resuscitation Line (Cordis / AVA 3Xi)</span></a>
+        <a href="#c15" data-k="salad suction assisted laryngoscopy airway decontamination vomit emesis contaminated airway ducanto rigid suction meconium aspirator three trajectories oesophageal park intubation soiled airway aspiration" class="lrh-row" style="--cc:var(--lrh-gray)"><span class="n lrh-mono">15</span><span class="t">SALAD &mdash; Contaminated Airway</span></a>
+        <a href="#c16" data-k="pigtail chest tube seldinger small bore thoracostomy pneumothorax hemothorax effusion empyema triangle of safety guidewire dilator underwater seal drain pcat" class="lrh-row" style="--cc:var(--lrh-teal)"><span class="n lrh-mono">16</span><span class="t">Pigtail Chest Tube</span></a>
+      </div>
+    </div>
   </div>
 
   <!-- ============ CARD 06 · CVC ============ -->
@@ -1430,11 +1469,14 @@ var SITE = {
   function boot(){
     var s=document.getElementById('betasplash'), b=document.getElementById('betago');
     if(!s||!b) return;
+    /* Drop straight into the filter box once the splash is gone — but only when
+       landing on the plain menu (no #cNN deep link already taking the user to a card). */
+    function focusFilter(){ if(location.hash) return; var f=document.getElementById('menuFilter'); if(f) f.focus(); }
     try{
       var params=new URLSearchParams(location.search);
-      if(params.get('from')==='home'){ if(s.parentNode) s.parentNode.removeChild(s); return; }
+      if(params.get('from')==='home'){ if(s.parentNode) s.parentNode.removeChild(s); focusFilter(); return; }
     }catch(e){}
-    function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); }
+    function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); focusFilter(); }
     b.addEventListener('click', go, false);
     b.addEventListener('touchend', go, false);
   }
@@ -1451,6 +1493,51 @@ var SITE = {
   window.addEventListener('hashchange', maybeShow, false);
   maybeShow();
   b.addEventListener('click', function(){ history.back(); }, false);
+})();
+</script>
+<script>
+(function(){
+  var menu=document.getElementById('menu');
+  var fInput=document.getElementById('menuFilter');
+  if(!menu || !fInput) return;
+  var emptyMsg=document.getElementById('menuFilterEmpty');
+  var rows=Array.prototype.slice.call(menu.querySelectorAll('.lrh-row'));
+  var groups=Array.prototype.slice.call(menu.querySelectorAll('.lrh-group-hd'));
+  function norm(s){ return (s||'').toLowerCase(); }
+  var rowData=rows.map(function(r){
+    var num=r.querySelector('.n'), t=r.querySelector('.t');
+    var text=norm((num?num.textContent:'')+' '+(t?t.textContent:'')+' '+(r.getAttribute('data-k')||''));
+    return {row:r, text:text};
+  });
+  function applyFilter(){
+    var term=norm(fInput.value.trim());
+    var anyVisible=false;
+    rowData.forEach(function(rd){
+      var match=!term || rd.text.indexOf(term)!==-1;
+      rd.row.style.display=match?'':'none';
+      if(match) anyVisible=true;
+    });
+    groups.forEach(function(gh){
+      var grid=gh.nextElementSibling;
+      if(!grid) return;
+      var visRows=grid.querySelectorAll('.lrh-row');
+      var vis=false;
+      for(var i=0;i<visRows.length;i++){ if(visRows[i].style.display!=='none'){ vis=true; break; } }
+      gh.style.display=vis?'':'none';
+      grid.style.display=vis?'':'none';
+    });
+    if(emptyMsg){ emptyMsg.hidden = anyVisible || !term; }
+  }
+  fInput.addEventListener('input', applyFilter);
+  fInput.addEventListener('keydown', function(e){
+    if(e.key==='Enter'){
+      var first=null;
+      for(var i=0;i<rowData.length;i++){ if(rowData[i].row.style.display!=='none'){ first=rowData[i].row; break; } }
+      if(first){ e.preventDefault(); window.location.href=first.getAttribute('href'); }
+    } else if(e.key==='Escape'){
+      fInput.value=''; applyFilter();
+    }
+  });
 })();
 </script>
 </body>
