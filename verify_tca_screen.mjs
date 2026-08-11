@@ -77,7 +77,7 @@ ok(!names[0].includes('massive transfusion') && !names[0].toLowerCase().includes
 // airway uses i-gel, not LMA
 ok(names[1].includes('i-gel') && !names[1].includes('LMA'), 'airway names i-gel, not LMA');
 // breathing forbids chest tube/drain/ICC
-ok(/no chest tube, drain or ICC/i.test(names[2]), 'breathing says no chest tube/drain/ICC');
+ok(/no chest tube now/i.test(names[2]) && !/drain or ICC/i.test(names[2]), 'breathing says no chest tube (not drain/ICC)');
 
 // links present and correct
 const links = await page.$$eval('#worksteps a.wlink', as => as.map(a => ({t:a.textContent.trim(), h:a.getAttribute('href')})));
