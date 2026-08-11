@@ -62,6 +62,9 @@
     .twoup { display:grid; grid-template-columns:1fr 1fr; gap:0 20px; } .twoup > li { min-width:0; } .twoup li label { min-width:0; } .twoup li label > span { min-width:0; overflow-wrap:break-word; } .cs-unarmed { opacity:.45; pointer-events:none; }
   }
   #stickytop { position:sticky; top:0; z-index:5; }
+  /* Tap-to-call transfer-center link inside the BIG checklist items (#65). */
+  a.telcall { color:var(--blue); font-weight:700; text-decoration:underline; text-underline-offset:2px; white-space:nowrap; }
+  a.telcall:hover, a.telcall:focus-visible { color:var(--accent); }
   @media print {
     body { background:#fffefb; }
     .hdr, #betasplash, #startnewcasebtn { display:none; }
@@ -244,7 +247,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-1" class="t-ck"><span><b>All of:</b> GCS 13–15 or at neurologic baseline · normal neuro exam · no intoxication · no anticoagulant/antiplatelet use.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-2" class="t-ck"><span><b>CT:</b> subdural (SDH) or intraparenchymal hemorrhage (IPH) ≤4mm · localized subarachnoid hemorrhage (SAH) ≤3 sulci and &lt;1mm · <b>no</b> skull fracture, intraventricular hemorrhage (IVH), or epidural hemorrhage (EDH).</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-3" class="t-ck"><span><b>Management:</b> 6-hour ED observation with neuro checks every 2 hours. No repeat head CT. No neurosurgical consultation. If stable at 6 hours, discharge home from the ED. <b>LRH:</b> notify the trauma attending — <b>not</b> neurosurgery — per the workflow agreed with DHMC's trauma medical director. <b>DHMC Transfer Center: (877) 999-9870.</b> DHMC's transfer center doesn't always route this correctly; ask for the trauma attending by name/service if you're connected to neurosurgery instead.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-3" class="t-ck"><span><b>Management:</b> 6-hour ED observation with neuro checks every 2 hours. No repeat head CT. No neurosurgical consultation. If stable at 6 hours, discharge home from the ED. <b>LRH:</b> notify the trauma attending — <b>not</b> neurosurgery — per the workflow agreed with DHMC's trauma medical director. <b><a class="telcall" data-tc href="tel:+18779999870">DHMC Transfer Center: (877) 999-9870</a>.</b> DHMC's transfer center doesn't always route this correctly; ask for the trauma attending by name/service if you're connected to neurosurgery instead.</span></label></li>
         </ul>
       </details>
       <details open class="t-box-caution">
@@ -252,7 +255,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-4" class="t-ck"><span><b>All of:</b> GCS 13–15 or at neurologic baseline · normal neuro exam · no anticoagulant/antiplatelet use. <b>May</b> be intoxicated (blood alcohol &gt;80 mg/dL).</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-5" class="t-ck"><span><b>CT:</b> SDH or IPH &gt;4–7.9mm · SAH involving one hemisphere or 1–3mm · non-displaced skull fracture · <b>no</b> IVH, EDH, midline shift, or herniation.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-6" class="t-ck"><span><b>Management (published guideline):</b> admit 24–48 hours to a trauma/monitored service. Neuro checks q2h ×6 hours, then q4h. No routine repeat CT. No neurosurgical consultation required. <b>LRH:</b> transferred to DHMC, not admitted locally — per agreement with DHMC's trauma medical director. <b>DHMC Transfer Center: (877) 999-9870.</b></span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-6" class="t-ck"><span><b>Management (published guideline):</b> admit 24–48 hours to a trauma/monitored service. Neuro checks q2h ×6 hours, then q4h. No routine repeat CT. No neurosurgical consultation required. <b>LRH:</b> transferred to DHMC, not admitted locally — per agreement with DHMC's trauma medical director. <b><a class="telcall" data-tc href="tel:+18779999870">DHMC Transfer Center: (877) 999-9870</a>.</b></span></label></li>
         </ul>
       </details>
       <details open class="t-box-crit">
@@ -260,7 +263,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-7" class="t-ck"><span>Abnormal neuro exam (GCS &lt;13, focal findings, abnormal pupils) · intoxication (BAC &gt;80 mg/dL) · <b>any</b> use of anticoagulants or antiplatelet agents.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-8" class="t-ck"><span><b>CT:</b> SDH or IPH ≥8mm · <b>any</b> IVH · bi-hemispheric SAH &gt;3mm · <b>any</b> EDH · multiple concurrent hemorrhages or midline shift · displaced skull fracture.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-9" class="t-ck"><span><b>Management:</b> admit to a monitored setting (ICU/neuro-ICU). Neurosurgical consultation. Repeat head CT per neurosurgical guidance. <b>LRH:</b> transferred to DHMC, same as mBIG-2 — per agreement with DHMC's trauma medical director. <b>DHMC Transfer Center: (877) 999-9870.</b></span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-9" class="t-ck"><span><b>Management:</b> admit to a monitored setting (ICU/neuro-ICU). Neurosurgical consultation. Repeat head CT per neurosurgical guidance. <b>LRH:</b> transferred to DHMC, same as mBIG-2 — per agreement with DHMC's trauma medical director. <b><a class="telcall" data-tc href="tel:+18779999870">DHMC Transfer Center: (877) 999-9870</a>.</b></span></label></li>
         </ul>
       </details>
       <details class="t-box-neutral">
@@ -644,9 +647,30 @@ catch(e){ document.body.dataset.theme='dark'; }
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "0.92",
-  lastReviewed: "2026-08-07"
+  version: "0.93",
+  lastReviewed: "2026-08-11",
+  /* Transfer/consult numbers. One source of truth (CLAUDE.md rule 2) — the
+     BIG card renders every "DHMC Transfer Center" line from here as a tap-to-
+     call tel: link. `tel` is the E.164 dial string; `phone` is what's shown. */
+  transferCenter: { label: "DHMC Transfer Center", phone: "(877) 999-9870", tel: "+18779999870" }
 };
+/* Render tap-to-call links for every [data-tc] placeholder from SITE.transferCenter. */
+(function(){
+  var tc=SITE.transferCenter; if(!tc) return;
+  function boot(){
+    var els=document.querySelectorAll('a.telcall[data-tc]');
+    for(var i=0;i<els.length;i++){
+      els[i].setAttribute('href','tel:'+tc.tel);
+      els[i].setAttribute('aria-label','Call '+tc.label+' '+tc.phone);
+      els[i].textContent=tc.label+': '+tc.phone;
+      /* Inside a checklist <label>: an <a> is interactive content, so the spec
+         suppresses the label's checkbox toggle — but stop propagation too so a
+         tap only dials, never ticks the box. */
+      els[i].addEventListener('click', function(e){ e.stopPropagation(); }, false);
+    }
+  }
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
+})();
 (function(){
   var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
   var stamps=document.querySelectorAll('.verstamp');
