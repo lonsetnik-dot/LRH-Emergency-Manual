@@ -22,8 +22,11 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-          cache: npm
-      - run: npm ci
+      # package.json, package-lock.json and node_modules are intentionally
+      # gitignored (the deployed site is pure static HTML; Playwright exists only
+      # for the verify scripts), so install Playwright by name rather than from a
+      # committed manifest, then fetch the chromium the scripts drive.
+      - run: npm install playwright@^1.62.1
       - run: npx playwright install --with-deps chromium
 
       # Python + pyzbar for the QR decode check (verify_qr_decode.py).
