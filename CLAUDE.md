@@ -13,6 +13,10 @@ unclear. If a request conflicts with a rule below, flag it before proceeding.
    JS; no external dependencies; must work offline. The landing page is the only
    top-level `index.html`.
 
+   "Must work offline" is now enforced, not just asserted — see **Offline
+   shell** below. Do not hand-write a per-tool service worker; a new tool gets
+   offline support automatically by existing.
+
 2. **Isolate site-specific values.** Put everything an adopting ED would change
    — clinical thresholds, assay names, hospital name, colors, phone numbers — in
    a clearly marked block at the top of the file:
@@ -98,6 +102,36 @@ editing:
 3. Write all prose in US English — see golden rule 10.
 4. Cite every clinical value; verify the logic; stamp version + last-reviewed
    date on the tool file the card lives in.
+
+## Offline shell (issue #120)
+
+The manual works in a wifi dead zone because `build.mjs` generates a root
+service worker that precaches **every page** — ~2.9 MB across the whole site, so
+a clinician who has opened any one page has all of it, including cross-tool
+links. Three things follow for anyone editing this repo:
+
+- **Never edit `dist/sw.js`.** It is generated. The sources are `sw-template.js`
+  (the worker) and `sw-register.js` (the registration + update prompt, inlined
+  into every page at build so no tool hand-maintains a copy).
+- **Never hand-bump a cache version.** The cache name is a content hash of
+  everything precached, so any content change invalidates it automatically. The
+  retired per-tool worker used a hand-written date string, and forgetting to
+  bump it would have served stale clinical content silently and indefinitely.
+- **Serving is cache-first**, because the failure being defended against is a
+  dead zone where the network hangs rather than fails. The cost is that a fresh
+  deploy is not shown until reload, so staleness is made *visible*: a dismissible
+  "MANUAL UPDATED — reload when it is safe to" bar. Nothing ever reloads the page
+  by itself; a forced reload mid-code would take the checklist away from whoever
+  is reading it.
+
+`verify_offline.mjs` proves all of this by stopping its own server mid-run.
+Note that `context.setOffline()` alone does **not** cut off service-worker
+fetches — an earlier version of that suite passed every "offline" check with the
+server still answering. If you touch the worker, run it against `dist/`:
+
+```
+node build.mjs && node verify_offline.mjs
+```
 
 ## Deploy & test workflow
 
