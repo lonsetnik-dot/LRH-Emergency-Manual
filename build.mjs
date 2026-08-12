@@ -15,12 +15,14 @@ import { join } from 'node:path';
 
 const CSS = readFileSync('design-system.css', 'utf8').trim();
 const MARKER = '/* @design-system */';
+const INV = readFileSync('inventory.js', 'utf8').trim();
+const MARKER_INV = '/* @inventory */';
 const OUT = 'dist';
 
 // Not part of the deployed site (dev tooling, docs, build inputs, VCS).
 const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', '.github']);
 const SKIP_ROOT_FILES = new Set([
-  'design-system.css', 'build.mjs', 'run-tests.sh', 'netlify.toml',
+  'design-system.css', 'inventory.js', 'build.mjs', 'run-tests.sh', 'netlify.toml',
   'package.json', 'package-lock.json', 'shot.mjs', '.gitignore',
 ]);
 const SKIP_ROOT_EXT = ['.mjs', '.py', '.md'];  // verify scripts, generators, docs
@@ -38,7 +40,7 @@ function walk(src, dst, atRoot) {
     if (statSync(s).isDirectory()) walk(s, d, false);
     else if (name.endsWith('.html')) {
       const html = readFileSync(s, 'utf8');
-      writeFileSync(d, html.split(MARKER).join(CSS));
+      writeFileSync(d, html.split(MARKER).join(CSS).split(MARKER_INV).join(INV));
     } else copyFileSync(s, d);
   }
 }
@@ -52,7 +54,7 @@ let leftover = 0;
   for (const name of readdirSync(dir)) {
     const p = join(dir, name);
     if (statSync(p).isDirectory()) scan(p);
-    else if (name.endsWith('.html') && readFileSync(p, 'utf8').includes(MARKER)) {
+    else if (name.endsWith('.html') && (readFileSync(p, 'utf8').includes(MARKER) || readFileSync(p, 'utf8').includes(MARKER_INV))) {
       console.error('!! un-injected marker left in', p); leftover++;
     }
   }
