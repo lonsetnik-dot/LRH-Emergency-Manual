@@ -241,7 +241,16 @@ test it" is not sufficient close-out for a deliverable.
 - `codes/` — Codes (cardiac arrest, stroke, RSI, STEMI, status epilepticus,
   and other resuscitation cards).
 - `ob-neonatal/` — OB & Neonatal emergencies (delivery, PPH, shoulder
-  dystocia, neonatal resuscitation, hysterotomy, and more).
+  dystocia, neonatal resuscitation, hysterotomy, and more). Card 03 now points
+  at `neonatal/` for the live version; the card stays as the reference view.
+- `neonatal/` — the newborn resuscitation **engine** (issue #135): time of birth
+  stamped on one tap, 30-second cycles off that clock, heart-rate driven
+  pathway, Apgar marks that fire on their own, and the SpO₂ target for the
+  minute the baby is actually in. A live-protocol peer of `arrest/`, `airway/`
+  and `tca/`, not a card. **Its content was carried over unchanged from card 03
+  and has not been reconciled with NRP 9th edition — the review banner stays up
+  until a clinician signs it off, and `verify_neonatal_screen.mjs` fails if
+  anyone switches it off quietly.**
 - `peds/` — Pediatric Emergencies.
 - `procedures/` — Rare, high-stakes procedure checklists (chest tube,
   thoracotomy, burr hole, canthotomy, CVC, TVP, tourniquet, JADA, etc.).
@@ -257,6 +266,34 @@ test it" is not sufficient close-out for a deliverable.
   sheet) that runs a case on a table instead of a mannequin. See **Shared
   equipment icons** above — its equipment cards must carry the same glyphs as
   the cart drawer labels.
-- `equipment-readiness/` — searchable equipment locations + NPRP readiness
-  audit, rendered from the root `inventory.js` (injected at build like
-  `design-system.css`; see `INVENTORY-DESIGN.md`).
+- `equipment-readiness/` — searchable equipment locations **size by size**, a
+  readiness score against seven national standards, and the cart-walk capture
+  that turns a walk into a git change. Rendered from the root `inventory.js`
+  (injected at build like `design-system.css`; see `INVENTORY-DESIGN.md`).
+
+## The equipment inventory (issue #117 family, `INVENTORY-DESIGN.md`)
+
+`inventory.js` is the single source for every physical item the manual names.
+Two layers: **CATALOG + STANDARDS travel with a fork; LOCATIONS is the only
+block another ED rewrites.** Four rules when touching it:
+
+- **Sizes are rows.** An item with `sizes:[…]` is audited once per size
+  (`id#size`), because "supraglottic airways 1–5: present" hides the only
+  question worth asking. Add sizes wherever a standard — or this department's
+  own stock reality — names them.
+- **A standard is joined, not listed twice.** An item declares `std:[…]`; each
+  standard's `items` array is derived from that at the bottom of the file.
+  Never hand-maintain a second list.
+- **NOT REVIEWED is not GAP.** An item with no `INV_LOCATIONS` entry has not
+  been looked at. A gap is an assertion someone makes — in `INV_GAP_ISSUES`
+  with an issue number, or by a champion on the walk. Never let an unreviewed
+  row score as either mapped or missing.
+- **Kit contents are byte-identical across artifacts.** The strings in a kit's
+  `contents` must match the procedure card, the poster and the cart label
+  exactly; `verify_kit_consistency.mjs` asserts it across all four, inventory
+  included.
+
+Adding a standard means: catalog `std` tags, an `INV_STANDARDS` entry with a
+real citation and a `kind` (`itemized` vs `narrative` — a narrative source gets
+a "NOT A VERBATIM LIST" caution on screen), a `SEARCH_INDEX` entry for its
+section, and a run of `verify_equipment_readiness.mjs`.

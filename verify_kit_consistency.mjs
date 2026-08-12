@@ -25,6 +25,7 @@ const KITS = [
       { file: 'procedures/index.html',        role: 'interactive card' },
       { file: 'posters/canthotomy/index.html', role: 'wall poster'      },
       { file: 'labels/index.html',             role: 'cart label'       },
+      { file: 'inventory.js',                  role: 'inventory catalog' },
     ],
   },
   {
@@ -47,6 +48,7 @@ const KITS = [
     artifacts: [
       { file: 'codes/index.html',  role: 'interactive card' },
       { file: 'labels/index.html', role: 'cabinet label'    },
+      { file: 'inventory.js',      role: 'inventory catalog' },
     ],
   },
   {
@@ -56,6 +58,7 @@ const KITS = [
     artifacts: [
       { file: 'codes/index.html',  role: 'interactive card' },
       { file: 'labels/index.html', role: 'cabinet label'    },
+      { file: 'inventory.js',      role: 'inventory catalog' },
     ],
   },
   {
@@ -67,6 +70,7 @@ const KITS = [
     artifacts: [
       { file: 'procedures/index.html', role: 'interactive card' },
       { file: 'labels/index.html',     role: 'cabinet label'    },
+      { file: 'inventory.js',          role: 'inventory catalog' },
     ],
   },
   {
@@ -77,6 +81,7 @@ const KITS = [
     artifacts: [
       { file: 'procedures/index.html', role: 'interactive card' },
       { file: 'labels/index.html',     role: 'cabinet label'    },
+      { file: 'inventory.js',          role: 'inventory catalog' },
     ],
   },
   {
@@ -86,6 +91,7 @@ const KITS = [
     artifacts: [
       { file: 'procedures/index.html', role: 'interactive card' },
       { file: 'labels/index.html',     role: 'kit card + build sheet' },
+      { file: 'inventory.js',          role: 'inventory catalog' },
     ],
   },
   {
@@ -95,6 +101,7 @@ const KITS = [
     artifacts: [
       { file: 'procedures/index.html', role: 'interactive card' },
       { file: 'labels/index.html',     role: 'kit card + build sheet' },
+      { file: 'inventory.js',          role: 'inventory catalog' },
     ],
   },
   {
@@ -104,6 +111,7 @@ const KITS = [
     artifacts: [
       { file: 'procedures/index.html', role: 'interactive card' },
       { file: 'labels/index.html',     role: 'kit card + build sheet' },
+      { file: 'inventory.js',          role: 'inventory catalog' },
     ],
   },
   {
@@ -113,6 +121,7 @@ const KITS = [
     artifacts: [
       { file: 'procedures/index.html', role: 'interactive card' },
       { file: 'labels/index.html',     role: 'kit card + build sheet' },
+      { file: 'inventory.js',          role: 'inventory catalog' },
     ],
   },
   {
@@ -122,6 +131,7 @@ const KITS = [
     artifacts: [
       { file: 'procedures/index.html', role: 'interactive card' },
       { file: 'labels/index.html',     role: 'kit card + build sheet' },
+      { file: 'inventory.js',          role: 'inventory catalog' },
     ],
   },
   {
@@ -131,6 +141,7 @@ const KITS = [
     artifacts: [
       { file: 'procedures/index.html', role: 'interactive card' },
       { file: 'labels/index.html',     role: 'kit card + build sheet' },
+      { file: 'inventory.js',          role: 'inventory catalog' },
     ],
   },
   {
@@ -140,6 +151,7 @@ const KITS = [
     artifacts: [
       { file: 'procedures/index.html', role: 'interactive card' },
       { file: 'labels/index.html',     role: 'kit card + build sheet' },
+      { file: 'inventory.js',          role: 'inventory catalog' },
     ],
   },
   {
@@ -149,6 +161,7 @@ const KITS = [
     artifacts: [
       { file: 'procedures/index.html', role: 'interactive card' },
       { file: 'labels/index.html',     role: 'kit card + build sheet' },
+      { file: 'inventory.js',          role: 'inventory catalog' },
     ],
   },
   {
@@ -158,6 +171,7 @@ const KITS = [
     artifacts: [
       { file: 'procedures/index.html', role: 'interactive card' },
       { file: 'labels/index.html',     role: 'kit card + build sheet' },
+      { file: 'inventory.js',          role: 'inventory catalog' },
     ],
   },
   {
@@ -167,6 +181,7 @@ const KITS = [
     artifacts: [
       { file: 'procedures/index.html', role: 'interactive card' },
       { file: 'labels/index.html',     role: 'kit card + build sheet' },
+      { file: 'inventory.js',          role: 'inventory catalog' },
     ],
   },
 ];
