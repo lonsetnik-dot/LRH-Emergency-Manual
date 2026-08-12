@@ -317,8 +317,10 @@ catch(e){ document.body.dataset.theme='dark'; }
     <div style="margin-top:6px; display:flex; gap:6px; align-items:stretch; flex-wrap:wrap;">
       <input type="time" id="tob" step="60" style="flex:2; min-width:110px; min-height:44px; padding:4px 8px; border:2px solid var(--sev-caution); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px;">
       <button type="button" id="tobnow" style="min-height:44px; padding:0 14px; background:var(--sev-caution); color:var(--on-sev); border:2px solid var(--sev-caution); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">NOW</button>
-      <input type="number" id="babyweight" class="wt-sync" inputmode="decimal" step="0.1" min="0" placeholder="kg (sizes)" style="flex:1; min-width:80px; min-height:44px; padding:4px 8px; border:2px solid var(--sev-caution); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px;">
+      <input type="number" id="babyweight" class="wt-sync" inputmode="decimal" step="0.1" min="0" placeholder="weight" style="flex:1; min-width:80px; min-height:44px; padding:4px 8px; border:2px solid var(--sev-caution); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px;">
+      <span style="align-self:center; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; color:var(--amber); white-space:nowrap;">kg or g</span>
     </div>
+    <div class="wtecho" style="display:none; margin-top:5px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.04em; color:var(--amber); line-height:1.3;"></div>
     <div id="tobmarks" style="margin-top:5px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.04em; color:var(--amber); line-height:1.3;">Set the time — the 1 and 5 minute marks appear here.</div>
     <div data-loglane="02" style="margin-top:8px; display:flex; gap:6px; align-items:center; overflow-x:auto; -webkit-overflow-scrolling:touch; min-height:28px; scrollbar-width:none;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--amber); opacity:0.7; white-space:nowrap;">NOTHING LOGGED YET</span></div>
   </div>
@@ -524,6 +526,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     <div style="display:flex; align-items:center; gap:8px; flex:none;">
       <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.06em; color:var(--ink); white-space:nowrap;">WEIGHT</span>
       <input type="number" id="babyweight-c03" class="wt-sync" inputmode="decimal" step="0.1" min="0" placeholder="kg" style="width:78px; min-height:44px; padding:4px 8px; border:2px solid var(--gray); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px;">
+      <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; color:var(--ink2); white-space:nowrap;">kg or g</span>
     </div>
     <div style="display:flex; align-items:center; gap:8px; flex:none;">
       <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.06em; color:var(--ink); white-space:nowrap;">OR WKS GESTATION</span>
@@ -595,7 +598,12 @@ catch(e){ document.body.dataset.theme='dark'; }
         <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="hrcycle" data-k="03-2-0" data-log="AIRWAY" class="t-ck t-ck-crit"><span>Secure the airway (LMA or ETT), 100% O₂, and give <b>30 s of chest-rising PPV</b> — then start compressions and run 60-second cycles.</span></label></li>
         <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="hrcycle" data-k="03-2-1" data-log="COMPRESSIONS 3:1" class="t-ck t-ck-crit"><span><span style="display:block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.04em; color:var(--red); margin-bottom:3px;">3:1</span>90 compressions + 30 breaths per minute. Count “one-and-two-and-three-and-breathe.”</span></label></li>
         <li style="padding:10px 0 4px; border-top:1px solid var(--line);"><figure style="margin:0; border:2px solid var(--sev-crit); background:var(--card);"><div style="background:var(--sev-crit); color:var(--on-sev); padding:8px 12px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.1em;">FIG 1 · TWO-THUMB ENCIRCLING — HAND PLACEMENT</div><div style="padding:12px; display:flex; justify-content:center; background:var(--card2);"><svg viewBox="0 0 240 138" style="width:100%; max-width:236px; height:auto; display:block;" xmlns="http://www.w3.org/2000/svg"><circle cx="120" cy="20" r="13" fill="#ffe6d2" stroke="#16324f" stroke-width="2"/><ellipse cx="120" cy="78" rx="46" ry="50" fill="#ffe6d2" stroke="#16324f" stroke-width="2"/><line x1="88" y1="66" x2="152" y2="66" stroke="#9b1c2e" stroke-width="1.5" stroke-dasharray="4 3"/><circle cx="105" cy="66" r="2.5" fill="#9b1c2e"/><circle cx="135" cy="66" r="2.5" fill="#9b1c2e"/><path d="M74 60 Q92 62 96 70" fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round"/><path d="M72 74 Q92 76 96 82" fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round"/><path d="M74 88 Q92 90 96 94" fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round"/><path d="M166 60 Q148 62 144 70" fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round"/><path d="M168 74 Q148 76 144 82" fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round"/><path d="M166 88 Q148 90 144 94" fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round"/><rect x="112" y="70" width="8" height="26" rx="4" fill="#16324f"/><rect x="120" y="70" width="8" height="26" rx="4" fill="#16324f"/><text x="120" y="122" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="9" font-weight="700" fill="#9b1c2e">LOWER ⅓ STERNUM</text></svg></div><figcaption style="padding:9px 12px; font-size:13px; line-height:1.35; color:var(--ink); border-top:1px solid #f0d3d8;">Both thumbs on the <b>lower third of the sternum</b> (just below the nipple line); fingers <b>encircle the torso</b> and support the back. Compress <b>⅓ of the chest depth</b>.</figcaption></figure></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="hrcycle" data-k="03-2-2" data-log="EPI" class="t-ck t-ck-crit"><span><span style="display:block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.04em; color:var(--red); margin-bottom:3px;">EPI</span>0.02 mg/kg IV = 0.2 mL/kg of 0.1 mg/mL, via UVC (card 04). Repeat every 3–5 min. <b>No access yet:</b> 0.05–0.1 mg/kg down the ETT once while the UVC goes in.<span class="epimini" style="display:block; margin-top:5px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14px; font-weight:700; color:var(--red);"></span></span></label></li>
+        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="hrcycle" data-k="03-2-2" data-log="EPI" class="t-ck t-ck-crit"><span><span style="display:block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.04em; color:var(--red); margin-bottom:3px;">EPI · IV/UVC</span>0.02 mg/kg IV = 0.2 mL/kg of 0.1 mg/mL, via UVC (card 04). Repeat every 3–5 min.<span class="epimini" style="display:block; margin-top:5px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14px; font-weight:700; color:var(--red);"></span></span></label></li>
+        <!-- ETT epi is its own item with its own computed figure (weight-routing
+             audit): the calculated IV volume used to render as the last line of a
+             bullet whose nearest sentence was the ETT instruction — a 2.5–5x
+             larger dose that was never computed. -->
+        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="hrcycle" data-k="03-2-2b" data-log="EPI ETT" class="t-ck t-ck-crit"><span><span style="display:block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.04em; color:var(--red); margin-bottom:3px;">EPI · ETT (NO ACCESS YET)</span><b>Once</b>, while the UVC goes in: 0.05–0.1 mg/kg down the ETT = 0.5–1 mL/kg of 0.1 mg/mL — a larger volume than the IV dose above.<span class="epiettmini" style="display:block; margin-top:5px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14px; font-weight:700; color:var(--red);"></span></span></label></li>
         <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="hrcycle" data-k="03-2-3" data-log="NS BOLUS" class="t-ck t-ck-crit"><span>Blood loss or poor perfusion: <b>NS 10 mL/kg</b> over 5–10 min.<span class="nsmini" style="display:block; margin-top:5px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14px; font-weight:700; color:var(--red);"></span></span></label></li>
         <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="hrcycle" data-k="03-2-4" class="t-ck t-ck-crit"><span>At the end of every cycle: state the heart rate, SpO₂, and elapsed time aloud.</span></label></li>
       </ul>
@@ -626,7 +634,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       </div>
       <ul style="margin:0; padding:4px 14px 13px; list-style:none;">
         <li style="padding:11px 0; border-top:1px solid var(--line); display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:baseline;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; color:var(--teal); white-space:nowrap;">LMA 0</span><span><span style="display:block; font-size:15px; font-weight:700;">Under 2 kg</span><span style="display:block; margin-top:2px; font-size:13.5px; color:var(--ink2);">ETT 2.5–3.0 · blade 00–0 · depth = weight in kg + 6 cm</span></span></li>
-        <li style="padding:11px 0; border-top:1px solid var(--line); display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:baseline;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; color:var(--teal); white-space:nowrap;">LMA 0.5</span><span><span style="display:block; font-size:15px; font-weight:700;">2 kg and over</span><span style="display:block; margin-top:2px; font-size:13.5px; color:var(--ink2);">ETT 3.0–3.5 · blade 0–1 · depth = weight in kg + 6 cm</span></span></li>
+        <li style="padding:11px 0; border-top:1px solid var(--line); display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:baseline;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; color:var(--teal); white-space:nowrap;">LMA 0.5</span><span><span style="display:block; font-size:15px; font-weight:700;">2 kg and over</span><span style="display:block; margin-top:2px; font-size:13.5px; color:var(--ink2);">ETT 3.5 (≥3 kg: 3.5–4.0) · blade 0–1 · depth = weight in kg + 6 cm</span></span></li>
         <li style="padding:11px 0; border-top:1px solid var(--line); font-size:13.5px; line-height:1.3; color:var(--ink2);">Seat the cuff, confirm chest rise and ETCO₂. An LMA beats a failed intubation — reach for it early.</li>
         <li style="padding:11px 0 2px; border-top:1px solid var(--line);"><button type="button" id="lmadone" data-logevent="LMA PLACED" data-logcard="03" style="width:100%; min-height:52px; background:var(--teal); color:var(--on-sev); border:2px solid var(--teal); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">LMA PLACED — LOG IT</button></li>
       </ul>
@@ -690,6 +698,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     <div style="display:flex; align-items:center; gap:8px; flex:none;">
       <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.06em; color:var(--ink); white-space:nowrap;">WEIGHT</span>
       <input type="number" id="babyweight-c04" class="wt-sync" inputmode="decimal" step="0.1" min="0" placeholder="kg" style="width:78px; min-height:44px; padding:4px 8px; border:2px solid var(--gray); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px;">
+      <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; color:var(--ink2); white-space:nowrap;">kg or g</span>
     </div>
     <div style="display:flex; align-items:center; gap:8px; flex:none;">
       <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.06em; color:var(--ink); white-space:nowrap;">OR WKS GESTATION</span>
@@ -2942,20 +2951,69 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   var WK='lrh-ob-weight', GK='lrh-ob-ga';
   function boot(){
     function num(k){ var v=parseFloat(localStorage.getItem(k)||''); return isNaN(v)?null:v; }
+    /* Birth weight is charted and SPOKEN in grams; this input is kilograms.
+       normW() reconciles the two instead of trusting the raw number
+       (weight-routing audit: "3500" typed at a delivery meant grams, and the
+       old w>0-only check rendered 70 mg of epinephrine as a code dose):
+       - >=300       -> unambiguously grams (no newborn is 300 kg; no dosable
+                        birth weight is under 300 g). Convert, and echo
+                        "3500 g = 3.5 kg" everywhere the weight is shown.
+       - 6.5 to <300 -> can't be either unit (macrosomia tops out ~6 kg):
+                        HARD STOP, no doses. Older infant/child -> Peds tool.
+       - <0.2        -> below a dosable birth weight: hard stop.
+       Display format and behavior chosen by Lon 2026-08-12. */
+    function normW(raw){
+      if(raw===null||isNaN(raw)||raw<=0) return { kg:null, err:null };
+      if(raw>=300){
+        var kg=Math.round(raw)/1000;
+        if(kg>6.5) return { kg:null, err:'CHECK WEIGHT — '+raw+' g = '+kg+' kg is beyond a plausible birth weight.' };
+        return { kg:kg, grams:Math.round(raw), err:null };
+      }
+      if(raw>6.5) return { kg:null, err:'CHECK WEIGHT — '+raw+' is not a plausible birth weight in kg or grams. Enter kg (e.g. 3.5) or grams (e.g. 3500). Older infant/child &rarr; use the <a href="../peds/?from=ob" style="color:inherit; font-weight:700;">Peds tool</a>.' };
+      if(raw<0.2) return { kg:null, err:'CHECK WEIGHT — '+raw+' kg is below a plausible birth weight. Grams? Enter e.g. 650 for 650 g.' };
+      return { kg:raw, err:null };
+    }
     function bW(w){ return w<1?0:(w<2?1:(w<3?2:3)); }
     function bG(g){ return g<28?0:(g<34?1:(g<38?2:3)); }
+    /* GA-expected weight by GA band (kg): rough band midpoints, used for the
+       weight-vs-dates plausibility check and as the GA-only reference weight. */
+    var GA_EXP=[0.8,1.5,2.5,3.5];
     function calc(){
-      var w=num(WK), g=num(GK), haveW=w!=null&&w>0, haveG=g!=null&&g>0;
-      if(!haveW&&!haveG) return null;
-      var band=haveW?bW(w):bG(g), conflict=haveW&&haveG&&bW(w)!==bG(g);
-      var lmaOK=haveW?w>=2:g>=34, refW=haveW?w:[0.8,1.5,2.5,3.5][band];
-      return { w:w, g:g, haveW:haveW, haveG:haveG, band:band, conflict:conflict, lmaOK:lmaOK,
+      var wn=normW(num(WK)), w=wn.kg, gRaw=num(GK), g=gRaw, gErr=null;
+      /* min/max on the GA inputs are decorative (no form, so constraint
+         validation never runs) — enforce 20–44 here, visibly. 9 (months) or
+         280 (days) used to be accepted as weeks. */
+      if(gRaw!==null && (gRaw<20||gRaw>44)){ g=null; gErr='CHECK WEEKS GESTATION — expected 20–44 wk ('+gRaw+' entered — months or days?).'; }
+      var haveW=w!==null&&w>0, haveG=g!==null&&g>0;
+      if(!haveW&&!haveG){
+        if(wn.err||gErr) return { hardstop:(wn.err&&gErr)?(wn.err+'<br>'+gErr):(wn.err||gErr) };
+        return null;
+      }
+      var band=haveW?bW(w):bG(g);
+      /* Weight-vs-dates check: RATIO against the GA-expected weight, not band
+         equality — the old band comparison red-flagged normal term babies
+         (3.2 kg at 37 wk -> bands 3 vs 2) while staying silent on real
+         errors. Warn only when the entered weight is <0.6x or >1.6x the
+         expected weight for the dates. */
+      var conflict=false;
+      if(haveW&&haveG){ var expW=GA_EXP[bG(g)]; conflict=(w<0.6*expW || w>1.6*expW); }
+      var lmaOK=haveW?w>=2:g>=34;
+      return { w:w, g:g, grams:wn.grams||null, haveW:haveW, haveG:haveG, band:band, conflict:conflict, lmaOK:lmaOK,
+        err:wn.err||gErr||null,
         ETT:['2.5','3.0','3.5','3.5–4.0'][band],
         blade:['00','0','0–1','1'][band],
         depth: haveW ? ((Math.round((6+w)*10)/10)+' cm') : ['~6 cm','~7 cm','~8 cm','~9 cm'][band],
         LMA: lmaOK ? '0.5' : '0',   /* LRH stocks infant LMA 0 and 0.5 (drawer 1) — no size 1 */
-        UVC: refW<1.5 ? '3.5 Fr' : '5 Fr',
-        epi: haveW ? { mg:+(0.02*w).toFixed(3), ml:+(0.2*w).toFixed(2) } : null };
+        /* UVC: 5 Fr >=1.5 kg, 3.5 Fr <1.5 kg (card 04's own header rule). The
+           GA-only path goes by band: <34 wk -> 3.5 Fr — the old strict
+           refW<1.5 handed exactly the 28–33 wk babies a 5 Fr
+           (weight-routing audit). */
+        UVC: haveW ? (w<1.5?'3.5 Fr':'5 Fr') : (band<2?'3.5 Fr':'5 Fr'),
+        epi: haveW ? { mg:+(0.02*w).toFixed(3), ml:+(0.2*w).toFixed(2) } : null,
+        /* ETT epinephrine (no access yet, ONCE): 0.05–0.1 mg/kg = 0.5–1 mL/kg
+           of 0.1 mg/mL — computed separately so the larger ETT volume can
+           never be read off the IV figure (weight-routing audit). */
+        epiEtt: haveW ? { mgLo:+(0.05*w).toFixed(3), mgHi:+(0.1*w).toFixed(2), mlLo:+(0.5*w).toFixed(1), mlHi:+(1*w).toFixed(1) } : null };
     }
     function tile(l,b,s){ return '<div style="background:#fffefb; border:1px solid #cfe0e2; padding:7px 9px;"><div style="font-family:ui-monospace,Menlo,monospace; font-size:10px; letter-spacing:0.06em; color:#0e7c86; font-weight:700;">'+l+'</div><div style="font-size:18px; font-weight:800; color:#16324f; line-height:1.12;">'+b+'</div>'+(s?'<div style="font-size:11px; color:#5a6a78; margin-top:1px;">'+s+'</div>':'')+'</div>'; }
     var SVG='<svg viewBox="0 0 262 84" style="width:100%; max-width:262px; height:auto; display:block;" xmlns="http://www.w3.org/2000/svg">'
@@ -2970,12 +3028,20 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
       +'<rect x="158" y="33" width="46" height="10" fill="#bfe0e3"/>'
       +'<line x1="226" y1="38" x2="250" y2="38" stroke="#5a6a78" stroke-width="2"/>'
       +'<text x="182" y="70" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="9" font-weight="700" fill="#0e7c86">CODE-CART 0.1 mg/mL</text></svg>';
-    function html(c){
-      if(!c){ return '<div style="border:2px dashed #b7c7ca; background:#f2f8f9; padding:11px 12px; font-size:13.5px; color:#16324f;">Enter <b>weight</b> or <b>weeks gestation</b> above for ETT / LMA / UVC / blade sizes and the code-dose epi.</div>'; }
-      var basis=c.haveW?('weight '+c.w+' kg'+(c.haveG?(' · '+c.g+' wk'):'')):(c.g+' wk (no weight)');
-      var warn=c.conflict?'<div style="margin:0 10px 6px; padding:6px 9px; background:#fbeaec; border:1px solid #9b1c2e; color:#9b1c2e; font-size:12px; font-weight:700;">&#9888; WEIGHT AND DATES DISAGREE — USING WEIGHT</div>':'';
+    function html(c, multi){
+      if(!c){ return '<div style="border:2px dashed #b7c7ca; background:#f2f8f9; padding:11px 12px; font-size:13.5px; color:#16324f;">Enter <b>weight</b> (kg — or grams, e.g. 3500) or <b>weeks gestation</b> above for ETT / LMA / UVC / blade sizes and the code-dose epi.</div>'; }
+      if(c.hardstop){ return '<div style="border:2px solid #9b1c2e; background:#fbeaec; padding:11px 12px; font-size:13.5px; font-weight:700; color:#9b1c2e;">&#9888; '+c.hardstop+'<br><span style="font-weight:400; color:#16324f;">No sizes or doses are calculated from this entry.</span></div>'; }
+      var basis=c.haveW
+        ? ((c.grams?(c.grams+' g = <b>'+c.w+' kg</b>'):('weight '+c.w+' kg'))+(c.haveG?(' · '+c.g+' wk'):''))
+        : (c.g+' wk (no weight)');
+      var warn='';
+      if(c.err) warn+='<div style="margin:0 10px 6px; padding:6px 9px; background:#fbeaec; border:1px solid #9b1c2e; color:#9b1c2e; font-size:12px; font-weight:700;">&#9888; '+c.err+'</div>';
+      if(c.conflict) warn+='<div style="margin:0 10px 6px; padding:6px 9px; background:#fbeaec; border:1px solid #9b1c2e; color:#9b1c2e; font-size:12px; font-weight:700;">&#9888; WEIGHT AND DATES DISAGREE (&gt;&#177;60% of expected for '+c.g+' wk) — USING WEIGHT. Grams/kg mix-up? Wrong dates?</div>';
+      if(multi) warn+='<div style="margin:0 10px 6px; padding:6px 9px; background:#fdf3cf; border:1px solid #8a6d1f; color:#6b5410; font-size:12px; font-weight:700;">&#9888; MULTIPLE BABIES — this is ONE shared weight field and it drives every card. Re-enter it per baby, out loud.</div>';
       var epiLine=c.epi
-        ? '<div style="margin-top:3px; font-size:15px; color:#16324f;"><b>'+c.epi.mg+' mg</b> = <b>'+c.epi.ml+' mL</b> of 0.1 mg/mL (1:10,000) IV/UVC · 0.02 mg/kg</div>'
+        ? '<div style="margin-top:3px; font-size:15px; color:#16324f;"><b>'+c.epi.mg+' mg</b> = <b>'+c.epi.ml+' mL</b> of 0.1 mg/mL (1:10,000) IV/UVC · 0.02 mg/kg'
+          +(c.epi.ml<0.1?'<span style="display:block; font-size:12px; color:#9b1c2e; font-weight:700;">Volume under 0.1 mL — draw up in a 1 mL syringe; see the dilution note below.</span>':'')
+          +'</div>'
         : '<div style="margin-top:3px; font-size:13.5px; color:#16324f;">Enter <b>weight</b> for the mL dose (0.02 mg/kg IV).</div>';
       return '<div style="border:2px solid #0e7c86; background:#f2f8f9;">'
         +'<div style="background:#0e7c86; color:#fffefb; padding:8px 12px; font-family:ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.09em;">EQUIPMENT &amp; CODE-DOSE · '+basis+'</div>'
@@ -2996,12 +3062,27 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
       +'</div>';
     }
     function render(){
-      var c=calc(), h=html(c), i;
+      var c=calc(), i;
+      /* Twin/triplet chip active + a weight in play: the shared weight field
+         needs saying out loud (weight-routing audit — one scalar, N babies). */
+      var mc=document.getElementById('multicue');
+      var multi=!!(mc && mc.offsetParent!==null && c && c.haveW);
+      var h=html(c, multi);
       var els=document.querySelectorAll('.eqpanel'); for(i=0;i<els.length;i++){ els[i].innerHTML=h; }
-      var et=(c&&c.epi)?('→ this baby: '+c.epi.mg+' mg = '+c.epi.ml+' mL'):'→ enter weight for the mL dose';
+      var et=(c&&c.epi)?('→ this baby IV/UVC: '+c.epi.mg+' mg = '+c.epi.ml+' mL'):'→ enter weight for the mL dose';
       var epis=document.querySelectorAll('.epimini'); for(i=0;i<epis.length;i++){ epis[i].textContent=et; }
+      var ett=(c&&c.epiEtt)?('→ this baby ETT (once): '+c.epiEtt.mgLo+'–'+c.epiEtt.mgHi+' mg = '+c.epiEtt.mlLo+'–'+c.epiEtt.mlHi+' mL'):'→ enter weight for the mL dose';
+      var etts=document.querySelectorAll('.epiettmini'); for(i=0;i<etts.length;i++){ etts[i].textContent=ett; }
       var nt=(c&&c.haveW)?('→ this baby: '+Math.round(10*c.w)+' mL'):'→ enter weight for the mL dose';
       var nss=document.querySelectorAll('.nsmini'); for(i=0;i<nss.length;i++){ nss[i].textContent=nt; }
+      /* Card 02's entry-point echo — the weight box there used to drive a
+         panel that only exists on cards 03/04, so a grams entry at the moment
+         of birth got zero feedback where it was typed. */
+      var echo='';
+      if(c&&c.hardstop) echo='⚠ '+c.hardstop.replace(/<[^>]*>/g,' ');
+      else if(c&&c.haveW) echo='= '+(c.grams?(c.grams+' g = '+c.w+' kg'):(c.w+' kg'))+' · drives sizes + doses on cards 03/04';
+      else if(c&&c.err) echo='⚠ '+c.err.replace(/<[^>]*>/g,' ');
+      var ecs=document.querySelectorAll('.wtecho'); for(i=0;i<ecs.length;i++){ ecs[i].textContent=echo; ecs[i].style.display=echo?'block':'none'; }
     }
     /* WS-audit: weight/gestation can now be entered on card 02 (birth banner /
        PREPARE) OR directly on cards 03/04 via the .wt-sync/.ga-sync quick-entry
@@ -3020,6 +3101,11 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
       return els;
     }
     var wEls=wireSync('wt-sync', WK), gEls=wireSync('ga-sync', GK);
+    /* The twin/triplet warning in html() reads the Multiple chip's state, so a
+       chip toggle needs a repaint too (chip handlers run first; defer a tick). */
+    Array.prototype.forEach.call(document.querySelectorAll('.mchip[data-g="babies"]'), function(b){
+      b.addEventListener('click', function(){ setTimeout(render,0); });
+    });
     var rb=document.getElementById('resetbtn'); if(rb) rb.addEventListener('click', function(){ try{ localStorage.removeItem(WK); localStorage.removeItem(GK); }catch(e){} Array.prototype.forEach.call(wEls, function(el){ el.value=''; }); Array.prototype.forEach.call(gEls, function(el){ el.value=''; }); render(); });
     render();
   }

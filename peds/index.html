@@ -258,6 +258,20 @@ catch(e){ document.body.dataset.theme='dark'; }
   <span id="wtzone"></span>
 </div>
 </div>
+<!-- NRP off-ramp (WS: weight-routing audit): NRP is for the NEWLY BORN
+     (transition period), so a sub-3 kg weight or an age under 1 month asks the
+     question loudly instead of silently serving PALS math — and instead of a
+     silent reroute, because an ex-preemie can legitimately weigh <3 kg and
+     belong in PALS; dismissing keeps every dose on this page live.
+     Threshold: 3 kg = the Broselow-Luten floor this page already enforces for
+     its zone strip. Dose divergence cited: NRP 8th ed epi 0.02 mg/kg IV/UVC
+     (range 0.01–0.03) vs PALS 0.01 mg/kg. Dismissal is per-case and
+     manual-wide (lrh-case-nrpdismiss, shared with arrest/codes) — RESET FOR
+     NEXT CASE and the stale-case sweep restore it for the next patient. -->
+<div id="nrpbanner" style="display:none; align-items:center; gap:10px; margin:0; padding:10px 14px; background:#fbeaec; border-bottom:2px solid #9b1c2e; border-left:10px solid #9b1c2e;">
+  <div style="flex:1; font-size:13.5px; line-height:1.45; color:#16324f;"><b style="color:#9b1c2e;">NEWLY BORN (first days of life)?</b> Use <a href="../ob-neonatal/?from=peds#c03" style="color:#9b1c2e; font-weight:800;">NEONATAL RESUSCITATION (NRP) &rarr;</a> — doses differ: epi <b>0.02 mg/kg</b> (NRP) vs 0.01 mg/kg (PALS). Older infant who simply weighs &lt;3 kg? Dismiss and continue with PALS.</div>
+  <button type="button" id="dismissnrp" style="min-height:44px; padding:8px 14px; background:none; border:1px solid #9b1c2e; color:#9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">DISMISS</button>
+</div>
 <div id="summarymodal" style="display:none; position:fixed; inset:0; z-index:20; background:rgba(15,28,44,0.55); padding:14px; overflow:auto;">
   <div style="max-width:560px; margin:22px auto; background:var(--card); border:2px solid var(--gray); box-shadow:0 12px 44px rgba(0,0,0,0.32);">
     <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; background:linear-gradient(135deg,#005596,#003e6e); color:var(--on-sev); border-bottom:5px solid var(--blue);">
@@ -1456,6 +1470,26 @@ var PEDS_WT = (function(){
       if(zoneEl) zoneEl.innerHTML = (wtKg!==null && !isNaN(wtKg)) ? '<span class="sw"></span>OUTSIDE BROSELOW-LUTEN RANGE (3–36 kg)' : '';
     }
   }
+  /* ---- NRP off-ramp (see #nrpbanner markup for the clinical reasoning).
+     Triggered by a committed weight under the Broselow floor (3 kg) or an age
+     typed as under 1 month; dismissal (lrh-case-nrpdismiss) is per-case,
+     shared with arrest/codes, and swept by RESET / the stale-case guard. */
+  var nrpEl=document.getElementById('nrpbanner'), nrpBtn=document.getElementById('dismissnrp');
+  function nrpDismissed(){ try{ return localStorage.getItem('lrh-case-nrpdismiss')==='1'; }catch(e){ return false; } }
+  function ageUnderOneMonth(){
+    if(!ageEl || ageEl.value==='') return false;
+    var v=parseFloat(ageEl.value); if(isNaN(v)||v<0) return false;
+    var u=unitEl?unitEl.value:'yr';
+    return (u==='mo'?v:v*12) < 1;
+  }
+  function paintNrp(){
+    if(!nrpEl) return;
+    var show = !nrpDismissed() && ((wtKg!==null && !isNaN(wtKg) && wtKg<3) || ageUnderOneMonth());
+    nrpEl.style.display = show ? 'flex' : 'none';
+  }
+  if(nrpBtn) nrpBtn.addEventListener('click', function(){ try{ localStorage.setItem('lrh-case-nrpdismiss','1'); }catch(e){} paintNrp(); });
+  if(ageEl) ageEl.addEventListener('input', paintNrp);
+  if(unitEl) unitEl.addEventListener('change', paintNrp);
   /* WS10.1 — lrh-case-wtms records when wtKg was last actually CHANGED, not every save()
      call. Compare against the value already committed to storage (not a local var) so a
      save() triggered by something that didn't actually change the number — there isn't
@@ -1519,6 +1553,7 @@ var PEDS_WT = (function(){
   }
   function paintDisplay(){
     paintZone();
+    paintNrp();
     if(!dispEl){ paintStale(); return; }
     if(wtKg===null || isNaN(wtKg)){ dispEl.textContent='WEIGHT NOT SET'; dispEl.style.color='#f7d97a'; paintStale(); return; }
     dispEl.textContent = fmt(wtKg)+' kg'+(src==='estimated' ? ' (age-estimate)' : ' (measured)');

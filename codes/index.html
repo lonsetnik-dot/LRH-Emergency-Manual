@@ -289,7 +289,21 @@ catch(e){ document.body.dataset.theme='dark'; }
   <select id="wtageunit"><option value="mo">months</option><option value="yr" selected>years</option></select>
   <button type="button" id="wtestimate">ESTIMATE KG FROM AGE</button>
   <span id="wtdisplay">no weight entered · per-kg doses hidden</span>
+  <span id="wtnotice" style="display:none; flex-basis:100%; font-size:12px; font-weight:700; letter-spacing:0.04em; color:#f2b84b;"></span>
 </div>
+</div>
+<!-- NRP off-ramp (weight-routing audit): NRP is for the NEWLY BORN (transition
+     period), so a sub-3 kg weight or an age under 1 month asks the question
+     loudly instead of leaving a newborn on adult cards — and instead of a
+     silent reroute, because an ex-preemie can legitimately weigh <3 kg and
+     belong in PALS/peds. Threshold: 3 kg = the Broselow-Luten floor
+     (SITE.nrp). Dose divergence cited: NRP 8th ed epi 0.02 mg/kg IV/UVC vs
+     PALS 0.01 mg/kg. Dismissal is per-case and manual-wide
+     (lrh-case-nrpdismiss, shared with peds/arrest) — RESET and the stale-case
+     sweep restore it for the next patient. -->
+<div id="nrpbanner" style="display:none; align-items:center; gap:10px; margin:0; padding:10px 14px; background:#fbeaec; border-bottom:2px solid #9b1c2e; border-left:10px solid #9b1c2e;">
+  <div style="flex:1; font-size:13.5px; line-height:1.45; color:#16324f;"><b style="color:#9b1c2e;">NEWLY BORN (first days of life)?</b> Use <a href="../ob-neonatal/?from=codes#c03" style="color:#9b1c2e; font-weight:800;">NEONATAL RESUSCITATION (NRP) &rarr;</a> — doses differ: epi <b>0.02 mg/kg</b> (NRP) vs 0.01 mg/kg (PALS). Older infant who simply weighs &lt;3 kg? Dismiss — and use the <a href="../peds/?from=codes" style="color:#9b1c2e; font-weight:800;">Peds tool</a>, not these adult cards.</div>
+  <button type="button" id="dismissnrp" style="min-height:44px; padding:8px 14px; background:none; border:1px solid #9b1c2e; color:#9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">DISMISS</button>
 </div>
 <div id="summarymodal" style="display:none; position:fixed; inset:0; z-index:20; background:rgba(15,28,44,0.55); padding:14px; overflow:auto;">
   <div style="max-width:560px; margin:22px auto; background:#fffefb; border:2px solid #16324f; box-shadow:0 12px 44px rgba(0,0,0,0.32);">
@@ -445,7 +459,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   </article>
 
   <!-- ============ CARD 03 · SYMPTOMATIC BRADYCARDIA ============ -->
-  <article id="c03" data-audience="adult" data-peds-alt="peds#p16">
+  <article id="c03" data-audience="adult" data-peds-alt="codes#c01">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:#16324f; font-size:16px; margin-right:8px;">03</span>Symptomatic Bradycardia</h2>
@@ -583,7 +597,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <summary style="background:#9b1c2e; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">COMPLICATIONS — NEUROLOGIC DECLINE AFTER TNK</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="04-15" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Any neurologic decline post-TNK → <b>STAT repeat head CT</b> and send ICH labs immediately.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="04-16" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Symptomatic ICH:</b> labs — CBC, PT, PTT, fibrinogen, type &amp; screen. <b>Cryoprecipitate 10 units IV over 10–30 min</b>, repeat to a fibrinogen goal of 150–200 mg/dL. <b>TXA 10–15 mg/kg IV (<span class="wdose" data-perkg="10" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="15" data-unit="mg" data-decimals="0">enter weight ↑</span>) over 10–20 min.</b> Manage BP, transfuse as needed, and call neurosurgery.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="04-16" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Symptomatic ICH:</b> labs — CBC, PT, PTT, fibrinogen, type &amp; screen. <b>Cryoprecipitate 10 units IV over 10–30 min</b>, repeat to a fibrinogen goal of 150–200 mg/dL. <b>TXA 10–15 mg/kg IV (<span class="wdose" data-perkg="10" data-max="1000" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="15" data-max="1000" data-unit="mg" data-decimals="0">enter weight ↑</span>; max 1 g — CRASH-3 regimen) over 10–20 min.</b> Manage BP, transfuse as needed, and call neurosurgery.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="04-17" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>TNK-associated orolingual angioedema:</b> Anaphylaxis box to bedside. Consider intubation early if edema is progressing rapidly (within 30 min) and involves the larynx, palate, floor of mouth, or oropharynx — don't wait for severe stridor. <b>Methylprednisolone 125 mg IV, diphenhydramine 50 mg IV, famotidine 20 mg IV.</b> Consider <b>epinephrine 0.1% 0.3 mL SC</b> and/or <b>racemic epinephrine 0.5 mL by nebulizer.</b></span></label></li>
         </ul>
       </details>
@@ -724,8 +738,8 @@ catch(e){ document.body.dataset.theme='dark'; }
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">RSI DRUGS — TYPICAL RANGES</summary>
         <div style="margin:11px 12px 0; border:2px solid #8a6d1f; background:#fdf3cf; color:#6b5410; padding:11px 14px; font-size:13px; line-height:1.4;">LRH's Adult Airway Guide leaves the specific induction agent, paralytic, and push-dose-pressor recipe to the intubating clinician's judgment/pharmacy stock — it doesn't name one combination. Ranges below are standard EM references, not an LRH-specific order set; confirm your preferred combo with pharmacy before printing a fixed choice.</div>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-10" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Induction:</b> etomidate 0.3 mg/kg (<span class="wdose" data-perkg="0.3" data-unit="mg" data-decimals="0">enter weight ↑</span>), or ketamine 1–2 mg/kg (<span class="wdose" data-perkg="1" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="2" data-unit="mg" data-decimals="0">enter weight ↑</span>), or propofol 1–2 mg/kg (<span class="wdose" data-perkg="1" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="2" data-unit="mg" data-decimals="0">enter weight ↑</span>) — reduce/avoid in shock.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-11" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Paralytic:</b> succinylcholine 1–1.5 mg/kg (<span class="wdose" data-perkg="1" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="1.5" data-unit="mg" data-decimals="0">enter weight ↑</span>), or rocuronium 1–1.2 mg/kg (<span class="wdose" data-perkg="1" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="1.2" data-unit="mg" data-decimals="0">enter weight ↑</span>).</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-10" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Induction:</b> etomidate 0.3 mg/kg (<span class="wdose" data-perkg="0.3" data-max="40" data-unit="mg" data-decimals="0">enter weight ↑</span>; max 40 mg), or ketamine 1–2 mg/kg (<span class="wdose" data-perkg="1" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="2" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>; max 200 mg), or propofol 1–2 mg/kg (<span class="wdose" data-perkg="1" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="2" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>; max 200 mg) — reduce/avoid in shock. Caps are display ceilings for extreme weights — verify locally.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-11" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Paralytic:</b> succinylcholine 1–1.5 mg/kg (<span class="wdose" data-perkg="1" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="1.5" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>; max 200 mg), or rocuronium 1–1.2 mg/kg (<span class="wdose" data-perkg="1" data-max="120" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="1.2" data-max="120" data-unit="mg" data-decimals="0">enter weight ↑</span>; max 120 mg).</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-12" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Post-intubation hypotension:</b> have a push-dose pressor ready (per your institutional recipe/concentration) before you push induction meds, especially in a shocked or critically ill patient.</span></label></li>
         </ul>
       </details>
@@ -856,7 +870,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">IF NOT RESPONDING TO IM EPI</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="08-1" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>IV fluids:</b> 20 mL/kg crystalloid bolus (<span class="wdose" data-perkg="20" data-unit="mL" data-decimals="0">enter weight ↑</span>) for hypotension — roughly 1–2 L for an average adult — repeat as needed.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="08-1" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>IV fluids:</b> 20 mL/kg crystalloid bolus (<span class="wdose" data-perkg="20" data-max="2000" data-unit="mL" data-decimals="0">enter weight ↑</span>; max 2 L/bolus) for hypotension — roughly 1–2 L for an average adult — repeat as needed.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="08-2" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Refractory shock:</b> IV epinephrine infusion, low-dose, by experienced personnel with continuous monitoring — confirm your pharmacy's approved concentration/rate before mixing (~2–10 mcg/min is a commonly cited EM starting range, not a fixed guideline number).</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="08-3" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>On a beta-blocker and not responding to epi?</b> Glucagon 1–5 mg IV slow push (watch for vomiting/aspiration).</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="08-4" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Positioning:</b> supine with legs elevated if tolerated; sitting if respiratory distress predominates; left-lateral if pregnant.</span></label></li>
@@ -962,13 +976,13 @@ catch(e){ document.body.dataset.theme='dark'; }
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">DABIGATRAN (direct thrombin inhibitor)</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="10-1" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Idarucizumab (Praxbind) 5 g IV</b> = two 2.5 g/50 mL vials given consecutively.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="10-2" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>If unavailable: PCC/aPCC 50 units/kg (max 4,000 units)</b> — pharmacy-guided.</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="10-2" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>If unavailable: PCC/aPCC 50 units/kg (<span class="wdose" data-perkg="50" data-max="4000" data-unit="units" data-decimals="0">enter weight ↑</span>; max 4,000 units)</b> — pharmacy-guided.</span></label></li>
         </ul>
       </details>
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">FACTOR Xa INHIBITORS (apixaban, rivaroxaban, edoxaban)</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="10-3" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>4F-PCC 50 units/kg</b> — pharmacy-guided; no INR target to titrate to (unlike warfarin).</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="10-3" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>4F-PCC 50 units/kg (<span class="wdose" data-perkg="50" data-max="5000" data-unit="units" data-decimals="0">enter weight ↑</span>; dosing weight capped at 100 kg → max 5,000 units)</b> — pharmacy-guided; no INR target to titrate to (unlike warfarin).</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="10-4" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span>Andexanet alfa is no longer commercially available in the US as of Dec 2025 (see warning above) — do not plan around it unless pharmacy confirms institutional stock.</span></label></li>
         </ul>
       </details>
@@ -982,7 +996,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <details open style="border:2px solid #16324f;">
         <summary style="background:#16324f; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">WARFARIN (VKA)</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="10-7" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>4F-PCC</b> (Kcentra), weight- and INR-based: INR 2–&lt;4 → 25 units/kg; INR 4–6 → 35 units/kg; INR &gt;6 → 50 units/kg (dosing weight capped at 100 kg).</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="10-7" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>4F-PCC</b> (Kcentra), weight- and INR-based: INR 2–&lt;4 → 25 units/kg (<span class="wdose" data-perkg="25" data-max="2500" data-unit="units" data-decimals="0">enter weight ↑</span>); INR 4–6 → 35 units/kg (<span class="wdose" data-perkg="35" data-max="3500" data-unit="units" data-decimals="0">enter weight ↑</span>); INR &gt;6 → 50 units/kg (<span class="wdose" data-perkg="50" data-max="5000" data-unit="units" data-decimals="0">enter weight ↑</span>). Dosing weight capped at 100 kg (Kcentra label) — the caps above implement it.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="10-8" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Plus vitamin K</b> 5–10 mg IV, slow infusion over 15–30 min (rapid push risks an anaphylactoid reaction). Vitamin K alone takes 4–6h — always pair with 4F-PCC for emergent reversal.</span></label></li>
         </ul>
       </details>
@@ -1418,7 +1432,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <summary style="background:#9b1c2e; color:#fffefb; padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">INTUBATION — INDICATIONS &amp; APPROACH</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="15-13" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Indications:</b> persistent hypoxia/hypercapnia despite BiPAP; altered mental status or fatigue; severe acidosis (pH &lt;7.25) or silent chest.</span></label></li>
-          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="15-14" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Ketamine is the preferred induction agent</b> — bronchodilator effect. 1–2 mg/kg IV bolus (<span class="wdose" data-perkg="1" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="2" data-unit="mg" data-decimals="0">enter weight ↑</span>) for induction; 0.5 mg/kg/hr drip if post-intubation bronchospasm persists (<a href="#c06">see card 06</a> for the full airway checklist).</span></label></li>
+          <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="15-14" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Ketamine is the preferred induction agent</b> — bronchodilator effect. 1–2 mg/kg IV bolus (<span class="wdose" data-perkg="1" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="2" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>; max 200 mg) for induction; 0.5 mg/kg/hr drip if post-intubation bronchospasm persists (<a href="#c06">see card 06</a> for the full airway checklist).</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="15-15" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Avoid</b> midazolam (can worsen hypercapnia) and propofol alone (can cause hypotension) as the primary sedative here.</span></label></li>
           <li style="border-top:1px solid #e7eaef;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="15-16" style="width:20px; height:20px; margin:2px 0 0; accent-color:#16324f; flex:none;"><span><b>Watch for breath-stacking/auto-PEEP once vented</b> — if the patient suddenly decompensates on the vent, <a href="#c14">see card 14 (DOPE)</a>.</span></label></li>
         </ul>
@@ -2639,30 +2653,11 @@ var SITE = {
   epi: { dose: "1 mg", intervalMin: "3–5", suggestSec: 180 },
   amio: { dose1: "300 mg", dose2: "150 mg", maxTotal: "2.2 g" },
   lido: { dose1: "1–1.5 mg/kg", dose2: "0.5–0.75 mg/kg", maxTotal: "3 mg/kg" },
-  /* Pediatric/PALS numbers for the merged card 01 arrest engine (WS-arrest-merge) — ported
-     verbatim from the retired peds/index.html card p01, not re-derived. The perkg figures
-     here are the single source of truth for the JS engine's pedsJoules()/pedsEpiMg()/
-     pedsAmioMg() calculators; the .wdose spans in card 01's PALS reference table duplicate
-     these same literal numbers in their data-perkg attributes (same convention already used
-     by the adult lidocaine row above — this file has no template step, so the two copies
-     must be kept in sync by hand if either ever changes). Sources: AHA/AAP 2025 Guidelines
-     for CPR and ECC Part 8 (PALS)/Part 6 (Pediatric BLS), Circulation 2025
-     (CIR.0000000000001368/CIR.0000000000001370); Topjian AA et al., 2020 AHA Guidelines
-     Part 4, Circulation 2020;142(16_suppl_2):S469–S523 (drug/energy numbers unchanged
-     2020→2025). */
-  peds: {
-    defibPerKg1: 2, defibPerKgN: 4, defibMaxPerKg: 10, /* J/kg: 1st shock, 2nd+ shocks (floor — may increase per clinician judgment), and the per-kg cap before falling back to the adult max, whichever is lower */
-    epiPerKg: 0.01, epiMaxMg: 1, epiConc: 0.1, /* mg/kg IV/IO, 1:10,000 = 0.1 mg/mL, q3–5min */
-    amioPerKgDose1: 5, amioMaxMgDose: 300, amioMaxDoses: 3, /* mg/kg, cap 300 mg/dose, may repeat x2 (max 3 doses / ≤15 mg/kg) */
-    lidoPerKg1: 1, lidoPerKg2: 0.5 /* mg/kg first dose, then repeat 0.5 mg/kg if needed */
-  },
-  /* WS-arrest-merge — the trigger for cards 01/02 to switch into PALS/pediatric mode: weight
-     below maxKg OR age at/below maxAgeYrs. This is an operational UI threshold the user chose
-     directly (not an AHA-cited clinical cutoff) — see the mode banner for the "loud and
-     reversible" adult-override this trigger requires, since weight alone can't reliably tell
-     a small child from a small/frail adult. TODO(maintainer): confirm these two numbers still
-     match your department's intent before this ships. */
-  arrestTrigger: { maxKg: 50, maxAgeYrs: 12 },
+  /* NOTE (weight-routing audit): the merged card-01 arrest engine and its SITE.peds /
+     SITE.arrestTrigger config moved to /arrest/ (cards 01/02 here redirect there). The
+     dead copies of that config, and the never-defined ARRESTMODE/__codeCPR paint hooks
+     that claimed to consume it, were removed from this file — /arrest/index.html is the
+     single home for PALS arrest numbers now. */
   /* STEMI transfer-center contacts — LRH has no on-site cath lab, so a STEMI patient is
      transferred out. Numbers are each hospital's own transfer-center line (not a direct
      cardiology/cath-lab line — the transfer-center RN routes the call). Verify locally;
@@ -2672,11 +2667,19 @@ var SITE = {
     { key:'concord', label:'Concord Hospital Transfer Center',           tel:'+18009929399', phoneDisplay:'800-992-9399' }
   ] },
   /* Audience strip (design-review F31) — the ONE number that decides which card a shared
-     weight *suggests* switching to; it never decides which dose is shown. TODO(maintainer):
-     set thresholdKg and cite the source (e.g. the top of your pediatric weight-based-dosing
-     range / Broselow-Luten range) before this ships. Left null on purpose — the strip logic
-     below treats null as "not yet configured" and never guesses a cutoff. */
-  audience: { thresholdKg: null /* TODO(maintainer) */ }
+     weight *suggests* switching to; it never decides which dose is shown. 40 kg: top of
+     the Broselow-Luten range (36 kg) plus margin — below this, a weight on an ADULT card
+     gets the loud red "pediatric weight" state. Deliberately below the 50 kg arrest-mode
+     trigger used in /arrest/: that one picks an algorithm, this one flags a probably-
+     pediatric weight on adult dosing cards, where 50 would red-flag many small adults
+     (alarm fatigue). Chosen by Lon 2026-08-12 (weight-routing audit). */
+  audience: { thresholdKg: 40 },
+  /* NRP off-ramp trigger (weight-routing audit): weight below the Broselow-Luten floor
+     (3 kg) or age under 1 month prompts the dismissible "newly born? -> NRP" banner under
+     the weight bar. A question, not a reroute — NRP applies to the newly born, not to a
+     weight; an ex-preemie <3 kg can belong in PALS. NRP 8th ed epi 0.02 mg/kg IV/UVC
+     (range 0.01–0.03) vs PALS 0.01 mg/kg is the divergence the banner names. */
+  nrp: { maxKg: 3, maxAgeYrs: 1/12 }
 };
 /* energy for the Nth shock (n is 1-based: 1st, 2nd, 3rd...) per ZOLL's protocol */
 function zollJoules(n){ return n<=1 ? SITE.defib.shock1 : (n===2 ? SITE.defib.shock2 : SITE.defib.shock3plus); }
@@ -2687,11 +2690,7 @@ function zollJoules(n){ return n<=1 ? SITE.defib.shock1 : (n===2 ? SITE.defib.sh
     rEpiDose: SITE.epi.dose, rEpiInterval: SITE.epi.intervalMin+' min',
     rAmio1: SITE.amio.dose1, rAmio2: SITE.amio.dose2, rAmioMax: SITE.amio.maxTotal,
     rLido1: SITE.lido.dose1, rLido2: SITE.lido.dose2, rLidoMax: SITE.lido.maxTotal,
-    rRate: SITE.cpr.rateLow+'–'+SITE.cpr.rateHigh, rDepth: SITE.cpr.depthCm+' cm', rRotate: SITE.cpr.rotateMin+' min',
-    rArrestTriggerKg: SITE.arrestTrigger.maxKg+' kg', rArrestTriggerAge: SITE.arrestTrigger.maxAgeYrs+' y',
-    rPedsEpiInterval: SITE.epi.intervalMin+' min', rPedsEpiMax: SITE.peds.epiMaxMg+' mg',
-    rPedsAmioMax: SITE.peds.amioMaxMgDose+' mg/dose', rPedsAmioDoses: String(SITE.peds.amioMaxDoses),
-    rPedsDefibMaxPerKg: SITE.peds.defibMaxPerKg+' J/kg'
+    rRate: SITE.cpr.rateLow+'–'+SITE.cpr.rateHigh, rDepth: SITE.cpr.depthCm+' cm', rRotate: SITE.cpr.rotateMin+' min'
   };
   Object.keys(map).forEach(function(k){ var el=$(k); if(el) el.textContent=map[k]; });
   var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
@@ -3258,11 +3257,34 @@ var CODES_WT = (function(){
       _lastCommittedWtKg=wtKg; _lastCommittedAgeYrs=ageYrs;
       if(changed && CASESTATE.getAdultOverride()){
         CASESTATE.setAdultOverride(false);
-        if(window.ARRESTMODE) window.ARRESTMODE.paint();
-        if(window.__codeCPR && window.__codeCPR.paint) window.__codeCPR.paint();
+        /* The override lives in /arrest/'s UI, so clearing it from here used to be
+           INVISIBLE (the repaint hooks it called were never defined in this file —
+           weight-routing audit). Say what happened instead. */
+        showWtNotice('ADULT OVERRIDE (ARREST TOOL) CLEARED — WEIGHT/AGE CHANGED');
       }
     }, 800);
   }
+  /* Transient, self-clearing notice line in the weight bar — for state changes this
+     tool makes that would otherwise be invisible here (the adult-override clear). */
+  var _wtNoticeT=null;
+  function showWtNotice(msg){
+    var el=document.getElementById('wtnotice'); if(!el) return;
+    el.textContent=msg; el.style.display='block';
+    if(_wtNoticeT) clearTimeout(_wtNoticeT);
+    _wtNoticeT=setTimeout(function(){ el.style.display='none'; }, 8000);
+  }
+  /* ---- NRP off-ramp (see #nrpbanner markup + SITE.nrp for the reasoning). ---- */
+  function nrpDismissed(){ try{ return localStorage.getItem('lrh-case-nrpdismiss')==='1'; }catch(e){ return false; } }
+  function paintNrp(){
+    var el=document.getElementById('nrpbanner'); if(!el) return;
+    var show = !nrpDismissed() &&
+      ((wtKg!==null && !isNaN(wtKg) && wtKg<SITE.nrp.maxKg) || (ageYrs!==null && ageYrs<SITE.nrp.maxAgeYrs));
+    el.style.display = show ? 'flex' : 'none';
+  }
+  (function(){
+    var b=document.getElementById('dismissnrp');
+    if(b) b.addEventListener('click', function(){ try{ localStorage.setItem('lrh-case-nrpdismiss','1'); }catch(e){} paintNrp(); });
+  })();
   function fmt(n){ var r=Math.round(n*10)/10; return (r%1===0) ? String(r) : r.toFixed(1); }
   /* WS10.2 — is a clock THIS TOOL itself would show as running right now? Deliberately
      NOT CASESTATE.anyClockRunning() (cross-tool, over every clock name any tool anywhere
@@ -3329,15 +3351,11 @@ var CODES_WT = (function(){
     else { kg = (3*years) + 7; }
     return {kg: Math.round(kg*10)/10};
   }
-  /* WS-arrest-merge — recompute() now also repaints the merged arrest card's mode banner and
-     its shock/epi/amio buttons: age is one of the two trigger inputs (weight is the other,
-     already wired below), and both feed straight-weight-based PALS numbers into that engine. */
   function recompute(){
     if(window.CODESDOSE) window.CODESDOSE.recompute(wtKg);
     paint();
     if(window.AUDIENCE) window.AUDIENCE.paint();
-    if(window.ARRESTMODE) window.ARRESTMODE.paint();
-    if(window.__codeCPR && window.__codeCPR.paint) window.__codeCPR.paint();
+    paintNrp();
     scheduleOverrideCommitCheck();
   }
   if(kgEl){
@@ -3358,7 +3376,7 @@ var CODES_WT = (function(){
     if(isNaN(a) || a<0) return null;
     return u==='mo' ? Math.round((a/12)*100)/100 : a;
   }
-  function onAgeInputChanged(){ ageYrs=ageInYears(); saveAge(); if(window.ARRESTMODE) window.ARRESTMODE.paint(); if(window.__codeCPR && window.__codeCPR.paint) window.__codeCPR.paint(); scheduleOverrideCommitCheck(); }
+  function onAgeInputChanged(){ ageYrs=ageInYears(); saveAge(); paintNrp(); scheduleOverrideCommitCheck(); }
   if(ageEl){
     if(ageYrs!==null) ageEl.value=ageYrs;
     ageEl.addEventListener('input', onAgeInputChanged);
@@ -3431,7 +3449,12 @@ var CODESDOSE = (function(){
       var val=perkg*kg;
       if(max!==null&&!isNaN(max)&&val>max) val=max;
       if(round!==null&&!isNaN(round)&&round>0) val=Math.round(val/round)*round;
-      var mgText=val.toFixed(isNaN(dec)?0:dec)+(unit?(' '+unit):'');
+      /* Never print "0 mg" for a real, nonzero dose (weight-routing audit: etomidate
+         0.3 mg/kg at 1 kg rendered "0 mg" with data-decimals="0"). If the row's declared
+         precision rounds a positive dose to zero, raise the precision until it shows. */
+      var d=isNaN(dec)?0:dec;
+      while(val>0 && parseFloat(val.toFixed(d))===0 && d<3) d++;
+      var mgText=val.toFixed(d)+(unit?(' '+unit):'');
       if(conc!==null && !isNaN(conc) && conc>0 && unit==='mg'){
         el.innerHTML = '<span class="wdose-vol">'+fmtVol(val/conc)+' mL</span><span class="wdose-mg">('+mgText+')</span>';
       } else {
@@ -3454,11 +3477,11 @@ var CODESDOSE = (function(){
    "peds" and "any" cards render nothing — this is a safety net for a weight ending up on the
    wrong card, not a general audience label. Tapping the red state opens a two-action
    interstitial: go to the named pediatric card, or "stay — adult patient" (clears the weight).
-   TODO(maintainer): SITE.audience.thresholdKg is unset — until it is, every entered weight
-   renders as the plain confirmation state (never a guessed red warning). The per-card
-   data-audience/data-peds-alt values above are an agent-prepared proposal (per AGENTTASKS.md
-   1.2) — review and correct them; several codes cards point at peds#p16 (Peds 16 Bradycardia),
-   which doesn't exist yet (WS 6). */
+   thresholdKg is set (40 kg — see SITE.audience for the reasoning), so all three states are
+   live. Strips stay tappable in every state, and a strip whose route leaves this tool (the
+   merged arrest card) says so in its label. c03's former alt "peds#p16" (a planned Peds
+   Bradycardia card that was never built) now routes to the arrest tool, which carries the
+   PALS bradycardia cards (weight-routing audit, Lon 2026-08-12). */
 var AUDIENCE = (function(){
   var THRESH = (SITE.audience && typeof SITE.audience.thresholdKg==='number') ? SITE.audience.thresholdKg : null;
   var cards = Array.prototype.slice.call(document.querySelectorAll('article[data-audience="adult"]'));
@@ -3532,6 +3555,16 @@ var AUDIENCE = (function(){
     modal.style.display = 'flex';
   }
   function closeModal(){ if(modal) modal.style.display='none'; }
+  /* Where does this strip's pediatric route actually land? Name it honestly —
+     a strip whose alt is this tool's own merged-arrest anchor (#c01) navigates
+     the whole page out to /arrest/, which deserves saying out loud
+     (weight-routing audit). */
+  function altLabel(alt){
+    if(!alt) return 'PEDIATRIC';
+    if(alt.indexOf('#c01')>=0) return 'PEDIATRIC (OPENS ARREST TOOL)';
+    if(alt.indexOf('#p')>=0) return 'PEDS '+alt.split('#p')[1];
+    return 'PEDIATRIC';
+  }
   function paint(){
     var kg = window.CODES_WT ? window.CODES_WT.getKg() : null;
     var set = kg!==null && kg!==undefined && !isNaN(kg) && kg>0;
@@ -3539,18 +3572,22 @@ var AUDIENCE = (function(){
       s.el.onclick = null;
       if(!set){
         s.el.className = 'audiencestrip quiet';
-        s.el.textContent = 'ADULT DOSES · TAP FOR PEDIATRIC';
+        s.el.textContent = 'ADULT DOSES · TAP FOR '+altLabel(s.alt);
         s.el.onclick = function(){ location.href = altHref(s.alt || 'peds'); };
         return;
       }
-      if(THRESH===null || kg>=THRESH){
+      if(kg>=THRESH){
+        /* Confirmation state stays TAPPABLE (weight-routing audit): entering a
+           weight used to remove the pediatric route exactly when a borderline
+           weight made it most useful, while the pointer cursor kept implying
+           it worked. */
         s.el.className = 'audiencestrip quiet';
-        s.el.textContent = (Math.round(kg*10)/10)+' kg · ADULT DOSES';
+        s.el.textContent = (Math.round(kg*10)/10)+' kg · ADULT DOSES · TAP FOR '+altLabel(s.alt);
+        s.el.onclick = function(){ location.href = altHref(s.alt || 'peds'); };
         return;
       }
-      var name = s.alt && s.alt.indexOf('#p')>=0 ? (' → PEDS '+s.alt.split('#p')[1]) : '';
       s.el.className = 'audiencestrip warn';
-      s.el.textContent = '⚠ '+(Math.round(kg*10)/10)+' kg PATIENT · THIS CARD IS ADULT DOSES'+name;
+      s.el.textContent = '⚠ '+(Math.round(kg*10)/10)+' kg PATIENT · THIS CARD IS ADULT DOSES → '+altLabel(s.alt);
       s.el.onclick = function(){ openModal(s.alt, kg); };
     });
   }
@@ -3569,6 +3606,11 @@ var AUDIENCE = (function(){
   var bandRow=$('tnkbandrow'), bandCue=$('tnkbandcue');
   function bandFor(kg){
     if(kg===null||kg===undefined||isNaN(kg)||kg<=0) return null;
+    /* This banded regimen is the ADULT STEMI TNK table. Below the audience
+       threshold the "<60 kg -> 30 mg" band is not a pediatric dose — refuse
+       to highlight a band rather than hand a 10 kg patient "30 mg"
+       (weight-routing audit). */
+    if(kg<SITE.audience.thresholdKg) return 'peds';
     if(kg<60) return '30 mg (<60 kg)';
     if(kg<70) return '35 mg (60–<70 kg)';
     if(kg<80) return '40 mg (70–<80 kg)';
@@ -3580,6 +3622,7 @@ var AUDIENCE = (function(){
     var kg=window.CODES_WT?window.CODES_WT.getKg():null;
     var b=bandFor(kg);
     if(b===null){ bandCue.textContent='Enter weight above to highlight the applicable band.'; bandRow.style.background='#fbeaec'; return; }
+    if(b==='peds'){ bandCue.textContent='Weight '+(Math.round(kg*10)/10)+' kg — this band table is an ADULT STEMI regimen; pediatric STEMI dosing is not covered here. Verify with pharmacy/peds cardiology.'; bandRow.style.background='#fbeaec'; return; }
     bandCue.textContent='This patient’s band: '+b+'.';
     bandRow.style.background='#f3c6cc';
   }
