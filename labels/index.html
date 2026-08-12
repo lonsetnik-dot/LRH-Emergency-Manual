@@ -481,8 +481,14 @@ var CARTS = [
    {n:2,c:'--p2',labels:[
       {t:'Surgical / Supraglottic',tag:'CODE CART · DRAWER 2',icon:'igel',big:'SGA · CRIC KIT · SPARE TRACH',
        sub:'Cart-front face. Moved up from the deep drawer — seconds matter here and crouching costs them.',par:1},
+      /* Full stocked range, pediatric through adult (LRH stocks i-gel 1–5;
+         confirmed by Lon 2026-08-12, weight-routing audit — the label used to
+         start at size 3 / 30 kg, so the cart a resus bay pulls for an
+         unexpected child or newborn showed no size that fits them). Bands are
+         the manufacturer's own weight ranges — verify against stock. */
       {t:'iGel',tag:'SIZE BY WEIGHT',icon:'igel',big:'NO CUFF TO INFLATE',
-       sub:'Lubricate, seat, confirm with ETCO₂.',sizes:['3 · 30–60 kg','4 · 50–90 kg','5 · 90+ kg'],par:3},
+       sub:'Lubricate, seat, confirm with ETCO₂. <b>Newborn / under 2 kg → LMA 0 or 0.5 on the OB cart (drawer 1), not an i-gel.</b>',
+       sizes:['1 · 2–5 kg','1.5 · 5–12 kg','2 · 10–25 kg','2.5 · 25–35 kg','3 · 30–60 kg','4 · 50–90 kg','5 · 90+ kg'],par:3},
       {t:'Jet Ventilation',tag:'BRIDGE ONLY',icon:'jet',big:'OXYGENATE, DO NOT VENTILATE',
        sub:'CO₂ keeps climbing. Exhalation must be possible.',par:1},
       {t:'Front of Neck Access',tag:'CICO',icon:'fona',big:'1 SCALPEL · 2 BOUGIE · 3 TUBE 6.0',
@@ -499,7 +505,7 @@ var CARTS = [
       {t:'I.V. Supplies',tag:'CODE CART · DRAWER 5 · DEEP',icon:'iv',big:'CANNULAE · EXTENSION SETS · DRESSINGS',
        sub:'Cart-front face. If peripheral access fails twice, stop and go intraosseous.',par:1},
       {t:'EZ-IO',tag:'INTRAOSSEOUS ACCESS',icon:'ezio',big:'90° TO THE BONE · FLUSH 10 mL FIRST',
-       sub:'Nothing runs until it is flushed. Lidocaine first in the awake patient.',
+       sub:'Nothing runs until it is flushed. Lidocaine first in the awake patient. <b>Under 3 kg / newly born → umbilical vein catheter (OB cart), not an IO.</b>',
        sizes:['15 mm · 3–39 kg','25 mm · ≥40 kg','45 mm · humeral'],par:3},
       {t:'Miscellaneous',tag:'CODE CART · DRAWER 5 · DEEP',icon:'ppe',big:'PPE · SHARPS · DOCUMENTATION · SPARE PADS',
        sub:'Shares the deep drawer with I.V. Supplies. Two labels, one drawer, one spine colour.',par:1}]},

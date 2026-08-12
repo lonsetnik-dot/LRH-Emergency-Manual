@@ -61,6 +61,7 @@ US term first, then the common Commonwealth/international alias.
 | norepinephrine | noradrenaline | drug name |
 | acetaminophen | paracetamol | drug name — also brand "Panadol"/"Calpol" outside the US |
 | albuterol | salbutamol | drug name (USAN vs INN) |
+| succinylcholine | suxamethonium | drug name (USAN vs INN) — found and fixed in `airway/index.html` (×2) 2026-08-12; DAS is a UK guideline, but our prose is not a quotation |
 | nitroglycerin | glyceryl trinitrate (GTN) | drug name |
 | lactated Ringer's | Hartmann's solution | IV fluid |
 | color / colored | colour / coloured | spelling |

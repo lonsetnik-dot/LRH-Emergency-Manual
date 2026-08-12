@@ -1284,6 +1284,31 @@ function wire(){
 SS.loadWeight();
 if(S.kg!==null) $('wIn').value = String(S.kg);
 if(S.ageY!==null) $('aIn').value = String(S.ageY);
+/* Cross-tab / cross-tool re-sync (weight-routing audit): pick up a weight or
+   age changed in another tool/tab instead of running the whole code off the
+   value that happened to be in storage at load. Never overrides the field the
+   user is actively typing in. */
+(function(){
+  /* "Mid-edit" = focused AND showing something other than the committed value.
+     Focus alone must not block the sync — returning to a background tab
+     restores focus to the input. */
+  function midEdit(el, committed){
+    return document.activeElement===el && el && String(el.value)!==(committed===null?'':String(committed));
+  }
+  function resync(){
+    var before=S.kg, beforeAge=S.ageY;
+    if(midEdit($('wIn'), S.kg) || midEdit($('aIn'), S.ageY)) return;
+    SS.loadWeight();
+    if(S.kg!==before) $('wIn').value = (S.kg===null?'':String(S.kg));
+    if(S.ageY!==beforeAge) $('aIn').value = (S.ageY===null?'':String(S.ageY));
+    if(S.kg!==before || S.ageY!==beforeAge) paint();
+  }
+  window.addEventListener('storage', function(ev){
+    if(!ev.key || ev.key.indexOf('lrh-case-')!==0) return;
+    resync();
+  });
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) resync(); });
+})();
 SS.touchActive();
 document.addEventListener('click', SS.touchActive, true);
 wire();
