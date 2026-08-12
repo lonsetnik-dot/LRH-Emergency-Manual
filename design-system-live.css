@@ -1,0 +1,68 @@
+/* ===========================================================================
+   design-system-live.css - shared skeleton for the LRH "live-protocol" family
+   (arrest/, airway/, tca/ — full-screen cognitive aids driven by a running
+   clock, not card-based reference tools). Injected at build time wherever a
+   tool's <style> contains the marker  (slash-star) @design-system-live
+   (star-slash)  — see build.mjs and issue #73.
+
+   This is a DIFFERENT vocabulary from design-system.css (the card-tool
+   family: .hdr, .t-box-crit and friends, .lrh-row) — the two are never
+   injected into the same file. Tokens/chrome here were originally authored
+   in arrest/ (the
+   reference implementation) and copied by hand into airway/ and tca/; this
+   file is that shared subset, extracted so the three stop drifting.
+
+   Fonts are system stacks, not Google Fonts (the handoff specifies Source
+   Sans 3 + JetBrains Mono): CLAUDE.md rule 1 forbids external dependencies
+   and requires every tool to work offline from a cart. Self-host the woff2
+   files as @font-face in a tool's own <style> if the exact faces are wanted.
+
+   --accent/--accentInk are deliberately NOT fixed here — arrest/airway share
+   the same green; tca overrides both (plus adds --purple/--teal/--orange) to
+   its own orange right after the injected marker, so a traumatic arrest
+   never looks like a medical one at a glance. Every tool may still add its
+   own genuinely tool-specific classes inline (arrest's rhythm-check sheet:
+   .sheetwrap/.sheet/.rcbtn/.rcsub; tca's weight-routing rows: .wcard/.wrow/
+   .wbox/.wtext/.wlink; airway's SALAD callouts: .say/.pip).
+   =========================================================================== */
+:root{
+  --bg:#0D1420; --card:#161F2E; --card2:#1D2A3C; --ink:#EAF0F7; --ink2:#8FA0B5;
+  --line:rgba(255,255,255,.10);
+  --red:#E5484D; --gray:#5C6B7E; --blue:#4C8DDA; --green:#3DA35D; --amber:#F0B429;
+  --accent:#2FA372; --accentInk:#fff;
+  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
+  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Roboto Mono",monospace;
+}
+body[data-theme="light"]{
+  --bg:#EFF2F5; --card:#FFFFFF; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D;
+  --line:rgba(15,35,60,.13);
+  --red:#C63238; --gray:#6B7A8D; --blue:#2F6FB5; --green:#1F7F49; --amber:#B07E13;
+  --accent:#00693E;
+}
+html{-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+button,input{font-family:inherit}
+button{-webkit-appearance:none;appearance:none;touch-action:manipulation}
+.wrap{max-width:680px;margin:0 auto;padding:0 14px 40px}
+.mono{font-family:var(--mono)}
+.hdr{position:sticky;top:0;z-index:30;background:var(--bg);padding:12px 0 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+.plabel{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--accent)}
+.sec{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--ink2)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:14px}
+.btn{border:1px solid var(--line);border-radius:12px;background:var(--card2);color:var(--ink);font:800 16px var(--sans);cursor:pointer}
+.ghost{background:var(--card);border:1px solid var(--line);color:var(--ink2);font:700 11px var(--sans);letter-spacing:.08em;padding:9px 12px;border-radius:10px;cursor:pointer;min-height:38px}
+.inp{background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:9px 10px;font-size:17px;font-weight:700;text-align:center}
+.acc{margin-top:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.acch{width:100%;display:flex;justify-content:space-between;align-items:center;background:none;border:none;color:var(--ink);padding:15px 14px;font:800 14px var(--sans);letter-spacing:.06em;cursor:pointer;min-height:52px}
+.accb{padding:0 14px 14px;font-size:14.5px;line-height:1.6;border-top:1px solid var(--line)}
+.accb p{margin:10px 0}
+.chip{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700}
+.evrow{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
+/* Only overdue things move. Everything else is deliberately still — motion is a
+   signal here, not decoration, and a screen where several things animate is a
+   screen where none of them mean anything. */
+@keyframes duepulse{0%,100%{opacity:1}50%{opacity:.45}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.due{animation:duepulse 1.2s infinite}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;animation:blink 1.4s infinite}
+@media (prefers-reduced-motion: reduce){.due,.dot{animation:none}}
