@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#005596">
+<title>LRH Equipment Readiness</title>
+<meta name="apple-mobile-web-app-title" content="Equipment">
+<meta name="description" content="Where every kit and critical item lives, and how the ED scores against the NPRP pediatric equipment checklist. Beta.">
+<link rel="canonical" href="https://lrhemergencymanual.net/equipment-readiness/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="LRH Emergency Manual">
+<meta property="og:title" content="LRH Equipment Readiness (beta)">
+<meta property="og:description" content="Searchable equipment locations + NPRP readiness audit + printable cart-walk checklist.">
+<meta property="og:url" content="https://lrhemergencymanual.net/equipment-readiness/">
+<meta name="twitter:card" content="summary">
+<style>
+  html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
+  /* @design-system */
+  /* ---- Shared design language injected above (build.mjs). Only this tool's
+     own audit-table styles live below. ---- */
+  main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
+  a { color:var(--blue); }
+  a:hover { color:var(--ink); }
+  button { -webkit-appearance:none; appearance:none; border-radius:0; touch-action:manipulation; }
+  .steps { display:grid; grid-template-columns:1fr; gap:12px; align-items:start; padding:14px 14px 0; }
+  @media (min-width:760px) { .steps { grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); } }
+  /* status chips for the audit table */
+  .st{display:inline-block;font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+    font-size:10.5px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:6px;white-space:nowrap}
+  .st-ok{background:rgba(61,163,93,.18);color:var(--green);border:1px solid var(--green)}
+  .st-vf{background:var(--note-bg);color:var(--note-tx);border:1px solid var(--note-tx)}
+  .st-gap{background:rgba(229,72,77,.15);color:var(--red);border:1px solid var(--red)}
+  .invrow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:baseline;
+    padding:9px 0;font-size:14px;line-height:1.35}
+  .invrow .where{font-size:12.5px;color:var(--ink2)}
+  .invrow .par{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;color:var(--ink2);white-space:nowrap}
+  .covbar{height:7px;background:var(--card2);border-radius:4px;overflow:hidden;margin-top:6px}
+  .covbar span{display:block;height:7px;background:var(--green)}
+  #stickytop { position:sticky; top:0; z-index:30; }
+  @media print {
+    body[data-theme]{ --bg:#fff; --card:#fff; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D; --line:rgba(15,35,60,.18);
+      --accent:#00693E; --red:#C63238; --amber:#B07E13; --blue:#2F6FB5; --green:#1F7F49; --gray:#6B7A8D;
+      --purple:#6C4FA3; --teal:#1F7E7E; --orange:#B4661F; --sev-crit:#9b1c2e; --sev-caution:#8a6d1f;
+      --sev-info:#2f62a8; --on-sev:#fffefb; --note-bg:#fdf3cf; --note-tx:#6b5410; background:#fff; }
+    .hdr { display:none; }
+    details { break-inside:avoid; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>
+try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+catch(e){ document.body.dataset.theme='dark'; }
+</script>
+<div id="stickytop">
+<div class="hdr">
+  <a class="ghost" href="../?from=tool">&#9664; MANUAL</a>
+  <span class="plabel">EQUIPMENT READINESS</span>
+  <button type="button" class="ghost" onclick="window.print()">PRINT WALK</button>
+  <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
+</div>
+</div>
+
+<main id="top">
+  <div style="padding:16px 14px 6px;">
+    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:var(--ink2); font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
+    <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Equipment Readiness</h1>
+    <p style="margin:0; color:var(--ink2); font-size:14.5px;">Where everything lives, and how the department scores against national equipment standards — starting with the NPRP pediatric checklist. Locations are the local layer; the catalog and standards travel with any fork.</p>
+  </div>
+
+  <div class="t-localize">
+    &#9888; <b>DRAFT — PENDING THE CART WALK:</b> items marked VERIFY are believed present at the listed location but not yet confirmed against the physical cart. Print the cart-walk checklist, confirm each, and the audit turns real. Not a stocking system — par counts are reference minimums, expiry lives on the physical build sheets.
+  </div>
+
+  <div style="padding:8px 14px 0;">
+    <div class="lrh-filter"><span class="ico" aria-hidden="true">&#8981;</span><input type="search" id="eq" autocomplete="off" spellcheck="false" placeholder="Where is&hellip; e.g. pigtail, burr hole, UVC, iGel" aria-label="Search equipment"></div>
+    <div class="lrh-filter-empty" id="eq-empty" hidden>No match &mdash; try a kit name, a drawer, or an item like &ldquo;chest tube&rdquo;.</div>
+    <ul class="lrh-results" id="eqresults" hidden style="margin-top:0"></ul>
+  </div>
+
+  <div class="steps">
+    <details open class="t-box-info" id="npr">
+      <summary class="t-head t-head-info">NPRP READINESS — PEDIATRIC EQUIPMENT CHECKLIST</summary>
+      <div class="t-sub" id="npr-cov" style="padding-top:12px"></div>
+      <div id="npr-body" style="padding:0 12px 12px"></div>
+    </details>
+
+    <details open class="t-box-neutral" id="dir">
+      <summary class="t-head t-head-neutral">WHERE IS IT — CARTS, CABINETS &amp; KITS</summary>
+      <div id="dir-body" style="padding:4px 12px 12px"></div>
+    </details>
+
+    <details class="t-box-caution" id="walk">
+      <summary class="t-head t-head-caution">CART-WALK CHECKLIST — CONVERT EVERY &ldquo;VERIFY&rdquo;</summary>
+      <div class="t-sub" style="padding-top:12px">Print this, walk the carts, check what you confirm. Each confirmed item: delete its <span class="lrh-mono">verify:true</span> flag in <span class="lrh-mono">inventory.js</span> (or hand the marked-up printout back). Broselow bands below list the <i>standard</i> packing — differences from the real drawers are findings, not errors.</div>
+      <div id="walk-body" style="padding:0 12px 12px"></div>
+    </details>
+  </div>
+
+  <div class="t-sub">
+    <b>Sources:</b> NPRP equipment list per the AAP/ACEP/ENA joint policy, <i>Pediatric Readiness in the Emergency Department</i> (Pediatrics 2018;142:e20182459); locations from the labels tool's photo-verified cart map and the procedure cards' kit definitions. Standard Broselow band packing per the Broselow-Luten system reference card — verify against the purchased refill lists. Design: INVENTORY-DESIGN.md; gaps filed as issues #98&ndash;#102.
+  </div>
+  <div class="t-foot">
+    <span class="verstamp"></span> &mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment or official readiness attestation. Verify all values locally.
+  </div>
+</main>
+
+<script>
+/* @inventory */
+</script>
+<script>
+/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
+var SITE = { version: "0.1", lastReviewed: "2026-08-12" };
+(function(){
+  "use strict";
+  document.querySelectorAll('.verstamp').forEach(function(el){ el.textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH'; });
+
+  function esc(x){ var d=document.createElement('div'); d.textContent=x; return d.innerHTML; }
+  function status(id){
+    var l=INV_LOCATIONS[id];
+    if(!l) return 'gap';
+    return l.verify ? 'vf' : 'ok';
+  }
+  var CHIP={ok:'<span class="st st-ok">MAPPED</span>',vf:'<span class="st st-vf">VERIFY</span>',gap:'<span class="st st-gap">GAP</span>'};
+
+  /* ---- NPRP audit ---- */
+  var nprIds=INV_STANDARDS.NPRP.items, counts={ok:0,vf:0,gap:0}, rows='';
+  nprIds.forEach(function(id){
+    var st=status(id), c=INV_CATALOG[id], l=INV_LOCATIONS[id];
+    counts[st]++;
+    var where = l ? esc(l.loc)+(l.note?' — <i>'+esc(l.note)+'</i>':'')
+                  : (INV_GAP_ISSUES[id] ? 'no mapped home — <a href="https://github.com/lonsetnik-dot/LRH-Emergency-Manual/issues/'+INV_GAP_ISSUES[id]+'">issue #'+INV_GAP_ISSUES[id]+'</a>' : 'no mapped home');
+    rows+='<div class="invrow t-div"><span>'+esc(c.name)+'<br><span class="where">'+where+'</span></span><span>'+CHIP[st]+'</span></div>';
+  });
+  var total=nprIds.length, pct=Math.round(counts.ok/total*100);
+  document.getElementById('npr-cov').innerHTML =
+    '<b>'+counts.ok+' mapped · '+counts.vf+' to verify · '+counts.gap+' gaps</b> of '+total+' checklist items — '+pct+'% confirmed-mapped.'
+    +'<div class="covbar"><span style="width:'+pct+'%"></span></div>'
+    +'<div style="margin-top:6px">'+CHIP.ok+' location confirmed &nbsp;'+CHIP.vf+' believed present — confirm on the cart walk &nbsp;'+CHIP.gap+' filed as an issue</div>';
+  document.getElementById('npr-body').innerHTML=rows;
+
+  /* ---- directory ---- */
+  var dhtml='';
+  Object.keys(INV_DIRECTORY).forEach(function(cart){
+    dhtml+='<div style="padding:10px 0 2px;font-family:\'IBM Plex Mono\',ui-monospace,monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--teal)">'+esc(cart.toUpperCase())+'</div>';
+    dhtml+='<div style="font-size:13.5px;line-height:1.6;color:var(--ink)">'+INV_DIRECTORY[cart].map(esc).join(' · ')+'</div>';
+  });
+  dhtml+='<div style="padding:12px 0 2px;font-family:\'IBM Plex Mono\',ui-monospace,monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--teal)">NAMED KITS</div>';
+  Object.keys(INV_CATALOG).forEach(function(id){
+    if(INV_CATALOG[id].cat!=='kit') return;
+    var l=INV_LOCATIONS[id];
+    dhtml+='<div class="invrow t-div"><span>'+esc(INV_CATALOG[id].name)+'<br><span class="where">'+(l?esc(l.loc):'unmapped')+'</span></span><span class="par">'+(l&&l.par?('PAR '+l.par):'')+'</span></div>';
+  });
+  document.getElementById('dir-body').innerHTML=dhtml;
+
+  /* ---- cart-walk checklist (VERIFY items + Broselow standard packs) ---- */
+  var w='';
+  nprIds.forEach(function(id){
+    var l=INV_LOCATIONS[id];
+    if(!l||!l.verify) return;
+    w+='<div class="invrow t-div"><label style="display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:start;cursor:pointer"><input type="checkbox" class="t-ck"><span>'+esc(INV_CATALOG[id].name)+'<br><span class="where">'+esc(l.loc)+(l.note?' — <i>'+esc(l.note)+'</i>':'')+'</span></span></label></div>';
+  });
+  w+='<div style="padding:12px 0 2px;font-family:\'IBM Plex Mono\',ui-monospace,monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--amber)">BROSELOW BANDS — STANDARD PACK VS THE REAL DRAWER</div>';
+  Object.keys(INV_BROSELOW_PACK).forEach(function(band){
+    w+='<div class="invrow t-div"><label style="display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:start;cursor:pointer"><input type="checkbox" class="t-ck"><span><b>'+esc(band)+'</b><br><span class="where">'+esc(INV_BROSELOW_PACK[band])+'</span></span></label></div>';
+  });
+  document.getElementById('walk-body').innerHTML=w;
+
+  /* ---- search ---- */
+  var idx=[];
+  Object.keys(INV_CATALOG).forEach(function(id){
+    var l=INV_LOCATIONS[id];
+    idx.push({t:INV_CATALOG[id].name, w:l?l.loc:'NO MAPPED HOME', k:(INV_CATALOG[id].name+' '+id+' '+(l?l.loc:'')).toLowerCase()});
+  });
+  Object.keys(INV_DIRECTORY).forEach(function(cart){
+    INV_DIRECTORY[cart].forEach(function(drawer){
+      idx.push({t:drawer, w:cart, k:(drawer+' '+cart).toLowerCase()});
+    });
+  });
+  var q=document.getElementById('eq'), res=document.getElementById('eqresults'), empty=document.getElementById('eq-empty');
+  q.addEventListener('input', function(){
+    var term=q.value.trim().toLowerCase();
+    if(!term){ res.hidden=true; empty.hidden=true; res.innerHTML=''; return; }
+    var hits=idx.filter(function(e){ return e.k.indexOf(term)!==-1; }).slice(0,12);
+    res.innerHTML=hits.map(function(e){ return '<li><a href="#dir"><span class="r-title">'+esc(e.t)+'</span><span class="r-cat">'+esc(e.w)+'</span></a></li>'; }).join('');
+    res.hidden=hits.length===0; empty.hidden=hits.length>0;
+  });
+
+  /* theme toggle */
+  var b=document.getElementById('lrhThemeBtn');
+  if(b){
+    b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
+    b.addEventListener('click', function(){
+      var dark = document.body.dataset.theme!=='light';
+      document.body.dataset.theme = dark ? 'light' : 'dark';
+      b.textContent = dark ? 'DARK' : 'LIGHT';
+      try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
+    });
+  }
+})();
+</script>
+</body>
+</html>

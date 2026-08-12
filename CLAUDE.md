@@ -158,3 +158,6 @@ test it" is not sufficient close-out for a deliverable.
   (card 04). Kept so old links and printed QR codes still resolve.
 - `simulations/` — pillow-patient in-situ drill scripts chaining the tools'
   workflows (deliberately excluded from the site search).
+- `equipment-readiness/` — searchable equipment locations + NPRP readiness
+  audit, rendered from the root `inventory.js` (injected at build like
+  `design-system.css`; see `INVENTORY-DESIGN.md`).

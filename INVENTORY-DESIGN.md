@@ -1,8 +1,21 @@
 # INVENTORY-DESIGN.md — ED equipment inventory: design for review
 
-Status: **DESIGN FOR REVIEW — nothing built yet.** (Lon, 2026-08-12: "adjust
-design first · include the equipment.") Edit this file directly or comment;
-Phase 1 starts only after sign-off.
+Status: **APPROVED — Phase 1 building.** Decisions (Lon, 2026-08-12):
+
+1. **Granularity:** sizes only where a standard names sizes; drawer/kit level
+   elsewhere.
+2. **Broselow:** transcribe the standard packing list first, then diff it
+   against the real cart — the diff is the readiness audit.
+3. **Par levels yes, expiry no.**
+4. **The 5 true gaps are filed as issues:** doppler #98 · hypothermia-capable
+   thermometer #99 · fluid/blood warmer #100 · trach tube range #101 ·
+   c-collar sizes #102 (label `coverage-gap` + `equipment`).
+5. **Tool name: `equipment-readiness/`** ("Equipment Readiness").
+
+Phase 1 scope (this build): `inventory.js` + build-time injection + the
+equipment-readiness browser/audit tool. The labels/ and simulations/
+consumers migrate onto the injected data in a follow-up phase, so this ships
+without touching the label generator.
 
 ## 1. Goals
 
