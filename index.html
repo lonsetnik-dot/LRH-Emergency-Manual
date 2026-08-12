@@ -160,8 +160,8 @@ catch(e){ document.body.dataset.theme='dark'; }
 
     <!-- ===== CATEGORY: Equipment Readiness (beta · GRAY) -> /equipment-readiness/ ===== -->
     <a class="lrh-cat" style="--cc:var(--gray)" href="equipment-readiness/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">Equipment Readiness</span><span class="spacer"></span><span class="count lrh-mono">NPRP audit</span></div>
-      <div class="desc">Where every kit and critical item lives &mdash; searchable &mdash; plus the department&rsquo;s live score against the NPRP pediatric equipment checklist and a printable cart-walk list.</div>
+      <div class="row"><span class="dot"></span><span class="name">Equipment Readiness</span><span class="spacer"></span><span class="count lrh-mono">7 standards</span></div>
+      <div class="desc">Where every kit, item and <b>size</b> lives &mdash; searchable &mdash; scored against seven national equipment standards (NPRP, ACS, ASA, NRP, AIM, MHAUS, ASRA). Record a location or a gap as you walk the carts, then export the findings.</div>
     </a>
 
     <!-- ===== CATEGORY: Simulations (beta · GREEN) -> /simulations/ ===== -->
@@ -306,6 +306,22 @@ catch(e){ document.body.dataset.theme='dark'; }
     {t:"Mass-Casualty Incident (MCI) — First 15 Minutes", c:"Trauma", k:"mci mass casualty disaster triage start salt surge declare roles zones expectant", u:"trauma/?from=home#c09"},
     {t:"Electrical & Lightning Injury", c:"Trauma", k:"electrical injury lightning electrocution high voltage reverse triage rhabdomyolysis compartment", u:"trauma/?from=home#c10"},
     {t:"Equipment Readiness — where is everything", c:"Equipment", k:"equipment inventory where is location cart drawer kit stock supplies nprp readiness par find pigtail burr hole uvc igel chest tube", u:"equipment-readiness/?from=home"},
+    /* One entry per section of the readiness tool — each is a destination a
+       champion actually goes to, and rule 9 means none of them is findable
+       without a line here. Ordering matters: the clinical cards for
+       lipid emulsion, NRP and difficult airway sit ABOVE these on purpose, so
+       a bedside query lands on the card and an equipment query lands here. */
+    {t:"Equipment — record a location or a gap (cart walk)", c:"Equipment", k:"record gap missing not stocked cart walk audit where is it kept dropdown set location readiness champion export walk sheet", u:"equipment-readiness/?from=home#standards"},
+    {t:"Equipment — national standards scorecard", c:"Equipment", k:"readiness scorecard national standards score percentage audit survey compliance gap analysis equipment standard", u:"equipment-readiness/?from=home#score"},
+    {t:"Equipment — kit contents audit", c:"Equipment", k:"kit contents complete bag tray audit canthotomy chest tube thoracotomy burr hole jada blakemore pigtail escharotomy build sheet missing item", u:"equipment-readiness/?from=home#kits"},
+    {t:"Equipment — airway sizes and where each size lives", c:"Equipment", k:"size sizes igel i-gel lma 0 0.5 supraglottic ett tube size uncuffed cuffed miller macintosh blade opa npa tracheostomy size stocked", u:"equipment-readiness/?from=home#s-NPRP"},
+    {t:"Equipment — trauma resuscitation equipment (ACS)", c:"Equipment", k:"trauma equipment acs committee on trauma rapid infuser pelvic binder tourniquet chest seal needle decompression massive transfusion cooler fluid warmer verification", u:"equipment-readiness/?from=home#s-ACS-COT"},
+    {t:"Equipment — airway trolley contents (ASA)", c:"Equipment", k:"difficult airway trolley portable storage unit asa contents bougie exchange catheter videolaryngoscope flexible scope cric kit jet ventilation stocked together", u:"equipment-readiness/?from=home#s-ASA-DA"},
+    {t:"Equipment — delivery-room supplies check (NRP)", c:"Equipment", k:"delivery room supplies equipment check t-piece resuscitator blender radiant warmer umbilical tray meconium aspirator newborn kit stocked", u:"equipment-readiness/?from=home#s-NRP"},
+    {t:"Equipment — OB hemorrhage cart contents (AIM)", c:"Equipment", k:"hemorrhage cart obstetric aim bundle bakri intrauterine balloon uterotonics quantitative blood loss drape weighted speculum vaginal packing stocked", u:"equipment-readiness/?from=home#s-AIM-OB"},
+    {t:"Equipment — MH cart and dantrolene stock", c:"Equipment", k:"malignant hyperthermia mh cart dantrolene ryanodex sterile water cold saline hotline succinylcholine triggering agent stock", u:"equipment-readiness/?from=home#s-MHAUS"},
+    {t:"Equipment — ASRA rescue kit stock", c:"Equipment", k:"asra last lipid emulsion rescue kit stock intralipid twenty percent local anesthetic systemic toxicity tubing syringes checklist stored together", u:"equipment-readiness/?from=home#s-ASRA-LAST"},
+    {t:"Equipment — weight-band cart packing check", c:"Equipment", k:"broselow weight band packing grey pink red purple yellow white blue orange green drawer contents weight band cart diff", u:"equipment-readiness/?from=home#walk"},
     /* Simulations are deliberately NOT in the search index (rule-9 exception,
        Lon 2026-08-12): the bedside search must never surface a training script
        next to a clinical card. The tool is reached via its landing tile only. */

@@ -8,45 +8,84 @@
 <meta name="theme-color" content="#005596">
 <title>LRH Equipment Readiness</title>
 <meta name="apple-mobile-web-app-title" content="Equipment">
-<meta name="description" content="Where every kit and critical item lives, and how the ED scores against the NPRP pediatric equipment checklist. Beta.">
+<meta name="description" content="Where every kit, size and critical item lives, and how the ED scores against seven national equipment standards. Record a location or a gap on the walk. Beta.">
 <link rel="canonical" href="https://lrhemergencymanual.net/equipment-readiness/">
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="LRH Emergency Manual">
 <meta property="og:title" content="LRH Equipment Readiness (beta)">
-<meta property="og:description" content="Searchable equipment locations + NPRP readiness audit + printable cart-walk checklist.">
+<meta property="og:description" content="Searchable equipment locations, size by size; readiness scored against NPRP, ACS, ASA, NRP, AIM, MHAUS and ASRA; record a location or a gap as you walk.">
 <meta property="og:url" content="https://lrhemergencymanual.net/equipment-readiness/">
 <meta name="twitter:card" content="summary">
 <style>
   html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
   /* @design-system */
   /* ---- Shared design language injected above (build.mjs). Only this tool's
-     own audit-table styles live below. ---- */
+     own audit/capture styles live below. ---- */
   main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
   a { color:var(--blue); }
   a:hover { color:var(--ink); }
   button { -webkit-appearance:none; appearance:none; border-radius:0; touch-action:manipulation; }
   .steps { display:grid; grid-template-columns:1fr; gap:12px; align-items:start; padding:14px 14px 0; }
   @media (min-width:760px) { .steps { grid-template-columns:repeat(auto-fit,minmax(340px,1fr)); } }
-  /* status chips for the audit table */
+  /* status chips */
   .st{display:inline-block;font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
     font-size:10.5px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:6px;white-space:nowrap}
   .st-ok{background:rgba(61,163,93,.18);color:var(--green);border:1px solid var(--green)}
+  .st-set{background:rgba(61,163,93,.28);color:var(--green);border:1px solid var(--green)}
   .st-vf{background:var(--note-bg);color:var(--note-tx);border:1px solid var(--note-tx)}
   .st-gap{background:rgba(229,72,77,.15);color:var(--red);border:1px solid var(--red)}
-  .invrow{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:baseline;
-    padding:9px 0;font-size:14px;line-height:1.35}
-  .invrow .where{font-size:12.5px;color:var(--ink2)}
-  .invrow .par{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;color:var(--ink2);white-space:nowrap}
-  .covbar{height:7px;background:var(--card2);border-radius:4px;overflow:hidden;margin-top:6px}
-  .covbar span{display:block;height:7px;background:var(--green)}
+  .st-new{background:var(--card2);color:var(--ink2);border:1px solid var(--line)}
+  .st-na{background:var(--card2);color:var(--ink2);border:1px dashed var(--ink2)}
+  /* audit rows */
+  .eqrow{border-top:1px solid var(--line);padding:9px 0;font-size:14px;line-height:1.35}
+  .eqtop{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:baseline}
+  .eqrow .where{display:block;font-size:12.5px;color:var(--ink2)}
+  .eqrow .par{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;color:var(--ink2);white-space:nowrap}
+  .eqctl{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .eqsel,.eqloc{font:inherit;font-size:13px;min-height:36px;background:var(--card2);color:var(--ink);
+    border:1px solid var(--line);border-radius:8px;padding:4px 8px;-webkit-appearance:none;appearance:none}
+  .eqsel{flex:0 0 auto;max-width:100%}
+  .eqloc{flex:1 1 190px;min-width:0}
+  .eqsel:focus-visible,.eqloc:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+  .eqrow[data-state="gap"] .eqsel{border-color:var(--red);color:var(--red)}
+  .eqrow[data-state="set"] .eqsel{border-color:var(--green)}
+  .eqhead{padding:14px 0 2px;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;
+    font-weight:700;letter-spacing:.1em;color:var(--teal)}
+  .eqkit{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-top:10px;background:var(--card2)}
+  .eqkit>.kname{font-size:15px;font-weight:700}
+  .eqkit .eqrow:first-of-type{border-top:0}
+  /* scorecard */
+  .scorecard{display:grid;grid-template-columns:1fr;gap:8px;padding:0 12px 12px}
+  @media (min-width:620px){ .scorecard{grid-template-columns:1fr 1fr} }
+  .scard{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:9px 11px;
+    text-align:left;width:100%;color:var(--ink);font:inherit;cursor:pointer;display:block}
+  .scard:hover{border-color:var(--accent)}
+  .scard .sn{display:block;font-size:13.5px;font-weight:700}
+  .scard .sm{display:block;font-size:11.5px;color:var(--ink2);margin-top:2px;
+    font-family:'IBM Plex Mono',ui-monospace,monospace;letter-spacing:.04em}
+  .covbar{height:7px;background:var(--card);border-radius:4px;overflow:hidden;margin-top:6px;display:flex}
+  .covbar i{display:block;height:7px}
+  .covbar .b-ok{background:var(--green)} .covbar .b-vf{background:var(--amber)}
+  .covbar .b-gap{background:var(--red)} .covbar .b-new{background:var(--line)}
+  .eqprint{display:none}
   #stickytop { position:sticky; top:0; z-index:30; }
+  #exportbox{width:100%;min-height:190px;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11.5px;
+    background:var(--card2);color:var(--ink);border:1px solid var(--line);border-radius:8px;padding:8px}
+  .eqbtn{min-height:44px;padding:0 14px;background:var(--card2);border:1px solid var(--line);color:var(--ink2);
+    font:inherit;font-weight:700;letter-spacing:.04em;cursor:pointer;border-radius:8px}
+  .eqbtn:hover{border-color:var(--accent);color:var(--accent)}
+  .eqbtn.danger{color:var(--red);border-color:var(--red)}
   @media print {
     body[data-theme]{ --bg:#fff; --card:#fff; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D; --line:rgba(15,35,60,.18);
       --accent:#00693E; --red:#C63238; --amber:#B07E13; --blue:#2F6FB5; --green:#1F7F49; --gray:#6B7A8D;
       --purple:#6C4FA3; --teal:#1F7E7E; --orange:#B4661F; --sev-crit:#9b1c2e; --sev-caution:#8a6d1f;
       --sev-info:#2f62a8; --on-sev:#fffefb; --note-bg:#fdf3cf; --note-tx:#6b5410; background:#fff; }
-    .hdr { display:none; }
+    .hdr, .lrh-filter, .eqctl, .noprint { display:none !important; }
+    .eqprint{display:block;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11.5px;color:#5A6A7D;
+      margin-top:3px;letter-spacing:.04em}
     details { break-inside:avoid; }
+    details > summary { list-style:none; }
+    .steps { display:block; }
   }
 </style>
 </head>
@@ -66,45 +105,78 @@ catch(e){ document.body.dataset.theme='dark'; }
 
 <main id="top">
   <div style="padding:16px 14px 6px;">
-    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:var(--ink2); font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
+    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:var(--ink2); font-weight:700;">LRH &middot; EMERGENCY DEPARTMENT</div>
     <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Equipment Readiness</h1>
-    <p style="margin:0; color:var(--ink2); font-size:14.5px;">Where everything lives, and how the department scores against national equipment standards — starting with the NPRP pediatric checklist. Locations are the local layer; the catalog and standards travel with any fork.</p>
+    <p style="margin:0; color:var(--ink2); font-size:14.5px;">Every item a national standard asks for, <b>size by size</b>, with one control per row: say where it is kept, or mark it a gap. Kits are audited as kits. Locations are the local layer; the catalog and the standards travel with any fork.</p>
   </div>
 
   <div class="t-localize">
-    &#9888; <b>DRAFT — PENDING THE CART WALK:</b> items marked VERIFY are believed present at the listed location but not yet confirmed against the physical cart. Print the cart-walk checklist, confirm each, and the audit turns real. Not a stocking system — par counts are reference minimums, expiry lives on the physical build sheets.
+    &#9888; <b>THIS IS THE WALK SHEET, NOT A STOCKING SYSTEM.</b> Rows start as <b>NOT REVIEWED</b> until someone stands in front of the drawer. What you record stays in this browser on this device &mdash; nothing is sent anywhere &mdash; so use <b>EXPORT</b> to hand the findings back into <span class="lrh-mono">inventory.js</span> and into issues. Par counts are reference minimums; expiry lives on the physical build sheets.
   </div>
 
   <div style="padding:8px 14px 0;">
-    <div class="lrh-filter"><span class="ico" aria-hidden="true">&#8981;</span><input type="search" id="eq" autocomplete="off" spellcheck="false" placeholder="Where is&hellip; e.g. pigtail, burr hole, UVC, iGel" aria-label="Search equipment"></div>
-    <div class="lrh-filter-empty" id="eq-empty" hidden>No match &mdash; try a kit name, a drawer, or an item like &ldquo;chest tube&rdquo;.</div>
+    <div class="lrh-filter"><span class="ico" aria-hidden="true">&#8981;</span><input type="search" id="eq" autocomplete="off" spellcheck="false" placeholder="Where is&hellip; e.g. i-gel 2, LMA 0, pigtail, dantrolene" aria-label="Search equipment"></div>
+    <div class="lrh-filter-empty" id="eq-empty" hidden>No match &mdash; try a size (&ldquo;3.5&rdquo;), a kit name, a drawer, or an item like &ldquo;chest tube&rdquo;.</div>
     <ul class="lrh-results" id="eqresults" hidden style="margin-top:0"></ul>
   </div>
 
   <div class="steps">
-    <details open class="t-box-info" id="npr">
-      <summary class="t-head t-head-info">NPRP READINESS — PEDIATRIC EQUIPMENT CHECKLIST</summary>
-      <div class="t-sub" id="npr-cov" style="padding-top:12px"></div>
-      <div id="npr-body" style="padding:0 12px 12px"></div>
+
+    <details open class="t-box-info" id="score">
+      <summary class="t-head t-head-info">READINESS SCORECARD &mdash; SEVEN NATIONAL STANDARDS</summary>
+      <div class="t-sub" id="score-lead" style="padding-top:12px"></div>
+      <div class="scorecard" id="score-body"></div>
+      <div class="t-sub" style="padding-top:0">
+        <span class="st st-ok">MAPPED</span> location already in the manual &nbsp;<span class="st st-set">RECORDED</span> you set it on this device &nbsp;<span class="st st-vf">VERIFY</span> believed present, unconfirmed &nbsp;<span class="st st-gap">GAP</span> not stocked &nbsp;<span class="st st-new">NOT REVIEWED</span> nobody has looked yet
+      </div>
     </details>
 
-    <details open class="t-box-neutral" id="dir">
-      <summary class="t-head t-head-neutral">WHERE IS IT — CARTS, CABINETS &amp; KITS</summary>
+    <details open class="t-box-neutral" id="standards">
+      <summary class="t-head t-head-neutral">THE STANDARDS &mdash; ITEM BY ITEM, SIZE BY SIZE</summary>
+      <div class="t-sub" style="padding-top:12px">One row per size, because &ldquo;supraglottic airways 1&ndash;5: present&rdquo; hides the only question worth asking &mdash; whether the size for the patient in front of you is in that drawer. Set each row to a location or to <b>GAP</b>.</div>
+      <div id="std-body" style="padding:0 12px 12px"></div>
+    </details>
+
+    <details class="t-box-caution" id="kits">
+      <summary class="t-head t-head-caution">KITS &mdash; AUDITED AS KITS</summary>
+      <div class="t-sub" style="padding-top:12px">A kit has one location and a contents list; a kit that is present but missing two items is not ready. Contents are the same strings the cart labels and the procedure cards use &mdash; if they ever disagree, the build breaks.</div>
+      <div id="kit-body" style="padding:0 12px 12px"></div>
+    </details>
+
+    <details class="t-box-neutral" id="dir">
+      <summary class="t-head t-head-neutral">WHERE IS IT &mdash; CARTS &amp; CABINETS</summary>
       <div id="dir-body" style="padding:4px 12px 12px"></div>
     </details>
 
     <details class="t-box-caution" id="walk">
-      <summary class="t-head t-head-caution">CART-WALK CHECKLIST — CONVERT EVERY &ldquo;VERIFY&rdquo;</summary>
-      <div class="t-sub" style="padding-top:12px">Print this, walk the carts, check what you confirm. Each confirmed item: delete its <span class="lrh-mono">verify:true</span> flag in <span class="lrh-mono">inventory.js</span> (or hand the marked-up printout back). Broselow bands below list the <i>standard</i> packing — differences from the real drawers are findings, not errors.</div>
+      <summary class="t-head t-head-caution">BROSELOW BANDS &mdash; STANDARD PACK VS THE REAL DRAWER</summary>
+      <div class="t-sub" style="padding-top:12px">The bands below list the <i>standard</i> packing. Differences from the real drawers are findings, not errors &mdash; the diff is the audit.</div>
       <div id="walk-body" style="padding:0 12px 12px"></div>
+    </details>
+
+    <details class="t-box-info" id="record">
+      <summary class="t-head t-head-info">RECORD, EXPORT &amp; RESET</summary>
+      <div class="t-sub" style="padding-top:12px">Everything you set is kept in this browser only. Export produces paste-ready <span class="lrh-mono">INV_LOCATIONS</span> lines plus a gap list to open issues from &mdash; that is how a walk becomes the manual's new baseline.</div>
+      <div style="padding:0 12px 14px" class="noprint">
+        <label style="display:block;font-size:12.5px;color:var(--ink2);margin-bottom:4px" for="walklabel">Walk label &mdash; equipment and shift only, never patient information</label>
+        <input id="walklabel" type="text" class="eqloc" style="flex:none;width:100%;margin-bottom:10px" placeholder="e.g. Aug 2026 cart walk &mdash; night shift">
+        <div style="display:flex;gap:8px;flex-wrap:wrap;margin-bottom:10px">
+          <button type="button" class="eqbtn" id="btn-export">BUILD EXPORT</button>
+          <button type="button" class="eqbtn" id="btn-copy">COPY</button>
+          <button type="button" class="eqbtn danger" id="btn-reset">RESET THIS DEVICE</button>
+        </div>
+        <textarea id="exportbox" readonly spellcheck="false" aria-label="Export of what you recorded"></textarea>
+      </div>
     </details>
   </div>
 
-  <div class="t-sub">
-    <b>Sources:</b> NPRP equipment list per the AAP/ACEP/ENA joint policy, <i>Pediatric Readiness in the Emergency Department</i> (Pediatrics 2018;142:e20182459); locations from the labels tool's photo-verified cart map and the procedure cards' kit definitions. Standard Broselow band packing per the Broselow-Luten system reference card — verify against the purchased refill lists. Design: INVENTORY-DESIGN.md; gaps filed as issues #98&ndash;#102.
+  <div class="t-sub" id="sources">
+    <b>Sources &mdash; one per standard.</b>
+    <div id="cites" style="margin-top:6px"></div>
+    <div style="margin-top:8px">Locations come from the labels tool's photo-verified cart map and the procedure cards' kit definitions. Standard Broselow band packing per the Broselow&ndash;Luten system reference card &mdash; verify against the purchased refill lists. Design and process: INVENTORY-DESIGN.md; gaps already filed as issues #98&ndash;#102.</div>
   </div>
   <div class="t-foot">
-    <span class="verstamp"></span> &mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment or official readiness attestation. Verify all values locally.
+    <span class="verstamp"></span> &mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment or official readiness attestation. Sizes and thresholds are stock- and brand-specific &mdash; verify all values locally.
   </div>
 </main>
 
@@ -112,92 +184,500 @@ catch(e){ document.body.dataset.theme='dark'; }
 /* @inventory */
 </script>
 <script>
-/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
-var SITE = { version: "0.1", lastReviewed: "2026-08-12" };
+/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device =====
+   The clinical/equipment content itself is in inventory.js (Layer 2 =
+   INV_LOCATIONS is the block a fork rewrites). Only presentation and the
+   storage key live here. */
+var SITE = {
+  version: "0.2",
+  lastReviewed: "2026-08-12",
+  storeKey: "lrh-eq-readiness-v1",   /* device-local only; cleared by RESET */
+  site: "LRH"
+};
+try{ window.SITE = SITE; }catch(e){}
 (function(){
   "use strict";
-  document.querySelectorAll('.verstamp').forEach(function(el){ el.textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH'; });
+  document.querySelectorAll('.verstamp').forEach(function(el){ el.textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · '+SITE.site; });
 
-  function esc(x){ var d=document.createElement('div'); d.textContent=x; return d.innerHTML; }
-  function status(id){
-    var l=INV_LOCATIONS[id];
-    if(!l) return 'gap';
-    return l.verify ? 'vf' : 'ok';
+  function esc(x){ var d=document.createElement('div'); d.textContent=x==null?'':x; return d.innerHTML; }
+
+  /* ---------- device-local capture (CLAUDE.md rule 3: no PHI, no network,
+     cleared by RESET). Shape: { rows:{ rowId:{s:state,l:location} }, label } */
+  var ST = { rows:{}, label:'' };
+  try {
+    var raw = localStorage.getItem(SITE.storeKey);
+    if (raw) { var p = JSON.parse(raw); if (p && p.rows) ST = { rows:p.rows, label:p.label||'' }; }
+  } catch(e){}
+  function save(){ try{ localStorage.setItem(SITE.storeKey, JSON.stringify(ST)); }catch(e){} }
+
+  /* ---------- status ---------- */
+  var CHIP = {
+    ok : '<span class="st st-ok">MAPPED</span>',
+    set: '<span class="st st-set">RECORDED</span>',
+    vf : '<span class="st st-vf">VERIFY</span>',
+    gap: '<span class="st st-gap">GAP</span>',
+    na : '<span class="st st-na">N/A</span>',
+    "new": '<span class="st st-new">NOT REVIEWED</span>'
+  };
+  function statusOf(rowId){
+    var u = ST.rows[rowId];
+    if (u && u.s) return (u.s==='loc'||u.s==='in') ? 'set' : u.s;   /* gap | na | set */
+    var base = rowId.split('#')[0];
+    if (INV_GAP_ISSUES[base]) return 'gap';
+    var b = invBaseline(rowId);
+    if (!b) return 'new';
+    return b.verify ? 'vf' : 'ok';
   }
-  var CHIP={ok:'<span class="st st-ok">MAPPED</span>',vf:'<span class="st st-vf">VERIFY</span>',gap:'<span class="st st-gap">GAP</span>'};
+  function whereOf(rowId, kind){
+    var u = ST.rows[rowId];
+    if (u && u.s === 'gap') return kind === 'kit' ? 'MISSING — recorded as not in the bag' : 'GAP — recorded as not stocked here';
+    if (u && u.s === 'na')  return 'not applicable at this site';
+    if (u && (u.s==='loc'||u.s==='in') && u.l) return u.l;
+    if (u && u.s === 'in') return 'in the kit';
+    var base = rowId.split('#')[0];
+    if (INV_GAP_ISSUES[base]) return 'no mapped home — <a href="https://github.com/lonsetnik-dot/LRH-Emergency-Manual/issues/'+INV_GAP_ISSUES[base]+'">issue #'+INV_GAP_ISSUES[base]+'</a>';
+    var b = invBaseline(rowId);
+    if (!b) return kind === 'kit'
+      ? 'not checked — is this actually in the bag?'
+      : 'not reviewed — set a location or mark it a gap';
+    return esc(b.loc) + (b.note ? ' — <i>'+esc(b.note)+'</i>' : '');
+  }
 
-  /* ---- NPRP audit ---- */
-  var nprIds=INV_STANDARDS.NPRP.items, counts={ok:0,vf:0,gap:0}, rows='';
-  nprIds.forEach(function(id){
-    var st=status(id), c=INV_CATALOG[id], l=INV_LOCATIONS[id];
-    counts[st]++;
-    var where = l ? esc(l.loc)+(l.note?' — <i>'+esc(l.note)+'</i>':'')
-                  : (INV_GAP_ISSUES[id] ? 'no mapped home — <a href="https://github.com/lonsetnik-dot/LRH-Emergency-Manual/issues/'+INV_GAP_ISSUES[id]+'">issue #'+INV_GAP_ISSUES[id]+'</a>' : 'no mapped home');
-    rows+='<div class="invrow t-div"><span>'+esc(c.name)+'<br><span class="where">'+where+'</span></span><span>'+CHIP[st]+'</span></div>';
+  /* ---------- one audit row ----------
+     kind 'item' -> options are location / gap / N-A
+     kind 'kit'  -> options are in-the-kit / missing / elsewhere / N-A       */
+  function rowHTML(rowId, label, kind, extra){
+    var st = statusOf(rowId), u = ST.rows[rowId] || {}, b = invBaseline(rowId);
+    /* An item the manual already asserts is absent shows GAP in its control,
+       not "not reviewed" — the chip and the dropdown must not contradict each
+       other. It stays out of the capture store: the claim is already in source
+       with an issue number behind it, so there is nothing to export. */
+    var preset = (!u.s && INV_GAP_ISSUES[rowId.split('#')[0]]) ? 'gap' : '';
+    var chosen = u.s || preset;
+    var opts = kind === 'kit'
+      ? [['','— not reviewed —'],['in','IN THE KIT'],['gap','MISSING from the kit'],['loc','ELSEWHERE — type where'],['na','N/A at this site']]
+      : [['','— not reviewed —'],['loc','STOCKED — type where'],['gap','GAP — not stocked'],['na','N/A at this site']];
+    var sel = '<select class="eqsel" aria-label="Readiness for '+esc(label)+'">' + opts.map(function(o){
+      return '<option value="'+o[0]+'"'+(chosen===o[0]?' selected':'')+'>'+esc(o[1])+'</option>';
+    }).join('') + '</select>';
+    var showLoc = (u.s === 'loc');
+    var inp = '<input class="eqloc" type="text" autocomplete="off" spellcheck="false" aria-label="Location of '+esc(label)+'"'
+      + ' placeholder="type the location — cart, drawer, cabinet"'
+      + ' value="'+esc(u.l||'')+'"'+(showLoc?'':' hidden')+'>';
+    return '<div class="eqrow" data-row="'+esc(rowId)+'" data-state="'+st+'" data-preset="'+preset+'" data-kind="'+kind+'">'
+      + '<div class="eqtop"><span><b>'+esc(label)+'</b>'
+      + '<span class="where">'+whereOf(rowId, kind)+'</span></span>'
+      + '<span>'+CHIP[st]+(b&&b.par?' <span class="par">PAR '+b.par+'</span>':'')+'</span></div>'
+      + (extra||'')
+      + '<div class="eqctl">'+sel+inp+'</div>'
+      + '<div class="eqprint">LOCATION __________________________  &#9744; GAP</div>'
+      + '</div>';
+  }
+
+  /* A read-only echo of a row whose control lives somewhere else.
+     Half these items belong to two or three standards, and a kit belongs to
+     the KITS section — so every row gets exactly ONE control, in its home
+     section, and an echo everywhere else. Two controls writing one row is how
+     a walk ends up disagreeing with itself halfway down the page. */
+  function mirrorHTML(rowId, label, href, hrefText){
+    return '<div class="eqrow" data-mirror="'+esc(rowId)+'">'
+      + '<div class="eqtop"><span><b>'+esc(label)+'</b>'
+      + '<span class="where">'+whereOf(rowId)+'</span>'
+      + '<span class="where"><a href="'+esc(href)+'">'+esc(hrefText)+' &#9654;</a></span></span>'
+      + '<span>'+CHIP[statusOf(rowId)]+'</span></div></div>';
+  }
+
+  /* The same echo for a whole item — used when a multi-size item appears in a
+     second standard. One line, a roll-up of its sizes, no control. */
+  function rollupState(id){
+    var rows = invRowIds(id), any = function(s){ return rows.some(function(r){ return statusOf(r)===s; }); };
+    if (any('gap')) return 'gap';
+    if (any('new')) return 'new';
+    if (any('vf'))  return 'vf';
+    return rows.every(function(r){ return statusOf(r)==='set'; }) ? 'set' : 'ok';
+  }
+  function rollupText(id){
+    var rows = invRowIds(id), n = { ok:0, set:0, vf:0, gap:0, na:0, "new":0 };
+    rows.forEach(function(r){ n[statusOf(r)]++; });
+    return (n.ok+n.set) + ' of ' + rows.length + ' ready · ' + n.vf + ' verify · ' + n.gap + ' gap · ' + n["new"] + ' not reviewed';
+  }
+  function rollupHTML(id, href, hrefText){
+    return '<div class="eqrow" data-rollup="'+esc(id)+'">'
+      + '<div class="eqtop"><span><b>'+esc(INV_CATALOG[id].name)+'</b>'
+      + '<span class="where">'+esc(rollupText(id))+'</span>'
+      + '<span class="where"><a href="'+esc(href)+'">'+esc(hrefText)+' &#9654;</a></span></span>'
+      + '<span>'+CHIP[rollupState(id)]+'</span></div></div>';
+  }
+
+  /* ---------- standards ---------- */
+  var STD_IDS = Object.keys(INV_STANDARDS);
+  /* An item's HOME standard owns its controls: the first standard it lists. */
+  var HOME = {};
+  Object.keys(INV_CATALOG).forEach(function(id){
+    var s = INV_CATALOG[id].std || [];
+    if (s.length) HOME[id] = s[0];
   });
-  var total=nprIds.length, pct=Math.round(counts.ok/total*100);
-  document.getElementById('npr-cov').innerHTML =
-    '<b>'+counts.ok+' mapped · '+counts.vf+' to verify · '+counts.gap+' gaps</b> of '+total+' checklist items — '+pct+'% confirmed-mapped.'
-    +'<div class="covbar"><span style="width:'+pct+'%"></span></div>'
-    +'<div style="margin-top:6px">'+CHIP.ok+' location confirmed &nbsp;'+CHIP.vf+' believed present — confirm on the cart walk &nbsp;'+CHIP.gap+' filed as an issue</div>';
-  document.getElementById('npr-body').innerHTML=rows;
+  var CAT_NAME = {}; INV_CATEGORIES.forEach(function(c){ CAT_NAME[c[0]]=c[1]; });
 
-  /* ---- directory ---- */
-  var dhtml='';
+  function standardRowIds(sid){
+    var out = [];
+    INV_STANDARDS[sid].items.forEach(function(id){ out = out.concat(invRowIds(id)); });
+    return out;
+  }
+
+  var sHTML = '';
+  STD_IDS.forEach(function(sid){
+    var S = INV_STANDARDS[sid];
+    sHTML += '<details class="t-div" id="s-'+esc(sid)+'" style="padding:4px 0">'
+      + '<summary style="cursor:pointer;padding:10px 0;font-size:15px;font-weight:700">'+esc(S.short)
+      + ' <span class="par" id="sum-'+esc(sid)+'"></span></summary>'
+      + '<div style="font-size:13px;color:var(--ink2);padding-bottom:4px"><b>'+esc(S.name)+'</b><br>'+esc(S.scope)+'</div>';
+    if (S.kind === 'narrative' && S.note) {
+      sHTML += '<div class="t-localize" style="margin:6px 0">&#9888; <b>NOT A VERBATIM LIST.</b> '+esc(S.note)+'</div>';
+    }
+    /* group this standard's items by category, keeping INV_CATEGORIES order */
+    INV_CATEGORIES.forEach(function(cpair){
+      var cat = cpair[0];
+      var ids = INV_STANDARDS[sid].items.filter(function(id){ return INV_CATALOG[id].cat === cat; });
+      if (!ids.length) return;
+      sHTML += '<div class="eqhead">'+esc(cpair[1].toUpperCase())+'</div>';
+      ids.forEach(function(id){
+        var c = INV_CATALOG[id];
+        var note = c.note ? '<div class="t-note2" style="margin:2px 0 0">&#9888; '+esc(c.note)+'</div>' : '';
+        if (c.cat === 'kit') {
+          sHTML += mirrorHTML(id, c.name, '#k-'+id, 'set it, and audit its contents, under KITS') + note;
+          return;
+        }
+        if (HOME[id] !== sid) {
+          sHTML += rollupHTML(id, '#s-'+HOME[id], 'captured under ' + INV_STANDARDS[HOME[id]].short);
+          return;
+        }
+        invRowIds(id).forEach(function(rid, i){
+          sHTML += rowHTML(rid, INV_ROWS[rid].name, 'item', i===0 ? note : '');
+        });
+      });
+    });
+    sHTML += '</details>';
+  });
+
+  /* Anything in the catalog that no scored standard asks for still has to be
+     auditable — a local addition, or an item whose standard this site dropped
+     because it has no such service. Without this section those items exist in
+     the data and appear nowhere on screen, which is worse than not having
+     them: the inventory claims coverage the walk sheet never asks about. */
+  var orphans = Object.keys(INV_CATALOG).filter(function(id){
+    var c = INV_CATALOG[id];
+    return c.cat !== 'kit' && !(c.std || []).some(function(s){ return INV_STANDARDS[s]; });
+  });
+  if (orphans.length) {
+    sHTML += '<details class="t-div" id="s-LOCAL" style="padding:4px 0">'
+      + '<summary style="cursor:pointer;padding:10px 0;font-size:15px;font-weight:700">LOCAL · not in a scored standard '
+      + '<span class="par" id="sum-LOCAL"></span></summary>'
+      + '<div style="font-size:13px;color:var(--ink2);padding-bottom:4px">Stocked here, or carried in the catalog, but not demanded by any standard scored above. Audited the same way; excluded from every standard\'s percentage.</div>';
+    orphans.forEach(function(id){
+      var c = INV_CATALOG[id];
+      var note = c.note ? '<div class="t-note2" style="margin:2px 0 0">&#9888; '+esc(c.note)+'</div>' : '';
+      invRowIds(id).forEach(function(rid, i){
+        sHTML += rowHTML(rid, INV_ROWS[rid].name, 'item', i===0 ? note : '');
+      });
+    });
+    sHTML += '</details>';
+  }
+  document.getElementById('std-body').innerHTML = sHTML;
+
+  /* ---------- kits ---------- */
+  var kHTML = '';
+  Object.keys(INV_CATALOG).forEach(function(id){
+    var c = INV_CATALOG[id];
+    if (c.cat !== 'kit') return;
+    kHTML += '<div class="eqkit" id="k-'+esc(id)+'"><div class="kname">'+esc(c.name)+'</div>';
+    if (c.note) kHTML += '<div class="t-note2">&#9888; '+esc(c.note)+'</div>';
+    kHTML += rowHTML(id, c.name + ' — the kit itself', 'item');
+    if (c.contents && c.contents.length) {
+      kHTML += '<div class="eqhead">CONTENTS &mdash; ' + c.contents.length + ' ITEMS</div>';
+      c.contents.forEach(function(item, i){
+        kHTML += rowHTML(id + '@' + i, item, 'kit');
+      });
+    } else {
+      kHTML += '<div class="t-note2">No contents list defined yet &mdash; add one to <span class="lrh-mono">inventory.js</span> and it appears here, on the cart label and on the poster together.</div>';
+    }
+    kHTML += '</div>';
+  });
+  document.getElementById('kit-body').innerHTML = kHTML;
+
+  /* ---------- directory ---------- */
+  var dhtml = '';
   Object.keys(INV_DIRECTORY).forEach(function(cart){
-    dhtml+='<div style="padding:10px 0 2px;font-family:\'IBM Plex Mono\',ui-monospace,monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--teal)">'+esc(cart.toUpperCase())+'</div>';
-    dhtml+='<div style="font-size:13.5px;line-height:1.6;color:var(--ink)">'+INV_DIRECTORY[cart].map(esc).join(' · ')+'</div>';
+    dhtml += '<div class="eqhead">'+esc(cart.toUpperCase())+'</div>'
+      + '<div style="font-size:13.5px;line-height:1.6;color:var(--ink)">'+INV_DIRECTORY[cart].map(esc).join(' · ')+'</div>';
   });
-  dhtml+='<div style="padding:12px 0 2px;font-family:\'IBM Plex Mono\',ui-monospace,monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--teal)">NAMED KITS</div>';
-  Object.keys(INV_CATALOG).forEach(function(id){
-    if(INV_CATALOG[id].cat!=='kit') return;
-    var l=INV_LOCATIONS[id];
-    dhtml+='<div class="invrow t-div"><span>'+esc(INV_CATALOG[id].name)+'<br><span class="where">'+(l?esc(l.loc):'unmapped')+'</span></span><span class="par">'+(l&&l.par?('PAR '+l.par):'')+'</span></div>';
-  });
-  document.getElementById('dir-body').innerHTML=dhtml;
+  document.getElementById('dir-body').innerHTML = dhtml;
 
-  /* ---- cart-walk checklist (VERIFY items + Broselow standard packs) ---- */
-  var w='';
-  nprIds.forEach(function(id){
-    var l=INV_LOCATIONS[id];
-    if(!l||!l.verify) return;
-    w+='<div class="invrow t-div"><label style="display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:start;cursor:pointer"><input type="checkbox" class="t-ck"><span>'+esc(INV_CATALOG[id].name)+'<br><span class="where">'+esc(l.loc)+(l.note?' — <i>'+esc(l.note)+'</i>':'')+'</span></span></label></div>';
-  });
-  w+='<div style="padding:12px 0 2px;font-family:\'IBM Plex Mono\',ui-monospace,monospace;font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--amber)">BROSELOW BANDS — STANDARD PACK VS THE REAL DRAWER</div>';
+  /* ---------- Broselow ---------- */
+  var w = '';
   Object.keys(INV_BROSELOW_PACK).forEach(function(band){
-    w+='<div class="invrow t-div"><label style="display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:start;cursor:pointer"><input type="checkbox" class="t-ck"><span><b>'+esc(band)+'</b><br><span class="where">'+esc(INV_BROSELOW_PACK[band])+'</span></span></label></div>';
+    w += '<div class="eqrow"><label style="display:grid;grid-template-columns:22px 1fr;gap:12px;align-items:start;cursor:pointer">'
+      + '<input type="checkbox" class="t-ck"><span><b>'+esc(band)+'</b><br><span class="where">'+esc(INV_BROSELOW_PACK[band])+'</span></span></label></div>';
   });
-  document.getElementById('walk-body').innerHTML=w;
+  document.getElementById('walk-body').innerHTML = w;
 
-  /* ---- search ---- */
-  var idx=[];
+  /* ---------- citations ---------- */
+  document.getElementById('cites').innerHTML = STD_IDS.map(function(sid){
+    return '<div style="margin-bottom:5px"><b>'+esc(INV_STANDARDS[sid].short)+'</b> — '+esc(INV_STANDARDS[sid].cite)+'</div>';
+  }).join('');
+
+  /* ---------- scoring ---------- */
+  function tally(rowIds){
+    var t = { ok:0, set:0, vf:0, gap:0, na:0, "new":0 };
+    rowIds.forEach(function(r){ t[statusOf(r)]++; });
+    t.scored = rowIds.length - t.na;
+    t.ready  = t.ok + t.set;
+    t.pct    = t.scored ? Math.round(t.ready / t.scored * 100) : 100;
+    return t;
+  }
+  function bar(t){
+    var d = t.scored || 1;
+    var seg = function(cls, n){ return n ? '<i class="'+cls+'" style="width:'+(n/d*100)+'%"></i>' : ''; };
+    return '<div class="covbar">'+seg('b-ok',t.ready)+seg('b-vf',t.vf)+seg('b-gap',t.gap)+seg('b-new',t["new"])+'</div>';
+  }
+  function refresh(){
+    var cards = '', all = [];
+    STD_IDS.forEach(function(sid){
+      var rows = standardRowIds(sid), t = tally(rows);
+      all = all.concat(rows);
+      cards += '<button type="button" class="scard" data-jump="s-'+esc(sid)+'">'
+        + '<span class="sn">'+esc(INV_STANDARDS[sid].short)+'</span>'
+        + '<span class="sm">'+t.pct+'% ready · '+t.ready+' ready · '+t.vf+' verify · '+t.gap+' gap · '+t["new"]+' not reviewed'+(t.na?' · '+t.na+' n/a':'')+'</span>'
+        + bar(t) + '</button>';
+      var sum = document.getElementById('sum-'+sid);
+      if (sum) sum.textContent = t.pct + '% READY · ' + rows.length + ' ROWS';
+    });
+    document.getElementById('score-body').innerHTML = cards;
+    var sumL = document.getElementById('sum-LOCAL');
+    if (sumL) {
+      var lrows = [];
+      orphans.forEach(function(id){ lrows = lrows.concat(invRowIds(id)); });
+      sumL.textContent = tally(lrows).pct + '% READY · ' + lrows.length + ' ROWS';
+    }
+    /* de-duplicate: an item can belong to several standards */
+    var seen = {}, uniq = [];
+    all.forEach(function(r){ if(!seen[r]){ seen[r]=1; uniq.push(r); } });
+    var T = tally(uniq);
+    document.getElementById('score-lead').innerHTML =
+      '<b>'+T.ready+' ready of '+T.scored+' scored rows across '+STD_IDS.length+' standards — '+T.pct+'%.</b> '
+      + T.vf+' believed present but unconfirmed, '+T.gap+' recorded as gaps, '+T["new"]+' not reviewed yet. '
+      + 'A row counts as ready only when a human has confirmed where it is.';
+    /* echoes follow their one real row */
+    document.querySelectorAll('[data-mirror]').forEach(function(m){
+      var rid = m.getAttribute('data-mirror');
+      m.querySelector('.where').innerHTML = whereOf(rid);
+      m.querySelector('.eqtop').lastElementChild.innerHTML = CHIP[statusOf(rid)];
+    });
+    document.querySelectorAll('[data-rollup]').forEach(function(m){
+      var id = m.getAttribute('data-rollup');
+      m.querySelector('.where').textContent = rollupText(id);
+      m.querySelector('.eqtop').lastElementChild.innerHTML = CHIP[rollupState(id)];
+    });
+    /* keep the kit sub-scores honest too */
+    Object.keys(INV_CATALOG).forEach(function(id){
+      var c = INV_CATALOG[id];
+      if (c.cat !== 'kit' || !c.contents) return;
+      var el = document.querySelector('#k-'+CSS.escape(id)+' .eqhead');
+      if (!el) return;
+      var done = c.contents.filter(function(_, i){ return statusOf(id+'@'+i) === 'set'; }).length;
+      el.textContent = 'CONTENTS — ' + done + ' OF ' + c.contents.length + ' CONFIRMED';
+    });
+  }
+
+  /* ---------- interaction (delegated: ~300 rows, 2 listeners) ---------- */
+  var mainEl = document.querySelector('main');
+  function repaint(row){
+    var rid = row.getAttribute('data-row'), st = statusOf(rid);
+    row.setAttribute('data-state', st);
+    var top = row.querySelector('.eqtop');
+    top.querySelector('.where').innerHTML = whereOf(rid, row.getAttribute('data-kind'));
+    var chipHost = top.lastElementChild, par = chipHost.querySelector('.par');
+    chipHost.innerHTML = CHIP[st] + (par ? ' ' + par.outerHTML : '');
+  }
+  mainEl.addEventListener('change', function(ev){
+    var sel = ev.target.closest('.eqsel'); if (!sel) return;
+    var row = sel.closest('.eqrow'), rid = row.getAttribute('data-row');
+    var inp = row.querySelector('.eqloc');
+    var v = sel.value;
+    if (!v) { delete ST.rows[rid]; inp.hidden = true; }
+    else {
+      var rec = ST.rows[rid] || {};
+      rec.s = v;
+      if (v === 'loc') {
+        var b = invBaseline(rid);
+        if (!rec.l) rec.l = (b && b.loc) || '';
+        inp.value = rec.l; inp.hidden = false;
+      } else { inp.hidden = true; }
+      ST.rows[rid] = rec;
+    }
+    save(); repaint(row); refresh();
+    if (v === 'loc') inp.focus();
+  });
+  mainEl.addEventListener('input', function(ev){
+    var inp = ev.target.closest('.eqloc'); if (!inp) return;
+    var row = inp.closest('.eqrow'); if (!row) return;   /* the walk label is not a row */
+    var rid = row.getAttribute('data-row');
+    var rec = ST.rows[rid] || { s:'loc' };
+    rec.l = inp.value; ST.rows[rid] = rec; save();
+    row.querySelector('.where').innerHTML = whereOf(rid, row.getAttribute('data-kind'));
+  });
+  /* Open every collapsed ancestor of a jump target — a link into a closed
+     <details> otherwise scrolls nowhere and reads as a broken link. */
+  function reveal(el){
+    if (!el) return;
+    var n = el;
+    while (n && n !== document.body) {
+      if (n.tagName === 'DETAILS') n.open = true;
+      n = n.parentElement;
+    }
+    if (el.tagName === 'DETAILS') el.open = true;
+    el.scrollIntoView({ block:'start' });
+  }
+  mainEl.addEventListener('click', function(ev){
+    var card = ev.target.closest('[data-jump]');
+    if (card) { reveal(document.getElementById(card.getAttribute('data-jump'))); return; }
+    var link = ev.target.closest('a[href^="#"]');
+    if (link) {
+      var t = document.getElementById(link.getAttribute('href').slice(1));
+      if (t) reveal(t);
+    }
+  });
+
+  /* PRINT WALK prints the whole sheet, including sections left collapsed. */
+  window.addEventListener('beforeprint', function(){
+    document.querySelectorAll('details').forEach(function(d){
+      d.setAttribute('data-wasopen', d.open ? '1' : '0'); d.open = true;
+    });
+  });
+  window.addEventListener('afterprint', function(){
+    document.querySelectorAll('details[data-wasopen]').forEach(function(d){
+      d.open = d.getAttribute('data-wasopen') === '1';
+      d.removeAttribute('data-wasopen');
+    });
+  });
+
+  /* ---------- export / reset ---------- */
+  var wl = document.getElementById('walklabel');
+  wl.value = ST.label || '';
+  wl.addEventListener('input', function(){ ST.label = wl.value; save(); });
+
+  function labelFor(rid){
+    if (rid.indexOf('@') > -1) {
+      var p = rid.split('@');
+      return INV_CATALOG[p[0]].name + ' → ' + INV_CATALOG[p[0]].contents[+p[1]];
+    }
+    return (INV_ROWS[rid] && INV_ROWS[rid].name) || rid;
+  }
+  function buildExport(){
+    var ids = Object.keys(ST.rows), locs = [], gaps = [], nas = [], miss = [];
+    ids.forEach(function(rid){
+      var r = ST.rows[rid];
+      if (r.s === 'loc') locs.push('  "'+rid+'": { loc:"'+String(r.l||'').replace(/"/g,'\\"')+'" },');
+      else if (r.s === 'in') { /* kit content confirmed in place — nothing to patch */ }
+      else if (r.s === 'gap') (rid.indexOf('@')>-1 ? miss : gaps).push('  /* GAP  '+rid+'  —  '+labelFor(rid)+' */');
+      else if (r.s === 'na')  nas.push('  /* N/A  '+rid+'  —  '+labelFor(rid)+' */');
+    });
+    var confirmedKitItems = ids.filter(function(rid){ return ST.rows[rid].s === 'in'; }).length;
+    var out = [];
+    out.push('/* ===== EQUIPMENT READINESS WALK' + (ST.label ? ' — ' + ST.label : '') + ' =====');
+    var n = function(count, one, many){ return count + ' ' + (count === 1 ? one : many); };
+    out.push('   ' + n(ids.length,'row','rows') + ' recorded on this device · ' + n(locs.length,'location','locations')
+      + ' · ' + n(gaps.length,'gap','gaps') + ' · ' + n(miss.length,'kit item','kit items') + ' missing · '
+      + n(confirmedKitItems,'kit item','kit items') + ' confirmed in place.');
+    out.push('   1. Paste the LOCATIONS block into inventory.js (Layer 2 — INV_LOCATIONS).');
+    out.push('   2. Open one issue per GAP, label it coverage-gap + equipment.');
+    out.push('   3. Delete any verify:true flag you personally confirmed. */');
+    out.push('');
+    out.push('/* --- LOCATIONS --- */');
+    out = out.concat(locs.length ? locs : ['  /* none recorded yet */']);
+    out.push('');
+    out.push('/* --- GAPS: file an issue for each --- */');
+    out = out.concat(gaps.length ? gaps : ['  /* none recorded */']);
+    if (miss.length) { out.push(''); out.push('/* --- KIT ITEMS MISSING FROM THE BAG --- */'); out = out.concat(miss); }
+    if (nas.length)  { out.push(''); out.push('/* --- MARKED NOT APPLICABLE AT THIS SITE --- */'); out = out.concat(nas); }
+    return out.join('\n');
+  }
+  document.getElementById('btn-export').addEventListener('click', function(){
+    document.getElementById('exportbox').value = buildExport();
+  });
+  document.getElementById('btn-copy').addEventListener('click', function(){
+    var box = document.getElementById('exportbox');
+    if (!box.value) box.value = buildExport();
+    box.removeAttribute('readonly'); box.select(); box.setSelectionRange(0, 999999);
+    try { document.execCommand('copy'); } catch(e){}
+    if (navigator.clipboard) { try { navigator.clipboard.writeText(box.value); } catch(e){} }
+    box.setAttribute('readonly','readonly');
+    this.textContent = 'COPIED'; var b = this;
+    setTimeout(function(){ b.textContent = 'COPY'; }, 1600);
+  });
+  document.getElementById('btn-reset').addEventListener('click', function(){
+    if (!window.confirm('Clear everything recorded on this device? The manual’s own baseline is untouched.')) return;
+    ST = { rows:{}, label:'' };
+    try { localStorage.removeItem(SITE.storeKey); } catch(e){}
+    document.getElementById('exportbox').value = '';
+    wl.value = '';
+    document.querySelectorAll('.eqrow[data-row]').forEach(function(row){
+      var sel = row.querySelector('.eqsel'), inp = row.querySelector('.eqloc');
+      if (sel) sel.value = row.getAttribute('data-preset') || '';
+      if (inp) { inp.value = ''; inp.hidden = true; }
+      repaint(row);
+    });
+    refresh();
+  });
+
+  /* ---------- search — items, every size, kit contents, drawers ---------- */
+  var idx = [];
+  Object.keys(INV_ROWS).forEach(function(rid){
+    var r = INV_ROWS[rid], b = invBaseline(rid);
+    idx.push({ t:r.name, w:(b?b.loc:'not reviewed'), a:'#standards',
+      k:(r.name+' '+r.id+' '+(b?b.loc:'')).toLowerCase() });
+  });
   Object.keys(INV_CATALOG).forEach(function(id){
-    var l=INV_LOCATIONS[id];
-    idx.push({t:INV_CATALOG[id].name, w:l?l.loc:'NO MAPPED HOME', k:(INV_CATALOG[id].name+' '+id+' '+(l?l.loc:'')).toLowerCase()});
+    var c = INV_CATALOG[id];
+    if (c.cat !== 'kit' || !c.contents) return;
+    c.contents.forEach(function(item){
+      idx.push({ t:item, w:c.name, a:'#k-'+id, k:(item+' '+c.name).toLowerCase() });
+    });
   });
   Object.keys(INV_DIRECTORY).forEach(function(cart){
     INV_DIRECTORY[cart].forEach(function(drawer){
-      idx.push({t:drawer, w:cart, k:(drawer+' '+cart).toLowerCase()});
+      idx.push({ t:drawer, w:cart, a:'#dir', k:(drawer+' '+cart).toLowerCase() });
     });
   });
-  var q=document.getElementById('eq'), res=document.getElementById('eqresults'), empty=document.getElementById('eq-empty');
+  var q = document.getElementById('eq'), res = document.getElementById('eqresults'), empty = document.getElementById('eq-empty');
   q.addEventListener('input', function(){
-    var term=q.value.trim().toLowerCase();
-    if(!term){ res.hidden=true; empty.hidden=true; res.innerHTML=''; return; }
-    var hits=idx.filter(function(e){ return e.k.indexOf(term)!==-1; }).slice(0,12);
-    res.innerHTML=hits.map(function(e){ return '<li><a href="#dir"><span class="r-title">'+esc(e.t)+'</span><span class="r-cat">'+esc(e.w)+'</span></a></li>'; }).join('');
-    res.hidden=hits.length===0; empty.hidden=hits.length>0;
+    var term = q.value.trim().toLowerCase();
+    if (!term) { res.hidden = true; empty.hidden = true; res.innerHTML=''; return; }
+    var hits = idx.filter(function(e){ return e.k.indexOf(term) !== -1; }).slice(0, 14);
+    res.innerHTML = hits.map(function(e){
+      return '<li><a href="'+e.a+'"><span class="r-title">'+esc(e.t)+'</span><span class="r-cat">'+esc(e.w)+'</span></a></li>';
+    }).join('');
+    res.hidden = hits.length === 0; empty.hidden = hits.length > 0;
   });
 
+  refresh();
+
+  /* A deep link from site search lands on a section that may be collapsed —
+     open it, or the link scrolls nowhere and reads as broken. */
+  if (location.hash.length > 1) {
+    var landing = document.getElementById(location.hash.slice(1));
+    if (landing) setTimeout(function(){ reveal(landing); }, 60);
+  }
+
   /* theme toggle */
-  var b=document.getElementById('lrhThemeBtn');
-  if(b){
-    b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
+  var b = document.getElementById('lrhThemeBtn');
+  if (b) {
+    b.textContent = document.body.dataset.theme === 'light' ? 'DARK' : 'LIGHT';
     b.addEventListener('click', function(){
-      var dark = document.body.dataset.theme!=='light';
+      var dark = document.body.dataset.theme !== 'light';
       document.body.dataset.theme = dark ? 'light' : 'dark';
       b.textContent = dark ? 'DARK' : 'LIGHT';
-      try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
+      try { localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); } catch(e){}
     });
   }
 })();
