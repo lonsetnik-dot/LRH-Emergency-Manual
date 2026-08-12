@@ -408,6 +408,17 @@ catch(e){ document.body.dataset.theme='dark'; }
       <div style="padding:12px 14px 0;"><figure style="margin:0; border:2px solid var(--gray); background:var(--card); display:flex; flex-direction:column;">
         <div style="background:var(--gray); color:var(--on-sev); padding:9px 12px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.12em;">THE 4-YES CHECK — ASK ALL FOUR OUT LOUD</div>
         <div style="flex:1; background:var(--card2); padding:16px 12px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:11px;"><div style="width:100%; max-width:330px; display:flex; flex-direction:column; align-items:center; gap:9px;">
+  <!-- Gestational age answers the TERM question on its own, so it is asked
+       once here rather than left to be judged in the moment. >=37 0/7 weeks is
+       term; anything less is not, and the button below follows automatically.
+       It stays tappable — a dating estimate can be wrong, and the clinician in
+       the room overrules the arithmetic. -->
+  <div style="width:100%; display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:2px;">
+    <span style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11px; font-weight:700; letter-spacing:0.1em; color:var(--ink2);">GA</span>
+    <input id="c02ga" inputmode="decimal" aria-label="Gestational age in weeks" style="width:64px; background:var(--card2); border:1px solid var(--line); color:var(--ink); border-radius:9px; padding:8px 9px; font-size:16px; font-weight:700; text-align:center;">
+    <span style="font-size:12.5px; color:var(--ink2);">weeks</span>
+    <span id="c02ganote" style="font-size:12.5px; font-weight:700; color:var(--ink2); flex:1 1 100%; line-height:1.35;"></span>
+  </div>
   <div style="width:100%; display:grid; grid-template-columns:1fr 1fr; gap:6px;"><button type="button" class="fyes" data-q="0" data-label="TERM?" style="padding:12px 6px; background:var(--card); border:2px solid var(--gray); color:var(--ink); text-align:center; font-family:inherit; font-size:13px; font-weight:700; line-height:1.15; cursor:pointer; min-height:52px;">TERM?</button><button type="button" class="fyes" data-q="1" data-label="GOOD TONE?" style="padding:12px 6px; background:var(--card); border:2px solid var(--gray); color:var(--ink); text-align:center; font-family:inherit; font-size:13px; font-weight:700; line-height:1.15; cursor:pointer; min-height:52px;">GOOD TONE?</button><button type="button" class="fyes" data-q="2" data-label="BREATHING?" style="padding:12px 6px; background:var(--card); border:2px solid var(--gray); color:var(--ink); text-align:center; font-family:inherit; font-size:13px; font-weight:700; line-height:1.15; cursor:pointer; min-height:52px;">BREATHING?</button><button type="button" class="fyes" data-q="3" data-label="MOTHER STABLE?" style="padding:12px 6px; background:var(--card); border:2px solid var(--gray); color:var(--ink); text-align:center; font-family:inherit; font-size:13px; font-weight:700; line-height:1.15; cursor:pointer; min-height:52px;">MOTHER STABLE?</button></div>
   <div style="width:0; height:0; border-left:8px solid transparent; border-right:8px solid transparent; border-top:10px solid var(--gray);"></div>
   <div style="width:100%; display:grid; grid-template-columns:1fr 1fr; gap:8px;">
@@ -2915,20 +2926,62 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
       for(var i=0;i<qs.length;i++){ if(!yes[qs[i].getAttribute('data-q')]) return false; }
       return true;
     }
+    function paintBtn(btn, on){
+      var label=btn.getAttribute('data-label');
+      btn.style.background = on ? '#0e7c86' : '#fffefb';
+      btn.style.color = on ? '#fffefb' : '#16324f';
+      btn.style.borderColor = on ? '#0e7c86' : '#16324f';
+      btn.textContent = on ? ('✓ '+label) : label;
+    }
     Array.prototype.forEach.call(qs, function(btn){
-      var q=btn.getAttribute('data-q'), label=btn.getAttribute('data-label');
+      var q=btn.getAttribute('data-q');
       btn.addEventListener('click', function(){
         yes[q]=!yes[q];
-        btn.style.background = yes[q] ? '#0e7c86' : '#fffefb';
-        btn.style.color = yes[q] ? '#fffefb' : '#16324f';
-        btn.style.borderColor = yes[q] ? '#0e7c86' : '#16324f';
-        btn.textContent = yes[q] ? ('✓ '+label) : label;
+        paintBtn(btn, yes[q]);
         if(gate()){
           startTimer(ensureBirthMs());
           if(c02y){ c02y.open=true; c02y.scrollIntoView({behavior:'smooth', block:'start'}); }
         }
       });
     });
+
+    /* ---- gestational age answers TERM ------------------------------------
+       Term is 37 0/7 weeks, so the arithmetic is not a judgement call and the
+       button should not pretend it is. Entering a GA sets question 0 both ways.
+
+       WHAT THIS DELIBERATELY DOES NOT SAY: it does not tell you to cut the
+       cord. Preterm is a reason to be AT the warmer doing initial steps; it is
+       not by itself a reason to clamp early, and deferred clamping is of most
+       benefit in exactly this group. NRP 9th edition made cord management the
+       first step and lengthened deferred clamping rather than shortening it.
+       What drives an early clamp is a baby who needs help NOW — a condition,
+       not a gestational age. See issue #140. */
+    var gaIn=document.getElementById('c02ga'), gaNote=document.getElementById('c02ganote');
+    var TERM_WEEKS=37;
+    if(gaIn){
+      gaIn.addEventListener('input', function(){
+        var w=parseFloat(gaIn.value), q0=qs[0];
+        if(isNaN(w)){ gaNote.textContent=''; gaNote.style.color='var(--ink2)'; return; }
+        if(w<20||w>45){
+          gaNote.textContent='Check that number — 20 to 45 weeks.';
+          gaNote.style.color='var(--red)';
+          return;
+        }
+        var term = w>=TERM_WEEKS;
+        yes['0'] = term;
+        if(q0) paintBtn(q0, term);
+        gaNote.style.color = term ? 'var(--teal)' : 'var(--red)';
+        gaNote.innerHTML = term
+          ? '<b>'+w+' weeks — term.</b> TERM answered yes. Ask the other three out loud.'
+          : '<b>'+w+' weeks — less than term.</b> That is a NO on the 4-yes check: '+
+            'warmer and initial steps, <a href="#c03" style="color:var(--red);font-weight:700">neonatal resuscitation</a>. '+
+            'Cord management still runs to your plan — being preterm is not on its own a reason to clamp early.';
+        if(term && gate()){
+          startTimer(ensureBirthMs());
+          if(c02y){ c02y.open=true; c02y.scrollIntoView({behavior:'smooth', block:'start'}); }
+        }
+      });
+    }
 
     /* ---- cord clamped: stamp + freeze (logging handled by data-logevent) ---- */
     if(cbtn){
