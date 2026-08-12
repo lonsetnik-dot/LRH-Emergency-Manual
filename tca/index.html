@@ -429,7 +429,8 @@ function doseModel(){
   /* Rounded and capped (weight-routing audit): the raw product rendered float
      artifacts ("21.200000000000003 mL" at 1.06 kg) and no ceiling at all
      (200 kg -> "4000 mL"). Display caps: 1 L/bolus pediatric (peds-tool
-     convention), 2 L/bolus adult — verify locally. */
+     convention), 2 L/bolus adult. Clinically reviewed and accepted for LRH
+     2026-08-12 (Lon Setnik); re-derive if adopting this file at another site. */
   var mlCap = p ? 1000 : 2000;
   var crystalloid = k!==null ? (Math.round(Math.min(SITE.fluid.crystalloidMlPerKg*k, mlCap))+' mL ('+SITE.fluid.crystalloidMlPerKg+' mL/kg, max '+(mlCap/1000)+' L/bolus)')
                              : SITE.fluid.crystalloidMlPerKg+' mL/kg';

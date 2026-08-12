@@ -112,8 +112,12 @@
      it's tokenized as a fixed highlighted panel rather than an accent-driven
      one. The WEIGHT label chip is a deliberately constant gold/navy pair
      (like the shared severity fills) — it's a small structural highlight
-     that doesn't need to shift with the theme. */
-  #wtbar { display:flex; align-items:center; gap:8px; flex-wrap:nowrap; overflow-x:auto; background:var(--card2); color:var(--ink); border-bottom:2px solid var(--blue); padding:5px 14px; }
+     that doesn't need to shift with the theme.
+     wrap, don't scroll (weight-routing audit): with flex-wrap:nowrap +
+     overflow-x:auto, #wtdisplay — the confirmation of what the tool thinks the
+     weight is — sat past the right edge of a 390px phone, so a weight could be
+     entered and never read back. */
+  #wtbar { display:flex; align-items:center; gap:8px; flex-wrap:wrap; background:var(--card2); color:var(--ink); border-bottom:2px solid var(--blue); padding:5px 14px; }
   #wtbar label { flex:none; display:inline-flex; align-items:center; background:#f7d97a; color:#16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10px; font-weight:700; letter-spacing:0.06em; padding:4px 7px; white-space:nowrap; }
   #wtbar input { flex:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; padding:4px 7px; border:1px solid var(--line); background:var(--card); color:var(--ink); min-height:28px; width:58px; }
   #wtbar select, #wtbar button { flex:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.04em; padding:4px 7px; border:1px solid var(--line); background:var(--card); color:var(--ink); min-height:28px; white-space:nowrap; cursor:pointer; }
@@ -743,7 +747,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <summary style="background:var(--gray); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">RSI DRUGS — TYPICAL RANGES</summary>
         <div style="margin:11px 12px 0; border:2px solid var(--sev-caution); background:var(--note-bg); color:var(--note-tx); padding:11px 14px; font-size:13px; line-height:1.4;">LRH's Adult Airway Guide leaves the specific induction agent, paralytic, and push-dose-pressor recipe to the intubating clinician's judgment/pharmacy stock — it doesn't name one combination. Ranges below are standard EM references, not an LRH-specific order set; confirm your preferred combo with pharmacy before printing a fixed choice.</div>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-10" class="t-ck"><span><b>Induction:</b> etomidate 0.3 mg/kg (<span class="wdose" data-perkg="0.3" data-max="40" data-unit="mg" data-decimals="0">enter weight ↑</span>; max 40 mg), or ketamine 1–2 mg/kg (<span class="wdose" data-perkg="1" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="2" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>; max 200 mg), or propofol 1–2 mg/kg (<span class="wdose" data-perkg="1" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="2" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>; max 200 mg) — reduce/avoid in shock. Caps are display ceilings for extreme weights — verify locally.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-10" class="t-ck"><span><b>Induction:</b> etomidate 0.3 mg/kg (<span class="wdose" data-perkg="0.3" data-max="40" data-unit="mg" data-decimals="0">enter weight ↑</span>; max 40 mg), or ketamine 1–2 mg/kg (<span class="wdose" data-perkg="1" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="2" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>; max 200 mg), or propofol 1–2 mg/kg (<span class="wdose" data-perkg="1" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="2" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>; max 200 mg) — reduce/avoid in shock. Caps are display ceilings for extreme weights (reviewed for LRH 2026-08-12) — verify locally.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-11" class="t-ck"><span><b>Paralytic:</b> succinylcholine 1–1.5 mg/kg (<span class="wdose" data-perkg="1" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="1.5" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>; max 200 mg), or rocuronium 1–1.2 mg/kg (<span class="wdose" data-perkg="1" data-max="120" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="1.2" data-max="120" data-unit="mg" data-decimals="0">enter weight ↑</span>; max 120 mg).</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-12" class="t-ck"><span><b>Post-intubation hypotension:</b> have a push-dose pressor ready (per your institutional recipe/concentration) before you push induction meds, especially in a shocked or critically ill patient.</span></label></li>
         </ul>
@@ -3497,6 +3501,32 @@ var CODES_WT = (function(){
    cited text (peds' two epinephrine rows do; that's why they're the ones wired). TODO(maintainer):
    add data-conc="<mg/mL>" to a row only once LRH's actual stocked concentration for that
    drug/route is confirmed — never guessed. */
+/* ---- data-max provenance (weight-routing audit, 2026-08-12) ----------------
+   Every per-kg row in this file now carries a data-max. Two different kinds of
+   number live in that attribute, and the distinction matters if this file is
+   ever forked or the values are revisited:
+
+   (a) Caps that IMPLEMENT a limit the card's own text already stated, so the
+       displayed figure stops contradicting the sentence next to it:
+         aPCC 50 u/kg -> 4,000 units   (card said "max 4,000 units")
+         4F-PCC 50 u/kg -> 5,000 units (card's "dosing weight capped at 100 kg")
+         Kcentra 25 / 35 u/kg -> 2,500 / 3,500 units (same 100 kg rule)
+         TXA (ICH) 10-15 mg/kg -> 1 g  (CRASH-3 regimen)
+       Pre-existing caps (TNK 25 mg, alteplase 90 mg, lorazepam 4 mg, diazepam
+       10 mg, levetiracetam 4,500 mg, valproate 3,000 mg, heparin 4,000 u and
+       1,000 u/hr) were already here and are untouched.
+
+   (b) Caps ADDED as display ceilings where the per-kg math previously ran
+       unbounded — etomidate 40 mg, ketamine/propofol/succinylcholine 200 mg,
+       rocuronium 120 mg, crystalloid 2 L/bolus. These engage only above
+       ~100-133 kg, i.e. they guard against a typo or a pounds-for-kilograms
+       entry rather than shaping normal dosing.
+
+   Group (b) was clinically reviewed and accepted for LRH on 2026-08-12 (Lon
+   Setnik): standard, within conventional maximum ceilings, fulfilling their
+   intended purpose. Another site adopting this file should still re-derive
+   them against its own formulary — hence the "verify locally" note that
+   remains on the card text. ---- */
 var CODESDOSE = (function(){
   var spans=Array.prototype.slice.call(document.querySelectorAll('.wdose'));
   function fmtVol(n){ return String(Math.round(n*100)/100); }

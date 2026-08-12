@@ -352,7 +352,13 @@ var SITE = {
            epiPerKg:0.01, epiMaxMg:1, epiConc:0.1, epiEttPerKg:0.1,
            /* epiEttMaxMg: adult ETT dose is 2–2.5 mg — cap the per-kg math
               there. lidoMaxMg1/2: adult bolus convention (1–1.5 mg/kg, max
-              ~100 mg; repeat half). Suggested caps — verify locally. */
+              ~100 mg; repeat half).
+              Clinically reviewed and accepted for LRH 2026-08-12 (Lon Setnik):
+              standard ceilings, guarding against typo/unit-error dosing at
+              extreme weights. NOTE for a fork: epiEttMaxMg is the one cap here
+              that binds inside a real pediatric range (above 25 kg) rather than
+              only at implausible weights — re-derive it for your own practice
+              rather than inheriting it. */
            epiEttMaxMg:2.5,
            amioPerKgDose1:5, amioMaxMgDose:300, amioMaxDoses:3,
            lidoPerKg1:1, lidoPerKg2:0.5, lidoMaxMg1:100, lidoMaxMg2:50 },
