@@ -33,6 +33,17 @@ pg.on('request', r => { const u = r.url(); if (!u.startsWith(BASE) && !u.startsW
 await pg.goto(BASE + '/vems/?from=home', { waitUntil: 'networkidle' });
 await pg.waitForTimeout(350);
 
+/* The kit now holds several cases and prints one at a time, so the
+   case-specific checks below are pinned to the adult airway deck and every
+   case gets swept in section 11. */
+const CASE_IDS = await pg.evaluate(() =>
+  [...document.querySelectorAll('[data-case]')].map(b => b.getAttribute('data-case')));
+const openCase = async id => {
+  await pg.click(`[data-case="${id}"]`);
+  await pg.waitForTimeout(320);
+};
+await openCase('adult-airway');
+
 /* ---- CONFIG-DRIVEN EXPECTATIONS (the #117 convention) ----------------------
    Read the tool's own SITE block, and read the deck's own shape off the page,
    so a site that adds a case, swaps a decoy or re-maps a drawer stays green.
@@ -163,7 +174,11 @@ await pg.evaluate(() => {
   document.body.classList.add('only-sheet');
 });
 ck('7. printing the run sheet does not print the cards', await pg.locator('.cardgrid.eq').first().isVisible(), false);
-await pg.emulateMedia({ media: 'screen' });
+/* Reset to the default, NOT to 'screen': page.pdf() honors emulateMedia, so
+   leaving it on 'screen' makes every later PDF render the screen layout —
+   which silently turns a 1-page poster into a 13-page one and looks like a
+   product bug. Cost me a diagnosis once already. */
+await pg.emulateMedia({ media: null });
 await pg.evaluate(() => document.body.classList.remove('only-poster', 'only-cards', 'only-sheet'));
 
 /* ---- 8. it stays wired into the rest of the manual ---- */
@@ -192,6 +207,39 @@ for (const term of ['vems', 'mental simulation', 'card deck']) {
   ck(`9. searching "${term}" surfaces the kit first`, /vems/.test(first), true);
 }
 await home.close();
+
+/* ---- 11. every case, not just the one that happens to load first ----
+   Each deck is a separate physical product that someone prints and laminates,
+   so each one has to be checked as one: its own figure, its own cards, its own
+   page counts. Read the shape off the page rather than hardcoding it, so
+   adding a case extends the sweep instead of needing a new assertion. */
+ck('11. the kit holds more than one case', CASE_IDS.length > 1, true);
+for (const id of CASE_IDS) {
+  await openCase(id);
+  const d = await pg.evaluate(() => ({
+    fig:   document.querySelectorAll('.pfig svg').length,
+    eq:    document.querySelectorAll('.cardgrid.eq .pcard').length,
+    mon:   document.querySelectorAll('.cardgrid.mon .pcard').length,
+    beats: document.querySelectorAll('.rs .rb').length,
+    blank: [...document.querySelectorAll('.cardgrid.eq .pcard svg')].filter(s => !s.innerHTML.trim()).length,
+    noloc: [...document.querySelectorAll('.cardgrid.eq .pcard .lo')].filter(e => !e.textContent.trim()).length,
+    decoys: document.querySelectorAll('.vchip.decoy').length,
+    sats:  [...document.querySelectorAll('.cardgrid.mon .pcard')].length,
+  }));
+  ck(`11. [${id}] has its own patient figure`, d.fig, 1);
+  ck(`11. [${id}] every equipment card draws a glyph`, d.blank, 0);
+  ck(`11. [${id}] every equipment card names a location`, d.noloc, 0);
+  ck(`11. [${id}] carries decoy cards`, d.decoys > 0, true);
+  ck(`11. [${id}] the run sheet has setup, beats and debrief`, d.beats >= 5, true);
+  ck(`11. [${id}] poster prints on one sheet`, await pdfPages('poster'), 1);
+  const want = Math.ceil(d.mon / PER_MON) + Math.ceil(d.eq / PER_EQ);
+  ck(`11. [${id}] card deck prints on ${want} sheets`, await pdfPages('cards'), want);
+  const rs = await pdfPages('sheet');
+  ck(`11. [${id}] run sheet is at most three sheets`, rs >= 1 && rs <= 3, true);
+  /* pdfPages leaves an only-* class on; clear it before the next case. */
+  await pg.evaluate(() => document.body.classList.remove('only-poster','only-cards','only-sheet'));
+}
+await openCase('adult-airway');
 
 ck('10. no page or console errors across the whole run', errs.length, 0);
 if (errs.length) errs.slice(0, 6).forEach(e => console.log('    ' + e));

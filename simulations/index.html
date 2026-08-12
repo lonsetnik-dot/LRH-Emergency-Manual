@@ -126,6 +126,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <div id="simmenu" style="display:grid; grid-template-columns:1fr; gap:8px;">
         <a class="lrh-row" style="--cc:var(--blue)" href="#s01" data-kw="ob birth delivery precipitous shoulder dystocia neonatal resuscitation nrp blue baby warmer ppv mcroberts"><span class="t">SIM 1 · Precipitous Birth → Shoulder Dystocia → Blue Baby</span><span class="spacer"></span><span class="tag">OB · 15 MIN</span></a>
         <a class="lrh-row" style="--cc:var(--blue)" href="#s02" data-kw="ob delivery postpartum hemorrhage pph mtp massive transfusion uterotonics txa jada bleeding"><span class="t">SIM 2 · Delivery → Postpartum Hemorrhage → MTP</span><span class="spacer"></span><span class="tag">OB · 12 MIN</span></a>
+        <a class="lrh-row" style="--cc:var(--blue)" href="#s10" data-kw="ob cord prolapse crash cesarean c-section after hours rsi general anesthetic airway handover role switch neonatal resuscitation newborn two patients"><span class="t">SIM 10 · Prolapsed Cord → Crash Section → ED Doc on Airway → Newborn</span><span class="spacer"></span><span class="tag">OB · 18 MIN</span></a>
         <a class="lrh-row" style="--cc:var(--purple)" href="#s03" data-kw="peds pediatric asthma silent chest arrest pals rosc post-rosc weight broselow epinephrine"><span class="t">SIM 3 · Pediatric Asthma → Arrest → Post-ROSC</span><span class="spacer"></span><span class="tag">PEDS · 15 MIN</span></a>
         <a class="lrh-row" style="--cc:var(--purple)" href="#s04" data-kw="peds pediatric seizure status epilepticus rsi intubation vent crash dope desaturation"><span class="t">SIM 4 · Pediatric Status Epilepticus → RSI → Vent Crash (DOPE)</span><span class="spacer"></span><span class="tag">PEDS · 12 MIN</span></a>
         <a class="lrh-row" style="--cc:var(--red)" href="#s05" data-kw="stemi vf arrest pea code status goals of care family conversation debrief lytics tnk"><span class="t">SIM 5 · STEMI → VF Arrest → PEA → Code Status → Debrief</span><span class="spacer"></span><span class="tag">MEDICAL · 18 MIN</span></a>
@@ -211,6 +212,7 @@ catch(e){ document.body.dataset.theme='dark'; }
           <li class="t-div" style="padding:8px 0; font-size:14px;">Time of birth stamped <b>at</b> delivery, not reconstructed later. Dystocia named out loud within seconds of the turtle sign. Nobody pulls harder — they change geometry.</li>
           <li class="t-div" style="padding:8px 0; font-size:14px;">The baby moves to the warmer with a named person, and PPV starts inside a minute of "not crying."</li>
           <li class="t-div" style="padding:8px 0; font-size:14px;"><a href="../conversations/?from=home#c04">Debrief card</a> prompts: <i>where did the extra hands come from at the dystocia call — and was that the fastest path?</i> · <i>who watched mom while everyone watched the baby?</i></li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Runs on a table as a <a href="../vems/?from=home#precipitous-birth">VEMS deck</a> when you cannot get the room or the people.</li>
         </ul>
       </details>
     </div>
@@ -275,6 +277,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div" style="padding:8px 0; font-size:14px;">Escalation happens on the <b>trajectory</b> (climbing loss + falling BP), not after a magic number. TXA's window is said out loud. The MTP call is a sentence, not a debate.</li>
           <li class="t-div" style="padding:8px 0; font-size:14px;"><a href="../conversations/?from=home#c04">Debrief card</a> prompts: <i>what number or trigger would have made us call MTP one loop earlier?</i> · <i>did the recorder's card-driving keep pace with the room?</i></li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Runs on a table as a <a href="../vems/?from=home#pph">VEMS deck</a> when you cannot get the room or the people.</li>
         </ul>
       </details>
     </div>
@@ -804,6 +807,103 @@ catch(e){ document.body.dataset.theme='dark'; }
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div" style="padding:8px 0; font-size:14px;">Run the <a href="../conversations/?from=home#c04">Debrief card</a> for real — this one needs it, and practicing the emotional debrief after a scripted death is the safest rehearsal there is.</li>
           <li class="t-div" style="padding:8px 0; font-size:14px;">Good looks like: reversible causes attacked before rhythm rituals, a thoracotomy decision made on criteria (either answer can be right — it must be <i>reasoned</i>), a pronouncement with a time, and a notification that doesn't hide behind euphemism.</li>
+        </ul>
+      </details>
+    </div>
+  </article>
+
+  <!-- ================= SIM 10 — OB ================= -->
+  <article id="s10">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">S10</span>Prolapsed Cord → Crash Section → ED Doc on Airway → Newborn</h2>
+        <span class="t-mono-r">OB SET · 18 MIN + DEBRIEF</span>
+      </div>
+      <div class="chain"><span class="ph">CORD PROLAPSE</span><span class="arw">→</span><span class="ph">CRASH SECTION</span><span class="arw">→</span><span class="ph">ED DOC ON AIRWAY</span><span class="arw">→</span><span class="ph">HANDOFF</span><span class="arw">→</span><span class="ph">NEONATAL RESUS</span></div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">SETUP · 2 MIN</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Pillow-mom on the stretcher. A length of IV tubing hanging out from under the gown is the cord. Towel-roll baby hidden. Whiteboard: <b>37 weeks · 02:10 · FHR 70</b>.</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Roles: <b>ED physician</b> (the one who will do everything) · recorder · one or two nurses · facilitator voicing mom, the fetal heart rate and OB on the phone. <b>Deliberately understaff this one</b> — the whole point is 02:10 on a weeknight.</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">The facilitator plays OB arriving at 9 minutes and scrubbing. OB does the operation; OB does <b>not</b> help with the airway or the baby.</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Run this one <b>after</b> the team has done SIM 1, so the newborn half is already familiar and the new load is the role switch, not the NRP.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow-mom + gown · IV tubing as the cord · towel-roll baby · whiteboard for the clock, the FHR and who is holding what.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>OB / Neonatal Cart · C-SECTION drawer:</b> point, don't open — this is the drawer most people have never opened, which is the reason to run this.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>OB / Neonatal Cart · AIRWAY / BREATHING drawer:</b> point — infant BVM + masks for the newborn half.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · airway drawers:</b> point at the RSI kit and the front-of-neck access drawer. Priming FONA before inducing a term pregnant patient at 02:10 is the point of Phase 3.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Radiant warmer:</b> turn it on for real, before the "section" starts. Warm-up time is part of the drill.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 1 · A CORD, AT 02:10</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"37 weeks, membranes ruptured in the car. She walks in and the triage nurse sees <b>a cord in the vagina.</b> Fetal heart rate 70. You are the only physician in the building. <b>First thirty seconds — go.</b>"</div>
+          <a class="golink" href="../ob-neonatal/?from=home">OPEN › OB &amp; NEONATAL</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">A named person gets <b>a hand in to elevate the presenting part</b> and does not come out until delivery. Knee–chest or Trendelenburg, narrated.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">OB is called — and so is <b>everyone else in the building</b>. At 02:10 that call is the difference between one doctor and three people.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › a named person is elevating, the position is changed, and the call-out has gone.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 2 · NINE MINUTES, ALONE</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"Hand is in, FHR is up to 104. <b>OB is nine minutes out and says get her ready to section.</b> What do you do with nine minutes and no anesthetist?"</div>
+          <a class="golink" href="../codes/?from=home#c06">OPEN › CODES · INTUBATION / RSI CHECKLIST</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">The ED physician <b>says out loud that they are the airway</b>. Deciding this before the room is busy is the skill being drilled.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">RSI checklist opened and read aloud by someone else. Warmer on. A person named for the baby — <b>knowing it may have to be the same physician.</b></li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › the airway is claimed out loud, the checklist is open, and the warmer is on.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 3 · CURVEBALL — YOU ARE THE ANESTHETIST</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"OB is scrubbed and waiting on you. <b>Term pregnant, full stomach, two in the morning, and nobody to bail you out.</b> Talk me through your induction."</div>
+          <a class="golink" href="../airway/?from=home">OPEN › AIRWAY · DAS 2025 LADDER</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Pre-oxygenation stated off the card. What is different about <i>this</i> airway is named out loud.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;"><b>A plan B exists and the front-of-neck kit is primed before anyone gives a drug.</b> If it is not, stop the sim and say why — this is the rewind that matters most in this case.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › pre-oxygenation, drugs and a stated plan B all exist before induction, and the tube is confirmed with capnography.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 4 · CURVEBALL — TWO PATIENTS, ONE DOCTOR</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"Baby is out at 02:32 — <b>floppy and blue.</b> Mom is still intubated on the table. <b>You are the only physician. What happens now?</b>"</div>
+          <a class="golink" href="../ob-neonatal/?from=home#c03">OPEN › OB · NEONATAL RESUSCITATION</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">The physician cannot be in two places, so <b>a handover has to be spoken out loud</b>: a named person on mom, a specific number they are watching, and an explicit trigger that brings the doctor back. "Keep an eye on her" does not count.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Time of birth written down. Baby to the warmer. Warm–dry–stimulate, then PPV narrated at the rate off the card — <b>NRP, not the pediatric pathway.</b></li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Facilitator: if the physician walks to the baby without saying anything, <b>freeze it</b> and ask the room who is watching mom. Then run the phase again.</li>
+          </ul>
+          <div class="adv">END WHEN › a named person holds mom with an explicit call-back trigger, effective PPV is running, and both patients have a stated destination.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-green">
+        <summary class="t-head t-head-green">WHAT GOOD LOOKS LIKE + DEBRIEF</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px;">The airway role is <b>claimed early and out loud</b>, not assumed in the moment. FONA is primed before induction because there is no second physician. The handover at delivery is a sentence with a name, a number and a trigger in it.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Time of birth is stamped at delivery. Somebody reports on mom without being asked.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;"><a href="../conversations/?from=home#c04">Debrief card</a> prompts: <i>at 02:10 on a weeknight, who else is actually in this building — and did we call all of them in the first minute?</i> · <i>when the baby came out, what exactly was said about the mother? quote it.</i></li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Runs on a table as a <a href="../vems/?from=home#cord-prolapse">VEMS deck</a> when you cannot get the room or the people.</li>
         </ul>
       </details>
     </div>
