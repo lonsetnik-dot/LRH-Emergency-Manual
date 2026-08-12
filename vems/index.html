@@ -1,0 +1,671 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#005596">
+<title>LRH VEMS Kit — Visually Enhanced Mental Simulation</title>
+<meta name="description" content="Printable, laminatable Visually Enhanced Mental Simulation kit: patient poster, monitor cards and equipment cards drawn with the same glyphs as the code cart drawer labels. Training aid only.">
+<link rel="canonical" href="https://lrhemergencymanual.net/vems/">
+<style>
+/* @design-system */
+/* ---- VEMS-specific chrome. Everything above is the shared card-tool skeleton
+   (tokens, .hdr, .t-box-*, .t-div) injected from design-system.css so this page
+   is the same product as simulations/ and codes/. Below is only what is
+   genuinely specific to a printed, laminated card deck. ---- */
+
+/* ===== SCREEN — the facilitator's prep view ============================== */
+.wrap{max-width:820px;margin:0 auto;padding:0 0 48px}
+.vlede{margin:14px 14px 0;font-size:15px;line-height:1.55;color:var(--ink)}
+.vgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:8px;padding:4px 12px 12px}
+.vchip{background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px;text-align:center}
+.vchip svg{width:52px;height:52px;display:block;margin:0 auto 5px}
+.vchip .n{font-size:12.5px;font-weight:800;line-height:1.25}
+.vchip .l{font-size:10.5px;color:var(--ink2);margin-top:3px;line-height:1.3}
+.vchip.decoy{border-style:dashed;opacity:.72}
+/* The icons are authored as black-on-white silhouettes for paper. On the dark
+   screen theme they would vanish, so the swatch keeps its own light ground
+   rather than the icons being redrawn per theme — paper is the primary output
+   and it must not be compromised for the screen preview. */
+.vchip .sw{background:#fffefb;border-radius:8px;padding:6px 0}
+.beat{margin:8px 14px 0;border:1px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden}
+.beat>h3{margin:0;padding:11px 13px;font:800 12.5px var(--sans,inherit);letter-spacing:.1em;background:var(--card2);border-bottom:1px solid var(--line)}
+.beat .bd{padding:11px 13px}
+.stem{border-left:3px solid var(--blue);background:var(--card2);padding:9px 11px;border-radius:0 8px 8px 0;font-style:italic;font-size:14.5px;line-height:1.5}
+.stem b{font-style:normal}
+.flip{display:inline-block;margin-top:9px;border:1.5px dashed var(--amber);color:var(--amber);border-radius:9px;padding:6px 10px;font:800 11.5px var(--mono,ui-monospace,monospace);letter-spacing:.06em}
+.adv{margin-top:9px;font:800 11.5px var(--mono,ui-monospace,monospace);letter-spacing:.05em;color:var(--amber)}
+.golink{display:inline-flex;align-items:center;min-height:38px;margin-top:8px;padding:0 13px;border:1px solid var(--teal);color:var(--teal);border-radius:999px;font:800 12px var(--mono,ui-monospace,monospace);letter-spacing:.04em;text-decoration:none}
+.prow{display:flex;gap:8px;flex-wrap:wrap;padding:10px 14px 0}
+.pbtn{flex:1 1 200px;min-height:52px;border:none;border-radius:12px;background:var(--accent);color:#fff;font:800 13.5px var(--sans,inherit);letter-spacing:.05em;cursor:pointer}
+.pbtn.alt{background:var(--card2);color:var(--ink);border:1px solid var(--line)}
+
+/* ===== PRINT — the kit itself ============================================
+   Three separately printable decks, because they are made of different things:
+   the patient poster wants one whole sheet, the cards want a cut-up grid, and
+   the run sheet is the facilitator's private document that participants must
+   not see. Each deck is a .psheet that starts its own page. */
+.printonly{display:none}
+@media screen{
+  .kit{border:1px solid var(--line);border-radius:12px;margin:10px 14px 0;padding:10px;background:var(--card)}
+  .kit .prevnote{font-size:12.5px;color:var(--ink2);line-height:1.45}
+}
+@media print{
+  @page{size:letter portrait;margin:0.4in}
+  /* Paper is always light, whatever the screen theme was. Icons are #111 on
+     #fffefb and must print that way on a mono laser printer. */
+  body[data-theme]{--bg:#fff;--card:#fff;--card2:#fff;--ink:#141E2B;--ink2:#5A6A7D;
+    --line:#b9c2cc;--accent:#00693E;--red:#C63238;--amber:#B07E13;--blue:#2F6FB5;
+    --green:#1F7F49;--teal:#1F7E7E;--sev-crit:#9b1c2e;--sev-caution:#8a6d1f;background:#fff}
+  html,body{background:#fff}
+  .screenonly,.hdr,.prow,.t-localize,#betasplash{display:none !important}
+  .printonly{display:block}
+  .wrap{max-width:none;padding:0}
+  .kit{border:none;margin:0;padding:0}
+  .psheet{break-before:page;page-break-before:always}
+  .psheet:first-of-type{break-before:auto;page-break-before:auto}
+  /* Print only the deck the facilitator asked for. body.only-X is set by the
+     print buttons and cleared again after the dialog closes. */
+  body.only-poster .psheet:not(.d-poster),
+  body.only-cards  .psheet:not(.d-cards),
+  body.only-sheet  .psheet:not(.d-sheet){display:none !important}
+  body.only-poster .d-poster,body.only-cards .d-cards:first-of-type,
+  body.only-sheet .d-sheet{break-before:auto;page-break-before:auto}
+}
+.pttl{font:800 10pt var(--mono,ui-monospace,monospace);letter-spacing:.2em;color:#5a6a78;border-bottom:2pt solid #16324f;padding-bottom:3pt;margin-bottom:8pt}
+
+/* --- the patient poster: the "external representation of the patient" ----- */
+.ppatient{border:2.5pt solid #16324f;padding:10pt}
+.ppatient h2{margin:0 0 2pt;font-size:22pt;line-height:1;text-transform:uppercase;color:#16324f}
+.ppatient .sub{font:700 10pt var(--mono,ui-monospace,monospace);letter-spacing:.1em;color:#9b1c2e;margin-bottom:8pt}
+.pfig{border:1pt solid #d7dde3;background:#fffefb}
+.pvitals{display:flex;border:2pt solid #16324f;margin-top:8pt}
+.pvitals .c{flex:1;text-align:center;padding:5pt 2pt;border-left:1pt solid #d7dde3}
+.pvitals .c:first-child{border-left:none}
+.pvitals .v{font:800 17pt var(--mono,ui-monospace,monospace);color:#9b1c2e}
+.pvitals .l{font:700 6.6pt var(--mono,ui-monospace,monospace);letter-spacing:.1em;color:#5a6a78}
+.plane{margin-top:8pt;border:1pt dashed #b9c2cc;padding:7pt;font-size:9.5pt;line-height:1.4;color:#16324f}
+
+/* --- the cut-up card grids -----------------------------------------------
+   box-sizing is scoped here rather than set globally: design-system.css does
+   not set it, and these are the only boxes in the file whose STATED height has
+   to be their REAL height. Without it the padding and border are added on top,
+   three rows come to 9.5 in instead of 8.7 in, and the last row of cards slides
+   onto a second sheet — which you only discover at the laminator. */
+.psheet,.psheet *{box-sizing:border-box}
+.cardgrid{display:grid;gap:0}
+.cardgrid.eq{grid-template-columns:repeat(3,1fr)}
+.cardgrid.mon{grid-template-columns:repeat(2,1fr)}
+.pcard{border:1pt dashed #9aa6b2;padding:7pt;text-align:center;break-inside:avoid;page-break-inside:avoid;
+       display:flex;flex-direction:column;align-items:center;justify-content:flex-start}
+.cardgrid.eq .pcard{height:2.9in}
+.cardgrid.mon .pcard{height:3.35in;justify-content:center}
+.pcard .sw{background:#fffefb;width:100%}
+.pcard svg{width:1.32in;height:1.32in;display:block;margin:0 auto}
+.pcard .nm{font:800 12pt inherit;line-height:1.15;margin-top:4pt;color:#16324f}
+.pcard .sz{font:700 8.4pt var(--mono,ui-monospace,monospace);letter-spacing:.05em;color:#9b1c2e;margin-top:3pt}
+.pcard .lo{font:700 7.2pt var(--mono,ui-monospace,monospace);letter-spacing:.04em;color:#5a6a78;margin-top:auto;
+           border-top:1pt solid #e2e7ec;padding-top:4pt;width:100%;line-height:1.3}
+.pcard.decoy .nm::after{content:"";}
+/* Monitor cards: the number IS the card. Everything else is chrome. */
+.pcard.moncard{background:#16324f;border:1pt dashed #9aa6b2}
+.pcard.moncard .st{font:800 8.5pt var(--mono,ui-monospace,monospace);letter-spacing:.16em;color:#9ec2e8}
+.monrow{display:flex;width:100%;margin-top:6pt}
+.monrow .c{flex:1;text-align:center;padding:3pt 1pt}
+.monrow .v{font:800 20pt var(--mono,ui-monospace,monospace);color:#fffefb;line-height:1}
+.monrow .l{font:700 6.4pt var(--mono,ui-monospace,monospace);letter-spacing:.1em;color:#9ec2e8;margin-top:2pt}
+.moncard .cue{font:700 7.6pt var(--mono,ui-monospace,monospace);color:#f0b429;margin-top:6pt;line-height:1.35}
+
+/* --- the facilitator run sheet ------------------------------------------- */
+.rs{font-size:9.6pt;line-height:1.4;color:#16324f}
+.rs .rb{border:1pt solid #b9c2cc;margin-bottom:6pt;break-inside:avoid;page-break-inside:avoid}
+.rs .rb h4{margin:0;padding:4pt 6pt;font:800 8.4pt var(--mono,ui-monospace,monospace);letter-spacing:.12em;
+           background:#eef1f5;border-bottom:1pt solid #b9c2cc;color:#16324f}
+.rs .rb .in{padding:5pt 6pt}
+.rs .say{border-left:2.5pt solid #2f62a8;padding:3pt 6pt;font-style:italic;margin-bottom:4pt}
+.rs .say b{font-style:normal}
+.rs .tr{font:800 8pt var(--mono,ui-monospace,monospace);color:#8a6d1f;margin-top:3pt}
+.rs .fl{font:800 8pt var(--mono,ui-monospace,monospace);color:#9b1c2e;margin-top:3pt}
+.rs ul{margin:3pt 0 0;padding-left:13pt}
+.pfoot{border-top:1pt solid #16324f;margin-top:6pt;padding-top:3pt;
+       font:400 6.6pt var(--mono,ui-monospace,monospace);line-height:1.35;color:#5a6a78}
+</style>
+</head>
+<body data-theme="dark">
+<script>
+/* Shared persisted theme, applied before paint (lrh-pref-theme; outside any
+   RESET sweep — CASE-STATE.md). */
+try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+catch(e){ document.body.dataset.theme='dark'; }
+</script>
+
+<div id="betasplash" class="screenonly" style="position:fixed;inset:0;z-index:9999;background:linear-gradient(160deg,#005596,#003e6e);color:#fffefb;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center">
+  <div style="font:800 11px ui-monospace,monospace;letter-spacing:.22em;border:1.5px solid rgba(255,255,255,.6);padding:6px 12px;border-radius:999px">TRAINING ONLY</div>
+  <div style="font-size:25px;font-weight:800;margin:16px 0 8px;line-height:1.2">VEMS Kit</div>
+  <div style="font-size:15px;line-height:1.5;max-width:26em;opacity:.92">Printed cards on a table. <b>The patient is a picture.</b> Nothing here is used during live patient care.</div>
+  <button type="button" id="betago" style="margin-top:22px;min-height:52px;padding:0 22px;border:none;border-radius:12px;background:#fffefb;color:#00365e;font:800 14px system-ui,sans-serif;cursor:pointer">I UNDERSTAND — CONTINUE</button>
+</div>
+
+<div class="wrap">
+
+  <div class="hdr screenonly">
+    <a class="ghost" href="../?from=tool" style="text-decoration:none">&#9664; MANUAL</a>
+    <span class="plabel">VEMS KIT</span>
+    <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
+  </div>
+
+  <div class="t-localize screenonly">
+    <b>&#9888; IN-SITU SIM SAFETY:</b> announce &ldquo;this is a simulation&rdquo; before you start and again if anyone new
+    walks in. Point at drawers &mdash; <b>do not open the cart or break sterile packaging</b>. The cards exist so the
+    real stock stays untouched. Stand the drill down immediately if the department needs the room.
+  </div>
+
+  <div class="vlede screenonly" id="lede"></div>
+
+  <div class="prow screenonly">
+    <button class="pbtn" type="button" data-print="poster">PRINT PATIENT POSTER</button>
+    <button class="pbtn" type="button" data-print="cards">PRINT THE CARD DECK</button>
+    <button class="pbtn alt" type="button" data-print="sheet">PRINT FACILITATOR SHEET</button>
+  </div>
+
+  <div class="screenonly" id="screenbody"></div>
+
+  <!-- ============ THE KIT ITSELF — screen preview + print output ========== -->
+  <div class="kit" id="kit"></div>
+
+  <div class="t-sub screenonly" id="sources"></div>
+  <div class="t-foot screenonly">
+    <span class="verstamp"></span> &mdash; personal/unofficial training aid, not part of the hospital IT system/EHR,
+    not a substitute for clinical judgment or an accredited simulation program. Never run this during live patient
+    care without announcing and staffing around it.
+  </div>
+</div>
+
+<script>
+/* @icons */
+/* @inventory */
+(function(){
+'use strict';
+
+/* ============================ SITE CONFIG ==================================
+   Everything an adopting ED changes lives here. The VEMS METHOD above this
+   block is universal; the CASE below is clinical content that cites the tools
+   it links to; this is the local layer — where your kit lives, what your
+   drawers are called, what sizes you actually stock.
+
+   Cart/drawer strings are looked up from inventory.js (INV_DIRECTORY /
+   INV_LOCATIONS) wherever one exists, so a site that re-maps its carts in the
+   inventory does not have to re-edit this file too. `loc` here is the FALLBACK
+   used when an item has no inventory entry.
+   ========================================================================== */
+var SITE = {
+  version:"0.1", lastReviewed:"2026-08-12",
+  site:"LRH", room:"Resus bay or the education room — a table the whole team can stand around",
+  /* Print geometry. Letter is the US default; a fork on A4 changes this one
+     line and the @page rule in the stylesheet. */
+  paper:"letter portrait",
+  /* Laminating: 3 equipment cards per row x 3 rows = 9 per sheet at roughly
+     2.4 x 2.95 in, which fits the common 2.56 x 3.75 in pouch after cutting.
+     A site with letter-size pouches only can laminate the whole sheet first
+     and cut afterwards — the dashed rules are printed for exactly that. */
+  laminate:"Cut on the dashed rules, then laminate. Letter pouches: laminate the whole sheet first, then cut.",
+  /* The monitor is a card the facilitator lays down, replacing the sim
+     convention of the facilitator saying "sat is 82" out loud. */
+  monitorLabels:{ spo2:"SpO₂ %", hr:"HR", bp:"NIBP", etco2:"EtCO₂" }
+};
+try{ window.SITE = SITE; }catch(e){}
+
+/* ===== THE VEMS METHOD (universal — a fork keeps this) ==================== */
+var METHOD = {
+  what:"Visually Enhanced Mental Simulation (VEMS) is mental simulation plus think-aloud, run over flat, "+
+       "laminated representations of the patient and of the equipment the team reaches for. There is no "+
+       "mannequin, no wiring and no consumables: a table, the printed kit, a facilitator and a team.",
+  why:"It is the format this department can actually run often. A mannequin drill needs a room, a technician "+
+      "and an hour; this needs fifteen minutes and a table, so it can happen on a quiet shift instead of once "+
+      "a quarter. Because there is nothing to reset, a segment can be re-run immediately — which is what "+
+      "makes deliberate practice possible.",
+  /* The two delivery formats named in the source material. Both are supported
+     by the run sheet: every beat has an ADVANCE WHEN trigger you can pause on,
+     and a FLIP TO line you can rewind to. */
+  formats:[
+    { n:"PAUSE AND DISCUSS", d:"Stop at each ADVANCE WHEN, talk about what just happened, then move on. Best for a new team, or the first time through a case." },
+    { n:"LIVE DIE REPEAT", d:"Run it straight through. If the team goes down a path that would kill the patient, say so plainly, reset the cards to the previous beat and run that segment again. Best for a team that has already seen the case." }
+  ],
+  roles:[
+    { n:"FACILITATOR", d:"Reads the stems aloud, lays down the monitor cards, and answers questions in role. Holds the run sheet — participants should not see it." },
+    { n:"TEAM LEADER", d:"Runs the resuscitation out loud. Names who is doing what." },
+    { n:"RECORDER", d:"Drives the manual on a phone or tablet — opening the linked card is itself the skill being practiced." },
+    { n:"EVERYONE", d:"Places an equipment card on the patient poster to show an action, and says what they are doing while they do it. An action that is not verbalized did not happen." }
+  ],
+  setup:[
+    "Lay the PATIENT POSTER in the middle of the table where everyone can reach it.",
+    "Spread the EQUIPMENT CARDS face up beside it. Do not sort them by plan — finding the right card is part of the exercise.",
+    "Keep the MONITOR CARDS face down in front of the facilitator, in beat order.",
+    "Announce “this is a simulation”. Say out loud that nobody opens a real drawer.",
+    "Read the opening stem, lay down monitor card M1, and start the clock."
+  ]
+};
+
+/* ===== THE CASE (clinical content; every value cites the card it comes from)
+   This is the printed companion to simulations/ SIM 9 (Angioedema -> Failed
+   Airway Ladder -> FONA) and it deliberately adds NO clinical numbers of its
+   own: doses, ceilings and the ladder itself live on the linked cards, which
+   carry their own citations. What this file adds is the physical staging.
+   ======================================================================== */
+var CASE = {
+  id:"vems-adult-airway",
+  title:"Adult Failed Airway",
+  chain:["ANGIOEDEMA","FAILED LADDER","SALAD","CICO","FONA"],
+  minutes:15,
+  who:"55-year-old, on lisinopril, woke with a swollen tongue and is now stridulous and frightened. Sitting bolt upright.",
+  /* The poster's printed baseline. The monitor CARDS carry the trajectory. */
+  baseline:{ spo2:"94", hr:"112", bp:"168/94", etco2:"—" },
+  /* Monitor cards, in the order the facilitator lays them down. `cue` is the
+     one line the facilitator reads while placing it. */
+  monitor:[
+    { id:"M1", st:"BEAT 1 · ON ARRIVAL", spo2:"94", hr:"112", bp:"168/94", etco2:"—",
+      cue:"Awake, stridor audible across the room, voice muffled." },
+    { id:"M2", st:"BEAT 2 · PRE-OXYGENATING", spo2:"97", hr:"118", bp:"172/96", etco2:"—",
+      cue:"Tolerating the mask. Tongue visibly larger than five minutes ago." },
+    { id:"M3", st:"BEAT 3 · POST-INDUCTION", spo2:"91", hr:"124", bp:"150/88", etco2:"—",
+      cue:"Apneic and paralyzed. First look: swollen, no landmarks." },
+    { id:"M4", st:"BEAT 4 · SOILED + FALLING", spo2:"78", hr:"131", bp:"138/80", etco2:"—",
+      cue:"Blood and secretions fill the view. The tone drops as you speak." },
+    { id:"M5", st:"BEAT 5 · CANNOT OXYGENATE", spo2:"61", hr:"126", bp:"120/70", etco2:"—",
+      cue:"SAD will not seat. Two-person mask moves nothing. The tone is a wail." },
+    { id:"M6", st:"BEAT 6 · AFTER THE NECK", spo2:"88", hr:"118", bp:"126/74", etco2:"41",
+      cue:"Waveform on the monitor. Chest rising. Sat climbing." }
+  ],
+  /* Facilitator beats. `flip` names the monitor card that goes down with the
+     stem; `adv` is the trigger to move on (the pause point in PAUSE AND
+     DISCUSS); `fail` is the Live-Die-Repeat rewind condition, where one exists. */
+  beats:[
+    { n:"BEAT 1 · THE AIRWAY YOU CAN SEE CLOSING", flip:"M1",
+      say:"“EMS brings in a 55-year-old on lisinopril. He woke up with a swollen tongue and it is getting worse. He is sitting up, he is stridulous, and he will not lie down. <b>What do you want, and who do you want in the room?</b>”",
+      link:{ t:"CODES · ANGIOEDEMA", h:"../codes/?from=home#c16" },
+      does:["Team names the diagnosis out loud and calls for help EARLY — before the airway is lost, not after.",
+            "Somebody puts the FONA card on the table now. Priming is a Beat 1 action, not a Beat 5 action.",
+            "Cards placed: MONITOR, MEDICATIONS, and the airway cards staged in reach."],
+      adv:"the team has called for help and named the plan A / plan B / plan D devices out loud.",
+      fail:"nobody primes for front of neck access — note it, and let the case run; it will cost them at Beat 5." },
+
+    { n:"BEAT 2 · PRE-OXYGENATE AND DECIDE", flip:"M2",
+      say:"“He is on high-flow now and the sat comes up. But his tongue is visibly bigger than it was five minutes ago and his voice has gone. <b>Are you inducing this patient, and what is your plan if you cannot see anything?</b>”",
+      link:{ t:"AIRWAY · DAS 2025 LADDER", h:"../airway/?from=home" },
+      does:["Recorder opens the airway ladder and reads the pre-induction card off the screen — the numbers live there, not here.",
+            "The plan is stated as a sequence with a ceiling, not as “we will try”.",
+            "Cards placed: VIDEO LARYNGOSCOPE and the SUCTION card, both within reach of the poster."],
+      adv:"a named plan A, B, C and D exist and the attempt ceiling has been said out loud." },
+
+    { n:"BEAT 3 · PLAN A FAILS", flip:"M3",
+      say:"“He is asleep and paralyzed. First look: the tongue fills the view, you cannot identify anything. <b>Say what you see and say what you are doing about it.</b>”",
+      link:{ t:"AIRWAY · DAS 2025 LADDER", h:"../airway/?from=home" },
+      does:["Each attempt is called out and something is CHANGED between attempts — the change is named.",
+            "The recorder is counting attempts on the ladder screen, out loud.",
+            "Watch for silent repetition: three identical looks is the failure mode this beat exists to expose."],
+      adv:"failed intubation is declared, or the configured attempt ceiling is reached and the team moves to plan B.",
+      fail:"a fourth and fifth look with nothing changed — stop, say “he has been apneic for four minutes”, rewind to the start of the beat." },
+
+    { n:"BEAT 4 · SOILED AIRWAY", flip:"M4",
+      say:"“Blood and secretions fill the view. <b>The sat is falling while you look.</b> What now?”",
+      link:{ t:"PROCEDURES · SALAD", h:"../procedures/?from=home#c15" },
+      does:["Somebody reaches for suction FIRST and says why — you cannot fix a view you cannot see.",
+            "Cards placed: SUCTION / SALAD on the poster.",
+            "The leader should be sounding out loud like someone running out of road. If the room is calm here, the trajectory is not being felt."],
+      adv:"suction is in use and the team has moved to a supraglottic airway or declared plan B failed." },
+
+    { n:"BEAT 5 · CANNOT INTUBATE, CANNOT OXYGENATE", flip:"M5",
+      say:"“The SAD will not seat. Two people on the mask, four hands, adjuncts in — nothing moves. <b>The sat is 61.</b>”",
+      link:{ t:"CODES · FRONT OF NECK ACCESS (FONA)", h:"../codes/?from=home#c18" },
+      does:["Somebody must SAY the words “cannot intubate, cannot oxygenate”. Declaring it is the skill; the knife is the easy part.",
+            "Cards placed: SCALPEL, BOUGIE, TUBE — in that order, on the neck of the patient poster.",
+            "Confirm full neuromuscular block is stated before the neck is cut."],
+      adv:"CICO is declared out loud and the scalpel-bougie-tube sequence is named in order.",
+      fail:"the team keeps trying to intubate past CICO — this is the single most important rewind in the case. Say “he has been at 60 percent for two minutes” and run the beat again." },
+
+    { n:"BEAT 6 · AFTER THE NECK", flip:"M6",
+      say:"“The tube is in the trachea. <b>Waveform on the monitor, chest rising, sat climbing.</b> What are the next three things?”",
+      link:{ t:"AIRWAY · DAS 2025 LADDER", h:"../airway/?from=home" },
+      does:["Capnography is named as the confirmation — every time, no exceptions.",
+            "Tube secured, depth checked, post-procedure plan and transfer named.",
+            "Somebody says out loud that this goes to M&M review and that the team gets a debrief."],
+      adv:"the airway is secured, capnography is stated, and M&M / debrief is named. Stop the clock." }
+  ],
+  /* Debrief prompts. The debrief card carries the structure; these are the
+     questions specific to this case. */
+  debrief:[
+    "What was the earliest moment we could have known this would end at the neck? What would we have done differently at that moment?",
+    "Did anyone say “I am worried” out loud? If not, what stopped them?",
+    "How long was it between the sat falling and someone saying CICO? Say the number.",
+    "Every card you placed — could you find the real thing in the real drawer right now, in the dark, in under ten seconds?"
+  ],
+  /* The equipment deck. `icon` MUST be a key in the shared icon set, which is
+     the same set the cart drawer labels use (issue #131) — that identity is
+     the point, so an unknown key is a build-visible blank, not a silent swap.
+     `inv` points at an inventory.js LOCATIONS id where one models the item;
+     `drawer` names the cart drawer from INV_DIRECTORY where it does not.
+     `decoy` = deliberately in the deck but NOT indicated here. VEMS asks people
+     to choose a card; a deck containing only correct answers is not a choice. */
+  kit:[
+    { icon:"monitor", n:"Monitor",              sz:"SpO₂ · ETCO₂ · NIBP", inv:"defib-peds" },
+    { icon:"mask",    n:"Face Mask / BVM",      sz:"ADULT",            drawer:"Resus bay", unconfirmed:1 },
+    { icon:"airway",  n:"OPA / NPA",            sz:"SET",              inv:"opa-0-5" },
+    { icon:"etco2",   n:"End-Tidal CO₂",        sz:"WAVEFORM",         inv:"etco2" },
+    { icon:"meds",    n:"Induction + Paralytic",sz:"SAY THE DOSE",     drawer:"Code Cart · Medications" },
+    { icon:"vl",      n:"Video Laryngoscope",   sz:"McGRATH MAC",      drawer:"Code Cart · Video Laryngoscopy" },
+    { icon:"dl",      n:"Direct Laryngoscope",  sz:"MACINTOSH",        drawer:"Code Cart · Direct Laryngoscopy" },
+    { icon:"ett",     n:"ETT + Bougie",         sz:"CUFFED",           inv:"ett-range" },
+    { icon:"suction", n:"Suction / SALAD",      sz:"YANKAUER + CATH",  inv:"suction-cath-5-14" },
+    { icon:"igel",    n:"iGel",                 sz:"SIZE BY WEIGHT",   inv:"sga-1-5" },
+    { icon:"fona",    n:"Front of Neck Access", sz:"CICO",             drawer:"Code Cart · Front of Neck Access" },
+    { icon:"scalpel", n:"Scalpel",              sz:"SIZE 10",          drawer:"Trauma Cart · Scalpel" },
+    { icon:"iv",      n:"IV Access",            sz:"LARGE BORE",       drawer:"Code Cart · I.V. Supplies" },
+    { icon:"ezio",    n:"EZ-IO",                sz:"ADULT",            inv:"io-needles" },
+    /* Decoys. Each is a real thing this department stocks, and each is a
+       plausible wrong turn in exactly this case — which is what makes reaching
+       for it a decision worth debriefing rather than a trick. */
+    { icon:"jet",     n:"Jet Ventilation",      sz:"NOT THE 2025 PLAN D", drawer:"Code Cart · Jet Ventilation", decoy:1 },
+    { icon:"ngt",     n:"Nasogastric Tube",     sz:"NOT NOW",          inv:"ng-8-18", decoy:1 },
+    { icon:"nose",    n:"Epistaxis Kit",        sz:"WRONG BLEED",      inv:"kit-epistaxis", decoy:1 },
+    { icon:"fluid",   n:"IV Fluid",             sz:"WON'T FIX THIS",   drawer:"Code Cart · I.V. Fluids", decoy:1 }
+  ],
+  sources:"Scenario staging follows the Visually Enhanced Mental Simulation format: Brazil V, et al. "+
+    "<i>Visually Enhanced Mental Simulation (VEMS) — an alternative simulation delivery format?</i> "+
+    "Royal College ICE Blog, 12 April 2022; and Brazil V, et al. <i>Recommendations for the design and "+
+    "delivery of Visually Enhanced Mental Simulation: insights from participants and facilitators.</i> "+
+    "Journal of Healthcare Simulation 2025, doi:10.54531/NDXV6633. The airway sequence is the DAS 2025 "+
+    "ladder as implemented in <a href=\"../airway/?from=home\">airway/</a>; angioedema, FONA and SALAD "+
+    "content lives on the linked cards. <b>This kit adds no clinical values of its own</b> — every "+
+    "dose, ceiling and threshold stays on the card that cites it, so there is only ever one place to "+
+    "update a number."
+};
+
+/* ---------------------------------------------------------------------- */
+var $=function(i){return document.getElementById(i);};
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+/* An icon that is missing from the shared set must be visible, not silent: the
+   whole point of issue #131 is that the card matches the drawer label. */
+function svg(id){
+  var body = (typeof I==='object' && I[id]) ? I[id] : '';
+  if(!body && typeof console!=='undefined' && console.warn) console.warn('[vems] no icon named',id);
+  return '<svg viewBox="0 0 100 100" role="img" aria-label="'+esc(id)+'">'+body+'</svg>';
+}
+
+/* Where an item lives. Prefer the inventory's own local map so a site that
+   re-maps its carts there does not have to edit this file as well; fall back to
+   the card's own `drawer` for items the inventory does not model. */
+function where(item){
+  try{
+    if(item.inv && typeof INV_LOCATIONS==='object' && INV_LOCATIONS[item.inv] && INV_LOCATIONS[item.inv].loc){
+      var e=INV_LOCATIONS[item.inv];
+      /* inventory.js marks a location `verify:true` when it is believed but not
+         yet confirmed on a cart walk. Carry that doubt onto the card instead of
+         laundering it into a confident-looking label — a drill that sends
+         someone to the wrong drawer teaches the wrong drawer. */
+      return e.loc + (e.verify ? ' · CONFIRM ON YOUR CART' : '');
+    }
+  }catch(err){}
+  return (item.drawer || '') + (item.unconfirmed ? ' · CONFIRM ON YOUR CART' : '');
+}
+
+/* ===== SCREEN ============================================================ */
+function paintScreen(){
+  $('lede').innerHTML = esc(METHOD.what)+' <b>'+esc(CASE.title)+'</b> is the case built out below: '+
+    CASE.chain.map(esc).join(' &rarr; ')+', about '+CASE.minutes+' minutes plus a debrief. '+
+    'It is the printed companion to <a href="../simulations/?from=home#s09">SIM 9</a> in the simulations tool.';
+
+  var h='';
+  h+='<div class="beat"><h3>WHY THIS FORMAT</h3><div class="bd" style="font-size:14.5px;line-height:1.55">'+
+     esc(METHOD.why)+'</div></div>';
+
+  h+='<div class="beat"><h3>TWO WAYS TO RUN IT</h3><div class="bd">';
+  METHOD.formats.forEach(function(f){
+    h+='<div class="t-div" style="padding:8px 0;font-size:14px;line-height:1.45"><b>'+esc(f.n)+'</b> &mdash; '+esc(f.d)+'</div>';
+  });
+  h+='</div></div>';
+
+  h+='<div class="beat"><h3>ROLES</h3><div class="bd">';
+  METHOD.roles.forEach(function(r){
+    h+='<div class="t-div" style="padding:8px 0;font-size:14px;line-height:1.45"><b>'+esc(r.n)+'</b> &mdash; '+esc(r.d)+'</div>';
+  });
+  h+='</div></div>';
+
+  h+='<div class="beat"><h3>SETTING THE TABLE</h3><div class="bd"><ol style="margin:0;padding-left:18px;font-size:14px;line-height:1.55">';
+  METHOD.setup.forEach(function(s){ h+='<li style="margin:5px 0">'+esc(s)+'</li>'; });
+  h+='</ol><div style="margin-top:9px;font-size:13px;color:var(--ink2);line-height:1.45"><b>Room:</b> '+
+     esc(SITE.room)+'<br><b>Laminating:</b> '+esc(SITE.laminate)+'</div></div></div>';
+
+  /* The deck, on screen, so a facilitator can check the icons before printing. */
+  h+='<div class="beat"><h3>THE DECK &mdash; '+CASE.kit.length+' EQUIPMENT CARDS</h3>'+
+     '<div class="bd" style="padding-bottom:2px"><div style="font-size:13.5px;line-height:1.5;color:var(--ink2)">'+
+     'Same glyphs as the cart drawer labels &mdash; a card and the drawer it comes out of must look like the same '+
+     'thing. Dashed cards are <b>decoys</b>: real stock, wrong answer for this case, in the deck on purpose so '+
+     'choosing is a real decision.</div></div><div class="vgrid">';
+  CASE.kit.forEach(function(k){
+    h+='<div class="vchip'+(k.decoy?' decoy':'')+'"><div class="sw">'+svg(k.icon)+'</div>'+
+       '<div class="n">'+esc(k.n)+'</div><div class="l">'+esc(where(k))+'</div></div>';
+  });
+  h+='</div></div>';
+
+  /* The run sheet on screen too — this is the facilitator's prep read. */
+  h+='<div class="beat"><h3>RUN SHEET &mdash; '+CASE.beats.length+' BEATS</h3><div class="bd">'+
+     '<div style="font-size:13.5px;line-height:1.5;color:var(--ink2);margin-bottom:8px">'+
+     'Participants should not read this. Print it separately and keep it face down.</div></div></div>';
+  CASE.beats.forEach(function(b){
+    h+='<div class="beat"><h3>'+esc(b.n)+'</h3><div class="bd">'+
+       '<div class="stem">'+b.say+'</div>'+
+       '<div class="flip">LAY DOWN MONITOR CARD '+esc(b.flip)+'</div><br>'+
+       '<a class="golink" href="'+esc(b.link.h)+'">OPEN &rsaquo; '+esc(b.link.t)+'</a>'+
+       '<ul style="margin:8px 0 0;padding:0;list-style:none">';
+    b.does.forEach(function(d){ h+='<li class="t-div" style="padding:8px 0;font-size:14px;line-height:1.45">'+d+'</li>'; });
+    h+='</ul><div class="adv">ADVANCE WHEN &rsaquo; '+esc(b.adv)+'</div>'+
+       (b.fail?'<div class="adv" style="color:var(--red)">REWIND IF &rsaquo; '+esc(b.fail)+'</div>':'')+
+       '</div></div>';
+  });
+
+  h+='<div class="beat"><h3>DEBRIEF</h3><div class="bd">'+
+     '<a class="golink" href="../conversations/?from=home#c04">OPEN &rsaquo; CONVERSATIONS · DEBRIEF</a><ul style="margin:8px 0 0;padding:0;list-style:none">';
+  CASE.debrief.forEach(function(d){ h+='<li class="t-div" style="padding:8px 0;font-size:14px;line-height:1.45">'+esc(d)+'</li>'; });
+  h+='</ul></div></div>';
+
+  $('screenbody').innerHTML=h;
+  $('sources').innerHTML='<b>Sources &amp; method:</b> '+CASE.sources;
+}
+
+/* ===== THE PRINTED KIT =================================================== */
+function foot(what){
+  return '<div class="pfoot">'+esc(what)+' · '+esc(CASE.title)+' · v'+SITE.version+
+    ' · last reviewed '+SITE.lastReviewed+' · '+esc(SITE.site)+
+    ' — TRAINING AID ONLY. Not part of the hospital IT system/EHR, not a substitute for clinical judgment. '+
+    'Clinical values live on the linked cards, not on this sheet.</div>';
+}
+
+function posterSheet(){
+  var b=CASE.baseline, L=SITE.monitorLabels;
+  var h='<section class="psheet d-poster">';
+  h+='<div class="pttl">VEMS · PATIENT POSTER — LAY THIS IN THE MIDDLE OF THE TABLE</div>';
+  h+='<div class="ppatient"><h2>'+esc(CASE.title)+'</h2>'+
+     '<div class="sub">'+CASE.chain.map(esc).join(' → ')+'</div>'+
+     '<div style="font-size:11.5pt;line-height:1.35;margin-bottom:7pt">'+esc(CASE.who)+'</div>';
+
+  /* The patient figure. Deliberately a head-and-neck, upright, three-quarter
+     view rather than a whole supine body: this case is decided at the neck, and
+     the poster has to have a place where SCALPEL, BOUGIE and TUBE physically go
+     in order. Anatomy is schematic on purpose — it is a place to put cards, not
+     an illustration to learn anatomy from. */
+  h+='<div class="pfig"><svg viewBox="0 0 520 320" style="width:100%;height:auto;display:block" role="img" aria-label="Lateral view of an adult head and neck with a swollen tongue and the cricothyroid membrane marked, and dashed zones for placing equipment cards">'+
+     '<rect x="0" y="0" width="520" height="320" fill="#fffefb"/>'+
+     /* Lateral (side) view, facing left, head slightly extended. A side view is
+        the only one that shows what this case is actually about: the column of
+        air from mouth to trachea, where it is being closed off, and where the
+        neck is cut if it closes completely. A front view cannot show any of
+        that. Anatomy is schematic on purpose — this is a place to put cards,
+        not a plate to learn anatomy from. */
+     /* shoulder + chest */
+     '<path d="M240 320 C242 284 272 266 320 262 L520 262 L520 320 Z" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+     /* neck */
+     '<path d="M198 196 C196 232 212 252 250 258 L330 262 L336 240 C300 232 268 214 262 178 Z" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+     /* head in profile: forehead, brow, nose, lips, chin, jaw, occiput */
+     '<path d="M214 36 C158 40 122 80 124 116 L112 126 C94 142 100 154 118 156 '+
+       'L120 170 C112 176 116 184 126 186 L128 200 C130 212 142 218 158 218 '+
+       'L214 222 C252 222 274 200 280 166 C288 116 272 44 214 36 Z" '+
+       'fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+     /* the airway column: oropharynx down to trachea, drawn as the lumen */
+     '<path d="M150 176 C186 180 208 194 214 216 L214 258" fill="none" stroke="#c9d2da" stroke-width="15" stroke-linecap="round"/>'+
+     /* SWOLLEN TONGUE — the thing that is closing the column */
+     '<path d="M138 172 C168 168 194 178 200 196 C204 210 190 216 172 212 '+
+       'C152 208 136 194 138 172 Z" fill="rgba(155,28,46,0.34)" stroke="#9b1c2e" stroke-width="2.2"/>'+
+     '<path d="M132 168 L96 150" stroke="#9b1c2e" stroke-width="1.6"/>'+
+     '<text x="18" y="146" font-family="ui-monospace,monospace" font-size="11.5" font-weight="700" fill="#9b1c2e">SWOLLEN TONGUE</text>'+
+     /* thyroid cartilage, then the membrane, then the trachea below it */
+     '<path d="M200 226 L232 222 L234 240 L202 244 Z" fill="none" stroke="#5a6a78" stroke-width="2"/>'+
+     '<rect x="202" y="246" width="32" height="14" fill="rgba(15,122,134,0.30)" stroke="#0f7a86" stroke-width="2.5"/>'+
+     '<path d="M236 253 L286 253" stroke="#0f7a86" stroke-width="1.6"/>'+
+     /* Opaque plate under the callout. It crosses the shoulder, and teal-on-grey
+        at 9.5 pt is the first thing to become unreadable on a tired photocopy. */
+     '<rect x="286" y="236" width="224" height="32" rx="3" fill="#fffefb" stroke="#d7dde3" stroke-width="1.2"/>'+
+     '<text x="292" y="250" font-family="ui-monospace,monospace" font-size="11.5" font-weight="700" fill="#0f7a86">CRICOTHYROID MEMBRANE</text>'+
+     '<text x="292" y="264" font-family="ui-monospace,monospace" font-size="9.5" fill="#5a6a78">SCALPEL &#8594; BOUGIE &#8594; TUBE, HERE</text>'+
+     /* card landing zones */
+     '<rect x="18" y="18" width="140" height="72" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+     '<text x="28" y="44" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">AIRWAY DEVICE</text>'+
+     '<text x="28" y="58" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">IN USE — PUT</text>'+
+     '<text x="28" y="72" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">THE CARD HERE</text>'+
+     '<rect x="360" y="18" width="142" height="72" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+     '<text x="370" y="44" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">MONITOR CARD</text>'+
+     '<text x="370" y="58" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">GOES HERE —</text>'+
+     '<text x="370" y="72" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">SWAP EACH BEAT</text>'+
+     '<rect x="18" y="200" width="140" height="66" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+     '<text x="28" y="226" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">DRUGS GIVEN —</text>'+
+     '<text x="28" y="240" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">SAY THE DOSE</text>'+
+     '<text x="28" y="254" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">OUT LOUD</text>'+
+     '<rect x="18" y="278" width="186" height="34" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+     '<text x="28" y="299" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">ACCESS CARDS HERE</text>'+
+     '</svg></div>';
+
+  h+='<div class="pvitals">'+
+     '<div class="c"><div class="v">'+esc(b.spo2)+'</div><div class="l">'+esc(L.spo2)+'</div></div>'+
+     '<div class="c"><div class="v">'+esc(b.hr)+'</div><div class="l">'+esc(L.hr)+'</div></div>'+
+     '<div class="c"><div class="v">'+esc(b.bp)+'</div><div class="l">'+esc(L.bp)+'</div></div>'+
+     '<div class="c"><div class="v">'+esc(b.etco2)+'</div><div class="l">'+esc(L.etco2)+'</div></div></div>'+
+     '<div style="font:700 7.4pt ui-monospace,monospace;letter-spacing:.08em;color:#5a6a78;margin-top:3pt">'+
+     'STARTING VITALS ONLY — THE MONITOR CARDS CARRY THE TRAJECTORY. COVER THIS STRIP WITH THE CURRENT CARD.</div>';
+
+  h+='<div class="plane"><b>How to use this sheet.</b> Put an equipment card down on the poster to show an action, '+
+     'and say what you are doing while you do it &mdash; an action nobody hears did not happen. Cards stay where they '+
+     'are put, so at the end the poster is a record of the resuscitation you can debrief off. '+
+     '<b>Nobody opens a real drawer.</b></div>';
+  h+='</div>'+foot('PATIENT POSTER')+'</section>';
+  return h;
+}
+
+function monitorSheets(){
+  /* 4 monitor cards per letter sheet (2 x 2). */
+  var h='', per=4, L=SITE.monitorLabels;
+  for(var i=0;i<CASE.monitor.length;i+=per){
+    h+='<section class="psheet d-cards"><div class="pttl">VEMS · MONITOR CARDS — CUT ON THE DASHED RULES, KEEP FACE DOWN IN BEAT ORDER</div><div class="cardgrid mon">';
+    CASE.monitor.slice(i,i+per).forEach(function(m){
+      h+='<div class="pcard moncard"><div class="st">'+esc(m.id)+' · '+esc(m.st)+'</div>'+
+         '<div class="monrow">'+
+         '<div class="c"><div class="v">'+esc(m.spo2)+'</div><div class="l">'+esc(L.spo2)+'</div></div>'+
+         '<div class="c"><div class="v">'+esc(m.hr)+'</div><div class="l">'+esc(L.hr)+'</div></div></div>'+
+         '<div class="monrow">'+
+         '<div class="c"><div class="v" style="font-size:15pt">'+esc(m.bp)+'</div><div class="l">'+esc(L.bp)+'</div></div>'+
+         '<div class="c"><div class="v">'+esc(m.etco2)+'</div><div class="l">'+esc(L.etco2)+'</div></div></div>'+
+         '<div class="cue">'+esc(m.cue)+'</div></div>';
+    });
+    h+='</div>'+foot('MONITOR CARDS')+'</section>';
+  }
+  return h;
+}
+
+function equipmentSheets(){
+  /* 9 equipment cards per letter sheet (3 x 3). */
+  var h='', per=9;
+  for(var i=0;i<CASE.kit.length;i+=per){
+    h+='<section class="psheet d-cards"><div class="pttl">VEMS · EQUIPMENT CARDS — '+esc(SITE.laminate.toUpperCase())+'</div><div class="cardgrid eq">';
+    CASE.kit.slice(i,i+per).forEach(function(k){
+      h+='<div class="pcard'+(k.decoy?' decoy':'')+'"><div class="sw">'+svg(k.icon)+'</div>'+
+         '<div class="nm">'+esc(k.n)+'</div><div class="sz">'+esc(k.sz)+'</div>'+
+         '<div class="lo">'+esc(where(k))+'</div></div>';
+    });
+    h+='</div>'+foot('EQUIPMENT CARDS')+'</section>';
+  }
+  return h;
+}
+
+function runSheet(){
+  var h='<section class="psheet d-sheet"><div class="pttl">VEMS · FACILITATOR RUN SHEET — DO NOT SHOW THIS TO PARTICIPANTS</div><div class="rs">';
+  h+='<div class="rb"><h4>BEFORE YOU START</h4><div class="in">'+
+     '<b>'+esc(CASE.title)+'</b> · '+CASE.chain.map(esc).join(' → ')+' · about '+CASE.minutes+' min + debrief.<ul>';
+  METHOD.setup.forEach(function(s){ h+='<li>'+esc(s)+'</li>'; });
+  h+='</ul><div class="tr">SAY IT OUT LOUD › &ldquo;THIS IS A SIMULATION.&rdquo; NOBODY OPENS A REAL DRAWER.</div></div></div>';
+
+  CASE.beats.forEach(function(b){
+    h+='<div class="rb"><h4>'+esc(b.n)+' — LAY DOWN '+esc(b.flip)+'</h4><div class="in">'+
+       '<div class="say">'+b.say+'</div><ul>';
+    b.does.forEach(function(d){ h+='<li>'+d+'</li>'; });
+    h+='</ul><div class="tr">ADVANCE WHEN › '+esc(b.adv)+'</div>'+
+       (b.fail?'<div class="fl">REWIND IF › '+esc(b.fail)+'</div>':'')+
+       '</div></div>';
+  });
+
+  h+='<div class="rb"><h4>DEBRIEF</h4><div class="in"><ul>';
+  CASE.debrief.forEach(function(d){ h+='<li>'+esc(d)+'</li>'; });
+  h+='</ul></div></div>';
+  h+='</div>'+foot('FACILITATOR RUN SHEET')+'</section>';
+  return h;
+}
+
+function paintKit(){
+  $('kit').innerHTML =
+    '<div class="prevnote screenonly" style="margin-bottom:8px">Below is exactly what prints. '+
+    'The patient poster is one sheet; the deck is '+
+    (Math.ceil(CASE.monitor.length/4)+Math.ceil(CASE.kit.length/9))+' sheets of cards; the run sheet is separate '+
+    'so participants never see it.</div>' +
+    posterSheet() + monitorSheets() + equipmentSheets() + runSheet();
+}
+
+/* ===== wiring ============================================================ */
+paintScreen();
+paintKit();
+
+Array.prototype.forEach.call(document.querySelectorAll('.verstamp'), function(el){
+  el.textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · '+SITE.site;
+});
+
+/* Print one deck at a time. The class is removed on afterprint AND on a timer,
+   because Safari does not always fire afterprint and leaving the class on would
+   silently hide two thirds of the kit from the next print. */
+Array.prototype.forEach.call(document.querySelectorAll('[data-print]'), function(btn){
+  btn.addEventListener('click', function(){
+    var cls='only-'+btn.getAttribute('data-print');
+    document.body.classList.add(cls);
+    var clear=function(){ document.body.classList.remove(cls); };
+    window.addEventListener('afterprint', clear, { once:true });
+    setTimeout(clear, 8000);
+    window.print();
+  });
+});
+
+var tb=$('lrhThemeBtn');
+if(tb) tb.addEventListener('click', function(){
+  var next = document.body.dataset.theme==='light' ? 'dark' : 'light';
+  document.body.dataset.theme=next;
+  tb.textContent = next==='dark' ? 'LIGHT' : 'DARK';
+  try{ localStorage.setItem('lrh-pref-theme', next); }catch(e){}
+});
+if(tb) tb.textContent = document.body.dataset.theme==='dark' ? 'LIGHT' : 'DARK';
+
+/* Splash. Handlers attach BEFORE the query-param auto-dismiss so a parse
+   failure can never trap someone behind it. */
+var sp=$('betasplash'), go=$('betago');
+function drop(){ if(sp && sp.parentNode) sp.parentNode.removeChild(sp); }
+if(go) go.addEventListener('click', drop);
+try{ if(/(^|[?&])from=(home|tool)(&|$)/.test(location.search)) drop(); }catch(err){}
+
+})();
+</script>
+</body>
+</html>

@@ -133,6 +133,29 @@ server still answering. If you touch the worker, run it against `dist/`:
 node build.mjs && node verify_offline.mjs
 ```
 
+## Shared equipment icons (issue #131)
+
+`equipment-icons.js` is the single source for the equipment glyphs. It is
+injected at build wherever a tool's `<script>` carries the `/* @icons */`
+marker, exactly like `design-system.css` and `inventory.js`. Consumers today:
+`labels/` (cart and cabinet labels) and `vems/` (the simulation card deck).
+
+**Do not paste an icon inline into a tool.** The reason is clinical, not
+tidiness: a clinician learns a glyph from the cart drawer they open every shift,
+and the VEMS deck hands them a card for the same item. If the card and the
+drawer show different pictures, the drill teaches the wrong association — the
+exact opposite of what it is for. `verify_vems.mjs` asserts this by loading
+`/labels/` and `/vems/` and comparing the *rendered* SVG markup for every glyph
+name they share, rather than trusting that both include the shared file.
+
+Drawing rules live in the header of `equipment-icons.js`: a 0 0 100 100 viewBox,
+solid `#111` silhouettes with white only for cut-outs, and no two clinically
+different items sharing a silhouette.
+
+A VEMS deck is also a paper product, so `verify_vems.mjs` renders the real print
+output to PDF and counts pages. A deck that spills onto an extra sheet, or a run
+sheet that prints along with the participant cards, is invisible on screen and
+expensive at the laminator.
 ## Config-driven verification (issue #117)
 
 The `verify_*.mjs` suites are the safety harness that makes it viable for a
@@ -229,6 +252,11 @@ test it" is not sufficient close-out for a deliverable.
   (card 04). Kept so old links and printed QR codes still resolve.
 - `simulations/` — pillow-patient in-situ drill scripts chaining the tools'
   workflows (deliberately excluded from the site search).
+- `vems/` — Visually Enhanced Mental Simulation kit: the printable, laminatable
+  card deck (patient poster, monitor cards, equipment cards, facilitator run
+  sheet) that runs a case on a table instead of a mannequin. See **Shared
+  equipment icons** above — its equipment cards must carry the same glyphs as
+  the cart drawer labels.
 - `equipment-readiness/` — searchable equipment locations + NPRP readiness
   audit, rendered from the root `inventory.js` (injected at build like
   `design-system.css`; see `INVENTORY-DESIGN.md`).
