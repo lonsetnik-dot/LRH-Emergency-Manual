@@ -1,0 +1,488 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0D1420">
+<title>LRH Postpartum Hemorrhage — Engine</title>
+<meta name="description" content="Mobile cognitive aid for postpartum hemorrhage: clock from recognition, running estimated blood loss, uterotonics in order with contraindication guards, escalation on the trend. Personal aid, not hospital policy.">
+<style>
+/* @design-system-live */
+/* ---- Shared live-protocol skeleton injected at the marker above, so this
+   screen is the same product as /arrest/, /neonatal/ and /airway/. Only
+   PPH-specific chrome below. ---- */
+
+/* The running blood loss is the single most important number on this screen and
+   the one the card could not hold, so it gets the largest type on the page. */
+.ebl{display:flex;align-items:center;gap:12px;margin-top:10px;padding:12px;border:2px solid var(--line);border-radius:14px;background:var(--card2)}
+.ebl .n{font:800 40px var(--mono);line-height:1;color:var(--red)}
+.ebl .u{font:700 12px var(--mono);color:var(--ink2);letter-spacing:.08em}
+.ebl .t{flex:1;font-size:12.5px;color:var(--ink2);line-height:1.35}
+.addrow{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:8px}
+.addrow button{min-height:54px;border:1px solid var(--line);border-radius:11px;background:var(--card2);
+  color:var(--ink);font:800 15px var(--mono);cursor:pointer}
+.step{display:flex;gap:10px;align-items:flex-start;padding:10px 0;border-top:1px solid var(--line);font-size:14.5px;line-height:1.45}
+.step:first-child{border-top:none}
+.step .who{flex:none;min-width:64px;font:800 10px var(--mono);letter-spacing:.08em;color:var(--accent);margin-top:3px}
+.say{border-left:4px solid var(--amber);background:var(--card2);padding:9px 12px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.45;margin-top:10px}
+.med{display:flex;gap:10px;align-items:center;padding:11px 12px;margin-top:7px;border:1px solid var(--line);border-radius:12px}
+.med.given{border-color:var(--green);background:var(--card2)}
+.med.blocked{opacity:.55;border-style:dashed;border-color:var(--red)}
+.med .nm{flex:1;min-width:0;font-size:14.5px;line-height:1.35}
+.med .nm b{display:block;font-size:15px}
+.med .nm i{display:block;font-style:normal;font-size:12.5px;color:var(--ink2);margin-top:2px}
+.med button{flex:none;min-height:44px;padding:0 13px;border-radius:10px;border:1px solid var(--line);
+  background:var(--card);color:var(--ink);font:800 11.5px var(--sans);cursor:pointer}
+.tog{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
+.tog button{min-height:44px;padding:0 12px;border-radius:999px;border:1px solid var(--line);
+  background:var(--card2);color:var(--ink2);font:800 11.5px var(--sans);cursor:pointer}
+.tog button[aria-pressed="true"]{border-color:var(--red);color:var(--red);border-width:2px}
+.rev{margin:12px 14px 0;border:2px solid var(--sev-caution);background:var(--note-bg);color:var(--note-tx);
+     padding:11px 13px;border-radius:12px;font-size:13px;line-height:1.45}
+</style>
+</head>
+<body data-theme="dark">
+<script>
+try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+catch(e){ document.body.dataset.theme='dark'; }
+</script>
+<div class="wrap">
+
+  <div class="hdr">
+    <div style="flex:1;min-width:0">
+      <div id="plabel" style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--accent)">PPH · ENGINE</div>
+      <div style="display:flex;align-items:baseline;gap:8px">
+        <span class="mono" id="clock" style="font-size:26px;font-weight:700">0:00</span>
+        <span id="rundot" style="display:none"><span class="dot"></span></span>
+        <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:600">READY</span>
+      </div>
+    </div>
+    <a class="ghost" id="backlink" href="../?from=tool" style="display:inline-flex;align-items:center;text-decoration:none">&#8962; MANUAL</a>
+    <button class="ghost" id="themebtn" type="button">LIGHT</button>
+    <button class="ghost" id="resetbtn" type="button">RESET</button>
+  </div>
+
+  <div class="card" id="scopebar" style="margin-top:12px;padding:11px 12px;border-color:var(--amber);font-size:13.5px;line-height:1.45">
+    <b>This is the mother after delivery.</b> Escalate on the <b>trend</b> — loss climbing while pressure falls —
+    not on a single number. If the newborn also needs help that is
+    <a href="../neonatal/?from=home" style="color:var(--blue)">neonatal resuscitation</a>, and it needs a
+    <b>different person</b>: say out loud who is staying with her.
+  </div>
+
+  <div class="rev" id="revbanner"></div>
+
+  <div id="idle">
+    <button id="startbtn" type="button" style="width:100%;margin-top:14px;min-height:104px;border:none;border-radius:16px;background:var(--red);color:#fff;font:800 21px var(--sans);letter-spacing:.03em;cursor:pointer;box-shadow:0 6px 24px rgba(229,72,77,.25)">
+      RECOGNIZED — START THE CLOCK
+      <div style="font-size:13px;font-weight:600;opacity:.9;margin-top:4px">Stamps the time of recognition, not the time of arrival</div>
+    </button>
+    <div class="card" style="margin-top:12px;padding:12px">
+      <div class="sec">BEFORE YOU START</div>
+      <div id="prestart" style="font-size:14px;line-height:1.6;margin-top:6px"></div>
+    </div>
+  </div>
+
+  <div id="live" style="display:none">
+    <div class="ebl" id="eblbox"></div>
+    <div class="addrow" id="addrow"></div>
+
+    <div class="card" id="phasebox" style="margin-top:10px;padding:14px;border-radius:16px"></div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+      <button class="btn" id="logtoggle" type="button" style="min-height:52px;font:700 14px var(--sans)">+ LOG EVENT</button>
+      <button class="btn" id="stopbtn" type="button" style="min-height:52px;font:700 14px var(--sans);border-color:var(--green);color:var(--green)">BLEEDING CONTROLLED</button>
+    </div>
+    <div id="customrow" style="display:none;gap:8px;margin-top:8px">
+      <input id="customin" style="flex:1;background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:12px;font-size:15px" placeholder="e.g. bimanual compression started">
+      <button id="customlog" type="button" style="border:none;border-radius:10px;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG</button>
+    </div>
+    <div id="customwarn" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>
+  </div>
+
+  <div id="done" style="display:none">
+    <div class="card" style="margin-top:14px;border:2px solid var(--green);border-radius:16px;padding:16px">
+      <div class="sec" style="color:var(--green)">BLEEDING CONTROLLED</div>
+      <div style="font-size:20px;font-weight:800;margin:4px 0 10px">Controlled at <span id="doneat" class="mono">0:00</span></div>
+      <div id="donebody" style="font-size:14.5px;line-height:1.6"></div>
+      <button id="resumebtn" type="button" style="width:100%;margin-top:12px;min-height:56px;border:none;border-radius:12px;background:var(--gray);color:#fff;font:800 15px var(--sans);cursor:pointer">BLEEDING AGAIN — BACK TO THE PATHWAY</button>
+    </div>
+  </div>
+
+  <div class="sec" style="margin-top:18px;letter-spacing:.12em">REFERENCE — TAP TO OPEN</div>
+  <div id="accordions"></div>
+
+  <div style="margin-top:16px;font-size:12px;color:var(--ink2);text-align:center;line-height:1.5">
+    Cognitive aid — verify against your own formulary and local policy.<br>
+    <span id="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment.
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ============================ SITE CONFIG ==================================
+   PROVENANCE. Every clinical value below was carried across VERBATIM from card
+   06 of ob-neonatal/. Nothing was authored fresh and no dose was altered — a
+   structural rebuild is not the place to quietly change a drug.
+
+   That card carried no citation, so the primary sources are named in the SOURCE
+   accordion and the banner says plainly that the values are inherited rather
+   than individually re-derived.
+   ========================================================================== */
+var SITE = {
+  version:"0.1", lastReviewed:"2026-08-12", site:"LRH",
+
+  review:{
+    on:true,
+    text:"DOSES INHERITED, NOT RE-DERIVED. Every drug and dose on this screen was carried across "+
+         "unchanged from the postpartum haemorrhage card, which carried no citation of its own. The "+
+         "sequence and the contraindication guards follow ACOG Practice Bulletin 183 and the AIM "+
+         "obstetric haemorrhage bundle (see SOURCE). Check the doses against your own formulary before "+
+         "relying on this screen."
+  },
+
+  /* The threshold that names the problem. Deliberately not a gate on this
+     screen: the trend is what escalates, and a tool that waits for a number is
+     the failure this engine exists to fix. */
+  recognizeMl:500,
+
+  /* Running loss. The increments are what a person can actually estimate — a
+     pad, a lap sponge, a visible gush — rather than arbitrary round numbers. */
+  eblSteps:[
+    { ml:100, t:"pad" },
+    { ml:250, t:"sponge" },
+    { ml:500, t:"gush" },
+    { ml:1000, t:"1 L" }
+  ],
+  /* Trend prompts. Each fires once, on the way up. */
+  eblMarks:[
+    { ml:1000, say:"1 litre. Say the number out loud. Are the uterotonics all in, and has anyone called for blood?" },
+    { ml:1500, say:"1.5 litres. This is the point to activate massive transfusion rather than think about it." },
+    { ml:2000, say:"2 litres. If the uterus is atonic and OB is not at the bedside, mechanical control now — balloon or packing." }
+  ],
+
+  /* Time bands, straight off the card's PPH clock figure. */
+  phases:[
+    { id:"t0",   from:0,  label:"0 MIN · RECORD THE TIME" },
+    { id:"t5",   from:0,  label:"0–5 MIN · ACCESS & FIRST-LINE" },
+    { id:"t15",  from:5,  label:"5–15 MIN · IF STILL BLEEDING" },
+    { id:"t15p", from:15, label:">15 MIN · IF IT PERSISTS" }
+  ],
+  callEveryMin:5,
+
+  /* Uterotonics, in the order the card gives them, with the contraindications
+     the card names. `block` is the condition that rules the drug out — the
+     engine greys it and says why, which is the thing a printed card cannot do. */
+  meds:[
+    { id:"oxy",  n:"Oxytocin", d:"10 units IM AND 10 units in 1 L NS/LR wide open", phase:"t5" },
+    { id:"txa",  n:"TXA", d:"1 g IV over 10 min — within 3 h of birth. May redose 1 g every 30 min if still bleeding.", phase:"t5" },
+    { id:"miso", n:"Misoprostol", d:"1000 mcg PR", phase:"t15" },
+    { id:"meth", n:"Methylergonovine", d:"0.2 mg IM. May repeat in 2–4 h.", phase:"t15",
+      block:"htn", blockWhy:"Not in hypertension or preeclampsia." },
+    { id:"carb", n:"Carboprost", d:"250 mcg IM. May repeat every 15–90 min, max 8 doses.", phase:"t15",
+      block:"asthma", blockWhy:"Not in asthma." }
+  ],
+  /* Asked once, up front, because the answer changes which drugs are offered
+     and nobody should be recalling a contraindication at 1.5 litres. */
+  flags:[
+    { id:"htn",    label:"HYPERTENSION / PREECLAMPSIA" },
+    { id:"asthma", label:"ASTHMA" }
+  ],
+
+  blood:{ oNegUnits:2, trigger:"hypotensive or tachycardic" },
+  local:{
+    cart:"OB / Neonatal Cart · Postpartum Hemorrhage drawer",
+    call:"Call OB STAT",
+    mtp:"the massive transfusion protocol — say it, do not dial",
+    jada:"Balloon tamponade (Bakri, or the JADA System)"
+  }
+};
+try{ window.SITE = SITE; }catch(e){}
+
+var S = { theme:'dark', phase:'idle', t0:null, ebl:0, given:{}, flags:{}, eblSaid:{},
+          lastCall:0, events:[], open:null, resetArm:false, doneAt:null, showCustom:false };
+
+var $=function(i){return document.getElementById(i);};
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmt(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+function since(){ return S.t0 ? (Date.now()-S.t0)/1000 : 0; }
+function mins(){ return since()/60; }
+function clk(){ return S.t0 ? fmt(since()) : '0:00'; }
+function log(l){ S.events.unshift({t:clk(), label:l}); }
+
+/* Which time band we are in. Bands come from config so a site can re-time them,
+   but the ORDER is fixed — you cannot reach the persistent band without passing
+   through the first-line one. */
+function band(){
+  var m=mins(), pick=SITE.phases[0];
+  SITE.phases.forEach(function(p){ if(m >= p.from) pick=p; });
+  return pick;
+}
+
+/* ===== the pathway ======================================================= */
+function row(who, html){
+  return '<div class="step"><div class="who">'+esc(who)+'</div><div>'+html+'</div></div>';
+}
+
+function phaseBox(){
+  var b=band(), h='';
+  h+='<div class="sec" style="color:var(--red)">'+esc(b.label)+'</div>';
+
+  if(b.id==='t0' || b.id==='t5'){
+    h+='<div style="font-size:22px;font-weight:800;margin-top:4px">Massage · call · access</div>'+
+       '<div style="margin-top:8px">'+
+       row('TEAM','Say it out loud: “Postpartum hemorrhage.” <b>'+esc(SITE.local.call)+'.</b>')+
+       row('PROVIDER','<b>Bimanual fundal massage</b> — start it now, it costs nothing.')+
+       row('PROVIDER','Sweep clots from the vagina and cervix — the uterus cannot clamp down over retained clot.')+
+       row('RN','Foley catheter.')+
+       row('RN','Two large-bore IVs (14 or 16 G).')+
+       row('RN','STAT type &amp; cross, CBC, CMP, D-dimer, fibrinogen, PT/PTT.')+
+       '</div>';
+  }
+  if(b.id==='t15'){
+    h+='<div style="font-size:22px;font-weight:800;margin-top:4px">Still bleeding — second line</div>'+
+       '<div style="margin-top:8px">'+
+       row('PROVIDER','<b>Bimanual uterine compression</b> — fist in the anterior fornix, other hand on the fundus, squeeze the uterus between them.')+
+       row('TEAM','Massage continues. Reassess tone, volume and vitals <b>out loud</b>.')+
+       '</div>';
+  }
+  if(b.id==='t15p'){
+    h+='<div style="font-size:22px;font-weight:800;margin-top:4px">It is persisting</div>'+
+       '<div style="margin-top:8px">'+
+       row('TEAM','<b>'+esc(SITE.blood.trigger.charAt(0).toUpperCase()+SITE.blood.trigger.slice(1))+':</b> hang '+
+           SITE.blood.oNegUnits+' units uncrossmatched O-negative, and activate '+esc(SITE.local.mtp)+'.')+
+       row('PROVIDER','OB delayed past 15 minutes: firmly <b>pack the vaginal vault</b> with sterile Kerlix.')+
+       row('PROVIDER',esc(SITE.local.jada)+' if OB is at the bedside and the uterus is atonic — '+
+           '<a href="../procedures/?from=home#c13" style="color:var(--blue)">procedures card 13</a>.')+
+       row('TEAM','Hand off to the arriving OB attending. Say the running total out loud as you do.')+
+       '</div>';
+  }
+
+  /* Uterotonics live under whichever band introduces them, and stay on screen
+     afterwards — a drug you have not given yet does not stop being available
+     because the clock moved on. */
+  var meds = SITE.meds.filter(function(m){
+    var mi=-1, bi=-1;
+    SITE.phases.forEach(function(p,i){ if(p.id===m.phase) mi=i; if(p.id===b.id) bi=i; });
+    return bi >= mi;
+  });
+  if(meds.length){
+    h+='<div class="sec" style="margin-top:14px;color:var(--amber)">UTEROTONICS — SAY EACH DOSE OUT LOUD</div>';
+    meds.forEach(function(m){
+      var blocked = m.block && S.flags[m.block];
+      var given = S.given[m.id];
+      h+='<div class="med'+(given?' given':'')+(blocked?' blocked':'')+'">'+
+         '<div class="nm"><b>'+esc(m.n)+'</b><i>'+esc(m.d)+
+         (blocked?' <span style="color:var(--red);font-weight:700">— '+esc(m.blockWhy)+'</span>':'')+'</i></div>'+
+         (blocked ? '<button type="button" disabled style="opacity:.6">BLOCKED</button>'
+                  : '<button type="button" data-med="'+m.id+'">'+(given?'✓ GIVEN '+given:'GIVEN')+'</button>')+
+         '</div>';
+    });
+  }
+
+  /* The recorder's call. This is the card's "recorder calls every 5 min" turned
+     into something that actually arrives. */
+  var due = Math.floor(mins()/SITE.callEveryMin);
+  if(due > 0){
+    h+='<div class="say"><b>'+(due*SITE.callEveryMin)+'-minute call.</b> Recorder: say the elapsed time, the '+
+       'running loss (<b>'+S.ebl+' mL</b>), the last set of vitals and what has been given.</div>';
+  }
+  return h;
+}
+
+function eblBox(){
+  var t = S.ebl >= SITE.recognizeMl
+    ? 'Running total. Say it out loud on every call — the trend is what escalates, not the number.'
+    : 'Running total. Add as you go; do not wait for a formal estimate.';
+  return '<div><div class="n">'+S.ebl+'</div><div class="u">mL EBL</div></div><div class="t">'+t+'</div>';
+}
+
+function addRow(){
+  return SITE.eblSteps.map(function(s){
+    return '<button type="button" data-ebl="'+s.ml+'">+'+s.ml+'<div style="font:700 9.5px var(--mono);color:var(--ink2);margin-top:2px">'+esc(s.t)+'</div></button>';
+  }).join('');
+}
+
+/* Fires once per mark, on the way up. */
+function checkEbl(){
+  SITE.eblMarks.forEach(function(m){
+    if(S.ebl >= m.ml && !S.eblSaid[m.ml]){
+      S.eblSaid[m.ml]=true;
+      log('<b>EBL '+m.ml+' mL</b> — '+m.say);
+    }
+  });
+}
+
+/* ===== reference ========================================================= */
+var ACC=[
+  { id:'flags', t:'CONTRAINDICATIONS — ASK ONCE, NOW', b:function(){
+      var h='<p>Answered up front so the screen can rule a drug out for you, rather than you '+
+        'recalling it at 1.5 litres.</p><div class="tog">';
+      SITE.flags.forEach(function(f){
+        h+='<button type="button" data-flag="'+f.id+'" aria-pressed="'+(S.flags[f.id]?'true':'false')+'">'+
+           (S.flags[f.id]?'✓ ':'')+esc(f.label)+'</button>';
+      });
+      return h+'</div><p style="margin-top:9px">'+
+        SITE.meds.filter(function(m){return m.block;}).map(function(m){
+          return '<b>'+esc(m.n)+'</b> — '+esc(m.blockWhy);
+        }).join('<br>')+'</p>'; } },
+  { id:'clockfig', t:'THE PPH CLOCK', b:function(){
+      var h='<p>Start at <b>recognition</b>, not arrival. The recorder calls every '+SITE.callEveryMin+' minutes.</p>';
+      SITE.phases.forEach(function(p){
+        h+='<div style="display:flex;gap:11px;padding:9px 0;border-top:1px solid var(--line)">'+
+           '<span class="mono" style="flex:none;font-weight:700;color:var(--accent);min-width:74px">'+
+           (p.from? p.from+'+ min':'0 min')+'</span><span>'+esc(p.label.split('· ')[1]||p.label)+'</span></div>';
+      });
+      return h; } },
+  { id:'meds', t:'UTEROTONICS + DOSES', b:function(){
+      return '<p>'+SITE.meds.map(function(m){
+        return '<b>'+esc(m.n)+'</b> — '+esc(m.d)+(m.blockWhy?' <span style="color:var(--red)">'+esc(m.blockWhy)+'</span>':'');
+      }).join('<br><br>')+'</p><p>Kit lives in the '+esc(SITE.local.cart)+'.</p>'; } },
+  { id:'log', t:'EVENT LOG', b:function(){
+      if(!S.events.length) return '<p>Nothing logged yet.</p>';
+      return S.events.map(function(e){
+        return '<div style="display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px">'+
+          '<span class="mono" style="font-weight:700;color:var(--accent);flex:none">'+esc(e.t)+'</span><span>'+e.label+'</span></div>';
+      }).join(''); } },
+  { id:'src', t:'SOURCE &amp; PROVENANCE', b:function(){
+      return '<p><b>Sequence and contraindications:</b> ACOG Practice Bulletin 183, <i>Postpartum '+
+        'Hemorrhage</i> (Obstet Gynecol 2017;130:e168), and the Alliance for Innovation on Maternal Health '+
+        '(AIM) obstetric haemorrhage patient safety bundle. TXA timing follows the WOMAN trial '+
+        '(<i>Lancet</i> 2017;389:2105) — benefit is greatest given early, hence the 3-hour window on '+
+        'this screen.</p>'+
+        '<p><b>Provenance.</b> Every drug and dose here was carried across <b>unchanged</b> from card 06 of '+
+        '<a href="../ob-neonatal/?from=home#c06">ob-neonatal/</a>, which carried no citation of its own. '+
+        'Nothing was authored fresh and no dose was altered in the move, but the individual doses have '+
+        '<b>not</b> been re-derived from the sources above. Check them against your own formulary.</p>'+
+        '<p>The engine adds no clinical values — what it adds is the clock, the running total, and the '+
+        'contraindication guard.</p>'; } }
+];
+
+function phiReason(t){
+  if(/\b\d{6,}\b/.test(t)) return 'mentions a record or account number';
+  if(/\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/.test(t)) return 'contains a date of birth style date';
+  if(/\bMRN\b/i.test(t)) return 'mentions a record or account number';
+  return null;
+}
+
+/* ===== paint ============================================================= */
+function paint(){
+  $('clock').textContent=clk();
+  var live = S.phase==='live';
+  $('rundot').style.display = live ? '' : 'none';
+  $('statusword').textContent = S.phase==='idle' ? 'READY' : (S.phase==='done' ? 'CONTROLLED' : (S.ebl+' mL'));
+  $('plabel').textContent = live ? ('PPH · '+band().label.split(' ·')[0]) : 'PPH · ENGINE';
+  $('themebtn').textContent = S.theme==='dark' ? 'LIGHT' : 'DARK';
+  $('resetbtn').textContent = S.resetArm ? 'SURE?' : 'RESET';
+  $('resetbtn').style.background = S.resetArm ? 'var(--red)' : 'var(--card)';
+  $('resetbtn').style.color = S.resetArm ? '#fff' : 'var(--ink2)';
+
+  $('revbanner').style.display = SITE.review.on ? '' : 'none';
+  if(SITE.review.on) $('revbanner').innerHTML = '<b>&#9888; '+esc(SITE.review.text);
+
+  $('prestart').innerHTML =
+    'Start the clock at <b>recognition</b>, not arrival — the elapsed time is what every escalation on this '+
+    'screen is measured against, and it is the number that gets reconstructed wrongly afterwards. '+
+    'Recognition is <b>&gt;'+SITE.recognizeMl+' mL or signs of shock</b>. Kit lives in the '+esc(SITE.local.cart)+'.';
+
+  $('idle').style.display = S.phase==='idle' ? '' : 'none';
+  $('live').style.display = live ? '' : 'none';
+  $('done').style.display = S.phase==='done' ? '' : 'none';
+
+  if(live){
+    $('eblbox').innerHTML = eblBox();
+    $('addrow').innerHTML = addRow();
+    $('phasebox').innerHTML = phaseBox();
+    $('customrow').style.display = S.showCustom ? 'flex' : 'none';
+  }
+  if(S.phase==='done'){
+    $('doneat').textContent = S.doneAt || clk();
+    $('donebody').innerHTML =
+      '· Total EBL <b>'+S.ebl+' mL</b> — say it in the handover<br>'+
+      '· Uterus firm and bleeding stopped, confirmed out loud<br>'+
+      '· Labs back, products accounted for, OB at the bedside<br>'+
+      '· Disposition and level of monitoring named<br>'+
+      '· The team gets a <a href="../conversations/?from=home#c04" style="color:var(--blue)">debrief</a>';
+  }
+
+  var h='';
+  ACC.forEach(function(a){
+    var open=(S.open===a.id);
+    h+='<div class="acc"><button class="acch" type="button" data-acc="'+a.id+'">'+a.t+
+       '<span style="color:var(--ink2)">'+(open?'−':'+')+'</span></button>'+
+       (open?'<div class="accb">'+a.b()+'</div>':'')+'</div>';
+  });
+  $('accordions').innerHTML=h;
+  $('verstamp').textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · '+SITE.site;
+}
+
+/* ===== events ============================================================ */
+document.addEventListener('click', function(e){
+  var t=e.target.closest ? e.target.closest('button') : null;
+  if(!t) return;
+  var id=t.id, acc=t.getAttribute('data-acc');
+
+  if(acc){ S.open=(S.open===acc?null:acc); paint(); return; }
+
+  var add=t.getAttribute('data-ebl');
+  if(add){
+    S.ebl += parseInt(add,10);
+    log('EBL +'+add+' mL — running total <b>'+S.ebl+' mL</b>');
+    checkEbl(); paint(); return;
+  }
+  var med=t.getAttribute('data-med');
+  if(med){
+    if(S.given[med]) return;
+    S.given[med]=clk();
+    var m=SITE.meds.filter(function(x){return x.id===med;})[0];
+    log('<b>'+m.n+' given</b> — '+m.d);
+    paint(); return;
+  }
+  var fl=t.getAttribute('data-flag');
+  if(fl){
+    S.flags[fl]=!S.flags[fl];
+    var f=SITE.flags.filter(function(x){return x.id===fl;})[0];
+    log((S.flags[fl]?'Flagged: ':'Cleared: ')+f.label);
+    paint(); return;
+  }
+
+  if(id==='themebtn'){
+    S.theme=S.theme==='dark'?'light':'dark';
+    document.body.dataset.theme=S.theme;
+    try{ localStorage.setItem('lrh-pref-theme', S.theme); }catch(err){}
+    paint(); return;
+  }
+  if(id==='resetbtn'){
+    if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){S.resetArm=false;paint();},2500); return; }
+    S={ theme:S.theme, phase:'idle', t0:null, ebl:0, given:{}, flags:{}, eblSaid:{}, lastCall:0,
+        events:[], open:null, resetArm:false, doneAt:null, showCustom:false };
+    paint(); return;
+  }
+  if(id==='startbtn'){ S.phase='live'; S.t0=Date.now(); log('<b>Postpartum hemorrhage recognized</b> — clock started'); paint(); return; }
+  if(id==='stopbtn'){ S.phase='done'; S.doneAt=clk(); log('Bleeding controlled — total EBL '+S.ebl+' mL'); paint(); return; }
+  if(id==='resumebtn'){ S.phase='live'; log('Bleeding again — back to the pathway'); paint(); return; }
+  if(id==='logtoggle'){ S.showCustom=!S.showCustom; paint(); if(S.showCustom) setTimeout(function(){$('customin').focus();},30); return; }
+  if(id==='customlog'){ submitCustom(); return; }
+});
+
+function submitCustom(){
+  var t=$('customin').value.trim(); if(!t) return;
+  var why=phiReason(t);
+  if(why){
+    $('customwarn').style.display='';
+    $('customwarn').textContent='Not logged — that text '+why+'. This aid never stores patient identifiers. Describe the event, not the patient.';
+    return;
+  }
+  $('customwarn').style.display='none';
+  log(esc(t)); $('customin').value=''; S.showCustom=false; paint();
+}
+$('customin').addEventListener('keydown', function(e){ if(e.key==='Enter') submitCustom(); });
+
+paint();
+setInterval(paint, 500);
+})();
+</script>
+</body>
+</html>
