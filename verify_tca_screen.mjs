@@ -17,7 +17,7 @@ const url = 'file://' + join(__dirname, 'tca', 'index.html');
 let pass = 0, fail = 0;
 const ok = (c, m) => { if (c) { pass++; } else { fail++; console.log('  ✗ ' + m); } };
 
-const browser = await chromium.launch();
+const browser = await chromium.launch(process.env.PW_CHROME ? { executablePath: process.env.PW_CHROME } : {});
 const page = await browser.newPage();
 const errors = [];
 page.on('pageerror', e => errors.push(String(e)));

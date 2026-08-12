@@ -83,6 +83,13 @@ a{color:var(--blue);text-decoration:none}
 </style>
 </head>
 <body data-theme="dark">
+<script>
+/* Apply the shared persisted theme before paint (lrh-pref-theme namespace, the
+   same key the rest of the manual uses; outside any RESET sweep — CASE-STATE.md).
+   TCA used to ignore it and always load dark (weight-routing audit). */
+try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+catch(e){ document.body.dataset.theme='dark'; }
+</script>
 <div class="wrap">
 
   <div class="hdr">
@@ -94,6 +101,7 @@ a{color:var(--blue);text-decoration:none}
         <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:600">READY</span>
       </div>
     </div>
+    <a class="ghost" id="backlink" href="../" data-noprint="1" style="display:inline-flex;align-items:center;text-decoration:none">&#8962; MANUAL</a>
     <button class="ghost" id="themebtn" type="button" data-noprint="1">LIGHT</button>
     <button class="ghost" id="resetbtn" type="button" data-noprint="1">RESET</button>
   </div>
@@ -102,9 +110,26 @@ a{color:var(--blue);text-decoration:none}
     <span class="sec">WEIGHT</span>
     <input class="inp" id="wIn" inputmode="decimal" style="width:64px" aria-label="Weight in kg">
     <span style="font-size:13px;color:var(--ink2)">kg &nbsp;·&nbsp; or age</span>
-    <input class="inp" id="aIn" inputmode="numeric" placeholder="yrs" style="width:52px;font-size:16px" aria-label="Age in years">
+    <input class="inp" id="aIn" inputmode="decimal" placeholder="age" style="width:52px;font-size:16px" aria-label="Age">
+    <select class="inp" id="aUnit" aria-label="Age unit" style="width:auto;font-size:14px;min-height:38px"><option value="mo">mo</option><option value="yr" selected>yr</option></select>
     <button class="btn" id="estbtn" type="button" style="font:700 12px var(--sans);padding:9px 12px;border-radius:9px;min-height:38px">ESTIMATE KG</button>
     <span id="wnote" style="font-size:13px;font-weight:700;color:var(--accent)">enter weight</span>
+    <span id="werr" style="display:none;flex-basis:100%;font-size:12.5px;font-weight:700;color:var(--red)"></span>
+  </div>
+
+  <!-- Pediatric-dosing bar + loud, reversible adult override (weight-routing
+       audit): TCA used the same <50 kg / <=12 y trigger as arrest but offered
+       no way out of it — a 45 kg frail adult silently got pediatric TXA and
+       calcium, with only the word "pediatric" in the weight note as the tell.
+       Same pattern as arrest's #pedsbanner/#overridebar. -->
+  <div id="pedsbar" class="card" style="display:none;gap:10px;align-items:center;margin-top:10px;border-color:var(--accent);padding:10px 12px">
+    <span style="width:14px;height:38px;border-radius:6px;background:var(--accent);flex:none"></span>
+    <div style="flex:1;font-size:13.5px;line-height:1.4" id="pedsbartext"></div>
+    <button class="ghost" id="dismisspeds" type="button" style="white-space:nowrap">ADULT — OVERRIDE</button>
+  </div>
+  <div id="overridebar" class="card" style="display:none;align-items:center;gap:10px;margin-top:10px;border-color:var(--amber);padding:10px 12px">
+    <div style="flex:1;font-size:13.5px;line-height:1.4"><b>Adult mode — overridden.</b> Pediatric criteria are met but this is being treated as an adult. TXA, calcium, and fluids below are adult doses.</div>
+    <button class="ghost" id="undooverride" type="button" style="white-space:nowrap">UNDO</button>
   </div>
 
   <!-- ============================ ENTRY / IDLE ============================ -->
@@ -154,6 +179,18 @@ a{color:var(--blue);text-decoration:none}
         <div><b>Tamponade</b> <span style="color:var(--ink2)">— eFAST → thoracotomy</span></div>
       </div>
       <div id="cprnote" style="margin-top:9px;font-size:13px;line-height:1.5;padding:9px 10px;background:var(--card2);border-radius:10px"></div>
+    </div>
+
+    <!-- Pregnancy is often discovered DURING the resus (eFAST, exam). The idle-
+         screen flag is hidden once the code starts, which made the OBSTETRIC
+         workstream unreachable mid-case (weight-routing audit). Same toggle,
+         reachable while running. -->
+    <div class="card" style="margin-top:10px;padding:11px 12px" id="pregactive">
+      <label style="display:flex;align-items:center;gap:12px;cursor:pointer;min-height:44px">
+        <span id="pregboxActive" class="wbox" style="margin-top:0"></span>
+        <span style="font-size:14px;line-height:1.4"><b>Pregnant, uterus at or above the umbilicus?</b>
+        <span style="color:var(--ink2)">Flag it — adds the OBSTETRIC workstream below; call OB + neonatal.</span></span>
+      </label>
     </div>
 
     <div class="sec" id="worktitle" style="margin-top:16px;letter-spacing:.12em"></div>
@@ -339,13 +376,52 @@ var WORK = [
  { id:'O', name:'OBSTETRIC', color:'var(--orange)', aim:'Maximize preload if pregnant', tasks:[
    'Supine — manually displace the uterus to the left',
    'Fundus at/above the umbilicus (~{gest} wk) → resuscitative hysterotomy, aim < {hyst} min',
-   'Call OB + the neonatal team early'
+   'Call OB + the neonatal team early',
+   'Baby delivered → a second patient: neonatal resuscitation (NRP), own team + warmer'
  ], links:[
-   {label:'Resuscitative hysterotomy', href:'../ob-neonatal/?from=home#c10'}
+   {label:'Resuscitative hysterotomy', href:'../ob-neonatal/?from=home#c10'},
+   {label:'Neonatal resuscitation (NRP)', href:'../ob-neonatal/?from=home#c03'}
  ]}
 ];
 
-var S = { theme:'dark', mode:SITE.mode, kg:null, ageY:null,
+/* ===== CASE-STATE shared contract (CASE-STATE.md) — same shape as arrest's SS.
+   TCA used to live entirely outside this contract (weight-routing audit): a
+   weight measured in peds/codes/arrest didn't carry in, TCA's events never
+   reached the manual-wide timeline the debrief tool reads, and its RESET —
+   visually identical to arrest's — cleared only this tool. Per CLAUDE.md,
+   tools share the CONTRACT, not the code: this is TCA's own copy. */
+var SS = {
+  get:function(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set:function(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+  del:function(k){ try{ localStorage.removeItem(k); }catch(e){} },
+  loadWeight:function(){
+    var w=parseFloat(SS.get('lrh-case-wtkg')); S.kg=(w>0&&w<300)?w:null;
+    var a=parseFloat(SS.get('lrh-case-ageyrs')); S.ageY=(a>=0&&a<130)?a:null;
+    S.override = SS.get('lrh-case-adultoverride')==='1';
+  },
+  saveWeight:function(src){
+    if(S.kg!==null){ SS.set('lrh-case-wtkg',String(S.kg)); SS.set('lrh-case-wtsrc',src||'measured'); SS.set('lrh-case-wtms',String(Date.now())); }
+    else { SS.del('lrh-case-wtkg'); SS.del('lrh-case-wtsrc'); SS.del('lrh-case-wtms'); }
+    if(S.ageY!==null) SS.set('lrh-case-ageyrs',String(S.ageY)); else SS.del('lrh-case-ageyrs');
+  },
+  saveOverride:function(){ if(S.override) SS.set('lrh-case-adultoverride','1'); else SS.del('lrh-case-adultoverride'); },
+  /* Shared timeline. Same PHI guard shape as every tool's addLog: refuse
+     weight-shaped labels and long digit runs. Tagged tool:'trauma' — the
+     timeline readers' TOOL_LABEL maps render that as TRAUMA. */
+  addLog:function(label){
+    if(/\d+(\.\d+)?\s*(kg|lb)/i.test(label)) return;
+    if(/\d{6,}/.test(label)) return;
+    var arr; try{ arr=JSON.parse(SS.get('lrh-case-log')||'[]'); }catch(e){ arr=[]; }
+    if(!Array.isArray(arr)) arr=[];
+    arr.push({ tMs:Date.now(), tool:'trauma', card:'tca', label:label });
+    SS.set('lrh-case-log', JSON.stringify(arr));
+  },
+  sweep:function(){ try{ for(var i=localStorage.length-1;i>=0;i--){ var k=localStorage.key(i);
+    if(k && k.indexOf('lrh-')===0 && k.indexOf('lrh-pref-')!==0) localStorage.removeItem(k); } }catch(e){} },
+  touchActive:function(){ SS.set('lrh-case-lastactive', String(Date.now())); }
+};
+
+var S = { theme:'dark', mode:SITE.mode, kg:null, ageY:null, override:false,
           phase:'idle', codeStart:null, checked:{}, pregnant:false,
           reversibleAddressed:false, addressedAt:null,
           events:[], open:null, resetArm:false, showCustom:false,
@@ -367,16 +443,26 @@ var PHI = [
   {re:/\b(dob|date of birth)\b/i, why:'mentions a date of birth'}
 ];
 function phiReason(t){ for(var i=0;i<PHI.length;i++){ if(PHI[i].re.test(t)) return PHI[i].why; } return null; }
-function log(label){ S.events.unshift({ t: clockNow(), label: label }); }
+/* Events go to BOTH the in-tool log (memory) and the shared manual-wide
+   timeline (lrh-case-log, PHI-guarded in SS.addLog) — same as arrest. */
+function log(label){ S.events.unshift({ t: clockNow(), label: label }); SS.addLog(label); }
 
 function kg(){ var k=S.kg; return (k>0 && k<300) ? k : null; }
-function isPeds(){ var k=kg(); return (k!==null && k<SITE.trigger.maxKg) || (S.ageY!==null && S.ageY<=SITE.trigger.maxAgeYrs); }
-function r(x,d){ var m=Math.pow(10,d===undefined?0:d); return Math.round(x*m)/m; }
+function autoPeds(){ var k=kg(); return (k!==null && k<SITE.trigger.maxKg) || (S.ageY!==null && S.ageY<=SITE.trigger.maxAgeYrs); }
+function isPeds(){ return autoPeds() && !S.override; }
+/* r() default precision aligned with arrest's copy (1 dp) — the two files
+   claim to be verbatim copies of each other's helpers; they now are. */
+function r(x,d){ var m=Math.pow(10,d===undefined?1:d); return Math.round(x*m)/m; }
 
 /* ---- Doses & targets — computed where a number helps, generic otherwise ---- */
 function doseModel(){
   var k=kg(), p=isPeds();
-  var crystalloid = k!==null ? (SITE.fluid.crystalloidMlPerKg*k)+' mL ('+SITE.fluid.crystalloidMlPerKg+' mL/kg)'
+  /* Rounded and capped (weight-routing audit): the raw product rendered float
+     artifacts ("21.200000000000003 mL" at 1.06 kg) and no ceiling at all
+     (200 kg -> "4000 mL"). Display caps: 1 L/bolus pediatric (peds-tool
+     convention), 2 L/bolus adult — verify locally. */
+  var mlCap = p ? 1000 : 2000;
+  var crystalloid = k!==null ? (Math.round(Math.min(SITE.fluid.crystalloidMlPerKg*k, mlCap))+' mL ('+SITE.fluid.crystalloidMlPerKg+' mL/kg, max '+(mlCap/1000)+' L/bolus)')
                              : SITE.fluid.crystalloidMlPerKg+' mL/kg';
   var txa;
   if(p){
@@ -587,6 +673,14 @@ function paint(){
   var k=kg();
   $('wnote').textContent = k!==null ? (k+' kg · '+(isPeds()?'pediatric':'adult'))
                          : (isPeds() ? 'pediatric by age — enter kg' : 'enter weight');
+  var showPeds = isPeds();
+  $('pedsbar').style.display = showPeds ? 'flex' : 'none';
+  if(showPeds){
+    $('pedsbartext').innerHTML = '<b>Pediatric dosing — '+(k!==null?k+' kg':'by age')+'.</b> TXA, calcium, and fluids below are weight-based. Small/frail adult? Override.';
+  }
+  $('overridebar').style.display = (autoPeds() && S.override) ? 'flex' : 'none';
+  $('pregboxActive').style.cssText = 'margin-top:0;'+(S.pregnant?'border-color:var(--orange);background:var(--orange);color:'+(S.theme==='dark'?'#141E2B':'#fff'):'');
+  $('pregboxActive').textContent = S.pregnant ? '✓' : '';
 
   $('soltxt').textContent = SITE.noSignsOfLifeMin;
   $('soltxt2').textContent = SITE.noSignsOfLifeMin;
@@ -640,7 +734,11 @@ function startTCA(){
   paint();
 }
 function doReset(){
-  S = { theme:S.theme, mode:S.mode, kg:null, ageY:null,
+  /* Manual-wide, same as arrest's RESET: the two buttons look identical, so
+     they now have the same blast radius (weight-routing audit — TCA's used to
+     clear only this tool while arrest's swept every tool's case state). */
+  SS.sweep();
+  S = { theme:S.theme, mode:S.mode, kg:null, ageY:null, override:false,
         phase:'idle', codeStart:null, checked:{}, pregnant:false,
         reversibleAddressed:false, addressedAt:null,
         events:[], open:null, resetArm:false, showCustom:false,
@@ -652,29 +750,99 @@ function doReset(){
 function wire(){
   $('themebtn').addEventListener('click', function(){
     S.theme = S.theme==='dark' ? 'light' : 'dark';
-    document.body.dataset.theme = S.theme; paint();
+    document.body.dataset.theme = S.theme;
+    try{ localStorage.setItem('lrh-pref-theme', S.theme); }catch(e){}
+    paint();
   });
   $('resetbtn').addEventListener('click', function(){
     if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){ S.resetArm=false; paint(); },2500); return; }
     doReset();
   });
 
-  $('wIn').addEventListener('input', function(e){ var v=parseFloat(e.target.value); S.kg = v>0?v:null; paint(); });
-  $('aIn').addEventListener('input', function(e){ var v=parseFloat(e.target.value); S.ageY = (v>=0&&v<130)?v:null; paint(); });
+  /* Weight/age handling — same contract as arrest's copy (weight-routing
+     audit): ONE validation band (0<kg<300) enforced loudly at write; wtsrc/
+     wtms only move on a genuine change; transient keystrokes don't delete the
+     shared weight; the adult override clears on a changed weight/age. */
+  function showWErr(msg){ var el=$('werr'); el.textContent=msg; el.style.display='block'; }
+  function clearWErr(){ var el=$('werr'); el.textContent=''; el.style.display='none'; }
+  var _ovClearT=null;
+  function scheduleOverrideClear(){
+    if(_ovClearT) clearTimeout(_ovClearT);
+    _ovClearT=setTimeout(function(){
+      if(S.override){ S.override=false; SS.saveOverride();
+        log('Adult override cleared — weight/age changed'); paint(); }
+    }, 800);
+  }
+  function commitKg(v, src){
+    if(v===S.kg){ paint(); return; }
+    S.kg=v; SS.saveWeight(src);
+    scheduleOverrideClear();
+    paint();
+  }
+  var _wClearT=null;
+  $('wIn').addEventListener('input', function(e){
+    clearWErr();
+    if(_wClearT){ clearTimeout(_wClearT); _wClearT=null; }
+    var raw=e.target.value, v=parseFloat(raw);
+    if(raw==='' || isNaN(v)){
+      _wClearT=setTimeout(function(){ if($('wIn').value===''||isNaN(parseFloat($('wIn').value))) commitKg(null,'measured'); }, 900);
+      return;
+    }
+    if(v<=0 || v>=300){ showWErr('CHECK WEIGHT — MUST BE ABOVE 0 AND BELOW 300 kg. NOT SAVED.'); return; }
+    commitKg(v,'measured');
+  });
+  $('wIn').addEventListener('blur', function(e){
+    if(e.target.value===''||isNaN(parseFloat(e.target.value))) commitKg(null,'measured');
+  });
+  function onAgeChanged(){
+    clearWErr();
+    var prev=S.ageY, v=parseFloat($('aIn').value);
+    if(isNaN(v)||v<0){ S.ageY=null; }
+    else { var u=$('aUnit')?$('aUnit').value:'yr'; var yrs=(u==='mo')?v/12:v;
+           S.ageY=(yrs>=0&&yrs<130)?Math.round(yrs*100)/100:null; }
+    if(S.ageY!==null) SS.set('lrh-case-ageyrs',String(S.ageY)); else SS.del('lrh-case-ageyrs');
+    if(S.ageY!==prev) scheduleOverrideClear();
+    paint();
+  }
+  $('aIn').addEventListener('input', onAgeChanged);
+  if($('aUnit')) $('aUnit').addEventListener('change', onAgeChanged);
   $('estbtn').addEventListener('click', function(){
-    var a=S.ageY; if(!(a>=0)) return;
-    var est = a<1 ? (4 + Math.round(a*12)*0.5) : Math.min(2*a+8, 70);
-    est = Math.round(est*10)/10;
-    S.kg = est; $('wIn').value = String(est);
+    /* The manual's ONE age-to-weight formula (APLS bands, identical to peds/
+       and arrest/). Refuses beyond 12 y — the old min(2a+8,70) silently
+       flipped adolescents/adults into pediatric TXA and calcium. */
+    var v=parseFloat($('aIn').value);
+    if(isNaN(v)||v<0){ showWErr('ENTER A VALID AGE FIRST'); return; }
+    var u=$('aUnit')?$('aUnit').value:'yr';
+    var months=(u==='mo')?v:v*12, years=months/12;
+    if(years>12){ showWErr('AGE ESTIMATE VALID TO 12 y — USE A MEASURED WEIGHT'); return; }
+    var est;
+    if(months<12){ est=(0.5*months)+4; }
+    else if(years<=5){ est=(2*years)+8; }
+    else { est=(3*years)+7; }
+    est=Math.round(est*10)/10;
+    clearWErr();
+    $('wIn').value=String(est);
+    commitKg(est,'estimated');
     log('Weight ESTIMATED from age — '+est+' kg (not measured)');
+  });
+  $('dismisspeds').addEventListener('click', function(){
+    S.override=true; SS.saveOverride();
+    log('Pediatric trigger overridden — treating as adult');
+    paint();
+  });
+  $('undooverride').addEventListener('click', function(){
+    S.override=false; SS.saveOverride();
+    log('Adult override undone — back to pediatric dosing');
     paint();
   });
 
-  $('pregidle').addEventListener('click', function(){
+  function togglePreg(){
     S.pregnant=!S.pregnant;
     if(S.phase!=='idle') log(S.pregnant?'Flagged pregnant ≥'+SITE.pregGestWeeks+' wk':'Pregnancy flag removed');
     paint();
-  });
+  }
+  $('pregidle').addEventListener('click', togglePreg);
+  $('pregactive').addEventListener('click', togglePreg);
   $('startbtn').addEventListener('click', startTCA);
 
   $('addressedbtn').addEventListener('click', function(){
@@ -741,6 +909,14 @@ function tick(){
   }
 }
 
+/* Join the shared case: pick up a weight/age/override set in another tool, and
+   keep the manual-wide "last active" heartbeat fresh (WS2.5 contract). */
+SS.loadWeight();
+if(S.kg!==null) $('wIn').value = String(S.kg);
+if(S.ageY!==null) $('aIn').value = String(S.ageY);
+try{ S.theme = document.body.dataset.theme==='light' ? 'light' : 'dark'; }catch(e){}
+SS.touchActive();
+document.addEventListener('click', SS.touchActive, true);
 wire();
 paint();
 setInterval(tick, 250);
