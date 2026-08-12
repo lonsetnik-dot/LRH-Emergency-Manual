@@ -56,6 +56,29 @@ const nBreaths = async () => parseInt(await txt('#breathn'), 10);
 const openAcc = async id => { await pg.click('[data-acc="' + id + '"]'); await pg.waitForTimeout(250);
   return (await pg.locator('.accb').innerText()).replace(/\s+/g, ' ').trim(); };
 
+/* ---- CONFIG-DRIVEN EXPECTATIONS (issue #117) -------------------------------
+   Read the tool's own SITE block and assert the UI against THAT, rather than
+   against LRH's numbers written out here a second time.
+
+   Why: this suite is the safety harness that makes champion+AI maintenance of
+   clinical logic viable. If a forking ED correctly localizes its defibrillator
+   to, say, 150/200/200 J, a suite full of hardcoded 120/150/200 turns red for
+   doing the right thing — which teaches an adopting site that a red test run is
+   normal, at the exact moment the harness is what protects them.
+
+   What stays hardcoded, deliberately: everything universal — that energies
+   escalate and then stop, that a per-kg dose is capped at the adult ceiling,
+   that peds mode refuses to invent a number without a weight. Those are the
+   clinical invariants a fork must NOT be able to localize away. */
+const CFG = await (async () => {
+  await pg.goto(BASE + '/arrest/', { waitUntil: 'networkidle' });
+  const c = await pg.evaluate(() => (typeof window.SITE === 'object' ? window.SITE : null));
+  if (!c) { console.error('FATAL: /arrest/ does not expose window.SITE — cannot verify against config'); process.exit(1); }
+  return c;
+})();
+const J = CFG.defib.adultJ;                     // e.g. [120, 150, 200]
+const JMAX = J[J.length - 1];
+
 /* ---- 1. offline-safe: nothing is fetched from anywhere else ---- */
 await fresh();
 ck('1. loads with no page errors', errs.length, 0);
@@ -67,18 +90,20 @@ ck('1. dark theme is the default', await pg.evaluate(() => document.body.dataset
 await pg.fill('#wIn', '80'); await pg.waitForTimeout(250);
 ck('2. adult weight reads back', await txt('#wnote'), '80 kg · adult');
 await pg.click('#startbtn'); await pg.waitForTimeout(300);
-ck('2. first adult shock is 120 J', /SHOCK 120 J/.test(await txt('#shocklabel')), true);
+ck(`2. first adult shock is ${J[0]} J (SITE.defib.adultJ[0])`, (await txt('#shocklabel')).includes(`SHOCK ${J[0]} J`), true);
 await pg.click('#shockbtn'); await pg.waitForTimeout(200);
-ck('2. second adult shock is 150 J', /SHOCK 150 J/.test(await txt('#shocklabel')), true);
+ck(`2. second adult shock is ${J[1]} J`, (await txt('#shocklabel')).includes(`SHOCK ${J[1]} J`), true);
 await pg.click('#shockbtn'); await pg.waitForTimeout(200);
-ck('2. third adult shock is 200 J', /SHOCK 200 J/.test(await txt('#shocklabel')), true);
+ck(`2. third adult shock is ${J[2]} J`, (await txt('#shocklabel')).includes(`SHOCK ${J[2]} J`), true);
 await pg.click('#shockbtn'); await pg.waitForTimeout(200);
-ck('2. fourth stays at 200 J, not higher', /SHOCK 200 J/.test(await txt('#shocklabel')), true);
+/* Universal invariant, not a local value: the sequence must PLATEAU at the
+   configured maximum rather than keep climbing, whatever that maximum is. */
+ck(`2. fourth stays at the ${JMAX} J ceiling, not higher`, (await txt('#shocklabel')).includes(`SHOCK ${JMAX} J`), true);
 ck('2. shock counter tracks', await txt('#shockn'), '3');
-ck('2. adult epi is 1 mg', /EPI 1 mg/.test(await txt('#epilabel')), true);
-ck('2. adult amio first dose 300 mg', /AMIO 300 mg/.test(await txt('#amiolabel')), true);
+ck(`2. adult epi is ${CFG.epi.adultMg} mg (SITE.epi.adultMg)`, (await txt('#epilabel')).includes(`EPI ${CFG.epi.adultMg} mg`), true);
+ck(`2. adult amio first dose ${CFG.amio.adultDose1} mg`, (await txt('#amiolabel')).includes(`AMIO ${CFG.amio.adultDose1} mg`), true);
 await pg.click('#amiobtn'); await pg.waitForTimeout(200);
-ck('2. adult amio second dose 150 mg', /AMIO 150 mg/.test(await txt('#amiolabel')), true);
+ck(`2. adult amio second dose ${CFG.amio.adultDose2} mg`, (await txt('#amiolabel')).includes(`AMIO ${CFG.amio.adultDose2} mg`), true);
 
 /* ---- 3. PEDIATRIC dose math, computed from the exact kg ---- */
 await fresh();
@@ -88,20 +113,29 @@ ck('3. peds banner names the Broselow band', /Broselow Blue/.test(await txt('#pe
 ck('3. accent becomes the band colour', await pg.evaluate(() =>
   getComputedStyle(document.body).getPropertyValue('--accent').trim()), '#2E86C1');
 await pg.click('#startbtn'); await pg.waitForTimeout(300);
-ck('3. first peds shock is 2 J/kg = 40 J', /SHOCK 40 J/.test(await txt('#shocklabel')), true);
+ck(`3. first peds shock is ${CFG.peds.defibPerKg1} J/kg = ${CFG.peds.defibPerKg1 * 20} J`,
+   (await txt('#shocklabel')).includes(`SHOCK ${CFG.peds.defibPerKg1 * 20} J`), true);
 await pg.click('#shockbtn'); await pg.waitForTimeout(200);
-ck('3. later peds shocks are 4 J/kg = 80 J', /SHOCK 80 J/.test(await txt('#shocklabel')), true);
-ck('3. peds epi 0.01 mg/kg = 0.2 mg', /EPI 0\.2 mg/.test(await txt('#epilabel')), true);
-ck('3. peds amio 5 mg/kg = 100 mg', /AMIO 100 mg/.test(await txt('#amiolabel')), true);
+ck(`3. later peds shocks are ${CFG.peds.defibPerKgN} J/kg = ${CFG.peds.defibPerKgN * 20} J`,
+   (await txt('#shocklabel')).includes(`SHOCK ${CFG.peds.defibPerKgN * 20} J`), true);
+ck(`3. peds epi ${CFG.peds.epiPerKg} mg/kg = ${CFG.peds.epiPerKg * 20} mg`,
+   (await txt('#epilabel')).includes(`EPI ${CFG.peds.epiPerKg * 20} mg`), true);
+ck(`3. peds amio ${CFG.peds.amioPerKgDose1} mg/kg = ${CFG.peds.amioPerKgDose1 * 20} mg`,
+   (await txt('#amiolabel')).includes(`AMIO ${CFG.peds.amioPerKgDose1 * 20} mg`), true);
 await pg.click('[data-acc="epi"]'); await pg.waitForTimeout(200);
-ck('3. epi reference gives mg AND mL', /0\.2 mg/.test(await txt('.accb')) && /2 mL/.test(await txt('.accb')), true);
+ck('3. epi reference gives mg AND mL', (await txt('.accb')).includes(`${CFG.peds.epiPerKg * 20} mg`)
+   && (await txt('.accb')).includes(`${(CFG.peds.epiPerKg * 20) / CFG.peds.epiConc} mL`), true);
 
 /* a weight that would exceed the adult ceiling must be capped, not extrapolated */
 await fresh();
 await pg.fill('#wIn', '49'); await pg.waitForTimeout(250);
 await pg.click('#startbtn'); await pg.waitForTimeout(250);
 await pg.click('[data-acc="defib"]'); await pg.waitForTimeout(200);
-ck('3. 10 J/kg is capped at the adult max', /200 J/.test(await txt('.accb')), true);
+/* Universal invariant: per-kg energy must never exceed the adult ceiling,
+   whatever either number is locally. At 49 kg, defibMaxPerKg would compute far
+   past it. */
+ck(`3. ${CFG.peds.defibMaxPerKg} J/kg is capped at the adult max (${JMAX} J)`,
+   (await txt('.accb')).includes(`${JMAX} J`), true);
 
 /* ---- 4. the age arm of the trigger, and refusing to invent a number ---- */
 await fresh();
@@ -287,7 +321,7 @@ ck('13. but still tappable if the rhythm has changed', await pg.locator('#shockb
 ck('13. epinephrine is promoted instead', /GIVE NOW — as early as possible/.test(await txt('#episub')), true);
 await pg.click('#rhythmchange'); await pg.waitForTimeout(200);
 await pg.click('#rcshock'); await pg.waitForTimeout(250);
-ck('13. switching back to shockable restores the joule count', /SHOCK 120 J/.test(await txt('#shocklabel')), true);
+ck('13. switching back to shockable restores the joule count', (await txt('#shocklabel')).includes(`SHOCK ${J[0]} J`), true);
 ck('13. and restores the red shock button', await pg.evaluate(() =>
   getComputedStyle(document.getElementById('shockbtn')).backgroundColor !== getComputedStyle(document.getElementById('cyclecard')).backgroundColor), true);
 ck('13. re-arrest from ROSC returns to an unknown rhythm', await (async () => {

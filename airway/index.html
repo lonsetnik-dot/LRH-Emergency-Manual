@@ -128,6 +128,17 @@ var DAS = {
   fona:{ blade:"size 10 scalpel", bougie:"coudé-tip bougie", bougieDepth:"10–15 cm",
          tube:"6.0 mm cuffed", incision:"vertical midline, up to 8 cm" }
 };
+/* Expose the site config for inspection and for the verify suites.
+   Read-only in practice: nothing in this file reads window.DAS, it reads
+   the local DAS. Two reasons it is worth one line:
+   1. The suites assert the UI against THIS config instead of against
+      hardcoded LRH numbers, so a fork that correctly localizes its
+      values keeps a green test run (issue #117). Tests that break on
+      correct localization teach an adopting site to ignore failures.
+   2. A champion localizing the DAS 2025 airway ladder can read the live,
+      in-effect config from the browser console rather than by reading
+      source (issues #116/#118). */
+try{ window.DAS = DAS; }catch(e){}
 
 var S = { theme:'dark', phase:'idle', t0:null, plan:'A', a:0, b:0, c:0, fonaStep:0,
           primed:false, stopThink:false, events:[], open:null, resetArm:false,
