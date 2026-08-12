@@ -9,55 +9,31 @@
 <title>LRH Traumatic Cardiac Arrest — Cognitive Aid</title>
 <meta name="description" content="Mobile cognitive aid for traumatic cardiac arrest (TCA): reversible-cause workstreams (hemorrhage, airway, chest decompression, tamponade, obstetric), sequential vs simultaneous team modes, weight-based fluid/TXA/calcium, and an event log. Personal aid, not hospital policy.">
 <style>
-/* ===========================================================================
-   SITE CONFIG lives in the <script> block below (the JS `SITE` object) so the
-   clinical numbers sit next to the logic that reads them. This <style> block is
-   the shared design-language skeleton — copied from arrest/index.html so the two
-   live-protocol screens stay visually and structurally identical (CLAUDE.md
-   rule 4). If you restyle one, restyle both.
+/* @design-system-live */
+/* ---- Shared live-protocol skeleton (tokens, .hdr/.card/.btn/.acc/.chip/etc.,
+   the due/dot motion) is injected from design-system-live.css at the marker
+   above (build.mjs, issue #73) — copied by hand from arrest/ until now, so
+   the two live-protocol screens stay visually and structurally identical
+   (CLAUDE.md rule 4). If you restyle one, restyle both.
 
-   FONTS: the design specifies Source Sans 3 + JetBrains Mono from Google Fonts.
-   CLAUDE.md rule 1 forbids external dependencies and requires offline use from a
-   cart, so no font is fetched — the stacks below are the closest system
-   equivalents (a humanist sans, and a mono for every timer and timestamp). To
-   use the exact faces, self-host the woff2 files here as @font-face; do not add
-   a <link> to fonts.googleapis.com.
-   =========================================================================== */
+   SITE CONFIG for the clinical numbers lives in the <script> block below (the
+   JS `SITE` object), next to the logic that reads it.
+
+   TCA's own orange branding overrides the shared green accent right here —
+   a traumatic arrest should never look like a medical one at a glance — and
+   adds the purple/teal/orange category tokens the workstream cards use.
+   Genuinely TCA-specific chrome (the workstream rows: .wcard/.wrow/.wbox/
+   .wtext/.wlink; the print stylesheet) stays inline below. ---- */
 :root{
-  --bg:#0D1420; --card:#161F2E; --card2:#1D2A3C; --ink:#EAF0F7; --ink2:#8FA0B5;
-  --line:rgba(255,255,255,.10);
-  --red:#E5484D; --gray:#5C6B7E; --blue:#4C8DDA; --green:#3DA35D; --amber:#F0B429;
   --purple:#9B7BD4; --teal:#3AA6A6; --orange:#E08A3C;
   --accent:#E08A3C; --accentInk:#141E2B;
-  --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
-  --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Roboto Mono",monospace;
 }
 body[data-theme="light"]{
-  --bg:#EFF2F5; --card:#FFFFFF; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D;
-  --line:rgba(15,35,60,.13);
-  --red:#C63238; --gray:#6B7A8D; --blue:#2F6FB5; --green:#1F7F49; --amber:#B07E13;
   --purple:#6C4FA3; --teal:#1F7E7E; --orange:#B4661F;
   --accent:#B4661F; --accentInk:#fff;
 }
-html{-webkit-text-size-adjust:100%}
-body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
-button,input{font-family:inherit}
-button{-webkit-appearance:none;appearance:none;touch-action:manipulation;-webkit-tap-highlight-color:rgba(255,255,255,.12)}
+button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
 a{color:var(--blue);text-decoration:none}
-.wrap{max-width:680px;margin:0 auto;padding:0 14px 40px}
-.mono{font-family:var(--mono)}
-.hdr{position:sticky;top:0;z-index:30;background:var(--bg);padding:12px 0 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
-.plabel{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--accent)}
-.sec{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--ink2)}
-.card{background:var(--card);border:1px solid var(--line);border-radius:14px}
-.btn{border:1px solid var(--line);border-radius:12px;background:var(--card2);color:var(--ink);font:800 16px var(--sans);cursor:pointer}
-.ghost{background:var(--card);border:1px solid var(--line);color:var(--ink2);font:700 11px var(--sans);letter-spacing:.08em;padding:9px 12px;border-radius:10px;cursor:pointer;min-height:38px}
-.inp{background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:9px 10px;font-size:17px;font-weight:700;text-align:center}
-.acc{margin-top:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.acch{width:100%;display:flex;justify-content:space-between;align-items:center;background:none;border:none;color:var(--ink);padding:15px 14px;font:800 14px var(--sans);letter-spacing:.06em;cursor:pointer;min-height:52px}
-.accb{padding:0 14px 14px;font-size:14.5px;line-height:1.6;border-top:1px solid var(--line)}
-.accb p{margin:10px 0}
-.chip{background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700}
 /* Category/section identity is a 4px left bar — never a filled header block, so
    it never competes with red/amber status color (design language §3). */
 .wcard{margin-top:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
@@ -65,13 +41,6 @@ a{color:var(--blue);text-decoration:none}
 .wbox{width:22px;height:22px;border-radius:6px;border:2px solid var(--line);background:transparent;color:#fff;font:700 13px var(--sans);display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px}
 .wtext{font-size:14.5px;line-height:1.5}
 .wlink{display:inline-flex;align-items:center;gap:4px;min-height:40px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--card2);font:800 12.5px var(--sans);letter-spacing:.03em;text-decoration:none;white-space:nowrap}
-/* Only overdue things move — motion is a signal here, not decoration. */
-@keyframes duepulse{0%,100%{opacity:1}50%{opacity:.45}}
-@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
-.due{animation:duepulse 1.2s infinite}
-.dot{width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;animation:blink 1.4s infinite}
-@media (prefers-reduced-motion: reduce){.due,.dot{animation:none}}
-.evrow{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px}
 @media print{
   @page{margin:14mm}
   html,body{background:#fff !important}

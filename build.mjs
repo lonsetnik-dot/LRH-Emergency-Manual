@@ -16,6 +16,8 @@ import { createHash } from 'node:crypto';
 
 const CSS = readFileSync('design-system.css', 'utf8').trim();
 const MARKER = '/* @design-system */';
+const CSS_LIVE = readFileSync('design-system-live.css', 'utf8').trim();
+const MARKER_LIVE = '/* @design-system-live */';
 const INV = readFileSync('inventory.js', 'utf8').trim();
 const MARKER_INV = '/* @inventory */';
 const SW_TEMPLATE = readFileSync('sw-template.js', 'utf8');
@@ -25,7 +27,7 @@ const OUT = 'dist';
 // Not part of the deployed site (dev tooling, docs, build inputs, VCS).
 const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', '.github']);
 const SKIP_ROOT_FILES = new Set([
-  'design-system.css', 'inventory.js', 'build.mjs', 'run-tests.sh', 'netlify.toml',
+  'design-system.css', 'design-system-live.css', 'inventory.js', 'build.mjs', 'run-tests.sh', 'netlify.toml',
   'package.json', 'package-lock.json', 'shot.mjs', '.gitignore',
   'sw-template.js', 'sw-register.js',   // build inputs — emitted as dist/sw.js / inlined
 ]);
@@ -44,7 +46,7 @@ function walk(src, dst, atRoot) {
     if (statSync(s).isDirectory()) walk(s, d, false);
     else if (name.endsWith('.html')) {
       const html = readFileSync(s, 'utf8');
-      writeFileSync(d, injectSW(html.split(MARKER).join(CSS).split(MARKER_INV).join(INV)));
+      writeFileSync(d, injectSW(html.split(MARKER).join(CSS).split(MARKER_LIVE).join(CSS_LIVE).split(MARKER_INV).join(INV)));
     } else copyFileSync(s, d);
   }
 }
@@ -161,7 +163,7 @@ let leftover = 0;
   for (const name of readdirSync(dir)) {
     const p = join(dir, name);
     if (statSync(p).isDirectory()) scan(p);
-    else if (name.endsWith('.html') && (readFileSync(p, 'utf8').includes(MARKER) || readFileSync(p, 'utf8').includes(MARKER_INV))) {
+    else if (name.endsWith('.html') && (readFileSync(p, 'utf8').includes(MARKER) || readFileSync(p, 'utf8').includes(MARKER_LIVE) || readFileSync(p, 'utf8').includes(MARKER_INV))) {
       console.error('!! un-injected marker left in', p); leftover++;
     }
   }
