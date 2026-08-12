@@ -39,6 +39,13 @@
 .prow{display:flex;gap:8px;flex-wrap:wrap;padding:10px 14px 0}
 .pbtn{flex:1 1 200px;min-height:52px;border:none;border-radius:12px;background:var(--accent);color:#fff;font:800 13.5px var(--sans,inherit);letter-spacing:.05em;cursor:pointer}
 .pbtn.alt{background:var(--card2);color:var(--ink);border:1px solid var(--line)}
+.crow{display:flex;align-items:center;gap:10px;width:100%;margin:6px 14px 0;width:calc(100% - 28px);
+      background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 13px;
+      min-height:54px;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
+.crow[aria-current="true"]{border-color:var(--accent);border-width:2px;background:var(--card2)}
+.crow .ct{font-size:15px;font-weight:800;line-height:1.25}
+.crow .cc{font-size:11.5px;color:var(--ink2);margin-top:3px;line-height:1.35}
+.crow .cg{margin-left:auto;flex:none;font:800 10.5px var(--mono,ui-monospace,monospace);letter-spacing:.06em;color:var(--ink2)}
 
 /* ===== PRINT — the kit itself ============================================
    Three separately printable decks, because they are made of different things:
@@ -162,6 +169,9 @@ catch(e){ document.body.dataset.theme='dark'; }
 
   <div class="vlede screenonly" id="lede"></div>
 
+  <div class="sec screenonly" style="margin:16px 14px 4px;font:800 11px var(--mono,ui-monospace,monospace);letter-spacing:.14em;color:var(--ink2)">CHOOSE A CASE — ONE DECK PRINTS AT A TIME</div>
+  <div class="screenonly" id="casemenu"></div>
+
   <div class="prow screenonly">
     <button class="pbtn" type="button" data-print="poster">PRINT PATIENT POSTER</button>
     <button class="pbtn" type="button" data-print="cards">PRINT THE CARD DECK</button>
@@ -252,12 +262,67 @@ var METHOD = {
    own: doses, ceilings and the ladder itself live on the linked cards, which
    carry their own citations. What this file adds is the physical staging.
    ======================================================================== */
-var CASE = {
-  id:"vems-adult-airway",
+var CASES = [{
+  id:"adult-airway", menu:"Adult Failed Airway", tag:"AIRWAY · 15 MIN",
+  sim:{ t:"SIM 9", h:"../simulations/?from=home#s09" },
   title:"Adult Failed Airway",
   chain:["ANGIOEDEMA","FAILED LADDER","SALAD","CICO","FONA"],
   minutes:15,
   who:"55-year-old, on lisinopril, woke with a swollen tongue and is now stridulous and frightened. Sitting bolt upright.",
+  /* The patient figure is per-case: each case is decided in a different place
+     on the body, so each gets its own drawing rather than one generic
+     silhouette that fits none of them. */
+  fig: function(){
+  return '<div class="pfig"><svg viewBox="0 0 520 320" style="width:100%;height:auto;display:block" role="img" aria-label="Lateral view of an adult head and neck with a swollen tongue and the cricothyroid membrane marked, and dashed zones for placing equipment cards">'+
+     '<rect x="0" y="0" width="520" height="320" fill="#fffefb"/>'+
+     /* Lateral (side) view, facing left, head slightly extended. A side view is
+        the only one that shows what this case is actually about: the column of
+        air from mouth to trachea, where it is being closed off, and where the
+        neck is cut if it closes completely. A front view cannot show any of
+        that. Anatomy is schematic on purpose — this is a place to put cards,
+        not a plate to learn anatomy from. */
+     /* shoulder + chest */
+     '<path d="M240 320 C242 284 272 266 320 262 L520 262 L520 320 Z" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+     /* neck */
+     '<path d="M198 196 C196 232 212 252 250 258 L330 262 L336 240 C300 232 268 214 262 178 Z" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+     /* head in profile: forehead, brow, nose, lips, chin, jaw, occiput */
+     '<path d="M214 36 C158 40 122 80 124 116 L112 126 C94 142 100 154 118 156 '+
+       'L120 170 C112 176 116 184 126 186 L128 200 C130 212 142 218 158 218 '+
+       'L214 222 C252 222 274 200 280 166 C288 116 272 44 214 36 Z" '+
+       'fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+     /* the airway column: oropharynx down to trachea, drawn as the lumen */
+     '<path d="M150 176 C186 180 208 194 214 216 L214 258" fill="none" stroke="#c9d2da" stroke-width="15" stroke-linecap="round"/>'+
+     /* SWOLLEN TONGUE — the thing that is closing the column */
+     '<path d="M138 172 C168 168 194 178 200 196 C204 210 190 216 172 212 '+
+       'C152 208 136 194 138 172 Z" fill="rgba(155,28,46,0.34)" stroke="#9b1c2e" stroke-width="2.2"/>'+
+     '<path d="M132 168 L96 150" stroke="#9b1c2e" stroke-width="1.6"/>'+
+     '<text x="18" y="146" font-family="ui-monospace,monospace" font-size="11.5" font-weight="700" fill="#9b1c2e">SWOLLEN TONGUE</text>'+
+     /* thyroid cartilage, then the membrane, then the trachea below it */
+     '<path d="M200 226 L232 222 L234 240 L202 244 Z" fill="none" stroke="#5a6a78" stroke-width="2"/>'+
+     '<rect x="202" y="246" width="32" height="14" fill="rgba(15,122,134,0.30)" stroke="#0f7a86" stroke-width="2.5"/>'+
+     '<path d="M236 253 L286 253" stroke="#0f7a86" stroke-width="1.6"/>'+
+     /* Opaque plate under the callout. It crosses the shoulder, and teal-on-grey
+        at 9.5 pt is the first thing to become unreadable on a tired photocopy. */
+     '<rect x="286" y="236" width="224" height="32" rx="3" fill="#fffefb" stroke="#d7dde3" stroke-width="1.2"/>'+
+     '<text x="292" y="250" font-family="ui-monospace,monospace" font-size="11.5" font-weight="700" fill="#0f7a86">CRICOTHYROID MEMBRANE</text>'+
+     '<text x="292" y="264" font-family="ui-monospace,monospace" font-size="9.5" fill="#5a6a78">SCALPEL &#8594; BOUGIE &#8594; TUBE, HERE</text>'+
+     /* card landing zones */
+     '<rect x="18" y="18" width="140" height="72" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+     '<text x="28" y="44" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">AIRWAY DEVICE</text>'+
+     '<text x="28" y="58" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">IN USE — PUT</text>'+
+     '<text x="28" y="72" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">THE CARD HERE</text>'+
+     '<rect x="360" y="18" width="142" height="72" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+     '<text x="370" y="44" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">MONITOR CARD</text>'+
+     '<text x="370" y="58" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">GOES HERE —</text>'+
+     '<text x="370" y="72" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">SWAP EACH BEAT</text>'+
+     '<rect x="18" y="200" width="140" height="66" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+     '<text x="28" y="226" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">DRUGS GIVEN —</text>'+
+     '<text x="28" y="240" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">SAY THE DOSE</text>'+
+     '<text x="28" y="254" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">OUT LOUD</text>'+
+     '<rect x="18" y="278" width="186" height="34" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+     '<text x="28" y="299" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">ACCESS CARDS HERE</text>'+
+     '</svg></div>';
+  },
   /* The poster's printed baseline. The monitor CARDS carry the trajectory. */
   baseline:{ spo2:"94", hr:"112", bp:"168/94", etco2:"—" },
   /* Monitor cards, in the order the facilitator lays them down. `cue` is the
@@ -378,9 +443,567 @@ var CASE = {
     "content lives on the linked cards. <b>This kit adds no clinical values of its own</b> — every "+
     "dose, ceiling and threshold stays on the card that cites it, so there is only ever one place to "+
     "update a number."
-};
+}
+,
+
+/* ======================= CASE 2 — PRECIPITOUS BIRTH ======================
+   The printed companion to simulations/ SIM 1. Two patients on one poster,
+   which is the whole point of this case: the moment the baby is out, the room
+   has to split, and a poster with only one body on it quietly teaches the team
+   to abandon mom. ====================================================== */
+{
+  id:"precipitous-birth", menu:"Precipitous Birth & the Blue Baby", tag:"OB · 15 MIN",
+  title:"Precipitous Birth & the Blue Baby",
+  chain:["IMMINENT DELIVERY","SHOULDER DYSTOCIA","NEONATAL RESUSCITATION"],
+  minutes:15,
+  sim:{ t:"SIM 1", h:"../simulations/?from=home#s01" },
+  who:"G3P2 at term, 5 minutes out the door and crowning on arrival. No prenatal records. The nursery team is 20 minutes away.",
+  baseline:{ vals:[{v:"112",l:"MOM HR"},{v:"128/74",l:"MOM BP"},{v:"—",l:"BABY HR"},{v:"—",l:"TIME OF BIRTH"}] },
+
+  fig: function(){
+    return '<div class="pfig"><svg viewBox="0 0 520 320" style="width:100%;height:auto;display:block" role="img" aria-label="Two zones: a mother in lithotomy on the left and a newborn on a radiant warmer on the right, with dashed areas for placing equipment cards">'+
+      '<rect x="0" y="0" width="520" height="320" fill="#fffefb"/>'+
+      /* A DIVIDED poster. The line down the middle is the clinical point: at the
+         moment of delivery this becomes two patients with two teams, and the
+         team that has only ever practiced on one body forgets the mother. */
+      '<line x1="266" y1="10" x2="266" y2="310" stroke="#b9c2cc" stroke-width="2" stroke-dasharray="7 6"/>'+
+      '<text x="16" y="24" font-family="ui-monospace,monospace" font-size="11.5" font-weight="700" fill="#16324f">MOTHER</text>'+
+      '<text x="280" y="24" font-family="ui-monospace,monospace" font-size="11.5" font-weight="700" fill="#16324f">NEWBORN — AT THE WARMER</text>'+
+      /* --- mother, lithotomy, schematic --- */
+      '<path d="M28 232 C28 208 44 196 68 196 L150 196 C176 196 190 212 190 236 L190 268 L28 268 Z" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+      '<circle cx="52" cy="170" r="20" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+      /* thighs up (McRoberts is the first maneuver, so the legs are drawn where they go) */
+      '<path d="M150 200 C186 176 206 140 208 108" fill="none" stroke="#5a6a78" stroke-width="13" stroke-linecap="round"/>'+
+      '<path d="M120 200 C150 168 162 132 160 100" fill="none" stroke="#5a6a78" stroke-width="13" stroke-linecap="round"/>'+
+      '<text x="150" y="92" font-family="ui-monospace,monospace" font-size="9.5" fill="#5a6a78">KNEES TO CHEST</text>'+
+      /* the perineum — where the head is */
+      '<circle cx="182" cy="212" r="15" fill="rgba(155,28,46,0.30)" stroke="#9b1c2e" stroke-width="2.2"/>'+
+      '<path d="M198 212 L232 206" stroke="#9b1c2e" stroke-width="1.6"/>'+
+      '<text x="196" y="196" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#9b1c2e">HEAD</text>'+
+      /* suprapubic pressure target — named because pointing at it is the drill */
+      '<circle cx="120" cy="204" r="9" fill="none" stroke="#0f7a86" stroke-width="2.4"/>'+
+      '<text x="60" y="290" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#0f7a86">SUPRAPUBIC PRESSURE — SAY WHICH WAY</text>'+
+      '<path d="M120 214 L112 282" stroke="#0f7a86" stroke-width="1.4"/>'+
+      '<rect x="16" y="34" width="150" height="52" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+      '<text x="26" y="56" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">DELIVERY CARDS</text>'+
+      '<text x="26" y="70" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">GO HERE</text>'+
+      /* --- newborn on the warmer --- */
+      '<rect x="286" y="150" width="216" height="118" rx="6" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+      '<path d="M286 150 L286 128 L502 128 L502 150" fill="none" stroke="#5a6a78" stroke-width="2"/>'+
+      '<text x="300" y="144" font-family="ui-monospace,monospace" font-size="9" fill="#5a6a78">RADIANT WARMER — ON BEFORE THE BIRTH</text>'+
+      /* baby: head, body, arms, legs */
+      babyFig(316, 168, 1.0, 'rgba(47,111,181,0.30)', '#2F6FB5')+
+      '<text x="292" y="258" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#2F6FB5">BLUE + FLOPPY</text>'+
+      '<path d="M336 186 L336 168" stroke="#5a6a78" stroke-width="1.4"/>'+
+      '<text x="292" y="164" font-family="ui-monospace,monospace" font-size="9" fill="#5a6a78">MASK SEAL</text>'+
+      /* umbilicus — where the UVC goes if it comes to that */
+      '<circle cx="390" cy="203" r="5" fill="#9b1c2e"/>'+
+      '<path d="M396 203 L438 203" stroke="#9b1c2e" stroke-width="1.4"/>'+
+      '<text x="442" y="207" font-family="ui-monospace,monospace" font-size="9" font-weight="700" fill="#9b1c2e">UVC</text>'+
+      '<rect x="286" y="278" width="216" height="32" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+      '<text x="296" y="299" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">NEWBORN CARDS + MONITOR CARD HERE</text>'+
+      '<rect x="286" y="34" width="216" height="52" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+      '<text x="296" y="56" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">TIME OF BIRTH — WRITE IT</text>'+
+      '<text x="296" y="70" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">THE MOMENT IT HAPPENS</text>'+
+      '</svg></div>';
+  },
+
+  /* MOM cards and BABY cards deliberately interleave. The facilitator lays the
+     newborn card down WITHOUT removing the maternal one — both patients still
+     exist, and the deck should not let the team forget that. */
+  monitor:[
+    { id:"M1", st:"BEAT 1 · MOM · CROWNING",
+      vals:[{v:"112",l:"MOM HR"},{v:"128/74",l:"MOM BP"},{v:"—",l:"BABY HR"},{v:"—",l:"BIRTH TIME"}],
+      cue:"Pushing involuntarily. You can see hair." },
+    { id:"M2", st:"BEAT 2 · MOM · TURTLE SIGN",
+      vals:[{v:"124",l:"MOM HR"},{v:"134/78",l:"MOM BP"},{v:"—",l:"BABY HR"},{v:"—",l:"BIRTH TIME"}],
+      cue:"Head delivered, then retracted tight against the perineum. Shoulders will not come." },
+    { id:"M3", st:"BEAT 3 · BABY · JUST BORN",
+      vals:[{v:"116",l:"MOM HR"},{v:"—",l:"BABY HR"},{v:"FLOPPY",l:"TONE"},{v:"BLUE",l:"COLOR"}],
+      cue:"Baby is out. Not crying. Write the time of birth NOW." },
+    { id:"M4", st:"BEAT 4 · BABY · FIRST CHECK",
+      vals:[{v:"50",l:"BABY HR"},{v:"NONE",l:"RESP"},{v:"FLOPPY",l:"TONE"},{v:"BLUE",l:"COLOR"}],
+      cue:"Heart rate 50 and no respiratory effort. This is a PPV number." },
+    { id:"M5", st:"BEAT 5 · BABY · PPV WORKING",
+      vals:[{v:"92",l:"BABY HR"},{v:"WITH PPV",l:"RESP"},{v:"SOME",l:"TONE"},{v:"PINKER",l:"COLOR"}],
+      cue:"Rising with good chest rise. Say what changed." },
+    { id:"M6", st:"BEAT 6 · BABY · RECOVERED",
+      vals:[{v:"148",l:"BABY HR"},{v:"CRYING",l:"RESP"},{v:"FLEXED",l:"TONE"},{v:"PINK",l:"COLOR"}],
+      cue:"Crying, flexed, pink. Log the 5-minute mark off the birth time." }
+  ],
+
+  beats:[
+    { n:"BEAT 1 · IT IS COMING NOW", flip:"M1",
+      say:"“She is pushing and you can see hair at the introitus. She screams — <b>it is coming now.</b> Who is catching, and who is on the baby?”",
+      link:{ t:"OB · IMMINENT NORMAL DELIVERY", h:"../ob-neonatal/?from=home#c02" },
+      does:["Two roles named out loud BEFORE the birth: who catches, who takes the newborn. One person cannot do both.",
+            "The radiant warmer is turned on now — warm-up time is real time.",
+            "Cards placed: DELIVERY KIT on mom's side, WARMER and TOWEL/HAT on the newborn side."],
+      adv:"a catcher and a newborn person are named, and the warmer is on.",
+      fail:"nobody is assigned to the baby before it arrives — note it and let it run; Beat 3 will show them what it costs." },
+
+    { n:"BEAT 2 · TURTLE SIGN", flip:"M2",
+      say:"“The head delivered a minute ago and pulled back tight against the perineum. Normal traction is doing nothing. <b>What is this, and what are you doing about it?</b>”",
+      link:{ t:"OB · SHOULDER DYSTOCIA", h:"../ob-neonatal/?from=home#c07" },
+      does:["Somebody says the words <b>shoulder dystocia</b> out loud and calls for more hands. Naming it is what starts the clock.",
+            "Maneuvers are worked IN ORDER and narrated. Knees to chest, then suprapubic pressure — with someone physically pointing at where and saying which direction.",
+            "Watch for pulling harder. The correct move is to change the geometry, not the force."],
+      adv:"two maneuvers are performed and narrated correctly, in order.",
+      fail:"the team pulls harder instead of changing position — stop, say so plainly, and run the beat again." },
+
+    { n:"BEAT 3 · THE BABY IS OUT, AND BLUE", flip:"M3",
+      say:"“Baby is out. Floppy, blue, not crying. Cord is cut. <b>What do you do, and where do you do it?</b>”",
+      link:{ t:"OB · NEONATAL RESUSCITATION", h:"../ob-neonatal/?from=home#c03" },
+      does:["<b>The time of birth gets written down NOW</b>, not reconstructed later. This is the single most commonly lost number in this case.",
+            "The baby physically moves to the warmer with a NAMED person.",
+            "Warm, dry, stimulate — narrated, in that order. Cards placed: TOWEL/HAT, then the newborn's monitor card.",
+            "Somebody is still watching mom. If every card and every person moves to the baby, say so at the debrief."],
+      adv:"time of birth is written, the baby is at the warmer with a named person, and warm-dry-stimulate is narrated." },
+
+    { n:"BEAT 4 · HEART RATE 50", flip:"M4",
+      say:"“Heart rate is 50. No respiratory effort. <b>Say what that number means and what it makes you do.</b>”",
+      link:{ t:"OB · NEONATAL RESUSCITATION", h:"../ob-neonatal/?from=home#c03" },
+      does:["PPV starts — inside a minute of “not crying”. The rate is called aloud off the card, not guessed.",
+            "Cards placed: INFANT BVM + MASK on the newborn's face zone.",
+            "If there is no chest rise, the corrective steps are named in order rather than squeezing harder.",
+            "This is a newborn, so it is the NRP pathway — not the pediatric one. If anyone reaches for a peds dose, that is the debrief."],
+      adv:"PPV is running with narrated chest rise and the rate said out loud.",
+      fail:"the team goes to compressions or epinephrine before PPV is established and effective — rewind; ventilation is the treatment." },
+
+    { n:"BEAT 5 · IT IS WORKING", flip:"M5",
+      say:"“Heart rate is up to 92 with good chest rise. <b>What changed, and what are you watching now?</b>”",
+      link:{ t:"OB · NEONATAL RESUSCITATION", h:"../ob-neonatal/?from=home#c03" },
+      does:["The team names WHAT they changed that worked — the specific corrective step, not “we bagged better”.",
+            "Somebody states the threshold they are working toward, off the card.",
+            "If the team wants access, UVC is the newborn route — point at the Circulation drawer, do not open it."],
+      adv:"the effective change is named and the target heart rate is stated." },
+
+    { n:"BEAT 6 · BOTH PATIENTS", flip:"M6",
+      say:"“Baby is 148, crying, pink. <b>Now — how is mom?</b>”",
+      link:{ t:"OB · POSTPARTUM HEMORRHAGE", h:"../ob-neonatal/?from=home#c06" },
+      does:["The 1- and 5-minute marks are logged off the birth time stamped in Beat 3. That is the payoff for writing it down.",
+            "Somebody reports mom's status. If nobody can, that is the finding of the whole drill.",
+            "Transfer and nursery notification are named. Stop the clock."],
+      adv:"the 5-minute mark is logged AND someone reports on the mother. Stop the clock." }
+  ],
+
+  debrief:[
+    "Was the time of birth written at the moment of birth, or reconstructed afterwards? If reconstructed — what would it have cost at the 5-minute mark?",
+    "How many seconds passed between “not crying” and the first effective breath?",
+    "When the baby got into trouble, who was still looking after the mother? Say the name, or say that nobody was.",
+    "In the dystocia, did anyone pull harder before changing the geometry?",
+    "Every card you placed — could you find the real thing in the new OB cart right now, in the dark, in under ten seconds?"
+  ],
+
+  kit:[
+    { icon:"baby",    n:"Delivery Kit",          sz:"CLAMPS · SCISSORS · BULB", inv:"ob-delivery-kit" },
+    { icon:"monitor", n:"Radiant Warmer",        sz:"ON BEFORE THE BIRTH", drawer:"OB / Neonatal Cart · alongside", unconfirmed:1 },
+    { icon:"mask",    n:"Infant BVM + Mask",     sz:"450 mL · NEONATAL MASK", inv:"bvm-infant-adult" },
+    { icon:"airway",  n:"OPA / NPA",             sz:"NEONATAL", inv:"opa-0-5" },
+    { icon:"suction", n:"Bulb / Suction",        sz:"5–8 Fr", inv:"suction-cath-5-14" },
+    { icon:"etco2",   n:"End-Tidal CO₂",         sz:"CONFIRMS THE TUBE", inv:"etco2" },
+    { icon:"ett",     n:"Neonatal ETT",          sz:"2.5–3.5 UNCUFFED", inv:"ett-range" },
+    { icon:"dl",      n:"Laryngoscope",          sz:"MILLER 0–1", inv:"blades-peds" },
+    { icon:"iv",      n:"UVC Kit",               sz:"3.5 / 5 Fr", inv:"uvc-3.5-5" },
+    { icon:"meds",    n:"Epinephrine",           sz:"NRP DOSE — SAY IT", drawer:"OB / Neonatal Cart · Circulation" },
+    { icon:"fluid",   n:"Normal Saline",         sz:"VOLUME — 10 mL/kg", drawer:"OB / Neonatal Cart · Circulation" },
+    { icon:"prep",    n:"Towel + Hat",           sz:"WARM, DRY, STIMULATE", drawer:"OB / Neonatal Cart · Vaginal Delivery" },
+    /* Decoys — each a real thing on a real cart, each the wrong reach here. */
+    { icon:"ezio",    n:"EZ-IO",                 sz:"NOT FIRST IN A NEWBORN", inv:"io-needles", decoy:1 },
+    { icon:"hemo",    n:"JADA Kit",              sz:"MOM LATER, NOT NOW", inv:"kit-jada", decoy:1 },
+    { icon:"igel",    n:"iGel",                  sz:"CHECK THE SIZE FIRST", inv:"sga-1-5", decoy:1 }
+  ],
+
+  sources:"Scenario staging follows the Visually Enhanced Mental Simulation format: Brazil V, et al. "+
+    "<i>Visually Enhanced Mental Simulation (VEMS) — an alternative simulation delivery format?</i> "+
+    "Royal College ICE Blog, 12 April 2022; and Brazil V, et al. <i>Recommendations for the design and "+
+    "delivery of Visually Enhanced Mental Simulation.</i> Journal of Healthcare Simulation 2025, "+
+    "doi:10.54531/NDXV6633. The clinical sequence is the manual's own "+
+    "<a href=\"../ob-neonatal/?from=home\">OB &amp; Neonatal</a> cards — delivery, shoulder dystocia and "+
+    "neonatal resuscitation — which carry their own citations. <b>This kit adds no clinical values of its "+
+    "own</b>; every dose, rate and threshold stays on the card that cites it."
+},
+
+/* ==================== CASE 3 — POSTPARTUM HEMORRHAGE =====================
+   The printed companion to simulations/ SIM 2. The number that drives this
+   case is the running blood loss, so it is on every monitor card — the whole
+   teaching point is escalating on the TRAJECTORY rather than on a threshold.
+   ====================================================================== */
+{
+  id:"pph", menu:"Postpartum Hemorrhage → MTP", tag:"OB · 12 MIN",
+  title:"Postpartum Hemorrhage",
+  chain:["DELIVERY DONE","PPH","MASSIVE TRANSFUSION"],
+  minutes:12,
+  sim:{ t:"SIM 2", h:"../simulations/?from=home#s02" },
+  who:"Delivered 20 minutes ago, placenta out 10 minutes ago. The nurse calls you back in: she is soaking through pads.",
+  baseline:{ vals:[{v:"700",l:"EBL mL"},{v:"98",l:"HR"},{v:"112/70",l:"NIBP"},{v:"ALERT",l:"MENTAL"}] },
+
+  fig: function(){
+    return '<div class="pfig"><svg viewBox="0 0 520 320" style="width:100%;height:auto;display:block" role="img" aria-label="A postpartum patient with the uterine fundus marked for massage and a growing area of blood loss, with dashed zones for placing equipment cards">'+
+      '<rect x="0" y="0" width="520" height="320" fill="#fffefb"/>'+
+      /* torso, supine, from the front — this case is decided at the fundus and
+         at the perineum, so both have to be reachable on the same sheet. */
+      '<path d="M150 40 C196 40 214 62 216 96 L222 210 C226 250 208 274 178 278 L120 278 C90 274 74 250 78 210 L84 96 C86 62 104 40 150 40 Z" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+      '<circle cx="150" cy="26" r="18" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+      /* the fundus — boggy, and the first thing a hand goes on */
+      '<circle cx="150" cy="176" r="40" fill="rgba(155,28,46,0.22)" stroke="#9b1c2e" stroke-width="2.5"/>'+
+      '<text x="128" y="180" font-family="ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#9b1c2e">FUNDUS</text>'+
+      '<path d="M190 168 L250 158" stroke="#9b1c2e" stroke-width="1.6"/>'+
+      '<rect x="250" y="140" width="252" height="34" rx="3" fill="#fffefb" stroke="#d7dde3" stroke-width="1.2"/>'+
+      '<text x="256" y="154" font-family="ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#9b1c2e">BOGGY — PUT A HAND ON IT</text>'+
+      '<text x="256" y="168" font-family="ui-monospace,monospace" font-size="9" fill="#5a6a78">MASSAGE IS THE FIRST MOVE, AND IT IS FREE</text>'+
+      /* the loss, growing downward — deliberately drawn as an area, not a number */
+      '<path d="M104 268 C112 296 128 312 150 312 C172 312 190 296 198 268 Z" fill="rgba(155,28,46,0.34)" stroke="#9b1c2e" stroke-width="2"/>'+
+      '<text x="82" y="306" font-family="ui-monospace,monospace" font-size="9" font-weight="700" fill="#9b1c2e">EBL</text>'+
+      '<rect x="250" y="196" width="252" height="46" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+      '<text x="260" y="216" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">UTEROTONICS — LAY THE CARD DOWN</text>'+
+      '<text x="260" y="230" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">AND SAY THE DOSE OUT LOUD</text>'+
+      '<rect x="250" y="252" width="252" height="46" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+      '<text x="260" y="272" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">BLOOD + ACCESS CARDS HERE</text>'+
+      '<text x="260" y="286" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">NAME A RUNNER AND A CHECKER</text>'+
+      '<rect x="250" y="34" width="252" height="90" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+      '<text x="260" y="56" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">MONITOR CARD HERE —</text>'+
+      '<text x="260" y="70" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">SWAP IT EVERY BEAT AND</text>'+
+      '<text x="260" y="84" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">READ THE EBL OUT LOUD</text>'+
+      '<text x="260" y="106" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#9b1c2e">THE TRAJECTORY IS THE FINDING</text>'+
+      '</svg></div>';
+  },
+
+  monitor:[
+    { id:"M1", st:"BEAT 1 · SOAKING THROUGH",
+      vals:[{v:"700",l:"EBL mL"},{v:"98",l:"HR"},{v:"112/70",l:"NIBP"},{v:"ALERT",l:"MENTAL"}],
+      cue:"Fundus feels boggy. Loss is climbing while you watch." },
+    { id:"M2", st:"BEAT 2 · UTEROTONICS IN",
+      vals:[{v:"1100",l:"EBL mL"},{v:"114",l:"HR"},{v:"104/62",l:"NIBP"},{v:"ALERT",l:"MENTAL"}],
+      cue:"Meds are in. Still bleeding. Pressure is starting to move the wrong way." },
+    { id:"M3", st:"BEAT 3 · CRASHING",
+      vals:[{v:"1600",l:"EBL mL"},{v:"132",l:"HR"},{v:"78/40",l:"NIBP"},{v:"CONFUSED",l:"MENTAL"}],
+      cue:"Pale, confused, cold. This is the beat the whole case exists for." },
+    { id:"M4", st:"BEAT 4 · PRODUCTS RUNNING",
+      vals:[{v:"1900",l:"EBL mL"},{v:"124",l:"HR"},{v:"88/50",l:"NIBP"},{v:"DROWSY",l:"MENTAL"}],
+      cue:"First units are up. Bleeding slowing but not stopped." },
+    { id:"M5", st:"BEAT 5 · TURNING",
+      vals:[{v:"2050",l:"EBL mL"},{v:"104",l:"HR"},{v:"104/64",l:"NIBP"},{v:"ALERT",l:"MENTAL"}],
+      cue:"Fundus firming. Pressure coming up. Loss nearly stopped." }
+  ],
+
+  beats:[
+    { n:"BEAT 1 · IT IS NOT STOPPING", flip:"M1",
+      say:"“The nurse calls you back in — <b>she is soaking through pads.</b> The fundus feels boggy. Loss so far is about 700 mL and climbing. <b>What is your first move?</b>”",
+      link:{ t:"OB · POSTPARTUM HEMORRHAGE", h:"../ob-neonatal/?from=home#c06" },
+      does:["A hand goes on the fundus and massages — narrated, on the poster. It is the first move and it costs nothing.",
+            "The recorder opens the PPH card and drives it in order.",
+            "Cards placed: UTEROTONICS and a SECOND IV. Doses are said out loud off the card, never guessed.",
+            "Somebody starts a running EBL where the whole room can see it."],
+      adv:"massage is happening, two medications are verbalized with doses, and a second IV is named." },
+
+    { n:"BEAT 2 · MEDS ARE IN, SHE IS STILL BLEEDING", flip:"M2",
+      say:"“Uterotonics are in. Loss is past 1.1 litres. Heart rate 114, pressure 104 over 62. <b>Is this working?</b>”",
+      link:{ t:"OB · POSTPARTUM HEMORRHAGE", h:"../ob-neonatal/?from=home#c06" },
+      does:["The team should be reading the TRAJECTORY — loss climbing, pressure falling — not waiting for a threshold.",
+            "TXA and its time window are stated out loud.",
+            "The next mechanical step is named before it is needed: balloon or JADA, and where that kit lives."],
+      adv:"someone says out loud that this is not working and names the next escalation.",
+      fail:"the team settles in to wait and see — say “she has lost another 400 mL while you talked” and run the beat again." },
+
+    { n:"BEAT 3 · SHE IS CRASHING", flip:"M3",
+      say:"“Loss is past 1.6 litres. <b>Pressure 78 over 40, heart rate 132.</b> She is pale and confused. Uterotonics are in. <b>What now, and who are you calling?</b>”",
+      link:{ t:"CODES · MASSIVE TRANSFUSION PROTOCOL", h:"../codes/?from=home#c12" },
+      does:["Somebody activates MTP by the actual process — say it, do not dial. The call should be a sentence, not a debate.",
+            "A blood RUNNER and a blood CHECKER are named as people, not as roles in the abstract.",
+            "Cards placed: BLOOD PRODUCTS, JADA/BALLOON.",
+            "OB and transfer are called. In a rural department this is the moment that decides the next two hours."],
+      adv:"MTP activation is verbalized end to end and named people hold the blood roles.",
+      fail:"MTP is discussed but never actually activated — this is the most common real-world failure in this case. Rewind and make them say it." },
+
+    { n:"BEAT 4 · PRODUCTS ARE RUNNING", flip:"M4",
+      say:"“First units are up. Loss is 1.9 litres, pressure 88 over 50. <b>What are you doing mechanically while the blood runs?</b>”",
+      link:{ t:"PROCEDURES · JADA", h:"../procedures/?from=home#c13" },
+      does:["Blood alone is not the treatment — the bleeding has to be stopped. The mechanical step is named and staged.",
+            "Somebody states where the JADA kit lives on the new cart, and what else it needs that is not in the bag.",
+            "Calcium and warming are named if the team gets there."],
+      adv:"a mechanical control step is named and staged, not just more product." },
+
+    { n:"BEAT 5 · TURNING THE CORNER", flip:"M5",
+      say:"“The fundus is firming. Pressure is 104 over 64. Loss has nearly stopped. <b>What are the next three things, and where is she going?</b>”",
+      link:{ t:"OB · POSTPARTUM HEMORRHAGE", h:"../ob-neonatal/?from=home#c06" },
+      does:["Ongoing monitoring, labs and the total EBL are stated.",
+            "Transfer or admission is named with the actual destination.",
+            "Somebody says out loud that the team gets a debrief. Stop the clock."],
+      adv:"disposition is named and the total EBL is stated. Stop the clock." }
+  ],
+
+  debrief:[
+    "What number or trigger would have made us call MTP one loop earlier? Say it as a rule we could use next time.",
+    "Was the EBL visible to the whole room, or did it live in one person's head?",
+    "Did we escalate on the trajectory, or did we wait for a threshold to be crossed?",
+    "Was the MTP call a sentence, or a discussion? Time it next drill.",
+    "Every card you placed — could you find the real thing in the new OB cart right now, in under ten seconds?"
+  ],
+
+  kit:[
+    { icon:"meds",    n:"Uterotonics",           sz:"SAY EACH DOSE", drawer:"OB / Neonatal Cart · Postpartum Hemorrhage" },
+    { icon:"hemo",    n:"JADA Kit",              sz:"NEEDS 80 mmHg VACUUM", inv:"kit-jada" },
+    { icon:"iv",      n:"Second IV",             sz:"LARGE BORE", drawer:"Code Cart · I.V. Supplies" },
+    { icon:"fluid",   n:"Blood Products",        sz:"MTP — RUNNER + CHECKER", drawer:"Blood bank — say it, do not dial", unconfirmed:1 },
+    { icon:"monitor", n:"Monitor",               sz:"HR · NIBP · SpO₂", inv:"defib-peds" },
+    { icon:"prep",    n:"Uterine Massage",       sz:"FIRST MOVE · FREE", drawer:"Your hands" },
+    { icon:"needle",  n:"Labs + Type & Cross",   sz:"SEND EARLY", drawer:"OB / Neonatal Cart · Labs / Misc." },
+    { icon:"ngt",     n:"Foley Catheter",        sz:"EMPTY BLADDER FIRST", inv:"urinary-cath-5-22" },
+    { icon:"scalpel", n:"C-section Tray",        sz:"IF IT COMES TO IT", drawer:"OB / Neonatal Cart · C-section" },
+    /* Decoys */
+    { icon:"baby",    n:"Delivery Kit",          sz:"SHE ALREADY DELIVERED", inv:"ob-delivery-kit", decoy:1 },
+    { icon:"blakemore", n:"Blakemore Tube",      sz:"WRONG BLEED ENTIRELY", inv:"kit-blakemore", decoy:1 },
+    { icon:"ezio",    n:"EZ-IO",                 sz:"ONLY IF NO IV", inv:"io-needles", decoy:1 }
+  ],
+
+  sources:"Scenario staging follows the Visually Enhanced Mental Simulation format: Brazil V, et al. "+
+    "<i>Visually Enhanced Mental Simulation (VEMS) — an alternative simulation delivery format?</i> "+
+    "Royal College ICE Blog, 12 April 2022; and Brazil V, et al. <i>Recommendations for the design and "+
+    "delivery of Visually Enhanced Mental Simulation.</i> Journal of Healthcare Simulation 2025, "+
+    "doi:10.54531/NDXV6633. The clinical content is the manual's own "+
+    "<a href=\"../ob-neonatal/?from=home#c06\">postpartum haemorrhage</a> and "+
+    "<a href=\"../codes/?from=home#c12\">massive transfusion</a> cards, which carry their own citations. "+
+    "<b>This kit adds no clinical values of its own</b>; every dose and threshold stays on the card that "+
+    "cites it. The blood-loss figures here are scenario values for a drill, not clinical thresholds."
+},
+
+/* ============= CASE 4 — PROLAPSED CORD, AFTER HOURS =====================
+   The rural role-switch case, and the reason it is in the deck: the ED
+   physician runs the general anesthetic for someone else's operation, and then
+   — while that patient is still anesthetized — becomes the person resuscitating
+   the newborn. Two patients, one doctor, a handover in the middle. No other
+   case in this manual drills that transition.
+   ====================================================================== */
+{
+  id:"cord-prolapse", menu:"Prolapsed Cord → Crash Section", tag:"OB · 18 MIN",
+  title:"Prolapsed Cord, After Hours",
+  chain:["CORD PROLAPSE","CRASH SECTION","ED DOC ON AIRWAY","HANDOFF","NEONATAL RESUS"],
+  minutes:18,
+  sim:{ t:"SIM 10", h:"../simulations/?from=home#s10" },
+  who:"37 weeks, walks into the ED at 02:10 with ruptured membranes and a cord in the vagina. OB is 15 minutes out and comes in to section her. You are the only physician in the building.",
+  baseline:{ vals:[{v:"88",l:"MOM HR"},{v:"122/76",l:"MOM BP"},{v:"70",l:"FHR"},{v:"02:10",l:"CLOCK"}] },
+
+  fig: function(){
+    return '<div class="pfig"><svg viewBox="0 0 520 320" style="width:100%;height:auto;display:block" role="img" aria-label="Three zones: the mother in knee-chest position, the operating field, and the newborn resuscitation area, showing the physician handing over between them">'+
+      '<rect x="0" y="0" width="520" height="320" fill="#fffefb"/>'+
+      /* THREE zones, because this case has three places and one doctor. The
+         arrows across the dividers are the case: the same person moves. */
+      '<line x1="180" y1="34" x2="180" y2="310" stroke="#b9c2cc" stroke-width="2" stroke-dasharray="7 6"/>'+
+      '<line x1="350" y1="34" x2="350" y2="310" stroke="#b9c2cc" stroke-width="2" stroke-dasharray="7 6"/>'+
+      /* Zone headers stay short so they cannot collide across the dividers —
+         the long version of each is written inside its own zone. */
+      '<text x="14" y="22" font-family="ui-monospace,monospace" font-size="10" font-weight="700" fill="#16324f">1 · HAND IN</text>'+
+      '<text x="192" y="22" font-family="ui-monospace,monospace" font-size="10" font-weight="700" fill="#16324f">2 · AIRWAY — YOU</text>'+
+      '<text x="362" y="22" font-family="ui-monospace,monospace" font-size="10" font-weight="700" fill="#16324f">3 · NEWBORN — YOU</text>'+
+      /* zone 1 — knee-chest, hand elevating the presenting part */
+      '<path d="M28 250 C28 222 48 208 76 208 L138 208 C158 208 168 222 168 244 L168 276 L28 276 Z" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+      '<circle cx="48" cy="188" r="16" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+      '<path d="M138 212 C160 186 166 156 162 132" fill="none" stroke="#5a6a78" stroke-width="12" stroke-linecap="round"/>'+
+      '<circle cx="150" cy="232" r="14" fill="rgba(155,28,46,0.30)" stroke="#9b1c2e" stroke-width="2.2"/>'+
+      '<text x="26" y="300" font-family="ui-monospace,monospace" font-size="9" font-weight="700" fill="#9b1c2e">HAND STAYS UNTIL DELIVERY</text>'+
+      '<text x="26" y="120" font-family="ui-monospace,monospace" font-size="9.5" fill="#5a6a78">KNEE–CHEST</text>'+
+      '<text x="26" y="134" font-family="ui-monospace,monospace" font-size="9.5" fill="#5a6a78">OR TRENDELENBURG</text>'+
+      /* zone 2 — the operating field / head of the bed */
+      '<rect x="196" y="120" width="138" height="118" rx="6" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+      '<circle cx="265" cy="152" r="19" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+      '<path d="M246 178 h38" stroke="#9b1c2e" stroke-width="3"/>'+
+      '<text x="204" y="200" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#9b1c2e">RSI — YOU ARE THE</text>'+
+      '<text x="204" y="214" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#9b1c2e">ANESTHETIST NOW</text>'+
+      '<rect x="196" y="248" width="138" height="52" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+      '<text x="204" y="268" font-family="ui-monospace,monospace" font-size="9.5" fill="#5a6a78">AIRWAY + DRUG</text>'+
+      '<text x="204" y="282" font-family="ui-monospace,monospace" font-size="9.5" fill="#5a6a78">CARDS HERE</text>'+
+      /* zone 3 — the warmer */
+      '<rect x="366" y="120" width="140" height="118" rx="6" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+      babyFig(378, 140, 0.82, 'rgba(47,111,181,0.30)', '#2F6FB5')+
+      '<text x="374" y="214" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#2F6FB5">WARMER — ON</text>'+
+      '<text x="374" y="228" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#2F6FB5">BEFORE THE CUT</text>'+
+      '<rect x="366" y="248" width="140" height="52" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+      '<text x="374" y="268" font-family="ui-monospace,monospace" font-size="9.5" fill="#5a6a78">NEWBORN CARDS</text>'+
+      '<text x="374" y="282" font-family="ui-monospace,monospace" font-size="9.5" fill="#5a6a78">+ MONITOR HERE</text>'+
+      /* the two moves the doctor makes — the actual subject of the drill */
+      '<path d="M120 62 L326 62" stroke="#8a6d1f" stroke-width="2.4" marker-end="url(#vah)"/>'+
+      '<path d="M240 96 L474 96" stroke="#8a6d1f" stroke-width="2.4" marker-end="url(#vah)"/>'+
+      '<defs><marker id="vah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">'+
+      '<path d="M0 0 L10 5 L0 10 z" fill="#8a6d1f"/></marker></defs>'+
+      '<text x="150" y="56" font-family="ui-monospace,monospace" font-size="9" font-weight="700" fill="#8a6d1f">YOU MOVE</text>'+
+      '<text x="248" y="90" font-family="ui-monospace,monospace" font-size="9" font-weight="700" fill="#8a6d1f">AND AGAIN — SO WHO HAS MOM?</text>'+
+      '</svg></div>';
+  },
+
+  monitor:[
+    { id:"M1", st:"BEAT 1 · TRIAGE, 02:10",
+      vals:[{v:"88",l:"MOM HR"},{v:"122/76",l:"MOM BP"},{v:"70",l:"FHR"},{v:"02:10",l:"CLOCK"}],
+      cue:"Cord is visible and pulsating. Fetal heart rate 70 and staying there." },
+    { id:"M2", st:"BEAT 2 · POSITIONED",
+      vals:[{v:"96",l:"MOM HR"},{v:"118/70",l:"MOM BP"},{v:"104",l:"FHR"},{v:"02:16",l:"CLOCK"}],
+      cue:"Knee–chest, hand elevating. FHR improved but not normal. OB is 9 minutes out." },
+    { id:"M3", st:"BEAT 3 · INDUCTION",
+      vals:[{v:"108",l:"MOM HR"},{v:"104/62",l:"MOM BP"},{v:"96",l:"FHR"},{v:"02:26",l:"CLOCK"}],
+      cue:"Pre-oxygenated, drugs given, cricoid decision made. You are the anesthetist." },
+    { id:"M4", st:"BEAT 4 · TUBE IN, SECTION STARTS",
+      vals:[{v:"112",l:"MOM HR"},{v:"96/58",l:"MOM BP"},{v:"38",l:"MOM EtCO₂"},{v:"02:29",l:"CLOCK"}],
+      cue:"Waveform confirmed. Knife to skin. Mom is now YOUR patient, asleep." },
+    { id:"M5", st:"BEAT 5 · BABY OUT — TWO PATIENTS",
+      vals:[{v:"110",l:"MOM HR"},{v:"—",l:"BABY HR"},{v:"FLOPPY",l:"BABY TONE"},{v:"02:32",l:"BIRTH"}],
+      cue:"Baby delivered, floppy and blue. Mom is still intubated. Who is watching her?" },
+    { id:"M6", st:"BEAT 6 · NEWBORN AT THE WARMER",
+      vals:[{v:"44",l:"BABY HR"},{v:"NONE",l:"RESP"},{v:"FLOPPY",l:"TONE"},{v:"02:33",l:"CLOCK"}],
+      cue:"Heart rate 44, no effort. This is a PPV number." },
+    { id:"M7", st:"BEAT 7 · BOTH STABLE",
+      vals:[{v:"96",l:"MOM HR"},{v:"136",l:"BABY HR"},{v:"CRYING",l:"RESP"},{v:"02:38",l:"CLOCK"}],
+      cue:"Baby crying and pink. Mom stable and still asleep — she still needs someone." }
+  ],
+
+  beats:[
+    { n:"BEAT 1 · A CORD IN THE VAGINA AT 02:10", flip:"M1",
+      say:"“37 weeks, membranes ruptured in the car. She walks in and the triage nurse sees <b>a cord in the vagina.</b> Fetal heart rate 70. You are the only physician in the building. <b>First thirty seconds — go.</b>”",
+      link:{ t:"OB · UMBILICAL CORD PROLAPSE", h:"../ob-neonatal/?from=home#c09" },
+      does:["A hand goes in to <b>elevate the presenting part</b> and does not come out until the baby is delivered. Whoever does it is now committed — say their name.",
+            "Position: knee–chest or Trendelenburg, narrated.",
+            "OB is called, and so is anyone who can help — this is a whole-building page at 02:10, not a phone call to one person.",
+            "Cards placed: MONITOR on mom."],
+      adv:"a named person is elevating the presenting part, the position is changed, and OB is called.",
+      fail:"the team takes her to a room without anyone's hand in — say “the FHR is 60 now” and run it again." },
+
+    { n:"BEAT 2 · NINE MINUTES OF OWNING IT ALONE", flip:"M2",
+      say:"“Knee–chest, hand in, FHR up to 104. <b>OB is nine minutes out and says start getting ready to section.</b> What are you doing with nine minutes and no anesthetist?”",
+      link:{ t:"CODES · INTUBATION / RSI CHECKLIST", h:"../codes/?from=home#c06" },
+      does:["<b>The ED physician says out loud that they will be the airway.</b> This is the moment the role switch is decided — before the room is busy, not during.",
+            "The RSI checklist is opened and run as a checklist. Somebody else reads it aloud.",
+            "The radiant warmer goes on NOW, and a person is named for the baby — knowing it may have to be the same physician.",
+            "Cards placed: AIRWAY cards and DRUGS staged in zone 2; WARMER on in zone 3."],
+      adv:"the physician has claimed the airway out loud, the RSI checklist is open, and the warmer is on.",
+      fail:"nobody is named for the newborn — note it; Beat 5 is where that bill comes due." },
+
+    { n:"BEAT 3 · YOU ARE THE ANESTHETIST NOW", flip:"M3",
+      say:"“OB is scrubbed and waiting on you. <b>She is a term pregnant patient with a full stomach at two in the morning.</b> Talk me through your induction.”",
+      link:{ t:"AIRWAY · DAS 2025 LADDER", h:"../airway/?from=home" },
+      does:["Pre-oxygenation is stated properly — the numbers come off the airway card, not from memory.",
+            "The team names what is different about this airway compared with the one they do every day.",
+            "A failed-airway plan is stated BEFORE induction, with the FONA kit primed. In this room, at this hour, there is nobody to bail you out.",
+            "Cards placed: VIDEO LARYNGOSCOPE, ETT, SUCTION, FONA — primed, not opened."],
+      adv:"pre-oxygenation, drugs and a stated plan B all exist before anyone gives anything.",
+      fail:"induction happens with no plan B and no primed FONA — stop. This is the rewind that matters most in this case." },
+
+    { n:"BEAT 4 · TUBE IN, KNIFE TO SKIN", flip:"M4",
+      say:"“Waveform capnography confirms the tube. OB starts. <b>Mom is now an intubated, anesthetized patient — and she is yours, not OB's.</b>”",
+      link:{ t:"CODES · INTUBATION / RSI CHECKLIST", h:"../codes/?from=home#c06" },
+      does:["Confirmation is named as capnography, every time.",
+            "Somebody states who is running the ventilator and watching mom's pressure while OB operates.",
+            "The team says out loud what happens to mom's airway when the baby comes out — this is the question Beat 5 asks, and answering it early is the whole skill."],
+      adv:"the tube is confirmed and a named person owns mom's airway and hemodynamics." },
+
+    { n:"BEAT 5 · THE HANDOVER — TWO PATIENTS, ONE DOCTOR", flip:"M5",
+      say:"“Baby is out at 02:32 — <b>floppy and blue.</b> Mom is still intubated on the table. <b>You are the only physician. What happens now?</b>”",
+      link:{ t:"OB · NEONATAL RESUSCITATION", h:"../ob-neonatal/?from=home#c03" },
+      does:["This is the beat the case exists for. The physician cannot be in two places, so <b>a handover has to be spoken out loud</b>: who is watching mom, what they are watching, and what brings the doctor back.",
+            "The handover names a specific person, a specific number to watch, and a specific trigger — not “keep an eye on her”.",
+            "Time of birth is written down.",
+            "If the department genuinely has nobody, that is the finding — and the answer is that it should have been called for in Beat 1."],
+      adv:"a named person holds mom with an explicit trigger to call the physician back, and the doctor has moved to the warmer.",
+      fail:"the physician walks to the baby without saying anything — freeze it. Ask the room who is watching mom. Then run the beat again." },
+
+    { n:"BEAT 6 · NEWBORN, HEART RATE 44", flip:"M6",
+      say:"“At the warmer: heart rate 44, no respiratory effort, floppy. <b>Go.</b>”",
+      link:{ t:"OB · NEONATAL RESUSCITATION", h:"../ob-neonatal/?from=home#c03" },
+      does:["Warm, dry, stimulate, then PPV — narrated, at the rate off the card.",
+            "This is a newborn: NRP, not the pediatric pathway. Reaching for a peds dose here is a debrief point.",
+            "Cards placed: INFANT BVM on the newborn's face, TOWEL/HAT.",
+            "Somebody is still reporting mom's numbers out loud from across the room."],
+      adv:"effective PPV is running and someone has reported mom's status without being asked." },
+
+    { n:"BEAT 7 · BOTH OF THEM, AND WHERE THEY GO", flip:"M7",
+      say:"“Baby is 136 and crying. Mom is stable and still asleep. It is 02:38. <b>What are the next three things, and where is everybody going?</b>”",
+      link:{ t:"OB · NEONATAL RESUSCITATION", h:"../ob-neonatal/?from=home#c03" },
+      does:["Mom's emergence and post-operative plan are named — she is still an anesthetized patient and still nobody's default.",
+            "The newborn's disposition and transfer are named, with who is calling.",
+            "The 1- and 5-minute marks are logged off the birth time.",
+            "Somebody says out loud that this team gets a debrief. Stop the clock."],
+      adv:"both patients have a named plan and a named destination. Stop the clock." }
+  ],
+
+  debrief:[
+    "At what moment did we decide the ED physician would do the airway? Was that decided, or did it just happen?",
+    "When the baby came out, what exactly was said about the mother? Quote it. If nothing was said, say that.",
+    "What was the trigger for calling the physician back to mom, and who was holding it?",
+    "At 02:10 on a weeknight, who else is actually in this building — and did we call all of them in the first minute?",
+    "Was the FONA kit primed before induction? If not, what was the plan if you could not intubate her?",
+    "Every card you placed — could you find the real thing in the new OB cart right now, in the dark, in under ten seconds?"
+  ],
+
+  kit:[
+    { icon:"monitor", n:"Monitor",               sz:"MOM · THEN BABY", inv:"defib-peds" },
+    { icon:"vl",      n:"Video Laryngoscope",    sz:"McGRATH MAC", drawer:"Code Cart · Video Laryngoscopy" },
+    { icon:"ett",     n:"ETT + Bougie",          sz:"CUFFED — SIZE DOWN", inv:"ett-range" },
+    { icon:"suction", n:"Suction",               sz:"FULL STOMACH", inv:"suction-cath-5-14" },
+    { icon:"meds",    n:"RSI Drugs",             sz:"SAY THE DOSE", drawer:"Code Cart · Medications" },
+    { icon:"etco2",   n:"End-Tidal CO₂",         sz:"CONFIRMS THE TUBE", inv:"etco2" },
+    { icon:"fona",    n:"Front of Neck Access",  sz:"PRIME IT BEFORE YOU INDUCE", drawer:"Code Cart · Front of Neck Access" },
+    { icon:"scalpel", n:"C-section Tray",        sz:"OB OPENS IT, NOT YOU", drawer:"OB / Neonatal Cart · C-section" },
+    { icon:"monitor", n:"Radiant Warmer",        sz:"ON BEFORE THE CUT", drawer:"OB / Neonatal Cart · alongside", unconfirmed:1 },
+    { icon:"mask",    n:"Infant BVM + Mask",     sz:"450 mL · NEONATAL", inv:"bvm-infant-adult" },
+    { icon:"prep",    n:"Towel + Hat",           sz:"WARM, DRY, STIMULATE", drawer:"OB / Neonatal Cart · Vaginal Delivery" },
+    { icon:"baby",    n:"Delivery Kit",          sz:"CLAMPS · SCISSORS", inv:"ob-delivery-kit" },
+    { icon:"iv",      n:"UVC Kit",               sz:"3.5 / 5 Fr", inv:"uvc-3.5-5" },
+    { icon:"fluid",   n:"IV Fluid + Blood",      sz:"SHE IS ALSO BLEEDING", drawer:"Code Cart · I.V. Fluids" },
+    /* Decoys */
+    { icon:"igel",    n:"iGel",                  sz:"RESCUE, NOT THE PLAN", inv:"sga-1-5", decoy:1 },
+    { icon:"hemo",    n:"JADA Kit",              sz:"AFTER, IF SHE BLEEDS", inv:"kit-jada", decoy:1 },
+    { icon:"jet",     n:"Jet Ventilation",       sz:"NOT THE PLAN D", drawer:"Code Cart · Jet Ventilation", decoy:1 }
+  ],
+
+  sources:"Scenario staging follows the Visually Enhanced Mental Simulation format: Brazil V, et al. "+
+    "<i>Visually Enhanced Mental Simulation (VEMS) — an alternative simulation delivery format?</i> "+
+    "Royal College ICE Blog, 12 April 2022; and Brazil V, et al. <i>Recommendations for the design and "+
+    "delivery of Visually Enhanced Mental Simulation.</i> Journal of Healthcare Simulation 2025, "+
+    "doi:10.54531/NDXV6633. Clinical content lives on the linked cards — "+
+    "<a href=\"../ob-neonatal/?from=home\">OB &amp; Neonatal</a>, the "+
+    "<a href=\"../codes/?from=home#c06\">RSI checklist</a> and the "+
+    "<a href=\"../airway/?from=home\">DAS 2025 ladder</a> — which carry their own citations. "+
+    "<b>This kit adds no clinical values of its own.</b> The times and vital signs here are scenario "+
+    "values for a drill, not clinical thresholds."
+}
+];
+
+/* The case on screen. Every render function reads this one variable, so
+   switching cases is an assignment plus a repaint — and the printed decks are
+   only ever the selected case, never all of them at once. */
+var CASE = CASES[0];
+
+/* Monitor cards and the poster's baseline strip carry different metrics per
+   case: an airway case is driven by the sat, a hemorrhage by the running blood
+   loss, a newborn by the heart rate. So each row is a generic {v,l} pair. The
+   airway case predates this and is written with named keys; normalize it here
+   rather than rewriting it, so both spellings stay valid. */
+(function(){
+  var L = SITE.monitorLabels;
+  function norm(o){
+    return o.vals || [{v:o.spo2,l:L.spo2},{v:o.hr,l:L.hr},{v:o.bp,l:L.bp},{v:o.etco2,l:L.etco2}];
+  }
+  CASES.forEach(function(c){
+    c.monitor.forEach(function(m){ m.vals = norm(m); });
+    c.baselineVals = c.baseline.vals || norm(c.baseline);
+  });
+})();
 
 /* ---------------------------------------------------------------------- */
+/* A supine newborn, drawn once and used by every case that has one. Same
+   reasoning as the shared equipment icons: two decks that draw the baby
+   differently are two different mental pictures of the same patient. Local
+   coordinates are roughly 113 x 70; the caller places and scales it. */
+function babyFig(x, y, sc, fill, line){
+  return '<g transform="translate('+x+','+y+') scale('+sc+')">'+
+    '<g fill="none" stroke="'+line+'" stroke-width="6" stroke-linecap="round" stroke-linejoin="round">'+
+      '<path d="M50 20 L42 4"/><path d="M50 50 L42 66"/>'+          /* arms */
+      '<path d="M86 24 L104 12 L113 23"/>'+                          /* legs, flexed */
+      '<path d="M86 46 L104 58 L113 47"/>'+
+    '</g>'+
+    '<path d="M38 18 L76 20 Q90 21 90 35 Q90 49 76 50 L38 52 Z" fill="'+fill+'" stroke="'+line+'" stroke-width="2.2"/>'+
+    '<circle cx="20" cy="35" r="19" fill="'+fill+'" stroke="'+line+'" stroke-width="2.2"/>'+
+    '</g>';
+}
+
 var $=function(i){return document.getElementById(i);};
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 
@@ -413,7 +1036,8 @@ function where(item){
 function paintScreen(){
   $('lede').innerHTML = esc(METHOD.what)+' <b>'+esc(CASE.title)+'</b> is the case built out below: '+
     CASE.chain.map(esc).join(' &rarr; ')+', about '+CASE.minutes+' minutes plus a debrief. '+
-    'It is the printed companion to <a href="../simulations/?from=home#s09">SIM 9</a> in the simulations tool.';
+    (CASE.sim ? 'It is the printed companion to <a href="'+esc(CASE.sim.h)+'">'+esc(CASE.sim.t)+
+      '</a> in the simulations tool.' : '');
 
   var h='';
   h+='<div class="beat"><h3>WHY THIS FORMAT</h3><div class="bd" style="font-size:14.5px;line-height:1.55">'+
@@ -482,7 +1106,7 @@ function foot(what){
 }
 
 function posterSheet(){
-  var b=CASE.baseline, L=SITE.monitorLabels;
+  var bv=CASE.baselineVals;
   var h='<section class="psheet d-poster">';
   h+='<div class="pttl">VEMS · PATIENT POSTER — LAY THIS IN THE MIDDLE OF THE TABLE</div>';
   h+='<div class="ppatient"><h2>'+esc(CASE.title)+'</h2>'+
@@ -494,61 +1118,11 @@ function posterSheet(){
      the poster has to have a place where SCALPEL, BOUGIE and TUBE physically go
      in order. Anatomy is schematic on purpose — it is a place to put cards, not
      an illustration to learn anatomy from. */
-  h+='<div class="pfig"><svg viewBox="0 0 520 320" style="width:100%;height:auto;display:block" role="img" aria-label="Lateral view of an adult head and neck with a swollen tongue and the cricothyroid membrane marked, and dashed zones for placing equipment cards">'+
-     '<rect x="0" y="0" width="520" height="320" fill="#fffefb"/>'+
-     /* Lateral (side) view, facing left, head slightly extended. A side view is
-        the only one that shows what this case is actually about: the column of
-        air from mouth to trachea, where it is being closed off, and where the
-        neck is cut if it closes completely. A front view cannot show any of
-        that. Anatomy is schematic on purpose — this is a place to put cards,
-        not a plate to learn anatomy from. */
-     /* shoulder + chest */
-     '<path d="M240 320 C242 284 272 266 320 262 L520 262 L520 320 Z" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
-     /* neck */
-     '<path d="M198 196 C196 232 212 252 250 258 L330 262 L336 240 C300 232 268 214 262 178 Z" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
-     /* head in profile: forehead, brow, nose, lips, chin, jaw, occiput */
-     '<path d="M214 36 C158 40 122 80 124 116 L112 126 C94 142 100 154 118 156 '+
-       'L120 170 C112 176 116 184 126 186 L128 200 C130 212 142 218 158 218 '+
-       'L214 222 C252 222 274 200 280 166 C288 116 272 44 214 36 Z" '+
-       'fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
-     /* the airway column: oropharynx down to trachea, drawn as the lumen */
-     '<path d="M150 176 C186 180 208 194 214 216 L214 258" fill="none" stroke="#c9d2da" stroke-width="15" stroke-linecap="round"/>'+
-     /* SWOLLEN TONGUE — the thing that is closing the column */
-     '<path d="M138 172 C168 168 194 178 200 196 C204 210 190 216 172 212 '+
-       'C152 208 136 194 138 172 Z" fill="rgba(155,28,46,0.34)" stroke="#9b1c2e" stroke-width="2.2"/>'+
-     '<path d="M132 168 L96 150" stroke="#9b1c2e" stroke-width="1.6"/>'+
-     '<text x="18" y="146" font-family="ui-monospace,monospace" font-size="11.5" font-weight="700" fill="#9b1c2e">SWOLLEN TONGUE</text>'+
-     /* thyroid cartilage, then the membrane, then the trachea below it */
-     '<path d="M200 226 L232 222 L234 240 L202 244 Z" fill="none" stroke="#5a6a78" stroke-width="2"/>'+
-     '<rect x="202" y="246" width="32" height="14" fill="rgba(15,122,134,0.30)" stroke="#0f7a86" stroke-width="2.5"/>'+
-     '<path d="M236 253 L286 253" stroke="#0f7a86" stroke-width="1.6"/>'+
-     /* Opaque plate under the callout. It crosses the shoulder, and teal-on-grey
-        at 9.5 pt is the first thing to become unreadable on a tired photocopy. */
-     '<rect x="286" y="236" width="224" height="32" rx="3" fill="#fffefb" stroke="#d7dde3" stroke-width="1.2"/>'+
-     '<text x="292" y="250" font-family="ui-monospace,monospace" font-size="11.5" font-weight="700" fill="#0f7a86">CRICOTHYROID MEMBRANE</text>'+
-     '<text x="292" y="264" font-family="ui-monospace,monospace" font-size="9.5" fill="#5a6a78">SCALPEL &#8594; BOUGIE &#8594; TUBE, HERE</text>'+
-     /* card landing zones */
-     '<rect x="18" y="18" width="140" height="72" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
-     '<text x="28" y="44" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">AIRWAY DEVICE</text>'+
-     '<text x="28" y="58" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">IN USE — PUT</text>'+
-     '<text x="28" y="72" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">THE CARD HERE</text>'+
-     '<rect x="360" y="18" width="142" height="72" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
-     '<text x="370" y="44" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">MONITOR CARD</text>'+
-     '<text x="370" y="58" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">GOES HERE —</text>'+
-     '<text x="370" y="72" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">SWAP EACH BEAT</text>'+
-     '<rect x="18" y="200" width="140" height="66" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
-     '<text x="28" y="226" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">DRUGS GIVEN —</text>'+
-     '<text x="28" y="240" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">SAY THE DOSE</text>'+
-     '<text x="28" y="254" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">OUT LOUD</text>'+
-     '<rect x="18" y="278" width="186" height="34" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
-     '<text x="28" y="299" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">ACCESS CARDS HERE</text>'+
-     '</svg></div>';
+  h+= (CASE.fig ? CASE.fig() : '');
 
-  h+='<div class="pvitals">'+
-     '<div class="c"><div class="v">'+esc(b.spo2)+'</div><div class="l">'+esc(L.spo2)+'</div></div>'+
-     '<div class="c"><div class="v">'+esc(b.hr)+'</div><div class="l">'+esc(L.hr)+'</div></div>'+
-     '<div class="c"><div class="v">'+esc(b.bp)+'</div><div class="l">'+esc(L.bp)+'</div></div>'+
-     '<div class="c"><div class="v">'+esc(b.etco2)+'</div><div class="l">'+esc(L.etco2)+'</div></div></div>'+
+  h+='<div class="pvitals">'+bv.map(function(x){
+       return '<div class="c"><div class="v">'+esc(x.v)+'</div><div class="l">'+esc(x.l)+'</div></div>';
+     }).join('')+'</div>'+
      '<div style="font:700 7.4pt ui-monospace,monospace;letter-spacing:.08em;color:#5a6a78;margin-top:3pt">'+
      'STARTING VITALS ONLY — THE MONITOR CARDS CARRY THE TRAJECTORY. COVER THIS STRIP WITH THE CURRENT CARD.</div>';
 
@@ -562,18 +1136,22 @@ function posterSheet(){
 
 function monitorSheets(){
   /* 4 monitor cards per letter sheet (2 x 2). */
-  var h='', per=4, L=SITE.monitorLabels;
+  var h='', per=4;
   for(var i=0;i<CASE.monitor.length;i+=per){
     h+='<section class="psheet d-cards"><div class="pttl">VEMS · MONITOR CARDS — CUT ON THE DASHED RULES, KEEP FACE DOWN IN BEAT ORDER</div><div class="cardgrid mon">';
     CASE.monitor.slice(i,i+per).forEach(function(m){
+      var rows='';
+      for(var j=0;j<m.vals.length;j+=2){
+        rows+='<div class="monrow">'+m.vals.slice(j,j+2).map(function(x){
+          /* Long values (a blood pressure, an estimated loss) get a smaller
+             face so they never wrap — a wrapped number is unreadable across a
+             table, which is the only distance this card is ever read at. */
+          var big = String(x.v).length > 5 ? ' style="font-size:15pt"' : '';
+          return '<div class="c"><div class="v"'+big+'>'+esc(x.v)+'</div><div class="l">'+esc(x.l)+'</div></div>';
+        }).join('')+'</div>';
+      }
       h+='<div class="pcard moncard"><div class="st">'+esc(m.id)+' · '+esc(m.st)+'</div>'+
-         '<div class="monrow">'+
-         '<div class="c"><div class="v">'+esc(m.spo2)+'</div><div class="l">'+esc(L.spo2)+'</div></div>'+
-         '<div class="c"><div class="v">'+esc(m.hr)+'</div><div class="l">'+esc(L.hr)+'</div></div></div>'+
-         '<div class="monrow">'+
-         '<div class="c"><div class="v" style="font-size:15pt">'+esc(m.bp)+'</div><div class="l">'+esc(L.bp)+'</div></div>'+
-         '<div class="c"><div class="v">'+esc(m.etco2)+'</div><div class="l">'+esc(L.etco2)+'</div></div></div>'+
-         '<div class="cue">'+esc(m.cue)+'</div></div>';
+         rows+'<div class="cue">'+esc(m.cue)+'</div></div>';
     });
     h+='</div>'+foot('MONITOR CARDS')+'</section>';
   }
@@ -628,8 +1206,45 @@ function paintKit(){
 }
 
 /* ===== wiring ============================================================ */
+function paintMenu(){
+  var h='';
+  CASES.forEach(function(c){
+    h+='<button class="crow" type="button" data-case="'+esc(c.id)+'"'+
+       (c.id===CASE.id?' aria-current="true"':'')+'>'+
+       '<span><span class="ct">'+esc(c.menu)+'</span>'+
+       '<span class="cc">'+c.chain.map(esc).join(' &rarr; ')+'</span></span>'+
+       '<span class="cg">'+esc(c.tag)+'</span></button>';
+  });
+  $('casemenu').innerHTML=h;
+}
+
+/* The selected case lives in the hash, so a facilitator can bookmark or send a
+   link straight to the deck they are running, and so a reload does not silently
+   put them back on a different case than the one they just printed. */
+function selectCase(id, push){
+  for(var i=0;i<CASES.length;i++){
+    if(CASES[i].id===id){ CASE=CASES[i]; break; }
+  }
+  if(push){ try{ history.replaceState(null,'','#'+CASE.id); }catch(e){} }
+  paintMenu(); paintScreen(); paintKit();
+  return CASE;
+}
+
+(function(){
+  var want=(location.hash||'').replace(/^#/,'');
+  if(want) selectCase(want, false);
+})();
+
+paintMenu();
 paintScreen();
 paintKit();
+
+document.addEventListener('click', function(e){
+  var t = e.target.closest ? e.target.closest('[data-case]') : null;
+  if(!t) return;
+  selectCase(t.getAttribute('data-case'), true);
+  window.scrollTo(0, 0);
+});
 
 Array.prototype.forEach.call(document.querySelectorAll('.verstamp'), function(el){
   el.textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · '+SITE.site;
