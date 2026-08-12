@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#005596">
+<title>LRH Conversations</title>
+<meta name="apple-mobile-web-app-title" content="Conversations">
+<meta name="description" content="Beta cognitive aids for difficult ED conversations — a consultant crucial conversation and a code-status conversation. Practice and feedback only.">
+<link rel="canonical" href="https://lrhemergencymanual.net/conversations/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="LRH Emergency Manual">
+<meta property="og:title" content="LRH Conversations (beta)">
+<meta property="og:description" content="Cognitive aids for difficult ED conversations. Beta — practice and feedback only.">
+<meta property="og:url" content="https://lrhemergencymanual.net/conversations/">
+<meta name="twitter:card" content="summary">
+<style>
+  html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
+  /* @design-system */
+  /* ---- Shared design language — tokens, the single .hdr chrome bar, the themed
+     <body> and the .t-* card-interior classes are injected from design-system.css
+     at the marker above (build.mjs), edited once for the whole manual. Only this
+     tool's own page layout and the script-line style live below. ---- */
+  main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
+  article { scroll-margin-top:54px; margin-top:12px; }
+  a { color:var(--blue); }
+  a:hover { color:var(--ink); }
+  summary::-webkit-details-marker { display:none; }
+  button { -webkit-appearance:none; appearance:none; border-radius:0; touch-action:manipulation; -webkit-tap-highlight-color:rgba(22,50,79,0.15); }
+  .steps { display:grid; grid-template-columns:1fr; gap:12px; align-items:start; }
+  /* A quoted script line — the words to actually say. Tinted inset with a left bar. */
+  .say { margin-top:7px; padding:9px 12px; background:var(--card2); border-left:3px solid var(--accent); font-size:14.5px; line-height:1.4; font-style:italic; }
+  .meta { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2); text-transform:uppercase; }
+  .nav2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:12px 14px 0; }
+  .nav2 a { display:flex; flex-direction:column; gap:3px; padding:12px 13px; background:var(--card); border:1px solid var(--line); border-left:4px solid var(--blue); text-decoration:none; color:var(--ink); }
+  .nav2 a .n { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.07em; color:var(--blue); }
+  #stickytop { position:sticky; top:0; z-index:5; }
+  @media (min-width:760px) { .steps { grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); } }
+  @media print {
+    body[data-theme]{ --bg:#fff; --card:#fff; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D; --line:rgba(15,35,60,.18);
+      --accent:#00693E; --red:#C63238; --amber:#B07E13; --blue:#2F6FB5; --green:#1F7F49; --gray:#6B7A8D;
+      --purple:#6C4FA3; --teal:#1F7E7E; --orange:#B4661F; --sev-crit:#9b1c2e; --sev-caution:#8a6d1f;
+      --sev-info:#2f62a8; --on-sev:#fffefb; --note-bg:#fdf3cf; --note-tx:#6b5410; background:#fff; }
+    .hdr, #betasplash, .nav2 { display:none; }
+    article { break-before:page; }
+    .steps { grid-template-columns:1fr; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>
+try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+catch(e){ document.body.dataset.theme='dark'; }
+</script>
+<div id="betasplash" style="position:fixed; inset:0; z-index:999; background:linear-gradient(135deg,#005596,#003e6e); color:#fffefb; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
+  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:#a9c2dc;">LRH · EMERGENCY DEPARTMENT</div>
+  <div style="font-size:30px; line-height:1.06; letter-spacing:-0.02em; font-weight:700;">Conversations</div>
+  <div style="display:inline-block; padding:6px 14px; border:2px solid #e0b93c; color:#f7d97a; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.16em;">BETA</div>
+  <div style="max-width:460px; font-size:17px; line-height:1.4; color:#dbe4ee;">Not yet ready for clinical use. Shared for feedback and practice only.</div>
+  <div style="max-width:460px; font-size:14.5px; line-height:1.35; color:#a9c2dc;">Communication is always situational — these are starting structures, not scripts to read verbatim. Use your judgment and your department's policies.</div>
+  <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
+</div>
+<div id="stickytop">
+<div class="hdr">
+  <a class="ghost" href="../?from=tool">&#9664; MANUAL</a>
+  <button class="ghost" id="backbtn" type="button" style="display:none">&#9664; BACK</button>
+  <span class="plabel">CONVERSATIONS</span>
+  <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
+</div>
+</div>
+
+<main>
+  <div style="padding:16px 14px 6px;">
+    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:var(--ink2); font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
+    <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Conversations</h1>
+    <p style="margin:0; color:var(--ink2); font-size:14.5px;">Cognitive aids for the hard conversations — the ones where structure buys you calm. Starting frameworks, not scripts to read word for word.</p>
+  </div>
+
+  <div class="nav2">
+    <a href="#c01"><span class="n">01</span><span>Consultant Crucial Conversation</span></a>
+    <a href="#c02"><span class="n">02</span><span>Code Status Conversation</span></a>
+  </div>
+
+  <!-- ============ CARD 01 · CONSULTANT CRUCIAL CONVERSATION ============ -->
+  <article id="c01">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">01</span>Consultant Crucial Conversation</h2>
+        <span class="t-mono-r">WHEN A CONSULT IS BEING REFUSED OR RESISTED</span>
+      </div>
+      <div class="t-note2">De-escalate the emotion <b>first</b>, then solve the clinical problem. A structured approach built on tactical empathy — you cannot problem-solve with someone whose guard is up.</div>
+    </div>
+
+    <div class="t-localize">
+      ⚠ <b>LOCALIZE THIS CARD:</b> set the escalation chain to your site (ED director, on-call CMO / administrator, transfer center). EMTALA obligations are federal, but who you call and how you document a refusal are local.
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">1 · UNCOVER THE EMOTION</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">
+            <div class="meta">Goal — neutralize hostility before the clinical problem</div>
+            <div style="margin-top:3px;">Label the emotion out loud, or run an accusation audit (name the worst thing they might be thinking, so it loses its charge).</div>
+            <div class="say">“It sounds like this call is coming at a terrible time — or that you feel this consult shouldn't be coming to your service.”</div>
+          </li>
+        </ul>
+      </details>
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">2 · VALIDATE THE PERSPECTIVE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">
+            <div class="meta">Goal — acknowledge their situation without agreeing to the refusal</div>
+            <div style="margin-top:3px;">Tactical empathy and mirroring. You are not conceding; you are showing you understand.</div>
+            <div class="say">“It sounds like you're completely underwater right now, and adding another complex admission feels impossible. If I were in your shoes, I'd probably be frustrated too.”</div>
+          </li>
+        </ul>
+      </details>
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">3 · CONFIRM UNDERSTANDING — GET “THAT'S RIGHT”</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">
+            <div class="meta">Goal — get a “that's right” so the defensive guard drops</div>
+            <div style="margin-top:3px;">Pause and listen until they confirm with <b>“That's right”</b> or <b>“Exactly.”</b> Don't settle for <b>“You're right”</b> — that's usually a brush-off to end the call, not real agreement.</div>
+          </li>
+        </ul>
+      </details>
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">4 · SHIFT TO COLLABORATIVE PROBLEM-SOLVING</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">
+            <div class="meta">Goal — make them invested in the solution</div>
+            <div style="margin-top:3px;">Calibrated, open-ended questions — “how” and “what,” not “can you.” They put the problem back in front of both of you.</div>
+            <div class="say">“Based on where things stand, how can we safely get this patient what they need right now?”</div>
+            <div class="say">“What would it take for us to manage this patient together tonight?”</div>
+          </li>
+        </ul>
+      </details>
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">5 · FRAME THE ESCALATION / EMTALA BOUNDARY</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">
+            <div class="meta">Goal — state the consequence of inaction without a personal threat</div>
+            <div style="margin-top:3px;">Bounded force and loss aversion: name the boundary, anchor the shared cost, and keep them in control of the way out.</div>
+            <div class="say">“It seems like we're stuck. This patient needs [X], and because of EMTALA I have to either escalate this to [ED director / CMO] or document a formal refusal. I really don't want to do that, and I know neither of us wants an administrative review. Is there any other way we can solve this right now?”</div>
+          </li>
+        </ul>
+      </details>
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">6 · EXECUTE INSTITUTIONAL PROTOCOL</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">
+            <div class="meta">Goal — follow through cleanly if they still won't engage</div>
+            <div style="margin-top:3px;">Document the facts objectively in the record (what was requested, the clinical need, the response — no editorializing). Notify executive leadership / the on-call CMO. Initiate transfer or the escalation protocol per policy.</div>
+          </li>
+        </ul>
+      </details>
+    </div>
+
+    <div class="t-sub">
+      <b>Sources:</b> Framework adapted from <i>Never Split the Difference</i> (Chris Voss) — labeling &amp; accusation audit, tactical empathy &amp; mirroring, triggering “that's right,” calibrated questions, and bounded force / loss aversion. Consult-refusal and transfer obligations per EMTALA (42 U.S.C. §1395dd); follow your institution's on-call and escalation policy for the specifics.
+    </div>
+    <div class="t-foot">
+      <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment.
+    </div>
+  </article>
+
+  <!-- ============ CARD 02 · CODE STATUS CONVERSATION ============ -->
+  <article id="c02">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">02</span>Code Status Conversation</h2>
+        <span class="t-mono-r">STARTING THE CONVERSATION IN THE ED</span>
+      </div>
+      <div class="t-note2">A brief, values-based goals-of-care conversation — make a <b>recommendation</b>, don't hand over a menu. Best done early, before the crash.</div>
+    </div>
+
+    <div class="t-localize">
+      ⚠ <b>LOCALIZE — Dr. Lawson's one-pager:</b> the LRH graphics and CPR-outcome references are in <a href="https://github.com/user-attachments/files/30935608/CPR.images.and.one.page.review.with.references.Dec.2025.docx"><b>“CPR images and one-page review with references” (Dr. Lawson, Dec 2025)</b></a>. That link is an external download — for true offline/bedside use, self-host the graphics (image or PDF) in this <code>conversations/</code> folder and link them locally.
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">1 · SET UP</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">Sit down, quiet space, the right people present. Ask permission to open it.
+            <div class="say">“Would it be OK if we talked about what we'd do if you became much sicker — so we're on the same page ahead of time?”</div>
+          </li>
+        </ul>
+      </details>
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">2 · ASSESS UNDERSTANDING — ASK · TELL · ASK</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">Start from what they already know, then fill the gap in plain language — no jargon, small chunks.
+            <div class="say">“What's your understanding of how sick you are right now?” … then … “Can I share how I'm seeing it?”</div>
+          </li>
+        </ul>
+      </details>
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">3 · EXPECT &amp; NAME EMOTION</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">Silence is a tool. Respond to emotion before facts — a wish/worry statement lands better than more data.
+            <div class="say">“I wish things were different.” · “This is a lot to take in.”</div>
+          </li>
+        </ul>
+      </details>
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">4 · MAP WHAT MATTERS</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">Values before interventions — the answers here drive the recommendation.
+            <div class="say">“If time were short, what would matter most to you?” · “Are there abilities so important that life without them wouldn't be worth living?”</div>
+          </li>
+        </ul>
+      </details>
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">5 · DESCRIBE CPR HONESTLY</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">Avoid “do you want us to do everything?” — it's unanswerable. Describe what CPR actually is and, for a seriously-ill patient, what it realistically achieves. Use <a href="https://github.com/user-attachments/files/30935608/CPR.images.and.one.page.review.with.references.Dec.2025.docx">Dr. Lawson's CPR-outcome graphics</a> to show, not just tell.
+            <div class="say">“If your heart were to stop, CPR means chest compressions, a breathing tube, and shocks. For someone as sick as you are, it rarely gets people back to the life they had — and often the opposite.”</div>
+          </li>
+        </ul>
+      </details>
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">6 · ALIGN &amp; RECOMMEND</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">Tie it back to their values and <b>make a recommendation</b> — patients and families consistently want one. Offer a time-limited trial when the path is genuinely uncertain.
+            <div class="say">“Given what you've told me matters most, I'd recommend we focus on [comfort / this treatment], and I wouldn't recommend CPR. How does that sound?”</div>
+          </li>
+        </ul>
+      </details>
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">7 · PLAN &amp; DOCUMENT</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">Enter the code-status order, complete a POLST/MOLST or your state form if appropriate, document the discussion and who was present, and tell the team out loud so the plan travels with the patient.</li>
+        </ul>
+      </details>
+    </div>
+
+    <div class="t-sub">
+      <b>Sources:</b> Communication structure per <b>VitalTalk</b> (REMAP; Ask-Tell-Ask; NURSE statements — vitaltalk.org) and the <b>Ariadne Labs Serious Illness Conversation Guide</b>. Local CPR-outcome graphics and references: <b>Dr. Lawson, “CPR images and one-page review with references,” Dec 2025</b> — <a href="https://github.com/user-attachments/files/30935608/CPR.images.and.one.page.review.with.references.Dec.2025.docx">linked here</a> (self-host locally for offline use). Best-practice content is a draft for departmental review; confirm your final references on this card.
+    </div>
+    <div class="t-foot">
+      <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment.
+    </div>
+  </article>
+
+  <div style="margin:14px 14px 0;"><a href="#top" style="display:flex; align-items:center; justify-content:center; min-height:46px; border:1px solid var(--line); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.12em; color:var(--ink2); text-decoration:none;">↑ TOP</a></div>
+</main>
+
+<script>
+/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
+var SITE = { version: "0.1", lastReviewed: "2026-08-12" };
+(function(){
+  document.querySelectorAll('.verstamp').forEach(function(el){ el.textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH'; });
+  var s=document.getElementById('betasplash'), b=document.getElementById('betago');
+  if(!s||!b) return;
+  function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); }
+  b.addEventListener('click', go, false);
+  b.addEventListener('touchend', go, false);
+  try{ if(/(^|[?&])from=(home|tool)(&|$)/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); } }catch(err){}
+})();
+/* BACK button — returns to the previous card/tool when there is history. */
+(function(){
+  var b=document.getElementById('backbtn');
+  if(!b) return;
+  function maybeShow(){ if(history.length>1) b.style.display='inline-flex'; }
+  window.addEventListener('hashchange', maybeShow, false);
+  maybeShow();
+  b.addEventListener('click', function(){ history.back(); }, false);
+})();
+/* Theme toggle — persists via the shared lrh-pref-theme key. */
+(function(){
+  var b=document.getElementById('lrhThemeBtn');
+  if(!b) return;
+  b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
+  b.addEventListener('click', function(){
+    var dark = document.body.dataset.theme!=='light';
+    document.body.dataset.theme = dark ? 'light' : 'dark';
+    b.textContent = dark ? 'DARK' : 'LIGHT';
+    try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
+  });
+})();
+</script>
+</body>
+</html>
