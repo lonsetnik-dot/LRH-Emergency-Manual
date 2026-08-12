@@ -88,3 +88,31 @@
   .t-mono-n{font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;color:var(--ink);font-size:16px;margin-right:8px}
   .t-localize{margin:14px 14px 0;border:2px solid var(--sev-caution);background:var(--note-bg);color:var(--note-tx);padding:11px 14px;font-size:13px;line-height:1.4;border-radius:12px}
   .t-notebtn{flex:none;min-height:32px;padding:0 10px;background:none;border:1px solid var(--note-tx);color:var(--note-tx);font:inherit;font-weight:700;letter-spacing:.04em;cursor:pointer}
+
+  /* ---- Issue #107: the square boxes inside the rounded ones ----------------
+     The card shells and the .t-box-* panels above are rounded rectangles, but
+     across codes/, peds/ and ob-neonatal/ roughly seventy interior blocks are
+     written with an inline `border:2px solid var(--…)` and no radius, so they
+     render as hard-cornered boxes sitting inside rounded ones. That is what Lon
+     is seeing.
+
+     Matching the inline pattern rather than hand-editing seventy declarations
+     is deliberate: the alternative is editing them all now and editing every
+     new one forever, and the next person writing a callout will reach for the
+     same inline border. Nothing here fights the inline style — inline sets the
+     border, never the radius, so this rule has nothing to override.
+
+     Scoped inside .steps and article, which is where the on-screen card body
+     lives. That keeps it away from the print artifacts: a laminated drawer
+     label or a VEMS equipment card is guillotined square, and a rounded corner
+     on paper would be wrong. */
+  .steps [style*="border:2px solid"], article [style*="border:2px solid"], #cart [style*="border:2px solid"],
+  .steps [style*="border: 2px solid"], article [style*="border: 2px solid"], #cart [style*="border: 2px solid"],
+  .steps [style*="border:2px dashed"], article [style*="border:2px dashed"], #cart [style*="border:2px dashed"],
+  .steps [style*="border: 2px dashed"], article [style*="border: 2px dashed"], #cart [style*="border: 2px dashed"]{
+    border-radius:12px}
+  /* A <details> whose <summary> carries a colored fill needs the clip, or the
+     header's background paints over the rounded top corners. */
+  .steps details[style*="border:2px solid"], article details[style*="border:2px solid"], #cart details[style*="border:2px solid"],
+  .steps details[style*="border: 2px solid"], article details[style*="border: 2px solid"], #cart details[style*="border: 2px solid"]{
+    overflow:hidden}

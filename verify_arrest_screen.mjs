@@ -277,6 +277,29 @@ const small = await pg.evaluate(() => [...document.querySelectorAll('button')]
   .filter(el => el.offsetParent !== null && el.getBoundingClientRect().height < 38)
   .map(el => (el.textContent || '').trim().slice(0, 24)));
 ck('11. every visible button is at least 38px tall', small.join(' | ') || 'none', 'none');
+/* ---- time of death is a WALL-CLOCK time (issue #129) ----
+   Elapsed answers "how long have we been going". The chart and the death
+   certificate need "at what time", and nobody reconstructs that from a
+   stopwatch afterwards — so the wall time is what is asserted, and the format
+   is asserted too, because HH:MM is what gets written down. */
+await fresh();
+await pg.fill('#wIn', '80'); await pg.waitForTimeout(200);
+await pg.click('#startbtn'); await pg.waitForTimeout(350);
+ck('12. the code can be ceased at all', await pg.locator('#ceasebtn').count(), 1);
+await pg.click('#ceasebtn'); await pg.waitForTimeout(220);
+ck('12. ceasing takes a confirm, not one tap', await pg.locator('#ceaseconfirm').isVisible(), true);
+await pg.click('#ceaseyes'); await pg.waitForTimeout(350);
+ck('12. it reaches the ceased state', await pg.locator('#ceased').isVisible(), true);
+const tod = await txt('#deathwall');
+ck('12. time of death is a wall clock, not elapsed', /^\d{2}:\d{2}$/.test(tod), true);
+ck('12. it agrees with the browser clock', tod, (d => String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'))(new Date()));
+ck('12. elapsed is still shown beside it', /^\d+:\d\d$/.test(await txt('#deathat')), true);
+ck('12. the time of death is logged', new RegExp('time of death ' + tod).test(await openAcc('log')), true);
+await pg.click('[data-acc="log"]'); await pg.waitForTimeout(150);
+await pg.click('#resumearrest'); await pg.waitForTimeout(300);
+ck('12. resuscitation can be resumed', await pg.locator('#ceased').isVisible(), false);
+await fresh();
+
 ck('11. version and disclaimer are stamped', /v\d+\.\d+ · last reviewed/.test(await txt('#verstamp')), true);
 
 /* ---- 12. the code blue front door: pulse first, rhythm later --------------- */

@@ -93,10 +93,13 @@ catch(e){ document.body.dataset.theme='dark'; }
       <input class="inp" id="wIn" inputmode="decimal" style="width:70px" aria-label="Birth weight in kg or g">
       <span style="font-size:13px;color:var(--ink2)">kg or g</span>
       <span class="sec" style="margin-left:6px">GA</span>
-      <input class="inp" id="gIn" inputmode="numeric" style="width:56px" aria-label="Gestational age in weeks">
-      <span style="font-size:13px;color:var(--ink2)">wks</span>
+      <input class="inp" id="gIn" inputmode="numeric" style="width:52px" aria-label="Gestational age, completed weeks">
+      <span style="font-size:15px;font-weight:800;color:var(--ink2)">+</span>
+      <input class="inp" id="gdIn" inputmode="numeric" style="width:44px" aria-label="Gestational age, days beyond the completed week">
+      <span style="font-size:13px;color:var(--ink2)">wk+d</span>
       <span id="wnote" style="font-size:13px;font-weight:700;color:var(--accent)">enter weight</span>
       <span id="werr" style="display:none;flex-basis:100%;font-size:12.5px;font-weight:700;color:var(--red)"></span>
+      <span id="gerr" style="display:none;flex-basis:100%;font-size:12.5px;font-weight:700;color:var(--red)"></span>
     </div>
 
     <div class="card" id="pacerbox" style="margin-top:10px;padding:10px 12px"></div>
@@ -162,7 +165,7 @@ catch(e){ document.body.dataset.theme='dark'; }
    content off against NRP 9th edition. See SITE.review.
    ========================================================================== */
 var SITE = {
-  version:"0.1", lastReviewed:"2026-08-12",
+  version:"0.2", lastReviewed:"2026-08-12",
   site:"LRH",
 
   /* The banner is config, not prose, so a site can turn it off in one place once
@@ -178,7 +181,8 @@ var SITE = {
     on:true,
     text:"ALIGNED TO THE 2025 AHA/AAP GUIDELINES for the items named in SOURCE & PROVENANCE — cord "+
          "management as the first step, deferred clamping ≥60 s, intact cord milking for the "+
-         "non-vigorous term and late-preterm newborn, and the supraglottic airway as a primary device. "+
+         "non-vigorous term and late-preterm newborn, the supraglottic airway as a primary device, and "+
+         "the under-32-week thermal wrap. "+
          "Values NOT named there were inherited unchanged from the previous card and are not "+
          "individually verified against the NRP 9th edition textbook. Check them against your own NRP "+
          "materials."
@@ -190,12 +194,17 @@ var SITE = {
      term newborn and the late preterm at 35 weeks or more, intact cord milking
      may be reasonable as an alternative to immediate clamping.
      The plan is a local decision — hence SITE. */
+  /* deferSec and milkingFromWeeks are the numbers; the two sentences are BUILT
+     from them rather than repeating them. A site that moves its milking line to
+     34 weeks and edits only the number used to get a screen that still said 35 —
+     the same config-says-one-thing-screen-says-another split that issue #117
+     found in /airway/. */
   cord:{
     deferSec:60,
     milkingFromWeeks:35,
-    plan:"Deferred clamping for at least 60 s unless the baby needs immediate resuscitation.",
-    milking:"Non-vigorous term, or late preterm at 35 weeks or more: intact cord milking may be reasonable "+
-            "rather than clamping immediately."
+    get plan(){ return "Deferred clamping for at least "+this.deferSec+" s unless the baby needs immediate resuscitation."; },
+    get milking(){ return "Non-vigorous term, or late preterm at "+this.milkingFromWeeks+" weeks or more: "+
+                          "intact cord milking may be reasonable rather than clamping immediately."; }
   },
 
   /* AUDIO PACER. Rates are the ones the screen already teaches, so the sound
@@ -241,7 +250,35 @@ var SITE = {
   /* Heart-rate bands — the three buttons the screen is driven by. */
   hr:{ good:100, low:60 },
 
-  temp:{ lowC:36.5, highC:37.5, wrapUnderWeeks:34 },
+  /* THERMAL CARE — and the one place where "warm, dry, stimulate" is the wrong
+     instruction (issue #143).
+
+     Below wrapUnderWeeks the newborn does NOT get dried. It goes straight into
+     polyethylene wrap or a bag, still wet, under the warmer, with a hat and a
+     thermal mattress. Drying a very preterm baby first defeats the wrap: the
+     evaporative loss the wrap exists to prevent has already happened by the
+     time it goes on, and the extra handling costs time in the first minute.
+
+     The threshold is 32 completed weeks, from the AHA/AAP neonatal
+     resuscitation guideline (Part 5: Neonatal Resuscitation, Circulation
+     2020;142:S524–S550, carried forward in the 2025 update
+     doi:10.1161/CIR.0000000000001367): for preterm newborns under 32 weeks'
+     gestation, a combination of plastic wrap or bag, hat, thermal mattress and
+     a warmed room is recommended to prevent hypothermia. NRP teaches the same
+     line. Some units also apply it by weight (under ~1500 g) — that is a local
+     addition, hence wrapUnderGrams below, set to null here because LRH has not
+     adopted one.
+
+     NOTE FOR REVIEW: the previous value in this file was 34 weeks, which was
+     authored here rather than carried from card 03 and had no citation. It is
+     corrected to the sourced 32. Confirm against your own NRP materials. */
+  temp:{
+    lowC:36.5, highC:37.5,
+    wrapUnderWeeks:32,
+    wrapUnderGrams:null,
+    wrapBundle:"polyethylene wrap or bag over the wet skin, hat, thermal mattress, warm the room",
+    dryStim:"Dry and stimulate. Remove wet linen. Position sniffing."
+  },
 
   /* Preductal SpO2 targets by minute of life. The engine shows the row for the
      minute you are actually in. */
@@ -271,7 +308,7 @@ var SITE = {
    from the browser console rather than from source (issues #117, #116/#118). */
 try{ window.SITE = SITE; }catch(e){}
 
-var S = { theme:'dark', phase:'idle', birth:null, kg:null, ga:null,
+var S = { theme:'dark', phase:'idle', birth:null, kg:null, ga:null, gaWk:null, gaD:null,
           step:'initial', ppvOn:false, compressions:false, epiDoses:0,
           lastAssess:null, apgarDone:{}, apgarScores:{}, apgarOpen:null, apgarPick:{}, events:[], open:null, resetArm:false,
           stableAt:null, showCustom:false };
@@ -407,16 +444,20 @@ function phaseBox(){
   if(S.step==='initial'){
     var left = Math.max(0, SITE.cycle.initialStepsSec - since());
     h+='<div class="sec" style="color:var(--blue)">1 · INITIAL STEPS — FIRST '+SITE.cycle.initialStepsSec+' SECONDS</div>'+
-       '<div style="font-size:22px;font-weight:800;margin-top:4px">Warm · dry · stimulate · position</div>'+
+       /* The headline itself has to change in the wrap band — a screen that
+          says "dry" above a step that says DO NOT DRY is the contradiction
+          this engine exists to remove. */
+       '<div style="font-size:22px;font-weight:800;margin-top:4px">'+
+       (inWrapBand() ? 'Warm · <span style="color:var(--red)">wrap, do not dry</span> · stimulate · position'
+                     : 'Warm · dry · stimulate · position')+'</div>'+
        '<div class="mono" style="font-size:15px;color:'+(left>0?'var(--amber)':'var(--red)')+';margin-top:4px">'+
        (left>0 ? left.toFixed(0)+' s to the first heart-rate check' : 'CHECK THE HEART RATE NOW')+'</div>'+
        '<div style="margin-top:10px">'+
        stepRow(1,'<b>Cord management plan</b> — the first step on the 2025 algorithm. Defer clamping '+
                  '<b>at least '+SITE.cord.deferSec+' s</b> unless this baby needs resuscitation now. '+
-                 esc(SITE.cord.milking))+
+                 esc(SITE.cord.milking)+milkingNote())+
        stepRow(2,'Baby to the <b>'+esc(SITE.local.warmer)+'</b>.')+
-       stepRow(3,'<b>Warm</b> — warmer, hat, plastic wrap if under '+SITE.temp.wrapUnderWeeks+' weeks. Target '+SITE.temp.lowC+'–'+SITE.temp.highC+' °C.')+
-       stepRow(4,'<b>Dry and stimulate.</b> Remove wet linen. Position sniffing.')+
+       thermalRows(3)+
        stepRow(5,'Clear the airway <b>only if obstructed</b>.')+
        stepRow(6,'Pulse oximeter on the <b>right hand</b>. Cardiac monitor if resuscitating.')+
        '</div>'+
@@ -504,6 +545,46 @@ function pacerBox(){
 
 function stepRow(n, html){
   return '<div class="step"><div class="n">'+n+'</div><div>'+html+'</div></div>';
+}
+
+/* Once the gestation is entered to the day, the milking sentence can say which
+   side of its own threshold THIS baby is on instead of leaving the reader to do
+   the comparison during the first minute. It states the threshold and the fact
+   and stops there — the decision is not the screen's to make. */
+function milkingNote(){
+  if(S.ga === null) return '';
+  var over = S.ga >= SITE.cord.milkingFromWeeks;
+  return '<div style="margin-top:6px;font-size:13.5px;font-weight:700;color:var('+
+    (over ? '--green' : '--amber') + ')">This baby is ' + gaText() + ' — ' +
+    (over ? 'at or above' : 'below') + ' the ' + SITE.cord.milkingFromWeeks +
+    '-week line for intact cord milking.</div>';
+}
+
+/* THE THERMAL FORK (issue #143). Two rows, and which two they are depends on
+   gestation — because for the very preterm newborn "dry and stimulate" is the
+   wrong instruction, not a softer version of the right one.
+   Returns rows numbered n and n+1 so the caller's numbering stays contiguous. */
+function thermalRows(n){
+  var target = 'Target '+SITE.temp.lowC+'–'+SITE.temp.highC+' °C.';
+  if(inWrapBand()){
+    return stepRow(n,
+        '<b style="color:var(--red)">DO NOT DRY THIS BABY.</b> '+gaText()+' is under '+
+        SITE.temp.wrapUnderWeeks+' weeks — straight into the wrap, wet. '+
+        esc(SITE.temp.wrapBundle)+'. '+target)+
+      stepRow(n+1,
+        '<b>Stimulate through the wrap</b> — back and soles. Position sniffing. '+
+        'Leave the wrap on for the transfer.');
+  }
+  /* At or above the threshold, or gestation not yet entered. When it is not
+     entered the screen must still say the fork exists, because the person
+     holding a 28-weeker has not typed anything yet. */
+  return stepRow(n,
+      '<b>Warm</b> — warmer, hat. '+target+
+      (S.ga === null
+        ? ' <span style="color:var(--amber);font-weight:700">Under '+SITE.temp.wrapUnderWeeks+
+          ' weeks this changes: wrap without drying. Enter the gestation.</span>'
+        : '')) +
+    stepRow(n+1, '<b>'+esc(SITE.temp.dryStim)+'</b>');
 }
 
 
@@ -669,9 +750,21 @@ var ACC=[
         'at '+SITE.cord.milkingFromWeeks+' weeks or more, as an alternative to immediate clamping.<br>'+
         '· <b>The supraglottic airway is a primary device</b> above '+SITE.sgaPrimaryFromWeeks+' weeks for the '+
         'baby who fails bag-mask ventilation, not only a rescue after failed intubation.<br>'+
+        '· <b>Under '+SITE.temp.wrapUnderWeeks+' weeks the baby is not dried.</b> It goes into '+
+        esc(SITE.temp.wrapBundle)+'. Source: Part 5: Neonatal Resuscitation, <i>Circulation</i> '+
+        '2020;142:S524–S550, carried forward in the 2025 update above — for preterm newborns under '+
+        SITE.temp.wrapUnderWeeks+' weeks’ gestation a combination of plastic wrap or bag, hat, thermal '+
+        'mattress and a warmed room is recommended to prevent hypothermia. <b>This corrects a value '+
+        'authored in this file at '+'34 weeks with no citation</b> (issue #143); confirm it against your own '+
+        'NRP materials. Sites that also apply a birth-weight cut-off set <code>SITE.temp.wrapUnderGrams</code>.<br>'+
         '· Heart-rate thresholds are unchanged: PPV for apnea, gasping or a rate under '+SITE.hr.good+
         '; compressions only if the rate stays under '+SITE.hr.low+' after '+SITE.cycle.reassessSec+
         ' s of effective ventilation.</p>'+
+        '<p><b>Gestational age is entered in weeks AND days</b> (issue #144). Every gestation threshold '+
+        'on this screen is a completed-weeks line, so a day never moves a baby across one on its own. '+
+        'What the days box prevents is rounding: a single weeks box invites 34+6 to be entered as 35, '+
+        'which does cross the '+SITE.cord.milkingFromWeeks+'-week milking line, and leaves a gestation '+
+        'in the record that cannot be reproduced.</p>'+
         '<p><b>What was NOT individually verified.</b> Everything else — the doses, the SpO₂ target table, the '+
         'compression ratio and the airway sizes — was carried across unchanged from card 03 of '+
         '<a href="../ob-neonatal/?from=home#c03">ob-neonatal/</a>, which carried no citation of its own. '+
@@ -885,8 +978,10 @@ document.addEventListener('click', function(e){
     stopPacer(); sound=false; lastChime=0;
     S={ theme:S.theme, phase:'idle', birth:null, kg:null, ga:null, step:'initial', ppvOn:false,
         compressions:false, epiDoses:0, lastAssess:null, apgarDone:{}, apgarScores:{}, apgarOpen:null,
-        apgarPick:{}, events:[], open:null, resetArm:false, stableAt:null, showCustom:false };
-    $('wIn').value=''; $('gIn').value='';
+        apgarPick:{}, events:[], open:null, resetArm:false, stableAt:null, showCustom:false,
+        gaWk:null, gaD:null };
+    $('wIn').value=''; $('gIn').value=''; $('gdIn').value='';
+    $('gerr').style.display='none';
     paint(); return;
   }
   if(id==='startbtn'){
@@ -935,13 +1030,53 @@ function readWeight(){
   S.kg = r.kg;
   $('werr').style.display = r.err ? '' : 'none';
   if(r.err) $('werr').textContent = r.err;
-  var g=parseFloat($('gIn').value); S.ga = isNaN(g)?null:g;
+  readGA();
   $('wnote').textContent = S.kg===null ? 'enter weight'
-    : (num(S.kg,2)+' kg' + (S.ga? ' · '+S.ga+' wks':'') + (S.ga && S.ga<SITE.temp.wrapUnderWeeks ? ' · wrap' : ''));
+    : (num(S.kg,2)+' kg' + (S.ga!==null ? ' · '+gaText() : '') + (inWrapBand() ? ' · WRAP, DO NOT DRY' : ''));
   paint();
 }
+
+/* GESTATIONAL AGE — weeks AND days (issue #144).
+   Obstetric gestation is written 34+2, not 34.29 and not "about 34".
+
+   Being precise about what this does and does not fix. Every gestation
+   threshold here is a completed-weeks line, and days can never move a baby
+   across an integer one: 34+6 is under 35 for exactly the same reason 34 is.
+   The arithmetic was never the problem. What a weeks-only box did wrong was
+   invite the person typing it to ROUND — a 34+6 baby gets entered as "35" and
+   lands on the far side of the milking line — and then print a gestation the
+   record could not reproduce.
+
+   So S.ga stays a single decimal (34+2 is 34 + 2/7) and every threshold
+   comparison is unchanged, while the DISPLAY is always rebuilt as w+d. */
+function readGA(){
+  var w = parseInt($('gIn').value, 10);
+  var d = parseInt($('gdIn').value, 10);
+  var err = '';
+  if(isNaN(w)){ S.ga = null; S.gaWk = null; S.gaD = null; }
+  else {
+    if(isNaN(d)) d = 0;
+    /* Days are 0–6 by definition: 7 days IS the next completed week. Rather
+       than silently swallowing a 7, say so — someone typing 34+7 means 35+0
+       and needs to see which one the screen is using. */
+    if(d < 0 || d > 6){ err = 'Days must be 0–6 — 34+7 is 35+0.'; d = Math.min(6, Math.max(0, d)); }
+    S.gaWk = w; S.gaD = d; S.ga = w + d/7;
+  }
+  var ge = $('gerr');
+  if(ge){ ge.style.display = err ? '' : 'none'; ge.textContent = err; }
+}
+/* The canonical rendering. Used everywhere gestation is printed so the screen
+   never shows a decimal week. */
+function gaText(){
+  if(S.gaWk === null || S.gaWk === undefined) return '';
+  return S.gaWk + '+' + (S.gaD || 0) + ' wks';
+}
+/* Below the thermal-wrap threshold, with the gestation actually known. */
+function inWrapBand(){ return S.ga !== null && S.ga < SITE.temp.wrapUnderWeeks; }
+
 $('wIn').addEventListener('input', readWeight);
 $('gIn').addEventListener('input', readWeight);
+$('gdIn').addEventListener('input', readWeight);
 
 paint();
 setInterval(paint, 500);

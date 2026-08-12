@@ -215,7 +215,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <a href="#c01" data-k="big brain injury guidelines mbig modified traumatic brain injury tbi minor head injury mtbi intracranial hemorrhage ich concussion" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">01</span><span class="t">Brain Injury Guidelines (BIG)</span></a>
         <a href="#c02" data-k="level 1 trauma activation full team response criteria acs field triage abc score mtp trigger" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">02</span><span class="t">Level 1 Trauma Activation</span></a>
         <a href="#c03" data-k="blunt polytrauma multi-system xabcde damage control resuscitation permissive hypotension react-2 blunt aortic cardiac injury seatbelt sign" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">03</span><span class="t">Blunt Polytrauma</span></a>
-        <a href="#c04" data-k="penetrating trauma gunshot stab wound torso abdomen tension pneumothorax open chest wound massive hemothorax tamponade" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">04</span><span class="t">Penetrating Trauma</span></a>
+        <a href="#c04" data-k="penetrating trauma gunshot stab wound torso abdomen tension pneumothorax open chest wound massive hemothorax tamponade lockdown lock down security weapon evidence police scene safety" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">04</span><span class="t">Penetrating Trauma</span></a>
         <a href="#c05" data-k="burn tbsa rule of nines parkland fluid resuscitation inhalation injury carbon monoxide cyanide burn center transfer" class="lrh-row" style="--cc:var(--orange)"><span class="n lrh-mono">05</span><span class="t">Burn</span></a>
         <a href="#c06" data-k="head trauma tbi gcs canadian ct head rule new orleans criteria herniation mannitol hypertonic saline hypoxia hypotension" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">06</span><span class="t">Isolated Head Trauma</span></a>
         <a href="#c07" data-k="mangled amputated extremity mess score replantation limb salvage vascular injury compartment syndrome tourniquet" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">07</span><span class="t">Mangled / Amputated Extremity</span></a>
@@ -341,7 +341,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <details class="t-box-neutral">
         <summary class="t-head t-head-neutral">AFTER ACTIVATION — MECHANISM BRANCH</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-13" class="t-ck"><span><b>Name the mechanism out loud</b> and open the matching card for injury-specific detail — <a href="#c03">Blunt Polytrauma</a> or <a href="#c04">Penetrating Trauma</a>. The primary survey below is common to both; the CT guidance at the bottom splits blunt vs penetrating.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-13" class="t-ck"><span><b>Name the mechanism out loud</b> and open the matching card for injury-specific detail — <a href="#c03">Blunt Polytrauma</a> or <a href="#c04">Penetrating Trauma</a>. The primary survey below is common to both; the CT guidance at the bottom splits blunt vs penetrating. <b>If it is penetrating, the security question is the first box on card 04</b> — ask it now, not after the primary survey.</span></label></li>
         </ul>
       </details>
       <details open class="t-box-crit">
@@ -464,6 +464,21 @@ catch(e){ document.body.dataset.theme='dark'; }
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
+      <!-- Issue #111. Deliberately the FIRST box on this card and deliberately
+           short: the moment to think about who else might come through the door
+           is while the patient is being moved to the bay, not after. The
+           who/how text is rendered from SITE.security so an adopting ED changes
+           it in one place. -->
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">BEFORE ANYTHING ELSE — IS THE DEPARTMENT SAFE?</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c04-0a" class="t-ck"><span><b>Consider departmental lockdown.</b> A penetrating injury means someone caused it, and they may not be accounted for. Say it out loud as a question — <i>&ldquo;do we need to lock down?&rdquo;</i> — so it is decided rather than assumed. <span data-seccall>Tell the <b>charge nurse</b>.</span></span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c04-0b" class="t-ck"><span><b>Weapons.</b> Assume the patient may still have one. Clothing comes off and is searched by staff who expect to find something — a knife in a pocket is found by the person cutting the trousers, and a bystander does not do that job. Bag and hand off per your local police-custody process; do not put it in the room.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c04-0c" class="t-ck"><span><b>Crowd and family.</b> One controlled entrance, family to a defined area away from the resuscitation bay, and a named person managing it — a second penetrating patient arriving with the first is common enough to plan for. This is the same control set as the <a href="#c09">MCI card</a>, at a smaller scale.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c04-0d" class="t-ck"><span><b>Evidence, without letting it slow anything.</b> Cut around holes rather than through them, and do not clean wounds for description alone. Care wins every conflict; this only costs seconds when it is decided up front.</span></label></li>
+          <li data-secnote class="t-note2" style="display:none; padding:9px 0 2px;"></li>
+        </ul>
+      </details>
       <details open class="t-box-crit">
         <summary class="t-head t-head-crit">HEMORRHAGE-FIRST PRIMARY SURVEY</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
@@ -844,12 +859,27 @@ catch(e){ document.body.dataset.theme='dark'; }
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "0.93",
-  lastReviewed: "2026-08-11",
+  version: "0.94",
+  lastReviewed: "2026-08-12",
   /* Transfer/consult numbers. One source of truth (CLAUDE.md rule 2) — the
      BIG card renders every "DHMC Transfer Center" line from here as a tap-to-
      call tel: link. `tel` is the E.164 dial string; `phone` is what's shown. */
-  transferCenter: { label: "DHMC Transfer Center", phone: "(877) 999-9870", tel: "+18779999870" }
+  transferCenter: { label: "DHMC Transfer Center", phone: "(877) 999-9870", tel: "+18779999870" },
+  /* SCENE SECURITY for penetrating trauma (issue #111). Who is called and what
+     the department can actually do is entirely local — some EDs can lock the
+     ambulance bay from the charge desk, some have to ask a security officer who
+     may be on the far side of the building, and the name of the overhead page
+     differs everywhere. So the PROMPT is universal and lives in the card; the
+     WHO and the HOW live here.
+
+     `who` and `how` render into the card. Set `overhead` to the exact phrase
+     your operator expects, or null if your site has none. */
+  security: {
+    who: "charge nurse + house supervisor",
+    how: "ask Security to restrict the ED to one controlled entrance",
+    overhead: null,
+    note: "LRH has no dedicated in-house ED security officer overnight — confirm who is actually available on your shift before you need them."
+  }
 };
 /* Render tap-to-call links for every [data-tc] placeholder from SITE.transferCenter. */
 (function(){
@@ -864,6 +894,25 @@ var SITE = {
          suppresses the label's checkbox toggle — but stop propagation too so a
          tap only dials, never ticks the box. */
       els[i].addEventListener('click', function(e){ e.stopPropagation(); }, false);
+    }
+  }
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
+})();
+/* Render the site-specific half of the penetrating-trauma security prompt from
+   SITE.security (issue #111). The card states WHAT to consider; this states who
+   to tell and how, so a fork changes it in one place instead of editing prose
+   buried in a checklist. */
+(function(){
+  var sec=SITE.security; if(!sec) return;
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function boot(){
+    var calls=document.querySelectorAll('[data-seccall]');
+    var html='Tell the <b>'+esc(sec.who)+'</b> — '+esc(sec.how)+'.'+
+             (sec.overhead ? ' Overhead page: <b>&ldquo;'+esc(sec.overhead)+'&rdquo;</b>.' : '');
+    for(var i=0;i<calls.length;i++){ calls[i].innerHTML=html; }
+    if(sec.note){
+      var notes=document.querySelectorAll('[data-secnote]');
+      for(var j=0;j<notes.length;j++){ notes[j].innerHTML='&#9888; '+esc(sec.note); notes[j].style.display=''; }
     }
   }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
