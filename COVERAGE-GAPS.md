@@ -40,4 +40,21 @@ closest thing a clinician would find by searching today.
 
 ## Filled since this log started
 
-*(none yet — move rows here as cards ship)*
+**2026-08-12 — draft cards shipped for all 13 open gaps** (issues stay open
+until each card passes clinical review; every card carries a DRAFT banner):
+
+| Gap | Draft card |
+|---|---|
+| Eclampsia / severe preeclampsia (#84) | `ob-neonatal/` c11 |
+| Adult sepsis / septic shock (#85) | `codes/` c28 |
+| Massive PE (#86) | `codes/` c29 |
+| Toxicology set (#87) | `codes/` c36 (opioid · wide-QRS/TCA · BB/CCB · tox arrest) |
+| Accidental hypothermia (#88) | `codes/` c27 |
+| Adult severe agitation (#89) | `codes/` c30 |
+| Adult DKA / HHS (#90) | `codes/` c31 |
+| Aortic catastrophe (#91) | `codes/` c32 |
+| Heat stroke (#92) | `codes/` c33 |
+| MCI first 15 minutes (#93) | `trauma/` c09 (needs the LRH call tree filled in) |
+| Severe alcohol withdrawal (#94) | `codes/` c34 |
+| Transfusion reaction (#95) | `codes/` c35 |
+| Electrical / lightning (#96) | `trauma/` c10 |

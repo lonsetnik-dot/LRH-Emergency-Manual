@@ -112,7 +112,7 @@ catch(e){ document.body.dataset.theme='dark'; }
 
     <!-- ===== CATEGORY: Codes & Resuscitation (beta · RED) -> /codes/ ===== -->
     <a class="lrh-cat" style="--cc:var(--red)" href="codes/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">Codes</span><span class="spacer"></span><span class="count lrh-mono">26 cards</span></div>
+      <div class="row"><span class="dot"></span><span class="name">Codes</span><span class="spacer"></span><span class="count lrh-mono">36 cards</span></div>
       <div class="desc">Code / resuscitation reference, including the ED code-cart drawer contents.</div>
     </a>
 
@@ -124,7 +124,7 @@ catch(e){ document.body.dataset.theme='dark'; }
 
     <!-- ===== CATEGORY: OB & Neonatal (live · BLUE) -> /ob-neonatal/ ===== -->
     <a class="lrh-cat" style="--cc:var(--blue)" href="ob-neonatal/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">OB &amp; Neonatal Emergencies</span><span class="spacer"></span><span class="count lrh-mono">9 cards</span></div>
+      <div class="row"><span class="dot"></span><span class="name">OB &amp; Neonatal Emergencies</span><span class="spacer"></span><span class="count lrh-mono">10 cards</span></div>
       <div class="desc">Obstetric and neonatal emergency manual with timers, checklists, and cart-drawer reference.</div>
     </a>
 
@@ -142,7 +142,7 @@ catch(e){ document.body.dataset.theme='dark'; }
 
     <!-- ===== CATEGORY: Trauma (beta · ORANGE) -> /trauma/ ===== -->
     <a class="lrh-cat" style="--cc:var(--orange)" href="trauma/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">Trauma</span><span class="spacer"></span><span class="count lrh-mono">8 cards</span></div>
+      <div class="row"><span class="dot"></span><span class="name">Trauma</span><span class="spacer"></span><span class="count lrh-mono">10 cards</span></div>
       <div class="desc">Brain Injury Guidelines (BIG) for minor TBI, plus quick links to the Massive Transfusion Protocol and Front of Neck Access (FONA).</div>
     </a>
 
@@ -164,11 +164,6 @@ catch(e){ document.body.dataset.theme='dark'; }
       <div class="desc">Pillow-patient drills that chain the manual's real workflows — birth into dystocia into a blue baby, STEMI into VF into the code-status conversation. 10&ndash;15 minutes, no mannequin.</div>
     </a>
 
-    <!-- ===== CATEGORY: Debrief (beta · GRAY · keep last) -> /debrief/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--gray)" href="debrief/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">Debrief</span><span class="spacer"></span><span class="count lrh-mono">1 tool</span></div>
-      <div class="desc">A short structure for the team conversation after a code or critical event — basic assumption, what did you see, plus/delta/plus.</div>
-    </a>
 
     <!-- ===== Add a category/tool: create a lowercase, hyphenated folder with an
          index.html, add a card above (href to that folder, --cc to a -- token),
@@ -285,10 +280,23 @@ catch(e){ document.body.dataset.theme='dark'; }
     {t:"LVAD — Responsive (Pump Running)", c:"Codes", k:"lvad ventricular assist device heartmate heartware pump hum driveline alarm map doppler thrombosis vad", u:"codes/?from=home#c19"},
     {t:"LVAD — Unresponsive (Pump NOT Running)", c:"Codes", k:"lvad ventricular assist device pump not running no hum restart battery controller driveline arrest cpr vad", u:"codes/?from=home#c20"},
     {t:"STEMI", c:"Codes", k:"stemi st elevation mi myocardial infarction chest pain heart cognitive aid mimics aspirin heparin enoxaparin atorvastatin tenecteplase tnk weight band pressor norepinephrine dobutamine cardiogenic shock reperfusion arrhythmia aivr transfer dartmouth concord omnicell code", u:"codes/?from=home#c21"},
+    {t:"Accidental Hypothermia", c:"Codes", k:"hypothermia cold water drowning rewarming ecmo ecls cold arrest not dead until warm and dead core temperature", u:"codes/?from=home#c27"},
+    {t:"Sepsis / Septic Shock", c:"Codes", k:"sepsis septic shock infection lactate cultures antibiotics bundle norepinephrine pressors fluids map source control", u:"codes/?from=home#c28"},
+    {t:"Massive Pulmonary Embolism", c:"Codes", k:"massive pe pulmonary embolism high risk lytics alteplase tpa thrombolysis rv failure obstructive shock", u:"codes/?from=home#c29"},
+    {t:"Severe Agitation (Adult)", c:"Codes", k:"agitation combative behavioral emergency excited delirium droperidol ketamine olanzapine restraints deescalation violent", u:"codes/?from=home#c30"},
+    {t:"Adult DKA / HHS", c:"Codes", k:"dka diabetic ketoacidosis hhs hyperosmolar adult insulin potassium fluids anion gap", u:"codes/?from=home#c31"},
+    {t:"Aortic Catastrophe (Dissection / AAA)", c:"Codes", k:"aortic dissection ruptured aaa aneurysm tearing chest pain anti-impulse esmolol type a type b vascular", u:"codes/?from=home#c32"},
+    {t:"Heat Stroke", c:"Codes", k:"heat stroke hyperthermia exertional cooling cold water immersion ice rhabdomyolysis", u:"codes/?from=home#c33"},
+    {t:"Severe Alcohol Withdrawal / DTs", c:"Codes", k:"alcohol withdrawal dts delirium tremens ciwa diazepam phenobarbital thiamine etoh seizure", u:"codes/?from=home#c34"},
+    {t:"Transfusion Reaction", c:"Codes", k:"transfusion reaction stop the unit hemolytic febrile trali taco blood bank hives", u:"codes/?from=home#c35"},
+    {t:"Toxicology Crash Card", c:"Codes", k:"toxicology overdose poisoning opioid naloxone tca bicarbonate wide qrs beta blocker calcium channel high dose insulin lipid emulsion poison control", u:"codes/?from=home#c36"},
+    {t:"Eclampsia / Severe Preeclampsia", c:"OB & Neonatal", k:"eclampsia preeclampsia pregnancy seizure magnesium sulfate severe hypertension labetalol hydralazine postpartum hellp", u:"ob-neonatal/?from=home#c11"},
+    {t:"Mass-Casualty Incident (MCI) — First 15 Minutes", c:"Trauma", k:"mci mass casualty disaster triage start salt surge declare roles zones expectant", u:"trauma/?from=home#c09"},
+    {t:"Electrical & Lightning Injury", c:"Trauma", k:"electrical injury lightning electrocution high voltage reverse triage rhabdomyolysis compartment", u:"trauma/?from=home#c10"},
     /* Simulations are deliberately NOT in the search index (rule-9 exception,
        Lon 2026-08-12): the bedside search must never surface a training script
        next to a clinical card. The tool is reached via its landing tile only. */
-    {t:"Debrief — after a code or critical event", c:"Debrief", k:"debrief same shift team reflection basic assumption plus delta enabled inhibited center for medical simulation takeaway escalate equipment", u:"debrief/?from=home"},
+    {t:"Debrief — after a code or critical event", c:"Conversations", k:"debrief same shift team reflection basic assumption plus delta enabled inhibited center for medical simulation takeaway escalate equipment", u:"conversations/?from=home#c04"},
     {t:"Conversations — overview / index", c:"Conversations", k:"conversations communication difficult crucial conversation index", u:"conversations/?from=home"},
     {t:"Consultant Crucial Conversation", c:"Conversations", k:"consultant crucial conversation consult refusal refuse admission tactical empathy chris voss never split the difference labeling accusation audit calibrated questions that's right emtali emtala escalation cmo director transfer difficult consultant", u:"conversations/?from=home#c01"},
     {t:"Code Status Conversation", c:"Conversations", k:"code status conversation goals of care dnr dni cpr resuscitation preferences remap vitaltalk serious illness ask tell ask time-limited trial polst molst recommendation lawson cpr outcomes graphics end of life", u:"conversations/?from=home#c02"},

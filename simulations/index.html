@@ -119,16 +119,20 @@ catch(e){ document.body.dataset.theme='dark'; }
   <!-- ===== SIM MENU ===== -->
   <div class="lrh-menuwrap" style="padding-top:8px">
     <div class="inner">
-      <div style="display:grid; grid-template-columns:1fr; gap:8px;">
-        <a class="lrh-row" style="--cc:var(--blue)" href="#s01"><span class="t">SIM 1 · Precipitous Birth → Shoulder Dystocia → Blue Baby</span><span class="spacer"></span><span class="tag">OB · 15 MIN</span></a>
-        <a class="lrh-row" style="--cc:var(--blue)" href="#s02"><span class="t">SIM 2 · Delivery → Postpartum Hemorrhage → MTP</span><span class="spacer"></span><span class="tag">OB · 12 MIN</span></a>
-        <a class="lrh-row" style="--cc:var(--purple)" href="#s03"><span class="t">SIM 3 · Pediatric Asthma → Arrest → Post-ROSC</span><span class="spacer"></span><span class="tag">PEDS · 15 MIN</span></a>
-        <a class="lrh-row" style="--cc:var(--purple)" href="#s04"><span class="t">SIM 4 · Pediatric Status Epilepticus → RSI → Vent Crash (DOPE)</span><span class="spacer"></span><span class="tag">PEDS · 12 MIN</span></a>
-        <a class="lrh-row" style="--cc:var(--red)" href="#s05"><span class="t">SIM 5 · STEMI → VF Arrest → PEA → Code Status → Debrief</span><span class="spacer"></span><span class="tag">MEDICAL · 18 MIN</span></a>
-        <a class="lrh-row" style="--cc:var(--red)" href="#s06"><span class="t">SIM 6 · Hyperkalemia → Unstable Bradycardia → Transvenous Pacing</span><span class="spacer"></span><span class="tag">MEDICAL · 12 MIN</span></a>
-        <a class="lrh-row" style="--cc:var(--red)" href="#s09"><span class="t">SIM 9 · Angioedema → Failed Airway Ladder → FONA</span><span class="spacer"></span><span class="tag">MEDICAL · 15 MIN</span></a>
-        <a class="lrh-row" style="--cc:var(--orange)" href="#s07"><span class="t">SIM 7 · Blunt Trauma → Tension Pneumothorax → Chest Tube → MTP</span><span class="spacer"></span><span class="tag">TRAUMA · 15 MIN</span></a>
-        <a class="lrh-row" style="--cc:var(--orange)" href="#s08"><span class="t">SIM 8 · Penetrating Trauma → TCA → Thoracotomy → Notification</span><span class="spacer"></span><span class="tag">TRAUMA · 18 MIN</span></a>
+      <!-- Sims are deliberately absent from the site-wide search; this local filter
+           is their own search surface. Matches titles + data-kw keywords. -->
+      <div class="lrh-filter"><span class="ico" aria-hidden="true">&#8981;</span><input type="search" id="simq" autocomplete="off" spellcheck="false" placeholder="Search sims&hellip; e.g. dystocia, arrest, FONA, MTP" aria-label="Search simulations"></div>
+      <div class="lrh-filter-empty" id="simq-empty" hidden>No sim matches &mdash; try a chain term like &ldquo;arrest&rdquo;, &ldquo;airway&rdquo;, or &ldquo;PPH&rdquo;.</div>
+      <div id="simmenu" style="display:grid; grid-template-columns:1fr; gap:8px;">
+        <a class="lrh-row" style="--cc:var(--blue)" href="#s01" data-kw="ob birth delivery precipitous shoulder dystocia neonatal resuscitation nrp blue baby warmer ppv mcroberts"><span class="t">SIM 1 · Precipitous Birth → Shoulder Dystocia → Blue Baby</span><span class="spacer"></span><span class="tag">OB · 15 MIN</span></a>
+        <a class="lrh-row" style="--cc:var(--blue)" href="#s02" data-kw="ob delivery postpartum hemorrhage pph mtp massive transfusion uterotonics txa jada bleeding"><span class="t">SIM 2 · Delivery → Postpartum Hemorrhage → MTP</span><span class="spacer"></span><span class="tag">OB · 12 MIN</span></a>
+        <a class="lrh-row" style="--cc:var(--purple)" href="#s03" data-kw="peds pediatric asthma silent chest arrest pals rosc post-rosc weight broselow epinephrine"><span class="t">SIM 3 · Pediatric Asthma → Arrest → Post-ROSC</span><span class="spacer"></span><span class="tag">PEDS · 15 MIN</span></a>
+        <a class="lrh-row" style="--cc:var(--purple)" href="#s04" data-kw="peds pediatric seizure status epilepticus rsi intubation vent crash dope desaturation"><span class="t">SIM 4 · Pediatric Status Epilepticus → RSI → Vent Crash (DOPE)</span><span class="spacer"></span><span class="tag">PEDS · 12 MIN</span></a>
+        <a class="lrh-row" style="--cc:var(--red)" href="#s05" data-kw="stemi vf arrest pea code status goals of care family conversation debrief lytics tnk"><span class="t">SIM 5 · STEMI → VF Arrest → PEA → Code Status → Debrief</span><span class="spacer"></span><span class="tag">MEDICAL · 18 MIN</span></a>
+        <a class="lrh-row" style="--cc:var(--red)" href="#s06" data-kw="hyperkalemia dialysis potassium bradycardia pacing transcutaneous transvenous tvp calcium"><span class="t">SIM 6 · Hyperkalemia → Unstable Bradycardia → Transvenous Pacing</span><span class="spacer"></span><span class="tag">MEDICAL · 12 MIN</span></a>
+        <a class="lrh-row" style="--cc:var(--red)" href="#s09" data-kw="airway angioedema failed intubation ladder das cico fona cric salad suction surgical"><span class="t">SIM 9 · Angioedema → Failed Airway Ladder → FONA</span><span class="spacer"></span><span class="tag">MEDICAL · 15 MIN</span></a>
+        <a class="lrh-row" style="--cc:var(--orange)" href="#s07" data-kw="trauma blunt mvc level 1 activation tension pneumothorax chest tube mtp transfer"><span class="t">SIM 7 · Blunt Trauma → Tension Pneumothorax → Chest Tube → MTP</span><span class="spacer"></span><span class="tag">TRAUMA · 15 MIN</span></a>
+        <a class="lrh-row" style="--cc:var(--orange)" href="#s08" data-kw="trauma penetrating stab tca traumatic arrest thoracotomy clamshell death notification spikes"><span class="t">SIM 8 · Penetrating Trauma → TCA → Thoracotomy → Notification</span><span class="spacer"></span><span class="tag">TRAUMA · 18 MIN</span></a>
       </div>
     </div>
   </div>
@@ -150,6 +154,16 @@ catch(e){ document.body.dataset.theme='dark'; }
           <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Pillow-mom in a gown on the stretcher, knees-up. Towel-roll baby hidden under the gown. Whiteboard: <b>G3P2 at term, "the baby is coming," 5 minutes out the door.</b></li>
           <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Roles: leader/deliverer · recorder (drives the OB tool) · nurse · facilitator (voices mom + vitals). Family actor optional.</li>
           <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Walk to the real OB cart — <b>point at</b> (don't open) the vaginal-delivery drawer and the airway/breathing drawer, so hands know where things live.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow + gown (mom) · rolled towel in a pillowcase (baby) · whiteboard + marker · one dry towel and a hat for the "baby" (these two may be real — they touch nothing sterile).</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>OB / Neonatal Cart · VAGINAL DELIVERY drawer:</b> point, don't open — clamps, cord scissors, bulb suction live here.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>OB / Neonatal Cart · AIRWAY / BREATHING drawer:</b> point — infant BVM + masks. Stage a separate SIM-labeled infant BVM if you want hands-on PPV.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Radiant warmer:</b> turn it on for real — warm-up time is part of the drill.</li>
         </ul>
       </details>
 
@@ -221,6 +235,16 @@ catch(e){ document.body.dataset.theme='dark'; }
         </ul>
       </details>
 
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow-mom · red towel/sheet (the growing puddle) · whiteboard for vitals + running EBL.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>OB / Neonatal Cart · POSTPARTUM HEMORRHAGE drawer:</b> point, don't open — uterotonics are named aloud, never handled.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Blood bank:</b> the real MTP activation number, written where the team can read it (say it, don't dial).</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>JADA / balloon kit:</b> point at where your department actually stocks it (see the labels tool).</li>
+        </ul>
+      </details>
+
       <details open class="t-box-neutral">
         <summary class="t-head t-head-neutral">PHASE 1 · IT'S NOT STOPPING</summary>
         <div style="padding:2px 12px 12px;">
@@ -272,6 +296,16 @@ catch(e){ document.body.dataset.theme='dark'; }
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Small pillow = <b>a 4-year-old, parent-reported 16 kg</b>. Whiteboard: sat 84% on room air, silent chest. A parent actor at the bedside raises the difficulty nicely.</li>
           <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;"><b>First move of the sim:</b> recorder enters <b>16 kg</b> in the Peds weight bar — every dose downstream, including in the arrest tool, hangs off it. That hand-off is the thing being drilled.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> small pillow (the 4-year-old) · whiteboard · a phone/tablet with the Peds tool open — the weight bar is the first prop used.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Pediatric (Broselow) Cart · WHITE drawer (15–18 kg):</b> point, don't open — this is the drawer 16 kg maps to.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>SIM-labeled pediatric BVM</b> (or mime it) · defib pads mimed on the pillow.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · MEDICATIONS drawer:</b> point — epi is named with its weight-based dose, never drawn up.</li>
         </ul>
       </details>
 
@@ -341,6 +375,16 @@ catch(e){ document.body.dataset.theme='dark'; }
         </ul>
       </details>
 
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow (the 6-year-old) · whiteboard · SIM-labeled BVM · working suction to point at.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Pediatric (Broselow) Cart · BLUE drawer (19–23 kg):</b> point — 20 kg maps here; tube sizes live on the card.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · INTUBATION + ETT / BOUGIE drawers:</b> point — laryngoscopes, tubes, bougie.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Vent:</b> if a real one is nearby, stand next to it for the DOPE phase — touch nothing.</li>
+        </ul>
+      </details>
+
       <details open class="t-box-neutral">
         <summary class="t-head t-head-neutral">PHASE 1 · STILL SEIZING</summary>
         <div style="padding:2px 12px 12px;">
@@ -400,6 +444,16 @@ catch(e){ document.body.dataset.theme='dark'; }
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Pillow = <b>a 68-year-old with crushing chest pain</b>. Print or pull up any old STEMI teaching EKG. <b>A family actor is required for this one</b> — that's the point of the chain.</li>
           <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Roles: leader · compressor(s) · meds/defib voice · recorder · family actor · facilitator.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow · any old STEMI teaching EKG (printed) · whiteboard · two chairs for the family conversation · a phone/tablet with the arrest tool open.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · MEDICATIONS drawer:</b> point — lytic checklist is read from the card, drugs stay shut.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Defibrillator:</b> pads mimed on the pillow; shocks are called out loud with the tool's timer.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Transfer:</b> the DHMC transfer number visible on the whiteboard (say it, don't dial).</li>
         </ul>
       </details>
 
@@ -465,6 +519,16 @@ catch(e){ document.body.dataset.theme='dark'; }
         </ul>
       </details>
 
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow (dialysis patient) · whiteboard (K 7.8, wide QRS) · a printed ugly-QRS strip if you have one.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · MEDICATIONS drawer:</b> point — calcium, insulin/dextrose, albuterol all named with doses, never drawn.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Pacing pads:</b> mimed on the pillow; the generator settings are said out loud.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Room 7 cabinets · TRANSVENOUS PACING kit:</b> point, don't open — the walk to it is part of the drill.</li>
+        </ul>
+      </details>
+
       <details open class="t-box-neutral">
         <summary class="t-head t-head-neutral">PHASE 1 · CRASH THE POTASSIUM</summary>
         <div style="padding:2px 12px 12px;">
@@ -524,6 +588,16 @@ catch(e){ document.body.dataset.theme='dark'; }
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Pillow = <b>a 55-year-old on lisinopril, tongue and lips swelling for an hour, voice getting muffled.</b> Stage near the airway cart; point at where the video laryngoscope, bougie, and the FONA kit actually live.</li>
           <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Roles: leader · airway operator · second operator (neck) · meds voice · recorder (drives the ladder) · facilitator. This one is about <b>saying the next rung out loud before you need it</b>.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow · whiteboard (sat trend) · a marker for the neck landmarks — marking the pillow's "neck" is encouraged.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · VIDEO + DIRECT LARYNGOSCOPY and ETT / BOUGIE drawers:</b> point — every ladder rung has a drawer.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · SURGICAL / SUPRAGLOTTIC + iGEL + FRONT OF NECK ACCESS drawers:</b> point — every person in the room should be able to find FONA blind.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Room 7 cabinets · SALAD SUCTION:</b> point — suction leads in the soiled-airway phase.</li>
         </ul>
       </details>
 
@@ -603,6 +677,16 @@ catch(e){ document.body.dataset.theme='dark'; }
         </ul>
       </details>
 
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow · whiteboard (EMS report + vitals) · SIM-labeled trauma shears · a marker X on the pillow's right chest.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Trauma Cart · NEEDLE DECOMPRESSION drawer:</b> point — first move of the tension phase.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Trauma Cart · CHEST TUBE INSERTION / PNEUMOTHORAX TRAY / THORACOSTOMY shelves:</b> point, don't open.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Blood bank:</b> MTP number on the whiteboard; the chamber "output" is the facilitator's voice.</li>
+        </ul>
+      </details>
+
       <details open class="t-box-neutral">
         <summary class="t-head t-head-neutral">PHASE 1 · THE FIVE MINUTES BEFORE</summary>
         <div style="padding:2px 12px 12px;">
@@ -665,6 +749,16 @@ catch(e){ document.body.dataset.theme='dark'; }
         <summary class="t-head t-head-info">SETUP · 3 MIN</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Pillow = <b>a 25-year-old, single stab wound left chest</b>, agonal on arrival. A family actor (partner) arrives mid-sim. This sim ends in a death — schedule it when there's time to debrief properly.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow with a taped X just left of the sternum · whiteboard · a quiet room + two chairs staged for the SPIKES phase.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Trauma Cart · NEEDLE DECOMPRESSION drawer:</b> point — bilateral decompression is narrated first.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Trauma Cart · THORACOSTOMY + RIB SPREADER shelves:</b> point, don't open — the thoracotomy is talked through with the card.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Family actor:</b> briefed separately before the sim starts (they should not hear the script).</li>
         </ul>
       </details>
 
@@ -748,6 +842,25 @@ var SITE = { version: "0.1", lastReviewed: "2026-08-12" };
     document.body.dataset.theme = dark ? 'light' : 'dark';
     b.textContent = dark ? 'DARK' : 'LIGHT';
     try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
+  });
+})();
+
+/* Sim search — filters the menu rows by title + data-kw. Local to this tool by
+   design: sims are excluded from the site-wide search so a training script can
+   never surface next to a clinical card. */
+(function(){
+  var q=document.getElementById('simq'), menu=document.getElementById('simmenu'),
+      empty=document.getElementById('simq-empty');
+  if(!q||!menu) return;
+  var rows=Array.prototype.slice.call(menu.querySelectorAll('a.lrh-row'));
+  q.addEventListener('input', function(){
+    var term=q.value.trim().toLowerCase(), shown=0;
+    rows.forEach(function(r){
+      var hay=(r.textContent+' '+(r.getAttribute('data-kw')||'')).toLowerCase();
+      var hit=!term||hay.indexOf(term)!==-1;
+      r.style.display=hit?'':'none'; if(hit) shown++;
+    });
+    if(empty) empty.hidden=(shown>0);
   });
 })();
 </script>
