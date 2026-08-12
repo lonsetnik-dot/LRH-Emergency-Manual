@@ -99,6 +99,8 @@ catch(e){ document.body.dataset.theme='dark'; }
       <span id="werr" style="display:none;flex-basis:100%;font-size:12.5px;font-weight:700;color:var(--red)"></span>
     </div>
 
+    <div class="card" id="pacerbox" style="margin-top:10px;padding:10px 12px"></div>
+
     <div class="card" id="phasebox" style="margin-top:10px;padding:14px;border-radius:16px"></div>
 
     <div class="sat" id="satbox"></div>
@@ -123,6 +125,8 @@ catch(e){ document.body.dataset.theme='dark'; }
     </div>
   </div>
 
+  <div id="apgarmount"></div>
+
   <div class="sec" style="margin-top:18px;letter-spacing:.12em">REFERENCE — TAP TO OPEN</div>
   <div id="accordions"></div>
 
@@ -133,6 +137,7 @@ catch(e){ document.body.dataset.theme='dark'; }
 </div>
 
 <script>
+/* @icons */
 (function(){
 'use strict';
 
@@ -160,23 +165,69 @@ var SITE = {
   version:"0.1", lastReviewed:"2026-08-12",
   site:"LRH",
 
-  /* The banner is config, not prose, so a site that HAS reconciled its content
-     turns it off in one place — and so the verify suite can assert that an
-     unreviewed engine never ships without it. */
+  /* The banner is config, not prose, so a site can turn it off in one place once
+     its own review is done, and so the verify suite can assert what the screen
+     is currently claiming about itself.
+
+     It now states what WAS reconciled and what was not, rather than a blanket
+     "unreviewed". The three algorithm changes below were taken from the
+     published 2025 AHA/AAP guideline and the NRP 9th edition change summary.
+     The full textbook was not available, so anything not named here is still
+     inherited from the previous card. */
   review:{
     on:true,
-    text:"CONTENT NOT YET RECONCILED WITH NRP 9th EDITION. Every value on this screen was carried "+
-         "over unchanged from the previous card, which carried no citation. NRP 9th edition (Nov 2025, "+
-         "reflecting the 2025 AHA/AAP guidelines) is the current standard and changes at least two things "+
-         "on this screen: cord management as the first step with deferred clamping ≥60 s, and the laryngeal "+
-         "mask as a primary device. Verify against your own NRP materials before relying on this, and see "+
-         "issue #135."
+    text:"ALIGNED TO THE 2025 AHA/AAP GUIDELINES for the items named in SOURCE & PROVENANCE — cord "+
+         "management as the first step, deferred clamping ≥60 s, intact cord milking for the "+
+         "non-vigorous term and late-preterm newborn, and the supraglottic airway as a primary device. "+
+         "Values NOT named there were inherited unchanged from the previous card and are not "+
+         "individually verified against the NRP 9th edition textbook. Check them against your own NRP "+
+         "materials."
+  },
+
+  /* CORD MANAGEMENT — new first step on the 2025 algorithm.
+     2025 AHA/AAP: deferred clamping of at least 60 s is beneficial for the term
+     newborn who does not need immediate resuscitation. For the NON-VIGOROUS
+     term newborn and the late preterm at 35 weeks or more, intact cord milking
+     may be reasonable as an alternative to immediate clamping.
+     The plan is a local decision — hence SITE. */
+  cord:{
+    deferSec:60,
+    milkingFromWeeks:35,
+    plan:"Deferred clamping for at least 60 s unless the baby needs immediate resuscitation.",
+    milking:"Non-vigorous term, or late preterm at 35 weeks or more: intact cord milking may be reasonable "+
+            "rather than clamping immediately."
+  },
+
+  /* AUDIO PACER. Rates are the ones the screen already teaches, so the sound
+     and the text cannot drift apart. 3:1 is 120 events a minute — three
+     compressions then a breath, four events every two seconds. */
+  pacer:{
+    ppvRates:[40, 50, 60],
+    defaultPpvRate:50,
+    cprEventsPerMin:120,
+    chimeEverySec:30,
+    note:"Low click = compression. Long tone = squeeze the bag. Double chime every 30 s — call the heart rate out loud."
   },
 
   /* Timing. The 30-second cycle is the spine of the whole algorithm — it is what
      the clock exists for, and what the card could not enforce. */
   cycle:{ initialStepsSec:30, reassessSec:30, compressionCycleSec:60 },
-  apgarMin:[1, 5, 10],
+  /* APGAR. Scored at 1 and 5 minutes; if the 5-minute score is below 7, it is
+     repeated every 5 minutes to 20. The engine knows the birth time, so it can
+     raise the calculator itself instead of relying on someone remembering — the
+     1- and 5-minute scores being reconstructed afterwards is the failure this
+     screen exists to stop. Component wording is the standard five signs. */
+  apgar:{
+    at:[1, 5],
+    repeatEveryMin:5, repeatUntilMin:20, repeatIfBelow:7,
+    rows:[
+      { k:'A', n:'Appearance', o:['Blue or pale all over','Body pink, extremities blue','Pink all over'] },
+      { k:'P', n:'Pulse',      o:['Absent','Under 100','100 or over'] },
+      { k:'G', n:'Grimace',    o:['No response','Grimace only','Cry, cough or sneeze'] },
+      { k:'A', n:'Activity',   o:['Limp','Some flexion','Active movement'] },
+      { k:'R', n:'Respiration',o:['Absent','Slow or irregular','Good, crying'] }
+    ]
+  },
 
   ppv:{ ratePerMin:"40–60", startFiO2Term:"room air", startFiO2Preterm:"21–30%", cpapCmH2O:5 },
   compressions:{ ratio:"3:1", perMin:90, breathsPerMin:30, depth:"⅓ of the chest depth",
@@ -204,6 +255,10 @@ var SITE = {
     { maxKg:null, lma:"LMA 0.5", ett:"3.5–4.0", blade:"0–1",  note:"3 kg and over" }
   ],
   ettDepthAddCm:6,
+  /* 2025 AHA/AAP: the supraglottic airway is endorsed as an alternative to
+     tracheal intubation for the newborn above this gestation who fails
+     bag-mask ventilation — a primary device, not only a rescue one. */
+  sgaPrimaryFromWeeks:34,
 
   local:{
     cart:"OB / Neonatal Cart · Airway / Breathing drawer",
@@ -218,7 +273,7 @@ try{ window.SITE = SITE; }catch(e){}
 
 var S = { theme:'dark', phase:'idle', birth:null, kg:null, ga:null,
           step:'initial', ppvOn:false, compressions:false, epiDoses:0,
-          lastAssess:null, apgarDone:{}, events:[], open:null, resetArm:false,
+          lastAssess:null, apgarDone:{}, apgarScores:{}, apgarOpen:null, apgarPick:{}, events:[], open:null, resetArm:false,
           stableAt:null, showCustom:false };
 
 var $=function(i){return document.getElementById(i);};
@@ -270,6 +325,81 @@ function satNow(){
   return pick;
 }
 
+/* ===== AUDIO PACER ========================================================
+   The old card had one and this engine shipped without it, which is the gap Lon
+   found in testing. It matters more here than on the card, because the whole
+   point of an engine is that the clock is doing the counting: a rate you can
+   hear is a rate nobody has to keep in their head while also running the room.
+
+   Web Audio, synthesised — no audio files, so the offline shell still holds
+   (CLAUDE.md rule 1). Browsers refuse to start audio without a gesture, so the
+   context is created on the first tap of SOUND ON and never before.
+
+   Two voices, deliberately different so they cannot be confused across a noisy
+   room: a short low CLICK for a compression, a longer higher TONE for a breath.
+   A double chime every 30 s marks the reassessment. */
+var AC=null, tick=null, tickN=0, sound=false, ppvRate=SITE.pacer.defaultPpvRate, lastChime=0;
+
+function beep(freq, ms, vol){
+  if(!AC) return;
+  try{
+    var o=AC.createOscillator(), g=AC.createGain();
+    o.type='sine'; o.frequency.value=freq;
+    o.connect(g); g.connect(AC.destination);
+    var t=AC.currentTime;
+    /* Shaped rather than square-edged: an abrupt gate clicks on phone speakers
+       and the click is louder than the note it is supposed to be. */
+    g.gain.setValueAtTime(0.0001, t);
+    g.gain.exponentialRampToValueAtTime(vol, t+0.008);
+    g.gain.exponentialRampToValueAtTime(0.0001, t+ms/1000);
+    o.start(t); o.stop(t+ms/1000+0.02);
+  }catch(e){}
+}
+function click(){ beep(440, 45, 0.28); }      /* compression */
+function breath(){ beep(760, 150, 0.34); }    /* squeeze the bag */
+function chime(){ beep(1180, 110, 0.30); setTimeout(function(){ beep(1180, 110, 0.30); }, 160); }
+
+function stopPacer(){ if(tick){ clearInterval(tick); tick=null; } tickN=0; }
+
+function startPacer(){
+  stopPacer();
+  if(!sound || !AC) return;
+  var cpr = (S.step==='cpr');
+  if(cpr){
+    /* 3:1 — three clicks then a breath, four events every two seconds. */
+    var everyMs = 60000 / SITE.pacer.cprEventsPerMin;
+    tick = setInterval(function(){
+      if(tickN % 4 === 3) breath(); else click();
+      tickN++;
+      maybeChime();
+    }, everyMs);
+  } else if(S.step==='ppv' || S.step==='assess'){
+    var ms = 60000 / ppvRate;
+    tick = setInterval(function(){ breath(); maybeChime(); }, ms);
+  } else {
+    /* Initial steps: no rate to pace, but the 30-second mark still matters. */
+    tick = setInterval(maybeChime, 1000);
+  }
+}
+
+/* The 30-second chime is measured off the birth clock, not off the pacer, so it
+   lands on the same half-minutes the reassessment cycles do however many times
+   the pacer has been restarted. */
+function maybeChime(){
+  if(!S.birth) return;
+  var block = Math.floor(since() / SITE.pacer.chimeEverySec);
+  if(block > 0 && block !== lastChime){ lastChime = block; chime(); }
+}
+
+function soundOn(on){
+  sound = on;
+  if(on && !AC){
+    try{ AC = new (window.AudioContext||window.webkitAudioContext)(); }catch(e){ AC=null; }
+  }
+  if(AC && AC.state==='suspended'){ try{ AC.resume(); }catch(e){} }
+  if(on) startPacer(); else stopPacer();
+}
+
 /* ===== the pathway ======================================================= */
 function phaseBox(){
   var h='', kg=S.kg, aw=airwayFor(kg);
@@ -281,11 +411,14 @@ function phaseBox(){
        '<div class="mono" style="font-size:15px;color:'+(left>0?'var(--amber)':'var(--red)')+';margin-top:4px">'+
        (left>0 ? left.toFixed(0)+' s to the first heart-rate check' : 'CHECK THE HEART RATE NOW')+'</div>'+
        '<div style="margin-top:10px">'+
-       stepRow(1,'Cord management as planned, then baby to the <b>'+esc(SITE.local.warmer)+'</b>.')+
-       stepRow(2,'<b>Warm</b> — warmer, hat, plastic wrap if under '+SITE.temp.wrapUnderWeeks+' weeks. Target '+SITE.temp.lowC+'–'+SITE.temp.highC+' °C.')+
-       stepRow(3,'<b>Dry and stimulate.</b> Remove wet linen. Position sniffing.')+
-       stepRow(4,'Clear the airway <b>only if obstructed</b>.')+
-       stepRow(5,'Pulse oximeter on the <b>right hand</b>. Cardiac monitor if resuscitating.')+
+       stepRow(1,'<b>Cord management plan</b> — the first step on the 2025 algorithm. Defer clamping '+
+                 '<b>at least '+SITE.cord.deferSec+' s</b> unless this baby needs resuscitation now. '+
+                 esc(SITE.cord.milking))+
+       stepRow(2,'Baby to the <b>'+esc(SITE.local.warmer)+'</b>.')+
+       stepRow(3,'<b>Warm</b> — warmer, hat, plastic wrap if under '+SITE.temp.wrapUnderWeeks+' weeks. Target '+SITE.temp.lowC+'–'+SITE.temp.highC+' °C.')+
+       stepRow(4,'<b>Dry and stimulate.</b> Remove wet linen. Position sniffing.')+
+       stepRow(5,'Clear the airway <b>only if obstructed</b>.')+
+       stepRow(6,'Pulse oximeter on the <b>right hand</b>. Cardiac monitor if resuscitating.')+
        '</div>'+
        '<div class="say"><b>Say it out loud:</b> “Newborn is not vigorous — starting resuscitation.” Claim the roles by name: airway, compressions, meds, recorder.</div>'+
        '<button class="btn" id="toassess" type="button" style="width:100%;min-height:72px;margin-top:10px;background:var(--blue);color:#fff;border:none;font-size:19px">INITIAL STEPS DONE — CHECK THE HEART RATE</button>';
@@ -349,28 +482,166 @@ function phaseBox(){
   return h;
 }
 
+function pacerBox(){
+  var cpr = (S.step==='cpr');
+  var h='<div style="display:flex;align-items:center;gap:9px;flex-wrap:wrap">'+
+    '<button class="btn" id="soundbtn" type="button" style="min-height:44px;padding:0 14px;font:800 12.5px var(--sans);'+
+    (sound?'border-color:var(--green);color:var(--green)':'')+'">'+(sound?'&#9834; SOUND ON':'SOUND OFF')+'</button>'+
+    '<span class="sec" style="color:var(--ink2)">'+(cpr?SITE.compressions.ratio+' PACER':'PPV PACER')+'</span>';
+  if(!cpr){
+    SITE.pacer.ppvRates.forEach(function(r){
+      h+='<button class="btn" type="button" data-rate="'+r+'" style="min-height:44px;padding:0 12px;font:800 12.5px var(--mono);'+
+         (r===ppvRate?'border-color:var(--accent);color:var(--accent)':'')+'">'+r+'/min</button>';
+    });
+  } else {
+    h+='<span class="mono" style="font-size:13px;color:var(--red);font-weight:700">'+
+       SITE.compressions.perMin+' + '+SITE.compressions.breathsPerMin+' — '+SITE.pacer.cprEventsPerMin+' events/min</span>';
+  }
+  h+='</div><div style="font-size:12.5px;color:var(--ink2);line-height:1.4;margin-top:7px">'+esc(SITE.pacer.note)+
+     '<br><b>On iPhone the silent switch mutes web audio</b> — flip it off before you start.</div>';
+  return h;
+}
+
 function stepRow(n, html){
   return '<div class="step"><div class="n">'+n+'</div><div>'+html+'</div></div>';
+}
+
+
+/* ===== FIGURES =============================================================
+   Three things on this screen are spatial, and prose makes them worse: where a
+   mask seals, which size goes with which weight, and where the sat should be by
+   the minute. Drawn once here and used by the accordions.
+
+   Where a row IS a piece of cart equipment, the glyph is the SHARED one from
+   equipment-icons.js — the same picture as the drawer label and the VEMS card
+   (issue #131), so all three teach the same association. ===================== */
+function shared(id, size){
+  var body = (typeof I==='object' && I[id]) ? I[id] : '';
+  return '<svg viewBox="0 0 100 100" width="'+size+'" height="'+size+'" role="img" aria-label="'+esc(id)+'">'+body+'</svg>';
+}
+
+/* MR SOPA — letters down the left, a picture of the move on the right. */
+function figMrSopa(){
+  var rows=[
+    { l:'M', t:'Mask adjust', d:'Reseat it. Two hands if you need them — the leak is almost always at the chin.',
+      g:'<svg viewBox="0 0 100 60" width="72" height="43" role="img" aria-label="Mask reseated on the face">'+
+        '<path d="M8 52 C8 24 26 8 50 8 C74 8 92 24 92 52" fill="none" stroke="#5a6a78" stroke-width="3"/>'+
+        '<ellipse cx="50" cy="34" rx="21" ry="16" fill="rgba(47,111,181,.28)" stroke="#2F6FB5" stroke-width="3"/>'+
+        '<path d="M24 30 L14 24 M76 30 L86 24" stroke="#2F6FB5" stroke-width="3" stroke-linecap="round"/>'+
+        '<path d="M50 50 L50 58" stroke="#2F6FB5" stroke-width="3" stroke-linecap="round"/></svg>' },
+    { l:'R', t:'Reposition the head', d:'Sniffing position. Not flexed, not over-extended — a small roll under the shoulders.',
+      g:'<svg viewBox="0 0 100 60" width="72" height="43" role="img" aria-label="Head in the sniffing position">'+
+        '<path d="M12 50 L88 50" stroke="#5a6a78" stroke-width="3"/>'+
+        '<rect x="30" y="44" width="26" height="7" rx="3" fill="#c9d2da"/>'+
+        '<circle cx="66" cy="28" r="15" fill="#eef1f5" stroke="#5a6a78" stroke-width="3"/>'+
+        '<path d="M30 44 C42 30 52 26 66 26" fill="none" stroke="#5a6a78" stroke-width="3"/>'+
+        '<path d="M78 16 A18 18 0 0 1 84 30" fill="none" stroke="#2F6FB5" stroke-width="3" stroke-linecap="round"/></svg>' },
+    { l:'S', t:'Suction mouth and nose', d:'Mouth first, then the nose. Only if there is something there.', shared:'suction' },
+    { l:'O', t:'Open the mouth', d:'Lift the jaw and part the lips — a closed mouth is a closed airway.',
+      g:'<svg viewBox="0 0 100 60" width="72" height="43" role="img" aria-label="Mouth opened">'+
+        '<circle cx="50" cy="30" r="22" fill="#eef1f5" stroke="#5a6a78" stroke-width="3"/>'+
+        '<ellipse cx="50" cy="36" rx="11" ry="8" fill="rgba(155,28,46,.30)" stroke="#9b1c2e" stroke-width="3"/>'+
+        '<path d="M50 50 L50 58 M38 52 L34 58 M62 52 L66 58" stroke="#9b1c2e" stroke-width="2.6" stroke-linecap="round"/></svg>' },
+    { l:'P', t:'Pressure up', d:'Increase in steps until the chest rises. Stop at the pressure that works.',
+      g:'<svg viewBox="0 0 100 60" width="72" height="43" role="img" aria-label="Pressure gauge rising">'+
+        '<path d="M12 48 A34 34 0 0 1 88 48" fill="none" stroke="#5a6a78" stroke-width="4"/>'+
+        '<path d="M50 48 L72 24" stroke="#9b1c2e" stroke-width="4" stroke-linecap="round"/>'+
+        '<circle cx="50" cy="48" r="5" fill="#9b1c2e"/>'+
+        '<path d="M78 20 L86 12 M86 12 L86 21 M86 12 L77 12" stroke="#9b1c2e" stroke-width="2.6" stroke-linecap="round"/></svg>' },
+    { l:'A', t:'Airway alternative', d:'Supraglottic airway or tracheal tube. The 2025 guideline puts the supraglottic airway forward as a primary device above '+SITE.sgaPrimaryFromWeeks+' weeks, not only as a rescue.', shared:'igel' }
+  ];
+  var h='<div style="margin-top:4px">';
+  rows.forEach(function(r){
+    h+='<div style="display:flex;gap:11px;align-items:center;padding:11px 0;border-top:1px solid var(--line)">'+
+       '<div style="flex:none;width:34px;height:34px;border-radius:8px;background:var(--amber);color:#141E2B;'+
+       'font:800 18px var(--mono);display:flex;align-items:center;justify-content:center">'+r.l+'</div>'+
+       '<div style="flex:1;min-width:0"><div style="font-weight:800;font-size:14.5px">'+esc(r.t)+'</div>'+
+       '<div style="font-size:13px;color:var(--ink2);line-height:1.4;margin-top:2px">'+r.d+'</div></div>'+
+       '<div style="flex:none;background:#fffefb;border-radius:8px;padding:4px">'+
+       (r.shared ? shared(r.shared, 44) : r.g)+'</div></div>';
+  });
+  return h+'</div>';
+}
+
+/* Preductal SpO2 — the ramp, with the minute you are in marked on it. */
+function figSats(){
+  var W=320, H=150, L=30, R=14, T=16, B=30;
+  var mins=SITE.satTargets.map(function(x){ return x.min; });
+  var maxMin=mins[mins.length-1];
+  var x=function(m){ return L + (m/maxMin)*(W-L-R); };
+  var y=function(pc){ return T + (1-(pc-50)/50)*(H-T-B); };
+  var h='<svg viewBox="0 0 '+W+' '+H+'" style="width:100%;height:auto;display:block;background:#fffefb;border-radius:8px" '+
+        'role="img" aria-label="Target preductal oxygen saturation rising from 60 to 95 percent over the first ten minutes">';
+  [50,75,100].forEach(function(pc){
+    h+='<line x1="'+L+'" y1="'+y(pc)+'" x2="'+(W-R)+'" y2="'+y(pc)+'" stroke="#e2e7ec" stroke-width="1"/>'+
+       '<text x="4" y="'+(y(pc)+4)+'" font-family="ui-monospace,monospace" font-size="9" fill="#5a6a78">'+pc+'%</text>';
+  });
+  /* the target band itself */
+  var top='', bot='';
+  SITE.satTargets.forEach(function(s2,i){
+    var lo=parseInt(String(s2.t),10), hi=parseInt(String(s2.t).split('–')[1],10);
+    top += (i?' L':'M')+x(s2.min)+' '+y(hi);
+    bot = ' L'+x(s2.min)+' '+y(lo) + bot;
+  });
+  h+='<path d="'+top+bot+' Z" fill="rgba(47,111,181,.22)" stroke="#2F6FB5" stroke-width="2"/>';
+  SITE.satTargets.forEach(function(s2){
+    h+='<text x="'+x(s2.min)+'" y="'+(H-16)+'" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9" fill="#5a6a78">'+s2.min+'</text>'+
+       '<text x="'+x(s2.min)+'" y="'+(y(parseInt(String(s2.t),10))+14)+'" text-anchor="middle" font-family="ui-monospace,monospace" font-size="8.5" font-weight="700" fill="#2F6FB5">'+esc(s2.t)+'</text>';
+  });
+  h+='<text x="'+((W+L)/2)+'" y="'+(H-3)+'" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9" fill="#5a6a78">MINUTES OF LIFE</text>';
+  /* where the baby actually is right now */
+  if(S.birth){
+    var m=Math.min(maxMin, since()/60);
+    if(m>=1) h+='<line x1="'+x(m)+'" y1="'+T+'" x2="'+x(m)+'" y2="'+(H-B)+'" stroke="#9b1c2e" stroke-width="2.5" stroke-dasharray="4 3"/>'+
+      '<text x="'+x(m)+'" y="'+(T-4)+'" text-anchor="middle" font-family="ui-monospace,monospace" font-size="9" font-weight="700" fill="#9b1c2e">NOW</text>';
+  }
+  return h+'</svg>';
+}
+
+/* LMA / tube sizing by weight, as a ladder rather than a sentence. */
+function figAirway(){
+  var h='<div style="margin-top:4px">';
+  SITE.airway.forEach(function(a,i){
+    var on = (S.kg!==null) && airwayFor(S.kg)===a;
+    h+='<div style="display:flex;gap:11px;align-items:center;padding:10px 9px;margin-top:6px;border-radius:10px;'+
+       'border:'+(on?'2px solid var(--accent)':'1px solid var(--line)')+';background:'+(on?'var(--card2)':'transparent')+'">'+
+       '<div style="flex:none;background:#fffefb;border-radius:8px;padding:4px">'+shared(i?'igel':'mask', 40)+'</div>'+
+       '<div style="flex:1;min-width:0">'+
+       '<div style="font-weight:800;font-size:15px">'+esc(a.lma)+(on?' &nbsp;&#9664; this baby':'')+'</div>'+
+       '<div style="font-size:12.5px;color:var(--ink2);margin-top:2px">'+esc(a.note)+
+       ' · ETT '+esc(a.ett)+' · blade '+esc(a.blade)+'</div></div></div>';
+  });
+  return h+'</div><p style="font-size:13px;color:var(--ink2);margin-top:8px">Depth = <b>weight in kg + '+
+    SITE.ettDepthAddCm+' cm</b>. Above '+SITE.sgaPrimaryFromWeeks+' weeks the supraglottic airway is a '+
+    '<b>primary</b> device under the 2025 guideline, not only a rescue after failed bag-mask ventilation.</p>';
 }
 
 /* ===== reference ========================================================= */
 var ACC=[
   { id:'mrsopa', t:'NO CHEST RISE — MR SOPA', b:function(){
-      return '<p><b>M</b> — Mask adjust. <b>R</b> — Reposition the head. <b>S</b> — Suction mouth and nose. '+
-        '<b>O</b> — Open the mouth. <b>P</b> — Pressure up. <b>A</b> — Airway alternative.</p>'+
-        '<p>Reassess the heart rate after '+SITE.cycle.reassessSec+' s of <b>chest-rising</b> PPV, and say the number out loud.</p>'; } },
+      return figMrSopa()+
+        '<p style="margin-top:10px">Reassess the heart rate after '+SITE.cycle.reassessSec+
+        ' s of <b>chest-rising</b> PPV, and say the number out loud.</p>'; } },
   { id:'airway', t:'WHICH AIRWAY FITS?', b:function(){
-      var h='<p>Sizes are local stock — '+esc(SITE.local.cart)+'.</p><p>';
-      SITE.airway.forEach(function(a){
-        h+='<b>'+esc(a.note)+':</b> '+esc(a.lma)+' · ETT '+esc(a.ett)+' · blade '+esc(a.blade)+'<br>';
-      });
-      h+='</p><p>ETT depth = <b>weight in kg + '+SITE.ettDepthAddCm+' cm</b>. Seat the cuff, confirm chest rise and ETCO₂. '+
-         'An airway that works beats a failed intubation — reach for the supraglottic early.</p>';
-      return h; } },
+      return '<p>Sizes are local stock — '+esc(SITE.local.cart)+'. Enter a weight and the row highlights.</p>'+
+        figAirway()+'<p>Seat it, then confirm chest rise and ETCO₂.</p>'; } },
   { id:'sats', t:'TARGET PREDUCTAL SpO₂', b:function(){
-      var h='<p>Probe on the <b>right hand</b>.</p><p>';
-      SITE.satTargets.forEach(function(x){ h+='<b>'+x.min+' min</b> — '+esc(x.t)+'<br>'; });
-      return h+'</p><p>A blue baby at 3 minutes with SpO₂ 72% is <b>on target</b>. Do not chase 100%.</p>'; } },
+      return '<p>Probe on the <b>right hand</b>.</p>'+figSats()+
+        '<p style="margin-top:8px">A blue baby at 3 minutes with SpO₂ 72% is <b>on target</b>. Do not chase 100%.</p>'; } },
+  { id:'apgar', t:'APGAR SCORES', b:function(){
+      var keys=Object.keys(S.apgarScores);
+      if(!keys.length) return '<p>Nothing scored yet. The calculator comes up on its own at '+
+        SITE.apgar.at.join(' and ')+' minutes.</p><p>If the '+SITE.apgar.repeatEveryMin+
+        '-minute score is under '+SITE.apgar.repeatIfBelow+', it repeats every '+SITE.apgar.repeatEveryMin+
+        ' minutes to '+SITE.apgar.repeatUntilMin+'.</p>';
+      var h='';
+      keys.sort(function(a,b){ return a-b; }).forEach(function(k){
+        var v=S.apgarScores[k];
+        h+='<div style="display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:15px">'+
+           '<span class="mono" style="font-weight:700;color:var(--accent);flex:none">'+k+' min</span>'+
+           '<b style="color:'+(v<SITE.apgar.repeatIfBelow?'var(--red)':'var(--ink)')+'">'+v+'/10</b></div>';
+      });
+      return h; } },
   { id:'cpr', t:'COMPRESSIONS — '+SITE.compressions.ratio+', NOT ADULT CPR', b:function(){
       return '<p><b>'+SITE.compressions.perMin+' compressions + '+SITE.compressions.breathsPerMin+' breaths</b> every minute — four events every two seconds.</p>'+
         '<p>Count aloud: “one-and-two-and-three-and-<b>breathe</b>.”</p>'+
@@ -385,15 +656,31 @@ var ACC=[
       }
       return h; } },
   { id:'src', t:'SOURCE &amp; PROVENANCE', b:function(){
-      return '<p><b>Every value on this screen was carried across unchanged</b> from card 03 of '+
-        '<a href="../ob-neonatal/?from=home#c03">ob-neonatal/</a>, which this engine replaces. Nothing was '+
-        'authored fresh here and no number was altered in the move.</p>'+
-        '<p>That card carried <b>no citation</b>. NRP 9th edition was released in November 2025 and reflects the '+
-        '2025 AHA/AAP guidelines, with instructors required to be on it by 1 June 2026. The content here has '+
-        '<b>not</b> been reconciled against it — see the banner at the top of this screen and issue #135. '+
-        'Two 9th-edition changes are known to bear on this screen: cord management as the first step with '+
-        'deferred clamping of at least 60 seconds, and the laryngeal mask permitted as a primary device.</p>'+
-        '<p>Verify every number against your own current NRP materials before relying on this screen.</p>'; } }
+      return '<p><b>Primary source.</b> Part 5: Neonatal Resuscitation — 2025 American Heart Association and '+
+        'American Academy of Pediatrics Guidelines for Cardiopulmonary Resuscitation and Emergency '+
+        'Cardiovascular Care. <i>Circulation</i>, published 22 October 2025, doi:10.1161/CIR.0000000000001367. '+
+        'Underlying evidence review: Neonatal Life Support — 2025 ILCOR Consensus on Science with Treatment '+
+        'Recommendations, <i>Circulation</i>, doi:10.1161/CIR.0000000000001363. Implemented in NRP 9th edition '+
+        '(AAP, autumn 2025); instructors required to be on it by 1 June 2026.</p>'+
+        '<p><b>What was updated to the 2025 guideline on this screen:</b></p>'+
+        '<p>· <b>Cord management is the first step</b> on the algorithm, with deferred clamping of at least '+
+        SITE.cord.deferSec+' s for the newborn who does not need immediate resuscitation.<br>'+
+        '· <b>Intact cord milking may be reasonable</b> for the non-vigorous term newborn and the late preterm '+
+        'at '+SITE.cord.milkingFromWeeks+' weeks or more, as an alternative to immediate clamping.<br>'+
+        '· <b>The supraglottic airway is a primary device</b> above '+SITE.sgaPrimaryFromWeeks+' weeks for the '+
+        'baby who fails bag-mask ventilation, not only a rescue after failed intubation.<br>'+
+        '· Heart-rate thresholds are unchanged: PPV for apnea, gasping or a rate under '+SITE.hr.good+
+        '; compressions only if the rate stays under '+SITE.hr.low+' after '+SITE.cycle.reassessSec+
+        ' s of effective ventilation.</p>'+
+        '<p><b>What was NOT individually verified.</b> Everything else — the doses, the SpO₂ target table, the '+
+        'compression ratio and the airway sizes — was carried across unchanged from card 03 of '+
+        '<a href="../ob-neonatal/?from=home#c03">ob-neonatal/</a>, which carried no citation of its own. '+
+        'Nothing was authored fresh and no number was altered in the move, but the full NRP 9th edition '+
+        'textbook was not available when this was built, so those values have not been checked line by line '+
+        'against it. Do that against your own NRP materials.</p>'+
+        '<p>Apgar timing follows the standard rule: scored at '+SITE.apgar.at.join(' and ')+' minutes, and '+
+        'repeated every '+SITE.apgar.repeatEveryMin+' minutes to '+SITE.apgar.repeatUntilMin+
+        ' if the '+SITE.apgar.repeatEveryMin+'-minute score is under '+SITE.apgar.repeatIfBelow+'.</p>'; } }
 ];
 
 /* ===== PHI guard — same contract as the other engines ==================== */
@@ -432,6 +719,7 @@ function paint(){
   $('stable').style.display = S.phase==='stable' ? '' : 'none';
 
   if(live){
+    $('pacerbox').innerHTML = pacerBox();
     $('phasebox').innerHTML = phaseBox();
     $('phasebox').style.border = (S.step==='cpr') ? '2px solid var(--red)' : '1px solid var(--line)';
     $('customrow').style.display = S.showCustom ? 'flex' : 'none';
@@ -443,6 +731,7 @@ function paint(){
         'heart rate is the decision until then.</div>';
     checkApgar();
   }
+  $('apgarmount').innerHTML = apgarSheet();
   if(S.phase==='stable'){
     $('stableat').textContent = S.stableAt || clk();
     $('stablebody').innerHTML =
@@ -468,20 +757,89 @@ function stepWord(){
   return { initial:'INITIAL STEPS', assess:'HEART RATE', ppv:'PPV', cpr:'COMPRESSIONS' }[S.step] || 'RUNNING';
 }
 
-/* Apgar prompts fire off the birth clock, once each. This is the whole reason
-   the birth time is stamped rather than remembered. */
+/* Which marks are due. 1 and 5 always; then, only if the 5-minute score came
+   out below the threshold, every 5 minutes to 20 — the standard rule, and one
+   nobody should have to remember while running a resuscitation. */
+function apgarDue(){
+  var due = SITE.apgar.at.slice();
+  var five = S.apgarScores[SITE.apgar.repeatEveryMin];
+  if(typeof five === 'number' && five < SITE.apgar.repeatIfBelow){
+    for(var m = SITE.apgar.repeatEveryMin * 2; m <= SITE.apgar.repeatUntilMin; m += SITE.apgar.repeatEveryMin){
+      due.push(m);
+      /* Stop extending once a later score has recovered — the rule is about a
+         score that stays low, not a fixed march to twenty minutes. */
+      var got = S.apgarScores[m];
+      if(typeof got === 'number' && got >= SITE.apgar.repeatIfBelow) break;
+    }
+  }
+  return due;
+}
+
+/* Apgar prompts fire off the birth clock. This is the whole reason the birth
+   time is stamped rather than remembered: the engine raises the calculator on
+   its own at the minute it is due, rather than hoping someone notices. */
 function checkApgar(){
   if(!S.birth) return;
   var m = since()/60;
-  SITE.apgarMin.forEach(function(x){
+  apgarDue().forEach(function(x){
     if(m >= x && !S.apgarDone[x]){
       S.apgarDone[x] = true;
-      log('<b>'+x+'-minute mark</b> — record the Apgar score');
+      if(S.apgarOpen === null){ S.apgarOpen = x; S.apgarPick = {}; }
+      log('<b>'+x+'-minute mark</b> — Apgar due');
     }
   });
 }
 
-function setStep(next, words){ S.step=next; if(words) log(words); paint(); }
+/* The calculator itself. A sheet rather than a browser dialog, because it has to
+   be dismissable with a thumb and must never block the pathway underneath. */
+function apgarSheet(){
+  if(S.apgarOpen === null) return '';
+  var min = S.apgarOpen, total = 0, answered = 0;
+  SITE.apgar.rows.forEach(function(r, i){
+    if(typeof S.apgarPick[i] === 'number'){ total += S.apgarPick[i]; answered++; }
+  });
+  var complete = answered === SITE.apgar.rows.length;
+  var h='<div id="apgarwrap" style="position:fixed;inset:0;z-index:9000;background:rgba(6,10,16,.62);display:flex;align-items:flex-end;justify-content:center">'+
+    '<div style="width:100%;max-width:560px;max-height:92vh;overflow:auto;background:var(--card);'+
+    'border-top:3px solid var(--accent);border-radius:16px 16px 0 0;padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px))">'+
+    '<div style="display:flex;align-items:baseline;gap:10px"><div class="sec" style="color:var(--accent);flex:1">'+
+    'APGAR AT '+min+' MINUTE'+(min===1?'':'S')+'</div>'+
+    '<div class="mono" style="font-size:26px;font-weight:800;color:'+(complete && total<SITE.apgar.repeatIfBelow?'var(--red)':'var(--ink)')+'">'+
+    (answered?total:'—')+'<span style="font-size:14px;color:var(--ink2)">/10</span></div></div>';
+  SITE.apgar.rows.forEach(function(r, i){
+    h+='<div style="margin-top:10px"><div style="font-size:13px;font-weight:800">'+
+       '<span class="mono" style="color:var(--accent)">'+r.k+'</span> &nbsp;'+esc(r.n)+'</div>'+
+       '<div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;margin-top:5px">';
+    r.o.forEach(function(o, v){
+      var on = S.apgarPick[i]===v;
+      h+='<button class="btn" type="button" data-ap="'+i+'" data-apv="'+v+'" style="min-height:62px;padding:6px 5px;'+
+         'font:700 11.5px var(--sans);line-height:1.25;'+(on?'border-color:var(--accent);color:var(--accent);border-width:2px':'')+'">'+
+         '<b style="display:block;font:800 15px var(--mono)">'+v+'</b>'+esc(o)+'</button>';
+    });
+    h+='</div></div>';
+  });
+  if(complete && total < SITE.apgar.repeatIfBelow && min < SITE.apgar.repeatUntilMin){
+    h+='<div class="say" style="border-color:var(--red)"><b>Under '+SITE.apgar.repeatIfBelow+'.</b> '+
+       'Scoring repeats every '+SITE.apgar.repeatEveryMin+' minutes to '+SITE.apgar.repeatUntilMin+
+       ' — the next one will come up on its own.</div>';
+  }
+  h+='<button class="btn" id="apgarsave" type="button" style="width:100%;min-height:58px;margin-top:12px;'+
+     (complete?'background:var(--accent);color:var(--accentInk);border:none;':'')+'font:800 15px var(--sans)"'+
+     (complete?'':' disabled')+'>'+(complete?'RECORD '+total+'/10':'ANSWER ALL FIVE')+'</button>'+
+     '<button class="btn" id="apgarlater" type="button" style="width:100%;min-height:48px;margin-top:8px;font:700 13px var(--sans);color:var(--ink2)">NOT NOW — KEEP RUNNING</button>'+
+     '</div></div>';
+  return h;
+}
+
+function setStep(next, words){
+  S.step=next;
+  if(words) log(words);
+  /* The pattern changes with the phase — 3:1 under compressions, a breath rate
+     otherwise — so the pacer is rebuilt on every transition rather than left
+     playing the previous phase's rhythm. */
+  startPacer();
+  paint();
+}
 
 /* ===== events ============================================================ */
 document.addEventListener('click', function(e){
@@ -491,6 +849,31 @@ document.addEventListener('click', function(e){
 
   if(acc){ S.open = (S.open===acc ? null : acc); paint(); return; }
 
+  var ap=t.getAttribute('data-ap');
+  if(ap!==null && ap!==undefined){
+    S.apgarPick[parseInt(ap,10)] = parseInt(t.getAttribute('data-apv'),10);
+    paint(); return;
+  }
+  if(id==='apgarsave'){
+    var min=S.apgarOpen, total=0, parts=[];
+    SITE.apgar.rows.forEach(function(r,i){ total += S.apgarPick[i]; parts.push(r.k+S.apgarPick[i]); });
+    S.apgarScores[min]=total;
+    log('<b>Apgar at '+min+' min = '+total+'/10</b> ('+parts.join(' ')+')');
+    S.apgarOpen=null; S.apgarPick={};
+    paint(); return;
+  }
+  if(id==='apgarlater'){
+    /* Dismissing does not lose the mark — it is re-raised on the next paint if
+       it is still unscored, because an unrecorded Apgar is the thing this
+       feature exists to prevent. */
+    S.apgarDone[S.apgarOpen]=false;
+    S.apgarOpen=null; S.apgarPick={};
+    paint(); return;
+  }
+  if(id==='soundbtn'){ soundOn(!sound); paint(); return; }
+  var rate=t.getAttribute('data-rate');
+  if(rate){ ppvRate=parseInt(rate,10); startPacer(); paint(); return; }
+
   if(id==='themebtn'){
     S.theme = S.theme==='dark'?'light':'dark';
     document.body.dataset.theme=S.theme;
@@ -499,9 +882,10 @@ document.addEventListener('click', function(e){
   }
   if(id==='resetbtn'){
     if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){S.resetArm=false;paint();},2500); return; }
+    stopPacer(); sound=false; lastChime=0;
     S={ theme:S.theme, phase:'idle', birth:null, kg:null, ga:null, step:'initial', ppvOn:false,
-        compressions:false, epiDoses:0, lastAssess:null, apgarDone:{}, events:[], open:null,
-        resetArm:false, stableAt:null, showCustom:false };
+        compressions:false, epiDoses:0, lastAssess:null, apgarDone:{}, apgarScores:{}, apgarOpen:null,
+        apgarPick:{}, events:[], open:null, resetArm:false, stableAt:null, showCustom:false };
     $('wIn').value=''; $('gIn').value='';
     paint(); return;
   }
@@ -518,7 +902,7 @@ document.addEventListener('click', function(e){
   }
   if(id==='tocpr'){ S.compressions=true; setStep('cpr','Heart rate under '+SITE.hr.low+' — compressions started'); return; }
   if(id==='epibtn'){ S.epiDoses++; log('<b>Epinephrine given</b> — dose '+S.epiDoses); paint(); return; }
-  if(id==='stablebtn'){ S.phase='stable'; S.stableAt=clk(); log('Stable — routine care'); paint(); return; }
+  if(id==='stablebtn'){ S.phase='stable'; S.stableAt=clk(); stopPacer(); log('Stable — routine care'); paint(); return; }
   if(id==='resumebtn'){ S.phase='live'; S.step='assess'; log('Deteriorated — back to the pathway'); paint(); return; }
   if(id==='logtoggle'){ S.showCustom=!S.showCustom; paint(); if(S.showCustom) setTimeout(function(){$('customin').focus();},30); return; }
   if(id==='customlog'){ submitCustom(); return; }
@@ -526,7 +910,7 @@ document.addEventListener('click', function(e){
   if(hr){
     if(hr==='good'){
       log('Heart rate ≥'+SITE.hr.good+' and breathing');
-      S.phase='stable'; S.stableAt=clk(); paint(); return;
+      S.phase='stable'; S.stableAt=clk(); stopPacer(); paint(); return;
     }
     if(hr==='mid'){ S.ppvOn=true; setStep('ppv','Heart rate '+SITE.hr.low+'–'+(SITE.hr.good-1)+' — PPV'); return; }
     if(hr==='low'){ S.ppvOn=true; S.compressions=true; setStep('cpr','Heart rate under '+SITE.hr.low+' — PPV and compressions'); return; }

@@ -65,21 +65,42 @@ ck('1. clock starts at zero', await txt('#clock'), '0:00');
 ck('1. status reads READY', await txt('#statusword'), 'READY');
 ck('1. dark theme is the default', await pg.evaluate(() => document.body.dataset.theme), 'dark');
 
-/* ---- 2. the provenance banner — the most important thing on this screen ----
-   Written out, not read from config as a pass/fail: an unreviewed engine must
-   not be able to ship silently. If a site reconciles its content and sets
-   review.on to false, this assertion is what forces them to update the suite
-   deliberately rather than by accident. */
-ck('2. the review banner is showing', await pg.locator('#revbanner').isVisible(), true);
+/* ---- 2. provenance — what this screen claims about its own sourcing ----
+   Written out, not read from config as a pass/fail. The engine is now aligned to
+   the 2025 AHA/AAP guideline for the named items and inherited for everything
+   else, and it has to keep saying BOTH halves. Dropping the second half would be
+   the dangerous edit: a screen that looks fully sourced when only part of it is.
+
+   The citation is asserted by DOI because a guideline reference that drifts is
+   worse than none — someone checks it and finds the wrong document. */
+ck('2. the provenance banner is showing', await pg.locator('#revbanner').isVisible(), true);
 const rev = await txt('#revbanner');
-ck('2. it names NRP 9th edition', /NRP 9th EDITION/i.test(rev), true);
-ck('2. it says the content was not reconciled', /NOT YET RECONCILED/i.test(rev), true);
-ck('2. it names the two known 9th-edition changes',
-   /cord management/i.test(rev) && /laryngeal mask/i.test(rev), true);
+ck('2. it names the 2025 AHA/AAP guidelines', /2025 AHA\/AAP GUIDELINES/i.test(rev), true);
+ck('2. it says which items were aligned', /cord management/i.test(rev) && /supraglottic/i.test(rev), true);
+ck('2. it also says what was NOT verified', /not.{0,30}individually verified/i.test(rev), true);
 const src = await openAcc('src');
-ck('2. the source note admits the old card carried no citation', /no citation/i.test(src), true);
-ck('2. the source note says nothing was authored fresh',
+ck('2. the source cites Part 5 by DOI', /10\.1161\/CIR\.0000000000001367/.test(src), true);
+ck('2. the source cites the ILCOR CoSTR by DOI', /10\.1161\/CIR\.0000000000001363/.test(src), true);
+ck('2. it names NRP 9th edition and the 1 June 2026 date',
+   /NRP 9th edition/i.test(src) && /1 June 2026/.test(src), true);
+ck('2. it still admits the old card carried no citation', /no citation of its own/i.test(src), true);
+ck('2. and that nothing was authored fresh',
    /carried across unchanged/i.test(src) && /no number was altered/i.test(src), true);
+ck('2. it separates what was NOT verified', /NOT individually verified/i.test(src), true);
+
+/* ---- 2b. the 2025 algorithm changes actually appear in the pathway ---- */
+await tap('#startbtn', 320);
+const first = await txt('#phasebox');
+ck(`2b. cord management is the first step, deferring ≥${CFG.cord.deferSec} s (SITE.cord)`,
+   /Cord management plan/i.test(first) && lit('at least ' + CFG.cord.deferSec + ' s').test(first), true);
+ck(`2b. intact cord milking is offered from ${CFG.cord.milkingFromWeeks} weeks`,
+   lit(CFG.cord.milkingFromWeeks + ' weeks or more').test(first), true);
+ck('2b. it does not clamp early just because a baby is preterm',
+   /clamp.{0,20}now.{0,20}preterm|preterm.{0,30}clamp/i.test(first), false);
+const airAcc = await openAcc('airway');
+ck(`2b. the supraglottic airway is primary above ${CFG.sgaPrimaryFromWeeks} weeks`,
+   /primary/i.test(airAcc) && lit(CFG.sgaPrimaryFromWeeks + ' weeks').test(airAcc), true);
+await fresh();
 
 /* ---- 3. routing — a newborn is not a small child ---- */
 const scope = await txt('#scopebar');
@@ -101,16 +122,42 @@ ck(`4. the initial-steps window is ${CFG.cycle.initialStepsSec} s (SITE.cycle)`,
 
 /* Apgar marks fire off the stamp, unprompted. This is the single thing the card
    could not do, and the reason the birth time is a button. */
-ck('4. no Apgar mark before its minute', /minute mark/i.test(await openAcc('log')), false);
+ck('4. no Apgar sheet before its minute', await pg.locator('#apgarwrap').count(), 0);
+
+/* The calculator raises ITSELF at each due minute. An Apgar reconstructed after
+   the fact is the failure this whole screen is built around, so the assertion is
+   that nobody has to remember to open it. */
+const scoreApgar = async v => {
+  for (let i = 0; i < CFG.apgar.rows.length; i++) {
+    await pg.click(`[data-ap="${i}"][data-apv="${v}"]`);
+    await pg.waitForTimeout(60);
+  }
+  await tap('#apgarsave', 300);
+};
+await skew(CFG.apgar.at[0] * 60 * 1000 + 2000);
+ck(`4. the ${CFG.apgar.at[0]}-minute calculator opens on its own`, await pg.locator('#apgarwrap').count(), 1);
+ck('4. it offers all five signs, three options each',
+   await pg.locator('[data-ap]').count(), CFG.apgar.rows.length * 3);
+await scoreApgar(2);
+ck('4. scoring closes it', await pg.locator('#apgarwrap').count(), 0);
+ck(`4. the score is logged with its minute`,
+   lit(`Apgar at ${CFG.apgar.at[0]} min = 10/10`).test(await openAcc('log')), true);
 await pg.click('[data-acc="log"]'); await pg.waitForTimeout(150);
-await skew(CFG.apgarMin[0] * 60 * 1000 + 2000);
-ck(`4. the ${CFG.apgarMin[0]}-minute mark fires on its own`,
-   lit(`${CFG.apgarMin[0]}-minute mark`).test(await openAcc('log')), true);
-await pg.click('[data-acc="log"]'); await pg.waitForTimeout(150);
-await skew(CFG.apgarMin[1] * 60 * 1000 + 2000);
-ck(`4. the ${CFG.apgarMin[1]}-minute mark fires too`,
-   lit(`${CFG.apgarMin[1]}-minute mark`).test(await openAcc('log')), true);
-await pg.click('[data-acc="log"]'); await pg.waitForTimeout(150);
+
+/* A low 5-minute score has to keep the calculator coming back — the rule nobody
+   should be holding in their head while running a resuscitation. */
+await skew(CFG.apgar.at[1] * 60 * 1000 + 2000);
+ck(`4. the ${CFG.apgar.at[1]}-minute calculator opens too`, await pg.locator('#apgarwrap').count(), 1);
+await scoreApgar(0);
+const nextMin = CFG.apgar.at[1] + CFG.apgar.repeatEveryMin;
+await skew(nextMin * 60 * 1000 + 2000);
+ck(`4. a score under ${CFG.apgar.repeatIfBelow} re-raises it at ${nextMin} min`,
+   await pg.locator('#apgarwrap').count(), 1);
+ck(`4. and it is labelled ${nextMin} minutes`, lit('APGAR AT ' + nextMin).test(await txt('#apgarwrap')), true);
+/* Dismissing must not lose the mark. */
+await tap('#apgarlater', 700);
+ck('4. NOT NOW re-raises rather than losing the score', await pg.locator('#apgarwrap').count(), 1);
+await scoreApgar(2);
 
 /* ---- 5. the live SpO2 target — one row, for the minute you are in ---- */
 await fresh();
@@ -206,6 +253,39 @@ await tap('#resetbtn', 320);
 ck('10. the second tap returns to idle', await pg.locator('#idle').isVisible(), true);
 ck('10. the clock is cleared', await txt('#clock'), '0:00');
 ck('10. the log is empty again', /Nothing logged yet/.test(await openAcc('log')), true);
+
+/* ---- 10b. the audio pacer ----
+   It shipped missing and was the one gap found in bedside testing. Synthesised
+   rather than a file, so the offline shell still holds. */
+await fresh(); await tap('#startbtn', 300);
+ck('10b. the pacer is on the running screen', await pg.locator('#pacerbox').isVisible(), true);
+ck('10b. it starts silent — audio needs a gesture', /SOUND OFF/.test(await txt('#soundbtn')), true);
+ck(`10b. a PPV rate button per configured rate (${CFG.pacer.ppvRates.join('/')})`,
+   await pg.locator('[data-rate]').count(), CFG.pacer.ppvRates.length);
+await tap('#soundbtn');
+ck('10b. tapping it turns sound on', /SOUND ON/.test(await txt('#soundbtn')), true);
+ck('10b. it explains what the sounds mean', lit(CFG.pacer.note).test(await txt('#pacerbox')), true);
+ck('10b. it warns about the iPhone silent switch', /silent switch/i.test(await txt('#pacerbox')), true);
+await tap('#toassess'); await tap('[data-hr="low"]');
+ck(`10b. under compressions it paces ${CFG.compressions.ratio} at ${CFG.pacer.cprEventsPerMin} events/min`,
+   lit(CFG.pacer.cprEventsPerMin + ' events/min').test(await txt('#pacerbox')), true);
+ck('10b. and the rate picker is gone — 3:1 is not a choice',
+   await pg.locator('[data-rate]').count(), 0);
+/* No audio files anywhere: a fetched sound would be a silent metronome in a
+   dead zone, which is worse than none. */
+ck('10b. no audio files are requested', reqs.filter(u => /\.(mp3|wav|ogg|m4a)/i.test(u)).length, 0);
+
+/* ---- 10c. the three figures ---- */
+await fresh();
+const mr = await openAcc('mrsopa');
+ck('10c. MR SOPA draws one figure per letter', await pg.locator('.accb svg').count(), 6);
+['Mask adjust', 'Reposition', 'Suction', 'Open the mouth', 'Pressure up', 'Airway alternative']
+  .forEach(step => ck(`10c. MR SOPA — ${step}`, lit(step).test(mr), true));
+await openAcc('sats');
+ck('10c. the SpO₂ target is drawn, not just listed', await pg.locator('.accb svg').count(), 1);
+await openAcc('airway');
+ck('10c. the airway ladder draws a figure per size band',
+   await pg.locator('.accb svg').count(), CFG.airway.length);
 
 /* ---- 11. stamp and disclaimer ---- */
 await fresh();
