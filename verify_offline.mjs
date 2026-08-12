@@ -163,6 +163,45 @@ for (const [path, expect] of TOOLS) {
   ck(`2. dead zone: ${path} still opens`, text.includes(expect) ? true : JSON.stringify(text.slice(0, 90)), true);
 }
 
+/* ---- 2b. THE URLS THE MANUAL ACTUALLY LINKS TO --------------------------
+   Regression for a bug found in live phone testing, not by this suite: every
+   internal link carries a query string (?from=home, ?from=codes,
+   ?startnewcase=1), and cache keys include the query string. The precached
+   '/codes/' therefore did not satisfy a navigation to '/codes/?from=home' —
+   it fell through to the fallback, which served the LANDING page at the tool's
+   URL, whose relative links then missed and fell back again. Tapping around
+   offline bounced to the beta splash with no way forward.
+
+   The original checks all used bare paths that no link in the manual uses,
+   which is exactly why they passed while the real thing was broken. */
+const LINKED = [
+  ['/codes/?from=home',      'Codes'],
+  ['/peds/?from=home',       'Pediatric'],
+  ['/arrest/?from=codes',    'CHECK A PULSE'],
+  ['/ob-neonatal/?from=home','Neonatal'],
+  ['/procedures/?from=home', 'Procedures'],
+  ['/codes/?from=home#c06',  'Codes'],
+];
+for (const [path, expect] of LINKED) {
+  let text = '';
+  try {
+    await pg.goto(BASE + path, { waitUntil: 'domcontentloaded' });
+    text = await pg.evaluate(() => document.body.innerText.slice(0, 6000));
+  } catch (e) { text = '(navigation failed: ' + e.message.split('\n')[0] + ')'; }
+  ck(`2b. dead zone: ${path} opens the TOOL, not the landing page`,
+     text.includes(expect) ? true : JSON.stringify(text.slice(0, 90)), true);
+}
+
+/* Click-through is the journey a clinician actually takes: land, tap a tool,
+   tap onward. goto() alone would not have caught the bounce. */
+await pg.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
+await pg.click('a[href*="codes/"]').catch(() => {});
+await pg.waitForTimeout(600);
+const clicked = await pg.evaluate(() => document.body.innerText.slice(0, 4000));
+ck('2b. dead zone: tapping a tool from the landing page opens that tool',
+   clicked.includes('Codes') && !clicked.includes('Tap a card to open') ? true
+     : JSON.stringify((await pg.url()) + ' :: ' + clicked.slice(0, 70)), true);
+
 /* ---- 3. cross-tool links survive the dead zone ----
    The whole reason for one root worker rather than one per tool: a link from
    codes to the arrest engine has to work too, not just the page already open. */

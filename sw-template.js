@@ -74,7 +74,18 @@ self.addEventListener('fetch', function (e) {
   if (url.origin !== self.location.origin) return;   /* never touch third parties */
 
   e.respondWith(
-    caches.match(req).then(function (hit) {
+    /* ignoreSearch is load-bearing, not a nicety. Cache keys include the query
+       string, but every internal link in this manual carries one —
+       /codes/?from=home, /arrest/?from=codes, /peds/?startnewcase=1. Matching
+       strictly meant the precached '/codes/' never satisfied a real navigation
+       to '/codes/?from=home': it fell through to the offline fallback, which
+       served the LANDING page at the tool's URL. The landing page's own
+       relative links then resolved against that wrong base, missed again, and
+       fell back again — so a clinician tapping around offline got bounced to
+       the beta splash and could not proceed. Found in live testing on a phone;
+       the first version of verify_offline.mjs missed it by navigating to bare
+       paths that no link in the manual actually uses. */
+    caches.match(req, { ignoreSearch: true }).then(function (hit) {
       /* Background revalidate: refresh the cache for next time, but never make
          the user wait on it. A failure here is normal (offline) and silent. */
       var fresh = fetch(req).then(function (res) {
@@ -89,11 +100,17 @@ self.addEventListener('fetch', function (e) {
 
       return fresh.then(function (res) {
         if (res) return res;
-        /* Offline and never cached. For a navigation, land on whatever shell we
-           do have rather than the browser's dinosaur — the landing page lists
-           every tool, so the clinician can still get somewhere useful. */
+        /* Offline and never cached. For a navigation, try this tool's own shell
+           first — a deep link like /codes/some-new-thing should land in Codes,
+           not be thrown back to the manual's front door — and only fall back to
+           the landing page if even that is unknown. It lists every tool, so the
+           clinician still gets somewhere useful rather than the browser's
+           dinosaur. */
         if (req.mode === 'navigate') {
-          return caches.match('/index.html').then(function (shell) {
+          var toolShell = url.pathname.replace(/[^/]*$/, '') + 'index.html';
+          return caches.match(toolShell, { ignoreSearch: true }).then(function (own) {
+            return own || caches.match('/index.html', { ignoreSearch: true });
+          }).then(function (shell) {
             return shell || new Response('Offline, and this page was never cached.', {
               status: 503, headers: { 'Content-Type': 'text/plain' }
             });
