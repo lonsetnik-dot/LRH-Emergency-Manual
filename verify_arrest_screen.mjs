@@ -111,9 +111,39 @@ await pg.click('#startbtn'); await pg.waitForTimeout(250);
 ck('4. refuses to print an energy with no weight', /ENTER WEIGHT/.test(await txt('#shocklabel')), true);
 ck('4. refuses to print an epi dose with no weight', /ENTER WEIGHT/.test(await txt('#epilabel')), true);
 await pg.click('#estbtn'); await pg.waitForTimeout(300);
-ck('4. ESTIMATE KG fills a weight (2 x age + 8)', await pg.inputValue('#wIn'), '20');
+/* APLS band for a 6-year-old is 3 x age + 7 — the manual's single estimator
+   (same formula as peds/), which replaced the old 2 x age + 8 here. */
+ck('4. ESTIMATE KG fills a weight (3 x age + 7)', await pg.inputValue('#wIn'), '25');
+/* The estimator refuses beyond 12 y instead of flipping an adolescent into
+   pediatric mode via a small estimated weight. */
+ck('4. ESTIMATE KG refuses age > 12 y', await (async () => {
+  await pg.fill('#aIn', '16'); await pg.waitForTimeout(250);
+  await pg.click('#estbtn'); await pg.waitForTimeout(250);
+  return /VALID TO 12/.test(await txt('#werr'));
+})(), true);
 await pg.click('[data-acc="log"]'); await pg.waitForTimeout(200);
 ck('4. the estimate is logged AS an estimate', /ESTIMATED/.test(await txt('.accb')), true);
+
+/* ---- 4b. the NRP off-ramp and the write-side weight validation ------------
+   A sub-3 kg weight asks "newly born? -> NRP" instead of silently dosing PALS
+   (and no longer claims a Broselow Grey drawer); an implausible weight is
+   refused with a visible message instead of being written to the shared key
+   for other tools to trust. */
+await fresh();
+await pg.fill('#wIn', '2'); await pg.waitForTimeout(300);
+ck('4b. under 3 kg shows the NRP banner', await pg.locator('#nrpbanner').isVisible(), true);
+ck('4b. the banner links to the NRP card', /ob-neonatal\/\?from=arrest#c03/.test(await pg.getAttribute('#nrpbanner a', 'href')), true);
+ck('4b. under 3 kg claims no Broselow drawer', await pg.locator('#brosechip').isVisible(), false);
+await pg.click('#dismissnrp'); await pg.waitForTimeout(250);
+ck('4b. dismiss hides the banner but keeps PALS mode', await pg.locator('#nrpbanner').isVisible(), false);
+ck('4b. PALS dosing still available after dismissal', /pediatric/.test(await txt('#wnote')), true);
+await pg.fill('#wIn', '350'); await pg.waitForTimeout(300);
+ck('4b. an implausible weight is refused loudly', /NOT SAVED/.test(await txt('#werr')), true);
+ck('4b. and the last good weight survives it', /2 kg/.test(await txt('#wnote')), true);
+ck('4b. and nothing implausible reached the shared key', await pg.evaluate(() => localStorage.getItem('lrh-case-wtkg')), '2');
+await fresh();
+await pg.fill('#aIn', '0'); await pg.waitForTimeout(300);
+ck('4b. age 0 shows the NRP banner too', await pg.locator('#nrpbanner').isVisible(), true);
 
 /* ---- 5. the override is loud and reversible, not a silent switch ---- */
 await fresh();

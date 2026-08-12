@@ -96,9 +96,24 @@ catch(e){ document.body.dataset.theme='dark'; }
     <span class="sec">WEIGHT</span>
     <input class="inp" id="wIn" inputmode="decimal" style="width:64px" aria-label="Weight in kg">
     <span style="font-size:13px;color:var(--ink2)">kg &nbsp;·&nbsp; or age</span>
-    <input class="inp" id="aIn" inputmode="numeric" placeholder="yrs" style="width:52px;font-size:16px" aria-label="Age in years">
+    <input class="inp" id="aIn" inputmode="decimal" placeholder="age" style="width:52px;font-size:16px" aria-label="Age">
+    <select class="inp" id="aUnit" aria-label="Age unit" style="width:auto;font-size:14px;min-height:38px"><option value="mo">mo</option><option value="yr" selected>yr</option></select>
     <button class="btn" id="estbtn" type="button" style="font:700 12px var(--sans);padding:9px 12px;border-radius:9px;min-height:38px">ESTIMATE KG</button>
     <span id="wnote" style="font-size:13px;font-weight:700;color:var(--accent)">enter weight</span>
+    <span id="werr" style="display:none;flex-basis:100%;font-size:12.5px;font-weight:700;color:var(--red)"></span>
+  </div>
+
+  <!-- NRP off-ramp: NRP is for the NEWLY BORN (transition period), so this is a
+       loud, dismissible question — never a silent reroute. An ex-preemie can
+       legitimately weigh <3 kg and belong in PALS; dismissing keeps PALS math.
+       Threshold: <3 kg (the Broselow-Luten floor) or age under 1 month.
+       Dose divergence cited: NRP 8th ed epi 0.02 mg/kg IV/UVC (range
+       0.01–0.03) vs PALS 0.01 mg/kg. Dismissal is per-case
+       (lrh-case-nrpdismiss, shared with peds/codes) — RESET and the stale-case
+       sweep bring the banner back for the next patient. -->
+  <div id="nrpbanner" class="card" style="display:none;gap:10px;align-items:center;margin-top:10px;border-color:var(--red);border-left:10px solid var(--red);padding:10px 12px">
+    <div style="flex:1;font-size:13.5px;line-height:1.45"><b>NEWLY BORN (first days of life)?</b> Use <a href="../ob-neonatal/?from=arrest#c03" style="color:var(--red);font-weight:800">NEONATAL RESUSCITATION (NRP) &rarr;</a> — doses differ: epi <b>0.02 mg/kg</b> (NRP) vs 0.01 mg/kg (PALS). Older infant who simply weighs &lt;3 kg? Dismiss and continue with PALS.</div>
+    <button class="ghost" id="dismissnrp" type="button" style="white-space:nowrap">DISMISS</button>
   </div>
 
   <div id="pedsbanner" class="card" style="display:none;gap:10px;align-items:center;margin-top:10px;border-color:var(--accent);padding:10px 12px">
@@ -381,8 +396,17 @@ var SITE = {
   amio:  { adultDose1:300, adultDose2:150 },
   peds:  { defibPerKg1:2, defibPerKgN:4, defibMaxPerKg:10,
            epiPerKg:0.01, epiMaxMg:1, epiConc:0.1, epiEttPerKg:0.1,
+           /* epiEttMaxMg: adult ETT dose is 2–2.5 mg — cap the per-kg math
+              there. lidoMaxMg1/2: adult bolus convention (1–1.5 mg/kg, max
+              ~100 mg; repeat half). Suggested caps — verify locally. */
+           epiEttMaxMg:2.5,
            amioPerKgDose1:5, amioMaxMgDose:300, amioMaxDoses:3,
-           lidoPerKg1:1, lidoPerKg2:0.5 },
+           lidoPerKg1:1, lidoPerKg2:0.5, lidoMaxMg1:100, lidoMaxMg2:50 },
+  /* NRP off-ramp trigger: weight below the Broselow-Luten floor (3 kg) or age
+     under 1 month prompts the "newly born?" banner (see #nrpbanner markup).
+     A question, not a reroute — NRP applies to the newly born, not to a
+     weight; an ex-preemie <3 kg can belong in PALS. */
+  nrp: { maxKg:3, maxAgeYrs:1/12 },
   /* ---- RESCUE BREATHING — a pulse but no breathing ------------------------
      Adult: AHA 2025 Part 7 (Adult BLS) — "it is reasonable for the health care
      professional to give 1 ventilation every 6 s, or 10 breaths/min." Class 2a,
@@ -520,6 +544,10 @@ function kg(){ var k=S.kg; return (k>0 && k<300) ? k : null; }
 function autoPeds(){ var k=kg(); return (k!==null && k<SITE.trigger.maxKg) || (S.ageY!==null && S.ageY<=SITE.trigger.maxAgeYrs); }
 function isPeds(){ return autoPeds() && !S.override; }
 function band(){ var k=kg(); if(k===null) return null;
+  /* Broselow-Luten runs 3–36 kg. Below 3 kg there is no band and no drawer —
+     returning Grey for a 1 kg patient pointed the team at the wrong cart
+     (that patient gets the NRP banner instead). Same floor peds/ uses. */
+  if(k<3) return null;
   for(var i=0;i<SITE.bands.length;i++){ if(k<=SITE.bands[i][0]){
     var low = i>0 ? SITE.bands[i-1][0] : 0;
     return {c:SITE.bands[i][1], name:'Broselow '+SITE.bands[i][2],
@@ -537,9 +565,10 @@ function doses(){
       eMax: Math.round(Math.min(P.defibMaxPerKg*k, adultMax)),
       epiMg: r(Math.min(P.epiPerKg*k, P.epiMaxMg),2),
       epiMl: r(Math.min(P.epiPerKg*k, P.epiMaxMg)/P.epiConc,1),
-      epiEttMg: r(P.epiEttPerKg*k,2),
+      epiEttMg: r(Math.min(P.epiEttPerKg*k, P.epiEttMaxMg),2),
       amioMg: Math.round(Math.min(P.amioPerKgDose1*k, P.amioMaxMgDose)),
-      lidoMg: r(P.lidoPerKg1*k), lido2Mg: r(P.lidoPerKg2*k) };
+      lidoMg: r(Math.min(P.lidoPerKg1*k, P.lidoMaxMg1)),
+      lido2Mg: r(Math.min(P.lidoPerKg2*k, P.lidoMaxMg2)) };
   }
   if(p && !k) return { pedsKnown:false };   /* peds by age, weight not yet entered */
   return { pedsKnown:true, adult:true,
@@ -807,6 +836,12 @@ function paint(){
   $('wnote').textContent = k!==null ? (k+' kg · '+(isPeds()?L('pediatric'):'adult'))
                          : (autoPeds() ? L('pediatric')+' by age — enter kg' : 'enter weight');
 
+  /* NRP off-ramp (see #nrpbanner markup + SITE.nrp). Dismissal is per-case and
+     manual-wide (lrh-case-nrpdismiss) — RESET / stale-case sweep restore it. */
+  var showNrp = SS.get('lrh-case-nrpdismiss')!=='1' &&
+    ((k!==null && k<SITE.nrp.maxKg) || (S.ageY!==null && S.ageY<SITE.nrp.maxAgeYrs));
+  $('nrpbanner').style.display = showNrp ? 'flex' : 'none';
+
   var b=band(), showPeds = isPeds() && !S.pedsDismissed;
   $('pedsbanner').style.display = showPeds ? 'flex' : 'none';
   if(showPeds){
@@ -1012,19 +1047,94 @@ function wire(){
     if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){ S.resetArm=false; paint(); },2500); return; }
     doReset();
   });
-  $('wIn').addEventListener('input', function(e){ var v=parseFloat(e.target.value); S.kg = v>0?v:null; SS.saveWeight('measured'); paint(); });
-  $('aIn').addEventListener('input', function(e){ var v=parseFloat(e.target.value); S.ageY = (v>=0&&v<130)?v:null;
-    if(S.ageY!==null) SS.set('lrh-case-ageyrs',String(S.ageY)); else SS.del('lrh-case-ageyrs'); paint(); });
+  /* Weight-bar error line: lives outside paint() (which runs on a 200 ms
+     interval and would erase it), cleared on the next weight/age input. */
+  function showWErr(msg){ var el=$('werr'); el.textContent=msg; el.style.display='block'; }
+  function clearWErr(){ var el=$('werr'); el.textContent=''; el.style.display='none'; }
+  /* Commit a weight change. ONE validation rule, applied at write (the same
+     0<kg<300 band kg()/loadWeight already enforce on read) — a value that
+     fails it is rejected LOUDLY here instead of being written to the shared
+     key for other tools to trust (or silently dropped on reload).
+     wtsrc/wtms move only on a genuine value change: retyping the same number
+     no longer relabels a peds age-estimate as "measured" or fakes freshness
+     (CASE-STATE.md contract, same as peds' save()). */
+  function commitKg(v, src){
+    if(v===S.kg){ paint(); return; }
+    S.kg=v; SS.saveWeight(src);
+    scheduleOverrideClear();
+    paint();
+  }
+  /* Adult-override clears on a changed committed weight/age — the closest
+     signal the system may treat as "possibly a different patient"
+     (CASE-STATE.md WS10.4; codes implements the same debounce). */
+  var _ovClearT=null;
+  function scheduleOverrideClear(){
+    if(_ovClearT) clearTimeout(_ovClearT);
+    _ovClearT=setTimeout(function(){
+      if(S.override){ S.override=false; S.pedsDismissed=false; SS.saveOverride();
+        log('Adult override cleared — weight/age changed'); paint(); }
+    }, 800);
+  }
+  /* Transient-empty guard: while a number is being corrected ("", ".", "-")
+     the last committed weight survives; a field left empty for a beat (or on
+     blur) commits the clear for real. */
+  var _wClearT=null;
+  $('wIn').addEventListener('input', function(e){
+    clearWErr();
+    if(_wClearT){ clearTimeout(_wClearT); _wClearT=null; }
+    var raw=e.target.value, v=parseFloat(raw);
+    if(raw==='' || isNaN(v)){
+      _wClearT=setTimeout(function(){ if($('wIn').value===''||isNaN(parseFloat($('wIn').value))) commitKg(null,'measured'); }, 900);
+      return;
+    }
+    if(v<=0 || v>=300){ showWErr('CHECK WEIGHT — MUST BE ABOVE 0 AND BELOW 300 kg. NOT SAVED.'); return; }
+    commitKg(v,'measured');
+  });
+  $('wIn').addEventListener('blur', function(e){
+    if(e.target.value===''||isNaN(parseFloat(e.target.value))) commitKg(null,'measured');
+  });
+  function ageInYears(){
+    var v=parseFloat($('aIn').value);
+    if(isNaN(v)||v<0) return null;
+    var u=$('aUnit')?$('aUnit').value:'yr';
+    var yrs=(u==='mo')?v/12:v;
+    return (yrs>=0&&yrs<130)?Math.round(yrs*100)/100:null;
+  }
+  function onAgeChanged(){
+    clearWErr();
+    var prev=S.ageY;
+    S.ageY=ageInYears();
+    if(S.ageY!==null) SS.set('lrh-case-ageyrs',String(S.ageY)); else SS.del('lrh-case-ageyrs');
+    if(S.ageY!==prev) scheduleOverrideClear();
+    paint();
+  }
+  $('aIn').addEventListener('input', onAgeChanged);
+  if($('aUnit')) $('aUnit').addEventListener('change', onAgeChanged);
   $('estbtn').addEventListener('click', function(){
-    var a=S.ageY; if(!(a>=0)) return;
-    /* Age-to-weight, the manual's own rule: under 1 y from months, otherwise
-       2 x age + 8, capped. An estimate is always worse than a scale — it is
-       logged as an estimate so the record says which it was. */
-    var est = a<1 ? (4 + Math.round(a*12)*0.5) : Math.min(2*a+8, 70);
-    est = Math.round(est*10)/10;
-    S.kg = est; $('wIn').value = String(est);
-    SS.saveWeight('estimated');
+    /* Age-to-weight: the manual's ONE formula (APLS bands, identical to
+       peds/index.html estimateFromAge — keep them in lockstep). Refuses
+       beyond 12 y rather than guessing: the old min(2a+8,70) here silently
+       flipped 13–20-year-olds into pediatric mode (est 34–48 kg < the 50 kg
+       trigger) and handed age ≥31 a flat "70 kg estimate". An estimate is
+       always worse than a scale — it is logged as an estimate. */
+    var v=parseFloat($('aIn').value);
+    if(isNaN(v)||v<0){ showWErr('ENTER A VALID AGE FIRST'); return; }
+    var u=$('aUnit')?$('aUnit').value:'yr';
+    var months=(u==='mo')?v:v*12, years=months/12;
+    if(years>12){ showWErr('AGE ESTIMATE VALID TO 12 y — USE A MEASURED WEIGHT'); return; }
+    var est;
+    if(months<12){ est=(0.5*months)+4; }
+    else if(years<=5){ est=(2*years)+8; }
+    else { est=(3*years)+7; }
+    est=Math.round(est*10)/10;
+    clearWErr();
+    $('wIn').value=String(est);
+    commitKg(est,'estimated');
     log('Weight ESTIMATED from age — '+est+' kg (not measured)');
+  });
+  $('dismissnrp').addEventListener('click', function(){
+    SS.set('lrh-case-nrpdismiss','1');
+    log('NRP banner dismissed — continuing with PALS');
     paint();
   });
   $('dismisspeds').addEventListener('click', function(){
