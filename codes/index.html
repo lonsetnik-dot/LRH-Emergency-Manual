@@ -3290,7 +3290,11 @@ var CODES_WT = (function(){
     var b=document.getElementById('dismissnrp');
     if(b) b.addEventListener('click', function(){ try{ localStorage.setItem('lrh-case-nrpdismiss','1'); }catch(e){} paintNrp(); });
   })();
-  function fmt(n){ var r=Math.round(n*10)/10; return (r%1===0) ? String(r) : r.toFixed(1); }
+  /* 1 dp normally, but never render a real weight as "0 kg" — under 0.1 kg
+     show 2 dp (weight-routing audit: 0.04 displayed "0 kg (measured)" while
+     every dose computed off 0.04). */
+  function fmt(n){ if(n>0 && n<0.1) return n.toFixed(2);
+    var r=Math.round(n*10)/10; return (r%1===0) ? String(r) : r.toFixed(1); }
   /* WS10.2 — is a clock THIS TOOL itself would show as running right now? Deliberately
      NOT CASESTATE.anyClockRunning() (cross-tool, over every clock name any tool anywhere
      uses — OB's pph/rh/dystocia would wrongly suppress a stale Codes weight). Codes'
@@ -3381,9 +3385,17 @@ var CODES_WT = (function(){
     if(isNaN(a) || a<0) return null;
     return u==='mo' ? Math.round((a/12)*100)/100 : a;
   }
-  function onAgeInputChanged(){ ageYrs=ageInYears(); saveAge(); paintNrp(); scheduleOverrideCommitCheck(); }
+  /* The months/years SELECT was never persisted, only the converted years value
+     (weight-routing audit): "9 months" stored 0.75, and on reload the field read
+     "0.75" with the unit back on YEARS — retyping 9 then produced a 9-year-old's
+     estimate (34 kg) from identical-looking UI. Persist the unit with the value
+     and restore the number in the unit it was entered in. */
+  function saveAgeUnit(){ try{ if(unitEl) localStorage.setItem('lrh-case-ageunit', unitEl.value); }catch(e){} }
+  function onAgeInputChanged(){ ageYrs=ageInYears(); saveAge(); saveAgeUnit(); paintNrp(); scheduleOverrideCommitCheck(); }
   if(ageEl){
-    if(ageYrs!==null) ageEl.value=ageYrs;
+    var savedUnit=null; try{ savedUnit=localStorage.getItem('lrh-case-ageunit'); }catch(e){}
+    if(unitEl && (savedUnit==='mo'||savedUnit==='yr')) unitEl.value=savedUnit;
+    if(ageYrs!==null) ageEl.value = (unitEl && unitEl.value==='mo') ? Math.round(ageYrs*12*100)/100 : ageYrs;
     ageEl.addEventListener('input', onAgeInputChanged);
   }
   if(unitEl) unitEl.addEventListener('change', onAgeInputChanged);
@@ -3392,7 +3404,17 @@ var CODES_WT = (function(){
       var a = parseFloat(ageEl ? ageEl.value : NaN);
       var u = unitEl ? unitEl.value : 'yr';
       var r = estimateFromAge(a, u);
-      if(r.err){ if(dispEl){ dispEl.textContent=r.err; dispEl.style.color='#e07a7a'; } return; }
+      /* Errors go to their OWN slot: they used to overwrite the weight readout,
+         so "80 kg (measured)" vanished while all 22 spans kept dosing off 80 kg,
+         and nothing repainted it back (weight-routing audit). */
+      if(r.err){ showWtNotice(r.err); return; }
+      /* One confirm before an estimate overwrites a MEASURED weight — a mis-tap
+         used to silently convert a scale weight into an age estimate. */
+      if(wtKg!==null && src==='measured'){
+        var okToReplace=false;
+        try{ okToReplace=window.confirm('Replace the measured weight ('+fmt(wtKg)+' kg) with an age estimate of '+r.kg+' kg?\n\nA measured weight is always better than an estimate.'); }catch(e){ okToReplace=true; }
+        if(!okToReplace) return;
+      }
       wtKg=r.kg; src='estimated';
       if(kgEl) kgEl.value=r.kg;
       save(); recompute();
@@ -3423,7 +3445,51 @@ var CODES_WT = (function(){
       kgEl.focus();
     });
   }
-  return { getKg:function(){ return wtKg; }, getAgeYrs:function(){ return ageYrs; } };
+  /* ---- Cross-tab / cross-tool weight re-sync (weight-routing audit) --------
+     wtKg was read from storage ONCE, at load, and never again — while the
+     checkbox module already re-synced on tab focus. So a weight measured in
+     peds (or corrected in arrest) left this tab's 22 dose spans computing off
+     a stale number indefinitely, and the stale-weight strip — which DOES
+     re-read its timestamp every 30 s — could print "ENTERED 14:22 · 3 MIN
+     AGO" beside a kg value frozen an hour earlier.
+     Only adopts storage's value when it actually differs, so nothing is
+     repainted mid-typing in this tab. */
+  /* "Mid-edit" = focused AND showing something other than the committed value
+     (a half-typed number). Focus alone must not block the sync: returning to a
+     background tab restores focus to the input. */
+  function midEdit(el, committed){
+    return document.activeElement===el && el && String(el.value)!==(committed===null?'':String(committed));
+  }
+  function resyncFromStorage(){
+    var storedKg=null, storedSrc=null, storedAge=null;
+    try{ storedKg=CASESTATE.getWtKg(); storedSrc=CASESTATE.getWtSrc(); }catch(e){}
+    try{ storedAge=CASESTATE.getAgeYrs?CASESTATE.getAgeYrs():null; }catch(e){}
+    var changed=false;
+    if(storedKg!==wtKg && !midEdit(kgEl, wtKg)){
+      wtKg=storedKg; src=storedSrc;
+      if(kgEl) kgEl.value = (wtKg===null?'':wtKg);
+      changed=true;
+    }
+    if(storedAge!==undefined && storedAge!==null && storedAge!==ageYrs && !midEdit(ageEl, ageYrs)){
+      ageYrs=storedAge;
+      if(ageEl) ageEl.value=ageYrs;
+      changed=true;
+    }
+    if(changed){
+      _lastCommittedWtKg=wtKg; _lastCommittedAgeYrs=ageYrs;
+      if(window.CODESDOSE) window.CODESDOSE.recompute(wtKg);
+      paint();
+      if(window.AUDIENCE) window.AUDIENCE.paint();
+      paintNrp();
+    }
+  }
+  window.addEventListener('storage', function(ev){
+    if(!ev.key || ev.key.indexOf('lrh-case-')!==0) return;
+    resyncFromStorage();
+  });
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) resyncFromStorage(); });
+
+  return { getKg:function(){ return wtKg; }, getAgeYrs:function(){ return ageYrs; }, resync:resyncFromStorage };
 })();
 /* data-conc (mg per mL, only meaningful when data-unit="mg") is supported here identically
    to peds/index.html's PEDSDOSE (design-review F29) but is not wired up on any row in this

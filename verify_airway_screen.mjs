@@ -62,7 +62,9 @@ ck('3. HFNO 30 L/min', /HFNO >30 L\/min/.test(idle), true);
 ck('3. peroxygenation named', /peroxygenation/i.test(idle), true);
 ck('3. videolaryngoscopy is first-line, not rescue', /Videolaryngoscopy is first-line/i.test(idle), true);
 ck('3. rocuronium 1.2 mg/kg', /rocuronium 1\.2 mg\/kg/i.test(idle), true);
-ck('3. suxamethonium 1.5 mg/kg', /suxamethonium 1\.5 mg\/kg/i.test(idle), true);
+/* US naming per CLAUDE.md rule 10 / TERMINOLOGY.md (UK: suxamethonium). The
+   DAS guideline is British, but this is our prose, not a quotation. */
+ck('3. succinylcholine 1.5 mg/kg', /succinylcholine 1\.5 mg\/kg/i.test(idle), true);
 
 /* ---- 4. PLAN A — the 3+1 rule, and only 3+1 ---- */
 await start();
