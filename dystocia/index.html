@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="theme-color" content="#0D1420">
+<title>LRH Shoulder Dystocia — Engine</title>
+<meta name="description" content="Mobile cognitive aid for shoulder dystocia: head-to-body interval clock, HELPERR maneuvers one at a time with 30-second prompts, no fundal pressure guard. Personal aid, not hospital policy.">
+<style>
+/* @design-system-live */
+/* ---- Shared live-protocol skeleton injected above, so this screen is the same
+   product as /arrest/, /neonatal/ and /pph/. Only dystocia chrome below. ---- */
+
+/* The head-to-body interval is the number this whole screen exists to keep in
+   front of people, so it is the largest thing on it. */
+.hbi{display:flex;align-items:center;gap:12px;margin-top:10px;padding:12px;border:2px solid var(--red);border-radius:14px;background:var(--card2)}
+.hbi .n{font:800 40px var(--mono);line-height:1;color:var(--red)}
+.hbi .t{flex:1;font-size:12.5px;color:var(--ink2);line-height:1.35}
+/* The one thing that must never happen, pinned so it cannot scroll away. */
+.never{margin-top:10px;padding:10px 12px;border:2px solid var(--red);border-radius:12px;
+  background:rgba(229,72,77,.10);color:var(--red);font:800 13.5px var(--sans);letter-spacing:.02em;text-align:center}
+.mstep{display:flex;gap:11px;align-items:flex-start;padding:11px 0;border-top:1px solid var(--line);font-size:14.5px;line-height:1.45}
+.mstep:first-child{border-top:none}
+.mstep .who{flex:none;min-width:70px;font:800 10px var(--mono);letter-spacing:.08em;color:var(--accent);margin-top:3px}
+.say{border-left:4px solid var(--amber);background:var(--card2);padding:9px 12px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.45;margin-top:10px}
+/* The HELPERR ladder, letters down the left — same shape as MR SOPA in the
+   neonatal engine, on purpose: they are the same kind of thing. */
+.ladder{margin-top:10px}
+.lrow{display:flex;gap:11px;align-items:center;padding:9px 0;border-top:1px solid var(--line)}
+.lrow .L{flex:none;width:32px;height:32px;border-radius:8px;background:var(--card2);border:1px solid var(--line);
+  color:var(--ink2);font:800 16px var(--mono);display:flex;align-items:center;justify-content:center}
+.lrow.done .L{background:var(--green);border-color:var(--green);color:#fff}
+.lrow.now .L{background:var(--red);border-color:var(--red);color:#fff}
+.lrow .lt{flex:1;min-width:0;font-size:14px;line-height:1.3}
+.lrow .lt i{display:block;font-style:normal;font-size:11.5px;color:var(--ink2);margin-top:2px}
+.lrow .lm{flex:none;font:700 11px var(--mono);color:var(--ink2)}
+.rev{margin:12px 14px 0;border:2px solid var(--sev-caution);background:var(--note-bg);color:var(--note-tx);
+     padding:11px 13px;border-radius:12px;font-size:13px;line-height:1.45}
+</style>
+</head>
+<body data-theme="dark">
+<script>
+try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+catch(e){ document.body.dataset.theme='dark'; }
+</script>
+<div class="wrap">
+
+  <div class="hdr">
+    <div style="flex:1;min-width:0">
+      <div id="plabel" style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--accent)">SHOULDER DYSTOCIA</div>
+      <div style="display:flex;align-items:baseline;gap:8px">
+        <span class="mono" id="clock" style="font-size:26px;font-weight:700">0:00</span>
+        <span id="rundot" style="display:none"><span class="dot"></span></span>
+        <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:600">READY</span>
+      </div>
+    </div>
+    <a class="ghost" id="backlink" href="../?from=tool" style="display:inline-flex;align-items:center;text-decoration:none">&#8962; MANUAL</a>
+    <button class="ghost" id="themebtn" type="button">LIGHT</button>
+    <button class="ghost" id="resetbtn" type="button">RESET</button>
+  </div>
+
+  <div class="card" id="scopebar" style="margin-top:12px;padding:11px 12px;border-color:var(--amber);font-size:13.5px;line-height:1.45">
+    <b>The head is out and the shoulders will not come.</b> The clock on this screen is the
+    <b>head-to-body interval</b> — the number that matters clinically and the one that gets reconstructed
+    wrongly afterwards. Work the maneuvers <b>in order</b>. When the baby is out, go to
+    <a href="../neonatal/?from=home" style="color:var(--blue)">neonatal resuscitation</a> and stamp the time of birth.
+  </div>
+
+  <div class="rev" id="revbanner"></div>
+
+  <div id="idle">
+    <button id="startbtn" type="button" style="width:100%;margin-top:14px;min-height:104px;border:none;border-radius:16px;background:var(--red);color:#fff;font:800 21px var(--sans);letter-spacing:.03em;cursor:pointer;box-shadow:0 6px 24px rgba(229,72,77,.25)">
+      ANNOUNCE IT — START THE CLOCK
+      <div style="font-size:13px;font-weight:600;opacity:.9;margin-top:4px">Say “we have a shoulder dystocia” out loud as you tap</div>
+    </button>
+    <div class="card" style="margin-top:12px;padding:12px">
+      <div class="sec">BEFORE YOU TOUCH ANYTHING</div>
+      <div id="prestart" style="font-size:14px;line-height:1.6;margin-top:6px"></div>
+    </div>
+  </div>
+
+  <div id="live" style="display:none">
+    <div class="hbi" id="hbibox"></div>
+    <div class="never" id="neverbox"></div>
+
+    <div class="card" id="phasebox" style="margin-top:10px;padding:14px;border-radius:16px"></div>
+
+    <div class="card" style="margin-top:10px;padding:12px">
+      <div class="sec">THE LADDER</div>
+      <div class="ladder" id="ladder"></div>
+    </div>
+
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+      <button class="btn" id="logtoggle" type="button" style="min-height:52px;font:700 14px var(--sans)">+ LOG EVENT</button>
+      <button class="btn" id="outbtn" type="button" style="min-height:52px;font:700 14px var(--sans);border-color:var(--green);color:var(--green)">BABY IS OUT</button>
+    </div>
+    <div id="customrow" style="display:none;gap:8px;margin-top:8px">
+      <input id="customin" style="flex:1;background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:12px;font-size:15px" placeholder="e.g. episiotomy for access">
+      <button id="customlog" type="button" style="border:none;border-radius:10px;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG</button>
+    </div>
+    <div id="customwarn" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>
+  </div>
+
+  <div id="out" style="display:none">
+    <div class="card" style="margin-top:14px;border:2px solid var(--green);border-radius:16px;padding:16px">
+      <div class="sec" style="color:var(--green)">DELIVERED</div>
+      <div style="font-size:20px;font-weight:800;margin:4px 0 10px">Head-to-body <span id="outat" class="mono">0:00</span></div>
+      <div id="outbody" style="font-size:14.5px;line-height:1.6"></div>
+      <a id="tonrp" href="../neonatal/?from=home" style="display:block;text-align:center;width:100%;margin-top:12px;min-height:56px;line-height:56px;border-radius:12px;background:var(--red);color:#fff;font:800 15px var(--sans);text-decoration:none">GO TO NEONATAL RESUSCITATION &rsaquo;</a>
+    </div>
+  </div>
+
+  <div class="sec" style="margin-top:18px;letter-spacing:.12em">REFERENCE — TAP TO OPEN</div>
+  <div id="accordions"></div>
+
+  <div style="margin-top:16px;font-size:12px;color:var(--ink2);text-align:center;line-height:1.5">
+    Cognitive aid — verify against local policy.<br>
+    <span id="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment.
+  </div>
+</div>
+
+<script>
+(function(){
+'use strict';
+
+/* ============================ SITE CONFIG ==================================
+   PROVENANCE. Every maneuver, order and timing below was carried across
+   VERBATIM from card 07 of ob-neonatal/. Nothing was authored fresh and no
+   step was reordered — a structural rebuild is not the place to change a
+   sequence people have drilled.
+   ========================================================================== */
+var SITE = {
+  version:"0.1", lastReviewed:"2026-08-12", site:"LRH",
+
+  review:{
+    on:true,
+    text:"SEQUENCE INHERITED, NOT RE-DERIVED. The maneuvers, their order and their timings were carried "+
+         "across unchanged from the shoulder dystocia card, which carried no citation of its own. The "+
+         "ladder follows the HELPERR mnemonic and ACOG Practice Bulletin 178 (see SOURCE). The per-"+
+         "maneuver timings are a teaching convention, not a rule — a maneuver that is working is not "+
+         "abandoned because 30 seconds elapsed."
+  },
+
+  /* Roughly 30 s per maneuver — the card's own words. It is a prompt to move on,
+     never a stopwatch that overrules the hands. */
+  perManeuverSec:30,
+  callEverySec:30,
+  /* Beyond this the card moves to the last-resort options. */
+  lastResortMin:4,
+
+  /* HELPERR. `key` is the letter shown; `secs` is when this rung is nominally
+     due, measured from the announcement. */
+  ladder:[
+    { k:"H", n:"Announce &amp; start the clock", at:0,
+      short:"Say it out loud. Bed flat, foot of the bed off.",
+      who:[["TEAM","Say it out loud: “We have a shoulder dystocia.” Activate OB, anesthesia and Pediatrics."],
+           ["TIMEKEEPER","Start the clock. Call the elapsed time every 30 s."],
+           ["TEAM","Bed completely flat, foot of the bed off. <b>No fundal pressure. No pulling.</b>"]] },
+    { k:"P", n:"Pressure — suprapubic", at:0,
+      short:"Heel of the hand above the pubic bone, down and toward the baby's face.",
+      who:[["3RD ASST","CPR-style suprapubic pressure, <b>down and lateral</b>. Steady for 30 s, then rocking."],
+           ["TEAM","Say aloud: “<b>Suprapubic — not fundal.</b>”"]] },
+    { k:"L", n:"Legs — McRoberts", at:30,
+      short:"Hyperflex both thighs onto her abdomen, knees toward the ears.",
+      who:[["2 ASSTS","Hyperflex both thighs tight to her abdomen. The sacrum flattens and the inlet opens."],
+           ["PHYSICIAN","Gentle <b>axial</b> traction only — one attempt."]] },
+    { k:"E", n:"Enter — corkscrew", at:60,
+      short:"Rubin II, then Woods, then reverse Woods.",
+      who:[["PHYSICIAN","<b>Rubin II</b> — two fingers behind the anterior shoulder, push it toward the baby's chest and rotate 30° out of the AP into the oblique."],
+           ["PHYSICIAN","<b>Woods corkscrew</b> — add fingers in front of the posterior shoulder and turn the same way. Reverse Woods if it will not turn."]] },
+    { k:"R", n:"Remove the posterior arm", at:120,
+      short:"Follow the arm to the elbow, flex, sweep across the chest.",
+      who:[["PHYSICIAN","Hand in along the posterior curve of the sacrum. Follow the arm to the elbow, <b>flex</b> it, grasp the wrist, sweep it across the chest and out."],
+           ["PHYSICIAN","This buys about 2 cm — often the one that works. <b>Never pull the arm straight — it snaps.</b>"]] },
+    { k:"R", n:"Roll to hands and knees", at:180,
+      short:"Gaskin. The posterior shoulder is now delivered first.",
+      who:[["TEAM","Get her onto all fours. Gravity and the change of position add 1–2 cm to the sacral outlet."],
+           ["PHYSICIAN","Run the sequence again — the posterior shoulder is now the one delivered first."]] }
+  ],
+
+  lastResort:[
+    "Deliberately fracture the clavicle (cleidotomy) — press the clavicle outward against the ramus.",
+    "Zavanelli: replace the head and go to cesarean.",
+    "Symphysiotomy if there is no other option."
+  ],
+
+  /* The single prohibition. Kept as config so it cannot be edited out by
+     accident, and asserted by the verify suite. */
+  never:"NO FUNDAL PRESSURE · NO PULLING",
+  neverWhy:"Fundal pressure impacts the shoulder further and ruptures uteri.",
+
+  local:{ cart:"OB / Neonatal Cart · Vaginal Delivery drawer" }
+};
+try{ window.SITE = SITE; }catch(e){}
+
+var S = { theme:'dark', phase:'idle', t0:null, rung:0, doneRungs:{}, saidCall:0,
+          events:[], open:null, resetArm:false, outAt:null, showCustom:false, rounds:1 };
+
+var $=function(i){return document.getElementById(i);};
+function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmt(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+function since(){ return S.t0 ? (Date.now()-S.t0)/1000 : 0; }
+function clk(){ return S.t0 ? fmt(since()) : '0:00'; }
+function log(l){ S.events.unshift({t:clk(), label:l}); }
+
+/* ===== the pathway ======================================================= */
+function phaseBox(){
+  var r=SITE.ladder[S.rung], h='';
+  var late = since() >= SITE.lastResortMin*60;
+
+  h+='<div class="sec" style="color:var(--red)">RUNG '+(S.rung+1)+' OF '+SITE.ladder.length+
+     ' &nbsp;·&nbsp; '+r.k+'</div>'+
+     '<div style="font-size:22px;font-weight:800;margin-top:4px">'+r.n+'</div>'+
+     '<div style="margin-top:8px">';
+  r.who.forEach(function(w){
+    h+='<div class="mstep"><div class="who">'+esc(w[0])+'</div><div>'+w[1]+'</div></div>';
+  });
+  h+='</div>';
+
+  /* The prompt to move on. Deliberately worded as a prompt, not an order — a
+     maneuver that is working is not abandoned because 30 seconds elapsed. */
+  var due = r.at + SITE.perManeuverSec;
+  if(since() > due && S.rung < SITE.ladder.length-1){
+    h+='<div class="say"><b>About '+SITE.perManeuverSec+' seconds on this one.</b> If it is not working, move to '+
+       SITE.ladder[S.rung+1].k+' — '+esc(SITE.ladder[S.rung+1].n)+'. If it <i>is</i> working, stay with it.</div>';
+  }
+
+  h+='<button class="btn" id="nextrung" type="button" style="width:100%;min-height:72px;margin-top:10px;background:var(--red);color:#fff;border:none;font-size:18px">'+
+     (S.rung < SITE.ladder.length-1
+        ? 'DONE — NEXT: '+SITE.ladder[S.rung+1].k+' · '+SITE.ladder[S.rung+1].n.toUpperCase()
+        : 'RUN THE SEQUENCE AGAIN — CLOCK KEEPS RUNNING')+'</button>';
+
+  if(late){
+    h+='<div class="say" style="border-color:var(--red)"><b>Past '+SITE.lastResortMin+' minutes.</b><br>'+
+       SITE.lastResort.map(esc).join('<br>')+
+       '<br><br>Record every maneuver, the order and the times. Debrief the team and the family.</div>';
+  }
+  return h;
+}
+
+function ladderBox(){
+  return SITE.ladder.map(function(r,i){
+    var cls = i===S.rung ? 'now' : (S.doneRungs[i] ? 'done' : '');
+    return '<div class="lrow '+cls+'"><div class="L">'+r.k+'</div>'+
+      '<div class="lt"><b>'+r.n+'</b><i>'+esc(r.short)+'</i></div>'+
+      '<div class="lm">'+(S.doneRungs[i] || fmt(r.at))+'</div></div>';
+  }).join('');
+}
+
+function hbiBox(){
+  var s=since();
+  return '<div><div class="n">'+clk()+'</div></div><div class="t"><b>Head-to-body interval.</b> '+
+    (s < 60 ? 'Call it out every '+SITE.callEverySec+' seconds.'
+            : 'Say the elapsed time out loud on every rung — this is the number that goes in the record.')+
+    '</div>';
+}
+
+/* ===== reference ========================================================= */
+var ACC=[
+  { id:'ladderref', t:'HELPERR — THE FULL LADDER', b:function(){
+      return SITE.ladder.map(function(r){
+        return '<p><b>'+r.k+' — '+r.n+'</b><br>'+esc(r.short)+'</p>';
+      }).join('')+'<p><b>Past '+SITE.lastResortMin+' minutes:</b><br>'+SITE.lastResort.map(esc).join('<br>')+'</p>'; } },
+  { id:'never', t:'WHAT NEVER HAPPENS', b:function(){
+      return '<p><b>'+esc(SITE.never)+'</b></p><p>'+esc(SITE.neverWhy)+'</p>'+
+        '<p>Traction is <b>axial</b> and gentle, one attempt per maneuver. Pulling harder does not '+
+        'move a shoulder that is impacted behind the symphysis — changing the geometry does.</p>'; } },
+  { id:'log', t:'EVENT LOG — THE RECORD', b:function(){
+      if(!S.events.length) return '<p>Nothing logged yet.</p>';
+      return '<p style="color:var(--ink2)">Every maneuver and its time. This is what the documentation '+
+        'needs and what nobody can reconstruct afterwards.</p>'+S.events.map(function(e){
+        return '<div style="display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px">'+
+          '<span class="mono" style="font-weight:700;color:var(--accent);flex:none">'+esc(e.t)+'</span><span>'+e.label+'</span></div>';
+      }).join(''); } },
+  { id:'src', t:'SOURCE &amp; PROVENANCE', b:function(){
+      return '<p><b>Sequence:</b> the HELPERR mnemonic as taught in the Advanced Life Support in '+
+        'Obstetrics (ALSO) course, and ACOG Practice Bulletin 178, <i>Shoulder Dystocia</i> '+
+        '(Obstet Gynecol 2017;129:e123).</p>'+
+        '<p><b>Provenance.</b> Every maneuver, its order and its timing was carried across '+
+        '<b>unchanged</b> from card 07 of <a href="../ob-neonatal/?from=home#c07">ob-neonatal/</a>, which '+
+        'carried no citation of its own. Nothing was authored fresh and no step was reordered.</p>'+
+        '<p>The per-maneuver timings are a <b>teaching convention</b> for keeping a team moving, not a '+
+        'rule from the guideline. A maneuver that is working is not abandoned because 30 seconds '+
+        'elapsed, and the screen says so rather than counting anyone down.</p>'+
+        '<p>The engine adds no clinical content — what it adds is the head-to-body clock, the ladder '+
+        'position, and a record of what was done and when.</p>'; } }
+];
+
+function phiReason(t){
+  if(/\b\d{6,}\b/.test(t)) return 'mentions a record or account number';
+  if(/\b\d{1,2}[\/\-]\d{1,2}[\/\-]\d{2,4}\b/.test(t)) return 'contains a date of birth style date';
+  if(/\bMRN\b/i.test(t)) return 'mentions a record or account number';
+  return null;
+}
+
+/* ===== paint ============================================================= */
+function paint(){
+  $('clock').textContent=clk();
+  var live = S.phase==='live';
+  $('rundot').style.display = live ? '' : 'none';
+  $('statusword').textContent = S.phase==='idle' ? 'READY'
+    : (S.phase==='out' ? 'DELIVERED' : (SITE.ladder[S.rung].k+' · RUNG '+(S.rung+1)));
+  $('plabel').textContent = live ? 'DYSTOCIA · ROUND '+S.rounds : 'SHOULDER DYSTOCIA';
+  $('themebtn').textContent = S.theme==='dark' ? 'LIGHT' : 'DARK';
+  $('resetbtn').textContent = S.resetArm ? 'SURE?' : 'RESET';
+  $('resetbtn').style.background = S.resetArm ? 'var(--red)' : 'var(--card)';
+  $('resetbtn').style.color = S.resetArm ? '#fff' : 'var(--ink2)';
+
+  $('revbanner').style.display = SITE.review.on ? '' : 'none';
+  if(SITE.review.on) $('revbanner').innerHTML = '<b>&#9888; '+esc(SITE.review.text);
+
+  $('prestart').innerHTML =
+    'Announce it as you tap — naming it out loud is what starts everyone else moving. The clock is the '+
+    '<b>head-to-body interval</b>, and it is the number that gets reconstructed wrongly afterwards. '+
+    'Bed flat, foot of the bed off. Kit lives in the '+esc(SITE.local.cart)+'.';
+
+  $('idle').style.display = S.phase==='idle' ? '' : 'none';
+  $('live').style.display = live ? '' : 'none';
+  $('out').style.display = S.phase==='out' ? '' : 'none';
+
+  if(live){
+    $('hbibox').innerHTML = hbiBox();
+    $('neverbox').textContent = SITE.never;
+    $('phasebox').innerHTML = phaseBox();
+    $('ladder').innerHTML = ladderBox();
+    $('customrow').style.display = S.showCustom ? 'flex' : 'none';
+    /* The 30-second call, logged so the record shows it happened. */
+    var blk = Math.floor(since()/SITE.callEverySec);
+    if(blk > S.saidCall){ S.saidCall = blk; log('Elapsed '+clk()+' called out'); }
+  }
+  if(S.phase==='out'){
+    $('outat').textContent = S.outAt || clk();
+    $('outbody').innerHTML =
+      '· Head-to-body interval <b>'+(S.outAt||clk())+'</b> — say it, and write it<br>'+
+      '· Every maneuver and its time is in the event log below<br>'+
+      '· Examine the baby for injury; examine her for tears and bleeding<br>'+
+      '· <b>Watch for postpartum hemorrhage</b> — <a href="../pph/?from=home" style="color:var(--blue)">PPH engine</a><br>'+
+      '· Debrief the team <i>and</i> the family — this was frightening to watch';
+  }
+
+  var h='';
+  ACC.forEach(function(a){
+    var open=(S.open===a.id);
+    h+='<div class="acc"><button class="acch" type="button" data-acc="'+a.id+'">'+a.t+
+       '<span style="color:var(--ink2)">'+(open?'−':'+')+'</span></button>'+
+       (open?'<div class="accb">'+a.b()+'</div>':'')+'</div>';
+  });
+  $('accordions').innerHTML=h;
+  $('verstamp').textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · '+SITE.site;
+}
+
+/* ===== events ============================================================ */
+document.addEventListener('click', function(e){
+  var t=e.target.closest ? e.target.closest('button') : null;
+  if(!t) return;
+  var id=t.id, acc=t.getAttribute('data-acc');
+  if(acc){ S.open=(S.open===acc?null:acc); paint(); return; }
+
+  if(id==='themebtn'){
+    S.theme=S.theme==='dark'?'light':'dark';
+    document.body.dataset.theme=S.theme;
+    try{ localStorage.setItem('lrh-pref-theme', S.theme); }catch(err){}
+    paint(); return;
+  }
+  if(id==='resetbtn'){
+    if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){S.resetArm=false;paint();},2500); return; }
+    S={ theme:S.theme, phase:'idle', t0:null, rung:0, doneRungs:{}, saidCall:0, events:[], open:null,
+        resetArm:false, outAt:null, showCustom:false, rounds:1 };
+    paint(); return;
+  }
+  if(id==='startbtn'){
+    S.phase='live'; S.t0=Date.now();
+    log('<b>Shoulder dystocia announced</b> — head-to-body clock started');
+    paint(); return;
+  }
+  if(id==='nextrung'){
+    var r=SITE.ladder[S.rung];
+    S.doneRungs[S.rung]=clk();
+    log('<b>'+r.k+' — '+r.n+'</b> done at '+clk());
+    if(S.rung < SITE.ladder.length-1){ S.rung++; }
+    else {
+      /* Round two. The clock does NOT restart — the head-to-body interval is
+         continuous, and restarting it would erase the only number that counts. */
+      S.rung=0; S.rounds++; S.doneRungs={};
+      log('<b>Sequence restarted — round '+S.rounds+'.</b> Clock keeps running.');
+    }
+    paint(); return;
+  }
+  if(id==='outbtn'){ S.phase='out'; S.outAt=clk(); log('<b>Baby delivered</b> — head-to-body '+clk()); paint(); return; }
+  if(id==='logtoggle'){ S.showCustom=!S.showCustom; paint(); if(S.showCustom) setTimeout(function(){$('customin').focus();},30); return; }
+  if(id==='customlog'){ submitCustom(); return; }
+});
+
+function submitCustom(){
+  var t=$('customin').value.trim(); if(!t) return;
+  var why=phiReason(t);
+  if(why){
+    $('customwarn').style.display='';
+    $('customwarn').textContent='Not logged — that text '+why+'. This aid never stores patient identifiers. Describe the event, not the patient.';
+    return;
+  }
+  $('customwarn').style.display='none';
+  log(esc(t)); $('customin').value=''; S.showCustom=false; paint();
+}
+$('customin').addEventListener('keydown', function(e){ if(e.key==='Enter') submitCustom(); });
+
+paint();
+setInterval(paint, 500);
+})();
+</script>
+</body>
+</html>
