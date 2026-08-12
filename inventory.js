@@ -5,7 +5,8 @@
    (slash-star) @inventory (star-slash), so deployed tools stay fully
    self-contained and offline (CLAUDE.md rule 1). Edit the inventory ONCE here.
    Design + process: INVENTORY-DESIGN.md. Consumers today:
-   equipment-readiness/. (labels/ and simulations/ migrate on later.)
+   equipment-readiness/ and simulations/ (which share ONE capture store — see
+   INV_CAPTURE below). labels/ migrates on later.
 
    TWO LAYERS (design decision, Lon 2026-08-12):
    - CATALOG + STANDARDS + BROSELOW_PACK are UNIVERSAL — a fork keeps them.
@@ -503,6 +504,64 @@ var INV_ROWS = {};   /* rowId -> {id, size, name, cat} */
 /* Baseline location for a row id, falling back from `id#size` to `id`. */
 function invBaseline(rowId){
   return INV_LOCATIONS[rowId] || INV_LOCATIONS[rowId.split('#')[0]] || null;
+}
+
+/* ===== SHARED CAPTURE (device-local; CLAUDE.md rule 3) ====================
+   ONE store, written by every tool that lets someone confirm where a thing is:
+   the readiness walk in equipment-readiness/, and the equipment walk inside a
+   simulation. A new nurse finding the pediatric pads during an orientation
+   drill is the same fact as the readiness champion finding them on a cart
+   walk, and it would be absurd to record it twice — so the sims feed the
+   audit, and the audit is what the orientation session leaves behind.
+
+   Contents: equipment row ids, a state, a typed location string, and which
+   activity recorded it. No patient data, ever, and no network. Cleared by the
+   RESET control in equipment-readiness/.
+
+   state: 'loc'  set to a location   'in'  confirmed inside its kit
+          'gap'  asserted absent     'na'  not applicable at this site       */
+var INV_STORE_KEY = 'lrh-eq-readiness-v1';
+var INV_CAPTURE = (function(){
+  var ST = { rows:{}, label:'' };
+  try {
+    var raw = localStorage.getItem(INV_STORE_KEY);
+    if (raw) { var p = JSON.parse(raw); if (p && p.rows) ST = { rows:p.rows, label:p.label || '' }; }
+  } catch(e){}
+  function save(){ try { localStorage.setItem(INV_STORE_KEY, JSON.stringify(ST)); } catch(e){} }
+  return {
+    key: INV_STORE_KEY,
+    rows: function(){ return ST.rows; },
+    get:  function(rowId){ return ST.rows[rowId] || null; },
+    /* whence records WHERE it was confirmed ("SIM 3", "cart walk") so the
+       export can say so — an item found during a drill and an item found on a
+       deliberate audit are the same fact with different provenance. */
+    set: function(rowId, state, loc, whence){
+      if (!state) { delete ST.rows[rowId]; }
+      else {
+        var r = ST.rows[rowId] || {};
+        r.s = state;
+        if (loc !== null && loc !== undefined) r.l = loc;
+        if (whence) r.w = whence;
+        ST.rows[rowId] = r;
+      }
+      save();
+    },
+    label: function(v){ if (v === undefined) return ST.label; ST.label = v; save(); },
+    clear: function(){ ST = { rows:{}, label:'' }; try { localStorage.removeItem(INV_STORE_KEY); } catch(e){} }
+  };
+})();
+
+/* The four states a row can be in, resolved once for every consumer.
+   'set' beats everything (a human looked), then an asserted gap, then the
+   manual's own baseline, and 'new' means nobody has looked — which is NOT a
+   claim that the item is missing. */
+function invStatus(rowId){
+  var u = INV_CAPTURE.get(rowId);
+  if (u && u.s) return (u.s === 'loc' || u.s === 'in') ? 'set' : u.s;   /* gap | na | set */
+  if (INV_GAP_ISSUES[rowId.split('#')[0]]) return 'gap';
+  var b = invBaseline(rowId);
+  if (!b) return 'new';
+  return b.verify ? 'vf' : 'ok';
 }
 
 /* Every row id belonging to a catalog item (one per size, or just the item). */
