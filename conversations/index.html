@@ -36,6 +36,9 @@
   .nav2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:12px 14px 0; }
   .nav2 a { display:flex; flex-direction:column; gap:3px; padding:12px 13px; background:var(--card); border:1px solid var(--line); border-left:4px solid var(--blue); text-decoration:none; color:var(--ink); }
   .nav2 a .n { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.07em; color:var(--blue); }
+  /* Green marks the positive PLUS/DELTA/PLUS debrief step — not a shared severity. */
+  .t-box-green { border:2px solid var(--green); border-radius:12px; overflow:hidden; }
+  .t-head-green { background:var(--green); }
   #stickytop { position:sticky; top:0; z-index:5; }
   @media (min-width:760px) { .steps { grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); } }
   @media print {
@@ -81,6 +84,8 @@ catch(e){ document.body.dataset.theme='dark'; }
   <div class="nav2">
     <a href="#c01"><span class="n">01</span><span>Consultant Crucial Conversation</span></a>
     <a href="#c02"><span class="n">02</span><span>Code Status Conversation</span></a>
+    <a href="#c03"><span class="n">03</span><span>SPIKES — Delivering Bad News</span></a>
+    <a href="#c04"><span class="n">04</span><span>Debrief — After the Event</span></a>
   </div>
 
   <!-- ============ CARD 01 · CONSULTANT CRUCIAL CONVERSATION ============ -->
@@ -240,6 +245,125 @@ catch(e){ document.body.dataset.theme='dark'; }
 
     <div class="t-sub">
       <b>Sources:</b> Communication structure per <b>VitalTalk</b> (REMAP; Ask-Tell-Ask; NURSE statements — vitaltalk.org) and the <b>Ariadne Labs Serious Illness Conversation Guide</b>. Local CPR-outcome graphics and references: <b>Dr. Lawson, “CPR images and one-page review with references,” Dec 2025</b> — <a href="https://github.com/user-attachments/files/30935608/CPR.images.and.one.page.review.with.references.Dec.2025.docx">linked here</a> (self-host locally for offline use). Best-practice content is a draft for departmental review; confirm your final references on this card.
+    </div>
+    <div class="t-foot">
+      <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment.
+    </div>
+  </article>
+
+  <!-- ============ CARD 03 · SPIKES — DELIVERING BAD NEWS ============ -->
+  <article id="c03">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">03</span>SPIKES — Delivering Bad News</h2>
+        <span class="t-mono-r">DEATH NOTIFICATION · SERIOUS DIAGNOSIS · BAD OUTCOME</span>
+      </div>
+      <div class="t-note2">A six-step structure for breaking bad news — the point is to <b>go slow, follow the patient</b>, and respond to emotion before you keep talking.</div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">S · SETTING UP</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">Private space, sit down, tissues within reach, phone silenced. Have the right people present and know their names. Take a breath before you go in.
+            <div class="say">“Is it OK if we sit down together? I want to make sure we have a few minutes.”</div>
+          </li>
+        </ul>
+      </details>
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">P · PERCEPTION — ASK BEFORE YOU TELL</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">Find out what they already understand, so you meet them where they are.
+            <div class="say">“Before I go on — what's your understanding of what's been happening?”</div>
+          </li>
+        </ul>
+      </details>
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">I · INVITATION — HOW MUCH DO THEY WANT?</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">Ask permission and gauge how much detail they want right now. People take news in at different speeds.
+            <div class="say">“Are you someone who likes all the details, or would you rather I give you the big picture first?”</div>
+          </li>
+        </ul>
+      </details>
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">K · KNOWLEDGE — THE NEWS ITSELF</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">Fire a <b>warning shot</b>, then say it plainly — no jargon, no euphemisms (“passed,” “we lost him” are unclear; say <b>died</b>). Small chunks, then stop and let it land.
+            <div class="say">“I'm afraid I have difficult news.” … <i>(pause)</i> … “Despite everything we did, his heart could not be restarted, and he died.”</div>
+          </li>
+        </ul>
+      </details>
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">E · EMOTIONS — RESPOND WITH EMPATHY</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">Stop talking. Observe the emotion, name it, and let silence do the work. A single empathic statement matters more than any explanation right now.
+            <div class="say">“I can see this is devastating.” · “Take whatever time you need.”</div>
+          </li>
+        </ul>
+      </details>
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">S · STRATEGY &amp; SUMMARY</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">Only once they're ready: what happens next (seeing the body, belongings, autopsy/medical examiner, who to call), and make sure they aren't left alone. Offer a contact and chaplain/social work.
+            <div class="say">“You don't have to decide anything now. I'll stay with you, and here's what we can do next when you're ready.”</div>
+          </li>
+        </ul>
+      </details>
+    </div>
+
+    <div class="t-sub">
+      <b>Sources:</b> Baile WF, Buckman R, et al. “SPIKES — A Six-Step Protocol for Delivering Bad News,” <i>The Oncologist</i> 2000;5(4):302-311. Empathic-response language per VitalTalk (NURSE statements). For a death notification specifically, the <b>GRIEV_ING</b> mnemonic (Hobgood, <i>Acad Emerg Med</i> 2005) is a useful ED-specific companion.
+    </div>
+    <div class="t-foot">
+      <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment.
+    </div>
+  </article>
+
+  <!-- ============ CARD 04 · DEBRIEF — AFTER THE EVENT ============ -->
+  <article id="c04">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">04</span>Debrief — After the Event</h2>
+        <span class="t-mono-r">SAME SHIFT AS THE EVENT</span>
+      </div>
+      <div class="t-note2">A short, structured team conversation after a code or critical event — a few minutes, at the bedside or a quiet corner, before everyone scatters.</div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">1 · WHY DEBRIEF — PURPOSE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">A debrief is not a performance review and not an incident investigation. It's a few protected minutes for the team to compare what each person saw, surface what the system enabled and inhibited, and carry one or two concrete things into the next case.</li>
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">Anyone on the team can call for one. Short beats perfect — five focused minutes now is worth more than a perfect session next week.</li>
+        </ul>
+      </details>
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">2 · STATE THE BASIC ASSUMPTION</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">Open by saying it out loud: <b>we start from the assumption that everyone here is intelligent, capable, cares about doing their best, and wants to improve.</b> (Adapted from the Center for Medical Simulation's Basic Assumption.)</li>
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">Saying it first changes the conversation that follows — curiosity about <i>why</i> things happened, instead of judgment about <i>who</i> did them.</li>
+        </ul>
+      </details>
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">3 · REVIEW THE CASE — WHAT DID YOU SEE?</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">Review the case timeline together — if the team ran a card in this manual, open its <b>SUMMARY</b> (case timeline) and read the timestamps aloud as the shared record of what happened when.</li>
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;">Then go around: <b>“What did you see?”</b> — each role saw a different case. Let everyone add to the shared picture before anyone evaluates anything.</li>
+        </ul>
+      </details>
+      <details open class="t-box-green">
+        <summary class="t-head t-head-green">4 · PLUS / DELTA / PLUS — ENABLED &amp; INHIBITED</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;"><b>PLUS — what enabled us?</b> Name the specific things (behaviors, tools, communication, environment) that enabled the team's performance.</li>
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;"><b>DELTA — what inhibited us?</b> Name what inhibited performance — framed as conditions and systems, not blame. “The pulse ox was on the BP-cuff arm” invites a fix; “you missed the sat drop” invites defensiveness.</li>
+          <li style="border-top:1px solid var(--line); padding:11px 0; font-size:14.5px; line-height:1.35;"><b>PLUS — what do we take away?</b> Close on the takeaway: anything to communicate or escalate? Key saves or key learning? Missing or broken equipment to report? Pick <b>one or two deltas at most</b> to act on, name who owns each, and stop there.</li>
+        </ul>
+      </details>
+    </div>
+
+    <div class="t-sub">
+      <b>Sources:</b> The Basic Assumption is adapted from the Center for Medical Simulation (Boston, MA) — harvardmedsim.org; the enabled/inhibited framing draws on debriefing-with-good-judgment and plus/delta conventions from the simulation-education literature. Locally drafted — refine with your simulation/education leads.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment.
