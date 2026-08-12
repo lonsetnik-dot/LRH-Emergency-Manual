@@ -126,6 +126,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <a class="lrh-row" style="--cc:var(--purple)" href="#s04"><span class="t">SIM 4 · Pediatric Status Epilepticus → RSI → Vent Crash (DOPE)</span><span class="spacer"></span><span class="tag">PEDS · 12 MIN</span></a>
         <a class="lrh-row" style="--cc:var(--red)" href="#s05"><span class="t">SIM 5 · STEMI → VF Arrest → PEA → Code Status → Debrief</span><span class="spacer"></span><span class="tag">MEDICAL · 18 MIN</span></a>
         <a class="lrh-row" style="--cc:var(--red)" href="#s06"><span class="t">SIM 6 · Hyperkalemia → Unstable Bradycardia → Transvenous Pacing</span><span class="spacer"></span><span class="tag">MEDICAL · 12 MIN</span></a>
+        <a class="lrh-row" style="--cc:var(--red)" href="#s09"><span class="t">SIM 9 · Angioedema → Failed Airway Ladder → FONA</span><span class="spacer"></span><span class="tag">MEDICAL · 15 MIN</span></a>
         <a class="lrh-row" style="--cc:var(--orange)" href="#s07"><span class="t">SIM 7 · Blunt Trauma → Tension Pneumothorax → Chest Tube → MTP</span><span class="spacer"></span><span class="tag">TRAUMA · 15 MIN</span></a>
         <a class="lrh-row" style="--cc:var(--orange)" href="#s08"><span class="t">SIM 8 · Penetrating Trauma → TCA → Thoracotomy → Notification</span><span class="spacer"></span><span class="tag">TRAUMA · 18 MIN</span></a>
       </div>
@@ -502,6 +503,83 @@ catch(e){ document.body.dataset.theme='dark'; }
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div" style="padding:8px 0; font-size:14px;">Calcium before anything shifty. Pacing decisions driven by perfusion, not the monitor number. The TVP checklist actually read, not recalled.</li>
           <li class="t-div" style="padding:8px 0; font-size:14px;"><a href="../conversations/?from=home#c04">Debrief card</a> prompt: <i>who in the room has actually floated a wire — and how do the rest of us borrow that before the real one?</i></li>
+        </ul>
+      </details>
+    </div>
+  </article>
+
+  <!-- ================= SIM 9 — MEDICAL / AIRWAY ================= -->
+  <article id="s09">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">S9</span>Angioedema → Failed Airway Ladder → FONA</h2>
+        <span class="t-mono-r">MEDICAL SET · 15 MIN + DEBRIEF</span>
+      </div>
+      <div class="chain"><span class="ph">ANGIOEDEMA</span><span class="arw">→</span><span class="ph">FAILED LADDER</span><span class="arw">→</span><span class="ph">SALAD</span><span class="arw">→</span><span class="ph">CICO → FONA</span></div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">SETUP · 2 MIN</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Pillow = <b>a 55-year-old on lisinopril, tongue and lips swelling for an hour, voice getting muffled.</b> Stage near the airway cart; point at where the video laryngoscope, bougie, and the FONA kit actually live.</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Roles: leader · airway operator · second operator (neck) · meds voice · recorder (drives the ladder) · facilitator. This one is about <b>saying the next rung out loud before you need it</b>.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 1 · THE AIRWAY IS CLOSING</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"Voice is muffled, he's drooling, tongue looks like a fist. <b>You will not get a second look at this airway.</b> Plan it out loud."</div>
+          <a class="golink" href="../codes/?from=home#c16">OPEN › CODES · ANGIOEDEMA</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Meds verbalized per the card — and the team states plainly what meds will and won't do for bradykinin-mediated swelling. Double setup declared: who intubates, who owns the neck, where the FONA kit is <i>physically</i>.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › double setup assigned and the neck is marked (narrated) before any attempt.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 2 · WORK THE LADDER</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"First look: <b>all you see is swollen tissue.</b> Sat 91 and drifting. Call the rung you're on and the next one."</div>
+          <a class="golink" href="../airway/?from=home">OPEN › AIRWAY · FAILED INTUBATION LADDER</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Recorder drives the ladder tool; the operator narrates each rung — optimize, change device/operator, supraglottic attempt — with the sat read out between rungs. The leader's job: keep the room ahead of the ladder, not behind it.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › two rungs attempted and the team states the CICO trigger unprompted.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 3 · CURVEBALL — BLOOD IN THE AIRWAY</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"The last attempt made him bleed — <b>the view is now blood and swelling.</b> Sat 84."</div>
+          <a class="golink" href="../procedures/?from=home#c15">OPEN › PROCEDURES · SALAD</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">One SALAD pass narrated on the pillow — suction leads, catheter parked, scope follows. If the view is still nothing, that <i>is</i> the answer: say it.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › SALAD narrated and the operator makes an explicit call: view or no view.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 4 · CICO — CUT THE NECK</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"Can't intubate. Supraglottic won't seat past the swelling. Bag-mask barely moves air. <b>Sat 78. Say the words.</b>"</div>
+          <a class="golink" href="../codes/?from=home#c18">OPEN › CODES · FRONT OF NECK ACCESS (FONA)</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Someone declares <b>"this is CICO — we are cutting"</b> out loud, and the second operator (already on the neck since Phase 1) walks the card on the pillow: laryngeal handshake, vertical incision, finger, bougie, tube. Facilitator grants sats once the sequence is narrated correctly.</li>
+          </ul>
+          <div class="adv">END WHEN › CICO declared in words and the FONA sequence narrated start to finish.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-green">
+        <summary class="t-head t-head-green">WHAT GOOD LOOKS LIKE + DEBRIEF</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px;">The neck is owned and marked <i>before</i> the first look. Every rung is named before it's climbed. CICO is declared by its name — the failure mode this sim exists to kill is the room that keeps trying "one more look" at sat 70.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;"><a href="../conversations/?from=home#c04">Debrief card</a> prompts: <i>what sat number or attempt count is OUR line in the sand — and did we say it before or after we crossed it?</i> · <i>could every person in the room find the FONA kit blind?</i></li>
         </ul>
       </details>
     </div>

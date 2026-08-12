@@ -160,7 +160,7 @@ catch(e){ document.body.dataset.theme='dark'; }
 
     <!-- ===== CATEGORY: Simulations (beta · GREEN) -> /simulations/ ===== -->
     <a class="lrh-cat" style="--cc:var(--green)" href="simulations/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">Simulations</span><span class="spacer"></span><span class="count lrh-mono">8 sims</span></div>
+      <div class="row"><span class="dot"></span><span class="name">Simulations</span><span class="spacer"></span><span class="count lrh-mono">9 sims</span></div>
       <div class="desc">Pillow-patient drills that chain the manual's real workflows — birth into dystocia into a blue baby, STEMI into VF into the code-status conversation. 10&ndash;15 minutes, no mannequin.</div>
     </a>
 
@@ -285,15 +285,9 @@ catch(e){ document.body.dataset.theme='dark'; }
     {t:"LVAD — Responsive (Pump Running)", c:"Codes", k:"lvad ventricular assist device heartmate heartware pump hum driveline alarm map doppler thrombosis vad", u:"codes/?from=home#c19"},
     {t:"LVAD — Unresponsive (Pump NOT Running)", c:"Codes", k:"lvad ventricular assist device pump not running no hum restart battery controller driveline arrest cpr vad", u:"codes/?from=home#c20"},
     {t:"STEMI", c:"Codes", k:"stemi st elevation mi myocardial infarction chest pain heart cognitive aid mimics aspirin heparin enoxaparin atorvastatin tenecteplase tnk weight band pressor norepinephrine dobutamine cardiogenic shock reperfusion arrhythmia aivr transfer dartmouth concord omnicell code", u:"codes/?from=home#c21"},
-    {t:"Simulations — overview / index", c:"Simulations", k:"simulation sim drill mock code pillow practice in situ low fidelity training rehearsal index", u:"simulations/?from=home"},
-    {t:"SIM · Birth → Shoulder Dystocia → Blue Baby", c:"Simulations", k:"shoulder dystocia sim drill mock birth delivery sim neonatal resuscitation sim ob practice rehearsal pillow", u:"simulations/?from=home#s01"},
-    {t:"SIM · Delivery → PPH → MTP", c:"Simulations", k:"pph sim postpartum hemorrhage sim drill mock mtp massive transfusion ob practice rehearsal pillow", u:"simulations/?from=home#s02"},
-    {t:"SIM · Peds Asthma → Arrest → Post-ROSC", c:"Simulations", k:"asthma sim pediatric arrest sim drill mock code rosc peds practice rehearsal pillow", u:"simulations/?from=home#s03"},
-    {t:"SIM · Peds Status Epilepticus → RSI → DOPE", c:"Simulations", k:"seizure sim status epilepticus sim rsi sim drill mock pediatric vent dope practice rehearsal pillow", u:"simulations/?from=home#s04"},
-    {t:"SIM · STEMI → VF → PEA → Code Status → Debrief", c:"Simulations", k:"stemi sim vf sim pea sim code status sim drill mock code goals of care practice rehearsal pillow", u:"simulations/?from=home#s05"},
-    {t:"SIM · Hyperkalemia → Bradycardia → TVP", c:"Simulations", k:"hyperkalemia sim bradycardia sim pacing sim drill mock transvenous practice rehearsal pillow", u:"simulations/?from=home#s06"},
-    {t:"SIM · Blunt Trauma → Tension PTX → Chest Tube → MTP", c:"Simulations", k:"trauma sim tension pneumothorax sim chest tube sim drill mock mtp practice rehearsal pillow", u:"simulations/?from=home#s07"},
-    {t:"SIM · Penetrating Trauma → TCA → Thoracotomy → SPIKES", c:"Simulations", k:"trauma sim tca sim thoracotomy sim drill mock death notification spikes practice rehearsal pillow", u:"simulations/?from=home#s08"},
+    /* Simulations are deliberately NOT in the search index (rule-9 exception,
+       Lon 2026-08-12): the bedside search must never surface a training script
+       next to a clinical card. The tool is reached via its landing tile only. */
     {t:"Debrief — after a code or critical event", c:"Debrief", k:"debrief same shift team reflection basic assumption plus delta enabled inhibited center for medical simulation takeaway escalate equipment", u:"debrief/?from=home"},
     {t:"Conversations — overview / index", c:"Conversations", k:"conversations communication difficult crucial conversation index", u:"conversations/?from=home"},
     {t:"Consultant Crucial Conversation", c:"Conversations", k:"consultant crucial conversation consult refusal refuse admission tactical empathy chris voss never split the difference labeling accusation audit calibrated questions that's right emtali emtala escalation cmo director transfer difficult consultant", u:"conversations/?from=home#c01"},
