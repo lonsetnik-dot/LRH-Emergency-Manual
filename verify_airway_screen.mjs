@@ -1,11 +1,14 @@
 /* LRH Emergency Manual — the DAS 2025 airway ladder (/airway/).
  *
  * This screen has one job that a human tester cannot reliably check by clicking: that the ladder
- * cannot be walked in the wrong order, and that the attempt ceilings are the ones DAS 2025 actually
- * publishes (3 + 1 senior, 3 SAD, 3 mask) rather than the older 2015 numbers. Those transitions are
- * asserted first and hardest. Everything after that guards against the two things most likely to be
- * broken by a later edit: an SpO2 threshold creeping in (DAS 2025 gives none), and the scope
- * disclaimer being softened.
+ * cannot be walked in the wrong order, and that each rung holds for exactly its configured attempt
+ * ceiling before handing off. Those transitions are asserted first and hardest. Everything after
+ * that guards against the two things most likely to be broken by a later edit: an SpO2 threshold
+ * creeping in (DAS 2025 gives none), and the scope disclaimer being softened.
+ *
+ * The clinical numbers are read from the page's own DAS config block rather than written out again
+ * here, so a fork that correctly localizes its values stays green — see the CONFIG-DRIVEN
+ * EXPECTATIONS note below (issue #117).
  *
  *     python3 -m http.server 8123
  *     node verify_airway_screen.mjs
@@ -36,6 +39,44 @@ const openAcc = async id => { await pg.click('[data-acc="' + id + '"]'); await p
   return (await pg.locator('.accb').innerText()).replace(/\s+/g, ' ').trim(); };
 const start = async () => { await fresh(); await tap('#startbtn', 300); };
 
+/* ---- CONFIG-DRIVEN EXPECTATIONS (issue #117) -------------------------------
+   Read the tool's own DAS block and assert the UI against THAT, rather than
+   writing this site's numbers out here a second time.
+
+   Why: this suite is the safety harness that makes champion+AI maintenance of
+   clinical logic viable. An adopting ED that stocks a 5.0 mm tube on its FONA
+   tray, or that runs succinylcholine at a different mg/kg, edits the config and
+   is doing exactly the right thing — a suite full of hardcoded LRH values would
+   turn red for it, and teach that site that a red run is normal, at the moment
+   the harness is the thing protecting them.
+
+   What stays hardcoded, deliberately: everything a fork must NOT be able to
+   localize away. The ladder's SHAPE (A → B → C → D, each rung handing off when
+   its own configured ceiling is reached), the fact that DAS publishes no SpO₂
+   cut-off, the scope disclaimer, the citation, and the PHI guard on the log.
+   Those are the guideline and the golden rules, not local preferences. */
+const CFG = await (async () => {
+  await fresh();
+  const c = await pg.evaluate(() => (typeof window.DAS === 'object' ? window.DAS : null));
+  if (!c) { console.error('FATAL: /airway/ does not expose window.DAS — cannot verify against config'); process.exit(1); }
+  return c;
+})();
+/* Config values are prose fragments ("1.2 mg/kg", "6.0 mm cuffed") that land
+   inside larger sentences, so they are matched as escaped literals.
+
+   Whitespace is deliberately loose: the page writes several of these with
+   non-breaking spaces (so "0 of 3 + 1 senior" never wraps mid-phrase on a
+   phone), while txt() collapses every whitespace run to a single space. A
+   literal built here with either kind must match either kind, so any run of
+   whitespace in the needle matches any run in the haystack. */
+const lit = s => new RegExp(
+  String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&').replace(/\s+/g, '\\s+'), 'i');
+const A = CFG.attempts;
+/* Structural, not local: DAS 2025 publishes a 17-step eFONA sequence. Named
+   once here so the ladder's step counter and the reference list are asserted
+   to agree with each other, rather than each carrying its own literal. */
+const FONA_STEPS = 17;
+
 /* ---- 1. offline-safe and the opening state ---- */
 await fresh();
 ck('1. loads with no page errors', errs.length, 0);
@@ -54,38 +95,48 @@ ck('2. scope bar says DAS gives no arrest algorithm', /no arrest algorithm/i.tes
 ck('2. scope bar says the wake options do not exist here', /wake-the-patient options do not exist/i.test(scope), true);
 ck('2. scope bar also routes pulse-but-not-breathing to rescue breathing', /a pulse but no breathing.{0,80}rescue breathing, not this ladder/i.test(scope), true);
 
-/* ---- 3. the pre-induction card carries the DAS 2025 numbers, not 2015 ---- */
+/* ---- 3. the pre-induction card carries the configured numbers ---- */
 const idle = await txt('#idle');
-ck('3. ETO2 target 0.9', /ETO₂ ≥0\.9/.test(idle), true);
-ck('3. head up 30 degrees', /head up ≥30°/.test(idle), true);
-ck('3. HFNO 30 L/min', /HFNO >30 L\/min/.test(idle), true);
+ck(`3. ETO₂ target ${CFG.preox.eto2} (DAS.preox.eto2)`, lit('ETO₂ ≥' + CFG.preox.eto2).test(idle), true);
+ck(`3. head up ${CFG.preox.headUp} (DAS.preox.headUp)`, lit('head up ≥' + CFG.preox.headUp).test(idle), true);
+ck(`3. HFNO ${CFG.preox.hfno} (DAS.preox.hfno)`, lit('HFNO >' + CFG.preox.hfno).test(idle), true);
 ck('3. peroxygenation named', /peroxygenation/i.test(idle), true);
 ck('3. videolaryngoscopy is first-line, not rescue', /Videolaryngoscopy is first-line/i.test(idle), true);
-ck('3. rocuronium 1.2 mg/kg', /rocuronium 1\.2 mg\/kg/i.test(idle), true);
+ck(`3. rocuronium ${CFG.rsi.roc} (DAS.rsi.roc)`, lit('rocuronium ' + CFG.rsi.roc).test(idle), true);
 /* US naming per CLAUDE.md rule 10 / TERMINOLOGY.md (UK: suxamethonium). The
-   DAS guideline is British, but this is our prose, not a quotation. */
-ck('3. succinylcholine 1.5 mg/kg', /succinylcholine 1\.5 mg\/kg/i.test(idle), true);
+   DAS guideline is British, but this is our prose, not a quotation. The DRUG
+   name is a golden-rule matter and stays asserted here; only its dose is
+   read from config. */
+ck(`3. succinylcholine ${CFG.rsi.sux} (DAS.rsi.sux)`, lit('succinylcholine ' + CFG.rsi.sux).test(idle), true);
 
-/* ---- 4. PLAN A — the 3+1 rule, and only 3+1 ---- */
+/* ---- 4. PLAN A — the configured N + senior rule, and only that ---- */
 await start();
 ck('4. declaring moves into the ladder', await pg.locator('#ladder').isVisible(), true);
 ck('4. opens on Plan A', await txt('#statusword'), 'PLAN A');
 ck('4. header label tracks the plan', /PLAN A/.test(await txt('#plabel')), true);
 let box = await txt('#planbox');
 ck('4. Plan A is videolaryngoscopy', /Videolaryngoscopy, first-line/.test(box), true);
-ck('4. counter shows 0 of 3 plus 1 senior', /0 of 3 \+ 1 senior/.test(box), true);
+ck(`4. counter shows 0 of ${A.planA} + ${A.planASenior} senior (DAS.attempts)`,
+   lit(`0 of ${A.planA} + ${A.planASenior} senior`).test(box), true);
 ck('4. defines what an attempt is', /any instrumentation with a device/i.test(box), true);
 ck('4. says change something between attempts', /change something/i.test(box), true);
-await tap('#attempt'); await tap('#attempt');
-ck('4. two attempts counted', /2 of 3 \+ 1 senior/.test(await txt('#planbox')), true);
-ck('4. no senior warning at two', /Three attempts used/.test(await txt('#planbox')), false);
+/* Walk to one short of the ceiling, whatever the ceiling is configured to be.
+   The invariant under test is that the rung does NOT hand off early and does
+   NOT warn early — not that the number happens to be three. */
+for (let i = 0; i < A.planA - 1; i++) await tap('#attempt');
+box = await txt('#planbox');
+ck(`4. ${A.planA - 1} attempts counted`,
+   lit(`${A.planA - 1} of ${A.planA} + ${A.planASenior} senior`).test(box), true);
+ck('4. no senior warning one short of the ceiling', /attempts used/i.test(box), false);
+ck('4. still on Plan A one short of the ceiling', await txt('#statusword'), 'PLAN A');
 await tap('#attempt');
 box = await txt('#planbox');
-ck('4. third attempt arms the senior warning', /Three attempts used/.test(box), true);
-ck('4. fourth is only for a more experienced colleague', /only.{0,4} for a more experienced colleague/i.test(box), true);
+ck(`4. attempt ${A.planA} arms the senior warning`, /attempts used/i.test(box), true);
+ck('4. the extra attempt is only for a more experienced colleague', /only.{0,4} for a more experienced colleague/i.test(box), true);
 ck('4. the button becomes the senior attempt', /SENIOR ATTEMPT/.test(box), true);
-ck('4. 3 + 1 is called a ceiling, not a quota', /ceiling, not a quota/i.test(box), true);
-await tap('#attempt');
+ck('4. the ceiling is called a ceiling, not a quota', /ceiling, not a quota/i.test(box), true);
+/* Universal invariant: the senior attempt is the LAST one on this rung. */
+for (let i = 0; i < A.planASenior; i++) await tap('#attempt');
 ck('4. the senior attempt hands off to Plan B', await txt('#statusword'), 'PLAN B');
 
 /* ---- 5. failure can be declared early, at any rung ---- */
@@ -94,7 +145,8 @@ await tap('#failA');
 ck('5. Plan A failure can be declared on attempt zero', await txt('#statusword'), 'PLAN B');
 box = await txt('#planbox');
 ck('5. Plan B is a second-generation SAD', /Second-generation SAD/.test(box), true);
-ck('5. Plan B counter starts at 0 of 3', /0 of 3 insertions/.test(box), true);
+ck(`5. Plan B counter starts at 0 of ${A.planB} (DAS.attempts.planB)`,
+   lit(`0 of ${A.planB} insertions`).test(box), true);
 await tap('#failB');
 ck('5. Plan B failure can be declared early', await txt('#statusword'), 'PLAN C');
 box = await txt('#planbox');
@@ -103,17 +155,21 @@ ck('5. Plan C insists on full neuromuscular block', /Ensure full neuromuscular b
 await tap('#cico');
 ck('5. CICO can be declared from Plan C', await txt('#statusword'), 'PLAN D');
 
-/* ---- 6. the ceilings on B and C ---- */
+/* ---- 6. the ceilings on B and C ----
+   Each rung must hold for exactly its configured number of attempts and hand
+   off on the one after. The counts come from config; the SHAPE — that B hands
+   to C and C declares CICO, never the other way and never skipping — is the
+   invariant and stays written out. */
 await start();
 await tap('#failA');
-await tap('#attempt'); await tap('#attempt');
-ck('6. two SAD attempts stay on Plan B', await txt('#statusword'), 'PLAN B');
+for (let i = 0; i < A.planB - 1; i++) await tap('#attempt');
+ck(`6. ${A.planB - 1} SAD attempts stay on Plan B`, await txt('#statusword'), 'PLAN B');
 await tap('#attempt');
-ck('6. the third SAD attempt hands off to Plan C', await txt('#statusword'), 'PLAN C');
-await tap('#attempt'); await tap('#attempt');
-ck('6. two mask attempts stay on Plan C', await txt('#statusword'), 'PLAN C');
+ck(`6. SAD attempt ${A.planB} hands off to Plan C`, await txt('#statusword'), 'PLAN C');
+for (let i = 0; i < A.planC - 1; i++) await tap('#attempt');
+ck(`6. ${A.planC - 1} mask attempts stay on Plan C`, await txt('#statusword'), 'PLAN C');
 await tap('#attempt');
-ck('6. the third mask attempt declares CICO', await txt('#statusword'), 'PLAN D');
+ck(`6. mask attempt ${A.planC} declares CICO`, await txt('#statusword'), 'PLAN D');
 
 /* ---- 7. STOP AND THINK — four options, wake is the default ---- */
 await start();
@@ -123,7 +179,14 @@ box = await txt('#planbox');
 ck('7. ventilating SAD triggers stop and think', /STOP AND THINK/.test(box), true);
 ck('7. option 1 is wake, marked the default', /1 · Wake the patient — the default/.test(box), true);
 ck('7. option 2 proceed is marked high risk', /2 · Proceed using the SAD — high risk/.test(box), true);
-ck('7. option 3 through-SAD is capped at ONE attempt', /ONE attempt, bronchoscope/.test(box), true);
+/* The screen writes this cap as the word "ONE" rather than reading
+   DAS.attempts.planBviaSAD, so the two are coupled by hand. Assert they agree:
+   a champion who edits the config expecting the screen to follow should find
+   out here that it does not, instead of on a patient. */
+const WORD = { 1: 'ONE', 2: 'TWO', 3: 'THREE' };
+const viaSADWord = WORD[A.planBviaSAD] || A.planBviaSAD;
+ck(`7. option 3 through-SAD is capped at ${viaSADWord} attempt (DAS.attempts.planBviaSAD)`,
+   lit(`${viaSADWord} attempt, bronchoscope`).test(box), true);
 ck('7. option 4 is front-of-neck', /4 · Front-of-neck airway/.test(box), true);
 ck('7. all four options are offered', await pg.locator('[data-st]').count(), 4);
 await tap('[data-st="viaSAD"]');
@@ -139,21 +202,22 @@ box = await txt('#planbox');
 ck('8. Plan D is scalpel bougie tube', /Scalpel · bougie · tube/.test(box), true);
 ck('8. the words to say out loud are given', /Cannot intubate, cannot oxygenate/i.test(box), true);
 ck('8. no eFONA without full neuromuscular block', /Do not attempt an eFONA without full neuromuscular block/i.test(box), true);
-ck('8. kit lists a size 10 scalpel', /size 10 scalpel/.test(box), true);
-ck('8. kit lists a coude bougie', /coud[ée]-tip bougie/.test(box), true);
-ck('8. kit lists a 6.0 cuffed tube', /6\.0 mm cuffed/.test(box), true);
-ck('8. seventeen steps in the sequence', /STEP 1 OF 17/.test(box), true);
+ck(`8. kit lists the configured blade (${CFG.fona.blade})`, lit(CFG.fona.blade).test(box), true);
+ck(`8. kit lists the configured bougie (${CFG.fona.bougie})`, lit(CFG.fona.bougie).test(box), true);
+/* The tube size is the most likely thing an adopting ED changes on this tray. */
+ck(`8. kit lists the configured tube (${CFG.fona.tube})`, lit(CFG.fona.tube).test(box), true);
+ck(`8. the sequence has ${FONA_STEPS} steps`, lit(`STEP 1 OF ${FONA_STEPS}`).test(box), true);
 ck('8. step one positions the operator', /Stand on the patient/.test(box), true);
 ck('8. there is no BACK on step one', await pg.locator('#fonaback').count(), 0);
 await tap('#fonanext');
 box = await txt('#planbox');
-ck('8. next advances to step two', /STEP 2 OF 17/.test(box), true);
+ck('8. next advances to step two', lit(`STEP 2 OF ${FONA_STEPS}`).test(box), true);
 ck('8. BACK appears from step two', await pg.locator('#fonaback').count(), 1);
 await tap('#fonaback');
-ck('8. BACK returns to step one', /STEP 1 OF 17/.test(await txt('#planbox')), true);
-for (let i = 0; i < 16; i++) await tap('#fonanext', 60);
+ck('8. BACK returns to step one', lit(`STEP 1 OF ${FONA_STEPS}`).test(await txt('#planbox')), true);
+for (let i = 0; i < FONA_STEPS - 1; i++) await tap('#fonanext', 60);
 box = await txt('#planbox');
-ck('8. the last step is step 17', /STEP 17 OF 17/.test(box), true);
+ck(`8. the last step is step ${FONA_STEPS}`, lit(`STEP ${FONA_STEPS} OF ${FONA_STEPS}`).test(box), true);
 ck('8. the last step is securing the tube', /Secure the tube/.test(box), true);
 ck('8. the finish button is capnography-confirmed', await pg.locator('#fonadone').count(), 1);
 ck('8. there is no NEXT past the last step', await pg.locator('#fonanext').count(), 0);
@@ -184,8 +248,9 @@ ck('10. losing it again returns to the ladder', await pg.locator('#ladder').isVi
 /* ---- 11. the reference accordions ---- */
 await fresh();
 const preox = await openAcc('preox');
-ck('11. cricoid 10 N awake', /10 N awake/.test(preox), true);
-ck('11. cricoid 30 N once unconscious', /30 N once unconscious/.test(preox), true);
+ck(`11. cricoid ${CFG.cricoid.awake} awake (DAS.cricoid.awake)`, lit(CFG.cricoid.awake + ' awake').test(preox), true);
+ck(`11. cricoid ${CFG.cricoid.asleep} once unconscious (DAS.cricoid.asleep)`,
+   lit(CFG.cricoid.asleep + ' once unconscious').test(preox), true);
 ck('11. audible SpO2 tone before induction', /audible SpO₂ tone/i.test(preox), true);
 
 const trig = await openAcc('triggers');
@@ -198,10 +263,10 @@ const say = await openAcc('say');
 ck('11. the three declarations are scripted', (say.match(/Failed intubation|Failed SAD ventilation|Cannot intubate, cannot oxygenate/g) || []).length, 3);
 
 const fona = await openAcc('fona');
-ck('11. the full sequence lists all 17 steps', await pg.locator('.accb ol li').count(), 17);
+ck(`11. the full sequence lists all ${FONA_STEPS} steps`, await pg.locator('.accb ol li').count(), FONA_STEPS);
 ck('11. vertical is named the 2025 default', /Vertical is the 2025 default/i.test(fona), true);
-ck('11. incision up to 8 cm', /up to 8 cm/.test(fona), true);
-ck('11. bougie to 10-15 cm', /10–15 cm/.test(fona), true);
+ck(`11. incision is the configured one (${CFG.fona.incision})`, lit(CFG.fona.incision).test(fona), true);
+ck(`11. bougie to ${CFG.fona.bougieDepth} (DAS.fona.bougieDepth)`, lit(CFG.fona.bougieDepth).test(fona), true);
 
 const why = await openAcc('why');
 ck('11. says DAS publishes no causes mnemonic', /does not publish a causes mnemonic/i.test(why), true);
@@ -266,7 +331,11 @@ const small = await pg.evaluate(() => [...document.querySelectorAll('button')]
   .filter(el => el.offsetParent !== null && el.getBoundingClientRect().height < 38)
   .map(el => (el.textContent || '').trim().slice(0, 24)));
 ck('14. every visible button is at least 38px tall', small.join(' | ') || 'none', 'none');
-ck('14. version and last-reviewed date are stamped', /v\d+\.\d+ · last reviewed \d{4}-\d{2}-\d{2}/.test(await txt('#verstamp')), true);
+/* The stamp is rendered from the config, so assert it shows the config's own
+   version and date rather than a plausible-looking pattern. A fork that edits
+   the ladder and bumps DAS.version gets a stamp that actually moved. */
+ck(`14. stamp shows v${CFG.version}, last reviewed ${CFG.lastReviewed}`,
+   lit(`v${CFG.version} · last reviewed ${CFG.lastReviewed}`).test(await txt('#verstamp')), true);
 ck('14. the standard disclaimer is present',
   /not part of the hospital IT system\/EHR, not a substitute for clinical judgment/.test(await txt('body')), true);
 

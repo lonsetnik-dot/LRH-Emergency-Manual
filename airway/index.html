@@ -52,13 +52,11 @@
     </button>
     <div class="card" style="margin-top:12px;padding:12px">
       <div class="sec">BEFORE YOU INDUCE — DAS 2025</div>
-      <div style="font-size:14px;line-height:1.6;margin-top:6px">
-        Pre-oxygenate to <b>ETO₂ &ge;0.9</b> · head up <b>&ge;30&deg;</b> · HFNO <b>&gt;30 L/min</b> if you have it, kept running throughout
-        (<b>peroxygenation</b>).<br>
-        <b>Videolaryngoscopy is first-line</b>, not rescue.<br>
-        Full block: <b>rocuronium 1.2 mg/kg</b> or <b>succinylcholine 1.5 mg/kg</b>.<br>
-        Turn the <b>audible SpO₂ tone on</b>. Name an airway assistant who watches capnography and the clock.
-      </div>
+      <!-- Filled from the DAS config block by preInduce(), not written out here.
+           These same numbers appear in the PRE-OXYGENATION & DRUGS accordion; when
+           both were hand-typed, a site that localized the config got a screen that
+           silently disagreed with itself. One source, two renderings. -->
+      <div id="preinduce" style="font-size:14px;line-height:1.6;margin-top:6px"></div>
     </div>
   </div>
 
@@ -68,7 +66,7 @@
     <div class="card" id="primebox" style="margin-top:10px;border:1px dashed var(--amber);padding:12px;display:flex;gap:10px;align-items:center">
       <div style="flex:1">
         <div class="sec" style="color:var(--amber)">PRIME IN PARALLEL — DO NOT WAIT FOR CICO</div>
-        <div style="font-size:13px;color:var(--ink2);margin-top:2px">Scalpel, bougie and a 6.0 tube out of the bag now, while Plans A–C are still running.</div>
+        <div id="primetext" style="font-size:13px;color:var(--ink2);margin-top:2px"></div>
       </div>
       <button id="primebtn" type="button" style="min-height:56px;border:none;border-radius:12px;background:var(--amber);color:#141E2B;font:800 13px var(--sans);padding:0 14px;cursor:pointer;white-space:nowrap">PRIMED — LOG IT</button>
     </div>
@@ -149,6 +147,23 @@ function fmt(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String
 function clk(){ return S.t0 ? fmt((Date.now()-S.t0)/1000) : '0:00'; }
 function log(l){ S.events.unshift({t:clk(), label:l}); }
 
+/* Small integers read better as words in prose ("ONE attempt") than as digits,
+   but the number itself must still come from config so a site that localizes a
+   ceiling gets prose that follows it. Anything past the table falls back to the
+   digit rather than inventing a word. */
+var NUMWORDS=['zero','one','two','three','four','five','six','seven','eight','nine','ten'];
+function numWord(n){ return NUMWORDS[n] || String(n); }
+
+/* The pre-induction card and the PRE-OXYGENATION & DRUGS accordion say the same
+   things. Both are rendered from DAS, so localizing the config moves both. */
+function preInduce(){
+  return 'Pre-oxygenate to <b>ETO&#8322; &ge;'+DAS.preox.eto2+'</b> · head up <b>&ge;'+DAS.preox.headUp+
+    '</b> · HFNO <b>&gt;'+DAS.preox.hfno+'</b> if you have it, kept running throughout (<b>peroxygenation</b>).<br>'+
+    '<b>Videolaryngoscopy is first-line</b>, not rescue.<br>'+
+    'Full block: <b>rocuronium '+DAS.rsi.roc+'</b> or <b>succinylcholine '+DAS.rsi.sux+'</b>.<br>'+
+    'Turn the <b>audible SpO&#8322; tone on</b>. Name an airway assistant who watches capnography and the clock.';
+}
+
 /* PHI guard — same contract as /arrest/. In memory only, refused with a reason
    rather than silently scrubbed, because a silent scrub teaches people the
    field is safe to put a name in. */
@@ -198,29 +213,32 @@ function planBox(){
     h+='<div class="sec" style="color:var(--blue)">PLAN A — TRACHEAL INTUBATION</div>'+
        '<div style="font-size:22px;font-weight:800;margin-top:4px">Videolaryngoscopy, first-line</div>'+
        '<div style="margin-top:10px">'+pips(S.a, DAS.attempts.planA+1, 'var(--blue)')+
-       '<span style="font-size:13px;color:var(--ink2);margin-left:6px">'+S.a+' of 3 &nbsp;+&nbsp; 1 senior</span></div>'+
+       '<span style="font-size:13px;color:var(--ink2);margin-left:6px">'+S.a+' of '+DAS.attempts.planA+
+       ' &nbsp;+&nbsp; '+DAS.attempts.planASenior+' senior</span></div>'+
        '<div style="font-size:13.5px;line-height:1.5;margin-top:8px;color:var(--ink2)">'+
        'An attempt is any instrumentation with a device, an introducer, or both. Between attempts change <b>something</b> — '+
        'operator, blade, stylet or bougie, external laryngeal manipulation, position.</div>';
-    if(senior) h+='<div class="say" style="border-color:var(--amber)"><b>Three attempts used.</b> A fourth is <b>only</b> for a more experienced colleague. '+
-       'If nobody more experienced is coming, or a fourth would not change anything, stop now.</div>';
+    if(senior) h+='<div class="say" style="border-color:var(--amber)"><b>'+DAS.attempts.planA+' attempts used.</b> '+
+       'A further attempt is <b>only</b> for a more experienced colleague. '+
+       'If nobody more experienced is coming, or another attempt would not change anything, stop now.</div>';
     h+='<button class="btn" id="attempt" type="button" style="width:100%;min-height:72px;margin-top:10px;background:var(--blue);color:#fff;border:none;font-size:19px">'+
        (senior?'SENIOR ATTEMPT — LOG IT':'ATTEMPT '+(S.a+1)+' — LOG IT')+'</button>'+
        '<button class="btn" id="failA" type="button" style="width:100%;min-height:60px;margin-top:8px;border-color:var(--red);color:var(--red)">DECLARE FAILED INTUBATION → PLAN B</button>'+
-       '<div style="font-size:12.5px;color:var(--ink2);margin-top:8px">Failure can be declared at any time, even after the first attempt. 3+1 is a ceiling, not a quota.</div>';
+       '<div style="font-size:12.5px;color:var(--ink2);margin-top:8px">Failure can be declared at any time, even after the first attempt. '+
+       DAS.attempts.planA+'+'+DAS.attempts.planASenior+' is a ceiling, not a quota.</div>';
   }
   if(p==='B'){
     h+='<div class="sec" style="color:var(--accent)">PLAN B — OXYGENATE VIA A SUPRAGLOTTIC AIRWAY</div>'+
        '<div style="font-size:22px;font-weight:800;margin-top:4px">Second-generation SAD</div>'+
        '<div style="margin-top:10px">'+pips(S.b, DAS.attempts.planB, 'var(--accent)')+
-       '<span style="font-size:13px;color:var(--ink2);margin-left:6px">'+S.b+' of 3 insertions</span></div>'+
+       '<span style="font-size:13px;color:var(--ink2);margin-left:6px">'+S.b+' of '+DAS.attempts.planB+' insertions</span></div>'+
        '<div style="font-size:13.5px;line-height:1.5;margin-top:8px;color:var(--ink2)">Change the size or the device between attempts. Second generation ahead of first.</div>';
     if(S.stopThink){
       h+='<div class="say"><b>It is ventilating. STOP AND THINK.</b> Four options, and the default is the first:</div>'+
          '<div style="display:flex;flex-direction:column;gap:8px;margin-top:8px">'+
          '<button class="btn" data-st="wake" type="button" style="min-height:56px;text-align:left;padding:0 14px">1 · Wake the patient <span style="font-weight:600;color:var(--ink2)">— the default</span></button>'+
          '<button class="btn" data-st="proceed" type="button" style="min-height:56px;text-align:left;padding:0 14px">2 · Proceed using the SAD <span style="font-weight:600;color:var(--red)">— high risk</span></button>'+
-         '<button class="btn" data-st="viaSAD" type="button" style="min-height:56px;text-align:left;padding:0 14px">3 · Intubate through the SAD <span style="font-weight:600;color:var(--ink2)">— ONE attempt, bronchoscope</span></button>'+
+         '<button class="btn" data-st="viaSAD" type="button" style="min-height:56px;text-align:left;padding:0 14px">3 · Intubate through the SAD <span style="font-weight:600;color:var(--ink2)">— '+numWord(DAS.attempts.planBviaSAD).toUpperCase()+' attempt, bronchoscope</span></button>'+
          '<button class="btn" data-st="fona" type="button" style="min-height:56px;text-align:left;padding:0 14px">4 · Front-of-neck airway</button></div>';
     } else {
       h+='<button class="btn" id="attempt" type="button" style="width:100%;min-height:72px;margin-top:10px;background:var(--accent);color:var(--accentInk);border:none;font-size:19px">SAD ATTEMPT '+(S.b+1)+' — LOG IT</button>'+
@@ -232,9 +250,9 @@ function planBox(){
     h+='<div class="sec" style="color:var(--amber)">PLAN C — FINAL FACEMASK VENTILATION</div>'+
        '<div style="font-size:22px;font-weight:800;margin-top:4px">Two people, four hands</div>'+
        '<div style="margin-top:10px">'+pips(S.c, DAS.attempts.planC, 'var(--amber)')+
-       '<span style="font-size:13px;color:var(--ink2);margin-left:6px">'+S.c+' of 3 attempts</span></div>'+
+       '<span style="font-size:13px;color:var(--ink2);margin-left:6px">'+S.c+' of '+DAS.attempts.planC+' attempts</span></div>'+
        '<div style="font-size:13.5px;line-height:1.5;margin-top:8px;color:var(--ink2)">'+
-       '<b>Ensure full neuromuscular block.</b> Two-person technique, optimise position, oral and nasal adjuncts in.</div>'+
+       '<b>Ensure full neuromuscular block.</b> Two-person technique, optimize position, oral and nasal adjuncts in.</div>'+
        '<button class="btn" id="attempt" type="button" style="width:100%;min-height:72px;margin-top:10px;background:var(--amber);color:#141E2B;border:none;font-size:19px">MASK ATTEMPT '+(S.c+1)+' — LOG IT</button>'+
        '<button class="btn" id="worksC" type="button" style="width:100%;min-height:60px;margin-top:8px;border-color:var(--green);color:var(--green)">IT IS VENTILATING — STOP, THINK, CALL SENIORS</button>'+
        '<button class="btn" id="cico" type="button" type="button" style="width:100%;min-height:72px;margin-top:8px;background:var(--red);color:#fff;border:none;font-size:19px">DECLARE CICO → PLAN D</button>';
@@ -331,6 +349,9 @@ function paint(){
   $('resetbtn').style.background = S.resetArm ? 'var(--red)' : 'var(--card)';
   $('resetbtn').style.color = S.resetArm ? '#fff' : 'var(--ink2)';
 
+  $('preinduce').innerHTML = preInduce();
+  $('primetext').innerHTML = 'Scalpel, bougie and a '+DAS.fona.tube+' tube out of the bag now, while Plans A–C are still running.';
+
   $('idle').style.display = S.phase==='idle' ? '' : 'none';
   $('ladder').style.display = live ? '' : 'none';
   $('secured').style.display = S.phase==='secured' ? '' : 'none';
@@ -373,19 +394,19 @@ document.addEventListener('click', function(e){
     S.phase='ladder'; S.t0=Date.now(); S.plan='A';
     log('Difficult airway declared — help called, eFONA primed in parallel'); paint(); return;
   }
-  if(id==='primebtn'){ S.primed=true; log('eFONA kit primed — scalpel, bougie, 6.0 tube out'); paint(); return; }
+  if(id==='primebtn'){ S.primed=true; log('eFONA kit primed — scalpel, bougie, '+DAS.fona.tube+' tube out'); paint(); return; }
 
   if(id==='attempt'){
     if(S.plan==='A'){
       S.a++;
       log(S.a>DAS.attempts.planA ? ('Plan A — SENIOR attempt #'+S.a) : ('Plan A — intubation attempt #'+S.a));
-      if(S.a>=DAS.attempts.planA+DAS.attempts.planASenior) toPlan('B','Three plus one attempts used — failed intubation declared, moving to Plan B');
+      if(S.a>=DAS.attempts.planA+DAS.attempts.planASenior) toPlan('B',DAS.attempts.planA+' plus '+DAS.attempts.planASenior+' attempts used — failed intubation declared, moving to Plan B');
     } else if(S.plan==='B'){
       S.b++; log('Plan B — SAD insertion attempt #'+S.b);
-      if(S.b>=DAS.attempts.planB) toPlan('C','Three SAD attempts used — failed SAD ventilation declared, moving to Plan C');
+      if(S.b>=DAS.attempts.planB) toPlan('C',DAS.attempts.planB+' SAD attempts used — failed SAD ventilation declared, moving to Plan C');
     } else if(S.plan==='C'){
       S.c++; log('Plan C — facemask attempt #'+S.c);
-      if(S.c>=DAS.attempts.planC) toPlan('D','Three facemask attempts used — CANNOT INTUBATE CANNOT OXYGENATE declared');
+      if(S.c>=DAS.attempts.planC) toPlan('D',DAS.attempts.planC+' facemask attempts used — CANNOT INTUBATE CANNOT OXYGENATE declared');
     }
     paint(); return;
   }
@@ -397,7 +418,7 @@ document.addEventListener('click', function(e){
 
   if(st==='wake'){ log('Stop and think → wake the patient (the default option)'); S.phase='secured'; S.securedAt=clk(); paint(); return; }
   if(st==='proceed'){ log('Stop and think → proceed using the SAD (high risk)'); S.phase='secured'; S.securedAt=clk(); paint(); return; }
-  if(st==='viaSAD'){ log('Stop and think → intubate through the SAD — ONE attempt, flexible bronchoscopy'); S.stopThink=false; paint(); return; }
+  if(st==='viaSAD'){ log('Stop and think → intubate through the SAD — '+numWord(DAS.attempts.planBviaSAD).toUpperCase()+' attempt, flexible bronchoscopy'); S.stopThink=false; paint(); return; }
   if(st==='fona'){ toPlan('D','Stop and think → front-of-neck airway'); return; }
 
   if(id==='fonanext'){ S.fonaStep++; log('eFONA step '+S.fonaStep+' done'); paint(); return; }
