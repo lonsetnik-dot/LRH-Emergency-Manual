@@ -1,9 +1,16 @@
 # INVENTORY-DESIGN.md — ED equipment inventory: design for review
 
-Status: **APPROVED — Phase 1 building.** Decisions (Lon, 2026-08-12):
+Status: **PHASE 2 SHIPPED (2026-08-12).** Phase 1 built the two-layer
+inventory and the read-only NPRP audit. Phase 2 turned it into a **process**:
+sizes are auditable rows, six more national standards sit alongside NPRP, kits
+are audited as kits, and the walk is captured in the tool itself rather than on
+a marked-up printout. §7 and §8 below are the Phase 2 record — read those first
+if you are picking this up.
+
+Decisions (Lon, 2026-08-12):
 
 1. **Granularity:** sizes only where a standard names sizes; drawer/kit level
-   elsewhere.
+   elsewhere. *(Phase 2: sizes are now their own rows — see §7.1.)*
 2. **Broselow:** transcribe the standard packing list first, then diff it
    against the real cart — the diff is the readiness audit.
 3. **Par levels yes, expiry no.**
@@ -225,3 +232,114 @@ carts with this list turns every ? into ✓ or ✗.
    warmer, trach tube range, c-collar sizes): file as coverage-gap issues
    like #84–96, or resolve on the cart walk first?
 5. Naming: `inventory/` as tool name, or fold the browser into `labels/`?
+
+---
+
+## 7. Phase 2 — what changed, and why (2026-08-12)
+
+Phase 1 produced an honest read-only picture: ~8 mapped, ~18 verify, 5 gaps
+against one standard. Using it exposed three limits, each fixed below.
+
+### 7.1 Sizes are rows, not adjectives
+
+*"Supraglottic airways 1–5: MAPPED"* answers a question nobody asks. The
+question at the head of the bed is whether **this** size is in **that** drawer.
+So a catalog item may carry `sizes:[…]`, and each size becomes its own
+auditable row keyed `id#size`; `INV_LOCATIONS` accepts either an item key or a
+size key, and a size key wins.
+
+The first thing this surfaced was already true and already invisible: LRH
+stocks **LMA 0 and 0.5 on the OB cart** and **i-gel 1 through 5 on the code
+cart**. At item granularity that is one green row. At size granularity it is
+two devices, two carts, and a handover fact worth knowing at 3 a.m.
+
+The catalog now sizes ~40 items — airways, tubes, blades, cannulae, chest
+tubes, collars, cuffs, IO needles, catheters — for ~230 standard rows, plus a
+row per kit and per kit-content line.
+
+### 7.2 Seven standards, not one
+
+NPRP is the **pediatric** checklist. It says nothing about a pelvic binder, a
+rapid infuser, a difficult-airway trolley, a hemorrhage cart or dantrolene, so
+a department at 100% NPRP could still be missing everything an adult trauma or
+an obstetric hemorrhage needs. The tool now scores:
+
+| Key | Standard | Why it is here |
+|---|---|---|
+| `NPRP` | AAP/ACEP/ENA pediatric readiness equipment appendix (Pediatrics 2018) | The national pediatric readiness score is built on it. |
+| `ACS-COT` | ACS *Resources for Optimal Care of the Injured Patient: 2022 Standards* | The adult/trauma half NPRP does not cover. |
+| `ASA-DA` | ASA difficult airway guideline 2022, portable storage unit contents | The rescue equipment must be **together**, not scattered. |
+| `NRP` | Neonatal Resuscitation Program 8th ed., delivery-room supplies | Unplanned births arrive in the ED. |
+| `AIM-OB` | AIM obstetric hemorrhage bundle (hemorrhage cart), item detail per CMQCC toolkit | A postpartum hemorrhage can present to an ED with no OB service. |
+| `MHAUS` | MHAUS malignant hyperthermia cart contents | Succinylcholine in RSI is a triggering agent. |
+| `ASRA-LAST` | ASRA LAST advisory — lipid rescue kit | Nerve blocks and large-volume local. |
+
+**Deliberately not scored**, so nobody re-litigates it: AHA/ACLS (publishes no
+cart parts list), Joint Commission and CMS Conditions of Participation (require
+that emergency equipment be available and checked, without itemizing it), ENA
+and ACEP department-planning guidance (capability language already covered by
+the ACS and NPRP rows), ATLS (a course, not an equipment standard).
+
+**Itemized vs narrative.** `ACS-COT` is marked `kind:"narrative"` because the
+ACS standard states capability rather than printing a parts list. Its rows are
+this manual's reading of it and the tool says so on screen, in a caution box,
+above the rows. That distinction has to survive: a survey is exactly where
+somebody quotes our list back as the standard's own words.
+
+### 7.3 A gap is an assertion, not an empty cell
+
+Phase 1 had two states, MAPPED and GAP, so an item nobody had looked at scored
+identically to an item somebody had confirmed absent. There are now four:
+
+- **MAPPED** — a location already in `inventory.js`, no `verify` flag.
+- **VERIFY** — believed present at that location, unconfirmed on a cart walk.
+- **NOT REVIEWED** — nobody has looked. The default, and not a claim.
+- **GAP** — asserted absent, either in source (`INV_GAP_ISSUES`, with an issue
+  number) or by whoever walked the cart.
+
+Only **MAPPED** and **RECORDED** (set on the walk) count toward a percentage.
+A readiness number that rises because nobody looked is worse than no number.
+
+### 7.4 One row, one control
+
+Half these items belong to two or three standards, and every kit belongs to the
+KITS section as well. Each row therefore renders its control exactly **once**,
+in its home standard (`std[0]`), and renders a read-only echo everywhere else;
+multi-size items echo as a roll-up ("3 of 7 ready"). Two controls writing one
+row is how a walk ends up disagreeing with itself halfway down the page.
+
+Catalog items belonging to **no** scored standard — a local addition, or an
+item whose standard a fork dropped — render in a `LOCAL` section. Without it
+they would exist in the data and appear nowhere on screen, which is worse than
+not carrying them at all.
+
+## 8. The readiness process (what the tool is actually for)
+
+1. **Print or carry it.** `PRINT WALK` prints every section, including the ones
+   left collapsed, with a blank location line and a GAP box per row.
+2. **Walk the carts.** For each row, set the dropdown: a location (type where
+   it actually is — the manual's own guess is prefilled, so usually you are
+   confirming or correcting a string) or **GAP**. Kit contents get IN THE KIT /
+   MISSING / ELSEWHERE. `N/A at this site` exists so a fork is not permanently
+   red for a service it does not run.
+3. **Nothing leaves the device.** Capture is `localStorage` on that browser
+   only — no PHI, no network, no server (CLAUDE.md rule 3). `RESET THIS DEVICE`
+   clears it and returns every row to the manual's baseline.
+4. **Hand it back to git.** `BUILD EXPORT` emits paste-ready `INV_LOCATIONS`
+   lines plus a gap list. Paste the locations into `inventory.js`, delete the
+   `verify:true` flags that were personally confirmed, and open one issue per
+   gap (`coverage-gap` + `equipment`). That is how a walk becomes the manual's
+   new baseline instead of a photograph of a clipboard.
+5. **Re-walk on a cadence.** The percentage is only true as of the last walk;
+   the tool deliberately does not decay it, because a number that rots quietly
+   is worse than a date on a page.
+
+`verify_equipment_readiness.mjs` protects the parts of this that a refactor
+could break silently: that every configured size has a row, that a typed
+location survives a reload, that RESET clears the device and not the baseline,
+that an untouched row reads NOT REVIEWED rather than MAPPED, that each standard
+carries its citation, and that no field asks for anything patient-identifying.
+Per CLAUDE.md's config-driven rule it reads all of that from the page's own
+injected inventory, so a fork with different sizes, locations or standards
+stays green — proven both ways before shipping, including a mutation run where
+the page's logic was broken with the config left alone.
