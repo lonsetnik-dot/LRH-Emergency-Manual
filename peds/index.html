@@ -1605,8 +1605,33 @@ var PEDS_WT = (function(){
   }
   var rb=document.getElementById('resetbtn');
   if(rb) rb.addEventListener('click', clearAll);
+  /* ---- Cross-tab / cross-tool weight re-sync (weight-routing audit) --------
+     wtKg was read from storage once at load and never again, so a weight
+     entered or corrected in codes/arrest left this tab's dose spans computing
+     off a stale number while the stale-strip's timestamp said "just entered".
+     Adopts storage's value only when it differs and this tab isn't mid-typing. */
+  /* "Mid-edit" = the field is focused AND shows something other than the
+     committed value, i.e. a half-typed number. Merely being focused is not
+     enough to skip: returning to a background tab restores focus to the input,
+     which would otherwise block the sync exactly when it's needed. */
+  function midEdit(el, committed){
+    return document.activeElement===el && el && String(el.value)!==(committed===null?'':String(committed));
+  }
+  function resyncFromStorage(){
+    var storedKg=null, storedSrc=null;
+    try{ storedKg=CASESTATE.getWtKg(); storedSrc=CASESTATE.getWtSrc(); }catch(e){}
+    if(storedKg===wtKg || midEdit(kgEl, wtKg)) return;
+    wtKg=storedKg; src=storedSrc;
+    if(kgEl) kgEl.value = (wtKg===null?'':wtKg);
+    recompute();
+  }
+  window.addEventListener('storage', function(ev){
+    if(!ev.key || ev.key.indexOf('lrh-case-')!==0) return;
+    resyncFromStorage();
+  });
+  document.addEventListener('visibilitychange', function(){ if(!document.hidden) resyncFromStorage(); });
   paintDisplay();
-  return { getKg:function(){ return wtKg; }, clear:clearAll };
+  return { getKg:function(){ return wtKg; }, clear:clearAll, resync:resyncFromStorage };
 })();
 
 /* ---- Generic weight-based dose calculator for every <span class="wdose">.
