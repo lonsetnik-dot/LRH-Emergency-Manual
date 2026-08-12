@@ -299,6 +299,17 @@ var SITE = {
     viscoelastic: "viscoelastic testing (TEG / ROTEM) if available"
   }
 };
+/* Expose the site config for inspection and for the verify suites.
+   Read-only in practice: nothing in this file reads window.SITE, it reads
+   the local SITE. Two reasons it is worth one line:
+   1. The suites assert the UI against THIS config instead of against
+      hardcoded LRH numbers, so a fork that correctly localizes its
+      values keeps a green test run (issue #117). Tests that break on
+      correct localization teach an adopting site to ignore failures.
+   2. A champion localizing the traumatic cardiac arrest can read the live,
+      in-effect config from the browser console rather than by reading
+      source (issues #116/#118). */
+try{ window.SITE = SITE; }catch(e){}
 
 /* The five reversible-cause workstreams. Same data drives both modes; only the
    presentation and framing differ. Colors follow the design tokens. The order

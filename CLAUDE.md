@@ -133,6 +133,43 @@ server still answering. If you touch the worker, run it against `dist/`:
 node build.mjs && node verify_offline.mjs
 ```
 
+## Config-driven verification (issue #117)
+
+The `verify_*.mjs` suites are the safety harness that makes it viable for a
+readiness champion plus an AI to maintain clinical logic. That only holds if a
+red run means something. So a suite must **read the tool's own config block and
+assert the UI against that** — never re-type this site's numbers a second time.
+An adopting ED that localizes its defibrillator to 150/200/200 J, its FONA tray
+to a 5.5 mm tube, or its fluid bolus to 10 mL/kg is doing exactly the right
+thing; a suite that turns red for it teaches that site a red run is normal, at
+the moment the harness is the only thing protecting them.
+
+Each live-protocol tool exposes its config for this (and so a champion can read
+the in-effect values from the browser console instead of from source):
+
+```js
+try{ window.SITE = SITE; }catch(e){}   /* arrest/, tca/  — DAS for airway/ */
+```
+
+Two rules when writing or editing a suite:
+
+1. **Local values come from config.** Doses, energies, attempt ceilings,
+   thresholds, tube sizes, countdown minutes, the version stamp. Derive test
+   inputs from config too — pick a pediatric weight as `trigger.maxKg - 1`, not
+   as `49`, so the case stays on the intended side of a localized threshold.
+2. **Clinical invariants stay written out.** Things a fork must *not* be able to
+   localize away: that energies escalate and then plateau, that a per-kg dose is
+   capped at the adult ceiling, that adult TXA is fixed while pediatric TXA is
+   per-kg, that the ladder runs A → B → C → D, that DAS publishes no SpO₂
+   cut-off, the scope disclaimers, the citations, and the PHI guards.
+
+Prove both directions before delivering: the suite passes with LRH's config,
+still passes with several values changed to a plausible fork's, and **fails**
+when the page's logic is mutated with the config left alone. Converting the
+airway suite this way is what surfaced that `/airway/` read its config for the
+ladder's behavior but printed hand-typed numbers on screen — a localized site
+would have got a screen that contradicted itself.
+
 ## Deploy & test workflow
 
 Give Lon this four-step close-out after every deliverable that touches a

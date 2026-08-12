@@ -1,6 +1,10 @@
 // Verification for tca/index.html — traumatic cardiac arrest cognitive aid.
 // Mirrors the pattern of the other verify_*.mjs scripts: load in headless
-// Chromium, drive the UI, assert behaviour and dose-math boundaries.
+// Chromium, drive the UI, assert behavior and dose-math boundaries.
+//
+// The clinical numbers are read from the page's own SITE block rather than
+// written out again here, so a fork that correctly localizes its values stays
+// green (issue #117). See the CONFIG-DRIVEN EXPECTATIONS note below.
 import { fileURLToPath } from 'url';
 import { dirname, join } from 'path';
 
@@ -27,6 +31,26 @@ await page.waitForTimeout(300);
 
 const txt = id => page.$eval('#' + id, e => e.textContent.trim());
 const vis = sel => page.$eval(sel, e => e.offsetParent !== null).catch(() => false);
+
+/* ---- CONFIG-DRIVEN EXPECTATIONS (issue #117) -------------------------------
+   Read the tool's own SITE block and assert the rendered doses against THAT.
+   An ED that gives 10 mL/kg boluses, or caps pediatric TXA differently, edits
+   the config and is doing the right thing; a suite full of LRH's numbers would
+   turn red for it and teach that site to ignore a red run.
+
+   What stays hardcoded, deliberately: that adult TXA is a FIXED dose while
+   pediatric TXA is per-kg and capped, that calcium is fixed in adults and
+   weight-based in children, that the obstetric workstream appears only when
+   pregnancy is flagged, and the PHI guard. Those are the clinical structure and
+   the golden rules, not local preferences. */
+const CFG = await page.evaluate(() => (typeof window.SITE === 'object' ? window.SITE : null));
+if (!CFG) { console.error('FATAL: /tca/ does not expose window.SITE — cannot verify against config'); process.exit(1); }
+/* A pediatric weight and an adult weight, both derived from the configured
+   threshold so they stay on the right side of it whatever it is set to. */
+const PEDS_KG = 20;
+const NEAR_PEDS_KG = CFG.trigger.maxKg - 1;
+const ADULT_KG = CFG.trigger.maxKg + 30;
+const perKg = (n, kg, cap) => Math.round(cap ? Math.min(n * kg, cap) : n * kg);
 
 // --- initial state -----------------------------------------------------------
 ok((await txt('clock')) === '0:00', 'clock starts at 0:00');
@@ -65,9 +89,11 @@ ok((await txt('statusword')) === 'RESUS RUNNING', 'status RESUS RUNNING when act
 ok(errors.length === 0, 'no JS errors after start: ' + errors.join(' | '));
 
 let circ = await circText();
-ok(circ.includes('20 mL/kg'), 'no-weight crystalloid shows per-kg inline in circulation: ' + circ.slice(0,120));
-ok(circ.includes('1 g IV over 10 min'), 'adult TXA fixed inline in circulation');
-ok(circ.includes('1 g calcium chloride'), 'adult calcium fixed 1 g CaCl2 inline');
+ok(circ.includes(CFG.fluid.crystalloidMlPerKg + ' mL/kg'),
+  `no-weight crystalloid shows ${CFG.fluid.crystalloidMlPerKg} mL/kg inline (SITE.fluid): ` + circ.slice(0,120));
+ok(circ.includes(CFG.txa.adult), 'adult TXA is the configured fixed dose (SITE.txa.adult)');
+ok(circ.includes(CFG.cal.adultChlorideG + ' g calcium chloride'),
+  `adult calcium is the configured fixed ${CFG.cal.adultChlorideG} g CaCl2 (SITE.cal.adultChlorideG)`);
 
 // workstreams present, obstetric hidden (not pregnant)
 let names = await page.$$eval('#worksteps .wcard', els => els.map(e => e.textContent));
@@ -102,30 +128,46 @@ let hasNum = await page.$eval('#worksteps', e => /1|2|3/.test(e.textContent));
 ok(hasNum, 'sequential mode shows priority numbers');
 
 // --- pediatric weight 20 kg: crystalloid 400 mL, TXA 300 mg, calcium 400/1000 -
-await page.fill('#wIn', '20');
+await page.fill('#wIn', String(PEDS_KG));
 await page.waitForTimeout(200);
 circ = await circText();
-ok(circ.includes('400 mL'), 'peds 20kg crystalloid = 400 mL inline: ' + circ.slice(0,140));
-ok(circ.includes('300 mg'), 'peds 20kg TXA = 300 mg (15 mg/kg) inline');
-ok(circ.includes('CaCl₂ 400 mg') && circ.includes('Ca gluconate 1000 mg'),
-  'peds 20kg calcium computes: CaCl2 400 mg (20 mg/kg) + gluconate 1000 mg (50 mg/kg)');
-ok((await txt('wnote')).includes('pediatric'), 'wnote flags pediatric at 20kg');
+{
+  const ml   = perKg(CFG.fluid.crystalloidMlPerKg, PEDS_KG);
+  const txaM = perKg(CFG.txa.pedsMgPerKg, PEDS_KG, CFG.txa.pedsMaxMg);
+  const cacl = perKg(CFG.cal.pedsChlorideMgPerKg, PEDS_KG, CFG.cal.pedsChlorideMaxMg);
+  const glu  = perKg(CFG.cal.pedsGluconateMgPerKg, PEDS_KG, CFG.cal.pedsGluconateMaxMg);
+  ok(circ.includes(ml + ' mL'), `peds ${PEDS_KG}kg crystalloid = ${ml} mL inline: ` + circ.slice(0,140));
+  ok(circ.includes(txaM + ' mg'), `peds ${PEDS_KG}kg TXA = ${txaM} mg (${CFG.txa.pedsMgPerKg} mg/kg) inline`);
+  ok(circ.includes('CaCl₂ ' + cacl + ' mg') && circ.includes('Ca gluconate ' + glu + ' mg'),
+    `peds ${PEDS_KG}kg calcium computes: CaCl2 ${cacl} mg + gluconate ${glu} mg`);
+}
+ok((await txt('wnote')).includes('pediatric'), `wnote flags pediatric at ${PEDS_KG}kg`);
 
 // peds TXA cap: 49 kg peds -> 15*49 = 735 mg
-await page.fill('#wIn', '49');
+await page.fill('#wIn', String(NEAR_PEDS_KG));
 await page.waitForTimeout(150);
 circ = await circText();
-ok(circ.includes('735 mg'), 'peds 49kg TXA = 735 mg inline');
+{
+  const txaM = perKg(CFG.txa.pedsMgPerKg, NEAR_PEDS_KG, CFG.txa.pedsMaxMg);
+  ok(circ.includes(txaM + ' mg'),
+    `just under the ${CFG.trigger.maxKg} kg threshold still doses as peds: TXA = ${txaM} mg`);
+}
 await page.fill('#wIn', '');
 await page.waitForTimeout(100);
 
 // --- adult weight 80 kg: crystalloid 1600 mL, TXA fixed, calcium fixed --------
-await page.fill('#wIn', '80');
+await page.fill('#wIn', String(ADULT_KG));
 await page.waitForTimeout(150);
 circ = await circText();
-ok(circ.includes('1600 mL'), 'adult 80kg crystalloid = 1600 mL inline');
-ok(circ.includes('1 g IV over 10 min'), 'adult 80kg TXA fixed 1 g inline');
-ok(circ.includes('1 g calcium chloride'), 'adult 80kg calcium fixed 1 g CaCl2 inline (not weight-scaled)');
+{
+  const ml = perKg(CFG.fluid.crystalloidMlPerKg, ADULT_KG);
+  ok(circ.includes(ml + ' mL'), `adult ${ADULT_KG}kg crystalloid = ${ml} mL inline`);
+}
+/* Structural, not local: above the threshold TXA and calcium stop scaling with
+   weight. Asserting the SAME strings the no-weight case produced is the point. */
+ok(circ.includes(CFG.txa.adult), `adult ${ADULT_KG}kg TXA is the fixed dose, not weight-scaled`);
+ok(circ.includes(CFG.cal.adultChlorideG + ' g calcium chloride'),
+  `adult ${ADULT_KG}kg calcium is the fixed dose, not weight-scaled`);
 
 // --- checklist logs to timeline ----------------------------------------------
 await page.click('#worksteps .wrow');   // first hemorrhage task
@@ -189,7 +231,13 @@ ok(plinks.some(h => h.includes('ob-neonatal/?from=home#c10')), 'resuscitative hy
 await page.click('#addressedbtn');
 await page.waitForTimeout(150);
 ok(await vis('#convstrip'), 'conventional window appears after MARK ADDRESSED');
-ok((await txt('convclock')).startsWith('9:') || (await txt('convclock')) === '10:00', 'conventional countdown near 10:00');
+{
+  const want = CFG.conventionalResusMin;
+  const shown = await txt('convclock');
+  /* Started a moment ago, so it reads the configured minutes or one second less. */
+  ok(shown === want + ':00' || shown.startsWith((want - 1) + ':'),
+    `conventional countdown starts at the configured ${want} min (SITE.conventionalResusMin), got ` + shown);
+}
 
 // --- ROSC path ---------------------------------------------------------------
 await page.click('#roscbtn');

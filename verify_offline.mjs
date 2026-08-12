@@ -273,15 +273,35 @@ try {
      (await pg.locator('#lrh-sw-update').count()) === 0 &&
      (await pg.evaluate(() => !document.getElementById('deploy-marker'))), true);
 
-  /* RELOAD is the only thing that swaps content. */
+  /* RELOAD is the only thing that swaps content.
+
+     This is the one place in the suite that deliberately provokes a navigation,
+     and sw-register.js reloads belt-and-braces: once on controllerchange, plus a
+     400 ms fallback for browsers that never fire it. So a SECOND navigation can
+     land underneath the assertion below and destroy the execution context out
+     from under page.evaluate. That is not a failure of the thing under test —
+     the thing under test is that the new content arrives — so read through the
+     navigation instead of failing on it. Seen only on CI, where the runner is
+     slow enough for the two reloads not to coalesce. */
   await pg.reload({ waitUntil: 'networkidle' });
   await pg.waitForSelector('#lrh-sw-update', { timeout: 15000 }).catch(() => {});
   if (await pg.locator('#lrh-sw-reload').count()) {
     await pg.click('#lrh-sw-reload');
     await pg.waitForFunction(() => !!document.getElementById('deploy-marker'), null, { timeout: 15000 }).catch(() => {});
   }
+  const evalSettled = async (fn, tries = 6) => {
+    for (let i = 0; i < tries; i++) {
+      try { return await pg.evaluate(fn); }
+      catch (e) {
+        if (!/Execution context was destroyed|Target closed|navigation/i.test(String(e))) throw e;
+        await pg.waitForLoadState('load').catch(() => {});
+        await pg.waitForTimeout(300);
+      }
+    }
+    return pg.evaluate(fn);            /* last attempt, and let it throw if it still fails */
+  };
   ck('7. new deploy: RELOAD brings in the new version',
-     await pg.evaluate(() => !!document.getElementById('deploy-marker')), true);
+     await evalSettled(() => !!document.getElementById('deploy-marker')), true);
 } finally {
   const { writeFile } = await import('node:fs/promises');
   await writeFile(distIndex, originalIndex);
