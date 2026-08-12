@@ -220,6 +220,8 @@ catch(e){ document.body.dataset.theme='dark'; }
         <a href="#c06" data-k="head trauma tbi gcs canadian ct head rule new orleans criteria herniation mannitol hypertonic saline hypoxia hypotension" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">06</span><span class="t">Isolated Head Trauma</span></a>
         <a href="#c07" data-k="mangled amputated extremity mess score replantation limb salvage vascular injury compartment syndrome tourniquet" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">07</span><span class="t">Mangled / Amputated Extremity</span></a>
         <a href="#c08" data-k="bcvi blunt cerebrovascular injury screening denver expanded universal carotid vertebral artery cta neck seatbelt le fort cervical spine fracture stroke horner" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">08</span><span class="t">BCVI Screening</span></a>
+        <a href="#c09" data-k="mci mass casualty incident disaster triage start salt surge multiple patients bus crash declare roles zones green yellow red black expectant call tree mutual aid" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">09</span><span class="t">Mass-Casualty Incident — First 15 Minutes</span></a>
+        <a href="#c10" data-k="electrical injury lightning electrocution shock high voltage low voltage reverse triage keraunoparalysis rhabdomyolysis myoglobin compartment oral commissure exit wound" class="lrh-row" style="--cc:var(--orange)"><span class="n lrh-mono">10</span><span class="t">Electrical &amp; Lightning Injury</span></a>
         <a href="../codes/?from=home#c12" data-k="mtp massive transfusion protocol blood products prbc plasma platelets cryo hemorrhagic shock trauma" class="lrh-row" style="--cc:var(--red)"><span class="t">Massive Transfusion Protocol</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; CODES</span></a>
         <a href="../codes/?from=home#c18" data-k="fona cricothyroidotomy cico front of neck access surgical airway difficult airway das trauma" class="lrh-row" style="--cc:var(--red)"><span class="t">Front of Neck Access (FONA)</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; CODES</span></a>
       </div>
@@ -753,6 +755,88 @@ catch(e){ document.body.dataset.theme='dark'; }
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
     </div>
+  </article>
+
+  <!-- ============ CARD 09 · MASS-CASUALTY INCIDENT — FIRST 15 MINUTES (coverage gap #93) ============ -->
+  <article id="c09">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">09</span>Mass-Casualty Incident — First 15 Minutes</h2>
+        <span class="t-mono-r">DECLARE &middot; ROLES &middot; TRIAGE &middot; SPACE</span>
+      </div>
+      <div class="t-note2">More patients than the department can treat normally — a bus, a fire, a lightning strike on a summit. The first 15 minutes decide whether the ED runs the event or the event runs the ED.</div>
+    </div>
+    <div class="t-localize">&#9888; <b>DRAFT &mdash; NOT CLINICALLY REVIEWED:</b> written from the published guidance cited below to fill coverage gap <a href="https://github.com/lonsetnik-dot/LRH-Emergency-Manual/issues/93" style="color:var(--note-tx);">#93</a>. Verify against local plans before this card is trusted.</div>
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">1 &middot; DECLARE &amp; CLAIM ROLES (MINUTES 0&ndash;5)</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c09-0-0" class="t-ck"><span><b>Say it: &ldquo;This is an MCI&rdquo;</b> with the number and type of patients expected. Half-declared events get half a response.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c09-0-1" class="t-ck"><span>Start the call tree: administrator on call, all-staff callback, EMS/dispatch for the incoming picture, neighboring EDs for mutual aid.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c09-0-2" class="t-ck"><span>Roles claimed out loud: <b>triage officer at the ambulance door</b> (senior, does not treat), treatment leads per zone, patient-flow/registration lead, one communications voice.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c09-0-3" class="t-ck"><span>Stop normal flow: hold discharges-in-progress in the lobby, pause non-urgent arrivals to registration, clear imaging.</span></label></li>
+        </ul>
+      </details>
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">2 &middot; TRIAGE &amp; SPACE (MINUTES 5&ndash;10)</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c09-1-0" class="t-ck"><span><b>START triage at the door:</b> can walk &rarr; GREEN; not breathing after airway opened &rarr; expectant/BLACK; RR &gt; 30, no radial pulse / cap refill &gt; 2 s, or cannot follow commands &rarr; RED; everyone else &rarr; YELLOW.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c09-1-1" class="t-ck"><span>Zones: RED = resus rooms · YELLOW = main department/hall beds · GREEN = lobby or cafeteria WITH a staff member · expectant = a separate, staffed, private space.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c09-1-2" class="t-ck"><span>Mark the sort where it can be seen: triage tag if stocked, otherwise tape + marker on the chest. Vitals and interventions get written on the tape, not on paper that walks away.</span></label></li>
+        </ul>
+      </details>
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">3 &middot; SUPPLY, COMMS &amp; THE NEXT HOUR (MINUTES 10&ndash;15)</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c09-2-0" class="t-ck"><span>Push carts to the zones: airway cart and trauma cart to RED, dressings/splints to YELLOW.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c09-2-1" class="t-ck"><span>Blood bank heads-up ("MCI, possible MTP &times; multiple") and the transfer center heads-up in the same 5 minutes &mdash; distribution starts before anyone is packaged.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c09-2-2" class="t-ck"><span>Security: lock down entrances to one, set the family/reunification area away from care spaces, one media/information voice through admin.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c09-2-3" class="t-ck"><span>Documentation minimal but real: one sheet or tape-strip per patient with a triage number &mdash; names come later.</span></label></li>
+        </ul>
+      </details>
+    </div>
+    <div class="t-sub"><b>Sources:</b> START/SALT triage per CHEMM (chemm.hhs.gov); ACS Committee on Trauma disaster resources. <b>This card needs LRH-specific facts filled in:</b> the actual call-tree names/numbers and the designated zones.</div>
+    <div class="t-foot"><span class="verstamp"></span> &mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.</div>
+  </article>
+
+  <!-- ============ CARD 10 · ELECTRICAL &AMP; LIGHTNING INJURY (coverage gap #96) ============ -->
+  <article id="c10">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">10</span>Electrical &amp; Lightning Injury</h2>
+        <span class="t-mono-r">THE BURN IS THE TIP &middot; THE RHYTHM IS THE RISK</span>
+      </div>
+      <div class="t-note2">High-voltage current cooks from the inside; lightning is a different disease again. The skin often lies about both.</div>
+    </div>
+    <div class="t-localize">&#9888; <b>DRAFT &mdash; NOT CLINICALLY REVIEWED:</b> written from the published guidance cited below to fill coverage gap <a href="https://github.com/lonsetnik-dot/LRH-Emergency-Manual/issues/96" style="color:var(--note-tx);">#96</a>. Verify against local plans before this card is trusted.</div>
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">1 &middot; SCENE, TRIAGE &amp; THE ARREST EXCEPTION</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c10-0-0" class="t-ck"><span><b>Lightning with multiple victims: reverse triage</b> &mdash; work the ones in arrest first; respiratory arrest from lightning is very survivable with prompt ventilation.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c10-0-1" class="t-ck"><span>Classify: high voltage (&ge; 1000 V &mdash; power lines, transformers), low voltage (household), lightning. The category drives everything below.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c10-0-2" class="t-ck"><span>Thrown, fell, or unwitnessed &rarr; treat as trauma too: c-spine precautions and the <a href="#c02">activation card</a>.</span></label></li>
+        </ul>
+      </details>
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">2 &middot; WORKUP &amp; WHO GETS A MONITOR</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c10-1-0" class="t-ck"><span><b>EKG on everyone.</b> Continuous monitoring for: high-voltage exposure, loss of consciousness, abnormal or changing EKG, dysrhythmia, or a transthoracic current path.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c10-1-1" class="t-ck"><span><b>Low-voltage, asymptomatic, normal EKG &rarr; can usually go home</b> &mdash; the monitor admission is for the categories above, not every plug shock.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c10-1-2" class="t-ck"><span>Examine like a detective: entry and exit wounds, oral commissure burns in children (delayed labial-artery bleed), tympanic membranes and eyes after lightning, every muscle compartment.</span></label></li>
+        </ul>
+      </details>
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">3 &middot; BURNS, RHABDO &amp; THE QUIET INJURIES</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c10-2-0" class="t-ck"><span>Deep tissue injury exceeds the visible burn &mdash; standard burn formulas underestimate; titrate LR to <b>urine output 1&ndash;2 mL/kg/h if the urine is pigmented</b> (myoglobin), and send a CK.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c10-2-1" class="t-ck"><span>Re-check compartments hourly &mdash; delayed compartment syndrome is the classic miss; escharotomy/fasciotomy thresholds per the <a href="#c05">burn card</a>.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c10-2-2" class="t-ck"><span>Lightning extras: keraunoparalysis (transient limb paralysis &mdash; usually resolves, do not call it a cord injury yet), cataracts later, fixed dilated pupils are NOT prognostic immediately after lightning.</span></label></li>
+        </ul>
+      </details>
+    </div>
+    <div class="t-sub"><b>Sources:</b> Wilderness Medical Society lightning injury guidelines (WEM 2014); ACS/ABA burn referral criteria; Zafren et al., electrical injuries review. See also the <a href="#c05">Burn card</a> for fluid math.</div>
+    <div class="t-foot"><span class="verstamp"></span> &mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.</div>
   </article>
 </main>
 

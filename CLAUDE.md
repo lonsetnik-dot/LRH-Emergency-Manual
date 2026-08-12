@@ -154,4 +154,10 @@ test it" is not sufficient close-out for a deliverable.
 - `trauma/` — Trauma activation and resuscitation pathways.
 - `clinical-pathways/` — Diagnostic pathways (e.g. Chest Pain / HEART).
 - `posters/` — Printable one-page posters generated from procedure content.
-- `debrief/` — Post-code/critical-event debrief tool.
+- `debrief/` — redirect stub only; the debrief card lives in `conversations/`
+  (card 04). Kept so old links and printed QR codes still resolve.
+- `simulations/` — pillow-patient in-situ drill scripts chaining the tools'
+  workflows (deliberately excluded from the site search).
+- `equipment-readiness/` — searchable equipment locations + NPRP readiness
+  audit, rendered from the root `inventory.js` (injected at build like
+  `design-system.css`; see `INVENTORY-DESIGN.md`).

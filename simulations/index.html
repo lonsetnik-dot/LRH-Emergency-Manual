@@ -1,0 +1,868 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#005596">
+<title>LRH Simulations</title>
+<meta name="apple-mobile-web-app-title" content="Simulations">
+<meta name="description" content="Low-fidelity in-situ simulation scripts — a pillow as the patient — that walk teams through the manual's major workflows. Practice only.">
+<link rel="canonical" href="https://lrhemergencymanual.net/simulations/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="LRH Emergency Manual">
+<meta property="og:title" content="LRH Simulations (beta)">
+<meta property="og:description" content="Pillow-patient simulation scripts chained across the manual's real workflow cards. Practice and feedback only.">
+<meta property="og:url" content="https://lrhemergencymanual.net/simulations/">
+<meta name="twitter:card" content="summary">
+<style>
+  html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; --sticky-h:54px; }
+  /* @design-system */
+  /* ---- Shared design language — tokens, the single .hdr chrome bar, the
+     .lrh-* menu rows, the themed <body> and the .t-* card-interior classes are
+     injected from design-system.css at the marker above (build.mjs), edited
+     once for the whole manual. Only this tool's own sim-script classes live
+     below. ---- */
+  /* green box/head (positive outcome / debrief) — same local pattern debrief/ uses;
+     green is not a shared severity. */
+  .t-box-green{border:2px solid var(--green);border-radius:12px;overflow:hidden}
+  .t-head-green{background:var(--green)}
+  /* the workflow chain strip at the top of each sim: phase chips joined by arrows */
+  .chain{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:8px 0 2px}
+  .chain .ph{font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;font-size:11px;
+    font-weight:700;letter-spacing:.06em;color:var(--ink);background:var(--card2);
+    border:1px solid var(--line);border-radius:7px;padding:4px 8px;white-space:nowrap}
+  .chain .arw{color:var(--ink2);font-weight:700}
+  /* "read aloud" stem — what the facilitator says, verbatim */
+  .stem{margin:10px 0;border-left:4px solid var(--blue);background:var(--card2);
+    padding:9px 12px;font-size:14.5px;line-height:1.4;font-style:italic;border-radius:0 9px 9px 0}
+  .stem b{font-style:normal}
+  /* "open this card" jump chip — the recorder's cue to drive the manual */
+  .golink{display:inline-flex;align-items:center;gap:6px;margin:4px 6px 4px 0;min-height:38px;
+    padding:6px 12px;background:var(--card);border:2px solid var(--teal);border-radius:9px;
+    color:var(--teal);text-decoration:none;font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+    font-size:12px;font-weight:700;letter-spacing:.05em}
+  .golink:hover{color:var(--teal);border-color:var(--teal);background:var(--card2)}
+  /* the ADVANCE WHEN trigger line closing each phase */
+  .adv{margin:8px 0 2px;font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+    font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--amber)}
+  main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
+  article { scroll-margin-top:var(--sticky-h,54px); margin-top:12px; }
+  a { color:var(--blue); }
+  a:hover { color:var(--ink); }
+  a[href^="#"] { -webkit-tap-highlight-color:rgba(47,98,168,0.2); }
+  summary::-webkit-details-marker { display:none; }
+  button { -webkit-appearance:none; appearance:none; border-radius:0; touch-action:manipulation; -webkit-tap-highlight-color:rgba(22,50,79,0.15); }
+  .steps { display:grid; grid-template-columns:1fr; gap:12px; align-items:start; }
+  @media (min-width:760px) { .steps { grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); } }
+  #stickytop { position:sticky; top:0; z-index:30; }
+  @media print {
+    /* Force the light palette on paper regardless of the on-screen theme. */
+    body[data-theme]{ --bg:#fff; --card:#fff; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D; --line:rgba(15,35,60,.18);
+      --accent:#00693E; --red:#C63238; --amber:#B07E13; --blue:#2F6FB5; --green:#1F7F49; --gray:#6B7A8D;
+      --purple:#6C4FA3; --teal:#1F7E7E; --orange:#B4661F; --sev-crit:#9b1c2e; --sev-caution:#8a6d1f;
+      --sev-info:#2f62a8; --on-sev:#fffefb; --note-bg:#fdf3cf; --note-tx:#6b5410; background:#fff; }
+    .hdr, #betasplash { display:none; }
+    article { break-before:page; }
+  }
+</style>
+</head>
+<body data-theme="dark">
+<script>
+/* Apply a persisted theme before the page paints (shared lrh-pref- namespace;
+   outside any RESET prefix sweep — CASE-STATE.md). */
+try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+catch(e){ document.body.dataset.theme='dark'; }
+</script>
+<div id="betasplash" style="position:fixed; inset:0; z-index:999; background:linear-gradient(135deg,#005596,#003e6e); color:#fffefb; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
+  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:#a9c2dc;">LRH · EMERGENCY DEPARTMENT</div>
+  <div style="font-size:30px; line-height:1.06; letter-spacing:-0.02em; font-weight:700;">Simulations</div>
+  <div style="display:inline-block; padding:6px 14px; border:2px solid #e0b93c; color:#f7d97a; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.16em;">TRAINING ONLY</div>
+  <div style="max-width:460px; font-size:17px; line-height:1.4; color:#dbe4ee;">These are practice scripts — never instructions for the care of a real patient. The patient is a pillow.</div>
+  <div style="max-width:460px; font-size:14.5px; line-height:1.35; color:#a9c2dc;">Content is unverified and unapproved. Clinical values live on the linked cards — verify them locally before relying on them, even in practice.</div>
+  <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
+</div>
+<div id="stickytop">
+<div class="hdr">
+  <a class="ghost" href="../?from=tool">&#9664; MANUAL</a>
+  <span class="plabel">SIMULATIONS</span>
+  <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
+</div>
+</div>
+
+<main id="top">
+  <div style="padding:16px 14px 6px;">
+    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:var(--ink2); font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
+    <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Simulations — the patient is a pillow</h1>
+    <p style="margin:0; color:var(--ink2); font-size:14.5px;">Ten-to-fifteen-minute low-fidelity drills that chain the manual's real workflows together — birth into dystocia into a blue baby, asthma into arrest into post-ROSC. One person reads the script; the recorder drives the actual cards. No mannequin required.</p>
+  </div>
+
+  <!-- ===== HOW TO RUN / SAFETY (applies to every sim) ===== -->
+  <div class="t-localize">
+    ⚠ <b>IN-SITU SIM SAFETY:</b> announce "<b>this is a simulation</b>" at start and end, and post someone to catch real patients/calls. Never open real medications or sterile kits — sim props stay labeled <b>SIM</b> and never enter real stock. A real clinical need ends the sim immediately. Nothing about a real patient goes on the whiteboard or into the tools.
+  </div>
+
+  <div class="steps" style="padding:14px 14px 0;">
+    <details open class="t-box-info">
+      <summary class="t-head t-head-info">HOW TO RUN A PILLOW SIM</summary>
+      <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+        <li class="t-div" style="padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Cast:</b> 3–6 people. Minimum: a <b>leader</b>, a <b>recorder</b> (drives the manual — that's the skill being drilled), and a <b>facilitator</b> who reads the script and voices the monitor ("sat is 82"). Add hands, meds, and a family actor as available.</li>
+        <li class="t-div" style="padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Stage:</b> pillow in a gown on a stretcher. A rolled towel in a pillowcase is the baby. Vitals live on a whiteboard or the facilitator's voice. Point at where you'd push, cut, or place — say the dose out loud, give nothing.</li>
+        <li class="t-div" style="padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Advance on actions, not time:</b> each phase ends when the team does the things under ADVANCE WHEN. If they stall, the facilitator drops a hint ("what does the card say comes next?"), not the answer.</li>
+        <li class="t-div" style="padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Recorder really uses the tools:</b> open the linked card, enter the (fictional) weight, start the timers, tap the dose buttons. Half the value of these drills is fluency with the manual itself. <b>RESET FOR NEXT CASE when the sim ends.</b></li>
+        <li class="t-div" style="padding:11px 0; font-size:14.5px; line-height:1.35;"><b>Always debrief</b> — five minutes, same shift, using the <a href="../conversations/?from=home#c04">Debrief card</a>. Plus/delta/plus; one or two takeaways, owners named.</li>
+      </ul>
+    </details>
+  </div>
+
+  <!-- ===== SIM MENU ===== -->
+  <div class="lrh-menuwrap" style="padding-top:8px">
+    <div class="inner">
+      <!-- Sims are deliberately absent from the site-wide search; this local filter
+           is their own search surface. Matches titles + data-kw keywords. -->
+      <div class="lrh-filter"><span class="ico" aria-hidden="true">&#8981;</span><input type="search" id="simq" autocomplete="off" spellcheck="false" placeholder="Search sims&hellip; e.g. dystocia, arrest, FONA, MTP" aria-label="Search simulations"></div>
+      <div class="lrh-filter-empty" id="simq-empty" hidden>No sim matches &mdash; try a chain term like &ldquo;arrest&rdquo;, &ldquo;airway&rdquo;, or &ldquo;PPH&rdquo;.</div>
+      <div id="simmenu" style="display:grid; grid-template-columns:1fr; gap:8px;">
+        <a class="lrh-row" style="--cc:var(--blue)" href="#s01" data-kw="ob birth delivery precipitous shoulder dystocia neonatal resuscitation nrp blue baby warmer ppv mcroberts"><span class="t">SIM 1 · Precipitous Birth → Shoulder Dystocia → Blue Baby</span><span class="spacer"></span><span class="tag">OB · 15 MIN</span></a>
+        <a class="lrh-row" style="--cc:var(--blue)" href="#s02" data-kw="ob delivery postpartum hemorrhage pph mtp massive transfusion uterotonics txa jada bleeding"><span class="t">SIM 2 · Delivery → Postpartum Hemorrhage → MTP</span><span class="spacer"></span><span class="tag">OB · 12 MIN</span></a>
+        <a class="lrh-row" style="--cc:var(--purple)" href="#s03" data-kw="peds pediatric asthma silent chest arrest pals rosc post-rosc weight broselow epinephrine"><span class="t">SIM 3 · Pediatric Asthma → Arrest → Post-ROSC</span><span class="spacer"></span><span class="tag">PEDS · 15 MIN</span></a>
+        <a class="lrh-row" style="--cc:var(--purple)" href="#s04" data-kw="peds pediatric seizure status epilepticus rsi intubation vent crash dope desaturation"><span class="t">SIM 4 · Pediatric Status Epilepticus → RSI → Vent Crash (DOPE)</span><span class="spacer"></span><span class="tag">PEDS · 12 MIN</span></a>
+        <a class="lrh-row" style="--cc:var(--red)" href="#s05" data-kw="stemi vf arrest pea code status goals of care family conversation debrief lytics tnk"><span class="t">SIM 5 · STEMI → VF Arrest → PEA → Code Status → Debrief</span><span class="spacer"></span><span class="tag">MEDICAL · 18 MIN</span></a>
+        <a class="lrh-row" style="--cc:var(--red)" href="#s06" data-kw="hyperkalemia dialysis potassium bradycardia pacing transcutaneous transvenous tvp calcium"><span class="t">SIM 6 · Hyperkalemia → Unstable Bradycardia → Transvenous Pacing</span><span class="spacer"></span><span class="tag">MEDICAL · 12 MIN</span></a>
+        <a class="lrh-row" style="--cc:var(--red)" href="#s09" data-kw="airway angioedema failed intubation ladder das cico fona cric salad suction surgical"><span class="t">SIM 9 · Angioedema → Failed Airway Ladder → FONA</span><span class="spacer"></span><span class="tag">MEDICAL · 15 MIN</span></a>
+        <a class="lrh-row" style="--cc:var(--orange)" href="#s07" data-kw="trauma blunt mvc level 1 activation tension pneumothorax chest tube mtp transfer"><span class="t">SIM 7 · Blunt Trauma → Tension Pneumothorax → Chest Tube → MTP</span><span class="spacer"></span><span class="tag">TRAUMA · 15 MIN</span></a>
+        <a class="lrh-row" style="--cc:var(--orange)" href="#s08" data-kw="trauma penetrating stab tca traumatic arrest thoracotomy clamshell death notification spikes"><span class="t">SIM 8 · Penetrating Trauma → TCA → Thoracotomy → Notification</span><span class="spacer"></span><span class="tag">TRAUMA · 18 MIN</span></a>
+      </div>
+    </div>
+  </div>
+
+  <!-- ================= SIM 1 — OB ================= -->
+  <article id="s01">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">S1</span>Precipitous Birth → Shoulder Dystocia → Blue Baby</h2>
+        <span class="t-mono-r">OB SET · 15 MIN + DEBRIEF</span>
+      </div>
+      <div class="chain"><span class="ph">IMMINENT DELIVERY</span><span class="arw">→</span><span class="ph">SHOULDER DYSTOCIA</span><span class="arw">→</span><span class="ph">NEONATAL RESUSCITATION</span></div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">SETUP · 2 MIN</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Pillow-mom in a gown on the stretcher, knees-up. Towel-roll baby hidden under the gown. Whiteboard: <b>G3P2 at term, "the baby is coming," 5 minutes out the door.</b></li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Roles: leader/deliverer · recorder (drives the OB tool) · nurse · facilitator (voices mom + vitals). Family actor optional.</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Walk to the real OB cart — <b>point at</b> (don't open) the vaginal-delivery drawer and the airway/breathing drawer, so hands know where things live.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow + gown (mom) · rolled towel in a pillowcase (baby) · whiteboard + marker · one dry towel and a hat for the "baby" (these two may be real — they touch nothing sterile).</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>OB / Neonatal Cart · VAGINAL DELIVERY drawer:</b> point, don't open — clamps, cord scissors, bulb suction live here.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>OB / Neonatal Cart · AIRWAY / BREATHING drawer:</b> point — infant BVM + masks. Stage a separate SIM-labeled infant BVM if you want hands-on PPV.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Radiant warmer:</b> turn it on for real — warm-up time is part of the drill.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 1 · IMMINENT DELIVERY</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"She's pushing. You can see hair at the introitus. She screams — <b>it's coming NOW.</b>"</div>
+          <a class="golink" href="../ob-neonatal/?from=home#c02">OPEN › OB · IMMINENT NORMAL DELIVERY</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Recorder opens the card, stamps <b>time of birth</b> when the facilitator calls it. Team calls OB + nursery, warms the "baby," assigns who catches.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › delivery roles are claimed and the card is open with the clock ready.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 2 · CURVEBALL — THE HEAD IS OUT, NOTHING ELSE</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"The head delivered a minute ago and <b>retracted back against the perineum — turtle sign.</b> The shoulders will not come with normal traction."</div>
+          <a class="golink" href="../ob-neonatal/?from=home#c07">OPEN › OB · SHOULDER DYSTOCIA</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Team says it out loud, calls for help, and works the maneuvers <b>in order on the pillow</b> — legs back (McRoberts), suprapubic pressure (someone actually places hands and says where and which direction).</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Facilitator releases the "baby" after two maneuvers done correctly and narrated.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › two maneuvers are performed and narrated correctly.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 3 · THE BABY IS OUT — AND BLUE</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"Baby's out — <b>floppy, blue, not crying.</b> Cord is cut. What do you do, and where?"</div>
+          <a class="golink" href="../ob-neonatal/?from=home#c03">OPEN › OB · NEONATAL RESUSCITATION</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Towel-roll baby to the warmer. Warm–dry–stimulate, then PPV narrated at the right rate (use the card's metronome). Facilitator gives HR by voice: "HR 50… now 90 with good PPV."</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Recorder logs 1- and 5-minute marks from the time-of-birth clock stamped in Phase 1 — that's the payoff of stamping it early.</li>
+          </ul>
+          <div class="adv">END WHEN › HR &gt; 100 narrated, baby "pinking up," 5-minute mark logged.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-green">
+        <summary class="t-head t-head-green">WHAT GOOD LOOKS LIKE + DEBRIEF</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Time of birth stamped <b>at</b> delivery, not reconstructed later. Dystocia named out loud within seconds of the turtle sign. Nobody pulls harder — they change geometry.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">The baby moves to the warmer with a named person, and PPV starts inside a minute of "not crying."</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;"><a href="../conversations/?from=home#c04">Debrief card</a> prompts: <i>where did the extra hands come from at the dystocia call — and was that the fastest path?</i> · <i>who watched mom while everyone watched the baby?</i></li>
+        </ul>
+      </details>
+    </div>
+  </article>
+
+  <!-- ================= SIM 2 — OB ================= -->
+  <article id="s02">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">S2</span>Delivery → Postpartum Hemorrhage → MTP</h2>
+        <span class="t-mono-r">OB SET · 12 MIN + DEBRIEF</span>
+      </div>
+      <div class="chain"><span class="ph">DELIVERY DONE</span><span class="arw">→</span><span class="ph">PPH</span><span class="arw">→</span><span class="ph">MASSIVE TRANSFUSION</span></div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">SETUP · 2 MIN</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Pillow-mom post-delivery, placenta "out 10 minutes ago." A red towel or sheet under her is the growing puddle. Whiteboard: <b>BP 112/70 → will fall.</b></li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Roles: leader · recorder (OB tool + Codes MTP card) · meds voice · facilitator. The facilitator adds "more blood on the sheet" every 90 seconds until the team escalates correctly.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow-mom · red towel/sheet (the growing puddle) · whiteboard for vitals + running EBL.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>OB / Neonatal Cart · POSTPARTUM HEMORRHAGE drawer:</b> point, don't open — uterotonics are named aloud, never handled.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Blood bank:</b> the real MTP activation number, written where the team can read it (say it, don't dial).</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>JADA / balloon kit:</b> point at where your department actually stocks it (see the labels tool).</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 1 · IT'S NOT STOPPING</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"The nurse calls you back in: <b>'she's soaking through pads.'</b> Fundus feels boggy. Estimated loss so far: 700 mL and climbing."</div>
+          <a class="golink" href="../ob-neonatal/?from=home#c06">OPEN › OB · POSTPARTUM HEMORRHAGE</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Team works the card in order and <b>says each dose out loud</b>: uterine massage (hands on pillow, narrated), oxytocin, TXA with the time window stated, second IV, call OB.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › massage + two meds verbalized with doses, second IV named.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 2 · CURVEBALL — SHE'S CRASHING</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"Loss is past 1.5 L. <b>BP 78/40, HR 132,</b> she's pale and confused. Uterotonics are in. What now, and who are you calling?"</div>
+          <a class="golink" href="../codes/?from=home#c12">OPEN › CODES · MASSIVE TRANSFUSION PROTOCOL</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Someone <b>activates MTP by its actual phone number / process</b> (say it, don't dial). Recorder opens the MTP card and assigns a blood runner and a checker.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Bonus branch if time allows: leader states the next mechanical step from the PPH card (balloon / <a href="../procedures/?from=home#c13">JADA</a>) and where that kit lives.</li>
+          </ul>
+          <div class="adv">END WHEN › MTP activation is verbalized end-to-end and roles for blood are named.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-green">
+        <summary class="t-head t-head-green">WHAT GOOD LOOKS LIKE + DEBRIEF</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Escalation happens on the <b>trajectory</b> (climbing loss + falling BP), not after a magic number. TXA's window is said out loud. The MTP call is a sentence, not a debate.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;"><a href="../conversations/?from=home#c04">Debrief card</a> prompts: <i>what number or trigger would have made us call MTP one loop earlier?</i> · <i>did the recorder's card-driving keep pace with the room?</i></li>
+        </ul>
+      </details>
+    </div>
+  </article>
+
+  <!-- ================= SIM 3 — PEDS ================= -->
+  <article id="s03">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">S3</span>Pediatric Asthma → Arrest → Post-ROSC</h2>
+        <span class="t-mono-r">PEDS SET · 15 MIN + DEBRIEF</span>
+      </div>
+      <div class="chain"><span class="ph">SEVERE ASTHMA</span><span class="arw">→</span><span class="ph">ARREST (PEDS MODE)</span><span class="arw">→</span><span class="ph">POST-ROSC</span></div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">SETUP · 2 MIN</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Small pillow = <b>a 4-year-old, parent-reported 16 kg</b>. Whiteboard: sat 84% on room air, silent chest. A parent actor at the bedside raises the difficulty nicely.</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;"><b>First move of the sim:</b> recorder enters <b>16 kg</b> in the Peds weight bar — every dose downstream, including in the arrest tool, hangs off it. That hand-off is the thing being drilled.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> small pillow (the 4-year-old) · whiteboard · a phone/tablet with the Peds tool open — the weight bar is the first prop used.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Pediatric (Broselow) Cart · WHITE drawer (15–18 kg):</b> point, don't open — this is the drawer 16 kg maps to.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>SIM-labeled pediatric BVM</b> (or mime it) · defib pads mimed on the pillow.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · MEDICATIONS drawer:</b> point — epi is named with its weight-based dose, never drawn up.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 1 · SEVERE ASTHMA</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"Four-year-old, third albuterol neb done, still <b>sat 84, silent chest, sleepy.</b> Parent: 'he's never been this bad.'"</div>
+          <a class="golink" href="../peds/?from=home#p03">OPEN › PEDS · ASTHMA EXACERBATION</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Team escalates per the card and says the weight-based doses aloud (the card computes them from the 16 kg). Someone states what "getting worse" will look like and what the trigger to bag is.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › escalation doses verbalized from the card and the arrest trigger is stated.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 2 · CURVEBALL — HE STOPS</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"He goes limp. <b>No pulse.</b> Monitor shows a slow wide rhythm, then nothing organized."</div>
+          <a class="golink" href="../arrest/?from=peds">OPEN › ARREST ENGINE (CARRIES THE 16 KG ACROSS)</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Compressions on the pillow at real rate. Recorder starts the arrest tool — <b>confirm it shows the pediatric weight carried over</b> — and taps the epi timer as the "dose" is announced.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Leader states the asthma-arrest specifics from the reference accordions: what to do about the vent/bagging (slow rate, watch for breath stacking).</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › two epi cycles timed in the tool; facilitator then grants ROSC.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 3 · ROSC — NOW WHAT?</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"Pulse is back, sat climbing. He's not waking up. <b>The next ten minutes decide the next ten days.</b>"</div>
+          <a class="golink" href="../codes/?from=home#c22">OPEN › CODES · POST-ROSC CARE</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Recorder opens Post-ROSC — <b>the ROSC clock should already be running</b>, handed across from the arrest tool. Team walks the checklist: pressure target, sat/CO2 window, temperature, who they're calling for transfer.</li>
+          </ul>
+          <div class="adv">END WHEN › post-ROSC checklist walked and the transfer call is named.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-green">
+        <summary class="t-head t-head-green">WHAT GOOD LOOKS LIKE + DEBRIEF</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Weight entered once, early, and trusted everywhere after. Arrest recognized inside 10 seconds of the limp doll. Post-ROSC opened <i>before</i> anyone relaxes.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;"><a href="../conversations/?from=home#c04">Debrief card</a> prompts: <i>did the tools' shared weight/clock hand-offs actually work for us?</i> · <i>who was talking to the parent during compressions?</i></li>
+        </ul>
+      </details>
+    </div>
+  </article>
+
+  <!-- ================= SIM 4 — PEDS ================= -->
+  <article id="s04">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">S4</span>Pediatric Status Epilepticus → RSI → Vent Crash (DOPE)</h2>
+        <span class="t-mono-r">PEDS SET · 12 MIN + DEBRIEF</span>
+      </div>
+      <div class="chain"><span class="ph">STATUS EPILEPTICUS</span><span class="arw">→</span><span class="ph">RSI</span><span class="arw">→</span><span class="ph">DOPE CRASH</span></div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">SETUP · 2 MIN</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Pillow = <b>a 6-year-old, ~20 kg</b>, "seizing for 10 minutes, one dose of midazolam by EMS." Recorder enters the weight first.</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Roles: leader · airway · meds voice · recorder · facilitator. Stage a real (empty, SIM-labeled) BVM if available; otherwise mime it.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow (the 6-year-old) · whiteboard · SIM-labeled BVM · working suction to point at.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Pediatric (Broselow) Cart · BLUE drawer (19–23 kg):</b> point — 20 kg maps here; tube sizes live on the card.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · INTUBATION + ETT / BOUGIE drawers:</b> point — laryngoscopes, tubes, bougie.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Vent:</b> if a real one is nearby, stand next to it for the DOPE phase — touch nothing.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 1 · STILL SEIZING</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"Second benzo is in. Three minutes later he is <b>still seizing.</b> What's your second-line, at what dose, and how long does it take to run in?"</div>
+          <a class="golink" href="../peds/?from=home#p10">OPEN › PEDS · STATUS EPILEPTICUS</a>
+          <div class="adv">ADVANCE WHEN › second-line agent + weight-based dose + infusion time verbalized from the card.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 2 · SECURE THE AIRWAY</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"He's not protecting his airway and the seizure is finally slowing. The room agrees: <b>intubate.</b>"</div>
+          <a class="golink" href="../codes/?from=home#c06">OPEN › CODES · INTUBATION / RSI CHECKLIST</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Run the RSI checklist out loud as a challenge-response: drugs with peds doses, tube size, backup plan. Airway "intubates" the pillow; recorder logs the time.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › checklist completed as challenge-response and tube "placed."</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 3 · CURVEBALL — HE CRASHES ON THE VENT</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"Five minutes later: <b>sat 79 and falling, pressure alarm.</b> He's intubated and sedated. Why — work it as a list, not a guess."</div>
+          <a class="golink" href="../codes/?from=home#c14">OPEN › CODES · UNSTABLE ON THE VENT — DOPE</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Team walks D-O-P-E out loud, states the action for each letter, and the facilitator reveals the answer (a plugged tube — suction fixes it) only when the letter is actually reached in order.</li>
+          </ul>
+          <div class="adv">END WHEN › DOPE walked in order and the plug found at its letter.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-green">
+        <summary class="t-head t-head-green">WHAT GOOD LOOKS LIKE + DEBRIEF</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Second-line is named without a phone-a-friend. RSI is a checklist, not a vibe. The desaturation triggers the mnemonic, not random tweaking.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;"><a href="../conversations/?from=home#c04">Debrief card</a> prompts: <i>which RSI checklist line would we actually skip under pressure — and what would catch us?</i></li>
+        </ul>
+      </details>
+    </div>
+  </article>
+
+  <!-- ================= SIM 5 — MEDICAL ================= -->
+  <article id="s05">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">S5</span>STEMI → VF Arrest → PEA → Code Status → Debrief</h2>
+        <span class="t-mono-r">MEDICAL SET · 18 MIN + DEBRIEF</span>
+      </div>
+      <div class="chain"><span class="ph">STEMI</span><span class="arw">→</span><span class="ph">VF</span><span class="arw">→</span><span class="ph">PEA</span><span class="arw">→</span><span class="ph">CODE STATUS</span><span class="arw">→</span><span class="ph">DEBRIEF</span></div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">SETUP · 3 MIN</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Pillow = <b>a 68-year-old with crushing chest pain</b>. Print or pull up any old STEMI teaching EKG. <b>A family actor is required for this one</b> — that's the point of the chain.</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Roles: leader · compressor(s) · meds/defib voice · recorder · family actor · facilitator.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow · any old STEMI teaching EKG (printed) · whiteboard · two chairs for the family conversation · a phone/tablet with the arrest tool open.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · MEDICATIONS drawer:</b> point — lytic checklist is read from the card, drugs stay shut.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Defibrillator:</b> pads mimed on the pillow; shocks are called out loud with the tool's timer.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Transfer:</b> the DHMC transfer number visible on the whiteboard (say it, don't dial).</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 1 · STEMI</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"EKG in hand: <b>anterior STEMI.</b> You are 90 minutes from a cath lab. Walk your card: who do you call, what does the patient get, what's the lytic decision?"</div>
+          <a class="golink" href="../codes/?from=home#c21">OPEN › CODES · STEMI</a>
+          <div class="adv">ADVANCE WHEN › transfer call placed (verbalized) and the lytic decision is stated with its checklist.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 2 · CURVEBALL — HE ARRESTS IN FRONT OF YOU</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"Mid-sentence he slumps. Monitor: <b>VF.</b> Family is standing in the doorway."</div>
+          <a class="golink" href="../arrest/?from=home">OPEN › ARREST ENGINE — RUN THE VF LOOP</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Compressions on the pillow, real rate. Shocks called with the tool; epi/amio timed on its buttons. After two shock loops the facilitator changes the story: <b>"rhythm check — organized and slow, no pulse. PEA."</b> Team switches branches in the tool and hunts causes (H's &amp; T's) out loud.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Nobody sends the family away — someone is assigned to them. That assignment is a scored behavior in this sim.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › VF→PEA branch switch done in the tool and a family support person is named.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 3 · THE CONVERSATION, MID-CODE</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"Twenty minutes in. The nurse says quietly: <b>'his daughter says he has a POLST at home — he never wanted this.'</b> You're still coding him."</div>
+          <a class="golink" href="../conversations/?from=home#c02">OPEN › CONVERSATIONS · CODE STATUS</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Leader (or a designated second physician) has the conversation with the daughter <b>while compressions continue</b> — using the card's language. The team then acts on the answer: transition to comfort, stop compressions, note the time.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › the conversation happens in-role and an explicit stop decision is made and time-stamped.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-green">
+        <summary class="t-head t-head-green">PHASE 4 · DEBRIEF FOR REAL + WHAT GOOD LOOKS LIKE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Run the actual <a href="../conversations/?from=home#c04">Debrief card</a> as Phase 4, in-sim — state the Basic Assumption out loud, walk the timeline from the arrest tool's log, plus/delta/plus. This is the phase teams skip in real life; here it's scripted.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Good looks like: the STEMI transfer call already made (so the arrest doesn't orphan it), clean VF→PEA branch handling, family never abandoned, and the goals-of-care conversation changing what the team <i>does</i>.</li>
+        </ul>
+      </details>
+    </div>
+  </article>
+
+  <!-- ================= SIM 6 — MEDICAL ================= -->
+  <article id="s06">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">S6</span>Hyperkalemia → Unstable Bradycardia → Transvenous Pacing</h2>
+        <span class="t-mono-r">MEDICAL SET · 12 MIN + DEBRIEF</span>
+      </div>
+      <div class="chain"><span class="ph">HYPERKALEMIA</span><span class="arw">→</span><span class="ph">UNSTABLE BRADY</span><span class="arw">→</span><span class="ph">TVP</span></div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">SETUP · 2 MIN</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Pillow = <b>a dialysis patient who missed two sessions</b>. Whiteboard: K 7.8, wide QRS. Stage near the TVP kit's real location (point, don't open).</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow (dialysis patient) · whiteboard (K 7.8, wide QRS) · a printed ugly-QRS strip if you have one.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · MEDICATIONS drawer:</b> point — calcium, insulin/dextrose, albuterol all named with doses, never drawn.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Pacing pads:</b> mimed on the pillow; the generator settings are said out loud.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Room 7 cabinets · TRANSVENOUS PACING kit:</b> point, don't open — the walk to it is part of the drill.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 1 · CRASH THE POTASSIUM</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"K is 7.8 with a <b>wide, ugly QRS.</b> Order the sequence — drug, dose, what it does, what it doesn't."</div>
+          <a class="golink" href="../codes/?from=home#c11">OPEN › CODES · HYPERKALEMIA CRASH PROTOCOL</a>
+          <div class="adv">ADVANCE WHEN › calcium-first sequence verbalized with doses and the "temporizing vs removing" distinction stated.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 2 · CURVEBALL — HE BRADYS DOWN</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"Despite calcium: <b>HR 28, BP 70/40,</b> barely responsive. Atropine does nothing — as the card predicts. What's next, physically?"</div>
+          <a class="golink" href="../codes/?from=home#c03">OPEN › CODES · SYMPTOMATIC BRADYCARDIA</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Pads on the pillow, transcutaneous pacing narrated — rate, output, and the capture check ("do we feel a pulse with each spike?").</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › TC pacing set up and the capture question asked out loud.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 3 · FLOAT THE WIRE</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"Transcutaneous captures intermittently and he's <b>screaming with every spike.</b> Dialysis is two hours away. Bridge him properly."</div>
+          <a class="golink" href="../procedures/?from=home#c07">OPEN › PROCEDURES · TRANSVENOUS PACING</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Walk the checklist on the pillow: access site, sheath, balloon up at the right depth, generator settings said out loud (rate / output / sensing), capture confirmed, balloon <b>down</b>, secure.</li>
+          </ul>
+          <div class="adv">END WHEN › generator settings verbalized correctly and capture confirmed in narration.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-green">
+        <summary class="t-head t-head-green">WHAT GOOD LOOKS LIKE + DEBRIEF</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Calcium before anything shifty. Pacing decisions driven by perfusion, not the monitor number. The TVP checklist actually read, not recalled.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;"><a href="../conversations/?from=home#c04">Debrief card</a> prompt: <i>who in the room has actually floated a wire — and how do the rest of us borrow that before the real one?</i></li>
+        </ul>
+      </details>
+    </div>
+  </article>
+
+  <!-- ================= SIM 9 — MEDICAL / AIRWAY ================= -->
+  <article id="s09">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">S9</span>Angioedema → Failed Airway Ladder → FONA</h2>
+        <span class="t-mono-r">MEDICAL SET · 15 MIN + DEBRIEF</span>
+      </div>
+      <div class="chain"><span class="ph">ANGIOEDEMA</span><span class="arw">→</span><span class="ph">FAILED LADDER</span><span class="arw">→</span><span class="ph">SALAD</span><span class="arw">→</span><span class="ph">CICO → FONA</span></div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">SETUP · 2 MIN</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Pillow = <b>a 55-year-old on lisinopril, tongue and lips swelling for an hour, voice getting muffled.</b> Stage near the airway cart; point at where the video laryngoscope, bougie, and the FONA kit actually live.</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Roles: leader · airway operator · second operator (neck) · meds voice · recorder (drives the ladder) · facilitator. This one is about <b>saying the next rung out loud before you need it</b>.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow · whiteboard (sat trend) · a marker for the neck landmarks — marking the pillow's "neck" is encouraged.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · VIDEO + DIRECT LARYNGOSCOPY and ETT / BOUGIE drawers:</b> point — every ladder rung has a drawer.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · SURGICAL / SUPRAGLOTTIC + iGEL + FRONT OF NECK ACCESS drawers:</b> point — every person in the room should be able to find FONA blind.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Room 7 cabinets · SALAD SUCTION:</b> point — suction leads in the soiled-airway phase.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 1 · THE AIRWAY IS CLOSING</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"Voice is muffled, he's drooling, tongue looks like a fist. <b>You will not get a second look at this airway.</b> Plan it out loud."</div>
+          <a class="golink" href="../codes/?from=home#c16">OPEN › CODES · ANGIOEDEMA</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Meds verbalized per the card — and the team states plainly what meds will and won't do for bradykinin-mediated swelling. Double setup declared: who intubates, who owns the neck, where the FONA kit is <i>physically</i>.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › double setup assigned and the neck is marked (narrated) before any attempt.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 2 · WORK THE LADDER</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"First look: <b>all you see is swollen tissue.</b> Sat 91 and drifting. Call the rung you're on and the next one."</div>
+          <a class="golink" href="../airway/?from=home">OPEN › AIRWAY · FAILED INTUBATION LADDER</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Recorder drives the ladder tool; the operator narrates each rung — optimize, change device/operator, supraglottic attempt — with the sat read out between rungs. The leader's job: keep the room ahead of the ladder, not behind it.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › two rungs attempted and the team states the CICO trigger unprompted.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 3 · CURVEBALL — BLOOD IN THE AIRWAY</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"The last attempt made him bleed — <b>the view is now blood and swelling.</b> Sat 84."</div>
+          <a class="golink" href="../procedures/?from=home#c15">OPEN › PROCEDURES · SALAD</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">One SALAD pass narrated on the pillow — suction leads, catheter parked, scope follows. If the view is still nothing, that <i>is</i> the answer: say it.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › SALAD narrated and the operator makes an explicit call: view or no view.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 4 · CICO — CUT THE NECK</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"Can't intubate. Supraglottic won't seat past the swelling. Bag-mask barely moves air. <b>Sat 78. Say the words.</b>"</div>
+          <a class="golink" href="../codes/?from=home#c18">OPEN › CODES · FRONT OF NECK ACCESS (FONA)</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Someone declares <b>"this is CICO — we are cutting"</b> out loud, and the second operator (already on the neck since Phase 1) walks the card on the pillow: laryngeal handshake, vertical incision, finger, bougie, tube. Facilitator grants sats once the sequence is narrated correctly.</li>
+          </ul>
+          <div class="adv">END WHEN › CICO declared in words and the FONA sequence narrated start to finish.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-green">
+        <summary class="t-head t-head-green">WHAT GOOD LOOKS LIKE + DEBRIEF</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px;">The neck is owned and marked <i>before</i> the first look. Every rung is named before it's climbed. CICO is declared by its name — the failure mode this sim exists to kill is the room that keeps trying "one more look" at sat 70.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;"><a href="../conversations/?from=home#c04">Debrief card</a> prompts: <i>what sat number or attempt count is OUR line in the sand — and did we say it before or after we crossed it?</i> · <i>could every person in the room find the FONA kit blind?</i></li>
+        </ul>
+      </details>
+    </div>
+  </article>
+
+  <!-- ================= SIM 7 — TRAUMA ================= -->
+  <article id="s07">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">S7</span>Blunt Trauma → Tension Pneumothorax → Chest Tube → MTP</h2>
+        <span class="t-mono-r">TRAUMA SET · 15 MIN + DEBRIEF</span>
+      </div>
+      <div class="chain"><span class="ph">LEVEL 1 ACTIVATION</span><span class="arw">→</span><span class="ph">TENSION PTX</span><span class="arw">→</span><span class="ph">CHEST TUBE</span><span class="arw">→</span><span class="ph">MTP</span></div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">SETUP · 2 MIN</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Pillow = <b>a 40-year-old, high-speed MVC, 5 minutes out</b> by EMS radio. Team assembles <i>before arrival</i> — that pre-brief is Phase 1. Stage next to the trauma cart; point at the chest-tube shelf.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow · whiteboard (EMS report + vitals) · SIM-labeled trauma shears · a marker X on the pillow's right chest.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Trauma Cart · NEEDLE DECOMPRESSION drawer:</b> point — first move of the tension phase.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Trauma Cart · CHEST TUBE INSERTION / PNEUMOTHORAX TRAY / THORACOSTOMY shelves:</b> point, don't open.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Blood bank:</b> MTP number on the whiteboard; the chamber "output" is the facilitator's voice.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 1 · THE FIVE MINUTES BEFORE</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"EMS radio: high-speed rollover, hypotensive on scene, intubated in the field. <b>Five minutes out.</b> Set your room."</div>
+          <a class="golink" href="../trauma/?from=home#c02">OPEN › TRAUMA · LEVEL 1 ACTIVATION</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Roles claimed out loud, activation criteria checked, blood asked about <i>now</i>, airway/suction checked, who's cutting clothes.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › roles + activation verbalized before the "patient" rolls in.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 2 · CURVEBALL — HE TENSIONS</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"Two minutes into the primary survey: <b>sat 78, BP 74/38, trachea deviated, no breath sounds on the right,</b> neck veins full. He's intubated — pressure alarm climbing."</div>
+          <a class="golink" href="../trauma/?from=home#c03">OPEN › TRAUMA · BLUNT POLYTRAUMA</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Someone names it and acts: finger or needle first per the card, narrated on the pillow at the correct landmark — then commits to the tube.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › tension named and decompressed (narrated) at a correct site.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 3 · TUBE + BLOOD</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"Air hisses out; pressure improves — <b>then 600 mL of blood hits the chamber</b> and keeps coming. BP dips again."</div>
+          <a class="golink" href="../procedures/?from=home#c01">OPEN › PROCEDURES · CHEST TUBE</a>
+          <a class="golink" href="../codes/?from=home#c12">OPEN › CODES · MTP</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Chest tube walked on the pillow from the checklist: triangle landmarks said out loud, finger sweep, tube secured. The chamber output triggers the MTP conversation — activate it and name the transfer decision (this patient is leaving).</li>
+          </ul>
+          <div class="adv">END WHEN › tube checklist done, MTP activated, and "he needs a trauma center" said by name.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-green">
+        <summary class="t-head t-head-green">WHAT GOOD LOOKS LIKE + DEBRIEF</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px;">The room is set before the doors open. Tension is a clinical call — nobody waits for imaging. The chamber number changes the plan (blood + transfer), not just the dressing.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;"><a href="../conversations/?from=home#c04">Debrief card</a> prompt: <i>what did we touch on the cart that we couldn't find in one reach?</i> — feed that straight to the kit-label system.</li>
+        </ul>
+      </details>
+    </div>
+  </article>
+
+  <!-- ================= SIM 8 — TRAUMA ================= -->
+  <article id="s08">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">S8</span>Penetrating Trauma → TCA → Thoracotomy → Notification</h2>
+        <span class="t-mono-r">TRAUMA SET · 18 MIN + DEBRIEF</span>
+      </div>
+      <div class="chain"><span class="ph">PENETRATING CHEST</span><span class="arw">→</span><span class="ph">TRAUMATIC ARREST</span><span class="arw">→</span><span class="ph">THORACOTOMY</span><span class="arw">→</span><span class="ph">SPIKES</span><span class="arw">→</span><span class="ph">DEBRIEF</span></div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">SETUP · 3 MIN</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Pillow = <b>a 25-year-old, single stab wound left chest</b>, agonal on arrival. A family actor (partner) arrives mid-sim. This sim ends in a death — schedule it when there's time to debrief properly.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow with a taped X just left of the sternum · whiteboard · a quiet room + two chairs staged for the SPIKES phase.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Trauma Cart · NEEDLE DECOMPRESSION drawer:</b> point — bilateral decompression is narrated first.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Trauma Cart · THORACOSTOMY + RIB SPREADER shelves:</b> point, don't open — the thoracotomy is talked through with the card.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Family actor:</b> briefed separately before the sim starts (they should not hear the script).</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 1 · HE ARRESTS ON THE DOOR</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"He had a pulse in the rig. As you move him over: <b>nothing.</b> Stab wound just left of the sternum."</div>
+          <a class="golink" href="../trauma/?from=home#c04">OPEN › TRAUMA · PENETRATING TRAUMA</a>
+          <a class="golink" href="../tca/?from=home">OPEN › TRAUMATIC CARDIAC ARREST</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">The team states why TCA is <b>not</b> a medical code: reversible causes first — bilateral chest decompression narrated, blood in motion, the thoracotomy decision made out loud with its actual criteria (penetrating + witnessed loss = candidate).</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › both chests decompressed (narrated) and the thoracotomy call is made with criteria.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 2 · OPEN THE CHEST</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"You have the kit. <b>Talk your way through it</b> — incision, spread, what you're looking for, what you'd do for a hole in the heart."</div>
+          <a class="golink" href="../procedures/?from=home#c02">OPEN › PROCEDURES · RESUSCITATIVE THORACOTOMY</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Clamshell narrated on the pillow with the card open — landmarks, rib spreader, pericardiotomy, aortic compression. Facilitator, after a genuine effort: <b>"the heart is empty and still. Twenty-five minutes. Nothing reversible left."</b> The leader calls it, with the time.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › the procedure is narrated start-to-finish and death is pronounced with a time.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 3 · TELL HIS PARTNER</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">"His partner has been in the family room for ten minutes. She knows it's bad. <b>Go tell her.</b>"</div>
+          <a class="golink" href="../conversations/?from=home#c03">OPEN › CONVERSATIONS · SPIKES — DELIVERING BAD NEWS</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">The leader (or whoever will really do this on shift) has the conversation in-role using the card's structure — sit down, warn, say "died," stop talking. The family actor gets to be human about it.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN › the notification happens in-role, with the word "died" used.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-green">
+        <summary class="t-head t-head-green">PHASE 4 · DEBRIEF + WHAT GOOD LOOKS LIKE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Run the <a href="../conversations/?from=home#c04">Debrief card</a> for real — this one needs it, and practicing the emotional debrief after a scripted death is the safest rehearsal there is.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Good looks like: reversible causes attacked before rhythm rituals, a thoracotomy decision made on criteria (either answer can be right — it must be <i>reasoned</i>), a pronouncement with a time, and a notification that doesn't hide behind euphemism.</li>
+        </ul>
+      </details>
+    </div>
+  </article>
+
+  <div class="t-sub">
+    <b>Sources &amp; method:</b> scenario design follows low-fidelity in-situ simulation and rapid-cycle deliberate-practice conventions (Hunt EA, et al. <i>Resuscitation</i> 2014;85:945-51; Rosen MA, et al. In situ simulation in continuing education, <i>J Contin Educ Health Prof</i> 2012;32:243-54). All clinical content — doses, criteria, maneuvers — deliberately lives on the linked cards, which carry their own citations; these scripts add no clinical values of their own. The debrief structure is the manual's own Debrief card (adapted from the Center for Medical Simulation's Basic Assumption).
+  </div>
+  <div class="t-foot">
+    <span class="verstamp"></span> — personal/unofficial training aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment or accredited simulation programs. Never run these during live patient care without announcing and staffing around them.
+  </div>
+</main>
+
+<script>
+/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
+var SITE = { version: "0.1", lastReviewed: "2026-08-12" };
+(function(){
+  document.querySelectorAll('.verstamp').forEach(function(el){ el.textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH'; });
+  var s=document.getElementById('betasplash'), b=document.getElementById('betago');
+  if(!s||!b) return;
+  function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); }
+  b.addEventListener('click', go, false);
+  b.addEventListener('touchend', go, false);
+  /* handlers attach first so a parse failure can never leave the splash stuck */
+  try{ if(/(^|[?&])from=(home|tool)(&|$)/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); } }catch(err){}
+})();
+
+/* Theme toggle — persists via the shared lrh-pref-theme key (read before paint
+   by the inline script after <body>), matching the rest of the manual. */
+(function(){
+  var b=document.getElementById('lrhThemeBtn');
+  if(!b) return;
+  b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
+  b.addEventListener('click', function(){
+    var dark = document.body.dataset.theme!=='light';
+    document.body.dataset.theme = dark ? 'light' : 'dark';
+    b.textContent = dark ? 'DARK' : 'LIGHT';
+    try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
+  });
+})();
+
+/* Sim search — filters the menu rows by title + data-kw. Local to this tool by
+   design: sims are excluded from the site-wide search so a training script can
+   never surface next to a clinical card. */
+(function(){
+  var q=document.getElementById('simq'), menu=document.getElementById('simmenu'),
+      empty=document.getElementById('simq-empty');
+  if(!q||!menu) return;
+  var rows=Array.prototype.slice.call(menu.querySelectorAll('a.lrh-row'));
+  q.addEventListener('input', function(){
+    var term=q.value.trim().toLowerCase(), shown=0;
+    rows.forEach(function(r){
+      var hay=(r.textContent+' '+(r.getAttribute('data-kw')||'')).toLowerCase();
+      var hit=!term||hay.indexOf(term)!==-1;
+      r.style.display=hit?'':'none'; if(hit) shown++;
+    });
+    if(empty) empty.hidden=(shown>0);
+  });
+})();
+</script>
+</body>
+</html>

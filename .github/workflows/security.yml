@@ -1,0 +1,49 @@
+name: security
+
+# Fast, dependency-free security gate. Exists because the main-branch ruleset
+# requires a check named "security" (set up 2026-08-12) — and because these
+# three guarantees are worth enforcing on every change to a bedside manual:
+#
+#   1. No committed secrets (tokens, private keys).
+#   2. The offline rule: no tool loads script or data from the network
+#      (CLAUDE.md rule 1 — everything must work with no connectivity).
+#   3. The PHI/state contract: every localStorage key stays inside the
+#      documented lrh- namespace so the RESET sweep can always clear case
+#      state (CASE-STATE.md; CLAUDE.md rule 3).
+#
+# Pure grep — no third-party actions, nothing to supply-chain.
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+jobs:
+  security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: No committed secrets
+        run: |
+          ! grep -rInE "AKIA[0-9A-Z]{16}|ghp_[A-Za-z0-9]{36}|github_pat_[A-Za-z0-9_]{36,}|xox[baprs]-[A-Za-z0-9-]+|BEGIN (RSA |EC |OPENSSH )?PRIVATE KEY|nfp_[A-Za-z0-9]{30,}" \
+            --include="*.html" --include="*.js" --include="*.mjs" --include="*.toml" --include="*.md" --include="*.yml" \
+            --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.git . \
+            || { echo "::error::Secret-looking string committed — remove and rotate it."; exit 1; }
+
+      - name: Offline rule — no external script/fetch in tools
+        run: |
+          ! grep -rInE "<script[^>]+src=\"https?://|fetch\(['\"]https?://|new XMLHttpRequest|navigator\.sendBeacon" \
+            --include="*.html" --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.git . \
+            || { echo "::error::A tool references the network — every tool must be self-contained and work offline (CLAUDE.md rule 1)."; exit 1; }
+
+      - name: PHI/state contract — localStorage keys stay in the lrh- namespace
+        run: |
+          BAD=$(grep -rhoE "localStorage\.setItem\('[^']+'" --include="*.html" \
+            --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.git . \
+            | sed "s/localStorage.setItem('//" | tr -d "'" | sort -u | grep -v "^lrh-" || true)
+          if [ -n "$BAD" ]; then
+            echo "::error::localStorage key(s) outside the documented lrh- namespace (CASE-STATE.md): $BAD"
+            exit 1
+          fi
