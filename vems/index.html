@@ -598,20 +598,20 @@ var CASES = [{
   kit:[
     { icon:"baby",    n:"Delivery Kit",          sz:"CLAMPS · SCISSORS · BULB", inv:"ob-delivery-kit" },
     { icon:"monitor", n:"Radiant Warmer",        sz:"ON BEFORE THE BIRTH", drawer:"OB / Neonatal Cart · alongside", unconfirmed:1 },
-    { icon:"mask",    n:"Infant BVM + Mask",     sz:"450 mL · NEONATAL MASK", inv:"bvm-infant-adult" },
-    { icon:"airway",  n:"OPA / NPA",             sz:"NEONATAL", inv:"opa-0-5" },
-    { icon:"suction", n:"Bulb / Suction",        sz:"5–8 Fr", inv:"suction-cath-5-14" },
+    { icon:"mask",    n:"Infant BVM + Mask",     sz:"450 mL · NEONATAL MASK", inv:"bvm" },
+    { icon:"airway",  n:"OPA / NPA",             sz:"NEONATAL", inv:"opa" },
+    { icon:"suction", n:"Bulb / Suction",        sz:"5–8 Fr", inv:"suction-cath" },
     { icon:"etco2",   n:"End-Tidal CO₂",         sz:"CONFIRMS THE TUBE", inv:"etco2" },
-    { icon:"ett",     n:"Neonatal ETT",          sz:"2.5–3.5 UNCUFFED", inv:"ett-range" },
-    { icon:"dl",      n:"Laryngoscope",          sz:"MILLER 0–1", inv:"blades-peds" },
-    { icon:"iv",      n:"UVC Kit",               sz:"3.5 / 5 Fr", inv:"uvc-3.5-5" },
+    { icon:"ett",     n:"Neonatal ETT",          sz:"2.5–3.5 UNCUFFED", inv:"ett-cuffed" },
+    { icon:"dl",      n:"Laryngoscope",          sz:"MILLER 0–1", inv:"blades-miller" },
+    { icon:"iv",      n:"UVC Kit",               sz:"3.5 / 5 Fr", inv:"uvc" },
     { icon:"meds",    n:"Epinephrine",           sz:"NRP DOSE — SAY IT", drawer:"OB / Neonatal Cart · Circulation" },
     { icon:"fluid",   n:"Normal Saline",         sz:"VOLUME — 10 mL/kg", drawer:"OB / Neonatal Cart · Circulation" },
     { icon:"prep",    n:"Towel + Hat",           sz:"WARM, DRY, STIMULATE", drawer:"OB / Neonatal Cart · Vaginal Delivery" },
     /* Decoys — each a real thing on a real cart, each the wrong reach here. */
     { icon:"ezio",    n:"EZ-IO",                 sz:"NOT FIRST IN A NEWBORN", inv:"io-needles", decoy:1 },
     { icon:"hemo",    n:"JADA Kit",              sz:"MOM LATER, NOT NOW", inv:"kit-jada", decoy:1 },
-    { icon:"igel",    n:"iGel",                  sz:"CHECK THE SIZE FIRST", inv:"sga-1-5", decoy:1 }
+    { icon:"igel",    n:"iGel",                  sz:"CHECK THE SIZE FIRST", inv:"sga-igel", decoy:1 }
   ],
 
   sources:"Scenario staging follows the Visually Enhanced Mental Simulation format: Brazil V, et al. "+
@@ -746,10 +746,10 @@ var CASES = [{
     { icon:"hemo",    n:"JADA Kit",              sz:"NEEDS 80 mmHg VACUUM", inv:"kit-jada" },
     { icon:"iv",      n:"Second IV",             sz:"LARGE BORE", drawer:"Code Cart · I.V. Supplies" },
     { icon:"fluid",   n:"Blood Products",        sz:"MTP — RUNNER + CHECKER", drawer:"Blood bank — say it, do not dial", unconfirmed:1 },
-    { icon:"monitor", n:"Monitor",               sz:"HR · NIBP · SpO₂", inv:"defib-peds" },
+    { icon:"monitor", n:"Monitor",               sz:"HR · NIBP · SpO₂", inv:"defib" },
     { icon:"prep",    n:"Uterine Massage",       sz:"FIRST MOVE · FREE", drawer:"Your hands" },
     { icon:"needle",  n:"Labs + Type & Cross",   sz:"SEND EARLY", drawer:"OB / Neonatal Cart · Labs / Misc." },
-    { icon:"ngt",     n:"Foley Catheter",        sz:"EMPTY BLADDER FIRST", inv:"urinary-cath-5-22" },
+    { icon:"ngt",     n:"Foley Catheter",        sz:"EMPTY BLADDER FIRST", inv:"urinary-cath" },
     { icon:"scalpel", n:"C-section Tray",        sz:"IF IT COMES TO IT", drawer:"OB / Neonatal Cart · C-section" },
     /* Decoys */
     { icon:"baby",    n:"Delivery Kit",          sz:"SHE ALREADY DELIVERED", inv:"ob-delivery-kit", decoy:1 },
@@ -933,22 +933,22 @@ var CASES = [{
   ],
 
   kit:[
-    { icon:"monitor", n:"Monitor",               sz:"MOM · THEN BABY", inv:"defib-peds" },
+    { icon:"monitor", n:"Monitor",               sz:"MOM · THEN BABY", inv:"defib" },
     { icon:"vl",      n:"Video Laryngoscope",    sz:"McGRATH MAC", drawer:"Code Cart · Video Laryngoscopy" },
-    { icon:"ett",     n:"ETT + Bougie",          sz:"CUFFED — SIZE DOWN", inv:"ett-range" },
-    { icon:"suction", n:"Suction",               sz:"FULL STOMACH", inv:"suction-cath-5-14" },
+    { icon:"ett",     n:"ETT + Bougie",          sz:"CUFFED — SIZE DOWN", inv:"ett-cuffed" },
+    { icon:"suction", n:"Suction",               sz:"FULL STOMACH", inv:"suction-cath" },
     { icon:"meds",    n:"RSI Drugs",             sz:"SAY THE DOSE", drawer:"Code Cart · Medications" },
     { icon:"etco2",   n:"End-Tidal CO₂",         sz:"CONFIRMS THE TUBE", inv:"etco2" },
     { icon:"fona",    n:"Front of Neck Access",  sz:"PRIME IT BEFORE YOU INDUCE", drawer:"Code Cart · Front of Neck Access" },
     { icon:"scalpel", n:"C-section Tray",        sz:"OB OPENS IT, NOT YOU", drawer:"OB / Neonatal Cart · C-section" },
     { icon:"monitor", n:"Radiant Warmer",        sz:"ON BEFORE THE CUT", drawer:"OB / Neonatal Cart · alongside", unconfirmed:1 },
-    { icon:"mask",    n:"Infant BVM + Mask",     sz:"450 mL · NEONATAL", inv:"bvm-infant-adult" },
+    { icon:"mask",    n:"Infant BVM + Mask",     sz:"450 mL · NEONATAL", inv:"bvm" },
     { icon:"prep",    n:"Towel + Hat",           sz:"WARM, DRY, STIMULATE", drawer:"OB / Neonatal Cart · Vaginal Delivery" },
     { icon:"baby",    n:"Delivery Kit",          sz:"CLAMPS · SCISSORS", inv:"ob-delivery-kit" },
-    { icon:"iv",      n:"UVC Kit",               sz:"3.5 / 5 Fr", inv:"uvc-3.5-5" },
+    { icon:"iv",      n:"UVC Kit",               sz:"3.5 / 5 Fr", inv:"uvc" },
     { icon:"fluid",   n:"IV Fluid + Blood",      sz:"SHE IS ALSO BLEEDING", drawer:"Code Cart · I.V. Fluids" },
     /* Decoys */
-    { icon:"igel",    n:"iGel",                  sz:"RESCUE, NOT THE PLAN", inv:"sga-1-5", decoy:1 },
+    { icon:"igel",    n:"iGel",                  sz:"RESCUE, NOT THE PLAN", inv:"sga-igel", decoy:1 },
     { icon:"hemo",    n:"JADA Kit",              sz:"AFTER, IF SHE BLEEDS", inv:"kit-jada", decoy:1 },
     { icon:"jet",     n:"Jet Ventilation",       sz:"NOT THE PLAN D", drawer:"Code Cart · Jet Ventilation", decoy:1 }
   ],
@@ -1027,6 +1027,15 @@ function where(item){
          laundering it into a confident-looking label — a drill that sends
          someone to the wrong drawer teaches the wrong drawer. */
       return e.loc + (e.verify ? ' · CONFIRM ON YOUR CART' : '');
+    }
+    /* An `inv` key that no longer resolves must be LOUD. This is how the OB
+       decks broke: inventory.js was restructured to size-level rows, several
+       keys were renamed, and where() quietly returned an empty string — so the
+       cards printed with a blank drawer line and nothing failed until the
+       suite was run on another branch. A missing key is now visible on the
+       card itself and, below, fails the build-time check. */
+    if(item.inv && (typeof INV_LOCATIONS!=='object' || !INV_LOCATIONS[item.inv])){
+      return 'UNKNOWN INVENTORY KEY: '+item.inv;
     }
   }catch(err){}
   return (item.drawer || '') + (item.unconfirmed ? ' · CONFIRM ON YOUR CART' : '');

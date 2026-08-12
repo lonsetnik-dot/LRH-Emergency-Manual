@@ -41,8 +41,8 @@ const ck = (name, got, want) => { const ok = String(got) === String(want); (ok ?
 
 /* Every page that renders on a phone screen. */
 const SCREENS = ['/', '/codes/', '/peds/', '/trauma/', '/ob-neonatal/', '/procedures/',
-  '/clinical-pathways/', '/arrest/', '/tca/', '/airway/', '/neonatal/', '/equipment-readiness/',
-  '/simulations/', '/conversations/', '/debrief/'];
+  '/clinical-pathways/', '/arrest/', '/tca/', '/airway/', '/neonatal/', '/pph/', '/dystocia/',
+  '/equipment-readiness/', '/simulations/', '/conversations/', '/debrief/'];
 
 /* Paper. These are cut square on purpose — see the header. */
 const PRINT = ['/labels/', '/vems/'];
