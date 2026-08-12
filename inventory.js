@@ -4,88 +4,328 @@
    Injected by build.mjs wherever a tool's <script> contains the marker
    (slash-star) @inventory (star-slash), so deployed tools stay fully
    self-contained and offline (CLAUDE.md rule 1). Edit the inventory ONCE here.
-   Design: INVENTORY-DESIGN.md. Consumers today: equipment-readiness/.
-   (labels/ and simulations/ migrate onto this in a later phase.)
+   Design + process: INVENTORY-DESIGN.md. Consumers today:
+   equipment-readiness/. (labels/ and simulations/ migrate on later.)
 
    TWO LAYERS (design decision, Lon 2026-08-12):
    - CATALOG + STANDARDS + BROSELOW_PACK are UNIVERSAL — a fork keeps them.
    - LOCATIONS is the LOCAL MAP — the only block another ED edits.
-   Granularity: sizes only where a standard names sizes. Par yes, expiry no.
+
+   THREE THINGS CHANGED IN v2 (2026-08-12), all of them because a readiness
+   audit that cannot name a size cannot find a hole:
+
+   1. SIZES ARE ROWS. An item may carry `sizes:[...]`; each size is its own
+      auditable row, keyed `id#size`. "Supraglottic airways 1–5: MAPPED" hides
+      the only question worth asking, which is whether the size for the patient
+      in front of you is in that drawer. LMA 0 and 0.5 live on the OB cart and
+      the i-gels start at 1 — that is invisible at item granularity and obvious
+      at size granularity.
+   2. STANDARDS ARE PLURAL. NPRP is the pediatric checklist only; it says
+      nothing about a pelvic binder, a rapid infuser, dantrolene, or a
+      difficult-airway trolley. Six more national standards now sit alongside
+      it (see INV_STANDARDS). An item belongs to a standard by listing it in
+      `std` — the `items` array on each standard is DERIVED from that at the
+      bottom of this file, so membership is edited in exactly one place.
+   3. KITS CARRY CONTENTS. A kit is audited as a kit: one location, and the
+      contents underneath it. The content strings are byte-identical to the
+      labels/ build sheets and the procedure cards on purpose —
+      verify_kit_consistency.mjs asserts that across every artifact.
+
+   Granularity rule: sizes where a standard (or this department's own stock
+   reality) names sizes; drawer/kit level elsewhere. Par yes, expiry no.
    =========================================================================== */
 
-/* ===== LAYER 1 — STANDARD CATALOG (universal; forks do not edit) ========== */
+/* ===== LAYER 1 — STANDARD CATALOG (universal; forks do not edit) ==========
+   name : what a clinician calls it.        cat : grouping for the UI.
+   std  : which national standards ask for it (drives the scorecards).
+   sizes: each entry becomes its own auditable row, id#size.
+   note : universal caveat about the item — NOT a local location note.       */
 var INV_CATALOG = {
-  /* --- monitoring --- */
-  "bp-cuffs-peds-range": { name:"BP cuffs — neonatal / infant / child / adult", cat:"monitoring", std:["NPRP"] },
-  "doppler":             { name:"Doppler ultrasound (pulses / BP)", cat:"monitoring", std:["NPRP"] },
-  "defib-peds":          { name:"Monitor–defibrillator with pediatric capability + peds pads", cat:"monitoring", std:["NPRP"] },
-  "pulseox-peds":        { name:"Pulse oximeter with pediatric + infant probes", cat:"monitoring", std:["NPRP"] },
-  "etco2":               { name:"Continuous end-tidal CO2 (pediatric + adult)", cat:"monitoring", std:["NPRP"] },
-  "thermometer-hypo":    { name:"Hypothermia-capable thermometer (reads < 35 °C)", cat:"monitoring", std:["NPRP"] },
-  "scale-kg":            { name:"Scale weighing in kilograms only", cat:"monitoring", std:["NPRP"] },
-  "broselow-tape":       { name:"Length-based resuscitation tape (Broselow)", cat:"monitoring", std:["NPRP"] },
-  /* --- vascular access --- */
-  "io-needles":          { name:"Intraosseous needles — pediatric + adult", cat:"vascular", std:["NPRP"] },
-  "iv-cath-22-24":       { name:"IV catheters 22–24 g", cat:"vascular", std:["NPRP"] },
-  "uvc-3.5-5":           { name:"Umbilical vein catheters 3.5 Fr + 5 Fr", cat:"vascular", std:["NPRP"] },
-  "cvc-peds-4-7":        { name:"Central venous catheters 4–7 Fr (pediatric sizes)", cat:"vascular", std:["NPRP"] },
-  "iv-sets-calibrated":  { name:"Calibrated-chamber IV sets / infusion pumps", cat:"vascular", std:["NPRP"] },
-  "fluid-warmer":        { name:"Fluid / blood warming capability", cat:"vascular", std:["NPRP"] },
-  /* --- airway --- */
-  "bvm-infant-adult":    { name:"Self-inflating BVM — infant (450 mL) + adult (1000 mL), masks neonatal–adult", cat:"airway", std:["NPRP"] },
-  "o2-masks-range":      { name:"Oxygen masks incl. infant/child NRB; nasal cannulae all sizes", cat:"airway", std:["NPRP"] },
-  "opa-0-5":             { name:"Oropharyngeal airways sizes 0–5", cat:"airway", std:["NPRP"] },
-  "npa-range":           { name:"Nasopharyngeal airways infant–adult", cat:"airway", std:["NPRP"] },
-  "blades-peds":         { name:"Laryngoscope blades — straight 0/1/2, curved 2/3 (+ handles)", cat:"airway", std:["NPRP"] },
-  "ett-range":           { name:"ETTs — uncuffed 2.5–3.5, cuffed 3.0–8.0 + pediatric/adult stylets", cat:"airway", std:["NPRP"] },
-  "sga-1-5":             { name:"Supraglottic airways sizes 1–5 (iGel)", cat:"airway", std:["NPRP"] },
-  "magill-peds-adult":   { name:"Magill forceps — pediatric + adult", cat:"airway", std:["NPRP"] },
-  "suction-cath-5-14":   { name:"Suction catheters 5–14 Fr + Yankauer", cat:"airway", std:["NPRP"] },
-  "ng-8-18":             { name:"Nasogastric tubes 8–18 Fr", cat:"airway", std:["NPRP"] },
-  "trach-tubes-0-6":     { name:"Tracheostomy tubes sizes 0–6", cat:"airway", std:["NPRP"] },
-  /* --- procedures / trauma / other --- */
-  "chest-tubes-8-40":    { name:"Chest tubes 8–40 Fr (pediatric sizes included)", cat:"procedure", std:["NPRP"] },
-  "c-collars-range":     { name:"Cervical collars — infant through adult", cat:"procedure", std:["NPRP"] },
-  "femur-splints":       { name:"Femur splints — pediatric + adult", cat:"procedure", std:["NPRP"] },
-  "lp-trays":            { name:"Lumbar puncture trays — 22 g infant/peds + adult", cat:"procedure", std:["NPRP"] },
-  "urinary-cath-5-22":   { name:"Urinary catheters 5–22 Fr", cat:"procedure", std:["NPRP"] },
-  "ob-delivery-kit":     { name:"Newborn delivery kit + radiant warmer", cat:"procedure", std:["NPRP"] },
-  "peds-dosing-ref":     { name:"Length-based pediatric drug dosing reference", cat:"reference", std:["NPRP"] },
-  /* --- named kits (drawer/kit granularity — no standard names their sizes) --- */
-  "kit-canthotomy":      { name:"Canthotomy Kit", cat:"kit" },
-  "kit-blakemore":       { name:"Blakemore Kit", cat:"kit" },
-  "kit-lung-isolation":  { name:"Lung Isolation Kit", cat:"kit" },
-  "kit-epistaxis":       { name:"Epistaxis Kit", cat:"kit" },
-  "kit-salad":           { name:"SALAD Suction Kit", cat:"kit" },
-  "kit-pigtail":         { name:"Pigtail Thoracostomy Kit", cat:"kit" },
-  "kit-pacer-magnet":    { name:"Pacemaker Magnet", cat:"kit" },
-  "kit-chest-tube":      { name:"Chest Tube Kit", cat:"kit" },
-  "kit-thoracotomy":     { name:"Thoracotomy Tray", cat:"kit" },
-  "kit-burr-hole":       { name:"Burr Hole Kit", cat:"kit" },
-  "kit-tvp":             { name:"Transvenous Pacing Kit", cat:"kit" },
-  "kit-escharotomy":     { name:"Escharotomy Kit", cat:"kit" },
-  "kit-neck-tamponade":  { name:"Neck Tamponade Kit", cat:"kit" },
-  "kit-junctional":      { name:"Junctional Hemorrhage Kit", cat:"kit" },
-  "kit-jada":            { name:"JADA Kit", cat:"kit" },
-  "kit-resus-line":      { name:"Resuscitation Line Kit (Cordis / AVA 3Xi)", cat:"kit" },
-  "kit-pneumo-tray":     { name:"Pneumothorax Tray", cat:"kit" }
+
+  /* ---------------- MONITORING & DIAGNOSTICS ---------------------------- */
+  "bp-cuffs": { name:"Blood-pressure cuffs", cat:"monitoring", std:["NPRP"],
+    sizes:["neonatal","infant","child","small adult","adult","large adult / thigh"] },
+  "ecg-electrodes": { name:"ECG cables + electrodes", cat:"monitoring", std:["NPRP","NRP"],
+    sizes:["neonatal / infant","pediatric","adult"] },
+  "defib": { name:"Monitor–defibrillator with pediatric capability", cat:"monitoring", std:["NPRP","ACS-COT"],
+    sizes:["adult pads","pediatric pads / attenuator","internal paddles (thoracotomy)"] },
+  "pulseox": { name:"Pulse oximeter with probes across the age range", cat:"monitoring", std:["NPRP","NRP"],
+    sizes:["neonatal","infant","pediatric","adult"] },
+  "etco2": { name:"Continuous waveform end-tidal CO2", cat:"monitoring", std:["NPRP","ACS-COT"],
+    sizes:["pediatric line","adult line"] },
+  "co2-detector": { name:"Colorimetric CO2 detector (tube confirmation)", cat:"monitoring", std:["ASA-DA","NRP"],
+    sizes:["neonatal","pediatric / adult"] },
+  "thermometer-hypo": { name:"Hypothermia-capable thermometer (reads below 35 °C)", cat:"monitoring", std:["NPRP","ACS-COT"] },
+  "scale-kg": { name:"Scale weighing in kilograms only", cat:"monitoring", std:["NPRP"] },
+  "broselow-tape": { name:"Length-based resuscitation tape (Broselow)", cat:"monitoring", std:["NPRP"] },
+  "glucometer": { name:"Bedside glucose meter", cat:"monitoring", std:["NPRP","NRP"] },
+  "doppler": { name:"Doppler ultrasound (pulses / BP)", cat:"monitoring", std:["NPRP"] },
+  "ultrasound": { name:"Ultrasound at the bedside — FAST, vascular, cardiac", cat:"monitoring", std:["ACS-COT","AIM-OB"] },
+  "xray-portable": { name:"Portable radiography into the resuscitation bay", cat:"monitoring", std:["ACS-COT"] },
+  "abg-syringes": { name:"Blood-gas syringes + point-of-care analyzer access", cat:"monitoring", std:["MHAUS","ACS-COT"] },
+
+  /* ---------------- AIRWAY ---------------------------------------------- */
+  "opa": { name:"Oropharyngeal airways", cat:"airway", std:["NPRP","NRP"],
+    sizes:["0 · 40 mm","1 · 50 mm","2 · 60 mm","3 · 70 mm","4 · 80 mm","5 · 90 mm"] },
+  "npa": { name:"Nasopharyngeal airways", cat:"airway", std:["NPRP","ASA-DA"],
+    sizes:["infant / child","small adult · 6.5 mm","adult · 7.5 mm","large adult · 8.5 mm"] },
+  "sga-neonatal": { name:"Supraglottic airway — neonatal LMA", cat:"airway", std:["NPRP","NRP"],
+    sizes:["LMA 0 · under 2 kg","LMA 0.5 · 2 kg and over"],
+    note:"NRP names a size 1 laryngeal mask; LRH stocks LMA 0 and 0.5 instead and the i-gels start at size 1. Audit what is on the shelf, not what the checklist prints." },
+  "sga-igel": { name:"Supraglottic airway — i-gel", cat:"airway", std:["NPRP","ASA-DA"],
+    sizes:["1 · 2–5 kg","1.5 · 5–12 kg","2 · 10–25 kg","2.5 · 25–35 kg","3 · 30–60 kg","4 · 50–90 kg","5 · 90+ kg"],
+    note:"Weight bands are the manufacturer's — verify against the brand actually stocked." },
+  "ett-uncuffed": { name:"Endotracheal tubes — uncuffed", cat:"airway", std:["NPRP","NRP"],
+    sizes:["2.5","3.0","3.5"] },
+  "ett-cuffed": { name:"Endotracheal tubes — cuffed", cat:"airway", std:["NPRP","ASA-DA"],
+    sizes:["3.0","3.5","4.0","4.5","5.0","5.5","6.0","6.5","7.0","7.5","8.0"] },
+  "ett-90": { name:"Endotracheal tube 9.0 (lung isolation / bronchoscopy)", cat:"airway", std:["ACS-COT"] },
+  "stylets": { name:"ETT stylets", cat:"airway", std:["NPRP","ASA-DA","NRP"],
+    sizes:["neonatal / pediatric 6 Fr","adult 14 Fr"] },
+  "bougie": { name:"Tube introducers (bougie)", cat:"airway", std:["ASA-DA","ACS-COT"],
+    sizes:["pediatric 10 Fr","adult 15 Fr","coudé tip (lung isolation)"] },
+  "exchange-catheter": { name:"Airway exchange catheter", cat:"airway", std:["ASA-DA"] },
+  "blades-mac": { name:"Laryngoscope blades — Macintosh (curved)", cat:"airway", std:["NPRP","ASA-DA"],
+    sizes:["2","3","4"] },
+  "blades-miller": { name:"Laryngoscope blades — Miller (straight)", cat:"airway", std:["NPRP","ASA-DA","NRP"],
+    sizes:["00","0","1","2","3"] },
+  "laryngoscope-handles": { name:"Laryngoscope handles + spare batteries / bulbs", cat:"airway", std:["NPRP","ASA-DA"],
+    sizes:["pediatric (short) handle","adult handle","spare batteries"] },
+  "videolaryngoscope": { name:"Videolaryngoscope + charged spare blade", cat:"airway", std:["ASA-DA","ACS-COT"],
+    sizes:["adult blade","hyperangulated blade","pediatric blade"] },
+  "flex-scope": { name:"Flexible intubation scope (or single-use equivalent)", cat:"airway", std:["ASA-DA"],
+    note:"ASA lists a flexible scope in the portable difficult-airway unit. Many critical-access EDs do not stock one — record that as a gap rather than leaving the row blank." },
+  "fona-kit": { name:"Front-of-neck access — scalpel, bougie, tube 6.0", cat:"airway", std:["ASA-DA","ACS-COT"] },
+  "jet-vent": { name:"Transtracheal jet ventilation setup", cat:"airway", std:["ASA-DA"] },
+  "topical-airway": { name:"Topical anesthetic + vasoconstrictor for an awake airway", cat:"airway", std:["ASA-DA"] },
+  "magill": { name:"Magill forceps", cat:"airway", std:["NPRP","ASA-DA"],
+    sizes:["pediatric","adult"] },
+  "trach-tubes": { name:"Tracheostomy tubes", cat:"airway", std:["NPRP"],
+    sizes:["0","1","2","3","4","5","6"] },
+  "suction-cath": { name:"Suction catheters", cat:"airway", std:["NPRP","NRP"],
+    sizes:["5 Fr","6 Fr","8 Fr","10 Fr","12 Fr","14 Fr"] },
+  "suction-rigid": { name:"Rigid suction — Yankauer + large-bore (DuCanto)", cat:"airway", std:["ACS-COT","ASA-DA"],
+    sizes:["Yankauer","large-bore rigid"] },
+  "suction-units": { name:"Two working suction units at the resuscitation bay", cat:"airway", std:["ACS-COT"] },
+  "ng-tubes": { name:"Nasogastric / orogastric tubes", cat:"airway", std:["NPRP","MHAUS"],
+    sizes:["8 Fr","10 Fr","12 Fr","14 Fr","16 Fr","18 Fr"] },
+
+  /* ---------------- BREATHING / OXYGEN ---------------------------------- */
+  "bvm": { name:"Self-inflating bag–valve–mask", cat:"breathing", std:["NPRP","NRP"],
+    sizes:["infant · 450 mL","adult · 1000 mL"] },
+  "face-masks": { name:"Ventilation face masks", cat:"breathing", std:["NPRP","NRP"],
+    sizes:["preterm / 00","neonatal / 0","infant / 1","child / 2","adult / 3–5"] },
+  "tpiece-resus": { name:"T-piece resuscitator with manometer + PEEP", cat:"breathing", std:["NRP"] },
+  "o2-blender": { name:"Oxygen blender with flowmeter (delivery-room titration)", cat:"breathing", std:["NRP"] },
+  "o2-masks": { name:"Oxygen masks — non-rebreather across the age range", cat:"breathing", std:["NPRP"],
+    sizes:["infant","child","adult"] },
+  "nasal-cannula": { name:"Nasal cannulae", cat:"breathing", std:["NPRP"],
+    sizes:["neonatal","infant","pediatric","adult"] },
+  "meconium-aspirator": { name:"Meconium aspirator", cat:"breathing", std:["NRP"] },
+  "bulb-syringe": { name:"Bulb syringe", cat:"breathing", std:["NRP"] },
+
+  /* ---------------- VASCULAR ACCESS & TRANSFUSION ----------------------- */
+  "io-needles": { name:"Intraosseous needles", cat:"vascular", std:["NPRP","ACS-COT"],
+    sizes:["15 mm · 3–39 kg","25 mm · 40 kg and over","45 mm · humeral / large habitus"] },
+  "iv-cath": { name:"IV catheters", cat:"vascular", std:["NPRP","ACS-COT"],
+    sizes:["24 g","22 g","20 g","18 g","16 g","14 g"] },
+  "uvc": { name:"Umbilical vein catheters", cat:"vascular", std:["NPRP","NRP"],
+    sizes:["3.5 Fr","5 Fr"] },
+  "umbilical-tray": { name:"Umbilical line tray — scalpel, tape, clamp, stopcock", cat:"vascular", std:["NRP"] },
+  "cvc-peds": { name:"Central venous catheters — pediatric sizes", cat:"vascular", std:["NPRP"],
+    sizes:["4 Fr","5 Fr","7 Fr"] },
+  "art-line": { name:"Arterial line set — catheter, transducer, pressure bag", cat:"vascular", std:["ACS-COT"],
+    sizes:["20 g adult","22 g pediatric"] },
+  "iv-sets-calibrated": { name:"Calibrated-chamber IV sets / infusion pumps", cat:"vascular", std:["NPRP"] },
+  "pressure-infuser": { name:"Pressure infuser bags", cat:"vascular", std:["ACS-COT","AIM-OB"] },
+  "rapid-infuser": { name:"Rapid infuser / high-flow transfusion device", cat:"vascular", std:["ACS-COT"] },
+  "fluid-warmer": { name:"Fluid / blood warming capability", cat:"vascular", std:["NPRP","ACS-COT","AIM-OB"] },
+  "mtp-cooler": { name:"Massive transfusion cooler — immediate uncrossmatched red cells", cat:"vascular", std:["ACS-COT","AIM-OB"] },
+  "blood-tubing-filters": { name:"Blood administration sets with filters", cat:"vascular", std:["ACS-COT","AIM-OB"] },
+  "warming-device": { name:"Patient warming — forced-air or warmed blankets", cat:"vascular", std:["ACS-COT"] },
+  "radiant-warmer": { name:"Radiant warmer (infant)", cat:"vascular", std:["NPRP","NRP"] },
+
+  /* ---------------- HEMORRHAGE & TRAUMA --------------------------------- */
+  "tourniquet": { name:"Extremity tourniquet (CAT or equivalent)", cat:"hemorrhage", std:["ACS-COT"] },
+  "hemostatic-gauze": { name:"Hemostatic gauze", cat:"hemorrhage", std:["ACS-COT"] },
+  "pressure-dressings": { name:"Pressure dressings + roller gauze for packing", cat:"hemorrhage", std:["ACS-COT"] },
+  "pelvic-binder": { name:"Pelvic binder (or correctly applied sheet)", cat:"hemorrhage", std:["ACS-COT"] },
+  "chest-seal": { name:"Vented occlusive chest seals", cat:"hemorrhage", std:["ACS-COT"] },
+  "needle-decompression": { name:"Needle decompression catheter — 14 g, 3.25 in", cat:"hemorrhage", std:["ACS-COT"] },
+  "txa": { name:"Tranexamic acid", cat:"hemorrhage", std:["ACS-COT","AIM-OB"] },
+  "trauma-shears": { name:"Trauma shears", cat:"hemorrhage", std:["ACS-COT"] },
+
+  /* ---------------- PROCEDURAL / IMMOBILIZATION ------------------------- */
+  "chest-tubes": { name:"Chest tubes", cat:"procedure", std:["NPRP","ACS-COT"],
+    sizes:["8–10 Fr (infant)","12 Fr","14 Fr pigtail","20 Fr","24 Fr","28 Fr","32 Fr","36–40 Fr"] },
+  "drainage-system": { name:"Underwater-seal drainage system, primed", cat:"procedure", std:["ACS-COT"] },
+  "c-collars": { name:"Cervical collars", cat:"procedure", std:["NPRP","ACS-COT"],
+    sizes:["infant","pediatric","short-neck adult","regular adult","tall adult"] },
+  "femur-splints": { name:"Femoral traction splints", cat:"procedure", std:["NPRP","ACS-COT"],
+    sizes:["pediatric","adult"] },
+  "lp-trays": { name:"Lumbar puncture trays", cat:"procedure", std:["NPRP"],
+    sizes:["22 g infant / pediatric","20 g adult"] },
+  "urinary-cath": { name:"Urinary catheters", cat:"procedure", std:["NPRP","AIM-OB","MHAUS"],
+    sizes:["5 Fr feeding tube","8 Fr","10 Fr","12 Fr","14 Fr","16 Fr","22 Fr"] },
+  "urimeter": { name:"Urimeter (hourly output during a crisis)", cat:"procedure", std:["MHAUS","AIM-OB"] },
+  "ppe-splash": { name:"Splash PPE — gown, double gloves, eye protection", cat:"procedure", std:["ACS-COT"] },
+
+  /* ---------------- OBSTETRIC & NEONATAL -------------------------------- */
+  "ob-delivery-kit": { name:"Precipitous delivery kit", cat:"obstetric", std:["NPRP","NRP","AIM-OB"] },
+  "neo-thermal": { name:"Neonatal thermal bundle — warm towels, hat, polyethylene bag under 32 weeks", cat:"obstetric", std:["NRP"] },
+  "epi-neonatal": { name:"Epinephrine 0.1 mg/mL with a dosing chart at the warmer", cat:"obstetric", std:["NRP"] },
+  "volume-expander-neo": { name:"Normal saline for neonatal volume expansion + flushes", cat:"obstetric", std:["NRP"] },
+  "uterotonics": { name:"Uterotonics, immediately available", cat:"obstetric", std:["AIM-OB"],
+    sizes:["oxytocin","methylergonovine","carboprost","misoprostol"] },
+  "intrauterine-balloon": { name:"Intrauterine balloon tamponade device", cat:"obstetric", std:["AIM-OB"] },
+  "ob-long-instruments": { name:"Long instruments — weighted speculum, sponge / ring forceps, long needle holder", cat:"obstetric", std:["AIM-OB"] },
+  "vaginal-packing": { name:"Vaginal packing gauze", cat:"obstetric", std:["AIM-OB"] },
+  "qbl-kit": { name:"Quantitative blood loss — graduated drape + gram scale", cat:"obstetric", std:["AIM-OB"] },
+  "pph-instruction-cards": { name:"Hemorrhage cart checklist + balloon / compression-suture instruction cards", cat:"obstetric", std:["AIM-OB"] },
+
+  /* ---------------- ANTIDOTE / RESCUE STOCK ----------------------------- */
+  "dantrolene": { name:"Dantrolene — full initial + repeat dosing on hand", cat:"medication", std:["MHAUS"],
+    sizes:["Ryanodex 250 mg vials","dantrolene 20 mg vials"],
+    note:"MHAUS expects enough for repeat dosing, not a single vial. Stock ONE presentation and mark the other a gap — mixing the two invites a reconstitution error under pressure." },
+  "sterile-water-mh": { name:"Preservative-free sterile water for dantrolene reconstitution", cat:"medication", std:["MHAUS"] },
+  "cold-saline": { name:"Cold normal saline 3 L (refrigerated) + ice", cat:"medication", std:["MHAUS"] },
+  "mh-hotline-card": { name:"MH hotline number posted with the cart", cat:"reference", std:["MHAUS"] },
+  "lipid-emulsion": { name:"Lipid emulsion 20% — 1000 mL", cat:"medication", std:["ASRA-LAST"] },
+  "last-tubing": { name:"Large-bore IV tubing + two 50 mL syringes for lipid rescue", cat:"medication", std:["ASRA-LAST"] },
+  "last-checklist": { name:"LAST checklist card stored with the lipid", cat:"reference", std:["ASRA-LAST"] },
+
+  /* ---------------- REFERENCE ------------------------------------------- */
+  "peds-dosing-ref": { name:"Length-based pediatric drug dosing reference", cat:"reference", std:["NPRP"] },
+  "mtp-protocol-card": { name:"Massive transfusion protocol card at the bedside", cat:"reference", std:["ACS-COT","AIM-OB"] },
+
+  /* ---------------- NAMED KITS (audited as kits, contents underneath) ----
+     Content strings are byte-identical to labels/ build sheets and the
+     procedure cards — verify_kit_consistency.mjs asserts that. ----------- */
+  "kit-canthotomy": { name:"Canthotomy Kit", cat:"kit", std:["ACS-COT"], contents:[
+    "3 mL syringe","Needle to draw","Needle to inject","Mosquito clamp","Toothed forceps","Blunt-tipped iris scissors"] },
+  "kit-chest-tube": { name:"Chest Tube Kit", cat:"kit", std:["ACS-COT"], contents:[
+    "Scalpel No. 10 blade","Kelly clamps","Heavy suture 0 or 2-0 + needle driver",
+    "Lidocaine 1% 20 mL + 10 mL syringe + 21 g and 25 g needles","Chlorhexidine prep + sterile drapes",
+    "Gown, gloves, mask, eye protection","Gauze packs + occlusive dressing + tape"] },
+  "kit-pigtail": { name:"Pigtail Thoracostomy Kit", cat:"kit", std:["ACS-COT"], contents:[
+    "Sterile gown, mask, eye protection, gloves, drapes","Ultrasound with a sterile probe cover and gel",
+    "25 G and 21 G needles","Lidocaine 1%","Introducer needle","Marked guidewire","Sequential dilators",
+    "Pigtail catheter with stiffener","Kelly clamps","Connecting tubing","Underwater-seal drain with sterile water"] },
+  "kit-thoracotomy": { name:"Thoracotomy Tray", cat:"kit", std:["ACS-COT"], contents:[
+    "Finochietto rib spreader","Gigli saw with handles","Mayo scissors, heavy","Scalpel No. 20 blade",
+    "Long artery forceps","Vascular (aortic) cross-clamp","3-0 monofilament on a large needle",
+    "Skin stapler","Foley 16 Fr + 20 mL syringe"] },
+  "kit-burr-hole": { name:"Burr Hole Kit", cat:"kit", std:["ACS-COT"], contents:[
+    "Codman disposable perforator","Hudson brace or driver","Scalpel No. 10 blade","Self-retaining retractor",
+    "Sharp dural hook","Bone nibbler","Lidocaine 1% with epinephrine 10 mL + syringe","Clippers",
+    "Sterile saline 500 mL for irrigation"] },
+  "kit-neck-tamponade": { name:"Neck Tamponade Kit", cat:"kit", std:["ACS-COT"], contents:[
+    "Foley catheter 16 Fr","20 mL syringe","Umbilical tape or clamp","Gauze packs","Occlusive dressing"] },
+  "kit-junctional": { name:"Junctional Hemorrhage Kit", cat:"kit", std:["ACS-COT"], contents:[
+    "Hemostatic gauze","Plain roller gauze / Kerlix","Pressure dressing","Permanent marker","Trauma shears"] },
+  "kit-escharotomy": { name:"Escharotomy Kit", cat:"kit", std:["ACS-COT"], contents:[
+    "Scalpel No. 10 blade","Scalpel No. 20 blade","Marking pen","Artery forceps","Topical hemostatic gauze",
+    "Gauze packs","Antiseptic prep + sterile drapes","Petroleum gauze + burn dressing"] },
+  "kit-resus-line": { name:"Resuscitation Line Kit (Cordis / AVA 3Xi)", cat:"kit", std:["ACS-COT"], contents:[
+    "Introducer sheath 8–9 Fr","18 g introducer needle + syringe","J-tip guidewire","Dilator",
+    "Sterile probe cover + gel","Suture 3-0 non-absorbable + needle driver","Non-return valve caps",
+    "Biopatch + Tegaderm"] },
+  "kit-central-line": { name:"Central Line Kit", cat:"kit", contents:[
+    "Triple-lumen catheter 7 Fr, 15–20 cm","Sterile probe cover + gel","Scalpel No. 11 blade",
+    "Luer-lock syringes","Needles","Suture 3-0 non-absorbable + needle driver",
+    "Biopatch + Tegaderm 10x12 and 6x7","Non-return valve caps"] },
+  "kit-tvp": { name:"Transvenous Pacing Kit", cat:"kit", contents:[
+    "Introducer sheath 6–7 Fr with sterile sleeve","Balloon-tipped bipolar pacing catheter 5 Fr",
+    "Balloon syringe capped at 1.5 mL","Connecting cable","Suture 2-0 + needle driver",
+    "Sterile probe cover + gel","External generator with a fresh battery"] },
+  "kit-blakemore": { name:"Blakemore Kit", cat:"kit", contents:[
+    "Sengstaken-Blakemore tube","Two 60 mL syringes","Insufflation manometer","Roller gauze",
+    "Scissors taped within reach"] },
+  "kit-lung-isolation": { name:"Lung Isolation Kit", cat:"kit", contents:[
+    "ETT 8.0 and 9.0","Coude bougie","Nebulizer setup for TXA","TXA 1 g vials","Suction x2 for the good lung"] },
+  "kit-epistaxis": { name:"Epistaxis Kit", cat:"kit", contents:[
+    "Nasal speculum + headlamp","Rapid Rhino","Merocel","Silver nitrate","Foley",
+    "Oxymetazoline 0.05%"] },
+  "kit-salad": { name:"SALAD Suction Kit", cat:"kit", contents:[
+    "DuCanto rigid catheter x2","HI-D Big Stick","Meconium aspirator","Suction tubing + canisters"] },
+  "kit-jada": { name:"JADA Kit", cat:"kit", std:["AIM-OB"], contents:[
+    "JADA System single-use kit","Sterile syringes","Straight catheter or Foley kit","Speculum",
+    "Antiseptic prep + sterile gloves","Tape","Regulated vacuum source holding 80 mmHg"] },
+  "kit-pneumo-tray": { name:"Pneumothorax Tray", cat:"kit", std:["ACS-COT"] },
+  "kit-pacer-magnet": { name:"Pacemaker Magnet", cat:"kit" },
+  "kit-mh": { name:"Malignant Hyperthermia Cart", cat:"kit", std:["MHAUS"] },
+  "kit-difficult-airway": { name:"Difficult Airway Trolley / portable unit", cat:"kit", std:["ASA-DA"],
+    note:"ASA's expectation is that the difficult-airway equipment travels together as one portable unit. At LRH it is spread across code cart drawers 1 and 2 — record where it actually is, then decide whether that counts." }
 };
 
-/* ===== STANDARDS (universal; versioned by checklist year) ================= */
+/* ===== STANDARDS (universal; versioned by checklist year) =================
+   `items` is DERIVED at the bottom of this file from each catalog entry's
+   `std` array — do not hand-maintain a second list.
+   kind: "itemized"  = the source publishes a parts list, transcribed here.
+         "narrative" = the source states a capability; the rows are this
+                       manual's reading of it, and are marked as such on
+                       screen so nobody cites them as the standard's own words. */
 var INV_STANDARDS = {
   "NPRP": {
-    name: "National Pediatric Readiness Project — equipment checklist",
-    cite: "AAP/ACEP/ENA joint policy, Pediatric Readiness in the Emergency Department (Pediatrics 2018;142:e20182459), equipment appendix",
-    items: ["bp-cuffs-peds-range","doppler","defib-peds","pulseox-peds","etco2",
-      "thermometer-hypo","scale-kg","broselow-tape","io-needles","iv-cath-22-24",
-      "uvc-3.5-5","cvc-peds-4-7","iv-sets-calibrated","fluid-warmer",
-      "bvm-infant-adult","o2-masks-range","opa-0-5","npa-range","blades-peds",
-      "ett-range","sga-1-5","magill-peds-adult","suction-cath-5-14","ng-8-18",
-      "trach-tubes-0-6","chest-tubes-8-40","c-collars-range","femur-splints",
-      "lp-trays","urinary-cath-5-22","ob-delivery-kit","peds-dosing-ref"]
+    name: "National Pediatric Readiness Project — pediatric equipment checklist",
+    short: "NPRP · pediatric",
+    kind: "itemized",
+    scope: "Every ED that sees children, which is every ED. This checklist is what the national readiness score is built on.",
+    cite: "AAP/ACEP/ENA joint policy, Pediatric Readiness in the Emergency Department (Pediatrics 2018;142:e20182459), equipment and supplies appendix"
+  },
+  "ACS-COT": {
+    name: "American College of Surgeons Committee on Trauma — resuscitation equipment",
+    short: "ACS · trauma",
+    kind: "narrative",
+    scope: "Any ED that receives trauma. Level III/IV expectations are the ones a critical-access department is measured against.",
+    cite: "ACS Committee on Trauma, Resources for Optimal Care of the Injured Patient: 2022 Standards — resuscitation equipment and immediate-availability requirements",
+    note: "The ACS standard states capability rather than printing a parts list, so these rows are this manual's reading of it. A red row here is a question for the trauma committee, not a quotation from the standard."
+  },
+  "ASA-DA": {
+    name: "ASA difficult airway guideline — portable storage unit contents",
+    short: "ASA · difficult airway",
+    kind: "itemized",
+    scope: "Anywhere an airway is managed. The point of the list is that the rescue equipment is together and portable, not scattered.",
+    cite: "ASA Practice Guidelines for Management of the Difficult Airway 2022 (Anesthesiology 2022;136:31–81), which continues the guideline's suggested contents for a portable difficult-airway storage unit"
+  },
+  "NRP": {
+    name: "Neonatal Resuscitation Program — delivery-room supplies and equipment",
+    short: "NRP · newborn",
+    kind: "itemized",
+    scope: "Every birth, including the unplanned ones that arrive in the ED. NRP expects this checked before each delivery.",
+    cite: "AAP/AHA Neonatal Resuscitation Program, 8th edition (2021), delivery-room supplies and equipment checklist"
+  },
+  "AIM-OB": {
+    name: "AIM obstetric hemorrhage bundle — hemorrhage cart and immediate-access supplies",
+    short: "AIM · OB hemorrhage",
+    kind: "itemized",
+    scope: "Any department where a postpartum patient can hemorrhage — including an ED with no obstetric service.",
+    cite: "Alliance for Innovation on Maternal Health, Obstetric Hemorrhage patient safety bundle (readiness element: hemorrhage cart with supplies, checklist and instruction cards; immediate access to hemorrhage medications and a massive transfusion protocol); item detail per the CMQCC Obstetric Hemorrhage Toolkit V3.0 cart list"
+  },
+  "MHAUS": {
+    name: "MHAUS malignant hyperthermia cart contents",
+    short: "MHAUS · MH cart",
+    kind: "itemized",
+    scope: "Any site that gives a triggering agent — succinylcholine in RSI counts — or that receives an MH patient from a surgical center.",
+    cite: "Malignant Hyperthermia Association of the United States, recommended contents of the MH cart"
+  },
+  "ASRA-LAST": {
+    name: "ASRA local anesthetic systemic toxicity — lipid rescue kit",
+    short: "ASRA · LAST rescue",
+    kind: "itemized",
+    scope: "Any department that performs nerve blocks or infiltrates large-volume local anesthetic.",
+    cite: "ASRA practice advisory on local anesthetic systemic toxicity and the ASRA LAST checklist (lipid emulsion 20%, dedicated tubing and syringes, checklist stored together)"
   }
-  /* ACS-TRAUMA, AIM-OB, DAS-AIRWAY follow the same shape in a later phase. */
 };
+
+/* Standards deliberately NOT scored here, and why — so the next person does
+   not re-litigate it (see INVENTORY-DESIGN.md §7):
+   - AHA/ACLS: publishes no crash-cart parts list; the cart is local convention.
+   - The Joint Commission / CMS Conditions of Participation: require that
+     emergency equipment be available and checked, without itemizing it.
+   - ENA / ACEP department-planning guidance: describes capability, already
+     covered by the ACS and NPRP rows.
+   - ATLS: a course, not an equipment standard.                              */
 
 /* Standard Broselow band packing (universal summary; design decision 2:
    transcribe standard first, diff against the real cart on the walk). */
@@ -102,62 +342,115 @@ var INV_BROSELOW_PACK = {
 };
 
 /* ===== LAYER 2 — LOCAL MAP (SITE CONFIG — the ONLY block a fork edits) ====
-   loc: where it lives HERE. par: minimum stocked count where tracked.
+   Key is an item id, or `id#size` to override one size of an item.
+   Resolution for a size row: LOCATIONS["id#size"] || LOCATIONS["id"].
+   loc: where it lives HERE.  par: minimum stocked count where tracked.
    verify:true = believed present at this location but not yet confirmed on a
    cart walk (converts to confirmed by deleting the flag).
-   An NPRP item with NO entry here = GAP (see INV_GAP_ISSUES). ============== */
+   NO entry = NOT YET REVIEWED — which is not the same claim as a gap. A gap
+   is an assertion that the department does not stock the thing, and it is
+   made either here (gap:true, with an issue number in INV_GAP_ISSUES) or by a
+   champion on the walk using the tool's own dropdown. ==================== */
 var INV_LOCATIONS = {
-  "bp-cuffs-peds-range": { loc:"Broselow Cart · band drawers + Room 7 · Monitoring", verify:true },
-  "defib-peds":          { loc:"Resus bay — monitor/defibrillator (outside cart data)", verify:true },
-  "pulseox-peds":        { loc:"Room 7 · Monitoring", verify:true },
-  "etco2":               { loc:"Code Cart · End-Tidal CO2 drawer", par:2 },
+  /* --- monitoring --- */
+  "bp-cuffs":            { loc:"Broselow Cart · band drawers + Room 7 · Monitoring", verify:true },
+  "ecg-electrodes":      { loc:"Room 7 · Monitoring", verify:true },
+  "defib":               { loc:"Resus bay — monitor/defibrillator (outside cart data)", verify:true },
+  "defib#internal paddles (thoracotomy)": { loc:"With the defibrillator, not in the thoracotomy tray", verify:true },
+  "pulseox":             { loc:"Room 7 · Monitoring", verify:true },
+  "etco2":               { loc:"Code Cart · Drawer 1 · End-Tidal CO2", par:2 },
   "scale-kg":            { loc:"Peds room / triage", verify:true },
   "broselow-tape":       { loc:"Pediatric (Broselow) Cart — top", par:1 },
-  "io-needles":          { loc:"Code Cart · EZ-IO drawer", par:2 },
-  "iv-cath-22-24":       { loc:"Broselow Cart · band drawers + Trauma Cart · IV Supplies", verify:true },
-  "uvc-3.5-5":           { loc:"OB / Neonatal Cart · Circulation drawer (UVC kit)", par:1 },
-  "cvc-peds-4-7":        { loc:"Room 7 · Vascular Access", verify:true, note:"adult CVC confirmed; pediatric sizes unconfirmed" },
+  "glucometer":          { loc:"Resus bay / triage point-of-care", verify:true },
+  "ultrasound":          { loc:"Resus bay — shared machine", verify:true },
+  "xray-portable":       { loc:"Radiology — portable into the bay", verify:true },
+  "abg-syringes":        { loc:"Room 7 · Specimens", verify:true },
+  /* --- airway --- */
+  "opa":                 { loc:"Code Cart · Drawer 1 · OPA / NPA", verify:true },
+  "npa":                 { loc:"Code Cart · Drawer 1 · OPA / NPA", verify:true },
+  "sga-neonatal":        { loc:"OB / Neonatal Cart · Drawer 1 · Airway / Breathing", verify:true },
+  "sga-igel":            { loc:"Code Cart · Drawer 2 · iGel", par:3 },
+  "ett-uncuffed":        { loc:"Broselow Cart · band drawers + OB Cart · Drawer 1", verify:true },
+  "ett-cuffed":          { loc:"Code Cart · Drawer 1 · ETT / Bougie + Broselow Cart · band drawers", verify:true },
+  "ett-90":              { loc:"Room 7 · Lung Isolation", verify:true },
+  "stylets":             { loc:"Code Cart · Drawer 1 · ETT / Bougie", verify:true },
+  "bougie":              { loc:"Code Cart · Drawer 1 · ETT / Bougie", par:2 },
+  "bougie#coudé tip (lung isolation)": { loc:"Room 7 · Lung Isolation", verify:true },
+  "blades-mac":          { loc:"Code Cart · Drawer 1 · Direct Laryngoscopy", verify:true },
+  "blades-miller":       { loc:"Code Cart · Drawer 1 · Direct Laryngoscopy", verify:true },
+  "laryngoscope-handles":{ loc:"Code Cart · Drawer 1 · Direct Laryngoscopy", verify:true },
+  "videolaryngoscope":   { loc:"Code Cart · Drawer 1 · Video Laryngoscopy (McGrath MAC)", par:1 },
+  "fona-kit":            { loc:"Code Cart · Drawer 2 · Front of Neck Access", par:1 },
+  "jet-vent":            { loc:"Code Cart · Drawer 2 · Jet Ventilation", par:1 },
+  "magill":              { loc:"Code Cart · Drawer 1 · Intubation", verify:true },
+  "suction-cath":        { loc:"Code Cart · Drawer 4 · Suction", verify:true },
+  "suction-rigid":       { loc:"Code Cart · Drawer 4 · Suction + Room 7 · SALAD Suction", verify:true },
+  "suction-units":       { loc:"Resus bay wall + portable unit", verify:true },
+  "ng-tubes":            { loc:"Trauma Cart · Drawer 2 · NG Tube", verify:true },
+  /* --- breathing --- */
+  "bvm":                 { loc:"Broselow Cart · band drawers + OB Cart · Drawer 1", verify:true },
+  "face-masks":          { loc:"Broselow Cart · band drawers + OB Cart · Drawer 1", verify:true },
+  "o2-masks":            { loc:"Respiratory storage + Broselow Cart", verify:true },
+  "nasal-cannula":       { loc:"Respiratory storage", verify:true },
+  "meconium-aspirator":  { loc:"Room 7 · SALAD Suction + OB Cart · Drawer 1", verify:true },
+  /* --- vascular --- */
+  "io-needles":          { loc:"Code Cart · Drawer 5 · EZ-IO", par:2 },
+  "iv-cath":             { loc:"Code Cart · Drawer 5 · I.V. Supplies + Trauma Cart · Drawer 1 · IV Supplies", verify:true },
+  "iv-cath#24 g":        { loc:"Broselow Cart · band drawers", verify:true },
+  "iv-cath#22 g":        { loc:"Broselow Cart · band drawers", verify:true },
+  "uvc":                 { loc:"OB / Neonatal Cart · Drawer 2 · Circulation (UVC kit)", par:1 },
+  "cvc-peds":            { loc:"Room 7 · Vascular Access", verify:true, note:"adult sizes confirmed; pediatric sizes unconfirmed" },
+  "art-line":            { loc:"Room 7 · Arterial Line", verify:true },
   "iv-sets-calibrated":  { loc:"Clean utility / pump storage", verify:true },
-  "bvm-infant-adult":    { loc:"Broselow Cart · band drawers + OB Cart · Airway/Breathing", verify:true },
-  "o2-masks-range":      { loc:"Respiratory storage + Broselow Cart", verify:true },
-  "opa-0-5":             { loc:"Code Cart · OPA/NPA drawer", verify:true, note:"pediatric sizes unconfirmed" },
-  "npa-range":           { loc:"Code Cart · OPA/NPA drawer", verify:true },
-  "blades-peds":         { loc:"Code Cart · Direct Laryngoscopy drawer", verify:true, note:"Miller 0–1 unconfirmed" },
-  "ett-range":           { loc:"Code Cart · ETT/Bougie drawer + Broselow Cart · band drawers", verify:true },
-  "sga-1-5":             { loc:"Code Cart · iGel drawer", verify:true, note:"pediatric sizes unconfirmed" },
-  "magill-peds-adult":   { loc:"Code Cart · Intubation drawer", verify:true },
-  "suction-cath-5-14":   { loc:"Code Cart · Suction drawer", verify:true },
-  "ng-8-18":             { loc:"Trauma Cart · NG Tube drawer", verify:true, note:"size range unconfirmed" },
-  "chest-tubes-8-40":    { loc:"Trauma Cart · Chest Tube Insertion + Room 7 · Pigtail Thoracostomy", verify:true, note:"sub-12 Fr unconfirmed" },
+  "pressure-infuser":    { loc:"Code Cart · Drawer 4 · I.V. Fluids", verify:true },
+  "radiant-warmer":      { loc:"OB / Neonatal — radiant warmer in the bay", verify:true },
+  /* --- hemorrhage / trauma --- */
+  "tourniquet":          { loc:"Trauma Cart · Drawer 4 · Hemorrhage Control 2", verify:true },
+  "hemostatic-gauze":    { loc:"Trauma Cart · Drawer 3 · Hemorrhage Control 1", verify:true },
+  "pressure-dressings":  { loc:"Trauma Cart · Drawer 3 · Hemorrhage Control 1", verify:true },
+  "pelvic-binder":       { loc:"Trauma Cart · Drawer 4 · Hemorrhage Control 2", verify:true },
+  "needle-decompression":{ loc:"Trauma Cart · Drawer 1 · Needle Decompression", verify:true },
+  "trauma-shears":       { loc:"Trauma Cart · Drawer 3 · Hemorrhage Control 1", verify:true },
+  "txa":                 { loc:"Omnicell + Room 7 · Lung Isolation (nebulized)", verify:true },
+  "ppe-splash":          { loc:"Trauma Cart · Drawer 5 · PPE", verify:true },
+  /* --- procedural --- */
+  "chest-tubes":         { loc:"Trauma Cart · Chest Tube Insertion shelf + Room 7 · Chest Drainage", verify:true, note:"14 Fr pigtail is the only small-bore size named on the cards" },
+  "drainage-system":     { loc:"Room 7 · Chest Drainage", verify:true },
   "femur-splints":       { loc:"Room 7 · Splints", verify:true },
   "lp-trays":            { loc:"Room 7 · Procedure Trays", verify:true, note:"infant 22 g needles unconfirmed" },
-  "urinary-cath-5-22":   { loc:"Clean utility", verify:true },
-  "ob-delivery-kit":     { loc:"OB / Neonatal Cart · Vaginal Delivery drawer + radiant warmer", par:1 },
+  "urinary-cath":        { loc:"Clean utility", verify:true },
+  /* --- obstetric / neonatal --- */
+  "ob-delivery-kit":     { loc:"OB / Neonatal Cart · Drawer 6 · Vaginal Delivery + radiant warmer", par:1 },
+  "intrauterine-balloon":{ loc:"OB / Neonatal Cart · Drawer 4 · Postpartum Hemorrhage", verify:true },
+  "uterotonics":         { loc:"Omnicell + OB / Neonatal Cart · Drawer 4", verify:true },
   "peds-dosing-ref":     { loc:"Broselow tape + the peds/ tool itself", par:1 },
-  /* kits (all locations confirmed from labels/ + cards) */
-  "kit-canthotomy":     { loc:"Trauma Cart · Canthotomy drawer", par:1 },
-  "kit-blakemore":      { loc:"Room 7 · GI Hemorrhage", par:1 },
-  "kit-lung-isolation": { loc:"Room 7 · Lung Isolation", par:1 },
-  "kit-epistaxis":      { loc:"Room 7 · Epistaxis", par:1 },
-  "kit-salad":          { loc:"Room 7 · SALAD Suction", par:1 },
-  "kit-pigtail":        { loc:"Room 7 · Chest Drainage (pigtail)", par:2 },
-  "kit-pacer-magnet":   { loc:"Code Cart · side panel", par:1 },
-  "kit-chest-tube":     { loc:"Trauma Cart · Chest Tube Insertion shelf", par:1 },
-  "kit-thoracotomy":    { loc:"Trauma Cart · Thoracostomy + Rib Spreader shelves", par:1 },
-  "kit-burr-hole":      { loc:"Trauma Cart · Burr Hole shelf", par:1 },
-  "kit-tvp":            { loc:"Room 7 · Transvenous Pacing", par:1 },
-  "kit-escharotomy":    { loc:"Room 7 · Procedure Trays (escharotomy)", par:1 },
-  "kit-neck-tamponade": { loc:"Trauma Cart · Hemorrhage Control", par:1 },
-  "kit-junctional":     { loc:"Trauma Cart · Drawer 3 · Hemorrhage Control", par:1 },
-  "kit-jada":           { loc:"OB / Neonatal Cart · Postpartum Hemorrhage drawer", par:1 },
-  "kit-resus-line":     { loc:"Room 7 · Vascular Access", par:1 },
-  "kit-pneumo-tray":    { loc:"Trauma Cart · Pneumothorax Tray drawer", par:1 }
+  /* --- kits (locations confirmed from labels/ + procedure cards) --- */
+  "kit-canthotomy":      { loc:"Trauma Cart · Drawer 6 · Canthotomy Kit", par:1 },
+  "kit-chest-tube":      { loc:"Room 7 · Chest Drainage", par:1 },
+  "kit-pigtail":         { loc:"Room 7 · Chest Drainage (pigtail)", par:2 },
+  "kit-thoracotomy":     { loc:"Trauma Cart · Shelf A · Thoracostomy + Rib Spreader", par:1 },
+  "kit-burr-hole":       { loc:"Trauma Cart · Shelf A · Burr Hole", par:1 },
+  "kit-neck-tamponade":  { loc:"Trauma Cart · Drawer 3 · Hemorrhage Control", par:1 },
+  "kit-junctional":      { loc:"Trauma Cart · Drawer 3 · Hemorrhage Control", par:1 },
+  "kit-escharotomy":     { loc:"Room 7 · Procedure Trays (escharotomy)", par:1 },
+  "kit-resus-line":      { loc:"Room 7 · Vascular Access", par:1 },
+  "kit-central-line":    { loc:"Room 7 · Vascular Access", par:1 },
+  "kit-tvp":             { loc:"Room 7 · Transvenous Pacing", par:1 },
+  "kit-blakemore":       { loc:"Room 7 · GI Hemorrhage", par:1 },
+  "kit-lung-isolation":  { loc:"Room 7 · Lung Isolation", par:1 },
+  "kit-epistaxis":       { loc:"Room 7 · Epistaxis", par:1 },
+  "kit-salad":           { loc:"Room 7 · SALAD Suction", par:1 },
+  "kit-jada":            { loc:"OB / Neonatal Cart · Drawer 4 · Postpartum Hemorrhage", par:1 },
+  "kit-pneumo-tray":     { loc:"Trauma Cart · Drawer 6 · Pneumothorax Tray", par:1 },
+  "kit-pacer-magnet":    { loc:"Code Cart · side panel", par:1 }
 };
 
-/* NPRP items with NO location = tracked gaps, filed as GitHub issues. */
+/* Items asserted ABSENT at LRH, each filed as a GitHub issue. This is the
+   only place a gap is claimed in source — everything else with no LOCATIONS
+   entry is simply not reviewed yet. */
 var INV_GAP_ISSUES = {
   "doppler": 98, "thermometer-hypo": 99, "fluid-warmer": 100,
-  "trach-tubes-0-6": 101, "c-collars-range": 102
+  "trach-tubes": 101, "c-collars": 102
 };
 
 /* Location directory (browse view): cart -> drawers, from labels/ (photo-
@@ -169,3 +462,53 @@ var INV_DIRECTORY = {
   "Pediatric (Broselow) Cart": ["GREY (3–5 kg)","PINK (6–7 kg)","RED (8–9 kg)","PURPLE (10–11 kg)","YELLOW (12–14 kg)","WHITE (15–18 kg)","BLUE (19–23 kg)","ORANGE (24–29 kg)","GREEN (30–36 kg)"],
   "Room 7 cabinets": ["Airway","Vascular Access","Arterial Line","Fluids","Chest Drainage","GI Hemorrhage","Lung Isolation","Epistaxis","SALAD Suction","Procedure Trays","Suture / Wound","Specimens","Splints","Monitoring","Transvenous Pacing"]
 };
+
+/* Human labels for the catalog's `cat` values (UI grouping order). */
+var INV_CATEGORIES = [
+  ["monitoring","Monitoring & diagnostics"],
+  ["airway","Airway"],
+  ["breathing","Breathing & oxygen"],
+  ["vascular","Vascular access & transfusion"],
+  ["hemorrhage","Hemorrhage & trauma"],
+  ["procedure","Procedural & immobilization"],
+  ["obstetric","Obstetric & neonatal"],
+  ["medication","Antidote & rescue stock"],
+  ["reference","Reference at the bedside"],
+  ["kit","Named kits"]
+];
+
+/* ===== DERIVED (do not hand-edit) =========================================
+   Each standard's item list comes from the catalog's `std` arrays, so an item
+   is filed under a standard in exactly one place. Row ids used by the audit
+   are also generated here: an item with `sizes` contributes one row per size
+   (`id#size`) and no row for the bare item. */
+var INV_ROWS = {};   /* rowId -> {id, size, name, cat} */
+(function(){
+  Object.keys(INV_STANDARDS).forEach(function(s){ INV_STANDARDS[s].items = []; });
+  Object.keys(INV_CATALOG).forEach(function(id){
+    var c = INV_CATALOG[id];
+    (c.std || []).forEach(function(s){
+      if (INV_STANDARDS[s]) INV_STANDARDS[s].items.push(id);
+    });
+    if (c.sizes && c.sizes.length) {
+      c.sizes.forEach(function(sz){
+        INV_ROWS[id + '#' + sz] = { id:id, size:sz, name:c.name + ' — ' + sz, cat:c.cat };
+      });
+    } else {
+      INV_ROWS[id] = { id:id, size:null, name:c.name, cat:c.cat };
+    }
+  });
+})();
+
+/* Baseline location for a row id, falling back from `id#size` to `id`. */
+function invBaseline(rowId){
+  return INV_LOCATIONS[rowId] || INV_LOCATIONS[rowId.split('#')[0]] || null;
+}
+
+/* Every row id belonging to a catalog item (one per size, or just the item). */
+function invRowIds(id){
+  var c = INV_CATALOG[id];
+  if (!c) return [];
+  if (c.sizes && c.sizes.length) return c.sizes.map(function(sz){ return id + '#' + sz; });
+  return [id];
+}

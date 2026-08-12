@@ -347,16 +347,16 @@ var CASE = {
      `decoy` = deliberately in the deck but NOT indicated here. VEMS asks people
      to choose a card; a deck containing only correct answers is not a choice. */
   kit:[
-    { icon:"monitor", n:"Monitor",              sz:"SpO₂ · ETCO₂ · NIBP", inv:"defib-peds" },
+    { icon:"monitor", n:"Monitor",              sz:"SpO₂ · ETCO₂ · NIBP", inv:"defib" },
     { icon:"mask",    n:"Face Mask / BVM",      sz:"ADULT",            drawer:"Resus bay", unconfirmed:1 },
-    { icon:"airway",  n:"OPA / NPA",            sz:"SET",              inv:"opa-0-5" },
+    { icon:"airway",  n:"OPA / NPA",            sz:"SET",              inv:"opa" },
     { icon:"etco2",   n:"End-Tidal CO₂",        sz:"WAVEFORM",         inv:"etco2" },
     { icon:"meds",    n:"Induction + Paralytic",sz:"SAY THE DOSE",     drawer:"Code Cart · Medications" },
     { icon:"vl",      n:"Video Laryngoscope",   sz:"McGRATH MAC",      drawer:"Code Cart · Video Laryngoscopy" },
     { icon:"dl",      n:"Direct Laryngoscope",  sz:"MACINTOSH",        drawer:"Code Cart · Direct Laryngoscopy" },
-    { icon:"ett",     n:"ETT + Bougie",         sz:"CUFFED",           inv:"ett-range" },
-    { icon:"suction", n:"Suction / SALAD",      sz:"YANKAUER + CATH",  inv:"suction-cath-5-14" },
-    { icon:"igel",    n:"iGel",                 sz:"SIZE BY WEIGHT",   inv:"sga-1-5" },
+    { icon:"ett",     n:"ETT + Bougie",         sz:"CUFFED",           inv:"ett-cuffed" },
+    { icon:"suction", n:"Suction / SALAD",      sz:"YANKAUER + CATH",  inv:"suction-cath" },
+    { icon:"igel",    n:"iGel",                 sz:"SIZE BY WEIGHT",   inv:"sga-igel" },
     { icon:"fona",    n:"Front of Neck Access", sz:"CICO",             drawer:"Code Cart · Front of Neck Access" },
     { icon:"scalpel", n:"Scalpel",              sz:"SIZE 10",          drawer:"Trauma Cart · Scalpel" },
     { icon:"iv",      n:"IV Access",            sz:"LARGE BORE",       drawer:"Code Cart · I.V. Supplies" },
@@ -365,7 +365,7 @@ var CASE = {
        plausible wrong turn in exactly this case — which is what makes reaching
        for it a decision worth debriefing rather than a trick. */
     { icon:"jet",     n:"Jet Ventilation",      sz:"NOT THE 2025 PLAN D", drawer:"Code Cart · Jet Ventilation", decoy:1 },
-    { icon:"ngt",     n:"Nasogastric Tube",     sz:"NOT NOW",          inv:"ng-8-18", decoy:1 },
+    { icon:"ngt",     n:"Nasogastric Tube",     sz:"NOT NOW",          inv:"ng-tubes", decoy:1 },
     { icon:"nose",    n:"Epistaxis Kit",        sz:"WRONG BLEED",      inv:"kit-epistaxis", decoy:1 },
     { icon:"fluid",   n:"IV Fluid",             sz:"WON'T FIX THIS",   drawer:"Code Cart · I.V. Fluids", decoy:1 }
   ],
