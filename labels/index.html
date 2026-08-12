@@ -23,25 +23,25 @@
 
    The design language is constant; the amount of it that fits is not. What
    survives at every size, in this order, is the RULE OF THREE:
-       1. colour + number   (which drawer)      - survives to 3 m
+       1. color + number   (which drawer)      - survives to 3 m
        2. the name          (which contents)    - survives to 1 m
        3. a pictogram       (recognise it fast) - survives to 1 m
    Everything beyond that (key fact, sizes, PAR, expiry, QR) is added back only
    where there is physical room. On SLIM labels there is not, so stock moves to
    a single CHECK CARD per cart rather than being repeated per drawer.
 
-   ---- COLOUR -------------------------------------------------------------
-   Colour encodes WHERE and nothing else: which drawer, counting down the cart.
+   ---- COLOR -------------------------------------------------------------
+   Color encodes WHERE and nothing else: which drawer, counting down the cart.
    Never severity, never tool identity. It is never the only carrier - every
    label also has a number, a name and a shape, so the whole system still works
    photocopied in black and white.
 
-   Cart identity does NOT need encoding: the carts are already different colours
+   Cart identity does NOT need encoding: the carts are already different colors
    in the room (code = red, OB = navy, trauma = tan/orange). Do not spend a
    channel on something the furniture already says.
    ========================================================================== */
 :root{
-  /* Drawer position colours. Red is excluded on purpose - the code cart is red. */
+  /* Drawer position colors. Red is excluded on purpose - the code cart is red. */
   --p1:#6f4fa8; --p2:#0f7a86; --p3:#2f62a8; --p4:#8a6011; --p5:#2f7a3f; --p6:#7a3f6d;
   --shelf:#5a6a78;
 
@@ -346,7 +346,7 @@ var CARTS = [
  {
   id:'code', name:'Code Cart', body:'#c8102e', format:'full',
   note:'Bare drawer fronts with no card holders, so these are full-size adhesive faces. '+
-       'Red is not used as a drawer colour here because the cart itself is red.',
+       'Red is not used as a drawer color here because the cart itself is red.',
   drawers:[
    /* WS-cart (2026-08-09) — rebuilt from the photograph of the real cart. It has FIVE drawers,
       the bottom one deep, and the categories printed on its own label strip are used verbatim:
@@ -393,7 +393,7 @@ var CARTS = [
       {t:'Suction',tag:'CODE CART · DRAWER 4',icon:'suction',big:'TWO UNITS · TEST BOTH BEFORE INDUCTION',
        sub:'Rigid large-bore for a contaminated airway. One suction is not a setup.',par:2},
       {t:'I.V. Fluids',tag:'CODE CART · DRAWER 4',icon:'fluid',big:'CRYSTALLOID · GIVING SETS · PRESSURE BAGS',
-       sub:'In haemorrhage this is not the resuscitation fluid — blood is.',par:2}]},
+       sub:'In hemorrhage this is not the resuscitation fluid — blood is.',par:2}]},
    {n:5,c:'--p5',deep:true,labels:[
       {t:'I.V. Supplies',tag:'CODE CART · DRAWER 5 · DEEP',icon:'iv',big:'CANNULAE · EXTENSION SETS · DRESSINGS',
        sub:'Cart-front face. If peripheral access fails twice, stop and go intraosseous.',par:1},
@@ -401,7 +401,7 @@ var CARTS = [
        sub:'Nothing runs until it is flushed. Lidocaine first in the awake patient. <b>Under 3 kg / newly born → umbilical vein catheter (OB cart), not an IO.</b>',
        sizes:['15 mm · 3–39 kg','25 mm · ≥40 kg','45 mm · humeral'],par:3},
       {t:'Miscellaneous',tag:'CODE CART · DRAWER 5 · DEEP',icon:'ppe',big:'PPE · SHARPS · DOCUMENTATION · SPARE PADS',
-       sub:'Shares the deep drawer with I.V. Supplies. Two labels, one drawer, one spine colour.',par:1}]},
+       sub:'Shares the deep drawer with I.V. Supplies. Two labels, one drawer, one spine color.',par:1}]},
    {n:'S',c:'--shelf',side:true,labels:[
       {t:'Pacemaker Magnet',tag:'SIDE PANEL',icon:'magnet',big:'ICD → SHOCKS SUSPENDED · PACER → ASYNCHRONOUS',
        sub:'The effect stops the moment the magnet comes off. Never leave it unattended.',par:1}]}
@@ -442,9 +442,9 @@ var CARTS = [
   ] },
  {
   id:'peds', name:'Pediatric (Broselow) Cart', body:'#d9dde2', format:'slim', broselow:true,
-  note:'The one place colour does NOT mean drawer position. Broselow bands encode PATIENT WEIGHT, '+
+  note:'The one place color does NOT mean drawer position. Broselow bands encode PATIENT WEIGHT, '+
        'a national standard already on this cart and already driving the Peds tool’s dosing. The chip '+
-       'therefore carries the kilogram band rather than a drawer number, and the colours are taken '+
+       'therefore carries the kilogram band rather than a drawer number, and the colors are taken '+
        'verbatim from peds/index.html so the screen and the drawer always agree.',
   drawers:[
    {n:'3–5',   c:'--bz-grey',   labels:[{t:'GREY',   tag:'3–5 kg',   icon:'child'}]},
@@ -462,7 +462,7 @@ var CARTS = [
 
 /* Cabinets — door labels. Contents are PLACEHOLDERS pending a walk-round. */
 var CABINETS = {
-  note:'The cabinets are where the system used to stop: tiny typed slips, no colour, no icon, posters taped on ad hoc. '+
+  note:'The cabinets are where the system used to stop: tiny typed slips, no color, no icon, posters taped on ad hoc. '+
        'A door label carries what a drawer label cannot — a short contents list — because a closed door hides everything '+
        'and there is no handle strip to read. Several items that had no home anywhere (arterial line, pigtail catheter, '+
        'the relocated LP tray) live here. Contents still need a walk-round to confirm.',
@@ -487,7 +487,7 @@ var CABINETS = {
     {t:'Epistaxis',c:'--p4',icon:'nose',list:['Nasal speculum + headlamp','Rapid Rhino 5.5 / 7.5 / 9 cm','Merocel tampons','Silver nitrate sticks','Foley 12-14 Fr + 20 mL syringe','Oxymetazoline 0.05% + lidocaine 4%']},
     {t:'SALAD Suction',c:'--p2',icon:'suction',list:['DuCanto rigid catheter x2','HI-D Big Stick','Meconium aspirator','Spare ETT 8.0','Suction tubing + canisters']},
     {t:'Procedure Trays',c:'--p1',icon:'lp',list:['Lumbar puncture tray','Suture trays','Minor procedure set']},
-    {t:'Suture / Wound',c:'--p4',icon:'suture',list:['3-0 / 4-0 / 5-0','Skin stapler','Local anaesthetic','Irrigation']},
+    {t:'Suture / Wound',c:'--p4',icon:'suture',list:['3-0 / 4-0 / 5-0','Skin stapler','Local anesthetic','Irrigation']},
     {t:'Specimens',c:'--p6',icon:'tube',list:['Blood tubes','Cultures','Swabs','Urine containers']},
     {t:'Splints',c:'--p4',icon:'splint',list:['Rigid splints','Casting supplies','Slings']},
     {t:'Transvenous Pacing',c:'--p3',icon:'pacer',list:['Introducer sheath 6-7 Fr','Pacing catheter 5 Fr','External generator + fresh battery','Connecting cable','Spare 9 V batteries']},
@@ -558,7 +558,7 @@ CARTS.forEach(function(cart){
       ' · SLIM INSERTS 3.4 × 0.85 in</span><span>PRINT AT 100% — CUT ON THE BORDER</span></div>'+
       '<div class="slimwrap">'+slims+'</div>'+
       '<p class="note screenonly"><b>Why these carry less.</b> A 3.4 × 0.85 in slot cannot hold a key fact, a size '+
-      'chart and a stock block as well. What survives is the rule of three — colour + number, name, pictogram. '+
+      'chart and a stock block as well. What survives is the rule of three — color + number, name, pictogram. '+
       'The clinical detail is on the wall poster and the phone card; the stock detail is on the cart check card below.</p></div>');
 
     /* --- one check card per slim cart, replacing per-label stock fields --- */
@@ -606,7 +606,7 @@ out.push('<div class="sheet" id="loc-room7"><div class="sheettitle"><span>ROOM 7
   '<span>FORMAT: DOOR</span></div>'+doors+
   '<p class="note"><b>'+CABINETS.note+'</b></p>'+
   '<p class="note screenonly">A door label is the one place a contents list earns its space: a closed cupboard hides '+
-  'everything, and unlike a drawer there is no handle strip to scan. Same colour code, same icons, same rule of three '+
+  'everything, and unlike a drawer there is no handle strip to scan. Same color code, same icons, same rule of three '+
   '— plus four to six lines of what is actually inside, which is what stops someone opening six doors in a row.</p></div>');
 
 /* ============ PROCEDURE INFOGRAPHIC CARDS (issue #33) ============
@@ -709,7 +709,7 @@ out.push('<div class="sheet screenonly"><div class="sheettitle"><span>WHAT STILL
  '<p class="note"><b>1b. DONE 2026-08-09 — the drawers were swapped.</b> Surgical / Supraglottic moved '+
  'UP to drawer 2; I.V. Supplies moved DOWN into the deep drawer alongside Miscellaneous. The reason: the '+
  'cricothyroidotomy kit is the most time-critical item on the cart and it was in the slowest drawer in the room to '+
- 'reach — you crouch for it, under everything. I.V. supplies are reached for early and calmly instead. Colour and '+
+ 'reach — you crouch for it, under everything. I.V. supplies are reached for early and calmly instead. Color and '+
  'shape follow the POSITION, not the contents, so drawer 2 is blue-with-a-diamond and drawer 5 is gold-with-a-pill '+
  'exactly as before; only the words and pictograms moved. <b>Two physical jobs follow: move the contents, and reprint '+
  'the cart’s own label strip.</b> Note the one cost — the EZ-IO is now in the deep drawer. If that bothers you it can '+
