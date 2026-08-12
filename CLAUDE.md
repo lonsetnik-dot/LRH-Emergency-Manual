@@ -241,7 +241,16 @@ test it" is not sufficient close-out for a deliverable.
 - `codes/` — Codes (cardiac arrest, stroke, RSI, STEMI, status epilepticus,
   and other resuscitation cards).
 - `ob-neonatal/` — OB & Neonatal emergencies (delivery, PPH, shoulder
-  dystocia, neonatal resuscitation, hysterotomy, and more).
+  dystocia, neonatal resuscitation, hysterotomy, and more). Card 03 now points
+  at `neonatal/` for the live version; the card stays as the reference view.
+- `neonatal/` — the newborn resuscitation **engine** (issue #135): time of birth
+  stamped on one tap, 30-second cycles off that clock, heart-rate driven
+  pathway, Apgar marks that fire on their own, and the SpO₂ target for the
+  minute the baby is actually in. A live-protocol peer of `arrest/`, `airway/`
+  and `tca/`, not a card. **Its content was carried over unchanged from card 03
+  and has not been reconciled with NRP 9th edition — the review banner stays up
+  until a clinician signs it off, and `verify_neonatal_screen.mjs` fails if
+  anyone switches it off quietly.**
 - `peds/` — Pediatric Emergencies.
 - `procedures/` — Rare, high-stakes procedure checklists (chest tube,
   thoracotomy, burr hole, canthotomy, CVC, TVP, tourniquet, JADA, etc.).
