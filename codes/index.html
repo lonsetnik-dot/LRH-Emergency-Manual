@@ -112,8 +112,12 @@
      it's tokenized as a fixed highlighted panel rather than an accent-driven
      one. The WEIGHT label chip is a deliberately constant gold/navy pair
      (like the shared severity fills) — it's a small structural highlight
-     that doesn't need to shift with the theme. */
-  #wtbar { display:flex; align-items:center; gap:8px; flex-wrap:nowrap; overflow-x:auto; background:var(--card2); color:var(--ink); border-bottom:2px solid var(--blue); padding:5px 14px; }
+     that doesn't need to shift with the theme.
+     wrap, don't scroll (weight-routing audit): with flex-wrap:nowrap +
+     overflow-x:auto, #wtdisplay — the confirmation of what the tool thinks the
+     weight is — sat past the right edge of a 390px phone, so a weight could be
+     entered and never read back. */
+  #wtbar { display:flex; align-items:center; gap:8px; flex-wrap:wrap; background:var(--card2); color:var(--ink); border-bottom:2px solid var(--blue); padding:5px 14px; }
   #wtbar label { flex:none; display:inline-flex; align-items:center; background:#f7d97a; color:#16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10px; font-weight:700; letter-spacing:0.06em; padding:4px 7px; white-space:nowrap; }
   #wtbar input { flex:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; padding:4px 7px; border:1px solid var(--line); background:var(--card); color:var(--ink); min-height:28px; width:58px; }
   #wtbar select, #wtbar button { flex:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.04em; padding:4px 7px; border:1px solid var(--line); background:var(--card); color:var(--ink); min-height:28px; white-space:nowrap; cursor:pointer; }
