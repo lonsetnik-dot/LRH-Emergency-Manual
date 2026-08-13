@@ -143,6 +143,20 @@ catch(e){ document.body.dataset.theme='dark'; }
       <div id="kit-body" style="padding:0 12px 12px"></div>
     </details>
 
+    <!-- ===== KIT CHECK PILOT — chest tube only (issue #148) =====
+         Scoped to one kit on purpose. The full system waits on #136, which turns
+         the inventory item-level -> size-level; building the row model twice
+         would mean throwing one away. One kit proves the loop: scan, check,
+         export, and a date that means something.
+
+         Contents are read from INV_CATALOG, never re-typed here — the same rule
+         that makes verify_kit_consistency.mjs meaningful. -->
+    <details class="t-box-teal" id="kitcheck" open>
+      <summary class="t-head t-head-teal">KIT CHECK &mdash; PILOT (CHEST TUBE)</summary>
+      <div class="t-sub" style="padding-top:12px">Walk to the kit, work down the list, then <b>EXPORT CSV</b>. The check lives on <b>this device only</b> &mdash; the CSV is the only way it leaves the iPad, so an un-exported walk is not a record.</div>
+      <div id="kc-body" style="padding:0 12px 14px"></div>
+    </details>
+
     <details class="t-box-neutral" id="dir">
       <summary class="t-head t-head-neutral">WHERE IS IT &mdash; CARTS &amp; CABINETS</summary>
       <div id="dir-body" style="padding:4px 12px 12px"></div>
@@ -682,5 +696,171 @@ try{ window.SITE = SITE; }catch(e){}
   }
 })();
 </script>
+
+<script>(function(){
+/* ===== KIT CHECK PILOT (issue #148) — chest tube kit only =====================
+   The loop this proves: walk to the kit, mark each item, sign with initials,
+   export a CSV. Scoped to one kit deliberately — the full system waits on #136,
+   which changes the inventory from item-level to size-level rows, and building
+   that row model twice would mean throwing one away.
+
+   THREE DECISIONS FROM LON, 2026-08-13, and each one shows up in the code:
+
+   1. CSV, not xlsx. A client-side Blob download, so no zip writer and no
+      dependency. On the iPad it lands in Files.
+   2. ONE SHARED DEPARTMENTAL iPAD. So the initials box starts EMPTY at every
+      walk and is never remembered — a stored initial on a shared device would
+      silently attribute one tech's walk to whoever set it last, and a wrong
+      name on a compliance record is worse than no name at all.
+   3. Because the iPad stays in the department, the CSV is the ONLY way the
+      record leaves it. So an un-exported walk is shown as un-exported rather
+      than quietly looking finished.
+
+   State is lrh-kit-* and NOT lrh-case-*: this must survive the case RESET
+   sweep. verify_case_contract.mjs would fail it otherwise, correctly. */
+  var KIT='kit-chest-tube', K='lrh-kit-check';
+  var STATUS=[{v:'ok',t:'OK'},{v:'missing',t:'MISSING'},{v:'short',t:'SHORT'},{v:'expired',t:'EXPIRED'}];
+  function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function load(){ try{ return JSON.parse(localStorage.getItem(K)||'{}')||{}; }catch(e){ return {}; } }
+  function save(st){ try{ localStorage.setItem(K, JSON.stringify(st)); }catch(e){} }
+  function contents(){
+    try{ return (INV_CATALOG[KIT] && INV_CATALOG[KIT].contents) || []; }catch(e){ return []; }
+  }
+  function where(){
+    try{ var l=INV_LOCATIONS[KIT]; return l && l.loc ? l.loc : 'location not recorded'; }catch(e){ return 'location not recorded'; }
+  }
+  function kitName(){ try{ return INV_CATALOG[KIT].name; }catch(e){ return 'Kit'; } }
+  function pad(n){ return (n<10?'0':'')+n; }
+  function stamp(ms){ var d=new Date(ms);
+    return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes()); }
+
+  /* Initials, not names. Same shape of guard as the case log's PHI rule: this is
+     an equipment record and must never become a staff record. Two or three
+     letters, optionally with a dot. Anything longer is a name. */
+  function badInitials(v){
+    if(!v) return 'Enter your initials before exporting.';
+    if(v.length>4) return 'Initials only — not a full name.';
+    if(/\d/.test(v)) return 'Initials only — no employee numbers.';
+    if(!/^[A-Za-z]{2,3}\.?$/.test(v)) return 'Two or three letters.';
+    return null;
+  }
+
+  function render(){
+    var host=document.getElementById('kc-body'); if(!host) return;
+    var st=load(), items=contents(), marks=st.marks||{};
+    var done=items.filter(function(_,i){ return marks[i]; }).length;
+    var bad=items.filter(function(_,i){ return marks[i] && marks[i]!=='ok'; }).length;
+
+    var h='';
+    h+='<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:baseline;padding:8px 0 2px">'
+      +'<b style="font-size:16px">'+esc(kitName())+'</b>'
+      +'<span class="lrh-mono" style="font-size:11.5px;color:var(--ink2)">'+esc(where())+'</span></div>';
+
+    h+='<div class="lrh-mono" style="font-size:11.5px;color:var(--ink2);padding-bottom:8px">LAST CHECKED '
+      +(st.lastChecked ? esc(st.lastChecked.when)+' &middot; '+esc(st.lastChecked.by)
+                       : '&mdash; never recorded on this device')
+      +(st.lastExported ? '' : (st.lastChecked ? ' &middot; <b style="color:var(--amber)">NOT EXPORTED</b>' : ''))
+      +'</div>';
+
+    items.forEach(function(name,i){
+      var cur=marks[i]||'';
+      h+='<div style="border-top:1px solid var(--line);padding:9px 0">'
+        +'<div style="font-size:14.5px;line-height:1.35">'+esc(name)+'</div>'
+        +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">';
+      STATUS.forEach(function(s){
+        var on = cur===s.v;
+        h+='<button type="button" class="eqbtn" data-kc="'+i+'" data-v="'+s.v+'" aria-pressed="'+(on?'true':'false')+'"'
+          +' style="min-height:38px;padding:4px 12px;border-radius:999px;font-size:12px'
+          +(on?';background:var(--ink);color:var(--card);border-color:var(--ink)':'')+'">'+s.t+'</button>';
+      });
+      h+='</div></div>';
+    });
+
+    h+='<div style="border-top:2px solid var(--line);margin-top:10px;padding-top:10px">'
+      +'<div class="lrh-mono" style="font-size:11.5px;color:var(--ink2)">'+done+' of '+items.length+' marked'
+      +(bad?' &middot; <b style="color:var(--red)">'+bad+' NOT OK</b>':'')+'</div>'
+      +'<label style="display:block;font-size:12.5px;color:var(--ink2);margin:10px 0 4px" for="kc-init">Your initials '
+      +'&mdash; initials only, never a full name (shared device)</label>'
+      /* No maxlength: it silently truncated "Lon Setnik" to "Lon", which the
+         guard then accepted as initials — recording a WRONG attribution instead
+         of refusing one. Let the full name be typed and rejected out loud. */
+      +'<input id="kc-init" class="eqloc" type="text" inputmode="text" autocomplete="off" '
+      +'style="flex:none;width:120px" placeholder="e.g. LS">'
+      +'<div id="kc-warn" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>'
+      +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">'
+      +'<button type="button" class="eqbtn" id="kc-save">RECORD THIS CHECK</button>'
+      +'<button type="button" class="eqbtn" id="kc-csv">EXPORT CSV</button>'
+      +'<button type="button" class="eqbtn danger" id="kc-clear">CLEAR THIS WALK</button>'
+      +'</div>'
+      +'<div class="t-sub" style="padding:10px 0 0">The kit contents come from <span class="lrh-mono">inventory.js</span>, '
+      +'so they always match the cart label, the build sheet and the procedure card. '
+      +'<a href="../procedures/?from=home#c01">Chest tube card</a> &middot; '
+      +'<a href="../labels/#kits">Build sheet</a></div>'
+      +'</div>';
+    host.innerHTML=h;
+  }
+
+  function csv(){
+    var st=load(), items=contents(), marks=st.marks||{}, by=(st.lastChecked&&st.lastChecked.by)||'';
+    var when=(st.lastChecked&&st.lastChecked.when)||stamp(Date.now());
+    /* Quote every field: kit and item names contain commas today (see the
+       lidocaine row) and an unquoted CSV would silently split them into extra
+       columns — which looks like data rather than a bug once it is in Excel. */
+    function q(v){ return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'; }
+    var rows=[['kit','location','item','status','checked_by','checked_at'].map(q).join(',')];
+    items.forEach(function(name,i){
+      rows.push([kitName(), where(), name, marks[i]||'not checked', by, when].map(q).join(','));
+    });
+    return rows.join('\r\n')+'\r\n';
+  }
+
+  function download(text){
+    var blob=new Blob([text],{type:'text/csv;charset=utf-8'});
+    var url=URL.createObjectURL(blob), a=document.createElement('a');
+    a.href=url; a.download='kit-check-chest-tube.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  }
+
+  function warn(msg){
+    var w=document.getElementById('kc-warn'); if(!w) return;
+    w.style.display = msg ? '' : 'none'; w.textContent = msg || '';
+  }
+
+  function boot(){
+    if(!document.getElementById('kc-body')) return;
+    render();
+    document.getElementById('kc-body').addEventListener('click', function(ev){
+      var b=ev.target.closest('[data-kc]');
+      if(b){
+        var st=load(); st.marks=st.marks||{};
+        var i=b.getAttribute('data-kc'), v=b.getAttribute('data-v');
+        /* Tap the same status again to clear it — a mis-tap must be undoable
+           without clearing the whole walk. */
+        if(st.marks[i]===v) delete st.marks[i]; else st.marks[i]=v;
+        st.lastExported=false; save(st); render(); return;
+      }
+      var id=ev.target.id;
+      if(id==='kc-save'){
+        var v=(document.getElementById('kc-init').value||'').trim();
+        var why=badInitials(v); if(why){ warn(why); return; }
+        warn('');
+        var st2=load(); st2.lastChecked={ by:v.toUpperCase(), when:stamp(Date.now()) };
+        st2.lastExported=false; save(st2); render(); return;
+      }
+      if(id==='kc-csv'){
+        var st3=load();
+        if(!st3.lastChecked){ warn('Record the check first — the CSV needs initials and a time.'); return; }
+        warn(''); download(csv());
+        st3.lastExported=true; save(st3); render(); return;
+      }
+      if(id==='kc-clear'){
+        try{ localStorage.removeItem(K); }catch(e){}
+        render(); return;
+      }
+    }, false);
+  }
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
+})();</script>
 </body>
 </html>
