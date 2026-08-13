@@ -1,7 +1,7 @@
 # CLAUDE.md — operating rules for AI assistants in this repo
 
 This repository is a set of **client-side, bedside emergency-department
-decision-support tools** (starting with Littleton Regional Hospital) built so it
+decision-support tools** (starting with this hospital) built so it
 *could* later be forked and customized by any ED. Follow these rules on every
 task. The reasoning behind them is in `PROJECT.md` — read it if a rule seems
 unclear. If a request conflicts with a rule below, flag it before proceeding.
@@ -17,15 +17,29 @@ unclear. If a request conflicts with a rule below, flag it before proceeding.
    shell** below. Do not hand-write a per-tool service worker; a new tool gets
    offline support automatically by existing.
 
-2. **Isolate site-specific values.** Put everything an adopting ED would change
-   — clinical thresholds, assay names, hospital name, colors, phone numbers — in
-   a clearly marked block at the top of the file:
+2. **Isolate site-specific values — in the answer sheet, not in the file.**
+   Everything an adopting ED would change (clinical thresholds, assay names,
+   hospital name, colors, phone numbers, what the department can and cannot do)
+   is declared once in `localization.manifest.mjs` and answered once in
+   `site.config.json`. A tool reads it in one of two ways:
    ```js
-   // ===== SITE CONFIG (LRH) — edit these to adapt to another site =====
+   /* @localconfig */                       // build injects LOCAL()/LOCAL_HAS()
+   var SITE = { units: LOCAL('trop.units'), ruleIn: LOCAL('trop.ruleInValue') };
    ```
-   Keep the *universal* clinical logic (score math, pathway structure) separate
-   and generic, reading its numbers from that block. Never scatter local values
-   through the logic.
+   ```html
+   <p>{{site.hospitalName}} — ED accelerated diagnostic pathway</p>
+   ```
+   Keep the *universal* clinical logic (score math, pathway structure) generic,
+   reading its numbers from there. Never scatter local values through the logic,
+   and never write a site-specific value twice — a prose line that repeats a
+   config number is a screen that will one day contradict itself.
+
+   **An unanswered value has no default.** `LOCAL()` returns null, the build
+   renders a loud `«PLACEHOLDER»`, and a screen that would have to calculate
+   refuses and says so (`LOCAL_MISSING_HTML`). Reach for `LOCAL_OR()` only
+   where every site's answer is genuinely the same — never for a dose, an
+   energy, a threshold, a phone number, or a claim about the department. See
+   `TEMPLATE.md` for why a plausible wrong number is worse than a blank one.
 
 3. **Never hold PHI; keep state on the device only.** No patient identifiers
    (name, MRN, DOB), no transmission off the device, no servers, no analytics
@@ -67,7 +81,7 @@ unclear. If a request conflicts with a rule below, flag it before proceeding.
    surface the wrong card first. Don't silently resolve an overlap you're not
    sure about; flag it to the user instead of guessing which entry should win.
 
-10. **Write in US English.** LRH is a US hospital, so all prose you write or
+10. **Write in US English.** The deploying site is a US hospital, so all prose you write or
     edit — checklist text, headers, UI copy, code comments — uses US medical
     spelling and drug-naming conventions, not British/Commonwealth ones
     (adrenaline → epinephrine, colour → color, paralysed → paralyzed,
@@ -161,7 +175,10 @@ expensive at the laminator.
 The `verify_*.mjs` suites are the safety harness that makes it viable for a
 readiness champion plus an AI to maintain clinical logic. That only holds if a
 red run means something. So a suite must **read the tool's own config block and
-assert the UI against that** — never re-type this site's numbers a second time.
+assert the UI against that** — never re-type a hospital's numbers a second time.
+Where a suite needs a site-specific string rather than a tool's own config,
+import it from `verify_site_config.mjs` (`cfg`, `rx`, `expect`, `isTemplate`)
+so the same assertion holds on a localized site and on a blank template.
 An adopting ED that localizes its defibrillator to 150/200/200 J, its FONA tray
 to a 5.5 mm tube, or its fluid bolus to 10 mL/kg is doing exactly the right
 thing; a suite that turns red for it teaches that site a red run is normal, at
@@ -186,9 +203,12 @@ Two rules when writing or editing a suite:
    per-kg, that the ladder runs A → B → C → D, that DAS publishes no SpO₂
    cut-off, the scope disclaimers, the citations, and the PHI guards.
 
-Prove both directions before delivering: the suite passes with LRH's config,
-still passes with several values changed to a plausible fork's, and **fails**
-when the page's logic is mutated with the config left alone. Converting the
+Prove all three directions before delivering: the suite passes with this
+deployment's config, still passes with several values changed to a plausible
+fork's, and **fails** when the page's logic is mutated with the config left
+alone. `verify_localization.mjs` does exactly this for the localization layer
+itself — blank build, fork build, then two mutations — and is the model to
+copy. Converting the
 airway suite this way is what surfaced that `/airway/` read its config for the
 ladder's behavior but printed hand-typed numbers on screen — a localized site
 would have got a screen that contradicted itself.
@@ -211,7 +231,7 @@ open on this branch):
    worth bookmarking for the duration of the branch's life.
 3. **Once it checks out on the branch deploy, merge the PR** into `main` on
    GitHub (compare URL pattern: `.../compare/main...<branch-name>`).
-4. **Netlify auto-builds `main`**; production (`lrhemergencymanual.net`)
+4. **Netlify auto-builds `main`**; production (`your-manual-domain`)
    updates. One more quick check there closes the loop.
 
 **Do not send Lon straight to the GitHub compare/PR page as the "test"

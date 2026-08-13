@@ -1,0 +1,136 @@
+{
+  "_readme": [
+    "WORKED EXAMPLE — Littleton Regional Hospital's own answers, kept in the",
+    "template so a fork can see the SHAPE of a complete answer sheet.",
+    "",
+    "DO NOT copy this file over site.config.json and go live. Every clinical",
+    "value here is specific to LRH's assay, formulary, equipment and transfer",
+    "agreements. Copying it would give your department a manual that is",
+    "confidently, quietly wrong about itself — which is worse than an obviously",
+    "blank one, because nobody re-checks a screen that looks finished.",
+    "",
+    "Legitimate uses: reading it alongside ONBOARDING.md to see what a real",
+    "answer looks like, and running `node verify_localization.mjs --config",
+    "site.config.lrh.json` to prove the build works end to end when fully",
+    "answered."
+  ],
+  "_generatedFrom": "localization.manifest.mjs",
+  "site": {
+    "hospitalName": "Littleton Regional Hospital",
+    "hospitalShort": "LRH",
+    "healthSystemName": "Littleton Regional Healthcare",
+    "deptName": "EMERGENCY DEPARTMENT",
+    "domain": "lrhemergencymanual.net",
+    "repoUrl": "https://github.com/lonsetnik-dot/LRH-Emergency-Manual",
+    "accentLight": "#00693E",
+    "accentDark": "#2FA372"
+  },
+  "contacts": {
+    "transfer": [
+      {
+        "key": "dhmc",
+        "label": "Dartmouth-Hitchcock (DHMC) Transfer Center",
+        "phoneDisplay": "877-999-9870 (urgent/emergent)",
+        "tel": "+18779999870",
+        "use": "PCI, thrombectomy, neurosurgery, trauma"
+      },
+      {
+        "key": "concord",
+        "label": "Concord Hospital Transfer Center",
+        "phoneDisplay": "800-992-9399",
+        "tel": "+18009929399",
+        "use": "second destination"
+      }
+    ],
+    "transferPrimary": {
+      "label": "DHMC Transfer Center",
+      "phone": "(877) 999-9870",
+      "tel": "+18779999870"
+    },
+    "poisonControl": {
+      "display": "1-800-222-1222",
+      "tel": "+18002221222"
+    },
+    "bloodBank": {
+      "how": "Any attending physician may activate MTP in an emergent situation; the first three activation criteria are LRH policy."
+    },
+    "security": {
+      "who": "charge nurse + house supervisor",
+      "how": "ask Security to restrict the ED to one controlled entrance",
+      "overhead": null,
+      "note": "LRH has no dedicated in-house ED security officer overnight — confirm who is actually available on your shift before you need them."
+    }
+  },
+  "caps": {
+    "traumaCenterLevel": "Level III",
+    "neurosurgeryInHouse": false,
+    "cathLab": false,
+    "plateletsOnSite": "sometimes",
+    "cEEGInHouse": false,
+    "replantCenter": false,
+    "edSecurityOvernight": false,
+    "criticalAccess": true,
+    "tcaTeamModel": "sequential",
+    "obOnSite": true
+  },
+  "defib": {
+    "mfr": "ZOLL Rectilinear Biphasic",
+    "mfrShort": "ZOLL",
+    "adultJoules": [120, 150, 200]
+  },
+  "trop": {
+    "assayName": "hs-cTn, reported in ng/L — confirm the platform with your lab",
+    "units": "ng/L",
+    "ruleInValue": 50,
+    "ruleInDelta": 15,
+    "ruleOutValue": 5,
+    "ruleOutDelta": 4,
+    "ruleOutPainValue": 4,
+    "singleLoD": 3,
+    "painHours": 3,
+    "grayLow": 5,
+    "grayHigh": 49,
+    "normalLimitMale": 19.8,
+    "normalLimitFemale": 14.9
+  },
+  "formulary": {
+    "strokeLytic": "tenecteplase (TNK) 0.25 mg/kg IV bolus, max 25 mg",
+    "thrombectomyTrigger": "NIHSS ≥6 or FAST-ED ≥4 → CTA and thrombectomy call",
+    "reversalAgents": "4F-PCC, vitamin K, idarucizumab, andexanet alfa — confirm what is physically stocked",
+    "rsiInduction": "ketamine (preferred — bronchodilator effect), etomidate",
+    "mtpRatio": "1:1:1 where platelets are available; platelets often not on site",
+    "apneicOxLpm": 15
+  },
+  "physical": {
+    "cartDrawers": [
+      "1 · Intubation",
+      "2 · Surgical + Supraglottic",
+      "3 · Meds",
+      "4 · Suction + Fluids",
+      "5 · IV Supplies + Misc (deep)"
+    ],
+    "supraglotticSizes": "i-gel 1–5; LMA 0 and 0.5 (no size 1)",
+    "lungIsolation": "Neither a bronchial blocker nor a double-lumen tube is stocked — the large single-lumen ETT is the isolation technique",
+    "balloonTamponadeTube": "Sengstaken-Blakemore (3-lumen, dual balloon); the Minnesota tube is not stocked",
+    "resusRoom": "Room 7 (Resus Bay)",
+    "simRoom": "Resus bay or the education room — a table the whole team can stand around"
+  },
+  "policy": {
+    "stroke": "Littleton Regional Hospital Stroke Alert Role-Based Checklist (MD/PA/APRN)",
+    "ich": "Littleton Regional Hospital Intracranial Hemorrhage (ICH) Checklist",
+    "mtp": "Littleton Regional Healthcare, Massive Transfusion Protocol policy (effective 07/01/2026; document owner: Chief Medical Officer)",
+    "statusEpilepticus": "Littleton Regional Hospital Status Epilepticus Checklist",
+    "asthma": "Littleton Regional Hospital Status Asthmaticus Management Checklist",
+    "angioedema": "Littleton Regional Hospital Angioedema Management Checklist",
+    "tracheostomy": "Littleton Regional Hospital \"Granular Rubric for Evaluating a Tracheostomy Emergency\"",
+    "pedsOrderSet": "LRH Pediatric General PowerPlan (Cerner order set)",
+    "stemiActivation": "No on-site cath lab — STEMI is transferred out via the transfer center; confirm who is paged and the current process"
+  },
+  "dialect": {
+    "variant": "US"
+  },
+  "review": {
+    "reviewer": "Lon Setnik",
+    "date": "2026-08-12"
+  }
+}

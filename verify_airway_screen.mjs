@@ -1,4 +1,4 @@
-/* LRH Emergency Manual — the DAS 2025 airway ladder (/airway/).
+/* ED Emergency Manual — the DAS 2025 airway ladder (/airway/).
  *
  * This screen has one job that a human tester cannot reliably check by clicking: that the ladder
  * cannot be walked in the wrong order, and that each rung holds for exactly its configured attempt
@@ -46,7 +46,7 @@ const start = async () => { await fresh(); await tap('#startbtn', 300); };
    Why: this suite is the safety harness that makes champion+AI maintenance of
    clinical logic viable. An adopting ED that stocks a 5.0 mm tube on its FONA
    tray, or that runs succinylcholine at a different mg/kg, edits the config and
-   is doing exactly the right thing — a suite full of hardcoded LRH values would
+   is doing exactly the right thing — a suite full of hardcoded this site values would
    turn red for it, and teach that site that a red run is normal, at the moment
    the harness is the thing protecting them.
 

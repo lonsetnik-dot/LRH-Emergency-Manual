@@ -1,5 +1,5 @@
 /* ===========================================================================
-   design-system.css - LRH Emergency Manual shared design language.
+   design-system.css - {{site.hospitalShort}} Emergency Manual shared design language.
 
    SINGLE SOURCE OF TRUTH for the tokens, chrome, menu and card-interior
    classes shared by every tool. build.mjs injects this wherever a tool's
@@ -17,7 +17,7 @@
   body[data-theme="light"]{ --bg:#EFF2F5; --card:#FFFFFF; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D; --line:rgba(15,35,60,.13); --accent:#00693E;
     --red:#C63238; --amber:#B07E13; --blue:#2F6FB5; --green:#1F7F49; --gray:#6B7A8D; --purple:#6C4FA3; --teal:#1F7E7E; --orange:#B4661F;
     --note-bg:#fdf3cf; --note-tx:#6b5410; }
-  /* ---- Phase 3 — single sticky chrome bar (replaces the old .lrh-hdr strip +
+  /* ---- Phase 3 — single sticky chrome bar (replaces the old .edm-hdr strip +
      blue nav.bar + section-stripe). One row: back · section label · RESET ·
      theme, matching arrest/, airway/ and procedures/. ---- */
   .hdr{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;
@@ -39,29 +39,29 @@
      home hub, clinical-pathways index, codes/index.html, and peds/index.html.
      Card content below the menu (article#c01 etc.) is untouched — step 3/4
      scope. */
-  .lrh-menuwrap{background:var(--bg);padding:8px 14px 26px}
-  .lrh-menuwrap .inner{max-width:1400px;margin:0 auto}
-  .lrh-startnew-btn{margin-top:10px;min-height:44px;padding:0 16px;background:var(--card2);
+  .edm-menuwrap{background:var(--bg);padding:8px 14px 26px}
+  .edm-menuwrap .inner{max-width:1400px;margin:0 auto}
+  .edm-startnew-btn{margin-top:10px;min-height:44px;padding:0 16px;background:var(--card2);
     color:var(--ink);border:2px solid var(--line);font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
     font-size:12px;font-weight:700;letter-spacing:.08em;cursor:pointer;border-radius:10px}
-  .lrh-startnew-btn:hover{border-color:var(--accent);color:var(--accent)}
-  .lrh-mono{font-family:ui-monospace,"SF Mono",Menlo,"JetBrains Mono",monospace}
-  .lrh-row{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);
+  .edm-startnew-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .edm-mono{font-family:ui-monospace,"SF Mono",Menlo,"JetBrains Mono",monospace}
+  .edm-row{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);
     background:var(--card);border:1px solid var(--line);border-left:4px solid var(--cc,var(--accent));
     border-radius:12px;padding:14px;min-height:56px;cursor:pointer}
-  .lrh-row .n{display:none;font-size:15px;font-weight:700;color:var(--cc,var(--accent));flex:none;width:24px}
-  .lrh-row .t{font-size:16.5px;font-weight:700;line-height:1.25}
-  .lrh-row .spacer{flex:1}
-  .lrh-row .tag{font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--ink2);white-space:nowrap;flex:none}
-  .lrh-row:hover, .lrh-row:focus-visible{color:var(--ink)}
-  .lrh-filter{display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);
+  .edm-row .n{display:none;font-size:15px;font-weight:700;color:var(--cc,var(--accent));flex:none;width:24px}
+  .edm-row .t{font-size:16.5px;font-weight:700;line-height:1.25}
+  .edm-row .spacer{flex:1}
+  .edm-row .tag{font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--ink2);white-space:nowrap;flex:none}
+  .edm-row:hover, .edm-row:focus-visible{color:var(--ink)}
+  .edm-filter{display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);
     border-radius:14px;padding:4px 6px 4px 14px;margin:0 2px 14px}
-  .lrh-filter .ico{color:var(--ink2);font-size:16px;flex:none}
-  .lrh-filter input{flex:1;background:none;border:none;color:var(--ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit;-webkit-appearance:none}
-  .lrh-filter input::-webkit-search-cancel-button{-webkit-appearance:none}
-  .lrh-filter-empty{margin:0 2px 14px;padding:12px 14px;color:var(--ink2);font-size:.88rem;background:var(--card);
+  .edm-filter .ico{color:var(--ink2);font-size:16px;flex:none}
+  .edm-filter input{flex:1;background:none;border:none;color:var(--ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit;-webkit-appearance:none}
+  .edm-filter input::-webkit-search-cancel-button{-webkit-appearance:none}
+  .edm-filter-empty{margin:0 2px 14px;padding:12px 14px;color:var(--ink2);font-size:.88rem;background:var(--card);
     border:1px solid var(--line);border-radius:14px}
-  .lrh-filter-empty[hidden]{display:none}
+  .edm-filter-empty[hidden]{display:none}
   body { margin:0; background:var(--bg); color:var(--ink); font-family:"Helvetica Neue",Helvetica,Arial,sans-serif; font-size:16.5px; line-height:1.4; text-wrap:pretty; }
   /* ===== Phase 4 — card-interior component classes. The card bodies were
      legacy inline-hardcoded colors (authored before the token system); these

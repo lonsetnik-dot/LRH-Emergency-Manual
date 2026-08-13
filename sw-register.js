@@ -1,4 +1,4 @@
-/* LRH Emergency Manual — service-worker registration + update prompt.
+/* {{site.hospitalShort}} Emergency Manual — service-worker registration + update prompt.
  *
  * Build input (issue #120), not shipped as a file: build.mjs injects this
  * inline into every published page, so the deployed HTML stays self-contained
@@ -24,9 +24,9 @@
   if (!secure) return;
 
   function showUpdateBar(reg) {
-    if (document.getElementById('lrh-sw-update')) return;   /* only ever one */
+    if (document.getElementById('edm-sw-update')) return;   /* only ever one */
     var bar = document.createElement('div');
-    bar.id = 'lrh-sw-update';
+    bar.id = 'edm-sw-update';
     bar.setAttribute('role', 'status');
     bar.style.cssText = 'position:fixed; left:0; right:0; bottom:0; z-index:9999;' +
       'display:flex; align-items:center; gap:10px; padding:10px 14px;' +
@@ -36,20 +36,20 @@
     bar.innerHTML =
       '<span style="flex:1;">MANUAL UPDATED &mdash; reload when it is safe to. ' +
       'This page is still showing the previous version.</span>' +
-      '<button type="button" id="lrh-sw-reload" style="flex:none; min-height:38px; padding:6px 12px;' +
+      '<button type="button" id="edm-sw-reload" style="flex:none; min-height:38px; padding:6px 12px;' +
       'background:#fffefb; color:#16324f; border:none; font:inherit; font-weight:700; cursor:pointer;">RELOAD</button>' +
-      '<button type="button" id="lrh-sw-dismiss" aria-label="Dismiss" style="flex:none; min-height:38px; padding:6px 10px;' +
+      '<button type="button" id="edm-sw-dismiss" aria-label="Dismiss" style="flex:none; min-height:38px; padding:6px 10px;' +
       'background:none; color:#fffefb; border:1px solid rgba(255,255,255,0.55); font:inherit; cursor:pointer;">LATER</button>';
 
     /* Meaningless on paper, and it would waste a strip of every printed poster. */
     var st = document.createElement('style');
-    st.textContent = '@media print { #lrh-sw-update { display:none !important; } }';
+    st.textContent = '@media print { #edm-sw-update { display:none !important; } }';
     document.head.appendChild(st);
     document.body.appendChild(bar);
 
-    document.getElementById('lrh-sw-dismiss').addEventListener('click', function () { bar.remove(); });
-    document.getElementById('lrh-sw-reload').addEventListener('click', function () {
-      document.getElementById('lrh-sw-reload').textContent = 'RELOADING…';
+    document.getElementById('edm-sw-dismiss').addEventListener('click', function () { bar.remove(); });
+    document.getElementById('edm-sw-reload').addEventListener('click', function () {
+      document.getElementById('edm-sw-reload').textContent = 'RELOADING…';
       /* Ask the waiting worker to take over; reload once it has. */
       if (reg.waiting) reg.waiting.postMessage({ type: 'SKIP_WAITING' });
       setTimeout(function () { location.reload(); }, 400);   /* fallback if no controllerchange */
@@ -75,7 +75,7 @@
     var reloading = false;
     navigator.serviceWorker.addEventListener('controllerchange', function () {
       /* Only reload if the user asked for it (the bar is on screen). */
-      if (reloading || !document.getElementById('lrh-sw-update')) return;
+      if (reloading || !document.getElementById('edm-sw-update')) return;
       reloading = true;
       location.reload();
     });

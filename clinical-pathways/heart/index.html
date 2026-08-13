@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LRH Chest Pain / hs-Troponin ADP + HEART Pathway</title>
+<title>{{site.hospitalShort}} Chest Pain / hs-Troponin ADP + HEART Pathway</title>
 <style>
   /* @design-system */
   /* ---- HEART-pathway-specific design tokens. The shared neutrals, the .hdr
@@ -12,7 +12,7 @@
      interactive brand accent and the four flowchart result-box colors are unique
      to this pathway, so those are the only tokens kept here; a fork re-skins the
      pathway's colors in this one block. Dark is the site default; a persisted
-     "light" choice (lrh-pref-theme) is applied before paint. --note-bg/--note-tx
+     "light" choice (edm-pref-theme) is applied before paint. --note-bg/--note-tx
      also come from the shared system now; only --note-br is local. ---- */
   :root{
     /* interactive brand accent — lightened on dark so the pathway's blue stays legible */
@@ -149,26 +149,26 @@
 <body data-theme="dark">
 <script>
 /* Apply a persisted theme before the page paints, so a "light" choice doesn't
-   flash dark first. Same lrh-pref- namespace the rest of the manual uses;
+   flash dark first. Same edm-pref- namespace the rest of the manual uses;
    this key is deliberately outside any RESET prefix sweep (CASE-STATE.md). */
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+try{ document.body.dataset.theme = localStorage.getItem('edm-pref-theme')==='light' ? 'light' : 'dark'; }
 catch(e){ document.body.dataset.theme='dark'; }
 </script>
 <div class="hdr">
   <a class="ghost" href="../?from=tool">&#9664; PATHWAYS</a>
   <span class="plabel">CHEST PAIN &middot; HEART</span>
-  <button type="button" id="lrhThemeBtn" class="ghost">LIGHT</button>
+  <button type="button" id="edmThemeBtn" class="ghost">LIGHT</button>
 </div>
 <script>
 (function(){
-  var b=document.getElementById('lrhThemeBtn');
+  var b=document.getElementById('edmThemeBtn');
   if(!b) return;
   b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
   b.addEventListener('click', function(){
     var dark = document.body.dataset.theme!=='light';
     document.body.dataset.theme = dark ? 'light' : 'dark';
     b.textContent = dark ? 'DARK' : 'LIGHT';
-    try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
+    try{ localStorage.setItem('edm-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
   });
 })();
 </script>
@@ -176,13 +176,13 @@ catch(e){ document.body.dataset.theme='dark'; }
 <div class="wrap">
 
   <h1 class="page-title">Chest Pain &middot; hs-Troponin 0/1-hr ADP + HEART Pathway</h1>
-  <p class="page-sub">Littleton Regional Hospital &mdash; ED accelerated diagnostic pathway for suspected ACS</p>
+  <p class="page-sub">{{site.hospitalName}} &mdash; ED accelerated diagnostic pathway for suspected ACS</p>
 
   <div class="disclaimer">
     <strong>Not a substitute for clinical judgment.</strong>
     <ul>
       <li>This algorithm is <strong>not applicable to patients with ESRD</strong>.</li>
-      <li>Personal decision-support aid &mdash; <strong>not part of the LRH IT system / EHR</strong>. Verify all values independently.</li>
+      <li>Personal decision-support aid &mdash; <strong>not part of the {{site.hospitalShort}} IT system / EHR</strong>. Verify all values independently.</li>
     </ul>
   </div>
   <div class="esrd-warn" id="esrdWarn">&#9888; ESRD selected &mdash; this algorithm is not applicable to ESRD patients. Use clinical judgment.</div>
@@ -195,8 +195,8 @@ catch(e){ document.body.dataset.theme='dark'; }
     <div class="q">
       <span class="label">Sex assigned at birth <span class="hint">&mdash; sets HEART troponin normal limit</span></span>
       <div class="opts two" data-group="sex">
-        <label class="opt"><input type="radio" name="sex" value="male"><span>Male <span class="hint">(0&ndash;19.8)</span></span></label>
-        <label class="opt"><input type="radio" name="sex" value="female"><span>Female <span class="hint">(0&ndash;14.9)</span></span></label>
+        <label class="opt"><input type="radio" name="sex" value="male"><span>Male <span class="hint">(0&ndash;{{trop.normalLimitMale}})</span></span></label>
+        <label class="opt"><input type="radio" name="sex" value="female"><span>Female <span class="hint">(0&ndash;{{trop.normalLimitFemale}})</span></span></label>
       </div>
     </div>
 
@@ -216,12 +216,12 @@ catch(e){ document.body.dataset.theme='dark'; }
   <!-- ============ SECTION 2: hs-TROPONIN ============ -->
   <div class="card">
     <h2><span class="num">2</span> hs-Troponin &mdash; 0 / 1-hour (&plusmn; 3-hr reflex)</h2>
-    <p class="sub">Enter the 0-hr and 1-hr values. A 0-hr alone can complete the pathway (&ge; 50 rules in; &le; 3, or &lt; 4 with pain &gt; 3 h, rules out). A 3-hr value is only needed if the pathway reflexes.</p>
+    <p class="sub">Enter the 0-hr and 1-hr values. A 0-hr alone can complete the pathway (&ge; {{trop.ruleInValue}} rules in; &le; {{trop.singleLoD}}, or &lt; {{trop.ruleOutPainValue}} with pain &gt; {{trop.painHours}} h, rules out). A 3-hr value is only needed if the pathway reflexes.</p>
 
     <div class="troprow">
-      <div class="field"><label>0-hr <span class="unit">(ng/L)</span></label>
+      <div class="field"><label>0-hr <span class="unit">({{trop.units}})</span></label>
         <input type="number" id="t0" min="0" step="1" inputmode="numeric" placeholder="0"></div>
-      <div class="field"><label>1-hr <span class="unit">(ng/L)</span></label>
+      <div class="field"><label>1-hr <span class="unit">({{trop.units}})</span></label>
         <input type="number" id="t1" min="0" step="1" inputmode="numeric" placeholder="1"></div>
       <div class="field" id="t3field"><label>3-hr <span class="opt3">(if reflexed)</span></label>
         <input type="number" id="t3" min="0" step="1" inputmode="numeric" placeholder="&ndash;"></div>
@@ -234,11 +234,11 @@ catch(e){ document.body.dataset.theme='dark'; }
       <summary>Troponin pathway logic (per posted protocol)</summary>
       <table>
         <tr><th>Condition</th><th>Result</th></tr>
-        <tr><td>Any hs-troponin &ge; 50 ng/L, <em>or</em> &Delta; &ge; 15 ng/L</td><td><b>Rule-in zone</b> &rarr; consider cardiology consult</td></tr>
-        <tr><td>&lt; 4 ng/L &amp; chest pain &gt; 3 h, <em>or</em> &lt; 5 ng/L &amp; &Delta; &lt; 4</td><td><b>D/C home</b>, outpatient follow-up as needed</td></tr>
-        <tr><td>Single 0-hr troponin: &ge; 50 <em>(rules in)</em> · &le; 3 <em>(below detection)</em> · &lt; 4 with pain &gt; 3 h</td><td><b>Pathway completes without the 1-hr draw</b></td></tr>
-        <tr><td>5&ndash;49 ng/L &amp; 0/1-hr &Delta; &lt; 4</td><td><b>AMI ruled out</b> &rarr; HEART score vs discharge w/ PCP</td></tr>
-        <tr><td>&lt; 50 ng/L &amp; 0/1-hr &Delta; 4&ndash;14</td><td><b>Reflex to 3 h</b>; then &Delta; &lt; 15 &rarr; HEART score, &Delta; &ge; 15 &rarr; rules in</td></tr>
+        <tr><td>Any hs-troponin &ge; {{trop.ruleInValue}} {{trop.units}}, <em>or</em> &Delta; &ge; {{trop.ruleInDelta}} {{trop.units}}</td><td><b>Rule-in zone</b> &rarr; consider cardiology consult</td></tr>
+        <tr><td>&lt; {{trop.ruleOutPainValue}} {{trop.units}} &amp; chest pain &gt; {{trop.painHours}} h, <em>or</em> &lt; {{trop.ruleOutValue}} {{trop.units}} &amp; &Delta; &lt; {{trop.ruleOutDelta}}</td><td><b>D/C home</b>, outpatient follow-up as needed</td></tr>
+        <tr><td>Single 0-hr troponin: &ge; {{trop.ruleInValue}} <em>(rules in)</em> · &le; {{trop.singleLoD}} <em>(below detection)</em> · &lt; {{trop.ruleOutPainValue}} with pain &gt; {{trop.painHours}} h</td><td><b>Pathway completes without the 1-hr draw</b></td></tr>
+        <tr><td>{{trop.grayLow}}&ndash;{{trop.grayHigh}} {{trop.units}} &amp; 0/1-hr &Delta; &lt; {{trop.ruleOutDelta}}</td><td><b>AMI ruled out</b> &rarr; HEART score vs discharge w/ PCP</td></tr>
+        <tr><td>&lt; {{trop.ruleInValue}} {{trop.units}} &amp; 0/1-hr &Delta; at or above {{trop.ruleOutDelta}} but under {{trop.ruleInDelta}}</td><td><b>Reflex to 3 h</b>; then &Delta; &lt; {{trop.ruleInDelta}} &rarr; HEART score, &Delta; &ge; {{trop.ruleInDelta}} &rarr; rules in</td></tr>
       </table>
       <p style="color:var(--ink2);margin:8px 0 0">&Delta; is the absolute change between serial values. Not applicable to ESRD.</p>
     </details>
@@ -312,7 +312,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <button class="btn" onclick="window.print()">Print</button>
     </div>
 
-    <p class="sub" style="margin-top:10px"><b>DHMC Transfer Center: (877) 999-9870</b> — for cardiology consultation or transfer.</p>
+    <p class="sub" style="margin-top:10px"><b>{{contacts.transferPrimary.label}}: {{contacts.transferPrimary.phone}}</b> — for cardiology consultation or transfer.</p>
 
     <details class="ref">
       <summary>Disposition logic (per posted protocol)</summary>
@@ -332,7 +332,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   </div>
 
   <footer>
-    LRH Chest Pain hs-Troponin ADP + HEART Pathway &mdash; personal decision-support aid, not part of the LRH IT system.
+    {{site.hospitalShort}} Chest Pain hs-Troponin ADP + HEART Pathway &mdash; personal decision-support aid, not part of the {{site.hospitalShort}} IT system.
     Thresholds are assay-specific; verify against your local hs-cTn assay.
     <div style="margin-top:8px;">
       <strong>Sources:</strong> HEART score derivation and 0/1-hr hs-troponin ADP thresholds per the posted protocol flowchart (cross-checked against WikEM/MDCalc). Outpatient stress-test timing after AMI is ruled out: ACC/AHA and ACEP guidance describes a 72-hour&ndash;1-week window for medium-risk patients discharged with shared decision-making &mdash; strict completion within 72 hours is the older, more commonly cited figure, but is often impractical and has not been consistently shown to improve outcomes in carefully selected patients; the emphasis in more recent guidance is on rapid follow-up (cardiology or PCP) and documented return precautions rather than a fixed hour count.
@@ -345,31 +345,51 @@ catch(e){ document.body.dataset.theme='dark'; }
 (function(){
   "use strict";
 
-  // ===== SITE CONFIG (LRH) — edit these to adapt this tool to another site =====
-  // The universal HEART-pathway logic below reads every clinical number from here.
-  // A site adopting this tool should only need to change values in this block.
-  // NOTE: the on-page reference tables/labels mirror these numbers as plain text —
-  // if you change a value here, update the matching text in the page to match.
+  /* @localconfig */
+  /* ===== SITE CONFIG — READ FROM site.config.json (ONBOARDING §E) ============
+     THE MOST ASSAY-SPECIFIC TOOL IN THE MANUAL, and the one with the least
+     forgiving failure. Every number below belongs to one hs-troponin assay.
+     They are not "sensible starting points" that a fork can refine later: a
+     cutoff from a different platform, in a pathway that discharges chest-pain
+     patients, is a missed infarct waiting for the right patient.
+
+     So there is no fallback. Unanswered means null, and the pathway REFUSES TO
+     CLASSIFY — see the notLocalized() guard in decide(). A blank screen sends
+     somebody to find the package insert. A borrowed number does not.
+     ======================================================================== */
   var SITE = {
-    hospital: "Littleton Regional Hospital",
-    hospitalShort: "LRH",
-    units: "ng/L",
+    hospital:      LOCAL('site.hospitalName'),
+    hospitalShort: LOCAL('site.hospitalShort'),
+    assayName:     LOCAL('trop.assayName'),
+    units:         LOCAL('trop.units'),
     version: "1.8",
-    lastReviewed: "2026-08-07",
+    lastReviewed: LOCAL('review.date'),
     trop: {
-      ruleInValue:      50,   // any hs-Trop >= this            -> rules in
-      ruleInDelta:      15,   // 0/1-hr or 3-hr delta >= this    -> rules in
-      ruleOutPainValue:  4,   // < this WITH chest pain > painHours -> rule out
-      ruleOutValue:      5,   // < this AND delta < ruleOutDelta -> rule out
-      ruleOutDelta:      4,   // delta < this (with value < ruleOutValue, or gray zone) -> rule out
-      singleLoD:         3,   // 0-hr <= this (below assay detection) -> rule out on a single troponin
-      painHours:         3,   // chest-pain duration threshold (hours)
-      grayLow:           5,   // gray-zone lower bound (display)
-      grayHigh:         49,   // gray-zone upper bound (display)
-      heartNormalLimit: { male: 19.8, female: 14.9 }, // HEART troponin normal limit by sex
-      heartMultiplier:   3    // >1x..3x normal = 1 pt, >3x normal = 2 pts
+      ruleInValue:      LOCAL('trop.ruleInValue'),      // any hs-Trop >= this -> rules in
+      ruleInDelta:      LOCAL('trop.ruleInDelta'),      // 0/1-hr or 3-hr delta >= this -> rules in
+      ruleOutPainValue: LOCAL('trop.ruleOutPainValue'), // < this WITH pain > painHours -> rule out
+      ruleOutValue:     LOCAL('trop.ruleOutValue'),     // < this AND delta < ruleOutDelta -> rule out
+      ruleOutDelta:     LOCAL('trop.ruleOutDelta'),
+      singleLoD:        LOCAL('trop.singleLoD'),        // below assay detection
+      painHours:        LOCAL('trop.painHours'),
+      grayLow:          LOCAL('trop.grayLow'),          // display band
+      grayHigh:         LOCAL('trop.grayHigh'),
+      heartNormalLimit: { male:   LOCAL('trop.normalLimitMale'),
+                          female: LOCAL('trop.normalLimitFemale') },
+      /* NOT site-specific: the HEART score is defined as 1 point above the
+         normal limit and 2 points above three times it. The multiplier is part
+         of the published score, not of your assay, so it stays written out. */
+      heartMultiplier:   3
     }
   };
+  /* Every key the pathway cannot run without. */
+  var REQUIRED_TROP = ['trop.units','trop.ruleInValue','trop.ruleInDelta','trop.ruleOutValue',
+    'trop.ruleOutDelta','trop.ruleOutPainValue','trop.singleLoD','trop.painHours',
+    'trop.grayLow','trop.grayHigh','trop.normalLimitMale','trop.normalLimitFemale'];
+  function tropLocalized(){ return LOCAL_HAS.apply(null, REQUIRED_TROP); }
+  /* Exposed for the verify suites and for a champion reading the in-effect
+     values from the console rather than from source (issue #117). */
+  try{ window.SITE = SITE; }catch(e){}
   // ============================================================================
 
   var $=function(id){return document.getElementById(id);};
@@ -391,6 +411,10 @@ catch(e){ document.body.dataset.theme='dark'; }
 
   // Core pathway decision -> {code, ...}
   function decide(){
+    /* Guard FIRST. Below this line every branch compares an entered value
+       against a configured threshold, and `50 >= null` is false rather than an
+       error — an unlocalized copy would silently rule nobody in. */
+    if(!tropLocalized()) return {code:'notlocalized'};
     var pain=sel('pain'), sex=sel('sex');
     var t0=num(t0El), t1=num(t1El), t3=num(t3El);
 
@@ -503,7 +527,9 @@ catch(e){ document.body.dataset.theme='dark'; }
     // troponin result card
     var tr=$('tropResult'); tr.className='resultcard';
     var t3field=$('t3field'); t3field.classList.remove('hot');
-    if(d.code==='incomplete'){ tr.classList.add('pending'); tr.innerHTML=d.why||'Enter the 0-hr and 1-hr troponin.'; }
+    if(d.code==='notlocalized'){ tr.classList.add('pending');
+      tr.innerHTML=LOCAL_MISSING_HTML('The hs-troponin pathway','E',REQUIRED_TROP.filter(function(k){ return LOCAL(k)===null; })); }
+    else if(d.code==='incomplete'){ tr.classList.add('pending'); tr.innerHTML=d.why||'Enter the 0-hr and 1-hr troponin.'; }
     else if(d.code==='in'){ tr.classList.add('r-in'); tr.innerHTML='<span class="tag">RULE-IN ZONE</span> '+d.why+'.'; }
     else if(d.code==='dchome'){ tr.classList.add('r-dc'); tr.innerHTML='<span class="tag">D/C HOME</span> '+d.why+' — AMI ruled out.'; }
     else if(d.code==='esrd'){ tr.classList.add('r-ref'); tr.innerHTML='<span class="tag">NOT APPLICABLE</span> ESRD — this accelerated hs-troponin algorithm does not apply. Use serial troponins and clinical judgment.'; }

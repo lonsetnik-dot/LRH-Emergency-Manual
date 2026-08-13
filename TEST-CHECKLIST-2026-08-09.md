@@ -6,7 +6,7 @@ four structural changes that were not issues.
 **Where to test.** Nothing is deployed yet, so localhost is the only place this exists:
 
 ```
-cd ~/Library/Mobile\ Documents/com~apple~CloudDocs/Documents/Lon/Job\ Littleton/Emergency\ Manual/dev.nosync/lrh-clinical-site
+cd ~/Library/Mobile\ Documents/com~apple~CloudDocs/Documents/Lon/Job\ <site>/Emergency\ Manual/dev.nosync/edm-clinical-site
 python3 -m http.server 8123
 ```
 
@@ -40,7 +40,7 @@ hand it to a colleague at 3am.
 - [ ] Resuscitate-first framing is right: blood not crystalloid, permissive hypotension
 - [ ] Hb targets ≥7 non-variceal / ~8 variceal match your practice
 - [ ] Octreotide 50 mcg bolus then 50 mcg/hr, ceftriaxone 1 g — dosing and the "not optional" framing
-- [ ] **PPI shown as two options (A: none, First10EM / B: pantoprazole, WikEM)** — is that the right call, or does LRH have a house position?
+- [ ] **PPI shown as two options (A: none, First10EM / B: pantoprazole, WikEM)** — is that the right call, or does this site have a house position?
 - [ ] **TXA said to be contraindicated (HALT-IT)** — confirm no local order set still includes it
 - [ ] Aortoenteric fistula warning is prominent enough
 - [ ] Balloon tamponade numbers match the Blakemore poster
@@ -49,7 +49,7 @@ hand it to a colleague at 3am.
 - [ ] "Bleeding lung DOWN" and the do-not-reflexively-intubate framing
 - [ ] ETT ≥8.0 and the reason given for it
 - [ ] Blind mainstem numbers (95% right, 73% left) and the bougie technique for the left
-- [ ] Nebulized TXA 500 mg vs IV 1 g — is the both-routes option right for LRH?
+- [ ] Nebulized TXA 500 mg vs IV 1 g — is the both-routes option right for this site?
 - [ ] The explicit contrast with card 23, where TXA is contraindicated
 
 ### #26 · Codes card 25 · Epistaxis
@@ -89,7 +89,7 @@ hand it to a colleague at 3am.
 - [ ] On card 01, tap the shock button 4 times → a **REFRACTORY VF** cue appears
 - [ ] It does **not** appear before the rhythm-check or epi-due cues — those still take priority
 - [ ] The REFRACTORY VF section says Class 2b and "not recommended" as plainly as the DOSE-VF numbers
-- [ ] Decide: **is DSED in scope at LRH at all?** It needs two identical defibrillators, a second pad set, a designated operator and a post-use device check
+- [ ] Decide: **is DSED in scope at this site at all?** It needs two identical defibrillators, a second pad set, a designated operator and a post-use device check
 
 ### #31 Broselow colour
 - [ ] Enter 20 kg on card 01 → chip appears reading **BLUE ZONE 19–23 kg**, coloured blue
@@ -128,7 +128,7 @@ Everything here is judged in **print preview**, not on screen. The screen view i
 - [ ] Slim inserts still have none, and the printed reason is still on the sheet
 - [ ] **#33** The 4 × 6 in procedure cards render, one per kit, each with EARLIEST EXPIRY / NEXT CHECK DUE / CHECKED BY / RESTOCKED BY
 - [ ] Kit build sheets render — one per kit, with a quantity column and four signature fields
-- [ ] New Room 7 door labels: **GI Hemorrhage, Lung Isolation, Epistaxis, SALAD Suction, Transvenous Pacing**
+- [ ] New the resus room door labels: **GI Hemorrhage, Lung Isolation, Epistaxis, SALAD Suction, Transvenous Pacing**
 - [ ] Nothing is clipped at a page edge; no QR is split across a page break
 - [ ] Print one page in **black and white** — every drawer must still be identifiable by number, word and shape
 
@@ -162,12 +162,12 @@ For each: is the split between what is in the bag and what is not correct, and a
 
 ## 8. Only testable after it is live
 
-The QR codes encode absolute `lrhemergencymanual.net` URLs, so a scanned code ignores localhost and
+The QR codes encode absolute `your-manual-domain` URLs, so a scanned code ignores localhost and
 any branch preview entirely. **Do not print labels until the cards are live.**
 
 - [ ] After merging to main, scan one code from each family with a phone: a drawer face, a cabinet door, a kit card, a wall poster
 - [ ] Blakemore poster QR lands on card 23
-- [ ] `BASE=https://lrhemergencymanual.net node verify_issues_20260809.mjs` passes against production
+- [ ] `BASE=https://your-manual-domain node verify_issues_20260809.mjs` passes against production
 
 ---
 
@@ -176,6 +176,6 @@ any branch preview entirely. **Do not print labels until the cards are live.**
 - Sixteen kits have labels, build sheets and expiry cards. **None of them physically exist.**
 - All PAR counts are placeholders.
 - Cabinet contents are best-guess pending a walk-round.
-- "Room 7" and "resus bay cabinet" have been unified to `ROOM 7 (RESUS BAY) CABINET` — **confirm they are the same cupboard.**
+- "the resus room" and "resus bay cabinet" have been unified to `the resus room CABINET` — **confirm they are the same cupboard.**
 - Slim-slot dimensions are from photographs, not measured.
 - `/favicon.ico` 404s sitewide; there is no favicon in the repo.

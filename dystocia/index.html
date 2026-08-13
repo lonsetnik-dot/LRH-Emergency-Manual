@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0D1420">
-<title>LRH Shoulder Dystocia — Engine</title>
+<title>{{site.hospitalShort}} Shoulder Dystocia — Engine</title>
 <meta name="description" content="Mobile cognitive aid for shoulder dystocia: head-to-body interval clock, HELPERR maneuvers one at a time with 30-second prompts, no fundal pressure guard. Personal aid, not hospital policy.">
 <style>
 /* @design-system-live */
@@ -41,7 +41,7 @@
 </head>
 <body data-theme="dark">
 <script>
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+try{ document.body.dataset.theme = localStorage.getItem('edm-pref-theme')==='light' ? 'light' : 'dark'; }
 catch(e){ document.body.dataset.theme='dark'; }
 </script>
 <div class="wrap">
@@ -131,7 +131,7 @@ catch(e){ document.body.dataset.theme='dark'; }
    sequence people have drilled.
    ========================================================================== */
 var SITE = {
-  version:"0.1", lastReviewed:"2026-08-12", site:"LRH",
+  version:"0.1", lastReviewed:"2026-08-12", site:"{{site.hospitalShort}}",
 
   review:{
     on:true,
@@ -360,7 +360,7 @@ document.addEventListener('click', function(e){
   if(id==='themebtn'){
     S.theme=S.theme==='dark'?'light':'dark';
     document.body.dataset.theme=S.theme;
-    try{ localStorage.setItem('lrh-pref-theme', S.theme); }catch(err){}
+    try{ localStorage.setItem('edm-pref-theme', S.theme); }catch(err){}
     paint(); return;
   }
   if(id==='resetbtn'){

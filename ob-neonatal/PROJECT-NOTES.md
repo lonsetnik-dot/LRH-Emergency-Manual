@@ -1,7 +1,7 @@
-# LRH OB Emergencies — project notes
+# this site OB Emergencies — project notes
 
 Beta cognitive aids for OB and neonatal emergencies in the Emergency Department.
-Live at https://lrhemergencymanual.net/ob/ — hosted on Netlify from a git repo.
+Live at https://your-manual-domain/ob/ — hosted on Netlify from a git repo.
 **Beta: practice and feedback only, not for clinical use.** A splash screen says so on first open.
 
 ## The artifact

@@ -16,7 +16,7 @@ items: resuscitate first, airway, drugs, definitive control, and balloon tampona
 step. Menu tile placed after card 12 so the bleeding cluster reads 09 Bleeding → 10 Reversal →
 11 Hyperkalemia → 12 MTP → 23 Massive Hematemesis. Version and last-reviewed stamped.
 
-**`labels/index.html`** — new `GI Hemorrhage` door label in the Room 7 lower cabinets, carrying the
+**`labels/index.html`** — new `GI Hemorrhage` door label in the the resus room lower cabinets, carrying the
 Blakemore kit contents and its own QR to card 23. New `blakemore` pictogram: straight shaft, one
 elongated balloon, one round balloon. It is deliberately not a variant of the existing `ngt` glyph —
 a plain curved tube and a tube-with-balloons read identically at 2 m, which is the exact
@@ -42,8 +42,8 @@ second kit entry.
 
 ## One thing that needs a human
 
-The poster called this cupboard the **resus bay cabinet**; the labels sheet calls it **Room 7**.
-Both now read `ROOM 7 (RESUS BAY) CABINET · GI HEMORRHAGE / BLAKEMORE KIT`, and the test asserts all
+The poster called this cupboard the **resus bay cabinet**; the labels sheet calls it **the resus room**.
+Both now read `the resus room CABINET · GI HEMORRHAGE / BLAKEMORE KIT`, and the test asserts all
 three artifacts agree on that string. **Confirm on the walk-round that these are actually the same
 cupboard.** If they are not, this is a two-minute fix in three places, but it has to be the right
 two minutes.

@@ -1,4 +1,4 @@
-/* LRH Emergency Manual — issue #24 (massive hematemesis) + #28 (Blakemore poster QR).
+/* ED Emergency Manual — issue #24 (massive hematemesis) + #28 (Blakemore poster QR).
  *
  * The definition of done for a new card in this manual is not "the card renders". It is the whole
  * loop: card -> stated location -> cabinet label -> printed poster -> QR back to the card -> a row
@@ -9,11 +9,13 @@
  *     node verify_ws24_hematemesis.mjs
  *
  * Or against a deployed URL:
- *     BASE=https://lrhemergencymanual.net node verify_ws24_hematemesis.mjs
+ *     BASE=https://your-manual-domain node verify_ws24_hematemesis.mjs
  */
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch { ({ chromium } = await import('/home/claude/.npm-global/lib/node_modules/playwright/index.mjs')); }
+
+import { rx, cfg, isTemplate } from './verify_site_config.mjs';
 
 const BASE = (process.env.BASE || 'http://localhost:8123').replace(/\/$/, '');
 const launchOpts = process.env.PW_CHROME ? { executablePath: process.env.PW_CHROME } : {};
@@ -52,7 +54,13 @@ ck('2. ketamine 0.5 + roc 1.5', has(/Ketamine 0\.5 mg\/kg/i) && has(/rocuronium 
 ck('2. metoclopramide 10 mg', has(/Metoclopramide 10 mg IV/i), true);
 ck('2. aortoenteric fistula warning', has(/aortoenteric fistula/i), true);
 ck('2. endoscopy timing 12 h / 24 h', has(/within 12 hours/i) && has(/within 24 hours/i), true);
-ck('2. DHMC transfer number', has(/\(877\) 999-9870/), true);
+/* The transfer number is a site answer. On a localized build the card must
+   print it; on a template build it must print the "no transfer center set"
+   state rather than any number at all. */
+ck('2. transfer destination stated',
+   cfg('contacts.transferPrimary.phone')
+     ? has(new RegExp(rx('contacts.transferPrimary.phone')))
+     : has(/NO TRANSFER CENTER SET|«PRIMARY TRANSFER CENTER»|«\(000\) 000-0000»/i), true);
 
 /* ---- 3. where more than one course is defensible, the card must OFFER BOTH ---- */
 // The project's rule: print them as lettered options with the source on each, rather than quietly
@@ -63,7 +71,8 @@ ck('3. PPI given as two lettered options', has(/PPI &mdash; two options|PPI — 
 ck('3. TXA contraindicated, HALT-IT named', has(/do NOT give it for GI bleeding/i) && has(/HALT-IT/), true);
 
 /* ---- 4. digital -> physical: the card says where the kit is ---- */
-ck('4. card states the location', has(/ROOM 7 \(RESUS BAY\) CABINET · GI HEMORRHAGE \/ BLAKEMORE KIT/i), true);
+ck('4. card states the location',
+   has(new RegExp(rx('physical.resusRoom') + ' CABINET · GI HEMORRHAGE / BLAKEMORE KIT', 'i')), true);
 ck('4. card links to the door label', await pg.locator('#c23 a[href="../labels/#loc-room7"]').count(), 1);
 ck('4. card links to the poster', await pg.locator('#c23 a[href="../posters/blakemore/"]').count() > 0, true);
 
@@ -95,8 +104,9 @@ ck('7. poster has a QR block', await pp.locator('.qr').count(), 1);
 const qrLabel = await pp.locator('.qr svg').first().getAttribute('aria-label');
 ck('7. QR is labelled for card 23', /card 23/i.test(qrLabel || ''), true);
 const qrText = (await pp.locator('.qr .qrtext').innerText()).replace(/\s+/g, ' ');
-ck('7. QR prints its destination', /lrhemergencymanual\.net\/codes\/\?from=home#c23/.test(qrText), true);
-ck('7. poster location matches the card', /ROOM 7 \(RESUS BAY\) CABINET · GI HEMORRHAGE \/ BLAKEMORE KIT/i
+ck('7. QR prints its destination',
+   new RegExp(rx('site.domain') + '/codes/\\?from=home#c23').test(qrText), true);
+ck('7. poster location matches the card', new RegExp(rx('physical.resusRoom') + ' CABINET · GI HEMORRHAGE / BLAKEMORE KIT', 'i')
   .test((await pp.locator('.loc').innerText()).replace(/\s+/g, ' ')), true);
 
 /* ---- 8. the cabinet label exists and carries a QR of its own ---- */
@@ -124,9 +134,9 @@ ck('9. system map has a row for card 23', await row.count(), 1);
 const rowTxt = (await row.innerText()).replace(/\s+/g, ' ');
 ck('9. map row shows the poster', /blakemore/i.test(rowTxt), true);
 ck('9. map row shows the QR is connected', /QR → card/.test(rowTxt), true);
-ck('9. map row shows where it lives', /Room 7 cabinets/i.test(rowTxt), true);
+ck('9. map row shows where it lives', new RegExp(rx('physical.resusRoom') + ' cabinets', 'i').test(rowTxt), true);
 ck('9. map row shows the kit is defined', /kit defined/i.test(rowTxt), true);
-ck('9. Room 7 index lists GI Hemorrhage',
+ck('9. the resus-room index lists GI Hemorrhage',
   /GI Hemorrhage/.test((await ps.locator('.places').innerText()).replace(/\s+/g, ' ')), true);
 
 /* ---- 10. nothing broke ---- */

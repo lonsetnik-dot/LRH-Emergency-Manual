@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0D1420">
-<title>LRH Traumatic Cardiac Arrest — Cognitive Aid</title>
+<title>{{site.hospitalShort}} Traumatic Cardiac Arrest — Cognitive Aid</title>
 <meta name="description" content="Mobile cognitive aid for traumatic cardiac arrest (TCA): reversible-cause workstreams (hemorrhage, airway, chest decompression, tamponade, obstetric), sequential vs simultaneous team modes, weight-based fluid/TXA/calcium, and an event log. Personal aid, not hospital policy.">
 <style>
 /* @design-system-live */
@@ -53,10 +53,10 @@ a{color:var(--blue);text-decoration:none}
 </head>
 <body data-theme="dark">
 <script>
-/* Apply the shared persisted theme before paint (lrh-pref-theme namespace, the
+/* Apply the shared persisted theme before paint (edm-pref-theme namespace, the
    same key the rest of the manual uses; outside any RESET sweep — CASE-STATE.md).
    TCA used to ignore it and always load dark (weight-routing audit). */
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+try{ document.body.dataset.theme = localStorage.getItem('edm-pref-theme')==='light' ? 'light' : 'dark'; }
 catch(e){ document.body.dataset.theme='dark'; }
 </script>
 <div class="wrap">
@@ -245,7 +245,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <div id="accordions"></div>
 
   <div style="margin-top:16px;font-size:12px;color:var(--ink2);text-align:center;line-height:1.55">
-    Adapted for LRH from the Royal Melbourne Hospital Trauma Service <i>Traumatic Cardiac Arrest Guideline</i> (TRM08.12, v3.0, 2023) and ERC/ANZCOR traumatic-arrest guidance. Verify doses and local roles before use.<br>
+    Adapted for {{site.hospitalShort}} from the Royal Melbourne Hospital Trauma Service <i>Traumatic Cardiac Arrest Guideline</i> (TRM08.12, v3.0, 2023) and ERC/ANZCOR traumatic-arrest guidance. Verify doses and local roles before use.<br>
     <span id="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment; thresholds are site-specific — verify locally.
   </div>
 </div>
@@ -254,6 +254,7 @@ catch(e){ document.body.dataset.theme='dark'; }
 (function(){
 'use strict';
 
+/* @localconfig */
 /* =============================== SITE CONFIG ===============================
    Everything an adopting ED would change lives here; the logic below reads
    these and nothing else (CLAUDE.md rule 2). The source guideline is from a
@@ -273,8 +274,9 @@ var SITE = {
                       conventional CPR is a secondary priority.
      'simultaneous' = full trauma team: workstreams assigned and worked in
                       parallel, CPR concurrent.
-     LRH is a rural critical-access hospital → sequential. */
-  mode: "sequential",
+     Set caps.tcaTeamModel in ONBOARDING §C. A rural critical-access hospital is
+     typically sequential; a full trauma team is typically simultaneous. */
+  mode: LOCAL('caps.tcaTeamModel'),
   noSignsOfLifeMin: 10,                  /* DNR if no signs of life beyond this */
   cprPauseMaxMin: 2,                     /* pause CPR in progress for at most this */
   conventionalResusMin: 10,              /* conventional BLS/ALS ± compressions window */
@@ -303,7 +305,7 @@ var SITE = {
    Read-only in practice: nothing in this file reads window.SITE, it reads
    the local SITE. Two reasons it is worth one line:
    1. The suites assert the UI against THIS config instead of against
-      hardcoded LRH numbers, so a fork that correctly localizes its
+      hardcoded {{site.hospitalShort}} numbers, so a fork that correctly localizes its
       values keeps a green test run (issue #117). Tests that break on
       correct localization teach an adopting site to ignore failures.
    2. A champion localizing the traumatic cardiac arrest can read the live,
@@ -375,32 +377,35 @@ var SS = {
   set:function(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
   del:function(k){ try{ localStorage.removeItem(k); }catch(e){} },
   loadWeight:function(){
-    var w=parseFloat(SS.get('lrh-case-wtkg')); S.kg=(w>0&&w<300)?w:null;
-    var a=parseFloat(SS.get('lrh-case-ageyrs')); S.ageY=(a>=0&&a<130)?a:null;
-    S.override = SS.get('lrh-case-adultoverride')==='1';
+    var w=parseFloat(SS.get('edm-case-wtkg')); S.kg=(w>0&&w<300)?w:null;
+    var a=parseFloat(SS.get('edm-case-ageyrs')); S.ageY=(a>=0&&a<130)?a:null;
+    S.override = SS.get('edm-case-adultoverride')==='1';
   },
   saveWeight:function(src){
-    if(S.kg!==null){ SS.set('lrh-case-wtkg',String(S.kg)); SS.set('lrh-case-wtsrc',src||'measured'); SS.set('lrh-case-wtms',String(Date.now())); }
-    else { SS.del('lrh-case-wtkg'); SS.del('lrh-case-wtsrc'); SS.del('lrh-case-wtms'); }
-    if(S.ageY!==null) SS.set('lrh-case-ageyrs',String(S.ageY)); else SS.del('lrh-case-ageyrs');
+    if(S.kg!==null){ SS.set('edm-case-wtkg',String(S.kg)); SS.set('edm-case-wtsrc',src||'measured'); SS.set('edm-case-wtms',String(Date.now())); }
+    else { SS.del('edm-case-wtkg'); SS.del('edm-case-wtsrc'); SS.del('edm-case-wtms'); }
+    if(S.ageY!==null) SS.set('edm-case-ageyrs',String(S.ageY)); else SS.del('edm-case-ageyrs');
   },
-  saveOverride:function(){ if(S.override) SS.set('lrh-case-adultoverride','1'); else SS.del('lrh-case-adultoverride'); },
+  saveOverride:function(){ if(S.override) SS.set('edm-case-adultoverride','1'); else SS.del('edm-case-adultoverride'); },
   /* Shared timeline. Same PHI guard shape as every tool's addLog: refuse
      weight-shaped labels and long digit runs. Tagged tool:'trauma' — the
      timeline readers' TOOL_LABEL maps render that as TRAUMA. */
   addLog:function(label){
     if(/\d+(\.\d+)?\s*(kg|lb)/i.test(label)) return;
     if(/\d{6,}/.test(label)) return;
-    var arr; try{ arr=JSON.parse(SS.get('lrh-case-log')||'[]'); }catch(e){ arr=[]; }
+    var arr; try{ arr=JSON.parse(SS.get('edm-case-log')||'[]'); }catch(e){ arr=[]; }
     if(!Array.isArray(arr)) arr=[];
     arr.push({ tMs:Date.now(), tool:'trauma', card:'tca', label:label });
-    SS.set('lrh-case-log', JSON.stringify(arr));
+    SS.set('edm-case-log', JSON.stringify(arr));
   },
   sweep:function(){ try{ for(var i=localStorage.length-1;i>=0;i--){ var k=localStorage.key(i);
-    if(k && k.indexOf('lrh-')===0 && k.indexOf('lrh-pref-')!==0) localStorage.removeItem(k); } }catch(e){} },
-  touchActive:function(){ SS.set('lrh-case-lastactive', String(Date.now())); }
+    if(k && k.indexOf('edm-')===0 && k.indexOf('edm-pref-')!==0) localStorage.removeItem(k); } }catch(e){} },
+  touchActive:function(){ SS.set('edm-case-lastactive', String(Date.now())); }
 };
 
+/* No configured team model means no screen framing: sequential and simultaneous
+   are different algorithms, and guessing which one a department runs is guessing
+   how many people walk through the door at 3am. */
 var S = { theme:'dark', mode:SITE.mode, kg:null, ageY:null, override:false,
           phase:'idle', codeStart:null, checked:{}, pregnant:false,
           reversibleAddressed:false, addressedAt:null,
@@ -431,7 +436,7 @@ var PHI = [
 ];
 function phiReason(t){ for(var i=0;i<PHI.length;i++){ if(PHI[i].re.test(t)) return PHI[i].why; } return null; }
 /* Events go to BOTH the in-tool log (memory) and the shared manual-wide
-   timeline (lrh-case-log, PHI-guarded in SS.addLog) — same as arrest. */
+   timeline (edm-case-log, PHI-guarded in SS.addLog) — same as arrest. */
 function log(label){ S.events.unshift({ t: clockNow(), label: label }); SS.addLog(label); }
 
 function kg(){ var k=S.kg; return (k>0 && k<300) ? k : null; }
@@ -447,7 +452,7 @@ function doseModel(){
   /* Rounded and capped (weight-routing audit): the raw product rendered float
      artifacts ("21.200000000000003 mL" at 1.06 kg) and no ceiling at all
      (200 kg -> "4000 mL"). Display caps: 1 L/bolus pediatric (peds-tool
-     convention), 2 L/bolus adult. Clinically reviewed and accepted for LRH
+     convention), 2 L/bolus adult. Clinically reviewed and accepted for {{site.hospitalShort}}
      2026-08-12 (Lon Setnik); re-derive if adopting this file at another site. */
   var mlCap = p ? 1000 : 2000;
   var crystalloid = k!==null ? (Math.round(Math.min(SITE.fluid.crystalloidMlPerKg*k, mlCap))+' mL ('+SITE.fluid.crystalloidMlPerKg+' mL/kg, max '+(mlCap/1000)+' L/bolus)')
@@ -558,7 +563,9 @@ var ACC = [
  {id:'seqsim', title:'SEQUENTIAL vs SIMULTANEOUS — HOW THIS SITE IS SET', body:function(){
    var seq=(S.mode==='sequential');
    return '<p>The reversible causes should ideally be corrected <b>at the same time</b>. Whether you can depends on how many hands you have — so each site is configured for <b>one</b> model at setup, not switched at the bedside.</p>'+
-     '<p><b>This aid is set to '+(seq?'SEQUENTIAL':'SIMULTANEOUS')+'</b> for LRH. To change it for another site, set <code>SITE.mode</code> in the config block.</p>'+
+     (S.mode
+       ? '<p><b>This aid is set to '+(seq?'SEQUENTIAL':'SIMULTANEOUS')+'</b> for this site. To change it, set <code>caps.tcaTeamModel</code> in <code>site.config.json</code>.</p>'
+       : LOCAL_MISSING_HTML('The team model this screen is built around','C',['caps.tcaTeamModel']))+
      '<p><b>Simultaneous (full trauma team):</b> assign hemorrhage, airway, breathing, cardiac and obstetric to separate people and work them in parallel. '+
      'These priorities are met quickly and CPR can run concurrently.</p>'+
      '<p><b>Sequential (rural / limited team):</b> one or two clinicians cannot do everything at once, so work the priorities in order — '+
@@ -605,7 +612,7 @@ var ACC = [
      '<p style="margin-bottom:0"><b>Cessation</b> — consider stopping when <b>both</b> are true: no ROSC after all reversible causes have been addressed, <b>and</b> no detectable cardiac activity on eFAST. Then run an immediate hot debrief.</p>';
  }},
  {id:'src', title:'SOURCES', body:function(){
-   return '<p>Adapted for LRH from the <b>Royal Melbourne Hospital Trauma Service — Traumatic Cardiac Arrest Guideline (TRM08.12), v3.0, endorsed by the Advisory Committee on Trauma, 2023</b>, and its companion ED Thoracotomy Guideline (TRM04.02).</p>'+
+   return '<p>Adapted for {{site.hospitalShort}} from the <b>Royal Melbourne Hospital Trauma Service — Traumatic Cardiac Arrest Guideline (TRM08.12), v3.0, endorsed by the Advisory Committee on Trauma, 2023</b>, and its companion ED Thoracotomy Guideline (TRM04.02).</p>'+
      '<p>Consistent with <b>ANZCOR Guideline 11.10 — Management of Cardiac Arrest due to Trauma</b> and the <b>European Resuscitation Council</b> traumatic-cardiac-arrest guidance; TXA per <b>CRASH-2</b>, calcium/coagulation per the <b>European trauma bleeding guideline (Spahn 2019)</b>.</p>'+
      '<p style="margin-bottom:0">The site-specific calls in the original (MEP, OPSTAT, RWH numbers, ROTEM) have been genericized in the SITE CONFIG block. Verify every value, role and phone number against your own department before use.</p>';
  }},
@@ -633,7 +640,12 @@ function renderAccordions(){
 }
 
 function planLabel(){
-  if(S.phase==='active') return 'TRAUMATIC CARDIAC ARREST · '+(S.mode==='sequential'?'SEQUENTIAL':'SIMULTANEOUS');
+  /* With no configured model, say so — never default to one. Which of the two
+     this screen is running IS the localization, so an unset site must not be
+     told it is running the sequential algorithm because that happened to be
+     the falsy branch. */
+  if(S.phase==='active') return 'TRAUMATIC CARDIAC ARREST · '+
+    (S.mode==='sequential' ? 'SEQUENTIAL' : S.mode==='simultaneous' ? 'SIMULTANEOUS' : '\u26A0 TEAM MODEL NOT SET');
   if(S.phase==='rosc')   return 'TCA · ROSC — POST-RESUS CARE';
   if(S.phase==='ceased') return 'TCA · RESUSCITATION CEASED';
   return 'TRM · TRAUMATIC CARDIAC ARREST';
@@ -710,7 +722,7 @@ function paint(){
     $('deathwall').textContent = S.deathWall || wallTime();
   }
 
-  $('verstamp').textContent = 'v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
+  $('verstamp').textContent = 'v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · {{site.hospitalShort}}';
   renderAccordions();
 }
 
@@ -742,7 +754,7 @@ function wire(){
   $('themebtn').addEventListener('click', function(){
     S.theme = S.theme==='dark' ? 'light' : 'dark';
     document.body.dataset.theme = S.theme;
-    try{ localStorage.setItem('lrh-pref-theme', S.theme); }catch(e){}
+    try{ localStorage.setItem('edm-pref-theme', S.theme); }catch(e){}
     paint();
   });
   $('resetbtn').addEventListener('click', function(){
@@ -791,7 +803,7 @@ function wire(){
     if(isNaN(v)||v<0){ S.ageY=null; }
     else { var u=$('aUnit')?$('aUnit').value:'yr'; var yrs=(u==='mo')?v/12:v;
            S.ageY=(yrs>=0&&yrs<130)?Math.round(yrs*100)/100:null; }
-    if(S.ageY!==null) SS.set('lrh-case-ageyrs',String(S.ageY)); else SS.del('lrh-case-ageyrs');
+    if(S.ageY!==null) SS.set('edm-case-ageyrs',String(S.ageY)); else SS.del('edm-case-ageyrs');
     if(S.ageY!==prev) scheduleOverrideClear();
     paint();
   }

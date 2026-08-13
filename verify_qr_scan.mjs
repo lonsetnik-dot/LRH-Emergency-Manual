@@ -1,4 +1,4 @@
-/* LRH Emergency Manual — QR scan verification.
+/* ED Emergency Manual — QR scan verification.
  *
  * A QR code that renders is not a QR code that scans. This screenshots every QR on the
  * labels page at print resolution and decodes it back, so a wrong module, a clipped
@@ -11,6 +11,10 @@
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch { ({ chromium } = await import('/home/claude/.npm-global/lib/node_modules/playwright/index.mjs')); }
+import { rx } from './verify_site_config.mjs';
+/* The QR target domain is a site answer. A poster that encodes another
+   hospital's domain is a laminated, trusted, wrong link. */
+const DOMAIN = rx('site.domain');
 const BASE=(process.env.BASE||'http://localhost:8123').replace(/\/$/,'');
 const b=await chromium.launch(process.env.PW_CHROME?{executablePath:process.env.PW_CHROME}:{});
 const pg=await b.newPage({viewport:{width:1200,height:1000},deviceScaleFactor:4});
@@ -24,12 +28,12 @@ async function grab(path, sel){
   const els=await pg.$$(sel);
   // Labels encode the destination in aria-label. Posters print it as text beside the code,
   // so take the expectation from whichever the artifact actually publishes.
-  const printed=await pg.evaluate(()=>{
+  const printed=await pg.evaluate((d)=>{
     const t=document.querySelector('.qr .qrtext, .qr');
     if(!t) return null;
-    const m=(t.textContent||'').match(/lrhemergencymanual\.net\/[^\s]+/);
+    const m=(t.textContent||'').match(new RegExp(d+'/[^\\s]+'));
     return m?('https://'+m[0]):null;
-  });
+  }, DOMAIN);
   for(const el of els){
     let want=(await el.getAttribute('aria-label')||'').replace(/^QR code to /,'');
     if(!want.startsWith('http')) want=printed;

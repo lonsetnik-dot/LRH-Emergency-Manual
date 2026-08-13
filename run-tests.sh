@@ -24,8 +24,16 @@ rm -f /tmp/qr_*.png /tmp/qr_*.want 2>/dev/null || true
 # --- static server -----------------------------------------------------------
 # Build the site (inlines design-system.css into marked tools) and test the
 # actual deployed output in dist/, not the source — so CI catches a broken build.
-node build.mjs
-python3 -m http.server "$PORT" --bind 127.0.0.1 --directory dist >/tmp/lrh-httpd.log 2>&1 &
+# SITE_CONFIG picks the answer sheet the whole run is built and asserted against.
+# Default is site.config.json (this deployment's own). The template branch ships
+# it blank, so the default run is the "not localized yet" run — which is the
+# state a fork is actually in, and therefore the one worth testing by default.
+#   SITE_CONFIG=site.config.lrh.json bash run-tests.sh   # the worked example
+SITE_CONFIG="${SITE_CONFIG:-site.config.json}"
+export SITE_CONFIG
+echo "=== building against ${SITE_CONFIG} ==="
+node build.mjs --config "$SITE_CONFIG"
+python3 -m http.server "$PORT" --bind 127.0.0.1 --directory dist >/tmp/edm-httpd.log 2>&1 &
 SERVER_PID=$!
 cleanup() { kill "$SERVER_PID" 2>/dev/null || true; }
 trap cleanup EXIT

@@ -23,7 +23,7 @@ Locked in as proposed. Implementation spec so we agree on the details:
   > [open card] — doses differ: epi 0.02 mg/kg (NRP) vs 0.01 mg/kg (PALS).
   > If this is an older infant who simply weighs <3 kg, dismiss and continue.
   Link: `../ob-neonatal/?from=<tool>#c03`. Dismissal stored per case
-  (`lrh-case-nrpdismiss`, so RESET and the 60-min sweep clear it — a new
+  (`edm-case-nrpdismiss`, so RESET and the 60-min sweep clear it — a new
   patient gets the banner again). PALS math stays available after dismissal
   (the ex-preemie case).
 - **Also in this item:** arrest gets peds' Broselow floor (<3 kg → "OUTSIDE
@@ -99,7 +99,7 @@ every state (fixes B3 at the same time).**
 ## The rest, grouped — recommended fixes
 
 ### 5. One validation rule for the shared weight key (audit §C1, F2)
-Every tool that writes `lrh-case-wtkg` (arrest, codes, peds) enforces the same
+Every tool that writes `edm-case-wtkg` (arrest, codes, peds) enforces the same
 band **at write time**: `0 < kg < 300`, with a *visible* rejection —
 *"Check weight — must be between 0 and 300 kg"* — instead of today's mix of
 silent-accept / silent-drop / silent-blank. `1e3` and 350 get the same message.
@@ -167,7 +167,7 @@ strips that jump to `../arrest/` get an explicit "opens the Arrest tool"
 label.
 
 ### 12. Codes — weight bar UX (audit §B11–B15, B21)
-Age unit select persisted per case (`lrh-case-ageunit`) so "9 months" never
+Age unit select persisted per case (`edm-case-ageunit`) so "9 months" never
 reloads as a years-flavored 0.75; ESTIMATE with a measured weight already
 present asks one inline confirm before overwriting; estimate errors render in
 their own slot (the "80 kg (measured)" readout never disappears) and
@@ -182,10 +182,10 @@ peds-then-codes on one phone — stop disagreeing. The stale strip then always
 describes the weight actually on screen.
 
 ### 14. TCA joins the case-state contract (audit §D1, D4–D6)
-- **Recommended: full adoption** — TCA reads/writes `lrh-case-wtkg`/`ageyrs`
-  (with items 4–6's rules), logs to `lrh-case-log` (PHI guard included), its
+- **Recommended: full adoption** — TCA reads/writes `edm-case-wtkg`/`ageyrs`
+  (with items 4–6's rules), logs to `edm-case-log` (PHI guard included), its
   RESET becomes the manual-wide confirm-modal sweep like arrest's, and it
-  honors `lrh-pref-theme`. **Option B:** keep it standalone but say so on
+  honors `edm-pref-theme`. **Option B:** keep it standalone but say so on
   screen ("weights and events here don't carry to other tools") and rename
   its RESET. B is less work but leaves the timeline hole in debrief.
 - Regardless: crystalloid line gets `Math.round` + the item-9 cap, and is
@@ -205,7 +205,7 @@ describes the weight actually on screen.
   missing. Weight-entered path unchanged.
 - **ETT size:** engine band 3 becomes **"3.5"** (drop "–4.0"), and the static
   card-03 table and engine then agree at "2 kg and over": NRP convention
-  (<1 kg: 2.5, 1–2 kg: 3.0, >2 kg: 3.5). **Your call:** confirm against LRH
+  (<1 kg: 2.5, 1–2 kg: 3.0, >2 kg: 3.5). **Your call:** confirm against this site
   stock; if you stock 4.0 for large terms I keep "3.5–4.0" and fix the table
   instead.
 - **Epi ETT/IV collision:** split into two bullets; the ETT bullet gets its
@@ -221,12 +221,12 @@ field — this is baby ___'s; re-enter per baby") — full per-baby scoping
 deferred as its own future task; epi volumes < 0.1 mL render with the
 dilution note pulled up beside them instead of an affirmative "0 mg = 0 mL";
 GA enforced 20–44 in JS with a visible message (and a "months? days?" hint on
-9/280-style entries); `lrh-ob-weight` gains the same changed-timestamp +
+9/280-style entries); `edm-ob-weight` gains the same changed-timestamp +
 stale strip the case weight has.
 
 ### 17. Labels + printed carts (audit §LB-2/LB-3)
 Code-cart label rows for i-gel and EZ-IO gain one printed line: *"<3 kg /
-newborn → OB cart (NRP sizes)"*. **Your call:** whether LRH stocks pediatric
+newborn → OB cart (NRP sizes)"*. **Your call:** whether this site stocks pediatric
 i-gel sizes (1/1.5/2/2.5) on the code cart — if yes I add the rows; that's a
 stock question I can't answer from here.
 

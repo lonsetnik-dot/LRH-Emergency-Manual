@@ -17,10 +17,10 @@ There are only two systems to hold in your head.
 - **GitHub** — the master copy of the project and its full history. Every version
   of every file, every change ever made, with the ability to undo any of it.
   Think of it as the filing cabinet + the time machine. The project lives at
-  `github.com/lonsetnik-dot/LRH-Emergency-Manual`.
+  `https://github.com/<you>/<your-fork>`.
 - **Netlify** — the publisher. It watches GitHub, and whenever the master copy
   changes, it automatically rebuilds and publishes the live website at
-  **lrhemergencymanual.net**. You don't "upload" anything to Netlify; it just
+  **your-manual-domain**. You don't "upload" anything to Netlify; it just
   watches GitHub and follows along.
 
 You (the clinician/designer) + Claude (the builder) sit in front of these two.
@@ -34,7 +34,7 @@ them — just recognize them.
 
 - **Repository ("repo")** — the whole project folder, stored on GitHub.
 - **`main`** — the official, live version. What's on `main` is what publishes to
-  lrhemergencymanual.net.
+  your-manual-domain.
 - **Branch** — a private scratch copy where a change is built and tested *without
   touching the live site*. Named things like `ci-and-docs-2026-08-10`.
 - **Commit** — one saved step of work, with a description. The history is a
@@ -73,7 +73,7 @@ Here's the whole lifecycle, and who does each step:
   Claude:  merges the pull request once you're happy
    │
    ▼
-  Netlify: publishes main → lrhemergencymanual.net updates. Done.
+  Netlify: publishes main → your-manual-domain updates. Done.
 ```
 
 **What you personally look at is only the last-mile stuff:** the green check

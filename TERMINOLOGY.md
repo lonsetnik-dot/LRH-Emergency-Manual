@@ -1,6 +1,7 @@
 # TERMINOLOGY.md — US English localization
 
-This repo is written in US medical English because LRH is a US hospital. If you
+This repo is written in US medical English because the originating site is a US
+hospital. If you
 fork this for a site outside the US, this file is your checklist for reverting
 back to your own dialect — search each row's **US term** and swap in your
 preferred alias.

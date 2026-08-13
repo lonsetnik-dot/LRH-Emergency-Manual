@@ -1,10 +1,10 @@
-/* LRH Emergency Manual — offline shell (build input, not shipped as-is).
+/* ED Emergency Manual — offline shell (build input, not shipped as-is).
  *
  * build.mjs reads this file, substitutes __CACHE__ and __ASSETS__, and writes
  * dist/sw.js. Do NOT edit dist/sw.js — edit this template.
  *
  * WHY A GENERATED CACHE NAME (issue #120): the previous per-tool worker carried
- * a hand-written version string ("lrh-ob-2026-08-08a") that a human had to
+ * a hand-written version string ("edm-ob-2026-08-08a") that a human had to
  * remember to bump on every deploy. Forgetting it means phones keep serving the
  * previous clinical content indefinitely, silently — the exact failure this
  * system cannot afford. __CACHE__ is a content hash of everything precached, so
@@ -54,7 +54,7 @@ self.addEventListener('activate', function (e) {
       return Promise.all(keys.map(function (k) {
         /* Only ever touch our own caches — never another origin's or another
            app's, in case this is deployed alongside something else. */
-        return (k !== CACHE && k.indexOf('lrh-') === 0) ? caches.delete(k) : null;
+        return (k !== CACHE && k.indexOf('edm-') === 0) ? caches.delete(k) : null;
       }));
     }).then(function () { return self.clients.claim(); })
   );

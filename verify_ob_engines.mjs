@@ -1,4 +1,4 @@
-/* LRH Emergency Manual — the two OB live-protocol engines, /pph/ and /dystocia/ (issue #135).
+/* ED Emergency Manual — the two OB live-protocol engines, /pph/ and /dystocia/ (issue #135).
  *
  * One suite for both because they ship together and are the same kind of thing: a card that was
  * doing an engine's job, rebuilt around the clock it could not hold. Each is asserted on the thing
@@ -138,7 +138,7 @@ ck('P7. a record number is refused', await pg.locator('#customwarn').isVisible()
 await pg.fill('#customin', 'bimanual compression started'); await tap('#customlog');
 ck('P7. a clinical note is accepted', await pg.locator('#customrow').isVisible(), false);
 ck('P7. localStorage holds only the theme preference',
-   (await pg.evaluate(() => Object.keys(localStorage))).filter(k => k !== 'lrh-pref-theme').join(',') || 'none', 'none');
+   (await pg.evaluate(() => Object.keys(localStorage))).filter(k => k !== 'edm-pref-theme').join(',') || 'none', 'none');
 
 /* ===================== SHOULDER DYSTOCIA ===================== */
 console.log('\n--- /dystocia/ ---');

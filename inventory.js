@@ -1,5 +1,5 @@
 /* ===========================================================================
-   inventory.js — LRH Emergency Manual equipment inventory (single source).
+   inventory.js — {{site.hospitalShort}} Emergency Manual equipment inventory (single source).
 
    Injected by build.mjs wherever a tool's <script> contains the marker
    (slash-star) @inventory (star-slash), so deployed tools stay fully
@@ -71,7 +71,7 @@ var INV_CATALOG = {
     sizes:["infant / child","small adult · 6.5 mm","adult · 7.5 mm","large adult · 8.5 mm"] },
   "sga-neonatal": { name:"Supraglottic airway — neonatal LMA", cat:"airway", std:["NPRP","NRP"],
     sizes:["LMA 0 · under 2 kg","LMA 0.5 · 2 kg and over"],
-    note:"NRP names a size 1 laryngeal mask; LRH stocks LMA 0 and 0.5 instead and the i-gels start at size 1. Audit what is on the shelf, not what the checklist prints." },
+    note:"NRP names a size 1 laryngeal mask; this site stocks {{physical.supraglotticSizes}}. Audit what is on the shelf, not what the checklist prints." },
   "sga-igel": { name:"Supraglottic airway — i-gel", cat:"airway", std:["NPRP","ASA-DA"],
     sizes:["1 · 2–5 kg","1.5 · 5–12 kg","2 · 10–25 kg","2.5 · 25–35 kg","3 · 30–60 kg","4 · 50–90 kg","5 · 90+ kg"],
     note:"Weight bands are the manufacturer's — verify against the brand actually stocked." },
@@ -255,7 +255,7 @@ var INV_CATALOG = {
   "kit-pacer-magnet": { name:"Pacemaker Magnet", cat:"kit" },
   "kit-mh": { name:"Malignant Hyperthermia Cart", cat:"kit", std:["MHAUS"] },
   "kit-difficult-airway": { name:"Difficult Airway Trolley / portable unit", cat:"kit", std:["ASA-DA"],
-    note:"ASA's expectation is that the difficult-airway equipment travels together as one portable unit. At LRH it is spread across code cart drawers 1 and 2 — record where it actually is, then decide whether that counts." }
+    note:"ASA's expectation is that the difficult-airway equipment travels together as one portable unit. At this site it is spread across the code cart drawers — record where it actually is, then decide whether that counts." }
 };
 
 /* ===== STANDARDS (universal; versioned by checklist year) =================
@@ -353,18 +353,18 @@ var INV_BROSELOW_PACK = {
    champion on the walk using the tool's own dropdown. ==================== */
 var INV_LOCATIONS = {
   /* --- monitoring --- */
-  "bp-cuffs":            { loc:"Broselow Cart · band drawers + Room 7 · Monitoring", verify:true },
-  "ecg-electrodes":      { loc:"Room 7 · Monitoring", verify:true },
+  "bp-cuffs":            { loc:"Broselow Cart · band drawers + {{physical.resusRoom}} · Monitoring", verify:true },
+  "ecg-electrodes":      { loc:"{{physical.resusRoom}} · Monitoring", verify:true },
   "defib":               { loc:"Resus bay — monitor/defibrillator (outside cart data)", verify:true },
   "defib#internal paddles (thoracotomy)": { loc:"With the defibrillator, not in the thoracotomy tray", verify:true },
-  "pulseox":             { loc:"Room 7 · Monitoring", verify:true },
+  "pulseox":             { loc:"{{physical.resusRoom}} · Monitoring", verify:true },
   "etco2":               { loc:"Code Cart · Drawer 1 · End-Tidal CO2", par:2 },
   "scale-kg":            { loc:"Peds room / triage", verify:true },
   "broselow-tape":       { loc:"Pediatric (Broselow) Cart — top", par:1 },
   "glucometer":          { loc:"Resus bay / triage point-of-care", verify:true },
   "ultrasound":          { loc:"Resus bay — shared machine", verify:true },
   "xray-portable":       { loc:"Radiology — portable into the bay", verify:true },
-  "abg-syringes":        { loc:"Room 7 · Specimens", verify:true },
+  "abg-syringes":        { loc:"{{physical.resusRoom}} · Specimens", verify:true },
   /* --- airway --- */
   "opa":                 { loc:"Code Cart · Drawer 1 · OPA / NPA", verify:true },
   "npa":                 { loc:"Code Cart · Drawer 1 · OPA / NPA", verify:true },
@@ -372,10 +372,10 @@ var INV_LOCATIONS = {
   "sga-igel":            { loc:"Code Cart · Drawer 2 · iGel", par:3 },
   "ett-uncuffed":        { loc:"Broselow Cart · band drawers + OB Cart · Drawer 1", verify:true },
   "ett-cuffed":          { loc:"Code Cart · Drawer 1 · ETT / Bougie + Broselow Cart · band drawers", verify:true },
-  "ett-90":              { loc:"Room 7 · Lung Isolation", verify:true },
+  "ett-90":              { loc:"{{physical.resusRoom}} · Lung Isolation", verify:true },
   "stylets":             { loc:"Code Cart · Drawer 1 · ETT / Bougie", verify:true },
   "bougie":              { loc:"Code Cart · Drawer 1 · ETT / Bougie", par:2 },
-  "bougie#coudé tip (lung isolation)": { loc:"Room 7 · Lung Isolation", verify:true },
+  "bougie#coudé tip (lung isolation)": { loc:"{{physical.resusRoom}} · Lung Isolation", verify:true },
   "blades-mac":          { loc:"Code Cart · Drawer 1 · Direct Laryngoscopy", verify:true },
   "blades-miller":       { loc:"Code Cart · Drawer 1 · Direct Laryngoscopy", verify:true },
   "laryngoscope-handles":{ loc:"Code Cart · Drawer 1 · Direct Laryngoscopy", verify:true },
@@ -384,7 +384,7 @@ var INV_LOCATIONS = {
   "jet-vent":            { loc:"Code Cart · Drawer 2 · Jet Ventilation", par:1 },
   "magill":              { loc:"Code Cart · Drawer 1 · Intubation", verify:true },
   "suction-cath":        { loc:"Code Cart · Drawer 4 · Suction", verify:true },
-  "suction-rigid":       { loc:"Code Cart · Drawer 4 · Suction + Room 7 · SALAD Suction", verify:true },
+  "suction-rigid":       { loc:"Code Cart · Drawer 4 · Suction + {{physical.resusRoom}} · SALAD Suction", verify:true },
   "suction-units":       { loc:"Resus bay wall + portable unit", verify:true },
   "ng-tubes":            { loc:"Trauma Cart · Drawer 2 · NG Tube", verify:true },
   /* --- breathing --- */
@@ -392,15 +392,15 @@ var INV_LOCATIONS = {
   "face-masks":          { loc:"Broselow Cart · band drawers + OB Cart · Drawer 1", verify:true },
   "o2-masks":            { loc:"Respiratory storage + Broselow Cart", verify:true },
   "nasal-cannula":       { loc:"Respiratory storage", verify:true },
-  "meconium-aspirator":  { loc:"Room 7 · SALAD Suction + OB Cart · Drawer 1", verify:true },
+  "meconium-aspirator":  { loc:"{{physical.resusRoom}} · SALAD Suction + OB Cart · Drawer 1", verify:true },
   /* --- vascular --- */
   "io-needles":          { loc:"Code Cart · Drawer 5 · EZ-IO", par:2 },
   "iv-cath":             { loc:"Code Cart · Drawer 5 · I.V. Supplies + Trauma Cart · Drawer 1 · IV Supplies", verify:true },
   "iv-cath#24 g":        { loc:"Broselow Cart · band drawers", verify:true },
   "iv-cath#22 g":        { loc:"Broselow Cart · band drawers", verify:true },
   "uvc":                 { loc:"OB / Neonatal Cart · Drawer 2 · Circulation (UVC kit)", par:1 },
-  "cvc-peds":            { loc:"Room 7 · Vascular Access", verify:true, note:"adult sizes confirmed; pediatric sizes unconfirmed" },
-  "art-line":            { loc:"Room 7 · Arterial Line", verify:true },
+  "cvc-peds":            { loc:"{{physical.resusRoom}} · Vascular Access", verify:true, note:"adult sizes confirmed; pediatric sizes unconfirmed" },
+  "art-line":            { loc:"{{physical.resusRoom}} · Arterial Line", verify:true },
   "iv-sets-calibrated":  { loc:"Clean utility / pump storage", verify:true },
   "pressure-infuser":    { loc:"Code Cart · Drawer 4 · I.V. Fluids", verify:true },
   "radiant-warmer":      { loc:"OB / Neonatal — radiant warmer in the bay", verify:true },
@@ -411,13 +411,13 @@ var INV_LOCATIONS = {
   "pelvic-binder":       { loc:"Trauma Cart · Drawer 4 · Hemorrhage Control 2", verify:true },
   "needle-decompression":{ loc:"Trauma Cart · Drawer 1 · Needle Decompression", verify:true },
   "trauma-shears":       { loc:"Trauma Cart · Drawer 3 · Hemorrhage Control 1", verify:true },
-  "txa":                 { loc:"Omnicell + Room 7 · Lung Isolation (nebulized)", verify:true },
+  "txa":                 { loc:"Omnicell + {{physical.resusRoom}} · Lung Isolation (nebulized)", verify:true },
   "ppe-splash":          { loc:"Trauma Cart · Drawer 5 · PPE", verify:true },
   /* --- procedural --- */
-  "chest-tubes":         { loc:"Trauma Cart · Chest Tube Insertion shelf + Room 7 · Chest Drainage", verify:true, note:"14 Fr pigtail is the only small-bore size named on the cards" },
-  "drainage-system":     { loc:"Room 7 · Chest Drainage", verify:true },
-  "femur-splints":       { loc:"Room 7 · Splints", verify:true },
-  "lp-trays":            { loc:"Room 7 · Procedure Trays", verify:true, note:"infant 22 g needles unconfirmed" },
+  "chest-tubes":         { loc:"Trauma Cart · Chest Tube Insertion shelf + {{physical.resusRoom}} · Chest Drainage", verify:true, note:"14 Fr pigtail is the only small-bore size named on the cards" },
+  "drainage-system":     { loc:"{{physical.resusRoom}} · Chest Drainage", verify:true },
+  "femur-splints":       { loc:"{{physical.resusRoom}} · Splints", verify:true },
+  "lp-trays":            { loc:"{{physical.resusRoom}} · Procedure Trays", verify:true, note:"infant 22 g needles unconfirmed" },
   "urinary-cath":        { loc:"Clean utility", verify:true },
   /* --- obstetric / neonatal --- */
   "ob-delivery-kit":     { loc:"OB / Neonatal Cart · Drawer 6 · Vaginal Delivery + radiant warmer", par:1 },
@@ -426,26 +426,26 @@ var INV_LOCATIONS = {
   "peds-dosing-ref":     { loc:"Broselow tape + the peds/ tool itself", par:1 },
   /* --- kits (locations confirmed from labels/ + procedure cards) --- */
   "kit-canthotomy":      { loc:"Trauma Cart · Drawer 6 · Canthotomy Kit", par:1 },
-  "kit-chest-tube":      { loc:"Room 7 · Chest Drainage", par:1 },
-  "kit-pigtail":         { loc:"Room 7 · Chest Drainage (pigtail)", par:2 },
+  "kit-chest-tube":      { loc:"{{physical.resusRoom}} · Chest Drainage", par:1 },
+  "kit-pigtail":         { loc:"{{physical.resusRoom}} · Chest Drainage (pigtail)", par:2 },
   "kit-thoracotomy":     { loc:"Trauma Cart · Shelf A · Thoracostomy + Rib Spreader", par:1 },
   "kit-burr-hole":       { loc:"Trauma Cart · Shelf A · Burr Hole", par:1 },
   "kit-neck-tamponade":  { loc:"Trauma Cart · Drawer 3 · Hemorrhage Control", par:1 },
   "kit-junctional":      { loc:"Trauma Cart · Drawer 3 · Hemorrhage Control", par:1 },
-  "kit-escharotomy":     { loc:"Room 7 · Procedure Trays (escharotomy)", par:1 },
-  "kit-resus-line":      { loc:"Room 7 · Vascular Access", par:1 },
-  "kit-central-line":    { loc:"Room 7 · Vascular Access", par:1 },
-  "kit-tvp":             { loc:"Room 7 · Transvenous Pacing", par:1 },
-  "kit-blakemore":       { loc:"Room 7 · GI Hemorrhage", par:1 },
-  "kit-lung-isolation":  { loc:"Room 7 · Lung Isolation", par:1 },
-  "kit-epistaxis":       { loc:"Room 7 · Epistaxis", par:1 },
-  "kit-salad":           { loc:"Room 7 · SALAD Suction", par:1 },
+  "kit-escharotomy":     { loc:"{{physical.resusRoom}} · Procedure Trays (escharotomy)", par:1 },
+  "kit-resus-line":      { loc:"{{physical.resusRoom}} · Vascular Access", par:1 },
+  "kit-central-line":    { loc:"{{physical.resusRoom}} · Vascular Access", par:1 },
+  "kit-tvp":             { loc:"{{physical.resusRoom}} · Transvenous Pacing", par:1 },
+  "kit-blakemore":       { loc:"{{physical.resusRoom}} · GI Hemorrhage", par:1 },
+  "kit-lung-isolation":  { loc:"{{physical.resusRoom}} · Lung Isolation", par:1 },
+  "kit-epistaxis":       { loc:"{{physical.resusRoom}} · Epistaxis", par:1 },
+  "kit-salad":           { loc:"{{physical.resusRoom}} · SALAD Suction", par:1 },
   "kit-jada":            { loc:"OB / Neonatal Cart · Drawer 4 · Postpartum Hemorrhage", par:1 },
   "kit-pneumo-tray":     { loc:"Trauma Cart · Drawer 6 · Pneumothorax Tray", par:1 },
   "kit-pacer-magnet":    { loc:"Code Cart · side panel", par:1 }
 };
 
-/* Items asserted ABSENT at LRH, each filed as a GitHub issue. This is the
+/* Items asserted ABSENT at this site, each filed as an issue. This is the
    only place a gap is claimed in source — everything else with no LOCATIONS
    entry is simply not reviewed yet. */
 var INV_GAP_ISSUES = {
@@ -460,7 +460,7 @@ var INV_DIRECTORY = {
   "Trauma Cart": ["ChloraPrep","IV Supplies","Scalpel","Needle Decompression","NG Tube","Hemorrhage Control 1","Hemorrhage Control 2","PPE","Canthotomy Kit","Pneumothorax Tray","Burr Hole","Thoracostomy","Rib Spreader","Chest Tube Insertion"],
   "OB / Neonatal Cart": ["Airway / Breathing","Circulation","Labs / Misc.","Postpartum Hemorrhage","C-section","Vaginal Delivery"],
   "Pediatric (Broselow) Cart": ["GREY (3–5 kg)","PINK (6–7 kg)","RED (8–9 kg)","PURPLE (10–11 kg)","YELLOW (12–14 kg)","WHITE (15–18 kg)","BLUE (19–23 kg)","ORANGE (24–29 kg)","GREEN (30–36 kg)"],
-  "Room 7 cabinets": ["Airway","Vascular Access","Arterial Line","Fluids","Chest Drainage","GI Hemorrhage","Lung Isolation","Epistaxis","SALAD Suction","Procedure Trays","Suture / Wound","Specimens","Splints","Monitoring","Transvenous Pacing"]
+  "{{physical.resusRoom}} cabinets": ["Airway","Vascular Access","Arterial Line","Fluids","Chest Drainage","GI Hemorrhage","Lung Isolation","Epistaxis","SALAD Suction","Procedure Trays","Suture / Wound","Specimens","Splints","Monitoring","Transvenous Pacing"]
 };
 
 /* Human labels for the catalog's `cat` values (UI grouping order). */

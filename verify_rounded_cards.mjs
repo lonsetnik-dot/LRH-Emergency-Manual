@@ -1,4 +1,4 @@
-/* LRH Emergency Manual — no square boxes inside the rounded ones (issue #107).
+/* ED Emergency Manual — no square boxes inside the rounded ones (issue #107).
  *
  * The manual's visual language is rounded rectangles: the card shells, the .t-box-* panels and every
  * control carry a radius. But a large number of interior blocks across codes/, peds/ and ob-neonatal/

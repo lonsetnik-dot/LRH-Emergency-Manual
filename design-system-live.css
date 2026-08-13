@@ -1,12 +1,12 @@
 /* ===========================================================================
-   design-system-live.css - shared skeleton for the LRH "live-protocol" family
+   design-system-live.css - shared skeleton for the {{site.hospitalShort}} "live-protocol" family
    (arrest/, airway/, tca/ — full-screen cognitive aids driven by a running
    clock, not card-based reference tools). Injected at build time wherever a
    tool's <style> contains the marker  (slash-star) @design-system-live
    (star-slash)  — see build.mjs and issue #73.
 
    This is a DIFFERENT vocabulary from design-system.css (the card-tool
-   family: .hdr, .t-box-crit and friends, .lrh-row) — the two are never
+   family: .hdr, .t-box-crit and friends, .edm-row) — the two are never
    injected into the same file. Tokens/chrome here were originally authored
    in arrest/ (the
    reference implementation) and copied by hand into airway/ and tca/; this

@@ -6,15 +6,15 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#005596">
-<title>LRH Conversations</title>
+<title>{{site.hospitalShort}} Conversations</title>
 <meta name="apple-mobile-web-app-title" content="Conversations">
 <meta name="description" content="Beta cognitive aids for difficult ED conversations — a consultant crucial conversation and a code-status conversation. Practice and feedback only.">
-<link rel="canonical" href="https://lrhemergencymanual.net/conversations/">
+<link rel="canonical" href="https://{{site.domain}}/conversations/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="LRH Emergency Manual">
-<meta property="og:title" content="LRH Conversations (beta)">
+<meta property="og:site_name" content="{{site.hospitalShort}} Emergency Manual">
+<meta property="og:title" content="{{site.hospitalShort}} Conversations (beta)">
 <meta property="og:description" content="Cognitive aids for difficult ED conversations. Beta — practice and feedback only.">
-<meta property="og:url" content="https://lrhemergencymanual.net/conversations/">
+<meta property="og:url" content="https://{{site.domain}}/conversations/">
 <meta name="twitter:card" content="summary">
 <style>
   html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
@@ -54,11 +54,11 @@
 </head>
 <body data-theme="dark">
 <script>
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+try{ document.body.dataset.theme = localStorage.getItem('edm-pref-theme')==='light' ? 'light' : 'dark'; }
 catch(e){ document.body.dataset.theme='dark'; }
 </script>
 <div id="betasplash" style="position:fixed; inset:0; z-index:999; background:linear-gradient(135deg,#005596,#003e6e); color:#fffefb; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
-  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:#a9c2dc;">LRH · EMERGENCY DEPARTMENT</div>
+  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:#a9c2dc;">{{site.hospitalShort}} · {{site.deptName}}</div>
   <div style="font-size:30px; line-height:1.06; letter-spacing:-0.02em; font-weight:700;">Conversations</div>
   <div style="display:inline-block; padding:6px 14px; border:2px solid #e0b93c; color:#f7d97a; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.16em;">BETA</div>
   <div style="max-width:460px; font-size:17px; line-height:1.4; color:#dbe4ee;">Not yet ready for clinical use. Shared for feedback and practice only.</div>
@@ -70,13 +70,13 @@ catch(e){ document.body.dataset.theme='dark'; }
   <a class="ghost" href="../?from=tool">&#9664; MANUAL</a>
   <button class="ghost" id="backbtn" type="button" style="display:none">&#9664; BACK</button>
   <span class="plabel">CONVERSATIONS</span>
-  <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
+  <button type="button" class="ghost" id="edmThemeBtn">LIGHT</button>
 </div>
 </div>
 
 <main>
   <div style="padding:16px 14px 6px;">
-    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:var(--ink2); font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
+    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:var(--ink2); font-weight:700;">{{site.hospitalShort}} · {{site.deptName}}</div>
     <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Conversations</h1>
     <p style="margin:0; color:var(--ink2); font-size:14.5px;">Cognitive aids for the hard conversations — the ones where structure buys you calm. Starting frameworks, not scripts to read word for word.</p>
   </div>
@@ -183,7 +183,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     </div>
 
     <div class="t-localize">
-      ⚠ <b>LOCALIZE — Dr. Lawson's one-pager:</b> the LRH graphics and CPR-outcome references are in <a href="https://github.com/user-attachments/files/30935608/CPR.images.and.one.page.review.with.references.Dec.2025.docx"><b>“CPR images and one-page review with references” (Dr. Lawson, Dec 2025)</b></a>. That link is an external download — for true offline/bedside use, self-host the graphics (image or PDF) in this <code>conversations/</code> folder and link them locally.
+      ⚠ <b>LOCALIZE — Dr. Lawson's one-pager:</b> the {{site.hospitalShort}} graphics and CPR-outcome references are in <a href="https://github.com/user-attachments/files/30935608/CPR.images.and.one.page.review.with.references.Dec.2025.docx"><b>“CPR images and one-page review with references” (Dr. Lawson, Dec 2025)</b></a>. That link is an external download — for true offline/bedside use, self-host the graphics (image or PDF) in this <code>conversations/</code> folder and link them locally.
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
@@ -374,10 +374,10 @@ catch(e){ document.body.dataset.theme='dark'; }
 </main>
 
 <script>
-/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
+/* ===== SITE CONFIG ({{site.hospitalShort}}) — edit these to adapt to another site/device ===== */
 var SITE = { version: "0.1", lastReviewed: "2026-08-12" };
 (function(){
-  document.querySelectorAll('.verstamp').forEach(function(el){ el.textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH'; });
+  document.querySelectorAll('.verstamp').forEach(function(el){ el.textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · {{site.hospitalShort}}'; });
   var s=document.getElementById('betasplash'), b=document.getElementById('betago');
   if(!s||!b) return;
   function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); }
@@ -394,16 +394,16 @@ var SITE = { version: "0.1", lastReviewed: "2026-08-12" };
   maybeShow();
   b.addEventListener('click', function(){ history.back(); }, false);
 })();
-/* Theme toggle — persists via the shared lrh-pref-theme key. */
+/* Theme toggle — persists via the shared edm-pref-theme key. */
 (function(){
-  var b=document.getElementById('lrhThemeBtn');
+  var b=document.getElementById('edmThemeBtn');
   if(!b) return;
   b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
   b.addEventListener('click', function(){
     var dark = document.body.dataset.theme!=='light';
     document.body.dataset.theme = dark ? 'light' : 'dark';
     b.textContent = dark ? 'DARK' : 'LIGHT';
-    try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
+    try{ localStorage.setItem('edm-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
   });
 })();
 </script>

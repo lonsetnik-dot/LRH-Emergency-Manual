@@ -8,7 +8,7 @@ name: security
 #   2. The offline rule: no tool loads script or data from the network
 #      (CLAUDE.md rule 1 — everything must work with no connectivity).
 #   3. The PHI/state contract: every localStorage key stays inside the
-#      documented lrh- namespace so the RESET sweep can always clear case
+#      documented edm- namespace so the RESET sweep can always clear case
 #      state (CASE-STATE.md; CLAUDE.md rule 3).
 #
 # Pure grep — no third-party actions, nothing to supply-chain.
@@ -38,12 +38,12 @@ jobs:
             --include="*.html" --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.git . \
             || { echo "::error::A tool references the network — every tool must be self-contained and work offline (CLAUDE.md rule 1)."; exit 1; }
 
-      - name: PHI/state contract — localStorage keys stay in the lrh- namespace
+      - name: PHI/state contract — localStorage keys stay in the edm- namespace
         run: |
           BAD=$(grep -rhoE "localStorage\.setItem\('[^']+'" --include="*.html" \
             --exclude-dir=node_modules --exclude-dir=dist --exclude-dir=.git . \
-            | sed "s/localStorage.setItem('//" | tr -d "'" | sort -u | grep -v "^lrh-" || true)
+            | sed "s/localStorage.setItem('//" | tr -d "'" | sort -u | grep -v "^edm-" || true)
           if [ -n "$BAD" ]; then
-            echo "::error::localStorage key(s) outside the documented lrh- namespace (CASE-STATE.md): $BAD"
+            echo "::error::localStorage key(s) outside the documented edm- namespace (CASE-STATE.md): $BAD"
             exit 1
           fi

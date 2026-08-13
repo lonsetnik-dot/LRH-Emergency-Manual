@@ -6,20 +6,20 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#005596">
-<title>LRH Pediatric Emergencies</title>
+<title>{{site.hospitalShort}} Pediatric Emergencies</title>
 <meta name="apple-mobile-web-app-title" content="Peds">
 <meta name="description" content="Beta cognitive aids for pediatric emergencies in the Emergency Department. Practice and feedback only.">
-<link rel="canonical" href="https://lrhemergencymanual.net/peds/">
+<link rel="canonical" href="https://{{site.domain}}/peds/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="LRH Emergency Manual">
-<meta property="og:title" content="LRH Pediatric Emergencies (beta)">
+<meta property="og:site_name" content="{{site.hospitalShort}} Emergency Manual">
+<meta property="og:title" content="{{site.hospitalShort}} Pediatric Emergencies (beta)">
 <meta property="og:description" content="Cognitive aids for pediatric emergencies in the ED — shared weight-based dosing engine plus 15 topic cards. Beta — practice and feedback only.">
-<meta property="og:url" content="https://lrhemergencymanual.net/peds/">
+<meta property="og:url" content="https://{{site.domain}}/peds/">
 <meta name="twitter:card" content="summary">
 <style>
   html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; --sticky-h:94px; }
   /* @design-system */
-  /* ---- Shared design language (tokens, the .hdr chrome bar, the .lrh-* menu
+  /* ---- Shared design language (tokens, the .hdr chrome bar, the .edm-* menu
      rows + filter, the themed <body>, and the .t-* card-interior classes) is
      injected from design-system.css at the marker above (build.mjs), edited once
      for the whole manual. --sticky-h is measured live off #stickytop (the
@@ -28,9 +28,9 @@
      heading, its band-colored chrome, the weight bar, the dose spans, the dosing
      tables and page layout live below. ---- */
   /* peds index-page heading (not part of the shared system) */
-  .lrh-eyebrow{font-size:11.5px;letter-spacing:.14em;color:var(--accent);font-weight:700}
-  .lrh-idx-h1{margin:4px 0 2px;font-size:26px;letter-spacing:-.01em;font-weight:800;color:var(--ink)}
-  .lrh-idx-sub{margin:0;color:var(--ink2);font-size:14.5px}
+  .edm-eyebrow{font-size:11.5px;letter-spacing:.14em;color:var(--accent);font-weight:700}
+  .edm-idx-h1{margin:4px 0 2px;font-size:26px;letter-spacing:-.01em;font-weight:800;color:var(--ink)}
+  .edm-idx-sub{margin:0;color:var(--ink2);font-size:14.5px}
   /* ---- peds keeps the Broselow band color on its chrome (clinical wayfinding).
      The single .hdr bar recolors to the active band via --peds-accent (set live
      by the band JS in paintZone(); a neutral navy before any weight is entered),
@@ -122,11 +122,11 @@
 </head>
 <body>
 <script>
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+try{ document.body.dataset.theme = localStorage.getItem('edm-pref-theme')==='light' ? 'light' : 'dark'; }
 catch(e){ document.body.dataset.theme='dark'; }
 </script>
 <div id="betasplash" style="position:fixed; inset:0; z-index:999; background:linear-gradient(135deg,#005596,#003e6e); color:#fffefb; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
-  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:#a9c2dc;">LRH · EMERGENCY DEPARTMENT</div>
+  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:#a9c2dc;">{{site.hospitalShort}} · {{site.deptName}}</div>
   <div style="font-size:30px; line-height:1.06; letter-spacing:-0.02em; font-weight:700;">Pediatric Emergencies</div>
   <div style="display:inline-block; padding:6px 14px; border:2px solid #e0b93c; color:#f7d97a; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.16em;">BETA</div>
   <div style="max-width:460px; font-size:17px; line-height:1.4; color:#dbe4ee;">Not yet ready for clinical use. Shared for feedback and practice only — do not use it to direct the care of a patient.</div>
@@ -140,18 +140,18 @@ catch(e){ document.body.dataset.theme='dark'; }
   <span class="plabel">PEDS</span>
   <button class="ghost" id="summarybtn" type="button">TIMELINE</button>
   <button class="ghost danger" id="resetbtn" type="button">RESET</button>
-  <button class="ghost" id="lrhThemeBtn" type="button">LIGHT</button>
+  <button class="ghost" id="edmThemeBtn" type="button">LIGHT</button>
 </div>
 <script>
 (function(){
-  var b=document.getElementById('lrhThemeBtn');
+  var b=document.getElementById('edmThemeBtn');
   if(!b) return;
   b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
   b.addEventListener('click', function(){
     var dark = document.body.dataset.theme!=='light';
     document.body.dataset.theme = dark ? 'light' : 'dark';
     b.textContent = dark ? 'DARK' : 'LIGHT';
-    try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
+    try{ localStorage.setItem('edm-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
   });
 })();
 </script>
@@ -216,7 +216,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     try{
       var keys=[];
       for(var i=0;i<localStorage.length;i++) keys.push(localStorage.key(i));
-      keys.forEach(function(k){ if(k && k.indexOf('lrh-')===0 && k.indexOf('lrh-pref-')!==0) localStorage.removeItem(k); });
+      keys.forEach(function(k){ if(k && k.indexOf('edm-')===0 && k.indexOf('edm-pref-')!==0) localStorage.removeItem(k); });
     }catch(e){}
     /* Not reload(): that preserves the #cNN hash, so a reset performed while a card was open
        dropped you straight back onto that same card and looked like nothing had happened. Drop
@@ -266,7 +266,7 @@ catch(e){ document.body.dataset.theme='dark'; }
      Threshold: 3 kg = the Broselow-Luten floor this page already enforces for
      its zone strip. Dose divergence cited: NRP 8th ed epi 0.02 mg/kg IV/UVC
      (range 0.01–0.03) vs PALS 0.01 mg/kg. Dismissal is per-case and
-     manual-wide (lrh-case-nrpdismiss, shared with arrest/codes) — RESET FOR
+     manual-wide (edm-case-nrpdismiss, shared with arrest/codes) — RESET FOR
      NEXT CASE and the stale-case sweep restore it for the next patient. -->
 <div id="nrpbanner" style="display:none; align-items:center; gap:10px; margin:0; padding:10px 14px; background:#fbeaec; border-bottom:2px solid #9b1c2e; border-left:10px solid #9b1c2e;">
   <div style="flex:1; font-size:13.5px; line-height:1.45; color:#16324f;"><b style="color:#9b1c2e;">NEWLY BORN (first days of life)?</b> Use <a href="../ob-neonatal/?from=peds#c03" style="color:#9b1c2e; font-weight:800;">NEONATAL RESUSCITATION (NRP) &rarr;</a> — doses differ: epi <b>0.02 mg/kg</b> (NRP) vs 0.01 mg/kg (PALS). Older infant who simply weighs &lt;3 kg? Dismiss and continue with PALS.</div>
@@ -285,38 +285,38 @@ catch(e){ document.body.dataset.theme='dark'; }
 </div>
 
 <main>
-  <div class="lrh-menuwrap">
+  <div class="edm-menuwrap">
     <div class="inner">
-      <div class="lrh-eyebrow lrh-mono">LRH · EMERGENCY DEPARTMENT</div>
-      <h1 class="lrh-idx-h1">Pediatric Emergencies</h1>
-      <p class="lrh-idx-sub">Enter a weight once above — every card below calculates its doses live from it. Weight and timers live only on this device, clear on RESET FOR NEXT CASE, and auto-clear after an hour of inactivity — still, always tap RESET between patients.</p>
-      <button type="button" id="startnewcasebtn" class="lrh-startnew-btn">START NEW CASE</button>
+      <div class="edm-eyebrow edm-mono">{{site.hospitalShort}} · {{site.deptName}}</div>
+      <h1 class="edm-idx-h1">Pediatric Emergencies</h1>
+      <p class="edm-idx-sub">Enter a weight once above — every card below calculates its doses live from it. Weight and timers live only on this device, clear on RESET FOR NEXT CASE, and auto-clear after an hour of inactivity — still, always tap RESET between patients.</p>
+      <button type="button" id="startnewcasebtn" class="edm-startnew-btn">START NEW CASE</button>
 
       <!-- ============ FILTER ============ -->
-      <div class="lrh-filter">
+      <div class="edm-filter">
         <span class="ico" aria-hidden="true">&#8981;</span>
         <input type="search" id="menuFilter" autocomplete="off" spellcheck="false" autofocus
           placeholder="Search&hellip;" aria-label="Search" aria-controls="menu">
       </div>
-      <p class="lrh-filter-empty" id="menuFilterEmpty" hidden>No matches. Try a different term.</p>
+      <p class="edm-filter-empty" id="menuFilterEmpty" hidden>No matches. Try a different term.</p>
 
       <!-- ============ CARD MENU ============ -->
       <div id="menu" class="menu" style="padding:0; margin:18px 0 0;">
-        <a href="../arrest/?from=peds" data-k="code cart cardiac arrest ventricular fibrillation tachycardia defibrillation shock epinephrine amiodarone lidocaine cpr acls pea asystole non-shockable reversible causes h's and t's pals pediatric weight-based broselow resuscitation" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">01</span><span class="t">Cardiac Arrest / PALS</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; ARREST</span></a>
-        <a href="#p02" data-k="anaphylaxis epinephrine allergic reaction pediatric angioedema" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">02</span><span class="t">Anaphylaxis</span></a>
-        <a href="#p03" data-k="asthma albuterol ipratropium wheeze pediatric pass severity dexamethasone magnesium terbutaline" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">03</span><span class="t">Asthma Exacerbation</span></a>
-        <a href="#p04" data-k="choking foreign body airway obstruction back blows abdominal thrusts" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">04</span><span class="t">Airway Obstruction (Choking)</span></a>
-        <a href="#p05" data-k="epiglottitis stridor upper airway croup drooling tripod" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">05</span><span class="t">Epiglottitis / Upper Airway</span></a>
-        <a href="#p06" data-k="bronchiolitis rsv wheeze infant respiratory" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">06</span><span class="t">Bronchiolitis</span></a>
-        <a href="#p07" data-k="dka diabetic ketoacidosis insulin pediatric fluids cerebral edema" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">07</span><span class="t">Diabetic Ketoacidosis (DKA)</span></a>
-        <a href="#p08" data-k="altered mental status ams pediatric coma glucose" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">08</span><span class="t">Altered Mental Status</span></a>
-        <a href="#p09" data-k="agitation behavioral psychiatric restraint pediatric sedation" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">09</span><span class="t">Behavioral Agitation</span></a>
-        <a href="#p10" data-k="status epilepticus seizure benzodiazepine pediatric levetiracetam fosphenytoin" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">10</span><span class="t">Status Epilepticus</span></a>
-        <a href="#p11" data-k="neonatal fever infant sepsis workup rule out lumbar puncture" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">11</span><span class="t">Neonatal Fever</span></a>
-        <a href="#p12" data-k="nat non-accidental trauma child abuse suspected" class="lrh-row" style="--cc:var(--amber)"><span class="n lrh-mono">12</span><span class="t">Non-Accidental Trauma</span></a>
-        <a href="#p13" data-k="pediatric death bereavement family termination of resuscitation" class="lrh-row" style="--cc:var(--amber)"><span class="n lrh-mono">13</span><span class="t">Death of a Child in the ED</span></a>
-        <a href="#p14" data-k="procedural sedation ketamine propofol etomidate fasting pediatric" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">14</span><span class="t">Procedural Sedation</span></a>
-        <a href="#p15" data-k="croup barky cough stridor racemic epinephrine dexamethasone steeple laryngotracheitis" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">15</span><span class="t">Croup</span></a>
+        <a href="../arrest/?from=peds" data-k="code cart cardiac arrest ventricular fibrillation tachycardia defibrillation shock epinephrine amiodarone lidocaine cpr acls pea asystole non-shockable reversible causes h's and t's pals pediatric weight-based broselow resuscitation" class="edm-row" style="--cc:var(--red)"><span class="n edm-mono">01</span><span class="t">Cardiac Arrest / PALS</span><span class="spacer"></span><span class="tag edm-mono">&rarr; ARREST</span></a>
+        <a href="#p02" data-k="anaphylaxis epinephrine allergic reaction pediatric angioedema" class="edm-row" style="--cc:var(--red)"><span class="n edm-mono">02</span><span class="t">Anaphylaxis</span></a>
+        <a href="#p03" data-k="asthma albuterol ipratropium wheeze pediatric pass severity dexamethasone magnesium terbutaline" class="edm-row" style="--cc:var(--red)"><span class="n edm-mono">03</span><span class="t">Asthma Exacerbation</span></a>
+        <a href="#p04" data-k="choking foreign body airway obstruction back blows abdominal thrusts" class="edm-row" style="--cc:var(--red)"><span class="n edm-mono">04</span><span class="t">Airway Obstruction (Choking)</span></a>
+        <a href="#p05" data-k="epiglottitis stridor upper airway croup drooling tripod" class="edm-row" style="--cc:var(--red)"><span class="n edm-mono">05</span><span class="t">Epiglottitis / Upper Airway</span></a>
+        <a href="#p06" data-k="bronchiolitis rsv wheeze infant respiratory" class="edm-row" style="--cc:var(--gray)"><span class="n edm-mono">06</span><span class="t">Bronchiolitis</span></a>
+        <a href="#p07" data-k="dka diabetic ketoacidosis insulin pediatric fluids cerebral edema" class="edm-row" style="--cc:var(--red)"><span class="n edm-mono">07</span><span class="t">Diabetic Ketoacidosis (DKA)</span></a>
+        <a href="#p08" data-k="altered mental status ams pediatric coma glucose" class="edm-row" style="--cc:var(--gray)"><span class="n edm-mono">08</span><span class="t">Altered Mental Status</span></a>
+        <a href="#p09" data-k="agitation behavioral psychiatric restraint pediatric sedation" class="edm-row" style="--cc:var(--gray)"><span class="n edm-mono">09</span><span class="t">Behavioral Agitation</span></a>
+        <a href="#p10" data-k="status epilepticus seizure benzodiazepine pediatric levetiracetam fosphenytoin" class="edm-row" style="--cc:var(--red)"><span class="n edm-mono">10</span><span class="t">Status Epilepticus</span></a>
+        <a href="#p11" data-k="neonatal fever infant sepsis workup rule out lumbar puncture" class="edm-row" style="--cc:var(--red)"><span class="n edm-mono">11</span><span class="t">Neonatal Fever</span></a>
+        <a href="#p12" data-k="nat non-accidental trauma child abuse suspected" class="edm-row" style="--cc:var(--amber)"><span class="n edm-mono">12</span><span class="t">Non-Accidental Trauma</span></a>
+        <a href="#p13" data-k="pediatric death bereavement family termination of resuscitation" class="edm-row" style="--cc:var(--amber)"><span class="n edm-mono">13</span><span class="t">Death of a Child in the ED</span></a>
+        <a href="#p14" data-k="procedural sedation ketamine propofol etomidate fasting pediatric" class="edm-row" style="--cc:var(--gray)"><span class="n edm-mono">14</span><span class="t">Procedural Sedation</span></a>
+        <a href="#p15" data-k="croup barky cough stridor racemic epinephrine dexamethasone steeple laryngotracheitis" class="edm-row" style="--cc:var(--gray)"><span class="n edm-mono">15</span><span class="t">Croup</span></a>
       </div>
     </div>
   </div>
@@ -385,7 +385,7 @@ catch(e){ document.body.dataset.theme='dark'; }
           <tr><td>Albuterol nebulizer (bronchospasm/wheeze)</td><td>unit-dose neb, may repeat q20min ×3</td><td>— (PowerPlan)</td></tr>
           <tr><td>Racemic epinephrine 2.25% neb (stridor/upper-airway edema)</td><td>0.5 mL in 3 mL NS (0.25 mL if &lt;5 kg)</td><td>— (PowerPlan)</td></tr>
         </table>
-        <div style="padding:8px 0 0; font-size:12.5px; line-height:1.35; color:var(--ink2);">These relieve itch/hives (antihistamine), blunt a biphasic reaction (steroid), or treat bronchospasm/stridor (albuterol, racemic epi) — none replace IM epinephrine for the airway/hemodynamic compromise. Doses per the LRH Pediatric General PowerPlan (Cerner order set) where marked; otherwise institutional pediatric ED pathways.</div>
+        <div style="padding:8px 0 0; font-size:12.5px; line-height:1.35; color:var(--ink2);">These relieve itch/hives (antihistamine), blunt a biphasic reaction (steroid), or treat bronchospasm/stridor (albuterol, racemic epi) — none replace IM epinephrine for the airway/hemodynamic compromise. Doses per the {{site.hospitalShort}} Pediatric General PowerPlan (Cerner order set) where marked; otherwise institutional pediatric ED pathways.</div>
       </details>
     </div>
 
@@ -394,7 +394,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> World Allergy Organization Anaphylaxis Guidance 2020 (epinephrine 0.01 mg/kg IM, max 0.5 mg, repeat q5–15min; 20 mL/kg fluid bolus); AAAAI/ACAAI Anaphylaxis: A 2023 Practice Parameter Update (0.3 mg pediatric epinephrine cap — conflicts with WAO's 0.5 mg, noted above); Johns Hopkins All Children's Hospital Anaphylaxis Clinical Pathway 2023 (adjunct dosing); Dribin TE, et al., "Timing of repeat epinephrine to inform paediatric anaphylaxis observation periods," <i>Lancet Child Adolesc Health</i> 2025;9(7):484-496. LRH Pediatric General PowerPlan (Cerner order set) — dexamethasone 0.6 mg/kg (max 10 mg), albuterol nebulizer q20min ×3, racemic epinephrine 2.25% 0.5 mL neb (0.25 mL if &lt;5 kg, dilute in 3 mL NS), and the epinephrine IM 0.01 mg/kg &lt;15 kg / EpiPen Jr 15–29.9 kg / EpiPen ≥30 kg tiering. IV-epinephrine bolus/infusion figures are standard pediatric-resuscitation references, not PowerPlan values — confirm with pharmacy.
+      <b>Sources:</b> World Allergy Organization Anaphylaxis Guidance 2020 (epinephrine 0.01 mg/kg IM, max 0.5 mg, repeat q5–15min; 20 mL/kg fluid bolus); AAAAI/ACAAI Anaphylaxis: A 2023 Practice Parameter Update (0.3 mg pediatric epinephrine cap — conflicts with WAO's 0.5 mg, noted above); Johns Hopkins All Children's Hospital Anaphylaxis Clinical Pathway 2023 (adjunct dosing); Dribin TE, et al., "Timing of repeat epinephrine to inform paediatric anaphylaxis observation periods," <i>Lancet Child Adolesc Health</i> 2025;9(7):484-496. {{site.hospitalShort}} Pediatric General PowerPlan (Cerner order set) — dexamethasone 0.6 mg/kg (max 10 mg), albuterol nebulizer q20min ×3, racemic epinephrine 2.25% 0.5 mL neb (0.25 mL if &lt;5 kg, dilute in 3 mL NS), and the epinephrine IM 0.01 mg/kg &lt;15 kg / EpiPen Jr 15–29.9 kg / EpiPen ≥30 kg tiering. IV-epinephrine bolus/infusion figures are standard pediatric-resuscitation references, not PowerPlan values — confirm with pharmacy.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -458,7 +458,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> Children's Hospital of Philadelphia, <i>Emergency Department Clinical Pathway for Evaluation/Treatment of Children with Asthma</i>, last revised May 2026 — PASS severity triage, weight-tiered albuterol/ipratropium dosing, dexamethasone weight-band dosing, magnesium/terbutaline escalation dosing, and the overall dexamethasone-first pathway structure. LRH Pediatric General PowerPlan (Cerner order set) — albuterol nebulizer/DuoNeb q20min ×3, albuterol HFA 4 puffs, dexamethasone 0.6 mg/kg (max 10 mg) and prednisolone 2 mg/kg (max 60 mg) as the LRH-ordered equivalents of the CHOP weight bands.
+      <b>Sources:</b> Children's Hospital of Philadelphia, <i>Emergency Department Clinical Pathway for Evaluation/Treatment of Children with Asthma</i>, last revised May 2026 — PASS severity triage, weight-tiered albuterol/ipratropium dosing, dexamethasone weight-band dosing, magnesium/terbutaline escalation dosing, and the overall dexamethasone-first pathway structure. {{site.hospitalShort}} Pediatric General PowerPlan (Cerner order set) — albuterol nebulizer/DuoNeb q20min ×3, albuterol HFA 4 puffs, dexamethasone 0.6 mg/kg (max 10 mg) and prednisolone 2 mg/kg (max 60 mg) as the {{site.hospitalShort}}-ordered equivalents of the CHOP weight bands.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -580,7 +580,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> StatPearls, <i>Epiglottitis</i> (NBK430960); WikEM, "Epiglottitis" and antibiotic dosing template; EMCrit IBCC, "Epiglottitis" (Farkas); RCEMLearning, croup/epiglottitis/tracheitis comparison. Post-Hib epidemiology per PubMed 23076559 and PMC2870429. No rural-specific stabilize-and-transfer guideline exists for this condition — that section is a synthesis of general principles, not a direct quote from a named protocol. Racemic epinephrine and dexamethasone doses per the LRH Pediatric General PowerPlan (Cerner order set); their use in epiglottitis specifically is temporizing/low-evidence — the do-not-agitate principle overrides both.
+      <b>Sources:</b> StatPearls, <i>Epiglottitis</i> (NBK430960); WikEM, "Epiglottitis" and antibiotic dosing template; EMCrit IBCC, "Epiglottitis" (Farkas); RCEMLearning, croup/epiglottitis/tracheitis comparison. Post-Hib epidemiology per PubMed 23076559 and PMC2870429. No rural-specific stabilize-and-transfer guideline exists for this condition — that section is a synthesis of general principles, not a direct quote from a named protocol. Racemic epinephrine and dexamethasone doses per the {{site.hospitalShort}} Pediatric General PowerPlan (Cerner order set); their use in epiglottitis specifically is temporizing/low-evidence — the do-not-agitate principle overrides both.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -709,7 +709,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <details class="t-box-caution">
         <summary class="t-head t-head-caution">SMALL RURAL ED — ICU ADMISSION / TRANSFER</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p07-11" class="t-ck"><span>Most pediatric DKA (especially first presentation, young age, severe acidosis, or altered mental status) warrants ICU-level care — if LRH doesn't have pediatric ICU capability, start the bolus/insulin protocol above and arrange transfer early rather than trying to manage the full multi-hour correction locally.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p07-11" class="t-ck"><span>Most pediatric DKA (especially first presentation, young age, severe acidosis, or altered mental status) warrants ICU-level care — if {{site.hospitalShort}} doesn't have pediatric ICU capability, start the bolus/insulin protocol above and arrange transfer early rather than trying to manage the full multi-hour correction locally.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p07-12" class="t-ck"><span>If cerebral edema is suspected, treat first (hypertonic saline or mannitol per your institutional protocol, head of bed elevation) — don't wait for transfer or imaging to act.</span></label></li>
         </ul>
       </details>
@@ -831,7 +831,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> Gerson R, et al., "Best Practices for Evaluation and Treatment of Agitated Children and Adolescents (BETA) in the Emergency Department," American Association for Emergency Psychiatry consensus statement, <i>West J Emerg Med</i> 2019; Foster AA, et al., "Standardizing and Improving Care for Pediatric Agitation Management in the Emergency Department," <i>Pediatrics</i> 2023;152(1):e2022059586 — de-escalation framework, medication choices/cautions, and restraint principles. Weight/age-banded dosing cross-checked against Children's Minnesota and Children's Hospital of Richmond institutional pediatric agitation guidelines. LRH Pediatric General PowerPlan (Cerner order set) — lorazepam 0.05 mg/kg PO (max 2 mg; avoid in autism spectrum disorder), olanzapine 2.5 mg (&lt;30 kg)/5 mg (≥30 kg) PO, midazolam 0.3 mg/kg IN, droperidol or haloperidol 0.05 mg/kg IM (max 5 mg; continuous EKG/SpO₂ after), diphenhydramine 1 mg/kg IV (max 50 mg) PRN dystonia. Restraint time limits per 42 CFR §482.13, CMS Hospital Conditions of Participation.
+      <b>Sources:</b> Gerson R, et al., "Best Practices for Evaluation and Treatment of Agitated Children and Adolescents (BETA) in the Emergency Department," American Association for Emergency Psychiatry consensus statement, <i>West J Emerg Med</i> 2019; Foster AA, et al., "Standardizing and Improving Care for Pediatric Agitation Management in the Emergency Department," <i>Pediatrics</i> 2023;152(1):e2022059586 — de-escalation framework, medication choices/cautions, and restraint principles. Weight/age-banded dosing cross-checked against Children's Minnesota and Children's Hospital of Richmond institutional pediatric agitation guidelines. {{site.hospitalShort}} Pediatric General PowerPlan (Cerner order set) — lorazepam 0.05 mg/kg PO (max 2 mg; avoid in autism spectrum disorder), olanzapine 2.5 mg (&lt;30 kg)/5 mg (≥30 kg) PO, midazolam 0.3 mg/kg IN, droperidol or haloperidol 0.05 mg/kg IM (max 5 mg; continuous EKG/SpO₂ after), diphenhydramine 1 mg/kg IV (max 50 mg) PRN dystonia. Restraint time limits per 42 CFR §482.13, CMS Hospital Conditions of Participation.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -907,7 +907,7 @@ catch(e){ document.body.dataset.theme='dark'; }
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p10-4" class="t-ck"><span><b>Call the pediatric referral center now if you haven't already</b> — need for intubation vs. bag-mask ventilation (hypercapnia is common and typically resolves with seizure cessation and non-invasive support, so don't rush to intubate on hypercapnia alone).</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p10-5" class="t-ck"><span><b>Consider additional workup:</b> full septic workup, antibiotics/antivirals, brain imaging.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p10-6" class="t-ck"><span>Persistent altered LOC may reflect non-convulsive status epilepticus or a severe underlying brain disorder.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p10-7" class="t-ck"><span><b>Third-line:</b> infusion of midazolam, pentobarbital, propofol, or ketamine — arrange transfer if LRH can't provide continuous EEG monitoring in-house.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p10-7" class="t-ck"><span><b>Third-line:</b> infusion of midazolam, pentobarbital, propofol, or ketamine — arrange transfer if {{site.hospitalShort}} can't provide continuous EEG monitoring in-house.</span></label></li>
         </ul>
       </details>
     </div>
@@ -975,13 +975,13 @@ catch(e){ document.body.dataset.theme='dark'; }
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p11-9" class="t-ck"><span><b>The AAP guideline's own logic:</b> if LP is unsuccessful/traumatic/deferred, treat as if the CSF result were positive (empiric antibiotics + admission) until proven otherwise. The same logic extends to a setting where LP simply isn't feasible.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p11-10" class="t-ck"><span>Draw blood/urine cultures if it doesn't meaningfully delay transfer, give the first empiric antibiotic dose promptly — don't wait for transfer to start therapy — and arrange transfer to a tertiary pediatric center rather than attempting definitive local management for any infant ≤28 days or any ill-appearing infant of any age.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p11-11" class="t-ck"><span>This stabilize-and-transfer approach is a reasonable extrapolation of the AAP guideline's own principle, not a separately published rural-specific guideline — worth review/sign-off from LRH's pediatric/ED medical director before treating it as formal protocol. Consider pediatric tele-EM consultation if available.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p11-11" class="t-ck"><span>This stabilize-and-transfer approach is a reasonable extrapolation of the AAP guideline's own principle, not a separately published rural-specific guideline — worth review/sign-off from {{site.hospitalShort}}'s pediatric/ED medical director before treating it as formal protocol. Consider pediatric tele-EM consultation if available.</span></label></li>
         </ul>
       </details>
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> Pantell RH, et al., "Evaluation and Management of Well-Appearing Febrile Infants 8 to 60 Days Old," AAP Clinical Practice Guideline, <i>Pediatrics</i> 2021;148(2):e2021052228 — age bands, workup requirements, inflammatory-marker thresholds, and the "treat as CSF-positive if LP unobtainable" principle. Kuppermann N, et al. (PECARN Febrile Infant Rule), 2019, for reference on the 29–60/61–90 day rules outside this guideline's scope. Neonatal antibiotic dosing per standard neonatal formulary references (e.g. UW NICU dosing guide) — gentamicin dosing intentionally not reduced to a single number here; confirm with pharmacy/NICU. LRH ED Infant Care &lt;90 Days PowerPlan (Cerner order set) — ampicillin 100 mg/kg + gentamicin 4 mg/kg IV (0–28 d; + acyclovir 20 mg/kg if HSV risk), ceftriaxone 50 mg/kg IV (non-meningitis) or 100 mg/kg + vancomycin 20 mg/kg (meningitis dosing), PECARN-based 29–60 d low-risk pathway (negative UA, ANC &lt;4000, procalcitonin ≤0.5 ng/mL), acetaminophen IV 12.5 mg/kg (&lt;29 d) / 15 mg/kg (≥29 d), D10W 2 mL/kg for hypoglycemia, NS 10–20 mL/kg boluses.
+      <b>Sources:</b> Pantell RH, et al., "Evaluation and Management of Well-Appearing Febrile Infants 8 to 60 Days Old," AAP Clinical Practice Guideline, <i>Pediatrics</i> 2021;148(2):e2021052228 — age bands, workup requirements, inflammatory-marker thresholds, and the "treat as CSF-positive if LP unobtainable" principle. Kuppermann N, et al. (PECARN Febrile Infant Rule), 2019, for reference on the 29–60/61–90 day rules outside this guideline's scope. Neonatal antibiotic dosing per standard neonatal formulary references (e.g. UW NICU dosing guide) — gentamicin dosing intentionally not reduced to a single number here; confirm with pharmacy/NICU. {{site.hospitalShort}} ED Infant Care &lt;90 Days PowerPlan (Cerner order set) — ampicillin 100 mg/kg + gentamicin 4 mg/kg IV (0–28 d; + acyclovir 20 mg/kg if HSV risk), ceftriaxone 50 mg/kg IV (non-meningitis) or 100 mg/kg + vancomycin 20 mg/kg (meningitis dosing), PECARN-based 29–60 d low-risk pathway (negative UA, ANC &lt;4000, procalcitonin ≤0.5 ng/mL), acetaminophen IV 12.5 mg/kg (&lt;29 d) / 15 mg/kg (≥29 d), D10W 2 mL/kg for hypoglycemia, NS 10–20 mL/kg boluses.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -1157,7 +1157,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> American College of Emergency Physicians, <i>Clinical Policy: Procedural Sedation and Analgesia in the Emergency Department</i>, <i>Ann Emerg Med</i> 2014;63(2):247-258 (current standing ACEP policy — NPO-status finding). Bhatt M, et al., "Unscheduled Procedural Sedation: A Multidisciplinary Consensus Practice Guideline" (11-society consensus incl. Society for Pediatric Sedation), <i>Ann Emerg Med</i> 2019;73(5):e51-e65. Coté CJ, Wilson S; AAP/AAPD, "Guidelines for Monitoring and Management of Pediatric Patients Before, During, and After Sedation," <i>Pediatrics</i> 2019;143(6):e20191000 (2016 update, reaffirmed 2025). StatPearls, <i>Pediatric Procedural Sedation</i> (NBK572100). Sherwin TS, et al., ketamine/midazolam emergence-reaction trial, <i>Ann Emerg Med</i> 2000. LRH Pediatric General PowerPlan (Cerner order set) — ketamine 2 mg/kg IV (max 100 mg) / 4 mg/kg IM (max 200 mg) initial procedural-sedation dosing, ondansetron 0.15 mg/kg IV 20 min pre-ketamine, midazolam 0.3 mg/kg IN (max 10 mg) / 0.5 mg/kg PO (max 20 mg) anxiolysis.
+      <b>Sources:</b> American College of Emergency Physicians, <i>Clinical Policy: Procedural Sedation and Analgesia in the Emergency Department</i>, <i>Ann Emerg Med</i> 2014;63(2):247-258 (current standing ACEP policy — NPO-status finding). Bhatt M, et al., "Unscheduled Procedural Sedation: A Multidisciplinary Consensus Practice Guideline" (11-society consensus incl. Society for Pediatric Sedation), <i>Ann Emerg Med</i> 2019;73(5):e51-e65. Coté CJ, Wilson S; AAP/AAPD, "Guidelines for Monitoring and Management of Pediatric Patients Before, During, and After Sedation," <i>Pediatrics</i> 2019;143(6):e20191000 (2016 update, reaffirmed 2025). StatPearls, <i>Pediatric Procedural Sedation</i> (NBK572100). Sherwin TS, et al., ketamine/midazolam emergence-reaction trial, <i>Ann Emerg Med</i> 2000. {{site.hospitalShort}} Pediatric General PowerPlan (Cerner order set) — ketamine 2 mg/kg IV (max 100 mg) / 4 mg/kg IM (max 200 mg) initial procedural-sedation dosing, ondansetron 0.15 mg/kg IV 20 min pre-ketamine, midazolam 0.3 mg/kg IN (max 10 mg) / 0.5 mg/kg PO (max 20 mg) anxiolysis.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -1198,7 +1198,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> LRH Pediatric General PowerPlan (Cerner order set) — dexamethasone 0.6 mg/kg PO/IV/IM max 10 mg (0.3 mg/kg PO listed as an alternative), racemic epinephrine 2.25% 0.5 mL nebulized (0.25 mL if &lt;5 kg, dilute in 3 mL NS). General croup framework (dex-for-all, racemic epi for stridor at rest, 3–4 h post-epi observation, night-2–3 natural history) per standard pediatric EM references (WikEM/StatPearls croup; Bjornson &amp; Johnson, <i>Lancet</i> croup reviews). Westley score intentionally omitted — severity here is the practical stridor-at-rest split, not a formal score.
+      <b>Sources:</b> {{site.hospitalShort}} Pediatric General PowerPlan (Cerner order set) — dexamethasone 0.6 mg/kg PO/IV/IM max 10 mg (0.3 mg/kg PO listed as an alternative), racemic epinephrine 2.25% 0.5 mL nebulized (0.25 mL if &lt;5 kg, dilute in 3 mL NS). General croup framework (dex-for-all, racemic epi for stridor at rest, 3–4 h post-epi observation, night-2–3 natural history) per standard pediatric EM references (WikEM/StatPearls croup; Bjornson &amp; Johnson, <i>Lancet</i> croup reviews). Westley score intentionally omitted — severity here is the practical stridor-at-rest split, not a formal score.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -1206,20 +1206,20 @@ catch(e){ document.body.dataset.theme='dark'; }
   </article>
 </main>
 <script>
-/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
+/* ===== SITE CONFIG ({{site.hospitalShort}}) — edit these to adapt to another site/device ===== */
 var SITE = {
   version: "1.4",
   lastReviewed: "2026-08-07",
-  /* WS10.2 — minutes of manual-wide inactivity (lrh-case-lastactive) before the weight
+  /* WS10.2 — minutes of manual-wide inactivity (edm-case-lastactive) before the weight
      strip appends an "ENTERED HH:MM · N MIN AGO" line and ambers its border. Purely
      informational — never hides the kg value, its color, or any .wdose span. A
      maintainer-tunable guess, not a clinical cutoff: raise it if state B ends up visible
      most of the time (lost signal value), lower it if consecutive patients still slip
-     through unflagged. See CASE-STATE.md (lrh-case-wtms) and CLAUDE.md's WS10 notes. */
+     through unflagged. See CASE-STATE.md (edm-case-wtms) and CLAUDE.md's WS10 notes. */
   staleWeightMins: 10
 };
 (function(){
-  var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
+  var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · {{site.hospitalShort}}';
   Array.prototype.forEach.call(document.querySelectorAll('.verstamp'), function(vs){ vs.textContent=stampText; });
 })();
 
@@ -1227,7 +1227,7 @@ var SITE = {
    Per CLAUDE.md: tools share the CONTRACT, not the CODE — codes/index.html and
    ob-neonatal/index.html each keep their own copy of this module. They agree only on the
    localStorage key names and value shapes documented in CASE-STATE.md. Read or write any
-   lrh-case-* / lrh-pref-* key ONLY through these functions. Must load before every module
+   edm-case-* / edm-pref-* key ONLY through these functions. Must load before every module
    below (including the stale-case guard immediately after it), so it's placed first. */
 var CASESTATE = (function(){
   var TOOL='peds';
@@ -1237,28 +1237,28 @@ var CASESTATE = (function(){
   function wrRaw(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
   function rm(k){ try{ localStorage.removeItem(k); }catch(e){} }
 
-  function getClocks(){ return rd('lrh-case-clocks', {}); }
-  function setClock(name, ms){ var c=getClocks(); if(ms===null||ms===undefined){ delete c[name]; } else { c[name]=ms; } wr('lrh-case-clocks', c); }
+  function getClocks(){ return rd('edm-case-clocks', {}); }
+  function setClock(name, ms){ var c=getClocks(); if(ms===null||ms===undefined){ delete c[name]; } else { c[name]=ms; } wr('edm-case-clocks', c); }
   function getClock(name){ var c=getClocks(); return (name in c) ? c[name] : null; }
-  function clearClocks(names){ var c=getClocks(); names.forEach(function(n){ delete c[n]; }); wr('lrh-case-clocks', c); }
+  function clearClocks(names){ var c=getClocks(); names.forEach(function(n){ delete c[n]; }); wr('edm-case-clocks', c); }
   function anyClockRunning(){ return Object.keys(getClocks()).length>0; }
 
-  function getCounts(){ return rd('lrh-case-counts', {}); }
-  function setCount(name, n){ var c=getCounts(); c[name]=n; wr('lrh-case-counts', c); }
+  function getCounts(){ return rd('edm-case-counts', {}); }
+  function setCount(name, n){ var c=getCounts(); c[name]=n; wr('edm-case-counts', c); }
   function getCount(name){ var c=getCounts(); return (name in c) ? (c[name]||0) : 0; }
-  function clearCounts(names){ var c=getCounts(); names.forEach(function(n){ delete c[n]; }); wr('lrh-case-counts', c); }
+  function clearCounts(names){ var c=getCounts(); names.forEach(function(n){ delete c[n]; }); wr('edm-case-counts', c); }
 
-  function getWtKg(){ var v=rdRaw('lrh-case-wtkg'); if(v===null) return null; var n=parseFloat(v); return isNaN(n)?null:n; }
-  function setWtKg(n){ if(n===null||isNaN(n)) rm('lrh-case-wtkg'); else wrRaw('lrh-case-wtkg', String(n)); }
-  function getWtSrc(){ return rdRaw('lrh-case-wtsrc'); } /* 'measured' | 'estimated' | null */
-  function setWtSrc(s){ if(!s) rm('lrh-case-wtsrc'); else wrRaw('lrh-case-wtsrc', s); }
-  /* WS10.1 — epoch ms of when lrh-case-wtkg was last actually CHANGED (not merely
-     re-saved). Written/cleared in the same place as lrh-case-wtkg, by PEDS_WT.save()
+  function getWtKg(){ var v=rdRaw('edm-case-wtkg'); if(v===null) return null; var n=parseFloat(v); return isNaN(n)?null:n; }
+  function setWtKg(n){ if(n===null||isNaN(n)) rm('edm-case-wtkg'); else wrRaw('edm-case-wtkg', String(n)); }
+  function getWtSrc(){ return rdRaw('edm-case-wtsrc'); } /* 'measured' | 'estimated' | null */
+  function setWtSrc(s){ if(!s) rm('edm-case-wtsrc'); else wrRaw('edm-case-wtsrc', s); }
+  /* WS10.1 — epoch ms of when edm-case-wtkg was last actually CHANGED (not merely
+     re-saved). Written/cleared in the same place as edm-case-wtkg, by PEDS_WT.save()
      below — never touched anywhere else. Powers the two-state weight strip (WS10.2):
      the tool's confidence in a displayed weight decays with elapsed manual-wide
      inactivity, not with this timestamp directly — see PEDS_WT.paintStale(). */
-  function getWtMs(){ var v=rdRaw('lrh-case-wtms'); return v===null?null:(+v||null); }
-  function setWtMs(ms){ if(ms===null||ms===undefined) rm('lrh-case-wtms'); else wrRaw('lrh-case-wtms', String(ms)); }
+  function getWtMs(){ var v=rdRaw('edm-case-wtms'); return v===null?null:(+v||null); }
+  function setWtMs(ms){ if(ms===null||ms===undefined) rm('edm-case-wtms'); else wrRaw('edm-case-wtms', String(ms)); }
 
   /* PHI guard (WS0.3) — the ONLY way this file may append to the shared case log. */
   function isSafeLabel(s){
@@ -1269,56 +1269,56 @@ var CASESTATE = (function(){
   }
   function addLog(card, label){
     if(!isSafeLabel(label)){ try{ console.warn('CASESTATE.addLog: rejected unsafe label', label); }catch(e){} return; }
-    var log=rd('lrh-case-log', []);
+    var log=rd('edm-case-log', []);
     log.push({ tMs:Date.now(), tool:TOOL, card:card, label:label });
     if(log.length>400) log=log.slice(-400);
-    wr('lrh-case-log', log);
+    wr('edm-case-log', log);
   }
-  function getLog(){ return rd('lrh-case-log', []); }
+  function getLog(){ return rd('edm-case-log', []); }
   function clearToolLog(){
     var log=getLog().filter(function(e){ return e.tool!==TOOL; });
-    wr('lrh-case-log', log);
+    wr('edm-case-log', log);
   }
 
-  function touchActive(){ wrRaw('lrh-case-lastactive', String(Date.now())); }
-  function getLastActive(){ var v=rdRaw('lrh-case-lastactive'); return v===null?0:(+v||0); }
+  function touchActive(){ wrRaw('edm-case-lastactive', String(Date.now())); }
+  function getLastActive(){ var v=rdRaw('edm-case-lastactive'); return v===null?0:(+v||0); }
 
-  function getChecks(){ return rd('lrh-case-checks', {}); }
+  function getChecks(){ return rd('edm-case-checks', {}); }
   /* one shared map across every tool; keys are "<tool>:<data-k>" so two tools' own card
      numbering can never collide — the prefix is applied here, at the storage layer, not
      in any card's markup. Same pattern as codes'/ob's copies of this module (WS0). */
   function setChecked(dataK, on){
     var c=getChecks(), fullKey=TOOL+':'+dataK;
     if(on) c[fullKey]=true; else delete c[fullKey];
-    wr('lrh-case-checks', c);
+    wr('edm-case-checks', c);
   }
   function isChecked(dataK){ return !!getChecks()[TOOL+':'+dataK]; }
   function clearToolChecks(){
     var c=getChecks(), changed=false;
     Object.keys(c).forEach(function(k){ if(k.indexOf(TOOL+':')===0){ delete c[k]; changed=true; } });
-    if(changed) wr('lrh-case-checks', c);
+    if(changed) wr('edm-case-checks', c);
   }
 
   /* ---- one-time migration off peds' old per-tool keys (WS0.2) — same pattern as codes'
-     and ob's copies of this module. Note lrh-peds-epidoses is NOT migrated: it's a
+     and ob's copies of this module. Note edm-peds-epidoses is NOT migrated: it's a
      per-button dose-time map (anaphylaxis IM/IV tracker), a genuinely different shape
      than the shared clocks/counts buckets, so it stays peds-local — see CASE-STATE.md. */
   (function migrate(){
     var did=false;
-    if(rdRaw('lrh-peds-wtkg')!==null){
-      if(getWtKg()===null){ var wv=parseFloat(rdRaw('lrh-peds-wtkg')); if(!isNaN(wv)) setWtKg(wv); }
-      rm('lrh-peds-wtkg'); did=true;
+    if(rdRaw('edm-peds-wtkg')!==null){
+      if(getWtKg()===null){ var wv=parseFloat(rdRaw('edm-peds-wtkg')); if(!isNaN(wv)) setWtKg(wv); }
+      rm('edm-peds-wtkg'); did=true;
     }
-    if(rdRaw('lrh-peds-wtsrc')!==null){
-      if(getWtSrc()===null){ var sv=rdRaw('lrh-peds-wtsrc'); setWtSrc(sv==='entered'?'measured':sv); }
-      rm('lrh-peds-wtsrc'); did=true;
+    if(rdRaw('edm-peds-wtsrc')!==null){
+      if(getWtSrc()===null){ var sv=rdRaw('edm-peds-wtsrc'); setWtSrc(sv==='entered'?'measured':sv); }
+      rm('edm-peds-wtsrc'); did=true;
     }
-    if(rdRaw('lrh-peds-cprstart')!==null){ setClock('cprCycle', +rdRaw('lrh-peds-cprstart')); rm('lrh-peds-cprstart'); did=true; }
-    if(rdRaw('lrh-peds-cprepims')!==null){ setClock('epi', +rdRaw('lrh-peds-cprepims')); rm('lrh-peds-cprepims'); did=true; }
-    if(rdRaw('lrh-peds-cprepicount')!==null){ setCount('epi', +rdRaw('lrh-peds-cprepicount')); rm('lrh-peds-cprepicount'); did=true; }
-    if(rdRaw('lrh-peds-seizure')!==null){ setClock('seizure', +rdRaw('lrh-peds-seizure')); rm('lrh-peds-seizure'); did=true; }
-    if(rdRaw('lrh-peds-lastactive')!==null){ wrRaw('lrh-case-lastactive', rdRaw('lrh-peds-lastactive')); rm('lrh-peds-lastactive'); did=true; }
-    var oldLog=rd('lrh-peds-log', null);
+    if(rdRaw('edm-peds-cprstart')!==null){ setClock('cprCycle', +rdRaw('edm-peds-cprstart')); rm('edm-peds-cprstart'); did=true; }
+    if(rdRaw('edm-peds-cprepims')!==null){ setClock('epi', +rdRaw('edm-peds-cprepims')); rm('edm-peds-cprepims'); did=true; }
+    if(rdRaw('edm-peds-cprepicount')!==null){ setCount('epi', +rdRaw('edm-peds-cprepicount')); rm('edm-peds-cprepicount'); did=true; }
+    if(rdRaw('edm-peds-seizure')!==null){ setClock('seizure', +rdRaw('edm-peds-seizure')); rm('edm-peds-seizure'); did=true; }
+    if(rdRaw('edm-peds-lastactive')!==null){ wrRaw('edm-case-lastactive', rdRaw('edm-peds-lastactive')); rm('edm-peds-lastactive'); did=true; }
+    var oldLog=rd('edm-peds-log', null);
     if(oldLog){
       var log=getLog(), cards=Object.keys(oldLog), total=0, idx=0;
       cards.forEach(function(card){ total += (oldLog[card]||[]).length; });
@@ -1329,10 +1329,10 @@ var CASESTATE = (function(){
         });
       });
       log.sort(function(a,b){ return (a.tMs||0)-(b.tMs||0); });
-      wr('lrh-case-log', log);
-      rm('lrh-peds-log'); did=true;
+      wr('edm-case-log', log);
+      rm('edm-peds-log'); did=true;
     }
-    if(did){ try{ console.info('CASESTATE: migrated legacy lrh-peds-* keys to the shared lrh-case-* contract'); }catch(e){} }
+    if(did){ try{ console.info('CASESTATE: migrated legacy edm-peds-* keys to the shared edm-case-* contract'); }catch(e){} }
   })();
 
   return {
@@ -1359,7 +1359,7 @@ var CASESTATE = (function(){
    elsewhere in the manual by the wall clock, even though nothing here was actually stale.
    WS2.5 makes lastactive genuinely manual-wide (every tool now touches it, not just
    peds — see CASESTATE.touchActive() calls in codes/ob-neonatal/trauma) and switches the
-   clear itself to the same lrh- prefix sweep RESET FOR NEXT CASE uses (WS2.4), so nothing
+   clear itself to the same edm- prefix sweep RESET FOR NEXT CASE uses (WS2.4), so nothing
    peds-specific has to be hand-maintained here either. anyClockRunning() (across ALL
    tools, unchanged from WS0) still suppresses the clear entirely while anything is
    running anywhere. A dismissible banner replaces the previous silent clear. ---- */
@@ -1370,8 +1370,8 @@ var CASESTATE = (function(){
     if(t && (Date.now()-t)>TTL && !CASESTATE.anyClockRunning()){
       var keys=[];
       for(var i=0;i<localStorage.length;i++) keys.push(localStorage.key(i));
-      keys.forEach(function(k){ if(k && k.indexOf('lrh-')===0 && k.indexOf('lrh-pref-')!==0) localStorage.removeItem(k); });
-      window.__lrhStaleCleared = true;
+      keys.forEach(function(k){ if(k && k.indexOf('edm-')===0 && k.indexOf('edm-pref-')!==0) localStorage.removeItem(k); });
+      window.__edmStaleCleared = true;
     }
     CASESTATE.touchActive();
     document.addEventListener('click', function(){ CASESTATE.touchActive(); }, true);
@@ -1382,7 +1382,7 @@ var CASESTATE = (function(){
    Same markup/behavior in every tool: a dismissible amber strip at the top of the page,
    shown only when the guard above actually cleared something on this load. */
 (function(){
-  if(!window.__lrhStaleCleared) return;
+  if(!window.__edmStaleCleared) return;
   var nav=document.querySelector('.hdr');
   if(!nav) return;
   var bar=document.createElement('div');
@@ -1472,10 +1472,10 @@ var PEDS_WT = (function(){
   }
   /* ---- NRP off-ramp (see #nrpbanner markup for the clinical reasoning).
      Triggered by a committed weight under the Broselow floor (3 kg) or an age
-     typed as under 1 month; dismissal (lrh-case-nrpdismiss) is per-case,
+     typed as under 1 month; dismissal (edm-case-nrpdismiss) is per-case,
      shared with arrest/codes, and swept by RESET / the stale-case guard. */
   var nrpEl=document.getElementById('nrpbanner'), nrpBtn=document.getElementById('dismissnrp');
-  function nrpDismissed(){ try{ return localStorage.getItem('lrh-case-nrpdismiss')==='1'; }catch(e){ return false; } }
+  function nrpDismissed(){ try{ return localStorage.getItem('edm-case-nrpdismiss')==='1'; }catch(e){ return false; } }
   function ageUnderOneMonth(){
     if(!ageEl || ageEl.value==='') return false;
     var v=parseFloat(ageEl.value); if(isNaN(v)||v<0) return false;
@@ -1487,10 +1487,10 @@ var PEDS_WT = (function(){
     var show = !nrpDismissed() && ((wtKg!==null && !isNaN(wtKg) && wtKg<3) || ageUnderOneMonth());
     nrpEl.style.display = show ? 'flex' : 'none';
   }
-  if(nrpBtn) nrpBtn.addEventListener('click', function(){ try{ localStorage.setItem('lrh-case-nrpdismiss','1'); }catch(e){} paintNrp(); });
+  if(nrpBtn) nrpBtn.addEventListener('click', function(){ try{ localStorage.setItem('edm-case-nrpdismiss','1'); }catch(e){} paintNrp(); });
   if(ageEl) ageEl.addEventListener('input', paintNrp);
   if(unitEl) unitEl.addEventListener('change', paintNrp);
-  /* WS10.1 — lrh-case-wtms records when wtKg was last actually CHANGED, not every save()
+  /* WS10.1 — edm-case-wtms records when wtKg was last actually CHANGED, not every save()
      call. Compare against the value already committed to storage (not a local var) so a
      save() triggered by something that didn't actually change the number — there isn't
      one today, but a future caller might add one — still can't bump the timestamp. */
@@ -1516,7 +1516,7 @@ var PEDS_WT = (function(){
   var wtbarEl=document.getElementById('wtbar'), staleEl=null;
   /* WS10.2 — the two-state weight strip. State A (today's display, untouched) is the
      only state while a weight is fresh; state B appends a second, purely informational
-     element after #wtdisplay once the manual has sat idle (lrh-case-lastactive) past
+     element after #wtdisplay once the manual has sat idle (edm-case-lastactive) past
      SITE.staleWeightMins, UNLESS a clock this tool itself would show as running is
      active. Never changes the kg value, its color, its provenance text, or any .wdose
      span — see the binding constraint in WS10's own spec: nothing here may hide a dose,
@@ -1626,7 +1626,7 @@ var PEDS_WT = (function(){
     recompute();
   }
   window.addEventListener('storage', function(ev){
-    if(!ev.key || ev.key.indexOf('lrh-case-')!==0) return;
+    if(!ev.key || ev.key.indexOf('edm-case-')!==0) return;
     resyncFromStorage();
   });
   document.addEventListener('visibilitychange', function(){ if(!document.hidden) resyncFromStorage(); });
@@ -1642,7 +1642,7 @@ var PEDS_WT = (function(){
    of 1:1000 or 1.4 mL of 1:10,000 — same number, tenfold difference in volume).
    TODO(maintainer): data-conc is wired up only where a concentration is already stated
    and cited in that row's own text (see the two epinephrine rows below) — do not add
-   data-conc to any other row without first confirming LRH's actual stocked concentration
+   data-conc to any other row without first confirming your own actual stocked concentration
    for that drug/route; this calculator will never guess one. */
 var PEDSDOSE = (function(){
   var spans = Array.prototype.slice.call(document.querySelectorAll('.wdose'));
@@ -1784,7 +1784,7 @@ var PEDSDOSE = (function(){
 
 /* ---- Card 02: anaphylaxis epi dose tracker — IM x3, IV bolus, IV drip ---- */
 (function(){
-  var K='lrh-peds-epidoses';
+  var K='edm-peds-epidoses';
   var DEFS=[
     {id:'pep1',   label:'EPI IM \u00b7 DOSE 1', log:'EPI IM DOSE 1', last:true},
     {id:'pep2',   label:'EPI IM \u00b7 DOSE 2', log:'EPI IM DOSE 2', last:true},
@@ -1839,7 +1839,7 @@ var PEDSDOSE = (function(){
 })();
 
 /* ---- Event log (times/labels only, no identifiers, no weight) ----
-   Persists to the shared lrh-case-log via CASESTATE (WS0) — the PHI guard there is the
+   Persists to the shared edm-case-log via CASESTATE (WS0) — the PHI guard there is the
    only path that can write it. */
 (function(){
   document.addEventListener('click', function(ev){
@@ -1855,7 +1855,7 @@ var PEDSDOSE = (function(){
 
 /* ---- CASE TIMELINE modal (design-review F36/2.3) — ONE timeline, every tool's events,
    in time order, each row tagged with its source tool. Previously this filtered the
-   shared lrh-case-log down to peds' own entries only; a cross-tool case (e.g. peds
+   shared edm-case-log down to peds' own entries only; a cross-tool case (e.g. peds
    anaphylaxis handed off into a codes RSI) produced two silently-partial records with
    no sign either was incomplete. Same change made in codes' and ob-neonatal's copies. ---- */
 (function(){
@@ -1870,7 +1870,7 @@ var PEDSDOSE = (function(){
     var ev=CASESTATE.getLog().filter(function(e){ return e.label; })
       .sort(function(a,b){ return (a.tMs||0)-(b.tMs||0); });
     if(!ev.length){ body.innerHTML='<div style="color:#5a6a78; padding:16px 0; text-align:center;">Nothing logged yet.</div>'; return ''; }
-    var rows='', text='LRH Emergency Manual — case timeline, all tools (times only, no identifiers, no weight)\n\n';
+    var rows='', text='{{site.hospitalShort}} Emergency Manual — case timeline, all tools (times only, no identifiers, no weight)\n\n';
     ev.forEach(function(e){
       var w=wallFromMs(e.tMs), tag=TOOL_LABEL[e.tool]||String(e.tool||'').toUpperCase();
       rows+='<div style="display:grid; grid-template-columns:52px 62px 1fr; gap:8px; padding:8px 0; border-top:1px solid #edf0f3; align-items:baseline;"><span style="font-family:ui-monospace,Menlo,monospace; font-weight:700;">'+w+'</span><span style="font-family:ui-monospace,Menlo,monospace; color:#5a6a78; font-size:11px; letter-spacing:0.04em;">'+tag+'</span><span>'+e.label+'</span></div>';
@@ -1900,14 +1900,14 @@ var PEDSDOSE = (function(){
 })();
 
 /* ---- Checklist persistence (design-review F01/2.1) — every checkbox in this file now
-   carries data-k="pNN-n"; state lives in the shared lrh-case-checks map (via CASESTATE,
+   carries data-k="pNN-n"; state lives in the shared edm-case-checks map (via CASESTATE,
    one "peds:<data-k>" entry per box), same pattern as codes'/ob's copies of this engine.
    TSKEY is a small tool-local timestamp used only to run this tool's own 1-hour auto-clear
    TTL — it isn't part of the cross-tool contract. RESET FOR NEXT CASE clears the checklists
    too — checked boxes are case state just like the weight and timers, and must not carry
    over to the next patient. ---- */
 (function(){
-  var TSKEY='lrh-peds-checks-ts', HOUR=3600000, btn=document.getElementById('resetbtn');
+  var TSKEY='edm-peds-checks-ts', HOUR=3600000, btn=document.getElementById('resetbtn');
   function boxes(){ return Array.prototype.slice.call(document.querySelectorAll('input[type=checkbox][data-k]')); }
   function getTs(){ try{ return +localStorage.getItem(TSKEY)||0; }catch(e){ return 0; } }
   function setTs(t){ try{ localStorage.setItem(TSKEY, String(t)); }catch(e){} }
@@ -1930,8 +1930,8 @@ var PEDSDOSE = (function(){
   var fInput=document.getElementById('menuFilter');
   if(!menu || !fInput) return;
   var emptyMsg=document.getElementById('menuFilterEmpty');
-  var rows=Array.prototype.slice.call(menu.querySelectorAll('.lrh-row'));
-  var groups=Array.prototype.slice.call(menu.querySelectorAll('.lrh-group-hd'));
+  var rows=Array.prototype.slice.call(menu.querySelectorAll('.edm-row'));
+  var groups=Array.prototype.slice.call(menu.querySelectorAll('.edm-group-hd'));
   function norm(s){ return (s||'').toLowerCase(); }
   var rowData=rows.map(function(r){
     var num=r.querySelector('.n'), t=r.querySelector('.t');
@@ -1949,7 +1949,7 @@ var PEDSDOSE = (function(){
     groups.forEach(function(gh){
       var grid=gh.nextElementSibling;
       if(!grid) return;
-      var visRows=grid.querySelectorAll('.lrh-row');
+      var visRows=grid.querySelectorAll('.edm-row');
       var vis=false;
       for(var i=0;i<visRows.length;i++){ if(visRows[i].style.display!=='none'){ vis=true; break; } }
       gh.style.display=vis?'':'none';

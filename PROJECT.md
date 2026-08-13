@@ -1,6 +1,6 @@
 # ED Clinical Support — Project Charter
 
-> Working name: **LRH Clinical Support Tools** (may become a general, forkable
+> Working name: **ED Clinical Support Tools** (a general, forkable
 > emergency-department cognitive-aid framework).
 
 This is the human source of truth for *why* the project is built the way it is.
@@ -12,12 +12,12 @@ document explains the thinking behind them. When in doubt, this file wins.
 ## 1. Mission
 
 Build a set of fast, trustworthy, bedside decision-support tools for the
-emergency department — starting with Littleton Regional Hospital (LRH) — in a
+emergency department — in a
 way that *could later* be adopted and customized by any ED, without a rewrite.
 
 ## 2. Vision & scope
 
-**Now:** a clean, reliable manual of calculators and pathways for LRH, deployed
+**Now:** a clean, reliable manual of calculators and pathways for one ED, deployed
 as a static website (GitHub → Netlify).
 
 **Later (optional):** a template other EDs can fork and adapt by editing their
@@ -72,7 +72,7 @@ against existing entries, is part of *finishing* the card, not a follow-up.
 
 **P7 — One dialect, documented aliases.**
 Content is written in the deploying site's own English dialect — US medical
-English for LRH — so a clinician's search terms, reading level, and drug
+English for a US site — so a clinician's search terms, reading level, and drug
 names match what's on screen without translation. A documented alias list
 (`TERMINOLOGY.md`) records the mapping so a fork in another dialect region
 can revert quickly instead of re-deriving it, and so a reviewer can tell a
@@ -82,7 +82,7 @@ deliberate proper-noun/citation exception from a missed localization.
 
 - **One tool = one folder** containing `index.html` (e.g. `heart/index.html` →
   `/heart/`). The landing page is the only top-level `index.html`.
-- **SITE CONFIG block:** every tool puts its LRH-specific values in a clearly
+- **SITE CONFIG block:** every tool puts its site-specific values in a clearly
   marked block at the top of the file; the logic reads from it.
 - **Shared skeleton:** reuse the same `:root` CSS variables (brand colors) and
   the same header + disclaimer markup across all tools.
@@ -125,7 +125,7 @@ LICENSE                        (to add) code license, e.g. MIT or Apache-2.0
 
 ## 6. Roadmap (phased, no step forces rework of an earlier one)
 
-1. **Build the LRH manual** following the conventions above. (Current phase.)
+1. **Build the deploying site's manual** following the conventions above. (Current phase.)
 2. **Make it adoptable:** mark the repo as a GitHub *template*, write a
    "deploy your own" guide, turn on Issues/Discussions with templates.
 3. **Content-driven:** move tool content into Markdown/YAML behind a static site
@@ -160,5 +160,5 @@ direction before wide release.*
 
 ---
 
-*Maintainer: Lon (LRH, Emergency Medicine). This is a personal passion project,
-not an official LRH product.*
+*Maintainer: the deploying site's readiness champion. This is a personal passion
+project, not an official product of any hospital.*

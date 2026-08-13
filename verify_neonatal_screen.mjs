@@ -1,4 +1,4 @@
-/* LRH Emergency Manual — the neonatal resuscitation engine (/neonatal/), issue #135.
+/* ED Emergency Manual — the neonatal resuscitation engine (/neonatal/), issue #135.
  *
  * This screen exists because a card cannot hold a clock. The things it does that the card could not
  * are therefore the things asserted hardest: that the time of birth is stamped rather than remembered,
@@ -242,7 +242,7 @@ ck('9. a clinical note is accepted', await pg.locator('#customrow').isVisible(),
 ck('9. and appears in the log', /LMA 0.5 in, chest rising/.test(await openAcc('log')), true);
 const keys = await pg.evaluate(() => Object.keys(localStorage));
 ck('9. localStorage holds only the theme preference',
-   keys.filter(k => k !== 'lrh-pref-theme').join(',') || 'none', 'none');
+   keys.filter(k => k !== 'edm-pref-theme').join(',') || 'none', 'none');
 
 /* ---- 10. reset is two taps and clears the case ---- */
 await pg.click('[data-acc="log"]'); await pg.waitForTimeout(150);

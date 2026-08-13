@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0D1420">
-<title>LRH Neonatal Resuscitation — NRP Engine</title>
+<title>{{site.hospitalShort}} Neonatal Resuscitation — NRP Engine</title>
 <meta name="description" content="Mobile cognitive aid for newborn resuscitation at delivery: time of birth clock, 30-second reassessment cycles, heart-rate driven pathway, weight-based doses. Personal aid, not hospital policy.">
 <style>
 /* @design-system-live */
@@ -40,7 +40,7 @@
 </head>
 <body data-theme="dark">
 <script>
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+try{ document.body.dataset.theme = localStorage.getItem('edm-pref-theme')==='light' ? 'light' : 'dark'; }
 catch(e){ document.body.dataset.theme='dark'; }
 </script>
 <div class="wrap">
@@ -166,7 +166,7 @@ catch(e){ document.body.dataset.theme='dark'; }
    ========================================================================== */
 var SITE = {
   version:"0.2", lastReviewed:"2026-08-12",
-  site:"LRH",
+  site:"{{site.hospitalShort}}",
 
   /* The banner is config, not prose, so a site can turn it off in one place once
      its own review is done, and so the verify suite can assert what the screen
@@ -266,7 +266,7 @@ var SITE = {
      gestation, a combination of plastic wrap or bag, hat, thermal mattress and
      a warmed room is recommended to prevent hypothermia. NRP teaches the same
      line. Some units also apply it by weight (under ~1500 g) — that is a local
-     addition, hence wrapUnderGrams below, set to null here because LRH has not
+     addition, hence wrapUnderGrams below, set to null here because this site has not
      adopted one.
 
      NOTE FOR REVIEW: the previous value in this file was 34 weeks, which was
@@ -970,7 +970,7 @@ document.addEventListener('click', function(e){
   if(id==='themebtn'){
     S.theme = S.theme==='dark'?'light':'dark';
     document.body.dataset.theme=S.theme;
-    try{ localStorage.setItem('lrh-pref-theme', S.theme); }catch(err){}
+    try{ localStorage.setItem('edm-pref-theme', S.theme); }catch(err){}
     paint(); return;
   }
   if(id==='resetbtn'){

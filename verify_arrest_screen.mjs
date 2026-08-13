@@ -1,8 +1,8 @@
-/* LRH Emergency Manual — the mobile arrest screen (/arrest/).
+/* ED Emergency Manual — the mobile arrest screen (/arrest/).
  *
  * The design handoff is UI; the clinical logic is the manual's. This suite exists to prove the
  * second half of that sentence: that adopting the new interface did not quietly adopt the
- * prototype's dose math along with it. The prototype showed a flat 200 J for adults; LRH runs an
+ * prototype's dose math along with it. The prototype showed a flat 200 J for adults; this site runs an
  * escalating ZOLL sequence, and that difference is the single thing most likely to be lost in a
  * redesign, so it is asserted first and hardest.
  *
@@ -41,7 +41,7 @@ await pg.addInitScript(() => {
 const skew = async ms => { await pg.evaluate(v => { window.__skew = v; }, ms); await pg.waitForTimeout(400); };
 
 const txt = async sel => (await pg.locator(sel).innerText()).replace(/\s+/g, ' ').trim();
-/* A clean slate per test group. The tool now shares the manual's lrh- case
+/* A clean slate per test group. The tool now shares the manual's edm- case
    state (weight, timeline, lastactive), so isolation requires clearing storage
    between groups — otherwise a weight or log entry set in one group leaks into
    the next through the shared keys. */
@@ -58,7 +58,7 @@ const openAcc = async id => { await pg.click('[data-acc="' + id + '"]'); await p
 
 /* ---- CONFIG-DRIVEN EXPECTATIONS (issue #117) -------------------------------
    Read the tool's own SITE block and assert the UI against THAT, rather than
-   against LRH's numbers written out here a second time.
+   against this site's numbers written out here a second time.
 
    Why: this suite is the safety harness that makes champion+AI maintenance of
    clinical logic viable. If a forking ED correctly localizes its defibrillator
@@ -76,7 +76,25 @@ const CFG = await (async () => {
   if (!c) { console.error('FATAL: /arrest/ does not expose window.SITE — cannot verify against config'); process.exit(1); }
   return c;
 })();
-const J = CFG.defib.adultJ;                     // e.g. [120, 150, 200]
+/* Three states, not two. A fork that localizes to 150/200/200 is CORRECT and
+   must stay green; a template with no answer at all is also correct, and must
+   assert that the screen prints no number rather than defaulting to one. */
+const J = CFG.defib.adultJ;                     // e.g. [120, 150, 200], or null
+if (!J || !J.length) {
+  await fresh();
+  await pg.fill('#wIn', '80'); await pg.waitForTimeout(250);
+  await pg.click('#startbtn'); await pg.waitForTimeout(300);
+  const lbl = await txt('#shocklabel');
+  ck('TEMPLATE: no configured energies', CFG.defib.adultJ, null);
+  ck('TEMPLATE: the shock control prints no joule value', /\d+\s*J\b/.test(lbl), false);
+  const ref = await openAcc('defib');
+  ck('TEMPLATE: the defibrillation reference says NOT LOCALIZED', /NOT LOCALIZED/.test(ref), true);
+  ck('TEMPLATE: and names the key to answer', /defib\.adultJoules/.test(ref), true);
+  ck('TEMPLATE: no page errors while refusing', errs.length, 0);
+  console.log(`\n=== ${pass} passed, ${fail} failed (template build: energy assertions skipped) ===`);
+  await b.close();
+  process.exit(fail ? 1 : 0);
+}
 const JMAX = J[J.length - 1];
 
 /* ---- 1. offline-safe: nothing is fetched from anywhere else ---- */
@@ -174,7 +192,7 @@ ck('4b. PALS dosing still available after dismissal', /pediatric/.test(await txt
 await pg.fill('#wIn', '350'); await pg.waitForTimeout(300);
 ck('4b. an implausible weight is refused loudly', /NOT SAVED/.test(await txt('#werr')), true);
 ck('4b. and the last good weight survives it', /2 kg/.test(await txt('#wnote')), true);
-ck('4b. and nothing implausible reached the shared key', await pg.evaluate(() => localStorage.getItem('lrh-case-wtkg')), '2');
+ck('4b. and nothing implausible reached the shared key', await pg.evaluate(() => localStorage.getItem('edm-case-wtkg')), '2');
 await fresh();
 await pg.fill('#aIn', '0'); await pg.waitForTimeout(300);
 ck('4b. age 0 shows the NRP banner too', await pg.locator('#nrpbanner').isVisible(), true);
@@ -235,15 +253,15 @@ await pg.click('[data-acc="log"]'); await pg.waitForTimeout(250);
 ck('8. it reaches the log', /IO placed right tibia/.test(await txt('.accb')), true);
 ck('8. the refused text never reached the log', /4471129/.test(await txt('.accb')), false);
 /* The tool now shares the manual's ONE timeline: the accepted note lands in the
-   shared, PHI-guarded lrh-case-log (tagged as the Codes arrest card); the
+   shared, PHI-guarded edm-case-log (tagged as the Codes arrest card); the
    refused identifier reaches neither the log nor storage; and only documented
    case/pref keys are ever written — no raw PHI, no undocumented key. */
 const s8 = JSON.parse(await pg.evaluate(() => JSON.stringify({
-  log: localStorage.getItem('lrh-case-log') || '', keys: Object.keys(localStorage) })));
+  log: localStorage.getItem('edm-case-log') || '', keys: Object.keys(localStorage) })));
 ck('8. the accepted note reached the shared timeline', /IO placed right tibia/.test(s8.log), true);
 ck('8. the refused identifier never reached the shared timeline', /4471129/.test(s8.log), false);
 ck('8. only documented case/pref keys are persisted',
-  s8.keys.every(k => k.startsWith('lrh-case-') || k.startsWith('lrh-pref-')), true);
+  s8.keys.every(k => k.startsWith('edm-case-') || k.startsWith('edm-pref-')), true);
 
 /* ---- 9. metronome starts with the code clock ---- */
 await fresh();
@@ -300,7 +318,15 @@ await pg.click('#resumearrest'); await pg.waitForTimeout(300);
 ck('12. resuscitation can be resumed', await pg.locator('#ceased').isVisible(), false);
 await fresh();
 
-ck('11. version and disclaimer are stamped', /v\d+\.\d+ · last reviewed/.test(await txt('#verstamp')), true);
+/* The stamp names the LOCAL review, not the upstream one — and says so loudly
+   when there has not been one. Both spellings are correct; a stamp that reads
+   "last reviewed" on a fork nobody has reviewed is the failure. */
+{
+  const st = await txt('#verstamp');
+  ck('11. version is stamped', /v\d+\.\d+/.test(st), true);
+  ck('11. stamp states the local review status',
+     /reviewed \d{4}-\d{2}-\d{2}/.test(st) || /NOT LOCALLY REVIEWED/.test(st), true);
+}
 
 /* ---- 12. the code blue front door: pulse first, rhythm later --------------- */
 await fresh();
@@ -446,10 +472,10 @@ await pg.click('#customlog2'); await pg.waitForTimeout(250);
 ck('18. a clinical note is accepted', await vis('#customrow2'), false);
 ck('18. and reaches the in-tool log', /naloxone 0\.4 mg IV, chest rising/.test(await openAcc('log')), true);
 const s18 = JSON.parse(await pg.evaluate(() => JSON.stringify({
-  log: localStorage.getItem('lrh-case-log') || '', keys: Object.keys(localStorage) })));
+  log: localStorage.getItem('edm-case-log') || '', keys: Object.keys(localStorage) })));
 ck('18. and the shared manual-wide timeline', /naloxone 0\.4 mg IV, chest rising/.test(s18.log), true);
 ck('18. only documented case/pref keys are persisted',
-  s18.keys.every(k => k.startsWith('lrh-case-') || k.startsWith('lrh-pref-')), true);
+  s18.keys.every(k => k.startsWith('edm-case-') || k.startsWith('edm-pref-')), true);
 
 /* ---- 19. the rescue-breathing reference, with its sources ------------------ */
 await fresh();

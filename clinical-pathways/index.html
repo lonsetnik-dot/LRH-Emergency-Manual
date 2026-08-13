@@ -4,22 +4,22 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#005596">
-<title>Clinical Pathways &middot; LRH Emergency Manual</title>
+<title>Clinical Pathways &middot; {{site.hospitalShort}} Emergency Manual</title>
 <style>
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   /* @design-system */
-  /* ---- Page-specific layout. Tokens, the .hdr chrome bar, .sr-only, .lrh-mono,
-     the .lrh-row menu rows and the themed body all come from the shared
+  /* ---- Page-specific layout. Tokens, the .hdr chrome bar, .sr-only, .edm-mono,
+     the .edm-row menu rows and the themed body all come from the shared
      design-system.css injected at the marker above (build.mjs) — edited once,
      for the whole manual. Only this index page's own grid/group-heading/note
      live here. ---- */
   .wrap{max-width:840px; margin:0 auto; padding:0 16px 56px}
-  .lrh-group-hd{display:flex;align-items:center;gap:9px;margin:18px 2px 8px}
-  .lrh-group-hd .dot{width:10px;height:10px;border-radius:3px;background:var(--accent);flex:none}
-  .lrh-group-hd .label{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--ink2)}
-  .lrh-group-hd .rule{flex:1;height:1px;background:var(--line)}
-  .lrh-row-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:8px}
+  .edm-group-hd{display:flex;align-items:center;gap:9px;margin:18px 2px 8px}
+  .edm-group-hd .dot{width:10px;height:10px;border-radius:3px;background:var(--accent);flex:none}
+  .edm-group-hd .label{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--ink2)}
+  .edm-group-hd .rule{flex:1;height:1px;background:var(--line)}
+  .edm-row-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:8px}
   .note{background:var(--card2); border:1px solid var(--line); border-left:4px solid var(--amber);
     color:var(--ink); font-size:.8rem; border-radius:9px; padding:12px 15px; margin-top:26px}
   footer{text-align:center; color:var(--ink2); font-size:.76rem; margin-top:22px}
@@ -27,27 +27,27 @@
 </head>
 <body data-theme="dark">
 <script>
-/* Apply a persisted theme before the page paints (shared lrh-pref- namespace;
+/* Apply a persisted theme before the page paints (shared edm-pref- namespace;
    outside any RESET prefix sweep — CASE-STATE.md). Keeps the theme choice in
    sync with the rest of the manual and avoids a flash. */
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+try{ document.body.dataset.theme = localStorage.getItem('edm-pref-theme')==='light' ? 'light' : 'dark'; }
 catch(e){ document.body.dataset.theme='dark'; }
 </script>
 <div class="hdr">
   <a class="ghost" href="../?from=tool">◀ MANUAL</a>
   <span class="plabel">CLINICAL PATHWAYS</span>
-  <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
+  <button type="button" class="ghost" id="edmThemeBtn">LIGHT</button>
 </div>
 
 <div class="wrap">
   <h1 class="sr-only">Clinical Pathways</h1>
 
-  <div class="lrh-group-hd"><span class="dot"></span><span class="label">PATHWAYS</span><span class="rule"></span></div>
-  <div class="lrh-row-grid">
+  <div class="edm-group-hd"><span class="dot"></span><span class="label">PATHWAYS</span><span class="rule"></span></div>
+  <div class="edm-row-grid">
 
     <!-- ===== HEART pathway (live) -> /clinical-pathways/heart/ ===== -->
-    <a class="lrh-row" href="heart/">
-      <span class="n lrh-mono">01</span>
+    <a class="edm-row" href="heart/">
+      <span class="n edm-mono">01</span>
       <span class="t">Chest Pain &middot; hs-Troponin HEART Pathway</span>
       <span class="spacer"></span>
       <span class="tag">LIVE</span>
@@ -55,8 +55,8 @@ catch(e){ document.body.dataset.theme='dark'; }
 
     <!-- ===== CROSS-LINK: Brain Injury Guidelines — lives in /trauma/, linked here so it
          shows up as a pathway too. Not duplicated; same source, same card. ===== -->
-    <a class="lrh-row" href="../trauma/?from=home#c01">
-      <span class="n lrh-mono">02</span>
+    <a class="edm-row" href="../trauma/?from=home#c01">
+      <span class="n edm-mono">02</span>
       <span class="t">Brain Injury Guidelines (BIG)</span>
       <span class="spacer"></span>
       <span class="tag">OPENS IN TRAUMA</span>
@@ -64,8 +64,8 @@ catch(e){ document.body.dataset.theme='dark'; }
 
     <!-- ===== CROSS-LINK: Massive Transfusion Protocol — lives in /codes/ card 12,
          linked here so it shows up as a pathway too. Not duplicated. ===== -->
-    <a class="lrh-row" href="../codes/?from=home#c12">
-      <span class="n lrh-mono">03</span>
+    <a class="edm-row" href="../codes/?from=home#c12">
+      <span class="n edm-mono">03</span>
       <span class="t">Massive Transfusion Protocol (MTP)</span>
       <span class="spacer"></span>
       <span class="tag">OPENS IN CODES</span>
@@ -78,24 +78,24 @@ catch(e){ document.body.dataset.theme='dark'; }
   </div>
 
   <div class="note">
-    <strong>Personal decision-support aids &mdash; not part of the LRH IT system / EHR.</strong>
+    <strong>Personal decision-support aids &mdash; not part of the {{site.hospitalShort}} IT system / EHR.</strong>
     Beta: content is unverified. These tools do not replace clinical judgment. Verify all values and thresholds against local protocols and assays.
   </div>
 
-  <footer>Littleton Regional Hospital Emergency Manual &mdash; personal, unofficial reference &middot; Beta</footer>
+  <footer>{{site.hospitalName}} Emergency Manual &mdash; personal, unofficial reference &middot; Beta</footer>
 </div>
 <script>
-/* Theme toggle — persists via the shared lrh-pref-theme key (read before paint
+/* Theme toggle — persists via the shared edm-pref-theme key (read before paint
    by the inline script after <body>), matching the rest of the manual. */
 (function(){
-  var b=document.getElementById('lrhThemeBtn');
+  var b=document.getElementById('edmThemeBtn');
   if(!b) return;
   b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
   b.addEventListener('click', function(){
     var dark = document.body.dataset.theme!=='light';
     document.body.dataset.theme = dark ? 'light' : 'dark';
     b.textContent = dark ? 'DARK' : 'LIGHT';
-    try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
+    try{ localStorage.setItem('edm-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
   });
 })();
 </script>

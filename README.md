@@ -1,7 +1,7 @@
-# LRH Clinical Support Tools
+# ED Clinical Support Tools — template
 
 Static site hosting personal, unofficial clinical decision-support tools.
-**Not part of the LRH IT system / EHR.** Nothing here replaces clinical judgment.
+**Not part of any hospital IT system / EHR.** Nothing here replaces clinical judgment.
 
 ## Structure
 

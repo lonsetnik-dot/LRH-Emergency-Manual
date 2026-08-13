@@ -1,4 +1,4 @@
-/* LRH Emergency Manual — Codes → /arrest/ hand-off (WS-arrest-handoff).
+/* ED Emergency Manual — Codes → /arrest/ hand-off (WS-arrest-handoff).
  *
  * The old merged card-01 engine was removed from codes/ and replaced by a
  * redirect to the standalone /arrest/ tool (covered in full by

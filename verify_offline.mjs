@@ -1,4 +1,4 @@
-/* LRH Emergency Manual — offline shell verification (issue #120).
+/* ED Emergency Manual — offline shell verification (issue #120).
  *
  * Golden rule 1 says the tools "must work offline." Before this suite that was
  * a promise with no mechanism and no test: only ob-neonatal registered a
@@ -100,14 +100,14 @@ ck('1. service worker activates on the landing page', activated, true);
 const cached = await pg.evaluate(async () => {
   const deadline = Date.now() + 30000;
   while (Date.now() < deadline) {
-    const mine = (await caches.keys()).filter(n => n.startsWith('lrh-manual-'));
+    const mine = (await caches.keys()).filter(n => n.startsWith('edm-manual-'));
     if (mine.length) {
       const keys = await (await caches.open(mine[0])).keys();
       if (keys.length >= 28) return keys.length;
     }
     await new Promise(r => setTimeout(r, 250));
   }
-  const mine = (await caches.keys()).filter(n => n.startsWith('lrh-manual-'));
+  const mine = (await caches.keys()).filter(n => n.startsWith('edm-manual-'));
   return mine.length ? (await (await caches.open(mine[0])).keys()).length : 0;
 });
 ck('1. whole manual precached (>= 28 entries)', cached >= 28, true);
@@ -228,7 +228,7 @@ ck('5. back online: codes still renders',
 /* ---- 6. no update bar on a first install ----
    A "manual updated" prompt on someone's first ever visit is nonsense, and it
    would train people to ignore the bar on the day it actually matters. */
-ck('6. no spurious update bar on first install', await pg.locator('#lrh-sw-update').count(), 0);
+ck('6. no spurious update bar on first install', await pg.locator('#edm-sw-update').count(), 0);
 
 /* ---- 7. a new deploy ANNOUNCES itself and never reloads on its own ----------
    This is the half of cache-first that carries the clinical risk. Serving a
@@ -247,12 +247,12 @@ const originalSW = await readFile(distSW, 'utf8');
 try {
   const { writeFile } = await import('node:fs/promises');
   await writeFile(distIndex, originalIndex.replace('</body>', '<p id="deploy-marker">NEW DEPLOY MARKER</p></body>'));
-  await writeFile(distSW, originalSW.replace(/lrh-manual-[a-f0-9]+/, 'lrh-manual-deadbeef1234'));
+  await writeFile(distSW, originalSW.replace(/edm-manual-[a-f0-9]+/, 'edm-manual-deadbeef1234'));
 
   await pg.goto(BASE + '/', { waitUntil: 'networkidle' });
-  await pg.waitForSelector('#lrh-sw-update', { timeout: 15000 }).catch(() => {});
+  await pg.waitForSelector('#edm-sw-update', { timeout: 15000 }).catch(() => {});
 
-  const barShown = await pg.locator('#lrh-sw-update').count();
+  const barShown = await pg.locator('#edm-sw-update').count();
   ck('7. new deploy: the update bar appears', barShown, 1);
 
   /* The bar says a newer version exists; the page must still be showing the old
@@ -261,16 +261,16 @@ try {
   ck('7. new deploy: page is NOT auto-reloaded', stillOld, true);
 
   const wording = await pg.evaluate(() => {
-    const el = document.getElementById('lrh-sw-update');
+    const el = document.getElementById('edm-sw-update');
     return el ? el.innerText.toUpperCase() : '';
   });
   ck('7. new deploy: the bar says the page is showing the previous version',
      wording.includes('UPDATED') && wording.includes('PREVIOUS VERSION') ? true : JSON.stringify(wording.slice(0, 90)), true);
 
   /* LATER dismisses without acting — the whole point of a non-disruptive prompt. */
-  await pg.click('#lrh-sw-dismiss');
+  await pg.click('#edm-sw-dismiss');
   ck('7. new deploy: LATER dismisses without reloading',
-     (await pg.locator('#lrh-sw-update').count()) === 0 &&
+     (await pg.locator('#edm-sw-update').count()) === 0 &&
      (await pg.evaluate(() => !document.getElementById('deploy-marker'))), true);
 
   /* RELOAD is the only thing that swaps content.
@@ -284,9 +284,9 @@ try {
      navigation instead of failing on it. Seen only on CI, where the runner is
      slow enough for the two reloads not to coalesce. */
   await pg.reload({ waitUntil: 'networkidle' });
-  await pg.waitForSelector('#lrh-sw-update', { timeout: 15000 }).catch(() => {});
-  if (await pg.locator('#lrh-sw-reload').count()) {
-    await pg.click('#lrh-sw-reload');
+  await pg.waitForSelector('#edm-sw-update', { timeout: 15000 }).catch(() => {});
+  if (await pg.locator('#edm-sw-reload').count()) {
+    await pg.click('#edm-sw-reload');
     await pg.waitForFunction(() => !!document.getElementById('deploy-marker'), null, { timeout: 15000 }).catch(() => {});
   }
   const evalSettled = async (fn, tries = 6) => {

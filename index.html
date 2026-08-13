@@ -4,9 +4,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#005596">
-<title>LRH Emergency Manual</title>
+<title>{{site.hospitalShort}} Emergency Manual</title>
 <style>
-  /* Landing page. The theme tokens, the .hdr chrome bar, .sr-only, .lrh-mono and
+  /* Landing page. The theme tokens, the .hdr chrome bar, .sr-only, .edm-mono and
      the themed body all come from the shared design-system.css injected at the
      marker below (build.mjs) — edited once for the whole manual. Only this page's
      search box, category grid, note and the beta-splash front door live here. */
@@ -20,40 +20,40 @@
   /* @design-system */
   body{min-height:100vh}
   .wrap{max-width:840px; margin:0 auto; padding:0 16px 56px}
-  .lrh-startnew{display:inline-flex;align-items:center;margin:0 2px 16px;min-height:44px;padding:0 16px;
+  .edm-startnew{display:inline-flex;align-items:center;margin:0 2px 16px;min-height:44px;padding:0 16px;
     border-radius:10px;background:var(--card2);border:1px solid var(--line);color:var(--ink);
     text-decoration:none;font-weight:700;font-size:.85rem;letter-spacing:.02em}
-  .lrh-startnew:hover{border-color:var(--accent);color:var(--accent)}
-  .lrh-search{display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);
+  .edm-startnew:hover{border-color:var(--accent);color:var(--accent)}
+  .edm-search{display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);
     border-radius:14px;padding:4px 6px 4px 14px;margin:0 2px}
-  .lrh-search .ico{color:var(--ink2);font-size:16px;flex:none}
-  .lrh-search input{flex:1;background:none;border:none;color:var(--ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit}
-  .lrh-results{list-style:none;margin:8px 2px 0;padding:0;border:1px solid var(--line);border-radius:14px;
+  .edm-search .ico{color:var(--ink2);font-size:16px;flex:none}
+  .edm-search input{flex:1;background:none;border:none;color:var(--ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit}
+  .edm-results{list-style:none;margin:8px 2px 0;padding:0;border:1px solid var(--line);border-radius:14px;
     overflow:hidden;background:var(--card);box-shadow:0 4px 14px rgba(0,0,0,.18)}
-  .lrh-results[hidden]{display:none}
-  .lrh-results li{margin:0}
-  .lrh-results a{display:flex;align-items:baseline;gap:10px;justify-content:space-between;text-decoration:none;
+  .edm-results[hidden]{display:none}
+  .edm-results li{margin:0}
+  .edm-results a{display:flex;align-items:baseline;gap:10px;justify-content:space-between;text-decoration:none;
     color:inherit;padding:12px 14px;border-top:1px solid var(--line)}
-  .lrh-results li:first-child a{border-top:none}
-  .lrh-results a:hover,.lrh-results a:focus{background:var(--card2);outline:none}
-  .lrh-results .r-title{font-weight:700;color:var(--ink);font-size:.95rem}
-  .lrh-results .r-cat{font-size:.72rem;color:var(--ink2);white-space:nowrap;text-transform:uppercase;letter-spacing:.4px}
-  .lrh-results .r-none{padding:12px 14px;color:var(--ink2);font-size:.88rem}
-  .lrh-cat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px;margin-top:14px}
-  .lrh-cat{display:flex;flex-direction:column;text-decoration:none;color:var(--ink);background:var(--card);
+  .edm-results li:first-child a{border-top:none}
+  .edm-results a:hover,.edm-results a:focus{background:var(--card2);outline:none}
+  .edm-results .r-title{font-weight:700;color:var(--ink);font-size:.95rem}
+  .edm-results .r-cat{font-size:.72rem;color:var(--ink2);white-space:nowrap;text-transform:uppercase;letter-spacing:.4px}
+  .edm-results .r-none{padding:12px 14px;color:var(--ink2);font-size:.88rem}
+  .edm-cat-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px;margin-top:14px}
+  .edm-cat{display:flex;flex-direction:column;text-decoration:none;color:var(--ink);background:var(--card);
     border:1px solid var(--line);border-left:4px solid var(--cc,var(--accent));border-radius:14px;
     padding:14px;min-height:88px;cursor:pointer;transition:.14s}
-  .lrh-cat:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.22)}
-  .lrh-cat .row{display:flex;align-items:center;gap:12px}
-  .lrh-cat .dot{width:12px;height:12px;border-radius:3px;background:var(--cc,var(--accent));flex:none}
-  .lrh-cat .name{font-size:19px;font-weight:800}
-  .lrh-cat .spacer{flex:1}
-  .lrh-cat .count{font-size:12px;font-weight:700;color:var(--ink2)}
-  .lrh-cat .desc{font-size:14px;line-height:1.5;color:var(--ink2);margin-top:6px}
-  .lrh-cat.soon{pointer-events:none;cursor:default;opacity:.55}
-  .lrh-note{background:var(--card2);border-left:4px solid var(--amber);border:1px solid var(--line);
+  .edm-cat:hover{transform:translateY(-2px);box-shadow:0 6px 18px rgba(0,0,0,.22)}
+  .edm-cat .row{display:flex;align-items:center;gap:12px}
+  .edm-cat .dot{width:12px;height:12px;border-radius:3px;background:var(--cc,var(--accent));flex:none}
+  .edm-cat .name{font-size:19px;font-weight:800}
+  .edm-cat .spacer{flex:1}
+  .edm-cat .count{font-size:12px;font-weight:700;color:var(--ink2)}
+  .edm-cat .desc{font-size:14px;line-height:1.5;color:var(--ink2);margin-top:6px}
+  .edm-cat.soon{pointer-events:none;cursor:default;opacity:.55}
+  .edm-note{background:var(--card2);border-left:4px solid var(--amber);border:1px solid var(--line);
     color:var(--ink);font-size:.8rem;border-radius:12px;padding:12px 15px;margin-top:26px}
-  .lrh-footer{text-align:center;color:var(--ink2);font-size:.76rem;margin-top:22px}
+  .edm-footer{text-align:center;color:var(--ink2);font-size:.76rem;margin-top:22px}
 
   /* ---- Beta splash (site front door; shown every visit, stores nothing) ---- */
   #betasplash{position:fixed; inset:0; z-index:999; display:flex; flex-direction:column;
@@ -73,125 +73,125 @@
 </head>
 <body data-theme="dark">
 <script>
-/* Apply a persisted theme before the page paints (shared lrh-pref- namespace;
+/* Apply a persisted theme before the page paints (shared edm-pref- namespace;
    outside any RESET prefix sweep — CASE-STATE.md). Keeps the theme choice in
    sync across the whole manual and avoids a flash. */
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+try{ document.body.dataset.theme = localStorage.getItem('edm-pref-theme')==='light' ? 'light' : 'dark'; }
 catch(e){ document.body.dataset.theme='dark'; }
 </script>
 
 <!-- ===== SITE BETA SPLASH — first thing you see; dismiss to reveal the menu ===== -->
 <div id="betasplash" role="dialog" aria-modal="true" aria-label="Beta notice">
-  <div class="eyebrow">Littleton Regional Hospital &middot; Emergency Department</div>
+  <div class="eyebrow">{{site.hospitalName}} &middot; Emergency Department</div>
   <div class="title">Emergency Manual</div>
   <div class="beta">BETA</div>
   <div class="lead">Not yet ready for clinical use. Shared for feedback and practice only &mdash; do not use it to direct the care of a patient.</div>
-  <div class="fine">A personal, unofficial reference &mdash; not part of the LRH IT system / EHR, and not a substitute for clinical judgment. Content is unverified; verify every value against local protocols and assays.</div>
+  <div class="fine">A personal, unofficial reference &mdash; not part of the {{site.hospitalShort}} IT system / EHR, and not a substitute for clinical judgment. Content is unverified; verify every value against local protocols and assays.</div>
   <button type="button" id="betago">I UNDERSTAND &mdash; CONTINUE</button>
 </div>
 
 <div class="hdr">
   <span class="plabel">EMERGENCY MANUAL</span>
-  <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
+  <button type="button" class="ghost" id="edmThemeBtn">LIGHT</button>
 </div>
 
 <div class="wrap">
-  <h1 class="sr-only">LRH Emergency Manual</h1>
-  <a class="lrh-startnew" href="codes/?from=home&amp;startnewcase=1#top">START NEW CASE</a>
+  <h1 class="sr-only">{{site.hospitalShort}} Emergency Manual</h1>
+  <a class="edm-startnew" href="codes/?from=home&amp;startnewcase=1#top">START NEW CASE</a>
 
   <!-- ===== SEARCH ===== -->
-  <div class="lrh-search">
+  <div class="edm-search">
     <span class="ico" aria-hidden="true">&#8981;</span>
     <input type="search" id="q" autocomplete="off" spellcheck="false"
       placeholder="Search topics&hellip; e.g. HEART, shoulder dystocia, PPH, cord prolapse"
       aria-label="Search topics" aria-controls="results">
   </div>
-  <ul class="lrh-results" id="results" hidden></ul>
+  <ul class="edm-results" id="results" hidden></ul>
 
-  <div class="lrh-cat-grid">
+  <div class="edm-cat-grid">
 
     <!-- ===== CATEGORY: Codes & Resuscitation (beta · RED) -> /codes/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--red)" href="codes/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">Codes</span><span class="spacer"></span><span class="count lrh-mono">36 cards</span></div>
+    <a class="edm-cat" style="--cc:var(--red)" href="codes/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">Codes</span><span class="spacer"></span><span class="count edm-mono">36 cards</span></div>
       <div class="desc">Code / resuscitation reference, including the ED code-cart drawer contents.</div>
     </a>
 
     <!-- ===== CATEGORY: Pediatric Emergencies (beta · PURPLE) -> /peds/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--purple)" href="peds/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">Pediatric Emergencies</span><span class="spacer"></span><span class="count lrh-mono">14 cards</span></div>
+    <a class="edm-cat" style="--cc:var(--purple)" href="peds/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">Pediatric Emergencies</span><span class="spacer"></span><span class="count edm-mono">14 cards</span></div>
       <div class="desc">Shared weight/age-based dosing engine plus 14 pediatric ED topics — PALS, anaphylaxis, status epilepticus, DKA, and more.</div>
     </a>
 
     <!-- ===== CATEGORY: OB & Neonatal (live · BLUE) -> /ob-neonatal/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--blue)" href="ob-neonatal/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">OB &amp; Neonatal Emergencies</span><span class="spacer"></span><span class="count lrh-mono">10 cards</span></div>
+    <a class="edm-cat" style="--cc:var(--blue)" href="ob-neonatal/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">OB &amp; Neonatal Emergencies</span><span class="spacer"></span><span class="count edm-mono">10 cards</span></div>
       <div class="desc">Obstetric and neonatal emergency manual with timers, checklists, and cart-drawer reference.</div>
     </a>
 
     <!-- ===== CATEGORY: Procedures (beta · TEAL) -> /procedures/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--teal)" href="procedures/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">Procedures</span><span class="spacer"></span><span class="count lrh-mono">15 cards</span></div>
+    <a class="edm-cat" style="--cc:var(--teal)" href="procedures/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">Procedures</span><span class="spacer"></span><span class="count edm-mono">15 cards</span></div>
       <div class="desc">Rare, high-stakes procedures — chest tube, thoracotomy, burr hole, canthotomy, CVC, transvenous pacing, escharotomy — with equipment lists and anatomy figures. (Resuscitative hysterotomy lives in OB &amp; Neonatal.)</div>
     </a>
 
     <!-- ===== CATEGORY: Clinical Pathways (live · ACCENT) -> /clinical-pathways/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--accent)" href="clinical-pathways/">
-      <div class="row"><span class="dot"></span><span class="name">Clinical Pathways</span><span class="spacer"></span><span class="count lrh-mono">3 pathways</span></div>
+    <a class="edm-cat" style="--cc:var(--accent)" href="clinical-pathways/">
+      <div class="row"><span class="dot"></span><span class="name">Clinical Pathways</span><span class="spacer"></span><span class="count edm-mono">3 pathways</span></div>
       <div class="desc">Accelerated diagnostic and treatment pathways. Includes the Chest Pain / hs-Troponin HEART pathway.</div>
     </a>
 
     <!-- ===== CATEGORY: Trauma (beta · ORANGE) -> /trauma/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--orange)" href="trauma/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">Trauma</span><span class="spacer"></span><span class="count lrh-mono">10 cards</span></div>
+    <a class="edm-cat" style="--cc:var(--orange)" href="trauma/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">Trauma</span><span class="spacer"></span><span class="count edm-mono">10 cards</span></div>
       <div class="desc">Brain Injury Guidelines (BIG) for minor TBI, plus quick links to the Massive Transfusion Protocol and Front of Neck Access (FONA).</div>
     </a>
 
     <!-- ===== CATEGORY: Posters (beta · AMBER) -> /posters/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--amber)" href="posters/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">Posters</span><span class="spacer"></span><span class="count lrh-mono">10 posters</span></div>
+    <a class="edm-cat" style="--cc:var(--amber)" href="posters/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">Posters</span><span class="spacer"></span><span class="count edm-mono">10 posters</span></div>
       <div class="desc">Print-ready one-pagers for the resuscitation-bay walls and carts — TVP, chest tube, thoracotomy, burr hole. Letter portrait, one page each.</div>
     </a>
 
     <!-- ===== CATEGORY: Conversations (beta · BLUE) -> /conversations/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--blue)" href="conversations/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">Conversations</span><span class="spacer"></span><span class="count lrh-mono">4 cards</span></div>
+    <a class="edm-cat" style="--cc:var(--blue)" href="conversations/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">Conversations</span><span class="spacer"></span><span class="count edm-mono">4 cards</span></div>
       <div class="desc">Cognitive aids for the hard conversations — consultant crucial conversation, code status, SPIKES bad news, and team debrief.</div>
     </a>
 
     <!-- ===== CATEGORY: Equipment Readiness (beta · GRAY) -> /equipment-readiness/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--gray)" href="equipment-readiness/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">Equipment Readiness</span><span class="spacer"></span><span class="count lrh-mono">7 standards</span></div>
+    <a class="edm-cat" style="--cc:var(--gray)" href="equipment-readiness/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">Equipment Readiness</span><span class="spacer"></span><span class="count edm-mono">7 standards</span></div>
       <div class="desc">Where every kit, item and <b>size</b> lives &mdash; searchable &mdash; scored against seven national equipment standards (NPRP, ACS, ASA, NRP, AIM, MHAUS, ASRA). Record a location or a gap as you walk the carts, then export the findings.</div>
     </a>
 
     <!-- ===== CATEGORY: Simulations (beta · GREEN) -> /simulations/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--green)" href="simulations/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">Simulations</span><span class="spacer"></span><span class="count lrh-mono">9 sims</span></div>
+    <a class="edm-cat" style="--cc:var(--green)" href="simulations/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">Simulations</span><span class="spacer"></span><span class="count edm-mono">9 sims</span></div>
       <div class="desc">Pillow-patient drills that chain the manual's real workflows — birth into dystocia into a blue baby, STEMI into VF into the code-status conversation. 10&ndash;15 minutes, no mannequin.</div>
     </a>
 
 
     <!-- ===== CATEGORY: Neonatal engine (beta · BLUE) -> /neonatal/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--blue)" href="neonatal/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">Neonatal Resuscitation</span><span class="spacer"></span><span class="count lrh-mono">live engine</span></div>
+    <a class="edm-cat" style="--cc:var(--blue)" href="neonatal/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">Neonatal Resuscitation</span><span class="spacer"></span><span class="count edm-mono">live engine</span></div>
       <div class="desc">NRP as a driven engine, not a card: one tap stamps the time of birth, the clock runs the 30-second cycles, the heart rate picks the next move, and the SpO&#8322; target shown is the one for the minute you are actually in.</div>
     </a>
 
     <!-- ===== CATEGORY: PPH engine (beta · RED) -> /pph/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--red)" href="pph/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">Postpartum Hemorrhage</span><span class="spacer"></span><span class="count lrh-mono">live engine</span></div>
+    <a class="edm-cat" style="--cc:var(--red)" href="pph/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">Postpartum Hemorrhage</span><span class="spacer"></span><span class="count edm-mono">live engine</span></div>
       <div class="desc">Clock from recognition, a running blood loss you tap up as you go, uterotonics in order with the contraindications greyed out for you, and escalation prompts that fire on the trend rather than a threshold.</div>
     </a>
 
     <!-- ===== CATEGORY: Shoulder dystocia engine (beta · GRAY) -> /dystocia/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--gray)" href="dystocia/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">Shoulder Dystocia</span><span class="spacer"></span><span class="count lrh-mono">live engine</span></div>
+    <a class="edm-cat" style="--cc:var(--gray)" href="dystocia/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">Shoulder Dystocia</span><span class="spacer"></span><span class="count edm-mono">live engine</span></div>
       <div class="desc">The head-to-body interval on the clock where everyone can see it, HELPERR one rung at a time with 30-second prompts, and a record of every maneuver and its time that nobody has to reconstruct afterwards.</div>
     </a>
 
     <!-- ===== CATEGORY: VEMS kit (beta · TEAL) -> /vems/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--teal)" href="vems/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">VEMS Kit</span><span class="spacer"></span><span class="count lrh-mono">printable deck</span></div>
+    <a class="edm-cat" style="--cc:var(--teal)" href="vems/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">VEMS Kit</span><span class="spacer"></span><span class="count edm-mono">printable deck</span></div>
       <div class="desc">Visually Enhanced Mental Simulation &mdash; a laminatable patient poster, monitor cards and equipment cards drawn with the same glyphs as the cart drawer labels. A table, the deck and fifteen minutes; no mannequin.</div>
     </a>
 
@@ -201,27 +201,27 @@ catch(e){ document.body.dataset.theme='dark'; }
 
   </div>
 
-  <div class="lrh-note">
-    <strong>Personal decision-support aids &mdash; not part of the LRH IT system / EHR.</strong>
+  <div class="edm-note">
+    <strong>Personal decision-support aids &mdash; not part of the {{site.hospitalShort}} IT system / EHR.</strong>
     Beta: content is unverified. These tools do not replace clinical judgment. Verify all values and thresholds against local protocols and assays.
   </div>
 
-  <footer class="lrh-footer">Littleton Regional Hospital Emergency Manual &mdash; personal, unofficial reference &middot; Beta</footer>
+  <footer class="edm-footer">{{site.hospitalName}} Emergency Manual &mdash; personal, unofficial reference &middot; Beta</footer>
 </div>
 
 <script>
-/* ---- Theme toggle. Persists via the shared lrh-pref-theme key (read before
+/* ---- Theme toggle. Persists via the shared edm-pref-theme key (read before
    paint by the inline script after <body>), so the choice follows you across
    every tool in the manual. ---- */
 (function(){
-  var b=document.getElementById('lrhThemeBtn');
+  var b=document.getElementById('edmThemeBtn');
   if(!b) return;
   b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
   b.addEventListener('click', function(){
     var dark = document.body.dataset.theme!=='light';
     document.body.dataset.theme = dark ? 'light' : 'dark';
     b.textContent = dark ? 'DARK' : 'LIGHT';
-    try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
+    try{ localStorage.setItem('edm-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
   });
 })();
 /* ---- Beta splash: dismiss on tap. Stores nothing (shows every visit). ---- */

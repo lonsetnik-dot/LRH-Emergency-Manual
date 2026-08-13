@@ -2,7 +2,7 @@
 
 **Scope:** every weight/age input and every per-kg calculation across `arrest/`,
 `tca/`, `codes/`, `peds/`, `ob-neonatal/`, `labels/`, `airway/`, `trauma/`, plus
-the shared `lrh-case-wtkg` / `lrh-ob-weight` localStorage contract between them.
+the shared `edm-case-wtkg` / `edm-ob-weight` localStorage contract between them.
 Prompted by: *"if you put 1 kg, it should direct to NRP not peds resuscitation."*
 
 **Method:** full read of the weight engines in each tool, boundary-value tracing
@@ -38,7 +38,7 @@ recommendations only.
    return a flat "70 kg" logged as an estimate. Peds' own estimator refuses
    beyond 12 y; arrest/tca ship a variant peds explicitly removed.
 5. **One shared weight key, three validation regimes.** Arrest's input accepts
-   any value >0 and writes it to `lrh-case-wtkg`; its own reader silently drops
+   any value >0 and writes it to `edm-case-wtkg`; its own reader silently drops
    ≥300; peds/codes have no ceiling at all. Enter 350 in arrest: the box shows
    350, arrest's dose lines say "enter weight," codes and peds happily dose off
    350 kg — and on reload arrest's box is blank while the others still hold it.
@@ -102,7 +102,7 @@ shows out-of-range (peds already does this correctly).
   chip.
 - **B6. Codes silently deletes arrest's adult override.** Any committed
   weight/age change (including clearing the field) removes
-  `lrh-case-adultoverride` 800 ms later, with both repaint hooks undefined, so
+  `edm-case-adultoverride` 800 ms later, with both repaint hooks undefined, so
   nothing visible happens in codes — but the arrest engine flips back into
   PALS mode for the same patient (`2821-2834`). The clear-on-change contract
   is right (per CASE-STATE.md); the invisibility is not, and arrest itself
@@ -122,7 +122,7 @@ shows out-of-range (peds already does this correctly).
   dopamine, C1-INH, card-23 RSI…) in a tool that has trained users to expect
   per-kg doses to auto-fill.
 - **B10. The only age-branching dose never sees the age field:** enoxaparin
-  (age <75 vs ≥75, `1891`) is prose; `lrh-case-ageyrs` is collected and used
+  (age <75 vs ≥75, `1891`) is prose; `edm-case-ageyrs` is collected and used
   by nothing in codes.
 - **B11. Age-unit trap:** the months/years select isn't persisted. "9 months"
   stores 0.75 y; on reload the field shows `0.75` with the unit back on
@@ -160,7 +160,7 @@ shows out-of-range (peds already does this correctly).
   31 kg (29% apart), and whichever tool ran last wins the shared key. TCA
   copies arrest's version verbatim (`tca:666`).
 - **C3. Adult override survives a patient change.** Arrest loads
-  `lrh-case-adultoverride` and clears it only via the undo button or RESET —
+  `edm-case-adultoverride` and clears it only via the undo button or RESET —
   it never implements the clear-on-changed-weight/age contract CASE-STATE.md
   documents (codes implements it, invisibly — see B6). Previous patient
   overridden to adult + no RESET + new 15 kg child = **adult ACLS doses on a
@@ -169,9 +169,9 @@ shows out-of-range (peds already does this correctly).
   `epiEttMaxMg`) prints 4.99 mg at 49.9 kg — adult ETT dose is 2–2.5 mg;
   lidocaine per-kg likewise uncapped (`538-542`, `SITE.peds` at `382-385`).
 - **C5. Provenance laundering:** every keystroke in the weight box rewrites
-  `lrh-case-wtsrc` to `'measured'` — retype the same number that peds
+  `edm-case-wtsrc` to `'measured'` — retype the same number that peds
   estimated from age and the whole manual now calls it measured. Arrest also
-  bumps `lrh-case-wtms` on every keystroke (contract says only on real
+  bumps `edm-case-wtms` on every keystroke (contract says only on real
   change), falsely refreshing peds'/codes' stale-weight strip, and intermediate
   keystrokes (".", "0", clearing to correct) delete the shared weight outright
   (`1015`, `484-488`).
@@ -193,7 +193,7 @@ shows out-of-range (peds already does this correctly).
   shared timeline the debrief tool reads — a hole exactly where the traumatic
   arrest was. Its RESET clears only itself while arrest's visually identical
   RESET wipes the whole manual — two identical buttons, opposite blast radius.
-  It also ignores `lrh-pref-theme` and always loads dark.
+  It also ignores `edm-pref-theme` and always loads dark.
 - **D2. No adult override.** Same `<50 kg` trigger as arrest but no
   dismiss/override UI: a 45 kg frail adult silently gets pediatric TXA
   (675 mg instead of 1 g + 1 g) and pediatric calcium; the only tell is the
@@ -250,11 +250,11 @@ shows out-of-range (peds already does this correctly).
   `max` attributes are decorative (no form, no checkValidity) — negative
   weight sits visibly in the box while the panel silently falls back to GA;
   GA `9` (months) or `280` (days) accepted silently; comma-decimal `3,5`
-  *deletes* the stored weight; no staleness/provenance on `lrh-ob-weight`
+  *deletes* the stored weight; no staleness/provenance on `edm-ob-weight`
   (previous delivery's weight reappears indistinguishable from fresh); mg
   rendered to 3 dp vs mL to 2 dp (inconsistent read-aloud widths).
-- **E10. Good news worth keeping:** `lrh-ob-weight` (the baby) is correctly
-  isolated from `lrh-case-wtkg` (the mother/child case weight) per
+- **E10. Good news worth keeping:** `edm-ob-weight` (the baby) is correctly
+  isolated from `edm-case-wtkg` (the mother/child case weight) per
   CASE-STATE.md, and every tool's RESET sweep correctly clears both. But note
   the flip side: the same 3.5 kg newborn can legitimately exist in both keys
   at once, and codes/PALS says epi 0.035 mg while ob/NRP says 0.07 mg — two

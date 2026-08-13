@@ -1,4 +1,4 @@
-/* LRH Emergency Manual — the VEMS kit (/vems/), issue #131.
+/* ED Emergency Manual — the VEMS kit (/vems/), issue #131.
  *
  * This tool's output is PAPER. Almost everything that can go wrong with it is invisible on screen and
  * expensive at the laminator: a card deck that silently spills onto an extra sheet, a poster that
@@ -130,13 +130,13 @@ ck('4. the last card is better than the worst', sats[sats.length - 1] > Math.min
    drawer teaches the wrong drawer, so the doubt has to reach the card. */
 const locs = await pg.evaluate(() => [...document.querySelectorAll('.cardgrid.eq .pcard .lo')].map(e => e.textContent.trim()));
 ck('5. every equipment card names a location', locs.filter(t => !t).length, 0);
-ck('5. at least one location came from the inventory map', locs.some(t => /drawer|Broselow|Room 7/i.test(t)), true);
+ck('5. at least one location came from the inventory map', locs.some(t => /drawer|Broselow|the resus room/i.test(t)), true);
 ck('5. unconfirmed locations say so on the card', locs.some(t => /CONFIRM ON YOUR CART/.test(t)), true);
 
 /* ---- 6. PHI + state: this tool holds nothing but a theme preference ---- */
 const keys = await pg.evaluate(() => Object.keys(localStorage));
 ck('6. localStorage holds only the shared theme preference',
-  keys.filter(k => k !== 'lrh-pref-theme').join(',') || 'none', 'none');
+  keys.filter(k => k !== 'edm-pref-theme').join(',') || 'none', 'none');
 ck('6. nothing is written to sessionStorage', await pg.evaluate(() => sessionStorage.length), 0);
 
 /* ---- 7. THE PAPER — render each deck exactly as its button does ----

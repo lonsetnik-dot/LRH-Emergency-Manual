@@ -5,9 +5,6 @@
 // The clinical numbers are read from the page's own SITE block rather than
 // written out again here, so a fork that correctly localizes its values stays
 // green (issue #117). See the CONFIG-DRIVEN EXPECTATIONS note below.
-import { fileURLToPath } from 'url';
-import { dirname, join } from 'path';
-
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch {
@@ -15,8 +12,13 @@ catch {
   catch { ({ chromium } = await import('/opt/node22/lib/node_modules/playwright/index.mjs')); }
 }
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const url = 'file://' + join(__dirname, 'tca', 'index.html');
+/* Test the BUILT page, not the source. The shared CSS, the equipment icons and
+   the LOCAL() config reader are all injected at build (build.mjs), so a source
+   file opened over file:// is missing exactly the machinery this suite is here
+   to check — it would fail for the wrong reason, or pass without ever seeing
+   the code that ships. Every other verify_*.mjs already works this way. */
+const BASE = (process.env.BASE || 'http://localhost:8123').replace(/\/$/, '');
+const url = BASE + '/tca/?from=home';
 
 let pass = 0, fail = 0;
 const ok = (c, m) => { if (c) { pass++; } else { fail++; console.log('  ✗ ' + m); } };
@@ -35,7 +37,7 @@ const vis = sel => page.$eval(sel, e => e.offsetParent !== null).catch(() => fal
 /* ---- CONFIG-DRIVEN EXPECTATIONS (issue #117) -------------------------------
    Read the tool's own SITE block and assert the rendered doses against THAT.
    An ED that gives 10 mL/kg boluses, or caps pediatric TXA differently, edits
-   the config and is doing the right thing; a suite full of LRH's numbers would
+   the config and is doing the right thing; a suite full of this site's numbers would
    turn red for it and teach that site to ignore a red run.
 
    What stays hardcoded, deliberately: that adult TXA is a FIXED dose while
@@ -183,23 +185,46 @@ await page.click('[data-acc="log"]'); // close
 let firstBox = await page.$eval('#worksteps .wrow .wbox', e => e.textContent);
 ok(firstBox === '✓', 'checked box shows tick');
 
-// --- sequential framing (the shipped LRH default) ----------------------------
-ok((await txt('worktitle')).includes('ORDER'), 'sequential worktitle mentions priority order');
-ok((await txt('plabel')).includes('SEQUENTIAL'), 'plabel reflects the configured sequential mode');
+/* --- framing follows the CONFIGURED model, whichever it is -------------------
+   Asserted against CFG.mode rather than against one hospital's answer. An
+   unlocalized template has no model, and the screen must say so rather than
+   pick one. */
+if (CFG.mode === 'sequential') {
+  ok((await txt('worktitle')).includes('ORDER'), 'sequential worktitle mentions priority order');
+  ok((await txt('plabel')).includes('SEQUENTIAL'), 'plabel reflects the configured sequential mode');
+} else if (CFG.mode === 'simultaneous') {
+  ok((await txt('worktitle')).includes('PARALLEL'), 'simultaneous worktitle mentions parallel');
+  ok((await txt('plabel')).includes('SIMULTANEOUS'), 'plabel reflects the configured simultaneous mode');
+} else {
+  ok(CFG.mode === null, 'no team model configured (template build)');
+  ok(!/SEQUENTIAL|SIMULTANEOUS/.test(await txt('plabel')), 'unlocalized: screen does not claim a team model');
+}
 ok((await txt('cprnote')).toLowerCase().includes('pause'), 'CPR-in-progress pause note present');
 
-// --- simultaneous rendering via a config-swapped copy (proves the other model
-//     works when a site sets SITE.mode:"simultaneous" at localization) ---------
-{
-  const fs = await import('fs');
-  const src = fs.readFileSync(join(__dirname, 'tca', 'index.html'), 'utf8');
-  const swapped = src.replace('mode: "sequential"', 'mode: "simultaneous"');
-  ok(swapped !== src, 'SITE.mode config swap point present');
-  const tmp = join(__dirname, 'tca', '_verify_simultaneous.html');
-  fs.writeFileSync(tmp, swapped);
+/* --- the OTHER team model, driven the way a fork actually sets it ------------
+   A site localizes by answering caps.tcaTeamModel, so that is what this drives:
+   the built page is loaded with the answer overridden before any script runs.
+   (The previous version rewrote the source file on disk and opened it over
+   file://, which tested a copy of the tool that no longer resembled the one
+   that ships — no injected CSS, no LOCAL() reader.) */
+async function withModel(model) {
   const p2 = await browser.newPage();
-  await p2.goto('file://' + tmp);
-  await p2.waitForTimeout(200);
+  await p2.addInitScript(m => {
+    /* SITE_CONFIG is written at the top of <head>; patch it as soon as it
+       exists and before the tool's own SITE block reads it. */
+    Object.defineProperty(window, 'SITE_CONFIG', {
+      configurable: true,
+      set(v) { if (v && v.config && v.config.caps) v.config.caps.tcaTeamModel = m;
+               Object.defineProperty(window, 'SITE_CONFIG', { value: v, writable: true, configurable: true }); },
+      get() { return undefined; },
+    });
+  }, model);
+  await p2.goto(url);
+  await p2.waitForTimeout(250);
+  return p2;
+}
+{
+  const p2 = await withModel('simultaneous');
   await p2.click('#startbtn');
   await p2.waitForTimeout(200);
   const wt = await p2.$eval('#worktitle', e => e.textContent);
@@ -209,7 +234,16 @@ ok((await txt('cprnote')).toLowerCase().includes('pause'), 'CPR-in-progress paus
   ok(pl.includes('SIMULTANEOUS'), 'simultaneous config: plabel reflects simultaneous');
   ok(cn.includes('concurrent'), 'simultaneous config: CPR note says concurrent');
   await p2.close();
-  fs.unlinkSync(tmp);
+}
+{
+  const p2 = await withModel('sequential');
+  await p2.click('#startbtn');
+  await p2.waitForTimeout(200);
+  const wt = await p2.$eval('#worktitle', e => e.textContent);
+  const pl = await p2.$eval('#plabel', e => e.textContent);
+  ok(wt.includes('ORDER'), 'sequential config: worktitle mentions priority order');
+  ok(pl.includes('SEQUENTIAL'), 'sequential config: plabel reflects sequential');
+  await p2.close();
 }
 
 // --- pregnancy flag reveals obstetric workstream -----------------------------

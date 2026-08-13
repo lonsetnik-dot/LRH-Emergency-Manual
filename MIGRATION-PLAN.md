@@ -1,4 +1,4 @@
-# LRH Emergency Manual — Design-Language Migration Plan
+# ED Emergency Manual — Design-Language Migration Plan
 
 > Approved implementation plan for completing the design-language migration.
 > Captured here so it travels with the repo (e.g. a cloud session can execute it).
@@ -12,18 +12,18 @@ is only **partially applied**, and stopped before the hardest parts. Today:
 
 - **Two token systems coexist.** Most tools (`codes`, `procedures`, `peds`,
   `ob-neonatal`, `trauma`, home hub, `debrief`, `system`, `labels`) use prefixed
-  `--lrh-*` CSS variables; only `arrest/` and `airway/` use the intended
+  `--edm-*` CSS variables; only `arrest/` and `airway/` use the intended
   unprefixed set (`--bg/--card/--ink/--accent`). `clinical-pathways/heart/` is a
   third, older brand scheme (light-only, no dark mode).
 - **The old chrome was never removed.** On the tool pages a *new* sticky header
-  (`.lrh-hdr`, e.g. "CODES & RESUSCITATION" + theme toggle) sits directly on top
+  (`.edm-hdr`, e.g. "CODES & RESUSCITATION" + theme toggle) sits directly on top
   of the *old* three-bar stack (`◀ MANUAL / TIMELINE / RESET` nav + a separate
   WEIGHT row + the CODE RUNNING bar). The handoff's own migration note warns this
   exact state is "worse than before."
 
 **Goal:** one consistent design system across every tool — the unprefixed token
 set and a single focused header — retiring the old three-bar chrome and the
-duplicate `--lrh-*` tokens, **without changing any clinical content or breaking
+duplicate `--edm-*` tokens, **without changing any clinical content or breaking
 the live cardiac-arrest engine.**
 
 ## Decisions (confirmed with Lon)
@@ -37,17 +37,17 @@ the live cardiac-arrest engine.**
 
 ## Key constraints (verified during exploration)
 
-1. **Token migration is a mechanical de-prefix, values unchanged:** `--lrh-bg`→
-   `--bg`, `--lrh-card(2)`→`--card(2)`, `--lrh-ink(2)`→`--ink(2)`, `--lrh-line`→
-   `--line`, `--lrh-accent`→`--accent`, `--lrh-red/amber/blue/green/gray`→
+1. **Token migration is a mechanical de-prefix, values unchanged:** `--edm-bg`→
+   `--bg`, `--edm-card(2)`→`--card(2)`, `--edm-ink(2)`→`--ink(2)`, `--edm-line`→
+   `--line`, `--edm-accent`→`--accent`, `--edm-red/amber/blue/green/gray`→
    unprefixed. Also carry `--accentInk/--sans/--mono` and keep category
    `--purple/--teal/--orange` (the home hub uses them). Canonical values live in
    `arrest/index.html` `:root` (dark) + `body[data-theme="light"]`.
-   - **CRITICAL:** rename only the CSS custom-property `--lrh-` prefix. Do **not**
-     touch the `lrh-case-*` / `lrh-pref-*` **localStorage keys** or card `data-k`
+   - **CRITICAL:** rename only the CSS custom-property `--edm-` prefix. Do **not**
+     touch the `edm-case-*` / `edm-pref-*` **localStorage keys** or card `data-k`
      ids — those are the cross-tool shared-state contract (`CASE-STATE.md`), and
-     the RESET sweep keys off the `lrh-` *storage* prefix. Any rename regex must
-     target `--lrh-`, never bare `lrh-`.
+     the RESET sweep keys off the `edm-` *storage* prefix. Any rename regex must
+     target `--edm-`, never bare `edm-`.
 
 2. **Codes/peds live-engine coupling — restyle *around* it, do not rewrite.**
    Preserve these element ids and their load order:
@@ -81,7 +81,7 @@ the live cardiac-arrest engine.**
 
 - **Phase 0 — Merge PR #52 first** so the verify CI runs on every migration PR.
 - **Phase 1 — Token unification (low risk, no layout change).** De-prefix
-  `--lrh-*` → unprefixed across the old tools + home hub; migrate
+  `--edm-*` → unprefixed across the old tools + home hub; migrate
   `clinical-pathways/heart/` onto the token set + dark mode; merge duplicate
   `:root`/`body[data-theme]` blocks into the one canonical set. Verify screenshots
   look identical; suite green. Files: `codes/`, `procedures/`, `peds/`,
@@ -103,7 +103,7 @@ the live cardiac-arrest engine.**
   `codes/#c01` (does codes card 01 link out to `arrest/`, or get the live-protocol
   design inline?) — open question for Lon at this phase. Bring any remaining live
   screens to the VF/VT pattern.
-- **Phase 6 — Retire the old.** Delete dead `--lrh-*` aliases, old blue-band CSS,
+- **Phase 6 — Retire the old.** Delete dead `--edm-*` aliases, old blue-band CSS,
   filled-tile styles. Final full-site screenshot pass (light+dark) + full suite +
   print check.
 
@@ -120,5 +120,5 @@ the live cardiac-arrest engine.**
 
 ## Out of scope / unchanged
 
-No clinical content, dose math, thresholds, or the `lrh-case-*` / `lrh-pref-*` /
+No clinical content, dose math, thresholds, or the `edm-case-*` / `edm-pref-*` /
 `data-k` state contract changes — this is UI/skin only.

@@ -57,7 +57,7 @@ doses come from; the colour is what someone runs to the cart with.
 
 **#29 QR on every cart label** → every full drawer face and every cabinet door now carries one, and
 the test fails if any lacks it. Four cabinets with no card of their own (arterial line, suture,
-specimens, splints) resolve to the system map's Room 7 index rather than getting an invented target.
+specimens, splints) resolve to the system map's the resus room index rather than getting an invented target.
 Slim inserts still have none, and the reason stays printed on the sheet.
 
 **#33 per-procedure infographic with an expiry line** → a new 4×6 in card in `labels/`, one per
@@ -201,13 +201,13 @@ System map coverage: 13/19 figure, 9/19 poster, 9/19 QR poster→card, **18/19 l
 
 ## Questions for you
 
-1. **Room 7 versus resus bay.** Everything now reads `ROOM 7 (RESUS BAY) CABINET`. Confirm they are
+1. **the resus room versus resus bay.** Everything now reads `the resus room CABINET`. Confirm they are
    the same cupboard, or tell me which is which.
 
 2. **Traumatic haemothorax: pigtail or 28–32 Fr?** The card shows both positions and says do not
    decide alone at 3am. Your surgeons' answer is the one that should be printed.
 
-3. **DSED — is it in scope at LRH at all?** It needs two identical manual defibrillators, a second
+3. **DSED — is it in scope at this site at all?** It needs two identical manual defibrillators, a second
    pad set, one designated operator and a post-use device check. If that is not realistic, the card
    should say vector change only.
 

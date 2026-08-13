@@ -6,20 +6,20 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#005596">
-<title>LRH OB Emergencies</title>
+<title>{{site.hospitalShort}} OB Emergencies</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="apple-mobile-web-app-title" content="OB Emergencies">
 <meta name="description" content="Beta cognitive aids for OB and neonatal emergencies in the Emergency Department. Practice and feedback only.">
-<link rel="canonical" href="https://lrhemergencymanual.net/ob-neonatal/">
+<link rel="canonical" href="https://{{site.domain}}/ob-neonatal/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="LRH Emergency Manual">
-<meta property="og:title" content="LRH OB Emergencies (beta)">
+<meta property="og:site_name" content="{{site.hospitalShort}} Emergency Manual">
+<meta property="og:title" content="{{site.hospitalShort}} OB Emergencies (beta)">
 <meta property="og:description" content="Cognitive aids for OB and neonatal emergencies in the ED. Beta — practice and feedback only.">
-<meta property="og:url" content="https://lrhemergencymanual.net/ob-neonatal/">
+<meta property="og:url" content="https://{{site.domain}}/ob-neonatal/">
 <meta name="twitter:card" content="summary">
 <style>
-  /* --sticky-h: the real, current height of #stickytop (the .lrh-hdr strip +
+  /* --sticky-h: the real, current height of #stickytop (the .edm-hdr strip +
      nav.bar together — the only position:sticky element pinned to top:0
      here), measured in JS and kept live — see the "measure the sticky
      header" script near the end of <body>. The 54px here is only a pre-JS
@@ -28,7 +28,7 @@
      guessed header height instead of measuring it). */
   html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; --sticky-h:54px; }
   /* @design-system */
-  /* ---- Shared design language (tokens, the .hdr chrome bar, the .lrh-* menu
+  /* ---- Shared design language (tokens, the .hdr chrome bar, the .edm-* menu
      rows/filter, the themed <body>, and the .t-* card-interior classes) is
      injected from design-system.css at the marker above (build.mjs), edited once
      for the whole manual. Only this tool's own grouped-menu heading classes and
@@ -44,37 +44,37 @@
      Replaces the old filled-gradient hero banner, which DESIGN_LANGUAGE.md
      explicitly rules out ("never a filled header block or icon tile"). Card
      content below the menu (article#c02 etc.) is untouched — step 3/4 scope. */
-  .lrh-menuwrap{background:var(--bg);padding:16px 14px 26px}
-  .lrh-menuwrap .inner{max-width:1400px;margin:0 auto}
-  .lrh-eyebrow{font-size:11.5px;letter-spacing:.14em;color:var(--accent);font-weight:700}
-  .lrh-idx-h1{margin:4px 0 2px;font-size:26px;letter-spacing:-.01em;font-weight:800;color:var(--ink)}
-  .lrh-idx-sub{margin:0;color:var(--ink2);font-size:14.5px}
-  .lrh-startnew-btn{margin-top:10px;min-height:44px;padding:0 16px;background:var(--card2);
+  .edm-menuwrap{background:var(--bg);padding:16px 14px 26px}
+  .edm-menuwrap .inner{max-width:1400px;margin:0 auto}
+  .edm-eyebrow{font-size:11.5px;letter-spacing:.14em;color:var(--accent);font-weight:700}
+  .edm-idx-h1{margin:4px 0 2px;font-size:26px;letter-spacing:-.01em;font-weight:800;color:var(--ink)}
+  .edm-idx-sub{margin:0;color:var(--ink2);font-size:14.5px}
+  .edm-startnew-btn{margin-top:10px;min-height:44px;padding:0 16px;background:var(--card2);
     color:var(--ink);border:2px solid var(--line);font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
     font-size:12px;font-weight:700;letter-spacing:.08em;cursor:pointer;border-radius:10px}
-  .lrh-startnew-btn:hover{border-color:var(--accent);color:var(--accent)}
-  .lrh-mono{font-family:ui-monospace,"SF Mono",Menlo,"JetBrains Mono",monospace}
-  .lrh-group-hd{display:flex;align-items:center;gap:9px;margin:20px 0 8px}
-  .lrh-group-hd .dot{width:10px;height:10px;border-radius:3px;background:var(--accent);flex:none}
-  .lrh-group-hd .label{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--ink2)}
-  .lrh-group-hd .rule{flex:1;height:1px;background:var(--line)}
-  .lrh-row-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px}
-  .lrh-row{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);
+  .edm-startnew-btn:hover{border-color:var(--accent);color:var(--accent)}
+  .edm-mono{font-family:ui-monospace,"SF Mono",Menlo,"JetBrains Mono",monospace}
+  .edm-group-hd{display:flex;align-items:center;gap:9px;margin:20px 0 8px}
+  .edm-group-hd .dot{width:10px;height:10px;border-radius:3px;background:var(--accent);flex:none}
+  .edm-group-hd .label{font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--ink2)}
+  .edm-group-hd .rule{flex:1;height:1px;background:var(--line)}
+  .edm-row-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(280px,1fr));gap:8px}
+  .edm-row{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);
     background:var(--card);border:1px solid var(--line);border-left:4px solid var(--cc,var(--accent));
     border-radius:12px;padding:14px;min-height:56px;cursor:pointer}
-  .lrh-row .n{display:none;font-size:15px;font-weight:700;color:var(--cc,var(--accent));flex:none;width:24px}
-  .lrh-row .t{font-size:16.5px;font-weight:700;line-height:1.25}
-  .lrh-row:hover, .lrh-row:focus-visible{color:var(--ink)}
-  .lrh-filter{display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);
+  .edm-row .n{display:none;font-size:15px;font-weight:700;color:var(--cc,var(--accent));flex:none;width:24px}
+  .edm-row .t{font-size:16.5px;font-weight:700;line-height:1.25}
+  .edm-row:hover, .edm-row:focus-visible{color:var(--ink)}
+  .edm-filter{display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);
     border-radius:14px;padding:4px 6px 4px 14px;margin:18px 2px 14px}
-  .lrh-filter .ico{color:var(--ink2);font-size:16px;flex:none}
-  .lrh-filter input{flex:1;background:none;border:none;color:var(--ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit;-webkit-appearance:none}
-  .lrh-filter input::-webkit-search-cancel-button{-webkit-appearance:none}
-  .lrh-filter-empty{margin:0 2px 14px;padding:12px 14px;color:var(--ink2);font-size:.88rem;background:var(--card);
+  .edm-filter .ico{color:var(--ink2);font-size:16px;flex:none}
+  .edm-filter input{flex:1;background:none;border:none;color:var(--ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit;-webkit-appearance:none}
+  .edm-filter input::-webkit-search-cancel-button{-webkit-appearance:none}
+  .edm-filter-empty{margin:0 2px 14px;padding:12px 14px;color:var(--ink2);font-size:.88rem;background:var(--card);
     border:1px solid var(--line);border-radius:14px}
-  .lrh-filter-empty[hidden]{display:none}
+  .edm-filter-empty[hidden]{display:none}
   /* #stickytop: new synthetic sticky wrapper. This tool had no #stickytop
-     before — nav.bar was itself position:sticky;top:0. Introducing .lrh-hdr
+     before — nav.bar was itself position:sticky;top:0. Introducing .edm-hdr
      as a sibling above it would have made both fight to stick at top:0
      independently and overlap. Wrapping both in #stickytop (and removing
      nav.bar's own position:sticky below) makes them stack as one sticky
@@ -136,12 +136,12 @@
 </head>
 <body>
 <script>
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+try{ document.body.dataset.theme = localStorage.getItem('edm-pref-theme')==='light' ? 'light' : 'dark'; }
 catch(e){ document.body.dataset.theme='dark'; }
 </script>
 <template id="__bundler_thumbnail" data-bg-color="#16324f"><svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg"><rect width="1200" height="800" fill="#16324f"/><rect x="480" y="180" width="240" height="440" rx="28" fill="#fffefb"/><rect x="480" y="180" width="240" height="70" rx="28" fill="#9b1c2e"/><g stroke="#16324f" stroke-width="12" stroke-linecap="round"><path d="M516 320h168M516 380h168M516 440h110"/></g></svg></template>
 <div id="betasplash" style="position:fixed; inset:0; z-index:999; background:linear-gradient(135deg,#005596,#003e6e); color:#fffefb; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
-  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:#a9c2dc;">LRH · EMERGENCY DEPARTMENT</div>
+  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:#a9c2dc;">{{site.hospitalShort}} · {{site.deptName}}</div>
   <div style="font-size:30px; line-height:1.06; letter-spacing:-0.02em; font-weight:700;">OB &amp; Neonatal Emergencies</div>
   <div style="display:inline-block; padding:6px 14px; border:2px solid #e0b93c; color:#f7d97a; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.16em;">BETA</div>
   <div style="max-width:460px; font-size:17px; line-height:1.4; color:#dbe4ee;">Not yet ready for clinical use. Shared for feedback and practice only — do not use it to direct the care of a patient.</div>
@@ -155,19 +155,19 @@ catch(e){ document.body.dataset.theme='dark'; }
   <span class="plabel">OB &amp; NEONATAL</span>
   <button class="ghost" id="summarybtn" type="button">TIMELINE</button>
   <button class="ghost danger" id="resetbtn" type="button" style="display:none">RESET</button>
-  <button class="ghost" id="lrhThemeBtn" type="button">LIGHT</button>
+  <button class="ghost" id="edmThemeBtn" type="button">LIGHT</button>
 </div>
 </div>
 <script>
 (function(){
-  var b=document.getElementById('lrhThemeBtn');
+  var b=document.getElementById('edmThemeBtn');
   if(!b) return;
   b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
   b.addEventListener('click', function(){
     var dark = document.body.dataset.theme!=='light';
     document.body.dataset.theme = dark ? 'light' : 'dark';
     b.textContent = dark ? 'DARK' : 'LIGHT';
-    try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
+    try{ localStorage.setItem('edm-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
   });
 })();
 </script>
@@ -211,7 +211,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     try{
       var keys=[];
       for(var i=0;i<localStorage.length;i++) keys.push(localStorage.key(i));
-      keys.forEach(function(k){ if(k && k.indexOf('lrh-')===0 && k.indexOf('lrh-pref-')!==0) localStorage.removeItem(k); });
+      keys.forEach(function(k){ if(k && k.indexOf('edm-')===0 && k.indexOf('edm-pref-')!==0) localStorage.removeItem(k); });
     }catch(e){}
     /* Not reload(): that preserves the #cNN hash, so a reset performed while a card was open
        dropped you straight back onto that same card and looked like nothing had happened. Drop
@@ -254,49 +254,49 @@ catch(e){ document.body.dataset.theme='dark'; }
 <main>
 
 <section id="top" style="padding:0 0 18px;">
-  <div class="lrh-menuwrap">
+  <div class="edm-menuwrap">
     <div class="inner">
-      <div class="lrh-eyebrow lrh-mono">LRH · EMERGENCY DEPARTMENT</div>
-      <h1 class="lrh-idx-h1">OB &amp; Neonatal Emergencies</h1>
-      <p class="lrh-idx-sub">Name the situation &middot; claim leadership &middot; aim the team. Tap a card.</p>
-      <p class="lrh-idx-sub" style="margin-top:6px; font-size:12.5px;">A reference to assist professional decision-making — not a policy or protocol. Every situation requires nuance; use your professional judgment to vary from this source.</p>
-      <p class="lrh-idx-sub lrh-mono" style="margin-top:6px; font-size:10.5px; letter-spacing:.06em;"><span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.</p>
-      <button type="button" id="startnewcasebtn" class="lrh-startnew-btn">START NEW CASE</button>
+      <div class="edm-eyebrow edm-mono">{{site.hospitalShort}} · {{site.deptName}}</div>
+      <h1 class="edm-idx-h1">OB &amp; Neonatal Emergencies</h1>
+      <p class="edm-idx-sub">Name the situation &middot; claim leadership &middot; aim the team. Tap a card.</p>
+      <p class="edm-idx-sub" style="margin-top:6px; font-size:12.5px;">A reference to assist professional decision-making — not a policy or protocol. Every situation requires nuance; use your professional judgment to vary from this source.</p>
+      <p class="edm-idx-sub edm-mono" style="margin-top:6px; font-size:10.5px; letter-spacing:.06em;"><span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.</p>
+      <button type="button" id="startnewcasebtn" class="edm-startnew-btn">START NEW CASE</button>
 
       <!-- ============ FILTER ============ -->
-      <div class="lrh-filter">
+      <div class="edm-filter">
         <span class="ico" aria-hidden="true">&#8981;</span>
         <input type="search" id="menuFilter" autocomplete="off" spellcheck="false" autofocus
           placeholder="Search&hellip;" aria-label="Search" aria-controls="menu">
       </div>
-      <p class="lrh-filter-empty" id="menuFilterEmpty" hidden>No matches. Try a different term.</p>
+      <p class="edm-filter-empty" id="menuFilterEmpty" hidden>No matches. Try a different term.</p>
 
       <div id="menu">
-        <div class="lrh-group-hd"><span class="dot" style="background:var(--gray)"></span><span class="label">EQUIPMENT</span><span class="rule"></span></div>
-        <div class="lrh-row-grid">
-          <a href="#cart" data-k="cart drawer equipment supplies where is" class="lrh-row" style="--cc:var(--gray)"><span class="t">OB / neonatal cart — what is in each drawer</span></a>
+        <div class="edm-group-hd"><span class="dot" style="background:var(--gray)"></span><span class="label">EQUIPMENT</span><span class="rule"></span></div>
+        <div class="edm-row-grid">
+          <a href="#cart" data-k="cart drawer equipment supplies where is" class="edm-row" style="--cc:var(--gray)"><span class="t">OB / neonatal cart — what is in each drawer</span></a>
         </div>
 
-        <div class="lrh-group-hd"><span class="dot" style="background:var(--gray)"></span><span class="label">DELIVERY</span><span class="rule"></span></div>
-        <div class="lrh-row-grid">
-          <a href="#c02" data-k="labor birth precipitous apgar nuchal cord crowning" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">02</span><span class="t">Imminent normal delivery</span></a>
-          <a href="#c07" data-k="shoulder dystocia helperr mcroberts suprapubic pressure maneuvers" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">07</span><span class="t">Shoulder dystocia</span></a>
-          <a href="#c08" data-k="breech buttocks footling frank complete" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">08</span><span class="t">Breech delivery</span></a>
-          <a href="#c09" data-k="cord prolapse presenting" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">09</span><span class="t">Umbilical cord prolapse</span></a>
+        <div class="edm-group-hd"><span class="dot" style="background:var(--gray)"></span><span class="label">DELIVERY</span><span class="rule"></span></div>
+        <div class="edm-row-grid">
+          <a href="#c02" data-k="labor birth precipitous apgar nuchal cord crowning" class="edm-row" style="--cc:var(--gray)"><span class="n edm-mono">02</span><span class="t">Imminent normal delivery</span></a>
+          <a href="#c07" data-k="shoulder dystocia helperr mcroberts suprapubic pressure maneuvers" class="edm-row" style="--cc:var(--gray)"><span class="n edm-mono">07</span><span class="t">Shoulder dystocia</span></a>
+          <a href="#c08" data-k="breech buttocks footling frank complete" class="edm-row" style="--cc:var(--gray)"><span class="n edm-mono">08</span><span class="t">Breech delivery</span></a>
+          <a href="#c09" data-k="cord prolapse presenting" class="edm-row" style="--cc:var(--gray)"><span class="n edm-mono">09</span><span class="t">Umbilical cord prolapse</span></a>
         </div>
 
-        <div class="lrh-group-hd"><span class="dot" style="background:var(--teal)"></span><span class="label">NEWBORN</span><span class="rule"></span></div>
-        <div class="lrh-row-grid">
-          <a href="#c03" data-k="nrp newborn resus ppv chest compressions heart rate metronome apgar" class="lrh-row" style="--cc:var(--teal)"><span class="n lrh-mono">03</span><span class="t">Neonatal resuscitation</span></a>
-          <a href="#c04" data-k="uvc umbilical vein line venous access emergency" class="lrh-row" style="--cc:var(--teal)"><span class="n lrh-mono">04</span><span class="t">Umbilical vein catheterization</span></a>
+        <div class="edm-group-hd"><span class="dot" style="background:var(--teal)"></span><span class="label">NEWBORN</span><span class="rule"></span></div>
+        <div class="edm-row-grid">
+          <a href="#c03" data-k="nrp newborn resus ppv chest compressions heart rate metronome apgar" class="edm-row" style="--cc:var(--teal)"><span class="n edm-mono">03</span><span class="t">Neonatal resuscitation</span></a>
+          <a href="#c04" data-k="uvc umbilical vein line venous access emergency" class="edm-row" style="--cc:var(--teal)"><span class="n edm-mono">04</span><span class="t">Umbilical vein catheterization</span></a>
         </div>
 
-        <div class="lrh-group-hd"><span class="dot" style="background:var(--red)"></span><span class="label">MATERNAL EMERGENCY</span><span class="rule"></span></div>
-        <div class="lrh-row-grid">
-          <a href="#c05" data-k="cesarean c-section section operative" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">05</span><span class="t">ED C-Section</span></a>
-          <a href="#c06" data-k="pph bleeding hemorrhage uterotonics oxytocin tranexamic txa uterine massage atony" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">06</span><span class="t">Postpartum hemorrhage</span></a>
-          <a href="#c10" data-k="hysterotomy perimortem c-section cesarean maternal arrest fundus umbilicus procedures" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">10</span><span class="t">Resuscitative hysterotomy</span></a>
-          <a href="#c11" data-k="eclampsia preeclampsia severe hypertension pregnancy seizure magnesium sulfate mag labetalol hydralazine nifedipine postpartum hellp toxemia" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">11</span><span class="t">Eclampsia / severe preeclampsia</span></a>
+        <div class="edm-group-hd"><span class="dot" style="background:var(--red)"></span><span class="label">MATERNAL EMERGENCY</span><span class="rule"></span></div>
+        <div class="edm-row-grid">
+          <a href="#c05" data-k="cesarean c-section section operative" class="edm-row" style="--cc:var(--red)"><span class="n edm-mono">05</span><span class="t">ED C-Section</span></a>
+          <a href="#c06" data-k="pph bleeding hemorrhage uterotonics oxytocin tranexamic txa uterine massage atony" class="edm-row" style="--cc:var(--red)"><span class="n edm-mono">06</span><span class="t">Postpartum hemorrhage</span></a>
+          <a href="#c10" data-k="hysterotomy perimortem c-section cesarean maternal arrest fundus umbilicus procedures" class="edm-row" style="--cc:var(--red)"><span class="n edm-mono">10</span><span class="t">Resuscitative hysterotomy</span></a>
+          <a href="#c11" data-k="eclampsia preeclampsia severe hypertension pregnancy seizure magnesium sulfate mag labetalol hydralazine nifedipine postpartum hellp toxemia" class="edm-row" style="--cc:var(--red)"><span class="n edm-mono">11</span><span class="t">Eclampsia / severe preeclampsia</span></a>
         </div>
       </div>
     </div>
@@ -1837,7 +1837,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     </div>
     <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:var(--ink);">Eclampsia / severe preeclampsia</h2>
   </header>
-    <div class="t-localize">&#9888; <b>DRAFT &mdash; NOT CLINICALLY REVIEWED:</b> written from ACOG guidance to fill coverage gap <a href="https://github.com/lonsetnik-dot/LRH-Emergency-Manual/issues/84" style="color:var(--note-tx);">#84</a>. Verify every dose against local protocol and pharmacy before this card is trusted.</div>
+    <div class="t-localize">&#9888; <b>DRAFT &mdash; NOT CLINICALLY REVIEWED:</b> written from ACOG guidance to fill coverage gap <a href="{{site.repoUrl}}/issues/84" style="color:var(--note-tx);">#84</a>. Verify every dose against local protocol and pharmacy before this card is trusted.</div>
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid var(--sev-crit); align-self:start;">
         <summary style="background:var(--sev-crit); color:var(--on-sev); padding:11px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">1 &middot; SEIZING + PREGNANT (OR &le; 6 WK POSTPARTUM) = ECLAMPSIA</summary>
@@ -1882,7 +1882,7 @@ catch(e){ document.body.dataset.theme='dark'; }
    Per CLAUDE.md: tools share the CONTRACT, not the CODE — codes/index.html and (once it
    gets one) peds/index.html each keep their own copy of this module. They agree only on
    the localStorage key names and value shapes documented in CASE-STATE.md. Read or write
-   any lrh-case-* key ONLY through these functions. Must load before every module below —
+   any edm-case-* key ONLY through these functions. Must load before every module below —
    it is the first script in the document for exactly that reason. */
 var CASESTATE = (function(){
   var TOOL='ob';
@@ -1892,29 +1892,29 @@ var CASESTATE = (function(){
   function wrRaw(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
   function rm(k){ try{ localStorage.removeItem(k); }catch(e){} }
 
-  function getClocks(){ return rd('lrh-case-clocks', {}); }
-  function setClock(name, ms){ var c=getClocks(); if(ms===null||ms===undefined){ delete c[name]; } else { c[name]=ms; } wr('lrh-case-clocks', c); }
+  function getClocks(){ return rd('edm-case-clocks', {}); }
+  function setClock(name, ms){ var c=getClocks(); if(ms===null||ms===undefined){ delete c[name]; } else { c[name]=ms; } wr('edm-case-clocks', c); }
   function getClock(name){ var c=getClocks(); return (name in c) ? c[name] : null; }
-  function clearClocks(names){ var c=getClocks(); names.forEach(function(n){ delete c[n]; }); wr('lrh-case-clocks', c); }
+  function clearClocks(names){ var c=getClocks(); names.forEach(function(n){ delete c[n]; }); wr('edm-case-clocks', c); }
   function anyClockRunning(){ return Object.keys(getClocks()).length>0; }
 
-  function touchActive(){ wrRaw('lrh-case-lastactive', String(Date.now())); }
-  function getLastActive(){ var v=rdRaw('lrh-case-lastactive'); return v===null?0:(+v||0); }
+  function touchActive(){ wrRaw('edm-case-lastactive', String(Date.now())); }
+  function getLastActive(){ var v=rdRaw('edm-case-lastactive'); return v===null?0:(+v||0); }
 
-  function getChecks(){ return rd('lrh-case-checks', {}); }
+  function getChecks(){ return rd('edm-case-checks', {}); }
   /* one shared map across every tool; keys are "<tool>:<data-k>" so two tools' own card
      numbering can never collide — the prefix is applied here, at the storage layer, not
      in any card's markup. */
   function setChecked(dataK, on){
     var c=getChecks(), fullKey=TOOL+':'+dataK;
     if(on) c[fullKey]=true; else delete c[fullKey];
-    wr('lrh-case-checks', c);
+    wr('edm-case-checks', c);
   }
   function isChecked(dataK){ return !!getChecks()[TOOL+':'+dataK]; }
   function clearToolChecks(){
     var c=getChecks(), changed=false;
     Object.keys(c).forEach(function(k){ if(k.indexOf(TOOL+':')===0){ delete c[k]; changed=true; } });
-    if(changed) wr('lrh-case-checks', c);
+    if(changed) wr('edm-case-checks', c);
   }
 
   /* PHI guard (WS0.3) — the ONLY way this file may append to the shared case log. Rejects
@@ -1933,44 +1933,44 @@ var CASESTATE = (function(){
      harmless extra field for any other tool reading the shared array. */
   function addLog(card, label, k, el){
     if(!isSafeLabel(label)){ try{ console.warn('CASESTATE.addLog: rejected unsafe label', label); }catch(e){} return; }
-    var log=rd('lrh-case-log', []);
+    var log=rd('edm-case-log', []);
     log.push({ tMs:Date.now(), tool:TOOL, card:card, label:label, k:(k||''), el:(el||'') });
     if(log.length>400) log=log.slice(-400);
-    wr('lrh-case-log', log);
+    wr('edm-case-log', log);
   }
-  function getLog(){ return rd('lrh-case-log', []); }
+  function getLog(){ return rd('edm-case-log', []); }
   function removeLogByKey(card, k){
     if(!k) return;
     var log=getLog().filter(function(e){ return !(e.tool===TOOL && e.card===card && e.k===k); });
-    wr('lrh-case-log', log);
+    wr('edm-case-log', log);
   }
   function setLogElapsed(card, k, el){
     if(!k) return;
     var log=getLog(), changed=false;
     log.forEach(function(e){ if(e.tool===TOOL && e.card===card && e.k===k){ e.el=el; changed=true; } });
-    if(changed) wr('lrh-case-log', log);
+    if(changed) wr('edm-case-log', log);
   }
   function clearToolLog(){
     var log=getLog().filter(function(e){ return e.tool!==TOOL; });
-    wr('lrh-case-log', log);
+    wr('edm-case-log', log);
   }
 
   /* ---- one-time migration off ob's old per-tool keys (WS0.2), same pattern as codes'
      copy of this module — run every load; a no-op once the old keys are gone. ---- */
   (function migrate(){
     var did=false;
-    var oldChecks=rd('lrh-ob-checks', null);
+    var oldChecks=rd('edm-ob-checks', null);
     if(oldChecks && oldChecks.v){
       var c=getChecks();
       oldChecks.v.forEach(function(k){ c[TOOL+':'+k]=true; });
-      wr('lrh-case-checks', c);
-      rm('lrh-ob-checks'); did=true;
+      wr('edm-case-checks', c);
+      rm('edm-ob-checks'); did=true;
     }
-    if(rdRaw('lrh-ob-pphclock')!==null){ setClock('pph', +rdRaw('lrh-ob-pphclock')); rm('lrh-ob-pphclock'); did=true; }
-    if(rdRaw('lrh-ob-rhclock')!==null){ setClock('rh', +rdRaw('lrh-ob-rhclock')); rm('lrh-ob-rhclock'); did=true; }
-    if(rdRaw('lrh-ob-rhbaby')!==null){ setClock('rhBaby', +rdRaw('lrh-ob-rhbaby')); rm('lrh-ob-rhbaby'); did=true; }
-    if(rdRaw('lrh-ob-sdclock')!==null){ setClock('dystocia', +rdRaw('lrh-ob-sdclock')); rm('lrh-ob-sdclock'); did=true; }
-    var oldLog=rd('lrh-ob-log', null);
+    if(rdRaw('edm-ob-pphclock')!==null){ setClock('pph', +rdRaw('edm-ob-pphclock')); rm('edm-ob-pphclock'); did=true; }
+    if(rdRaw('edm-ob-rhclock')!==null){ setClock('rh', +rdRaw('edm-ob-rhclock')); rm('edm-ob-rhclock'); did=true; }
+    if(rdRaw('edm-ob-rhbaby')!==null){ setClock('rhBaby', +rdRaw('edm-ob-rhbaby')); rm('edm-ob-rhbaby'); did=true; }
+    if(rdRaw('edm-ob-sdclock')!==null){ setClock('dystocia', +rdRaw('edm-ob-sdclock')); rm('edm-ob-sdclock'); did=true; }
+    var oldLog=rd('edm-ob-log', null);
     if(oldLog){
       var log=getLog(), cards=Object.keys(oldLog), nowMs=Date.now(), total=0, idx=0;
       cards.forEach(function(card){ total += (oldLog[card]||[]).length; });
@@ -1980,10 +1980,10 @@ var CASESTATE = (function(){
           idx++;
         });
       });
-      wr('lrh-case-log', log);
-      rm('lrh-ob-log'); did=true;
+      wr('edm-case-log', log);
+      rm('edm-ob-log'); did=true;
     }
-    if(did){ try{ console.info('CASESTATE: migrated legacy lrh-ob-* keys to the shared lrh-case-* contract'); }catch(e){} }
+    if(did){ try{ console.info('CASESTATE: migrated legacy edm-ob-* keys to the shared edm-case-* contract'); }catch(e){} }
   })();
 
   return {
@@ -1998,7 +1998,7 @@ var CASESTATE = (function(){
 /* ---- WS2.5 — inactivity auto-clear, manual-wide (F35) ----
    Same pattern as codes'/peds'/trauma's copy of this guard (see codes/index.html for the
    full reasoning). Runs before any per-card module below reads clock/weight/checks state;
-   reuses the identical lrh- prefix sweep RESET FOR NEXT CASE uses (WS2.4); suppressed
+   reuses the identical edm- prefix sweep RESET FOR NEXT CASE uses (WS2.4); suppressed
    entirely by anyClockRunning() across ALL tools, not just this one. */
 (function(){
   var TTL=60*60*1000;
@@ -2007,8 +2007,8 @@ var CASESTATE = (function(){
     if(t && (Date.now()-t)>TTL && !CASESTATE.anyClockRunning()){
       var keys=[];
       for(var i=0;i<localStorage.length;i++) keys.push(localStorage.key(i));
-      keys.forEach(function(k){ if(k && k.indexOf('lrh-')===0 && k.indexOf('lrh-pref-')!==0) localStorage.removeItem(k); });
-      window.__lrhStaleCleared = true;
+      keys.forEach(function(k){ if(k && k.indexOf('edm-')===0 && k.indexOf('edm-pref-')!==0) localStorage.removeItem(k); });
+      window.__edmStaleCleared = true;
     }
     CASESTATE.touchActive();
     document.addEventListener('click', function(){ CASESTATE.touchActive(); }, true);
@@ -2019,7 +2019,7 @@ var CASESTATE = (function(){
    Same markup/behavior in every tool: a dismissible amber strip at the top of the page,
    shown only when the guard above actually cleared something on this load. */
 (function(){
-  if(!window.__lrhStaleCleared) return;
+  if(!window.__edmStaleCleared) return;
   /* Insert after #stickytop (not nav.bar directly) so the banner scrolls
      normally below the sticky header+nav unit, same placement/behavior as
      before #stickytop existed (nav.bar used to be the sticky element
@@ -2037,12 +2037,12 @@ var CASESTATE = (function(){
 })();
 </script>
 <script>(function(){
-  /* Checks live in the shared lrh-case-checks map (via CASESTATE, WS0), one "ob:<data-k>"
+  /* Checks live in the shared edm-case-checks map (via CASESTATE, WS0), one "ob:<data-k>"
      entry per box. TSKEY is a small tool-local timestamp used only to run this tool's own
      1-hour auto-clear TTL and the "CASE STARTED N MIN AGO" note — not part of the
-     cross-tool contract (see CASE-STATE.md's note on lrh-case-startms not yet being wired
+     cross-tool contract (see CASE-STATE.md's note on edm-case-startms not yet being wired
      into ob-neonatal). */
-  var TSKEY='lrh-ob-checks-ts', HOUR=3600000, btn=document.getElementById('resetbtn'), note=document.getElementById('resetnote');
+  var TSKEY='edm-ob-checks-ts', HOUR=3600000, btn=document.getElementById('resetbtn'), note=document.getElementById('resetnote');
   function boxes(){ return Array.prototype.slice.call(document.querySelectorAll('input[type=checkbox][data-k]')); }
   function getTs(){ try{ return +localStorage.getItem(TSKEY)||0; }catch(e){ return 0; } }
   function setTs(t){ try{ localStorage.setItem(TSKEY, String(t)); }catch(e){} }
@@ -2064,7 +2064,7 @@ var CASESTATE = (function(){
 /* ---- Measure the real sticky-header height into --sticky-h, live ----
    Ported from codes/index.html's identical fix (same review finding: a hardcoded
    scroll-margin-top / banner-offset guess instead of a measured one). #stickytop
-   (the new .lrh-hdr strip + nav.bar together) is the only element pinned to
+   (the new .edm-hdr strip + nav.bar together) is the only element pinned to
    top:0 here now; every per-card sticky banner (#pcclock and its siblings)
    stacks directly below it, and every article/cart/drawer scroll-margin-top has to clear it. */
 (function(){
@@ -2086,7 +2086,7 @@ var CASESTATE = (function(){
 <script>
 (function(){
   function boot(){
-    var K='lrh-ob-apgar', cur='1', d={t:'',s:{'1':{},'5':{}}};
+    var K='edm-ob-apgar', cur='1', d={t:'',s:{'1':{},'5':{}}};
     var tob=document.getElementById('tob'), now=document.getElementById('tobnow'),
         marks=document.getElementById('tobmarks'), sum=document.getElementById('apsum'),
         which=document.getElementById('apwhich'), note=document.getElementById('apnote');
@@ -2318,10 +2318,10 @@ var CASESTATE = (function(){
 })();
 </script>
 <script>
-/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
+/* ===== SITE CONFIG ({{site.hospitalShort}}) — edit these to adapt to another site/device ===== */
 var SITE = { version: "1.13", lastReviewed: "2026-08-07" };
 (function(){
-  var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
+  var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · {{site.hospitalShort}}';
   Array.prototype.forEach.call(document.querySelectorAll('.verstamp'), function(vs){ vs.textContent=stampText; });
 })();
 </script>
@@ -2442,8 +2442,8 @@ var SITE = { version: "1.13", lastReviewed: "2026-08-07" };
 <script>(function(){
   /* Round counter/round-start (RK/SK) stay tool-local — see CASE-STATE.md: they're
      shoulder-dystocia-specific re-run bookkeeping, not a simple named clock, so WS0 left
-     them out of the shared lrh-case-clocks shape. Only the main clock (K) moved. */
-  var RK='lrh-ob-sdround', SK='lrh-ob-sdroundstart', t0=null, r0=null, tick=null, round=1;
+     them out of the shared edm-case-clocks shape. Only the main clock (K) moved. */
+  var RK='edm-ob-sdround', SK='edm-ob-sdroundstart', t0=null, r0=null, tick=null, round=1;
   var el=document.getElementById('sdtime'), sb=document.getElementById('sdstart'), rb=document.getElementById('sdreset'), nw=document.getElementById('sdnow'), ag=document.getElementById('sdagain');
   if(!el) return;
   var panes = Array.prototype.slice.call(document.querySelectorAll('[data-sdband]'));
@@ -2496,7 +2496,7 @@ var SITE = { version: "1.13", lastReviewed: "2026-08-07" };
   run();
 })();</script>
 <script>(function(){
-  var HK='lrh-ob-hrcycle', n0=null, dur=60, band='', tick=null, flash=0, airflash=0;
+  var HK='edm-ob-hrcycle', n0=null, dur=60, band='', tick=null, flash=0, airflash=0;
   var labels = Array.prototype.slice.call(document.querySelectorAll('.hrleft'));
   if(!labels.length) return;
   /* card2 = "2 · HEART RATE CHECK" (03-1-*, high/mid guidance), card3 = "3 · HR
@@ -2583,7 +2583,7 @@ var SITE = { version: "1.13", lastReviewed: "2026-08-07" };
   paint();
 })();</script>
 <script>(function(){
-  /* Persistent source of truth is now the shared lrh-case-log (via CASESTATE, WS0); `data`
+  /* Persistent source of truth is now the shared edm-case-log (via CASESTATE, WS0); `data`
      here is an in-memory, ob-only, per-card grouping of that shared log kept around to
      paint the little inline lane widgets without re-filtering storage on every event. */
   var COL={'02':'#8a6d1f','03':'#16324f','06':'#9b1c2e','07':'#8a6d1f'}, CLK={'03':'pctime','06':'pphtime','07':'sdtime'};
@@ -2606,7 +2606,7 @@ var SITE = { version: "1.13", lastReviewed: "2026-08-07" };
   function elapsed(card){
     /* Card 02 events display as time since birth (issue #7), seconds-precise. */
     if(card==='02'){
-      var b=null; try{ b=+localStorage.getItem('lrh-ob-birthms')||null; }catch(e){}
+      var b=null; try{ b=+localStorage.getItem('edm-ob-birthms')||null; }catch(e){}
       if(!b) return '';
       var s=Math.max(0,Math.floor((Date.now()-b)/1000));
       return '+'+Math.floor(s/60)+':'+pad(s%60);
@@ -2738,8 +2738,8 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
 }
 </script>
 <script>(function(){
-  /* CASE TIMELINE — aggregates the birth time (lrh-ob-apgar) and all logged
-     events (lrh-ob-log) into one chronological summary. Times/events only; no
+  /* CASE TIMELINE — aggregates the birth time (edm-ob-apgar) and all logged
+     events (edm-ob-log) into one chronological summary. Times/events only; no
      identifiers; nothing transmitted; clears on RESET with the rest of state. */
   var btn=document.getElementById('summarybtn'), modal=document.getElementById('summarymodal'),
       body=document.getElementById('summarybody'), closeb=document.getElementById('summaryclose'),
@@ -2758,8 +2758,8 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   function wallFromMs(ms){ var d=new Date(ms); return pad2(d.getHours())+':'+pad2(d.getMinutes()); }
   var TOOL_LABEL={codes:'CODES', ob:'OB', peds:'PEDS', trauma:'TRAUMA'};
   function obLogByCard(){
-    /* WS0: lrh-ob-log is gone — rebuild the same {card:[...]} shape from the shared
-       lrh-case-log, filtered to this tool's own entries, so build() below is unchanged. */
+    /* WS0: edm-ob-log is gone — rebuild the same {card:[...]} shape from the shared
+       edm-case-log, filtered to this tool's own entries, so build() below is unchanged. */
     var out={};
     (CASESTATE.getLog()||[]).forEach(function(e){
       if(e.tool!=='ob') return;
@@ -2770,7 +2770,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   /* design-review F36/2.3 — ONE timeline, every tool's events. OB's own events (and its
      synthetic Born/Apgar rows) sort by an HH:MM "wall" string derived either from the
      user-entered time of birth or from a real logged timestamp; every other tool's real
-     lrh-case-log entries reduce to that same HH:MM shape via wallFromMs(tMs), so they can
+     edm-case-log entries reduce to that same HH:MM shape via wallFromMs(tMs), so they can
      be pushed into the same ev[] array and the existing toMin(wall) sort interleaves them
      correctly without needing a second sort key. */
   function otherToolEvents(){
@@ -2782,7 +2782,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
     return out;
   }
   function build(){
-    var ap=rd('lrh-ob-apgar'), log=obLogByCard();
+    var ap=rd('edm-ob-apgar'), log=obLogByCard();
     var birth = ap && ap.t ? ap.t : '', ev=[];
     if(birth) ev.push({wall:birth, label:'Born', pri:0, tool:'ob'});
     Object.keys(log).forEach(function(card){ (log[card]||[]).forEach(function(it){ if(it&&it.label) ev.push({wall:it.wall||'', label:it.label, pri:1, els:(card==='02'&&it.el)?it.el:null, tool:'ob'}); }); });
@@ -2801,7 +2801,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   function render(){
     var m=build();
     if(!m.ev.length){ body.innerHTML='<div style="color:#5a6a78; padding:16px 0; text-align:center;">Nothing logged yet — set the time of birth and work the case.</div>'; return ''; }
-    var rows='', text='LRH Emergency Manual — case timeline, all tools (times only, no identifiers)\n';
+    var rows='', text='{{site.hospitalShort}} Emergency Manual — case timeline, all tools (times only, no identifiers)\n';
     if(m.birth) text+='Born: '+m.birth+'\n';
     text+='\n';
     m.ev.forEach(function(e){
@@ -2837,8 +2837,8 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
     function pad(n){ return (n<10?'0':'')+n; }
     function fmt(s){ return Math.floor(s/60)+':'+pad(s%60); }
     function nowHM(){ var d=new Date(); return pad(d.getHours())+':'+pad(d.getMinutes()); }
-    function birthT(){ try{ var ap=JSON.parse(localStorage.getItem('lrh-ob-apgar')||'null'); return ap&&ap.t?ap.t:''; }catch(e){ return ''; } }
-    function birthMs(){ try{ return +localStorage.getItem('lrh-ob-birthms')||null; }catch(e){ return null; } }
+    function birthT(){ try{ var ap=JSON.parse(localStorage.getItem('edm-ob-apgar')||'null'); return ap&&ap.t?ap.t:''; }catch(e){ return ''; } }
+    function birthMs(){ try{ return +localStorage.getItem('edm-ob-birthms')||null; }catch(e){ return null; } }
     /* Fall back to the displayed birth time (TIME OF BIRTH banner) so the clamp
        clock anchors to birth even when the banner set the time. */
     function tobMs(){
@@ -2852,7 +2852,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
     function ensureBirthMs(){
       var b=birthMs(); if(b) return b;
       var m=tobMs(); if(m==null) m=Date.now();
-      try{ localStorage.setItem('lrh-ob-birthms', String(m)); }catch(e){}
+      try{ localStorage.setItem('edm-ob-birthms', String(m)); }catch(e){}
       return m;
     }
 
@@ -2886,7 +2886,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
     if(bs){
       bs.addEventListener('click', function(){
         if(!birthT() && tob){ tob.value=nowHM(); tob.dispatchEvent(new Event('input',{bubbles:true})); }
-        if(!birthMs()){ try{ localStorage.setItem('lrh-ob-birthms', String(Date.now())); }catch(e){} }
+        if(!birthMs()){ try{ localStorage.setItem('edm-ob-birthms', String(Date.now())); }catch(e){} }
         startTimer(birthMs());
         echo();
       });
@@ -2896,7 +2896,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
     (function(){
       var nb=document.getElementById('tobnow');
       if(!nb) return;
-      function exact(){ if(!birthMs()){ try{ localStorage.setItem('lrh-ob-birthms', String(Date.now())); }catch(e){} } }
+      function exact(){ if(!birthMs()){ try{ localStorage.setItem('edm-ob-birthms', String(Date.now())); }catch(e){} } }
       nb.addEventListener('touchend', exact, false);
       nb.addEventListener('click', exact, false);
     })();
@@ -2906,14 +2906,14 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
     if(tob){
       tob.addEventListener('change', function(){
         var m=tobMs(); if(m==null) return;
-        try{ localStorage.setItem('lrh-ob-birthms', String(m)); }catch(e){}
+        try{ localStorage.setItem('edm-ob-birthms', String(m)); }catch(e){}
         if(!clamped && t0!==null) startTimer(m);
       });
     }
     Array.prototype.forEach.call(document.querySelectorAll('.babyout'), function(bo){
       bo.addEventListener('click', function(){
         if(!birthT() && tob){ tob.value=nowHM(); tob.dispatchEvent(new Event('input',{bubbles:true})); }
-        if(!birthMs()){ try{ localStorage.setItem('lrh-ob-birthms', String(Date.now())); }catch(e){} }
+        if(!birthMs()){ try{ localStorage.setItem('edm-ob-birthms', String(Date.now())); }catch(e){} }
         startTimer(birthMs()); echo();
       });
     });
@@ -2990,14 +2990,14 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
     if(cbtn){
       cbtn.addEventListener('click', function(){
         if(clamped) return;
-        var atMs=Date.now(); try{ localStorage.setItem('lrh-ob-clampms', String(atMs)); }catch(e){}
+        var atMs=Date.now(); try{ localStorage.setItem('edm-ob-clampms', String(atMs)); }catch(e){}
         showClamped(t0!=null?t0:birthMs(), atMs);
       });
     }
 
     /* ---- resume on reload ---- */
     (function(){
-      var cl=null; try{ cl=+localStorage.getItem('lrh-ob-clampms')||null; }catch(e){}
+      var cl=null; try{ cl=+localStorage.getItem('edm-ob-clampms')||null; }catch(e){}
       var b=birthMs();
       if(cl){ showClamped(b, cl); }
       else if(b){ startTimer(b); }
@@ -3006,7 +3006,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
     /* ---- RESET clears our extra keys ---- */
     var rb=document.getElementById('resetbtn');
     if(rb) rb.addEventListener('click', function(){
-      try{ localStorage.removeItem('lrh-ob-birthms'); localStorage.removeItem('lrh-ob-clampms'); }catch(e){}
+      try{ localStorage.removeItem('edm-ob-birthms'); localStorage.removeItem('edm-ob-clampms'); }catch(e){}
       /* Clear the in-memory clamp state + on-screen timer so the next case starts clean. */
       clamped=false; t0=null; if(tick){ clearInterval(tick); tick=null; }
       if(disp){ disp.textContent='0:00'; disp.style.color='#5a6a78'; }
@@ -3026,7 +3026,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
 <script>(function(){
   /* Equipment + code-dose engine. Weight (birth banner) preferred over gestation
      (PREPARE). Device-local, no identifiers. Sizes: Merck/NRP. */
-  var WK='lrh-ob-weight', GK='lrh-ob-ga';
+  var WK='edm-ob-weight', GK='edm-ob-ga';
   function boot(){
     function num(k){ var v=parseFloat(localStorage.getItem(k)||''); return isNaN(v)?null:v; }
     /* Birth weight is charted and SPOKEN in grams; this input is kilograms.
@@ -3081,7 +3081,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
         ETT:['2.5','3.0','3.5','3.5–4.0'][band],
         blade:['00','0','0–1','1'][band],
         depth: haveW ? ((Math.round((6+w)*10)/10)+' cm') : ['~6 cm','~7 cm','~8 cm','~9 cm'][band],
-        LMA: lmaOK ? '0.5' : '0',   /* LRH stocks infant LMA 0 and 0.5 (drawer 1) — no size 1 */
+        LMA: lmaOK ? '0.5' : '0',   /* Stocked supraglottic sizes: {{physical.supraglotticSizes}} */
         /* UVC: 5 Fr >=1.5 kg, 3.5 Fr <1.5 kg (card 04's own header rule). The
            GA-only path goes by band: <34 wk -> 3.5 Fr — the old strict
            refW<1.5 handed exactly the 28–33 wk babies a 5 Fr
@@ -3192,7 +3192,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
 <script>(function(){
   /* Maternal-question chips — tap to highlight; single-select within a data-g
      group unless it lacks data-single. Device-local, cleared on RESET. */
-  var MK='lrh-ob-mother';
+  var MK='edm-ob-mother';
   function boot(){
     var chips=document.querySelectorAll('.mchip'); if(!chips.length) return;
     var sel={}; try{ sel=JSON.parse(localStorage.getItem(MK)||'{}')||{}; }catch(e){}
@@ -3230,8 +3230,8 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   var fInput=document.getElementById('menuFilter');
   if(!menu || !fInput) return;
   var emptyMsg=document.getElementById('menuFilterEmpty');
-  var rows=Array.prototype.slice.call(menu.querySelectorAll('.lrh-row'));
-  var groups=Array.prototype.slice.call(menu.querySelectorAll('.lrh-group-hd'));
+  var rows=Array.prototype.slice.call(menu.querySelectorAll('.edm-row'));
+  var groups=Array.prototype.slice.call(menu.querySelectorAll('.edm-group-hd'));
   function norm(s){ return (s||'').toLowerCase(); }
   var rowData=rows.map(function(r){
     var num=r.querySelector('.n'), t=r.querySelector('.t');
@@ -3249,7 +3249,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
     groups.forEach(function(gh){
       var grid=gh.nextElementSibling;
       if(!grid) return;
-      var visRows=grid.querySelectorAll('.lrh-row');
+      var visRows=grid.querySelectorAll('.edm-row');
       var vis=false;
       for(var i=0;i<visRows.length;i++){ if(visRows[i].style.display!=='none'){ vis=true; break; } }
       gh.style.display=vis?'':'none';

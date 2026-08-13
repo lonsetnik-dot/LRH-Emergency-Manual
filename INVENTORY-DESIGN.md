@@ -75,7 +75,7 @@ var CATALOG = {
 var LOCATIONS = {
   "io-needle-peds":   { loc:"Code Cart · EZ-IO drawer",            par:2 },
   "ett-cuffed-3.0":   { loc:"Broselow Cart · PINK–RED drawers",    par:2 },
-  "chest-tube-12f":   { loc:"Room 7 · Pigtail Thoracostomy",       par:2 },
+  "chest-tube-12f":   { loc:"the resus room · Pigtail Thoracostomy",       par:2 },
   "uvc-5f":           { loc:"OB Cart · Circulation drawer",        par:2,
                         note:"in the UVC kit" },
   // ...
@@ -124,7 +124,7 @@ WHITE (15–18) · BLUE (19–23) · ORANGE (24–29) · GREEN (30–36)
 > standard Broselow packing list becomes catalog items mapped to bands in
 > Phase 1, then verified against the physical cart (see §6 open question 2).
 
-### Room 7 cabinets (13 sections)
+### the resus room cabinets (13 sections)
 Airway · Vascular Access · Arterial Line · Fluids · Chest Drainage ·
 GI Hemorrhage · Lung Isolation · Epistaxis · SALAD Suction · Procedure Trays ·
 Suture / Wound · Specimens · Splints · Monitoring · Transvenous Pacing
@@ -147,10 +147,10 @@ physical cart) · **✗ GAP** (no known home anywhere in the manual's data).
 ### Monitoring
 | Item | Status |
 |---|---|
-| BP cuffs — neonatal / infant / child / adult | ? VERIFY — Broselow drawers + Room 7 · Monitoring |
+| BP cuffs — neonatal / infant / child / adult | ? VERIFY — Broselow drawers + the resus room · Monitoring |
 | Doppler ultrasound (pulses/BP) | ✗ GAP |
 | ECG monitor–defibrillator with pediatric capability + peds pads/paddles | ? VERIFY — defib lives outside cart data today |
-| Pulse oximeter with pediatric + infant probes | ? VERIFY — Room 7 · Monitoring |
+| Pulse oximeter with pediatric + infant probes | ? VERIFY — the resus room · Monitoring |
 | Continuous end-tidal CO₂ (peds + adult) | ✓ MAPPED — Code Cart · End-Tidal CO₂ |
 | Hypothermia-capable thermometer (reads < 35 °C) | ✗ GAP — also needed by codes c27 |
 | Scale in kilograms only | ? VERIFY |
@@ -162,7 +162,7 @@ physical cart) · **✗ GAP** (no known home anywhere in the manual's data).
 | IO needles — pediatric + adult | ✓ MAPPED — Code Cart · EZ-IO |
 | IV catheters 22–24 g | ? VERIFY — Broselow drawers / Trauma Cart · IV Supplies |
 | Umbilical vein catheters 3.5 Fr + 5 Fr | ✓ MAPPED — OB Cart (UVC kit, card c04) |
-| Central venous catheters 4–7 Fr (peds sizes) | ? VERIFY — Room 7 · Vascular Access stocks adult CVC; peds sizes unconfirmed |
+| Central venous catheters 4–7 Fr (peds sizes) | ? VERIFY — the resus room · Vascular Access stocks adult CVC; peds sizes unconfirmed |
 | Calibrated-chamber IV sets / infusion pumps | ? VERIFY |
 | Fluid/blood warming capability | ✗ GAP in data — exists in hospital, no mapped home |
 
@@ -183,10 +183,10 @@ physical cart) · **✗ GAP** (no known home anywhere in the manual's data).
 ### Procedures / trauma / other
 | Item | Status |
 |---|---|
-| Chest tubes 8–40 Fr (peds sizes matter) | ✓ MAPPED — Trauma Cart + Room 7 · Pigtail; sub-12 Fr VERIFY |
+| Chest tubes 8–40 Fr (peds sizes matter) | ✓ MAPPED — Trauma Cart + the resus room · Pigtail; sub-12 Fr VERIFY |
 | Cervical collars — infant through adult | ✗ GAP in data |
-| Femur splints — pediatric + adult | ? VERIFY — Room 7 · Splints |
-| Lumbar puncture trays — 22 g infant/peds + adult | ? VERIFY — Room 7 · Procedure Trays |
+| Femur splints — pediatric + adult | ? VERIFY — the resus room · Splints |
+| Lumbar puncture trays — 22 g infant/peds + adult | ? VERIFY — the resus room · Procedure Trays |
 | Urinary catheters 5–22 Fr | ? VERIFY |
 | Newborn delivery kit + warmer | ✓ MAPPED — OB Cart + warmer |
 | Pediatric drug dosing reference (length-based) | ✓ MAPPED — Broselow tape + peds/ tool itself |
@@ -210,7 +210,7 @@ carts with this list turns every ? into ✓ or ✗.
 | `labels/` | Renders from injected inventory instead of its private `CARTS` — zero visual change, one source of truth. |
 | `simulations/` | Equipment boxes resolve locations by item id — a moved kit updates every sim on rebuild. |
 | `system/` | Gains an equipment audit column (standards coverage %). |
-| `inventory/` (new) | Search box: "pigtail" → *Room 7 · Pigtail Thoracostomy*; plus the NPRP green/red audit view. |
+| `inventory/` (new) | Search box: "pigtail" → *the resus room · Pigtail Thoracostomy*; plus the NPRP green/red audit view. |
 | `verify_kit_consistency.mjs` | Extends naturally: kit contents move into the inventory and the test checks all consumers against it. |
 | Fork/localization | Another ED edits `LOCATIONS` only (and their own par levels); catalog + standards ship as-is. |
 
@@ -248,7 +248,8 @@ So a catalog item may carry `sizes:[…]`, and each size becomes its own
 auditable row keyed `id#size`; `INV_LOCATIONS` accepts either an item key or a
 size key, and a size key wins.
 
-The first thing this surfaced was already true and already invisible: LRH
+The first thing this surfaced was already true and already invisible: the
+originating site
 stocks **LMA 0 and 0.5 on the OB cart** and **i-gel 1 through 5 on the code
 cart**. At item granularity that is one green row. At size granularity it is
 two devices, two carts, and a handover fact worth knowing at 3 a.m.

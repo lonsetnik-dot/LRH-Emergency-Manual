@@ -1,6 +1,6 @@
-# /ob — LRH OB Emergencies (beta)
+# /ob — this site OB Emergencies (beta)
 
-Live at <https://lrhemergencymanual.net/ob/>
+Live at <https://your-manual-domain/ob/>
 
 Static, self-contained. Serve this folder at `/ob` and link to it from the root index:
 

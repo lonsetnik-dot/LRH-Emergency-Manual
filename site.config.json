@@ -1,0 +1,108 @@
+{
+  "_readme": [
+    "This is the answer sheet for your fork. Every key here is a question in",
+    "ONBOARDING.md — the question text, why it matters, and who at your hospital",
+    "knows the answer all live there, keyed by the same dot path.",
+    "null means UNANSWERED: the build renders a loud placeholder on screen and",
+    "verify_localization.mjs reports it. false and 0 are real answers.",
+    "Never copy another hospital's answers into this file without validating them."
+  ],
+  "_generatedFrom": "localization.manifest.mjs",
+  "site": {
+    "hospitalName": null,
+    "hospitalShort": null,
+    "healthSystemName": null,
+    "deptName": null,
+    "domain": null,
+    "repoUrl": null,
+    "accentLight": null,
+    "accentDark": null
+  },
+  "contacts": {
+    "transfer": null,
+    "transferPrimary": {
+      "label": null,
+      "phone": null,
+      "tel": null
+    },
+    "poisonControl": {
+      "display": null,
+      "tel": null
+    },
+    "bloodBank": {
+      "how": null
+    },
+    "security": {
+      "who": null,
+      "how": null,
+      "overhead": null,
+      "note": null
+    }
+  },
+  "caps": {
+    "traumaCenterLevel": null,
+    "neurosurgeryInHouse": null,
+    "cathLab": null,
+    "plateletsOnSite": null,
+    "cEEGInHouse": null,
+    "replantCenter": null,
+    "edSecurityOvernight": null,
+    "criticalAccess": null,
+    "tcaTeamModel": null,
+    "obOnSite": null
+  },
+  "defib": {
+    "mfr": null,
+    "mfrShort": null,
+    "adultJoules": null
+  },
+  "trop": {
+    "assayName": null,
+    "units": null,
+    "ruleInValue": null,
+    "ruleInDelta": null,
+    "ruleOutValue": null,
+    "ruleOutDelta": null,
+    "ruleOutPainValue": null,
+    "singleLoD": null,
+    "painHours": null,
+    "grayLow": null,
+    "grayHigh": null,
+    "normalLimitMale": null,
+    "normalLimitFemale": null
+  },
+  "formulary": {
+    "strokeLytic": null,
+    "thrombectomyTrigger": null,
+    "reversalAgents": null,
+    "rsiInduction": null,
+    "mtpRatio": null,
+    "apneicOxLpm": null
+  },
+  "physical": {
+    "cartDrawers": null,
+    "supraglotticSizes": null,
+    "lungIsolation": null,
+    "balloonTamponadeTube": null,
+    "resusRoom": null,
+    "simRoom": null
+  },
+  "policy": {
+    "stroke": null,
+    "ich": null,
+    "mtp": null,
+    "statusEpilepticus": null,
+    "asthma": null,
+    "angioedema": null,
+    "tracheostomy": null,
+    "pedsOrderSet": null,
+    "stemiActivation": null
+  },
+  "dialect": {
+    "variant": null
+  },
+  "review": {
+    "reviewer": null,
+    "date": null
+  }
+}

@@ -1,5 +1,5 @@
-/* LRH OB Emergencies — offline shell. Bump CACHE on every deploy. */
-var CACHE = 'lrh-ob-2026-08-08a';
+/* {{site.hospitalShort}} OB Emergencies — offline shell. Bump CACHE on every deploy. */
+var CACHE = 'edm-ob-2026-08-08a';
 var ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'icon.svg'];
 self.addEventListener('install', function(e){
   // Cache.addAll() is all-or-nothing: if ANY asset above 404s, the whole install rejects,

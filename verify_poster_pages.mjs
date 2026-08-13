@@ -1,4 +1,4 @@
-/* LRH Emergency Manual — poster page-count guard.
+/* ED Emergency Manual — poster page-count guard.
  *
  * Every poster in posters/ is a print-first letter-portrait one-pager for the resus-bay wall and
  * the trauma cart. "Exactly one page" is a hard requirement: a poster that silently spills onto a
@@ -12,7 +12,7 @@
  *     node verify_poster_pages.mjs
  *
  * Or against a deployed URL:
- *     BASE=https://lrhemergencymanual.net node verify_poster_pages.mjs
+ *     BASE=https://your-manual-domain node verify_poster_pages.mjs
  *
  * Needs Playwright once:  npm i -D playwright && npx playwright install chromium
  *

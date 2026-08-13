@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0D1420">
-<title>LRH Arrest — Cardiac Arrest Cognitive Aid</title>
+<title>{{site.hospitalShort}} Arrest — Cardiac Arrest Cognitive Aid</title>
 <meta name="description" content="Mobile cognitive aid for cardiac arrest: code clock, 2-minute cycle, weight-based PALS dosing, rhythm-check branching and an event log. Personal aid, not hospital policy.">
 <style>
 /* @design-system-live */
@@ -24,10 +24,10 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
 </head>
 <body data-theme="dark">
 <script>
-/* Apply the shared persisted theme before paint (lrh-pref-theme namespace, the
+/* Apply the shared persisted theme before paint (edm-pref-theme namespace, the
    same key the rest of the manual uses; outside any RESET sweep — CASE-STATE.md).
    Keeps this tool's theme in sync with wherever the clinician came from. */
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+try{ document.body.dataset.theme = localStorage.getItem('edm-pref-theme')==='light' ? 'light' : 'dark'; }
 catch(e){ document.body.dataset.theme='dark'; }
 </script>
 <div class="wrap">
@@ -63,7 +63,7 @@ catch(e){ document.body.dataset.theme='dark'; }
        Threshold: <3 kg (the Broselow-Luten floor) or age under 1 month.
        Dose divergence cited: NRP 8th ed epi 0.02 mg/kg IV/UVC (range
        0.01–0.03) vs PALS 0.01 mg/kg. Dismissal is per-case
-       (lrh-case-nrpdismiss, shared with peds/codes) — RESET and the stale-case
+       (edm-case-nrpdismiss, shared with peds/codes) — RESET and the stale-case
        sweep bring the banner back for the next patient. -->
   <div id="nrpbanner" class="card" style="display:none;gap:10px;align-items:center;margin-top:10px;border-color:var(--red);border-left:10px solid var(--red);padding:10px 12px">
     <div style="flex:1;font-size:13.5px;line-height:1.45"><b>NEWLY BORN (first days of life)?</b> Use <a href="../ob-neonatal/?from=arrest#c03" style="color:var(--red);font-weight:800">NEONATAL RESUSCITATION (NRP) &rarr;</a> — doses differ: epi <b>0.02 mg/kg</b> (NRP) vs 0.01 mg/kg (PALS). Older infant who simply weighs &lt;3 kg? Dismiss and continue with PALS.</div>
@@ -359,20 +359,24 @@ catch(e){ document.body.dataset.theme='dark'; }
 (function(){
 'use strict';
 
+/* @localconfig */
 /* =============================== SITE CONFIG ===============================
    Ported verbatim from codes/index.html so the two screens cannot drift on
    dose math. THIS IS A DUPLICATE BY DESIGN — CLAUDE.md rule 1 forbids a shared
    dependency between tools, so if either changes, change both by hand.
 
    NOTE ON ADULT DEFIBRILLATION: the design prototype showed a flat 200 J for
-   adults. LRH runs a ZOLL rectilinear biphasic with a labelled escalating
+   adults. {{site.hospitalShort}} runs a ZOLL rectilinear biphasic with a labelled escalating
    sequence, which is what the existing site implements, and the handoff says
    to keep the site's clinical logic where the two differ. So 120 / 150 / 200.
    ========================================================================== */
 var SITE = {
   version: "0.2", lastReviewed: "2026-08-10",
   cpr:   { cycleSec:120, rateLow:100, rateHigh:120, rotateMin:2, bpm:110 },
-  defib: { mfrShort:"ZOLL", adultJ:[120,150,200] },
+  /* Device-specific: read from site.config.json (ONBOARDING §D). Escalation
+     and plateau are universal and enforced by the suite; the joules are not,
+     and there is no defensible default to fall back to. */
+  defib: { mfrShort: LOCAL('defib.mfrShort'), adultJ: LOCAL('defib.adultJoules') },
   epi:   { adultMg:1, intervalMin:"3–5", suggestSec:180, conc:0.1 },
   amio:  { adultDose1:300, adultDose2:150 },
   peds:  { defibPerKg1:2, defibPerKgN:4, defibMaxPerKg:10,
@@ -380,7 +384,7 @@ var SITE = {
            /* epiEttMaxMg: adult ETT dose is 2–2.5 mg — cap the per-kg math
               there. lidoMaxMg1/2: adult bolus convention (1–1.5 mg/kg, max
               ~100 mg; repeat half).
-              Clinically reviewed and accepted for LRH 2026-08-12 (Lon Setnik):
+              Clinically reviewed and accepted for {{site.hospitalShort}} 2026-08-12 (Lon Setnik):
               standard ceilings, guarding against typo/unit-error dosing at
               extreme weights. NOTE for a fork: epiEttMaxMg is the one cap here
               that binds inside a real pediatric range (above 25 kg) rather than
@@ -428,7 +432,7 @@ var SITE = {
    Read-only in practice: nothing in this file reads window.SITE, it reads
    the local SITE. Two reasons it is worth one line:
    1. The suites assert the UI against THIS config instead of against
-      hardcoded LRH numbers, so a fork that correctly localizes its
+      hardcoded {{site.hospitalShort}} numbers, so a fork that correctly localizes its
       values keeps a green test run (issue #117). Tests that break on
       correct localization teach an adopting site to ignore failures.
    2. A champion localizing the arrest engine can read the live,
@@ -438,7 +442,7 @@ try{ window.SITE = SITE; }catch(e){}
 
 /* =============================== LOCALE ====================================
    Spelling and drug nomenclature for the JS-GENERATED content below (dose
-   strings, reference accordions, status labels). US English / LRH is the
+   strings, reference accordions, status labels). US English / {{site.hospitalShort}} is the
    default; a fork localizes by editing the values here — one place, and every
    dynamic string re-reads it on the next paint. Static HTML prose in this file
    is maintained separately in the site's dialect (see TERMINOLOGY.md). Give the
@@ -510,43 +514,43 @@ var SS = {
   set:function(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
   del:function(k){ try{ localStorage.removeItem(k); }catch(e){} },
   loadWeight:function(){
-    var w=parseFloat(SS.get('lrh-case-wtkg')); S.kg=(w>0&&w<300)?w:null;
-    var a=parseFloat(SS.get('lrh-case-ageyrs')); S.ageY=(a>=0&&a<130)?a:null;
-    S.override = SS.get('lrh-case-adultoverride')==='1';
+    var w=parseFloat(SS.get('edm-case-wtkg')); S.kg=(w>0&&w<300)?w:null;
+    var a=parseFloat(SS.get('edm-case-ageyrs')); S.ageY=(a>=0&&a<130)?a:null;
+    S.override = SS.get('edm-case-adultoverride')==='1';
   },
   saveWeight:function(src){
-    if(S.kg!==null){ SS.set('lrh-case-wtkg',String(S.kg)); SS.set('lrh-case-wtsrc',src||'measured'); SS.set('lrh-case-wtms',String(Date.now())); }
-    else { SS.del('lrh-case-wtkg'); SS.del('lrh-case-wtsrc'); SS.del('lrh-case-wtms'); }
-    if(S.ageY!==null) SS.set('lrh-case-ageyrs',String(S.ageY)); else SS.del('lrh-case-ageyrs');
+    if(S.kg!==null){ SS.set('edm-case-wtkg',String(S.kg)); SS.set('edm-case-wtsrc',src||'measured'); SS.set('edm-case-wtms',String(Date.now())); }
+    else { SS.del('edm-case-wtkg'); SS.del('edm-case-wtsrc'); SS.del('edm-case-wtms'); }
+    if(S.ageY!==null) SS.set('edm-case-ageyrs',String(S.ageY)); else SS.del('edm-case-ageyrs');
   },
-  saveOverride:function(){ if(S.override) SS.set('lrh-case-adultoverride','1'); else SS.del('lrh-case-adultoverride'); },
+  saveOverride:function(){ if(S.override) SS.set('edm-case-adultoverride','1'); else SS.del('edm-case-adultoverride'); },
   /* Shared timeline. Same PHI guard shape as every tool's CASESTATE.addLog:
      refuse weight-shaped labels and long digit runs so nothing identifying,
      and no bare patient weight, ever lands in the shared record. */
   addLog:function(label){
     if(/\d+(\.\d+)?\s*(kg|lb)/i.test(label)) return;
     if(/\d{6,}/.test(label)) return;
-    var arr; try{ arr=JSON.parse(SS.get('lrh-case-log')||'[]'); }catch(e){ arr=[]; }
+    var arr; try{ arr=JSON.parse(SS.get('edm-case-log')||'[]'); }catch(e){ arr=[]; }
     if(!Array.isArray(arr)) arr=[];
     arr.push({ tMs:Date.now(), tool:'codes', card:'01', label:label });
-    SS.set('lrh-case-log', JSON.stringify(arr));
+    SS.set('edm-case-log', JSON.stringify(arr));
   },
   sweep:function(){ try{ for(var i=localStorage.length-1;i>=0;i--){ var k=localStorage.key(i);
-    if(k && k.indexOf('lrh-')===0 && k.indexOf('lrh-pref-')!==0) localStorage.removeItem(k); } }catch(e){} },
-  /* Shared case clock (lrh-case-clocks map — same shape codes/peds use). arrest/
+    if(k && k.indexOf('edm-')===0 && k.indexOf('edm-pref-')!==0) localStorage.removeItem(k); } }catch(e){} },
+  /* Shared case clock (edm-case-clocks map — same shape codes/peds use). arrest/
      writes 'rosc' (the ROSC instant) so Codes card 22's live Post-ROSC clock can
      count up from it; pass ms=null to clear it (re-arrest / pulse lost). */
   setClock:function(name, ms){
-    var c; try{ c=JSON.parse(SS.get('lrh-case-clocks')||'{}'); }catch(e){ c={}; }
+    var c; try{ c=JSON.parse(SS.get('edm-case-clocks')||'{}'); }catch(e){ c={}; }
     if(c===null||typeof c!=='object') c={};
     if(ms===null||ms===undefined) delete c[name]; else c[name]=ms;
-    SS.set('lrh-case-clocks', JSON.stringify(c));
+    SS.set('edm-case-clocks', JSON.stringify(c));
   },
-  touchActive:function(){ SS.set('lrh-case-lastactive', String(Date.now())); }
+  touchActive:function(){ SS.set('edm-case-lastactive', String(Date.now())); }
 };
 
 /* Every logged event goes to BOTH the in-tool event-log accordion (in-memory
-   S.events) and the shared manual-wide timeline (lrh-case-log, PHI-guarded). */
+   S.events) and the shared manual-wide timeline (edm-case-log, PHI-guarded). */
 function log(label){ S.events.unshift({ t: clockNow(), label: label }); SS.addLog(label); }
 
 function kg(){ var k=S.kg; return (k>0 && k<300) ? k : null; }
@@ -566,7 +570,13 @@ function band(){ var k=kg(); if(k===null) return null;
 /* ---- DOSE MATH — the site's, not the prototype's --------------------------- */
 function r(x,d){ var m=Math.pow(10,d===undefined?1:d); return Math.round(x*m)/m; }
 function doses(){
-  var k=kg(), p=isPeds(), P=SITE.peds, adultMax=SITE.defib.adultJ[SITE.defib.adultJ.length-1];
+  var k=kg(), p=isPeds(), P=SITE.peds;
+  /* The adult ceiling caps every per-kg pediatric energy. With no configured
+     sequence there is no ceiling, so peds energies are withheld too rather
+     than computed against an imaginary maximum. */
+  var aJ=SITE.defib.adultJ;
+  if(!aJ || !aJ.length) return { pedsKnown:false, noEnergies:true };
+  var adultMax=aJ[aJ.length-1];
   if(p && k){
     return { pedsKnown:true,
       e1: Math.round(Math.min(P.defibPerKg1*k, adultMax)),
@@ -589,8 +599,9 @@ function doses(){
    number rather than inventing one. */
 function shockJ(){
   var d=doses(), n=S.shocks;
-  if(isPeds()){ if(!d.pedsKnown) return null; return n===0 ? d.e1 : d.eN; }
   var a=SITE.defib.adultJ;
+  if(!a || !a.length) return null;      /* unlocalized — print no number */
+  if(isPeds()){ if(!d.pedsKnown) return null; return n===0 ? d.e1 : d.eN; }
   return a[Math.min(n, a.length-1)];
 }
 
@@ -692,8 +703,12 @@ var ACC = [
        '<p><b>Different manufacturer/device on your unit?</b> Use its manufacturer label instead — energies are device-specific.</p>'+
        '<p style="margin-bottom:0"><b>Resume compressions immediately after each shock</b> — minimize the pause to &lt;10 s.</p>';
    }
-   return '<p>Adult, '+SITE.defib.mfrShort+' rectilinear biphasic: <b>'+SITE.defib.adultJ[0]+' J</b> first shock, <b>'+
-     SITE.defib.adultJ[1]+' J</b> second, <b>'+SITE.defib.adultJ[2]+' J</b> third and subsequent.</p>'+
+   var aJ=SITE.defib.adultJ;
+   return (aJ && aJ.length
+     ? '<p>Adult, '+(SITE.defib.mfrShort||'your device')+': <b>'+aJ[0]+' J</b> first shock'+
+       (aJ[1]!=null ? ', <b>'+aJ[1]+' J</b> second' : '')+
+       (aJ[2]!=null ? ', <b>'+aJ[2]+' J</b> third and subsequent' : '')+'.</p>'
+     : LOCAL_MISSING_HTML('Adult defibrillation energies','D',['defib.adultJoules','defib.mfrShort']))+
      '<p><b>Different manufacturer/device on your unit?</b> Use its manufacturer label instead — energies are device-specific. If no label is visible, use the maximum available.</p>'+
      '<p style="margin-bottom:0"><b>Resume compressions immediately after each shock</b> — minimize the pause to &lt;10 s.</p>';
  }},
@@ -846,8 +861,8 @@ function paint(){
                          : (autoPeds() ? L('pediatric')+' by age — enter kg' : 'enter weight');
 
   /* NRP off-ramp (see #nrpbanner markup + SITE.nrp). Dismissal is per-case and
-     manual-wide (lrh-case-nrpdismiss) — RESET / stale-case sweep restore it. */
-  var showNrp = SS.get('lrh-case-nrpdismiss')!=='1' &&
+     manual-wide (edm-case-nrpdismiss) — RESET / stale-case sweep restore it. */
+  var showNrp = SS.get('edm-case-nrpdismiss')!=='1' &&
     ((k!==null && k<SITE.nrp.maxKg) || (S.ageY!==null && S.ageY<SITE.nrp.maxAgeYrs));
   $('nrpbanner').style.display = showNrp ? 'flex' : 'none';
 
@@ -989,7 +1004,9 @@ function paint(){
   }
 
   $('cyclemin').textContent = fmt(SITE.cpr.cycleSec);
-  $('verstamp').textContent = 'v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
+  $('verstamp').textContent = 'v'+SITE.version+' \u00b7 '+
+    (LOCAL('review.date') ? 'reviewed '+LOCAL('review.date') : '\u26A0 NOT LOCALLY REVIEWED')+
+    ' \u00b7 '+(LOCAL('site.hospitalShort')||'\u00ABABBR\u00BB');
   renderAccordions(d);
 }
 
@@ -1030,8 +1047,8 @@ function toCPR(why){
 }
 function doReset(){
   MET.stop(); VENT.stop();
-  /* One case, one reset: sweep the shared lrh- namespace (preserving the
-     lrh-pref- preferences) so a reset here clears weight, timeline and every
+  /* One case, one reset: sweep the shared edm- namespace (preserving the
+     edm-pref- preferences) so a reset here clears weight, timeline and every
      other tool's case state too — the same sweep RESET FOR NEXT CASE runs
      everywhere else (CASE-STATE.md). Then re-init this tool in memory. */
   SS.sweep();
@@ -1050,7 +1067,7 @@ function wire(){
   $('themebtn').addEventListener('click', function(){
     S.theme = S.theme==='dark' ? 'light' : 'dark';
     document.body.dataset.theme = S.theme;
-    try{ localStorage.setItem('lrh-pref-theme', S.theme); }catch(e){}
+    try{ localStorage.setItem('edm-pref-theme', S.theme); }catch(e){}
     paint();
   });
   /* Back link: default to the manual hub, but if we were opened from a specific
@@ -1122,7 +1139,7 @@ function wire(){
     clearWErr();
     var prev=S.ageY;
     S.ageY=ageInYears();
-    if(S.ageY!==null) SS.set('lrh-case-ageyrs',String(S.ageY)); else SS.del('lrh-case-ageyrs');
+    if(S.ageY!==null) SS.set('edm-case-ageyrs',String(S.ageY)); else SS.del('edm-case-ageyrs');
     if(S.ageY!==prev) scheduleOverrideClear();
     paint();
   }
@@ -1151,7 +1168,7 @@ function wire(){
     log('Weight ESTIMATED from age — '+est+' kg (not measured)');
   });
   $('dismissnrp').addEventListener('click', function(){
-    SS.set('lrh-case-nrpdismiss','1');
+    SS.set('edm-case-nrpdismiss','1');
     log('NRP banner dismissed — continuing with PALS');
     paint();
   });
@@ -1343,7 +1360,7 @@ if(S.ageY!==null) $('aIn').value = String(S.ageY);
     if(S.kg!==before || S.ageY!==beforeAge) paint();
   }
   window.addEventListener('storage', function(ev){
-    if(!ev.key || ev.key.indexOf('lrh-case-')!==0) return;
+    if(!ev.key || ev.key.indexOf('edm-case-')!==0) return;
     resync();
   });
   document.addEventListener('visibilitychange', function(){ if(!document.hidden) resync(); });

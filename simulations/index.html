@@ -6,21 +6,21 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#005596">
-<title>LRH Simulations</title>
+<title>{{site.hospitalShort}} Simulations</title>
 <meta name="apple-mobile-web-app-title" content="Simulations">
 <meta name="description" content="Low-fidelity in-situ simulation scripts — a pillow as the patient — that walk teams through the manual's major workflows. Practice only.">
-<link rel="canonical" href="https://lrhemergencymanual.net/simulations/">
+<link rel="canonical" href="https://{{site.domain}}/simulations/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="LRH Emergency Manual">
-<meta property="og:title" content="LRH Simulations (beta)">
+<meta property="og:site_name" content="{{site.hospitalShort}} Emergency Manual">
+<meta property="og:title" content="{{site.hospitalShort}} Simulations (beta)">
 <meta property="og:description" content="Pillow-patient simulation scripts chained across the manual's real workflow cards. Practice and feedback only.">
-<meta property="og:url" content="https://lrhemergencymanual.net/simulations/">
+<meta property="og:url" content="https://{{site.domain}}/simulations/">
 <meta name="twitter:card" content="summary">
 <style>
   html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; --sticky-h:54px; }
   /* @design-system */
   /* ---- Shared design language — tokens, the single .hdr chrome bar, the
-     .lrh-* menu rows, the themed <body> and the .t-* card-interior classes are
+     .edm-* menu rows, the themed <body> and the .t-* card-interior classes are
      injected from design-system.css at the marker above (build.mjs), edited
      once for the whole manual. Only this tool's own sim-script classes live
      below. ---- */
@@ -70,13 +70,13 @@
 </head>
 <body data-theme="dark">
 <script>
-/* Apply a persisted theme before the page paints (shared lrh-pref- namespace;
+/* Apply a persisted theme before the page paints (shared edm-pref- namespace;
    outside any RESET prefix sweep — CASE-STATE.md). */
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+try{ document.body.dataset.theme = localStorage.getItem('edm-pref-theme')==='light' ? 'light' : 'dark'; }
 catch(e){ document.body.dataset.theme='dark'; }
 </script>
 <div id="betasplash" style="position:fixed; inset:0; z-index:999; background:linear-gradient(135deg,#005596,#003e6e); color:#fffefb; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
-  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:#a9c2dc;">LRH · EMERGENCY DEPARTMENT</div>
+  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:#a9c2dc;">{{site.hospitalShort}} · {{site.deptName}}</div>
   <div style="font-size:30px; line-height:1.06; letter-spacing:-0.02em; font-weight:700;">Simulations</div>
   <div style="display:inline-block; padding:6px 14px; border:2px solid #e0b93c; color:#f7d97a; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.16em;">TRAINING ONLY</div>
   <div style="max-width:460px; font-size:17px; line-height:1.4; color:#dbe4ee;">These are practice scripts — never instructions for the care of a real patient. The patient is a pillow.</div>
@@ -87,13 +87,13 @@ catch(e){ document.body.dataset.theme='dark'; }
 <div class="hdr">
   <a class="ghost" href="../?from=tool">&#9664; MANUAL</a>
   <span class="plabel">SIMULATIONS</span>
-  <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
+  <button type="button" class="ghost" id="edmThemeBtn">LIGHT</button>
 </div>
 </div>
 
 <main id="top">
   <div style="padding:16px 14px 6px;">
-    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:var(--ink2); font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
+    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:var(--ink2); font-weight:700;">{{site.hospitalShort}} · {{site.deptName}}</div>
     <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Simulations — the patient is a pillow</h1>
     <p style="margin:0; color:var(--ink2); font-size:14.5px;">Ten-to-fifteen-minute low-fidelity drills that chain the manual's real workflows together — birth into dystocia into a blue baby, asthma into arrest into post-ROSC. One person reads the script; the recorder drives the actual cards. No mannequin required.</p>
   </div>
@@ -117,23 +117,23 @@ catch(e){ document.body.dataset.theme='dark'; }
   </div>
 
   <!-- ===== SIM MENU ===== -->
-  <div class="lrh-menuwrap" style="padding-top:8px">
+  <div class="edm-menuwrap" style="padding-top:8px">
     <div class="inner">
       <!-- Sims are deliberately absent from the site-wide search; this local filter
            is their own search surface. Matches titles + data-kw keywords. -->
-      <div class="lrh-filter"><span class="ico" aria-hidden="true">&#8981;</span><input type="search" id="simq" autocomplete="off" spellcheck="false" placeholder="Search sims&hellip; e.g. dystocia, arrest, FONA, MTP" aria-label="Search simulations"></div>
-      <div class="lrh-filter-empty" id="simq-empty" hidden>No sim matches &mdash; try a chain term like &ldquo;arrest&rdquo;, &ldquo;airway&rdquo;, or &ldquo;PPH&rdquo;.</div>
+      <div class="edm-filter"><span class="ico" aria-hidden="true">&#8981;</span><input type="search" id="simq" autocomplete="off" spellcheck="false" placeholder="Search sims&hellip; e.g. dystocia, arrest, FONA, MTP" aria-label="Search simulations"></div>
+      <div class="edm-filter-empty" id="simq-empty" hidden>No sim matches &mdash; try a chain term like &ldquo;arrest&rdquo;, &ldquo;airway&rdquo;, or &ldquo;PPH&rdquo;.</div>
       <div id="simmenu" style="display:grid; grid-template-columns:1fr; gap:8px;">
-        <a class="lrh-row" style="--cc:var(--blue)" href="#s01" data-kw="ob birth delivery precipitous shoulder dystocia neonatal resuscitation nrp blue baby warmer ppv mcroberts"><span class="t">SIM 1 · Precipitous Birth → Shoulder Dystocia → Blue Baby</span><span class="spacer"></span><span class="tag">OB · 15 MIN</span></a>
-        <a class="lrh-row" style="--cc:var(--blue)" href="#s02" data-kw="ob delivery postpartum hemorrhage pph mtp massive transfusion uterotonics txa jada bleeding"><span class="t">SIM 2 · Delivery → Postpartum Hemorrhage → MTP</span><span class="spacer"></span><span class="tag">OB · 12 MIN</span></a>
-        <a class="lrh-row" style="--cc:var(--blue)" href="#s10" data-kw="ob cord prolapse crash cesarean c-section after hours rsi general anesthetic airway handover role switch neonatal resuscitation newborn two patients"><span class="t">SIM 10 · Prolapsed Cord → Crash Section → ED Doc on Airway → Newborn</span><span class="spacer"></span><span class="tag">OB · 18 MIN</span></a>
-        <a class="lrh-row" style="--cc:var(--purple)" href="#s03" data-kw="peds pediatric asthma silent chest arrest pals rosc post-rosc weight broselow epinephrine"><span class="t">SIM 3 · Pediatric Asthma → Arrest → Post-ROSC</span><span class="spacer"></span><span class="tag">PEDS · 15 MIN</span></a>
-        <a class="lrh-row" style="--cc:var(--purple)" href="#s04" data-kw="peds pediatric seizure status epilepticus rsi intubation vent crash dope desaturation"><span class="t">SIM 4 · Pediatric Status Epilepticus → RSI → Vent Crash (DOPE)</span><span class="spacer"></span><span class="tag">PEDS · 12 MIN</span></a>
-        <a class="lrh-row" style="--cc:var(--red)" href="#s05" data-kw="stemi vf arrest pea code status goals of care family conversation debrief lytics tnk"><span class="t">SIM 5 · STEMI → VF Arrest → PEA → Code Status → Debrief</span><span class="spacer"></span><span class="tag">MEDICAL · 18 MIN</span></a>
-        <a class="lrh-row" style="--cc:var(--red)" href="#s06" data-kw="hyperkalemia dialysis potassium bradycardia pacing transcutaneous transvenous tvp calcium"><span class="t">SIM 6 · Hyperkalemia → Unstable Bradycardia → Transvenous Pacing</span><span class="spacer"></span><span class="tag">MEDICAL · 12 MIN</span></a>
-        <a class="lrh-row" style="--cc:var(--red)" href="#s09" data-kw="airway angioedema failed intubation ladder das cico fona cric salad suction surgical"><span class="t">SIM 9 · Angioedema → Failed Airway Ladder → FONA</span><span class="spacer"></span><span class="tag">MEDICAL · 15 MIN</span></a>
-        <a class="lrh-row" style="--cc:var(--orange)" href="#s07" data-kw="trauma blunt mvc level 1 activation tension pneumothorax chest tube mtp transfer"><span class="t">SIM 7 · Blunt Trauma → Tension Pneumothorax → Chest Tube → MTP</span><span class="spacer"></span><span class="tag">TRAUMA · 15 MIN</span></a>
-        <a class="lrh-row" style="--cc:var(--orange)" href="#s08" data-kw="trauma penetrating stab tca traumatic arrest thoracotomy clamshell death notification spikes"><span class="t">SIM 8 · Penetrating Trauma → TCA → Thoracotomy → Notification</span><span class="spacer"></span><span class="tag">TRAUMA · 18 MIN</span></a>
+        <a class="edm-row" style="--cc:var(--blue)" href="#s01" data-kw="ob birth delivery precipitous shoulder dystocia neonatal resuscitation nrp blue baby warmer ppv mcroberts"><span class="t">SIM 1 · Precipitous Birth → Shoulder Dystocia → Blue Baby</span><span class="spacer"></span><span class="tag">OB · 15 MIN</span></a>
+        <a class="edm-row" style="--cc:var(--blue)" href="#s02" data-kw="ob delivery postpartum hemorrhage pph mtp massive transfusion uterotonics txa jada bleeding"><span class="t">SIM 2 · Delivery → Postpartum Hemorrhage → MTP</span><span class="spacer"></span><span class="tag">OB · 12 MIN</span></a>
+        <a class="edm-row" style="--cc:var(--blue)" href="#s10" data-kw="ob cord prolapse crash cesarean c-section after hours rsi general anesthetic airway handover role switch neonatal resuscitation newborn two patients"><span class="t">SIM 10 · Prolapsed Cord → Crash Section → ED Doc on Airway → Newborn</span><span class="spacer"></span><span class="tag">OB · 18 MIN</span></a>
+        <a class="edm-row" style="--cc:var(--purple)" href="#s03" data-kw="peds pediatric asthma silent chest arrest pals rosc post-rosc weight broselow epinephrine"><span class="t">SIM 3 · Pediatric Asthma → Arrest → Post-ROSC</span><span class="spacer"></span><span class="tag">PEDS · 15 MIN</span></a>
+        <a class="edm-row" style="--cc:var(--purple)" href="#s04" data-kw="peds pediatric seizure status epilepticus rsi intubation vent crash dope desaturation"><span class="t">SIM 4 · Pediatric Status Epilepticus → RSI → Vent Crash (DOPE)</span><span class="spacer"></span><span class="tag">PEDS · 12 MIN</span></a>
+        <a class="edm-row" style="--cc:var(--red)" href="#s05" data-kw="stemi vf arrest pea code status goals of care family conversation debrief lytics tnk"><span class="t">SIM 5 · STEMI → VF Arrest → PEA → Code Status → Debrief</span><span class="spacer"></span><span class="tag">MEDICAL · 18 MIN</span></a>
+        <a class="edm-row" style="--cc:var(--red)" href="#s06" data-kw="hyperkalemia dialysis potassium bradycardia pacing transcutaneous transvenous tvp calcium"><span class="t">SIM 6 · Hyperkalemia → Unstable Bradycardia → Transvenous Pacing</span><span class="spacer"></span><span class="tag">MEDICAL · 12 MIN</span></a>
+        <a class="edm-row" style="--cc:var(--red)" href="#s09" data-kw="airway angioedema failed intubation ladder das cico fona cric salad suction surgical"><span class="t">SIM 9 · Angioedema → Failed Airway Ladder → FONA</span><span class="spacer"></span><span class="tag">MEDICAL · 15 MIN</span></a>
+        <a class="edm-row" style="--cc:var(--orange)" href="#s07" data-kw="trauma blunt mvc level 1 activation tension pneumothorax chest tube mtp transfer"><span class="t">SIM 7 · Blunt Trauma → Tension Pneumothorax → Chest Tube → MTP</span><span class="spacer"></span><span class="tag">TRAUMA · 15 MIN</span></a>
+        <a class="edm-row" style="--cc:var(--orange)" href="#s08" data-kw="trauma penetrating stab tca traumatic arrest thoracotomy clamshell death notification spikes"><span class="t">SIM 8 · Penetrating Trauma → TCA → Thoracotomy → Notification</span><span class="spacer"></span><span class="tag">TRAUMA · 18 MIN</span></a>
       </div>
     </div>
   </div>
@@ -456,7 +456,7 @@ catch(e){ document.body.dataset.theme='dark'; }
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow · any old STEMI teaching EKG (printed) · whiteboard · two chairs for the family conversation · a phone/tablet with the arrest tool open.</li>
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · MEDICATIONS drawer:</b> point — lytic checklist is read from the card, drugs stay shut.</li>
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Defibrillator:</b> pads mimed on the pillow; shocks are called out loud with the tool's timer.</li>
-          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Transfer:</b> the DHMC transfer number visible on the whiteboard (say it, don't dial).</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Transfer:</b> the configured transfer number visible on the whiteboard (say it, don't dial).</li>
         </ul>
       </details>
 
@@ -528,7 +528,7 @@ catch(e){ document.body.dataset.theme='dark'; }
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow (dialysis patient) · whiteboard (K 7.8, wide QRS) · a printed ugly-QRS strip if you have one.</li>
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · MEDICATIONS drawer:</b> point — calcium, insulin/dextrose, albuterol all named with doses, never drawn.</li>
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Pacing pads:</b> mimed on the pillow; the generator settings are said out loud.</li>
-          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Room 7 cabinets · TRANSVENOUS PACING kit:</b> point, don't open — the walk to it is part of the drill.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>{{physical.resusRoom}} cabinets · TRANSVENOUS PACING kit:</b> point, don't open — the walk to it is part of the drill.</li>
         </ul>
       </details>
 
@@ -600,7 +600,7 @@ catch(e){ document.body.dataset.theme='dark'; }
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow · whiteboard (sat trend) · a marker for the neck landmarks — marking the pillow's "neck" is encouraged.</li>
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · VIDEO + DIRECT LARYNGOSCOPY and ETT / BOUGIE drawers:</b> point — every ladder rung has a drawer.</li>
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · SURGICAL / SUPRAGLOTTIC + iGEL + FRONT OF NECK ACCESS drawers:</b> point — every person in the room should be able to find FONA blind.</li>
-          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Room 7 cabinets · SALAD SUCTION:</b> point — suction leads in the soiled-airway phase.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>{{physical.resusRoom}} cabinets · SALAD SUCTION:</b> point — suction leads in the soiled-airway phase.</li>
         </ul>
       </details>
 
@@ -918,10 +918,10 @@ catch(e){ document.body.dataset.theme='dark'; }
 </main>
 
 <script>
-/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
+/* ===== SITE CONFIG ({{site.hospitalShort}}) — edit these to adapt to another site/device ===== */
 var SITE = { version: "0.1", lastReviewed: "2026-08-12" };
 (function(){
-  document.querySelectorAll('.verstamp').forEach(function(el){ el.textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH'; });
+  document.querySelectorAll('.verstamp').forEach(function(el){ el.textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · {{site.hospitalShort}}'; });
   var s=document.getElementById('betasplash'), b=document.getElementById('betago');
   if(!s||!b) return;
   function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); }
@@ -931,17 +931,17 @@ var SITE = { version: "0.1", lastReviewed: "2026-08-12" };
   try{ if(/(^|[?&])from=(home|tool)(&|$)/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); } }catch(err){}
 })();
 
-/* Theme toggle — persists via the shared lrh-pref-theme key (read before paint
+/* Theme toggle — persists via the shared edm-pref-theme key (read before paint
    by the inline script after <body>), matching the rest of the manual. */
 (function(){
-  var b=document.getElementById('lrhThemeBtn');
+  var b=document.getElementById('edmThemeBtn');
   if(!b) return;
   b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
   b.addEventListener('click', function(){
     var dark = document.body.dataset.theme!=='light';
     document.body.dataset.theme = dark ? 'light' : 'dark';
     b.textContent = dark ? 'DARK' : 'LIGHT';
-    try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
+    try{ localStorage.setItem('edm-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
   });
 })();
 
@@ -952,7 +952,7 @@ var SITE = { version: "0.1", lastReviewed: "2026-08-12" };
   var q=document.getElementById('simq'), menu=document.getElementById('simmenu'),
       empty=document.getElementById('simq-empty');
   if(!q||!menu) return;
-  var rows=Array.prototype.slice.call(menu.querySelectorAll('a.lrh-row'));
+  var rows=Array.prototype.slice.call(menu.querySelectorAll('a.edm-row'));
   q.addEventListener('input', function(){
     var term=q.value.trim().toLowerCase(), shown=0;
     rows.forEach(function(r){

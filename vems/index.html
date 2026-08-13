@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#005596">
-<title>LRH VEMS Kit — Visually Enhanced Mental Simulation</title>
+<title>{{site.hospitalShort}} VEMS Kit — Visually Enhanced Mental Simulation</title>
 <meta name="description" content="Printable, laminatable Visually Enhanced Mental Simulation kit: patient poster, monitor cards and equipment cards drawn with the same glyphs as the code cart drawer labels. Training aid only.">
-<link rel="canonical" href="https://lrhemergencymanual.net/vems/">
+<link rel="canonical" href="https://{{site.domain}}/vems/">
 <style>
 /* @design-system */
 /* ---- VEMS-specific chrome. Everything above is the shared card-tool skeleton
@@ -140,9 +140,9 @@
 </head>
 <body data-theme="dark">
 <script>
-/* Shared persisted theme, applied before paint (lrh-pref-theme; outside any
+/* Shared persisted theme, applied before paint (edm-pref-theme; outside any
    RESET sweep — CASE-STATE.md). */
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
+try{ document.body.dataset.theme = localStorage.getItem('edm-pref-theme')==='light' ? 'light' : 'dark'; }
 catch(e){ document.body.dataset.theme='dark'; }
 </script>
 
@@ -158,7 +158,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <div class="hdr screenonly">
     <a class="ghost" href="../?from=tool" style="text-decoration:none">&#9664; MANUAL</a>
     <span class="plabel">VEMS KIT</span>
-    <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
+    <button type="button" class="ghost" id="edmThemeBtn">LIGHT</button>
   </div>
 
   <div class="t-localize screenonly">
@@ -210,7 +210,7 @@ catch(e){ document.body.dataset.theme='dark'; }
    ========================================================================== */
 var SITE = {
   version:"0.1", lastReviewed:"2026-08-12",
-  site:"LRH", room:"Resus bay or the education room — a table the whole team can stand around",
+  site:"{{site.hospitalShort}}", room:"Resus bay or the education room — a table the whole team can stand around",
   /* Print geometry. Letter is the US default; a fork on A4 changes this one
      line and the @page rule in the stylesheet. */
   paper:"letter portrait",
@@ -1273,12 +1273,12 @@ Array.prototype.forEach.call(document.querySelectorAll('[data-print]'), function
   });
 });
 
-var tb=$('lrhThemeBtn');
+var tb=$('edmThemeBtn');
 if(tb) tb.addEventListener('click', function(){
   var next = document.body.dataset.theme==='light' ? 'dark' : 'light';
   document.body.dataset.theme=next;
   tb.textContent = next==='dark' ? 'LIGHT' : 'DARK';
-  try{ localStorage.setItem('lrh-pref-theme', next); }catch(e){}
+  try{ localStorage.setItem('edm-pref-theme', next); }catch(e){}
 });
 if(tb) tb.textContent = document.body.dataset.theme==='dark' ? 'LIGHT' : 'DARK';
 

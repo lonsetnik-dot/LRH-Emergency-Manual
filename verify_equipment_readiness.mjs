@@ -1,4 +1,4 @@
-/* LRH Emergency Manual — /equipment-readiness/ : the readiness walk sheet.
+/* ED Emergency Manual — /equipment-readiness/ : the readiness walk sheet.
  *
  * This tool is the one place in the manual where a clinician WRITES rather than reads, and what they
  * write is the department's claim about where its equipment is. Two failure modes matter more than
@@ -68,7 +68,7 @@ ck('1. the standard disclaimer is present',
 /* ---- 2. CONFIG-DRIVEN COVERAGE: the page audits exactly what the inventory says ----
    Every catalog item must be reachable, and every size must be its own row. Derived
    entirely from the injected data, so a fork that adds, drops or re-sizes an item is
-   still checked against its own config rather than against LRH's. */
+   still checked against its own config rather than against this site's. */
 const domRows    = await pg.$$eval('.eqrow[data-row]', els => els.map(e => e.getAttribute('data-row')));
 const domRowSet  = new Set(domRows);
 const kitIds     = Object.keys(INV.catalog).filter(id => INV.catalog[id].cat === 'kit');
@@ -97,7 +97,7 @@ ck('2. the catalog does size the airway rescue devices (a lumped SGA row is the 
 const probeRow  = nonKitRows.find(r => r.includes('#') && INV.locations[r.split('#')[0]]);
 const probeItem = probeRow.split('#')[0];
 const unmapped  = INV.rows.find(r => !INV.locations[r] && !INV.locations[r.split('#')[0]] && !INV.gaps[r.split('#')[0]]);
-const TYPED     = 'TEST BAY · SHELF ' + INV.rows.length;   /* derived, never a real LRH location */
+const TYPED     = 'TEST BAY · SHELF ' + INV.rows.length;   /* derived, never a real this site location */
 
 const rowSel = r => `.eqrow[data-row="${r.replace(/"/g, '\\"')}"]`;
 await pg.selectOption(rowSel(probeRow) + ' .eqsel', 'loc');

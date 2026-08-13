@@ -1,4 +1,4 @@
-/* LRH Emergency Manual — the 2026-08-09 issue round.
+/* ED Emergency Manual — the 2026-08-09 issue round.
  *
  * Covers GitHub issues #20, #25, #26, #27, #29, #30, #31, #33, #34.
  * (#24 and #28 have their own suite: verify_ws24_hematemesis.mjs.)
@@ -14,6 +14,8 @@
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch { ({ chromium } = await import('/home/claude/.npm-global/lib/node_modules/playwright/index.mjs')); }
+
+import { expect as cfgExpect, rx, isTemplate } from './verify_site_config.mjs';
 
 const BASE = (process.env.BASE || 'http://localhost:8123').replace(/\/$/, '');
 let b;
@@ -51,15 +53,16 @@ ck('menu tile reaches it', await codes.locator('a[href="#c24"]').count() > 0, tr
   const t = await textOf(codes, '#c24');
   ck('bleeding lung DOWN', /Bleeding lung DOWN/i.test(t), true);
   ck('ETT >= 8.0 and the reason', /ETT\s*≥8\.0 mm/i.test(t) && /bronchoscope has to fit/i.test(t), true);
-  // LRH stocks no blocker and no DLT — the card must say the big ETT IS the isolation technique
-  ck('no-blocker reality stated', /stocks neither a bronchial blocker nor a double-lumen tube/i.test(t), true);
+  // The card must state THIS site's lung-isolation reality, whatever it is —
+  // read from site.config.json, not re-typed here (CLAUDE.md: config-driven).
+  ck('lung-isolation reality stated', new RegExp(rx('physical.lungIsolation'), 'i').test(t), true);
   ck('blind mainstem success rates', /95%/.test(t) && /73%/.test(t), true);
   ck('nebulized TXA 500 mg', /Nebulized TXA 500 mg/i.test(t), true);
   ck('IV TXA 1 g over 10 min', /1 g over 10 min/i.test(t), true);
   ck('does not intubate the effective cougher', /effective cough is doing a better job/i.test(t), true);
   ck('one-lung Vt 3-4 mL/kg', /3&ndash;4 mL\/kg|3–4 mL\/kg/.test(t), true);
   ck('contrast with the GI-bleed TXA rule is drawn', /card 23/i.test(t) && /HALT-IT/.test(t), true);
-  ck('states its cabinet location', /ROOM 7 \(RESUS BAY\) CABINET/i.test(t), true);
+  ck('states its cabinet location', new RegExp(rx('physical.resusRoom') + ' CABINET', 'i').test(t), true);
   // the definition of "massive" genuinely differs between sources; the card must not pick one silently
   ck('threshold options are shown, not narrowed', /are all in print/i.test(t) && /shown as options/i.test(t), true);
 }
@@ -121,10 +124,12 @@ ck('procedures card 16 exists', await proc.locator('#c16').count(), 1);
   const t = await textOf(proc, '#c16');
   ck('triangle of safety borders', /lateral edge of pectoralis major/i.test(t) && /latissimus dorsi/i.test(t), true);
   ck('over the upper border of the rib', /over the upper border of the rib below/i.test(t), true);
-  ck('one stocked size, 14 Fr, stated plainly', /LRH stocks one size: 14 Fr/.test(t), true);
+  ck('one stocked size, 14 Fr, stated plainly', new RegExp(rx('site.hospitalShort') + ' stocks one size: 14 Fr').test(t), true);
   ck('lidocaine ceiling', /3 mg\/kg/.test(t) && /250 mg/.test(t), true);
-  // LRH resolved this: haemothorax is a chest tube. P-CAT stays as the reason the question exists.
-  ck('haemothorax routed to a chest tube', /at LRH this is a chest tube, not a pigtail/i.test(t) && /28–32 Fr/.test(t) && /P-CAT/.test(t), true);
+  // This site resolved it: haemothorax is a chest tube. P-CAT stays as the reason the question exists.
+  ck('haemothorax routed to a chest tube',
+     new RegExp('at ' + rx('site.hospitalShort') + ' this is a chest tube, not a pigtail', 'i').test(t)
+     && /28–32 Fr/.test(t) && /P-CAT/.test(t), true);
   ck('wire depth given as two options', /Two options for depth/i.test(t) && /15–20 cm/.test(t), true);
   ck('never clamp a bubbling drain', /Never clamp a bubbling drain/i.test(t), true);
   ck('1.5 L then clamp', /1\.5 L/.test(t), true);
@@ -216,7 +221,7 @@ console.log('--- #33 procedure infographic cards');
   ck('carries a next-check-due field', /NEXT CHECK DUE/.test(t), true);
   ck('carries a checked-by field', /CHECKED BY/.test(t), true);
   ck('carries a restocked-by field', /RESTOCKED BY/.test(t), true);
-  ck('states where the kit lives', /ROOM 7/.test(t), true);
+  ck('states where the kit lives', new RegExp(rx('physical.resusRoom'), 'i').test(t), true);
   ck('lists the kit contents', /Insufflation manometer/.test(t), true);
   ck('carries a QR', await card.locator('svg[aria-label^="QR code to"]').count(), 1);
   const all = await lab.locator('.pcard').evaluateAll(els =>
@@ -234,7 +239,7 @@ for (const title of ['Massive Hemoptysis', 'Epistaxis', 'Pacemaker / ICD Emergen
 }
 {
   const places = (await sys.locator('.places').innerText()).replace(/\s+/g, ' ');
-  ck('Room 7 index lists the new cabinets',
+  ck('the resus room index lists the new cabinets',
     /Lung Isolation/.test(places) && /Epistaxis/.test(places) && /SALAD Suction/.test(places), true);
 }
 

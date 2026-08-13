@@ -1,10 +1,10 @@
-/* LRH Emergency Manual — executable CASE-STATE.md (issue #127).
+/* ED Emergency Manual — executable CASE-STATE.md (issue #127).
  *
  * Six tools now share the CASE-STATE contract and each keeps its OWN copy of the storage module —
  * codes, peds, ob-neonatal, arrest, tca and trauma. That is the right call for single-file offline
  * tools ("share the contract, not the code"), but it means six hand-synced implementations of the
  * same promises, and the weight-routing audit found real drift in every direction: arrest bumped
- * lrh-case-wtms on every keystroke while peds moved it only on genuine change; arrest rewrote
+ * edm-case-wtms on every keystroke while peds moved it only on genuine change; arrest rewrote
  * provenance to 'measured' on any keystroke; the adult-override clear-on-change rule existed in
  * codes and not in arrest; tca was outside the contract entirely.
  *
@@ -44,7 +44,7 @@ const TOOLS = [
   { id: 'tca',         path: '/tca/',         wIn: '#wIn'  },
   /* ob-neonatal and trauma read the case but write no adult weight of their
      own. ob-neonatal deliberately keeps the BABY's weight in its own
-     lrh-ob-weight key rather than lrh-case-wtkg — two patients in the room,
+     edm-ob-weight key rather than edm-case-wtkg — two patients in the room,
      two weights, and a newborn's 3.2 kg must never reach an adult dose line. */
   { id: 'ob-neonatal', path: '/ob-neonatal/', wIn: null },
   { id: 'trauma',      path: '/trauma/',      wIn: null },
@@ -100,12 +100,12 @@ for (const writer of WRITERS) {
   if (!(await fillW(writer, '24'))) continue;
   await pg.waitForTimeout(400);
   const written = await store();
-  const kg = written['lrh-case-wtkg'];
-  ck(`2. [${writer.id}] writes lrh-case-wtkg`, kg, '24');
+  const kg = written['edm-case-wtkg'];
+  ck(`2. [${writer.id}] writes edm-case-wtkg`, kg, '24');
 
   for (const reader of TOOLS.filter(x => x.id !== writer.id)) {
     await open(reader);
-    const seen = await pg.evaluate(() => localStorage.getItem('lrh-case-wtkg'));
+    const seen = await pg.evaluate(() => localStorage.getItem('edm-case-wtkg'));
     ck(`2. ${writer.id} -> ${reader.id}: same weight survives`, seen, '24');
   }
 }
@@ -122,8 +122,8 @@ for (const t of WRITERS) {
   await open(t);
   if (!(await fillW(t, '30'))) continue;
   await pg.waitForTimeout(450);
-  const first = (await store())['lrh-case-wtms'];
-  ck(`3. [${t.id}] sets lrh-case-wtms on a new weight`, !!first, true);
+  const first = (await store())['edm-case-wtms'];
+  ck(`3. [${t.id}] sets edm-case-wtms on a new weight`, !!first, true);
 
   /* Retype the SAME value. fill() dispatches a fresh input event either way,
      so this is exactly the "someone touched the field but nothing changed"
@@ -132,13 +132,13 @@ for (const t of WRITERS) {
      stamp it. */
   await fillW(t, '30');
   await pg.waitForTimeout(450);
-  const same = (await store())['lrh-case-wtms'];
+  const same = (await store())['edm-case-wtms'];
   ck(`3. [${t.id}] re-entering the SAME weight does not move wtms`, same, first);
 
   /* A different value must move it. */
   await fillW(t, '31');
   await pg.waitForTimeout(450);
-  const moved = (await store())['lrh-case-wtms'];
+  const moved = (await store())['edm-case-wtms'];
   ck(`3. [${t.id}] a genuinely different weight DOES move wtms`, Number(moved) >= Number(first), true);
   ck(`3. [${t.id}] and it is actually a different stamp`, moved !== same, true);
 }
@@ -150,30 +150,30 @@ for (const t of WRITERS) {
 console.log('\n--- 4. provenance survives ---');
 for (const t of WRITERS) {
   await open(t);
-  await seed({ 'lrh-case-wtkg': '18', 'lrh-case-wtsrc': 'estimated', 'lrh-case-wtms': String(Date.now() - 60000) });
+  await seed({ 'edm-case-wtkg': '18', 'edm-case-wtsrc': 'estimated', 'edm-case-wtms': String(Date.now() - 60000) });
   await open(t);
-  const src = await pg.evaluate(() => localStorage.getItem('lrh-case-wtsrc'));
+  const src = await pg.evaluate(() => localStorage.getItem('edm-case-wtsrc'));
   ck(`4. [${t.id}] merely OPENING does not rewrite provenance`, src, 'estimated');
 }
 
-/* ---- 5. RESET SWEEPS lrh-case-* AND SPARES lrh-pref-* ----
+/* ---- 5. RESET SWEEPS edm-case-* AND SPARES edm-pref-* ----
    The blast radius clause. A RESET that takes the theme with it is a small
    annoyance; a RESET that leaves a previous patient's weight behind is not. */
 console.log('\n--- 5. reset blast radius ---');
 const RESETTABLE = TOOLS.filter(t => ['codes', 'peds', 'arrest', 'tca'].includes(t.id));
-/* lrh-case-lastactive is the inactivity heartbeat, not case content: every tool
+/* edm-case-lastactive is the inactivity heartbeat, not case content: every tool
    re-stamps it on load, so finding it present straight after a RESET is correct.
    What must NOT survive is the OLD stamp — that would make a fresh case look
    like it had been running for an hour and hand the weight sweep a lie. So it
    is exempted from the clear-everything rule and checked separately below. */
-const HEARTBEAT = 'lrh-case-lastactive';
+const HEARTBEAT = 'edm-case-lastactive';
 const STALE = Date.now() - 3600000;
 for (const t of RESETTABLE) {
   await open(t);
   await seed({
-    'lrh-case-wtkg': '42', 'lrh-case-wtsrc': 'measured', 'lrh-case-wtms': String(Date.now()),
-    'lrh-case-log': '[]', [HEARTBEAT]: String(STALE),
-    'lrh-pref-theme': 'light',
+    'edm-case-wtkg': '42', 'edm-case-wtsrc': 'measured', 'edm-case-wtms': String(Date.now()),
+    'edm-case-log': '[]', [HEARTBEAT]: String(STALE),
+    'edm-pref-theme': 'light',
   });
   await open(t);
   if (!(await pg.locator('#resetbtn').count())) { ck(`5. [${t.id}] has a RESET`, 'no #resetbtn', 'a RESET'); continue; }
@@ -188,9 +188,9 @@ for (const t of RESETTABLE) {
   }
   await pg.waitForTimeout(500);
   const after = await store();
-  const caseLeft = Object.keys(after).filter(k => k.indexOf('lrh-case-') === 0 && k !== HEARTBEAT);
-  ck(`5. [${t.id}] RESET clears every lrh-case-* key`, caseLeft.join(',') || 'none', 'none');
-  ck(`5. [${t.id}] RESET spares lrh-pref-theme`, after['lrh-pref-theme'], 'light');
+  const caseLeft = Object.keys(after).filter(k => k.indexOf('edm-case-') === 0 && k !== HEARTBEAT);
+  ck(`5. [${t.id}] RESET clears every edm-case-* key`, caseLeft.join(',') || 'none', 'none');
+  ck(`5. [${t.id}] RESET spares edm-pref-theme`, after['edm-pref-theme'], 'light');
   /* Absent is fine. Present-and-stale is not. */
   const hb = after[HEARTBEAT];
   ck(`5. [${t.id}] RESET leaves no STALE inactivity stamp`, hb === undefined || Number(hb) > STALE, true);
@@ -240,8 +240,8 @@ for (const t of TOOLS) {
 }
 
 /* ---- 7. NOTHING WRITES OUTSIDE THE NAMESPACE ----
-   Golden rule 3 again, from the other side: a tool may only persist lrh-* keys,
-   and anything device-local that is not case state must be lrh-pref-*. A stray
+   Golden rule 3 again, from the other side: a tool may only persist edm-* keys,
+   and anything device-local that is not case state must be edm-pref-*. A stray
    key is how PHI would leak in practice. */
 console.log('\n--- 7. namespace discipline ---');
 for (const t of TOOLS) {
@@ -250,8 +250,8 @@ for (const t of TOOLS) {
   await open(t);
   if (t.wIn && await pg.locator(t.wIn).count()) { await fillW(t, '22'); await pg.waitForTimeout(350); }
   const keys = Object.keys(await store());
-  const stray = keys.filter(k => k.indexOf('lrh-') !== 0);
-  ck(`7. [${t.id}] writes nothing outside the lrh- namespace`, stray.join(',') || 'none', 'none');
+  const stray = keys.filter(k => k.indexOf('edm-') !== 0);
+  ck(`7. [${t.id}] writes nothing outside the edm- namespace`, stray.join(',') || 'none', 'none');
   const sessionN = await pg.evaluate(() => sessionStorage.length);
   ck(`7. [${t.id}] writes nothing to sessionStorage`, sessionN, 0);
 }
@@ -263,7 +263,7 @@ console.log('\n--- 8. tools distrust what they read ---');
 for (const bad of ['abc', '-5', '99999', '']) {
   for (const t of WRITERS) {
     await open(t);
-    await seed({ 'lrh-case-wtkg': bad, 'lrh-case-wtsrc': 'measured', 'lrh-case-wtms': String(Date.now()) });
+    await seed({ 'edm-case-wtkg': bad, 'edm-case-wtsrc': 'measured', 'edm-case-wtms': String(Date.now()) });
     await open(t);
     const body = await pg.innerText('body');
     /* The specific failure being guarded: a NaN or Infinity reaching a dose line. */
