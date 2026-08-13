@@ -88,7 +88,7 @@ const KITS = [
     name: 'Chest Tube Kit',
     location: /ROOM 7|TRAUMA CART|OB \/ NEONATAL CART/i,
     items: ['Scalpel No. 10 blade', 'Kelly clamps', 'Suture 0 silk + needle driver',
-            'Chlorhexidine prep', 'Fenestrated drape', 'Regular 1/2 drape', 'Large Tegaderm'],
+            'ChloraPrep', 'Fenestrated drape', 'Regular 1/2 drape', 'Large Tegaderm'],
     /* Corrected on the cart walk 2026-08-13: PPE lives in the Trauma Cart PPE
        drawer and the dressing supplies are their own bag, so neither may be
        listed as CONTENTS of this one. Listing them here is what sends someone
