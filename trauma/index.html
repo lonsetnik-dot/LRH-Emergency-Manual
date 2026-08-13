@@ -859,8 +859,8 @@ catch(e){ document.body.dataset.theme='dark'; }
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "0.94",
-  lastReviewed: "2026-08-12",
+  version: "0.95",
+  lastReviewed: "2026-08-13",
   /* Transfer/consult numbers. One source of truth (CLAUDE.md rule 2) — the
      BIG card renders every "DHMC Transfer Center" line from here as a tap-to-
      call tel: link. `tel` is the E.164 dial string; `phone` is what's shown. */
@@ -873,12 +873,19 @@ var SITE = {
      WHO and the HOW live here.
 
      `who` and `how` render into the card. Set `overhead` to the exact phrase
-     your operator expects, or null if your site has none. */
+     your operator expects, or null if your site has none. `note` renders a
+     caution line under the box, or null for no line.
+
+     LRH values confirmed by Lon 2026-08-13: tell Security, ask them to consider
+     a lockdown, no overhead page phrase, and no caution — Security is in house
+     overnight. An earlier draft of this block asserted the opposite (that there
+     was no overnight ED security officer) and printed it on the card; it was a
+     guess and it was wrong. */
   security: {
-    who: "charge nurse + house supervisor",
-    how: "ask Security to restrict the ED to one controlled entrance",
+    who: "Security",
+    how: "consider requesting a lockdown",
     overhead: null,
-    note: "LRH has no dedicated in-house ED security officer overnight — confirm who is actually available on your shift before you need them."
+    note: null
   }
 };
 /* Render tap-to-call links for every [data-tc] placeholder from SITE.transferCenter. */

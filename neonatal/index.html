@@ -165,7 +165,7 @@ catch(e){ document.body.dataset.theme='dark'; }
    content off against NRP 9th edition. See SITE.review.
    ========================================================================== */
 var SITE = {
-  version:"0.2", lastReviewed:"2026-08-12",
+  version:"0.3", lastReviewed:"2026-08-13",
   site:"LRH",
 
   /* The banner is config, not prose, so a site can turn it off in one place once
@@ -182,7 +182,7 @@ var SITE = {
     text:"ALIGNED TO THE 2025 AHA/AAP GUIDELINES for the items named in SOURCE & PROVENANCE — cord "+
          "management as the first step, deferred clamping ≥60 s, intact cord milking for the "+
          "non-vigorous term and late-preterm newborn, the supraglottic airway as a primary device, and "+
-         "the under-32-week thermal wrap. "+
+         "the thermal wrap for the very preterm or very small newborn. "+
          "Values NOT named there were inherited unchanged from the previous card and are not "+
          "individually verified against the NRP 9th edition textbook. Check them against your own NRP "+
          "materials."
@@ -253,29 +253,34 @@ var SITE = {
   /* THERMAL CARE — and the one place where "warm, dry, stimulate" is the wrong
      instruction (issue #143).
 
-     Below wrapUnderWeeks the newborn does NOT get dried. It goes straight into
+     Inside the wrap band the newborn does NOT get dried. It goes straight into
      polyethylene wrap or a bag, still wet, under the warmer, with a hat and a
      thermal mattress. Drying a very preterm baby first defeats the wrap: the
      evaporative loss the wrap exists to prevent has already happened by the
      time it goes on, and the extra handling costs time in the first minute.
 
-     The threshold is 32 completed weeks, from the AHA/AAP neonatal
-     resuscitation guideline (Part 5: Neonatal Resuscitation, Circulation
+     TWO TRIGGERS, AND EITHER ONE IS ENOUGH — confirmed by Lon 2026-08-13:
+     under 32 completed weeks, OR under 1500 g. They are deliberately an OR
+     rather than an AND, because each catches a baby the other misses: a
+     growth-restricted 33-weeker can be well under 1500 g, and an estimated
+     gestation can be wrong or simply unknown at the moment of birth. Whichever
+     number you have first is the one that decides.
+
+     Gestation threshold: AHA/AAP (Part 5: Neonatal Resuscitation, Circulation
      2020;142:S524–S550, carried forward in the 2025 update
-     doi:10.1161/CIR.0000000000001367): for preterm newborns under 32 weeks'
+     doi:10.1161/CIR.0000000000001367) — for preterm newborns under 32 weeks'
      gestation, a combination of plastic wrap or bag, hat, thermal mattress and
      a warmed room is recommended to prevent hypothermia. NRP teaches the same
-     line. Some units also apply it by weight (under ~1500 g) — that is a local
-     addition, hence wrapUnderGrams below, set to null here because LRH has not
-     adopted one.
+     line. The 1500 g arm is the companion birth-weight criterion NRP pairs with
+     it; a site that does not use one sets wrapUnderGrams to null and the weight
+     arm disappears from the logic and the screen together.
 
-     NOTE FOR REVIEW: the previous value in this file was 34 weeks, which was
-     authored here rather than carried from card 03 and had no citation. It is
-     corrected to the sourced 32. Confirm against your own NRP materials. */
+     The previous value in this file was 34 weeks, authored here rather than
+     carried from card 03 and uncited. Corrected to the sourced 32. */
   temp:{
     lowC:36.5, highC:37.5,
     wrapUnderWeeks:32,
-    wrapUnderGrams:null,
+    wrapUnderGrams:1500,
     wrapBundle:"polyethylene wrap or bag over the wet skin, hat, thermal mattress, warm the room",
     dryStim:"Dry and stimulate. Remove wet linen. Position sniffing."
   },
@@ -561,30 +566,41 @@ function milkingNote(){
 }
 
 /* THE THERMAL FORK (issue #143). Two rows, and which two they are depends on
-   gestation — because for the very preterm newborn "dry and stimulate" is the
-   wrong instruction, not a softer version of the right one.
+   gestation OR birth weight — because for the very preterm or very small
+   newborn "dry and stimulate" is the wrong instruction, not a softer version of
+   the right one.
    Returns rows numbered n and n+1 so the caller's numbering stays contiguous. */
 function thermalRows(n){
   var target = 'Target '+SITE.temp.lowC+'–'+SITE.temp.highC+' °C.';
-  if(inWrapBand()){
+  var why = wrapReason();
+  if(why){
     return stepRow(n,
-        '<b style="color:var(--red)">DO NOT DRY THIS BABY.</b> '+gaText()+' is under '+
-        SITE.temp.wrapUnderWeeks+' weeks — straight into the wrap, wet. '+
-        esc(SITE.temp.wrapBundle)+'. '+target)+
+        '<b style="color:var(--red)">DO NOT DRY THIS BABY.</b> '+esc(why)+
+        ' — straight into the wrap, wet. '+esc(SITE.temp.wrapBundle)+'. '+target)+
       stepRow(n+1,
         '<b>Stimulate through the wrap</b> — back and soles. Position sniffing. '+
         'Leave the wrap on for the transfer.');
   }
-  /* At or above the threshold, or gestation not yet entered. When it is not
-     entered the screen must still say the fork exists, because the person
-     holding a 28-weeker has not typed anything yet. */
+  /* Outside the band, or nothing entered yet. When neither number is known the
+     screen must still say the fork exists, because the person holding a
+     28-weeker has not typed anything yet. */
+  var unknown = (S.ga === null && S.kg === null);
   return stepRow(n,
       '<b>Warm</b> — warmer, hat. '+target+
-      (S.ga === null
-        ? ' <span style="color:var(--amber);font-weight:700">Under '+SITE.temp.wrapUnderWeeks+
-          ' weeks this changes: wrap without drying. Enter the gestation.</span>'
+      (unknown
+        ? ' <span style="color:var(--amber);font-weight:700">'+esc(wrapTriggerText())+
+          ' this changes: wrap without drying. Enter the gestation or the weight.</span>'
         : '')) +
     stepRow(n+1, '<b>'+esc(SITE.temp.dryStim)+'</b>');
+}
+
+/* "Under 32 weeks or 1500 g" — built from config so a site that drops one arm
+   gets a sentence naming only the arm it kept, rather than an orphaned "or". */
+function wrapTriggerText(){
+  var parts = [];
+  if(SITE.temp.wrapUnderWeeks !== null) parts.push(SITE.temp.wrapUnderWeeks + ' weeks');
+  if(SITE.temp.wrapUnderGrams !== null) parts.push(SITE.temp.wrapUnderGrams + ' g');
+  return 'Under ' + parts.join(' or ') + ',';
 }
 
 
@@ -750,13 +766,16 @@ var ACC=[
         'at '+SITE.cord.milkingFromWeeks+' weeks or more, as an alternative to immediate clamping.<br>'+
         '· <b>The supraglottic airway is a primary device</b> above '+SITE.sgaPrimaryFromWeeks+' weeks for the '+
         'baby who fails bag-mask ventilation, not only a rescue after failed intubation.<br>'+
-        '· <b>Under '+SITE.temp.wrapUnderWeeks+' weeks the baby is not dried.</b> It goes into '+
-        esc(SITE.temp.wrapBundle)+'. Source: Part 5: Neonatal Resuscitation, <i>Circulation</i> '+
-        '2020;142:S524–S550, carried forward in the 2025 update above — for preterm newborns under '+
-        SITE.temp.wrapUnderWeeks+' weeks’ gestation a combination of plastic wrap or bag, hat, thermal '+
-        'mattress and a warmed room is recommended to prevent hypothermia. <b>This corrects a value '+
-        'authored in this file at '+'34 weeks with no citation</b> (issue #143); confirm it against your own '+
-        'NRP materials. Sites that also apply a birth-weight cut-off set <code>SITE.temp.wrapUnderGrams</code>.<br>'+
+        '· <b>'+esc(wrapTriggerText())+' the baby is not dried.</b> It goes into '+
+        esc(SITE.temp.wrapBundle)+'. <b>Either trigger is enough</b> — they are an OR, not an AND, '+
+        'because each catches a baby the other misses: a growth-restricted 33-weeker can be well under '+
+        SITE.temp.wrapUnderGrams+' g, and an estimated gestation can be wrong or simply not known yet. '+
+        'Source: Part 5: Neonatal Resuscitation, <i>Circulation</i> 2020;142:S524–S550, carried forward '+
+        'in the 2025 update above — for preterm newborns under '+SITE.temp.wrapUnderWeeks+' weeks’ '+
+        'gestation a combination of plastic wrap or bag, hat, thermal mattress and a warmed room is '+
+        'recommended to prevent hypothermia; the '+SITE.temp.wrapUnderGrams+' g arm is the companion '+
+        'birth-weight criterion NRP pairs with it. <b>This corrects a value authored in this file at '+
+        '34 weeks with no citation</b> (issue #143). Both numbers confirmed for LRH 2026-08-13.<br>'+
         '· Heart-rate thresholds are unchanged: PPV for apnea, gasping or a rate under '+SITE.hr.good+
         '; compressions only if the rate stays under '+SITE.hr.low+' after '+SITE.cycle.reassessSec+
         ' s of effective ventilation.</p>'+
@@ -1071,8 +1090,20 @@ function gaText(){
   if(S.gaWk === null || S.gaWk === undefined) return '';
   return S.gaWk + '+' + (S.gaD || 0) + ' wks';
 }
-/* Below the thermal-wrap threshold, with the gestation actually known. */
-function inWrapBand(){ return S.ga !== null && S.ga < SITE.temp.wrapUnderWeeks; }
+/* THE WRAP BAND — either trigger is enough, and each catches a baby the other
+   misses (see SITE.temp). Returns the REASON rather than a boolean so the screen
+   can say which number put this baby in the band; a bare "do not dry" invites
+   someone to re-check the gestation they already typed. */
+function wrapReason(){
+  var g = SITE.temp.wrapUnderWeeks, gr = SITE.temp.wrapUnderGrams;
+  var byGa = (g !== null && S.ga !== null && S.ga < g);
+  var byWt = (gr !== null && S.kg !== null && S.kg * 1000 < gr);
+  if(byGa && byWt) return gaText() + ' and ' + Math.round(S.kg*1000) + ' g — under both ' + g + ' weeks and ' + gr + ' g';
+  if(byGa) return gaText() + ' is under ' + g + ' weeks';
+  if(byWt) return Math.round(S.kg*1000) + ' g is under ' + gr + ' g';
+  return null;
+}
+function inWrapBand(){ return wrapReason() !== null; }
 
 $('wIn').addEventListener('input', readWeight);
 $('gIn').addEventListener('input', readWeight);
