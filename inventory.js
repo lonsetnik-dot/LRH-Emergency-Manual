@@ -203,10 +203,17 @@ var INV_CATALOG = {
      procedure cards — verify_kit_consistency.mjs asserts that. ----------- */
   "kit-canthotomy": { name:"Canthotomy Kit", cat:"kit", std:["ACS-COT"], contents:[
     "3 mL syringe","Needle to draw","Needle to inject","Mosquito clamp","Toothed forceps","Blunt-tipped iris scissors"] },
+  /* Corrected on the cart walk 2026-08-13 (Lon). Two things that had been listed
+     as bag contents are NOT in the bag: PPE lives in the Trauma Cart PPE drawer
+     (see "ppe-splash" below, which already carries that location), and the
+     dressing supplies are their own separate bag. Listing either one here sends
+     someone rummaging in a chest-tube bag for a gown while a patient is waiting.
+     The drapes are now spelled out as one regular + one fenestrated, which is
+     what the bag actually holds. */
   "kit-chest-tube": { name:"Chest Tube Kit", cat:"kit", std:["ACS-COT"], contents:[
     "Scalpel No. 10 blade","Kelly clamps","Heavy suture 0 or 2-0 + needle driver",
-    "Lidocaine 1% 20 mL + 10 mL syringe + 21 g and 25 g needles","Chlorhexidine prep + sterile drapes",
-    "Gown, gloves, mask, eye protection","Gauze packs + occlusive dressing + tape"] },
+    "Lidocaine 1% 20 mL + 10 mL syringe + 21 g and 25 g needles","Chlorhexidine prep",
+    "Sterile drapes — 1 regular, 1 fenestrated"] },
   "kit-pigtail": { name:"Pigtail Thoracostomy Kit", cat:"kit", std:["ACS-COT"], contents:[
     "Sterile gown, mask, eye protection, gloves, drapes","Ultrasound with a sterile probe cover and gel",
     "25 G and 21 G needles","Lidocaine 1%","Introducer needle","Marked guidewire","Sequential dilators",
