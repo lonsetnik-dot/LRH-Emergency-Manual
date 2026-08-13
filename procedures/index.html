@@ -99,7 +99,7 @@
      looks like a step the MD has to wait for. Splitting the lanes is what makes
      "prime it while I cut" visible on the page.
 
-     Deliberately scoped to card 01 for now, and labelled a preview on screen,
+     Deliberately scoped to card 01 for now, and labeled a preview on screen,
      because the role assignments are a departmental decision and Lon has not
      reviewed them yet. Rolling them across the other procedure cards is a
      separate job. */
@@ -409,7 +409,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <details open class="t-box-neutral">
         <summary class="t-head t-head-neutral">TECHNIQUE — STEP BY STEP</summary>
         <div class="rolebar" data-rolebar><button type="button" data-rolefilter="ALL" aria-pressed="true">ALL</button><button type="button" data-rolefilter="MD" aria-pressed="false">MD</button><button type="button" data-rolefilter="RN" aria-pressed="false">RN</button><span class="rolehint">PREVIEW &mdash; roles on this card only. RN steps run in parallel, not after.</span></div><ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div" data-role="BOTH"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-both">BOTH</span><span><b>Position:</b> supine or head up 30–45°, arm on the affected side abducted or behind the head.</span></label></li><li class="t-div" data-role="RN"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-rn">RN</span><span><b>Monitor and analgesia.</b> Continuous pulse oximetry and cardiac monitor; analgesia or sedation per order in the awake patient.</span></label></li>
+          <li class="t-div" data-role="BOTH"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-both">BOTH</span><span><b>Position:</b> supine or head up 30–45°, arm on the affected side abducted or behind the head.</span></label></li><li class="t-div" data-role="RN"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-rn">RN</span><span><b>Monitor and analgesia.</b> Continuous pulse oximetry and cardiac monitor; analgesia or sedation per order in the awake patient.</span></label></li><li class="t-div" data-role="RN"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-rn">RN</span><span data-abx><b>Antibiotic prophylaxis.</b></span></label></li>
           <li class="t-div" data-role="MD"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-md">MD</span><span><b>Landmark the safe triangle:</b> 4th–5th intercostal space, anterior-to-mid axillary line — anterior border of latissimus dorsi, lateral border of pectoralis major, above the 5th ICS (nipple line). Palpate and confirm before prepping.</span></label></li><li class="t-div" data-role="RN"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-rn">RN</span><span><b>Prime the underwater-seal drain</b> and bring it to the bedside. <b>This runs in parallel</b> — it never delays the incision, and finger thoracostomy needs no drain at all.</span></label></li>
           <li class="t-div" data-role="MD"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-md">MD</span><span><b>Prep and drape;</b> in the conscious patient infiltrate lidocaine through skin, muscle, periosteum, and pleura.</span></label></li>
           <li class="t-div" data-role="MD"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-md">MD</span><span><b>Incise 2–4 cm</b> through skin, parallel to and directly over the rib <i>below</i> the target space.</span></label></li>
@@ -1467,6 +1467,33 @@ catch(e){ document.body.dataset.theme='dark'; }
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
+  /* ANTIBIOTIC PROPHYLAXIS FOR TUBE THORACOSTOMY (Lon, 2026-08-13).
+
+     Agent, dose and the allergy alternative are a pharmacy/antibiogram decision
+     rather than a literature one, so they live here and an adopting ED changes
+     them in one place. LRH: cefazolin (Ancef) 2 g IV; clindamycin 900 mg IV if
+     penicillin ANAPHYLAXIS.
+
+     The word anaphylaxis is load-bearing and is deliberately not softened to
+     "allergy". Most patients labeled penicillin-allergic tolerate cefazolin,
+     and withholding it for a rash or an unverified childhood label is the
+     common error this line exists to prevent — so the screen says which kind of
+     reaction actually changes the drug.
+
+     Evidence for giving anything at all: EAST Practice Management Guideline,
+     Presumptive Antibiotic Use in Tube Thoracostomy for Traumatic
+     Hemopneumothorax — Moore FO et al., J Trauma Acute Care Surg
+     2012;73(5 Suppl 4):S341-4. It is a CONDITIONAL recommendation for a
+     first-generation cephalosporin for no more than 24 h, and the guideline is
+     candid that the evidence is weak and contested. Stated as such on screen
+     rather than as a rule. */
+  abx: {
+    agent: "Cefazolin (Ancef) 2 g IV",
+    allergyTrigger: "penicillin anaphylaxis",
+    alternative: "Clindamycin 900 mg IV",
+    note: "Most patients labeled penicillin-allergic tolerate cefazolin — a rash or an unverified childhood label is not a reason to switch.",
+    cite: "EAST PMG, presumptive antibiotics in tube thoracostomy for traumatic hemopneumothorax (Moore FO et al., J Trauma Acute Care Surg 2012;73(5 Suppl 4):S341-4) — conditional recommendation, first-generation cephalosporin, no more than 24 h."
+  },
   version: "1.3",
   lastReviewed: "2026-08-13"
 };
@@ -1574,6 +1601,23 @@ var SITE = {
         r.classList.toggle('rolehide', !show);
       });
     }, false);
+  }
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
+})();</script>
+
+<script>(function(){
+  /* Render the antibiotic line from SITE.abx (issue-less, Lon 2026-08-13) so the
+     dose on screen and the dose in config cannot drift — the split #117 keeps
+     finding. Nothing here is hand-typed twice. */
+  function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function boot(){
+    var a=(typeof SITE==='object'&&SITE.abx)?SITE.abx:null; if(!a) return;
+    var els=document.querySelectorAll('[data-abx]');
+    var html='<b>Antibiotic prophylaxis.</b> '+esc(a.agent)+'. If <b>'+esc(a.allergyTrigger)+'</b>, '+
+             esc(a.alternative)+'.<br><span style="color:var(--ink2)">'+esc(a.note)+'</span>'+
+             '<br><span style="color:var(--ink2);font-size:12.5px">'+esc(a.cite)+'</span>'+
+             '<br><b style="color:var(--red)">Never delay decompression for it.</b>';
+    for(var i=0;i<els.length;i++){ els[i].innerHTML=html; }
   }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
 })();</script>
