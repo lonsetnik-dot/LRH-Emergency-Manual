@@ -140,6 +140,34 @@ table.kt td:nth-child(4){width:20%}
 table.kt td i{font-style:normal; color:var(--muted)}
 .ksign{display:grid; grid-template-columns:1fr 1fr; gap:7pt 12pt; margin-top:8pt; padding-top:7pt;
       border-top:1pt solid var(--rule)}
+/* ---- KIT WALL CARD 3 x 8 in (Lon, 2026-08-13) ------------------------------
+   A different job from the 4 x 6 procedure card, which is why it is a separate
+   artifact rather than a resize. The 4 x 6 carries the CONTENTS — it is what you
+   read while building or checking the bag. This one goes on the wall beside the
+   kit and answers, from across the room: what is this, where does it live, is it
+   in date, and who says so.
+
+   It deliberately carries NO item list. Contents live on the 4 x 6 and on the
+   one-page procedure checklist; repeating them here would make a tall narrow
+   strip of small type nobody reads, and would need reprinting every time an item
+   changed. The infographic is the biggest thing on the card. */
+.wcard{width:3in; height:8in; border:1.5pt solid var(--ink); background:var(--paper);
+       display:flex; flex-direction:column; overflow:hidden; break-inside:avoid; page-break-inside:avoid}
+.wch{display:flex; align-items:center; gap:7pt; padding:8pt 9pt; color:#fff}
+.wch b{font-size:12pt; line-height:1.1; display:block}
+.wch i{font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:6.2pt;
+       letter-spacing:.14em; font-style:normal; opacity:.85}
+.wfig{flex:1; display:flex; align-items:center; justify-content:center; padding:10pt 8pt;
+       border-bottom:1pt solid var(--rule)}
+.wfig svg{width:1.9in; height:1.9in}
+.wloc{padding:7pt 9pt; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+       font-size:7.6pt; line-height:1.45; letter-spacing:.05em; color:var(--ink);
+       border-bottom:1pt solid var(--rule)}
+.wqr{display:flex; align-items:center; gap:9pt; padding:8pt 9pt; border-bottom:1pt solid var(--rule)}
+.wqr div{font-size:7.4pt; line-height:1.35; color:var(--muted)}
+.wsign{padding:8pt 9pt}
+.wsign .r{margin-bottom:10pt}
+.wsign .w{height:16pt}
 .pcard{width:4in; height:6in; border:1.5pt solid var(--ink); background:var(--paper);
        display:flex; flex-direction:column; overflow:hidden; break-inside:avoid; page-break-inside:avoid}
 .pcard .ph{display:flex; align-items:center; gap:8pt; padding:7pt 10pt; color:#fff}
@@ -682,6 +710,32 @@ PROCS.forEach(function(p){
     '<div><span class="fl">RESTOCKED BY \u00b7 DATE</span><div class="w"></div></div></div>'+
     '<div class="pfoot">'+(QRS[p.qr]?qr(p.qr,'.78in'):'')+'<div>'+p.note+'<br>'+(p.scan||'Scan for the checklist.')+'</div></div></div>';
 });
+/* ============ KIT WALL CARDS 3 x 8 in ============
+   Goes on the wall beside the kit. Infographic, where it lives, a QR that opens
+   the check, and the three things a compliance walk actually needs written down:
+   CHECKED (date + initials), EXPIRES, and the next check due. No contents list —
+   see the .wcard CSS note. */
+var wcards='';
+PROCS.forEach(function(p){
+  wcards+='<div class="wcard"><div class="wch" style="background:var('+p.c+')">'+svg(p.icon)+
+    '<span><b>'+p.t+'</b><i>WALL CARD \u00b7 CHECK RECORD</i></span></div>'+
+    '<div class="wfig">'+svg(p.icon)+'</div>'+
+    '<div class="wloc">'+p.loc+'</div>'+
+    '<div class="wqr">'+(QRS[p.qr]?qr(p.qr,'1.05in'):'')+
+      '<div>'+(p.scan||'Scan for the checklist.')+'</div></div>'+
+    '<div class="wsign">'+
+      '<div class="r"><span class="fl">CHECKED \u00b7 DATE \u00b7 INITIALS</span><div class="w"></div></div>'+
+      '<div class="r"><span class="fl">EARLIEST EXPIRY IN THE KIT</span><div class="w"></div></div>'+
+      '<div class="r"><span class="fl">NEXT CHECK DUE</span><div class="w"></div></div>'+
+    '</div></div>';
+});
+out.push('<div class="sheet"><div class="sheettitle"><span>KIT WALL CARDS \u00b7 3 \u00d7 8 in</span>'+
+ '<span>PRINT AT 100% \u2014 DO NOT SCALE TO FIT</span></div><div class="pwrap">'+wcards+'</div>'+
+ '<p class="note screenonly">Beside the kit, at eye level. It answers what this is, where it lives, '+
+ 'whether it is in date and who last checked it \u2014 from across the room. <b>No contents list on purpose:</b> '+
+ 'the contents are on the 4 \u00d7 6 card and the one-page procedure checklist, and repeating them here would '+
+ 'mean reprinting the wall card every time an item changed. The QR is the entry point to the check.</p></div>');
+
 out.push('<div class="sheet"><div class="sheettitle"><span>PROCEDURE INFOGRAPHIC CARDS \u00b7 4 \u00d7 6 in</span>'+
  '<span>ONE PER KIT</span></div><div class="pwrap">'+pcards+'</div>'+
  '<p class="note screenonly"><b>Why this is a separate artifact.</b> A drawer face answers "which drawer" at three '+
