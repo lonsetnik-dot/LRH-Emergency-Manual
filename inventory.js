@@ -204,10 +204,19 @@ var INV_CATALOG = {
      procedure cards — verify_kit_consistency.mjs asserts that. ----------- */
   "kit-canthotomy": { name:"Canthotomy Kit", cat:"kit", std:["ACS-COT"], contents:[
     "3 mL syringe","Needle to draw","Needle to inject","Mosquito clamp","Toothed forceps","Blunt-tipped iris scissors"] },
-  "kit-chest-tube": { name:"Chest Tube Kit", cat:"kit", std:["ACS-COT"], contents:[
-    "Scalpel No. 10 blade","Kelly clamps","Heavy suture 0 or 2-0 + needle driver",
-    "Lidocaine 1% 20 mL + 10 mL syringe + 21 g and 25 g needles","Chlorhexidine prep + sterile drapes",
-    "Gown, gloves, mask, eye protection","Gauze packs + occlusive dressing + tape"] },
+  /* Rebuilt 2026-08-13 from the kit the department is assembling for providers
+     (photo of the build). Instruments are peel-packed singly rather than as a
+     tray, so each pack is its own line and its own expiry. Lines marked
+     `confirm:true` were read off the build photo and are not yet verified
+     against the assembled bag — they print with a ◇ on the check card. */
+  "kit-chest-tube": { name:"Chest Tube Kit", cat:"kit", std:["ACS-COT"],
+    draft:"Assembled build not yet verified item-for-item — see the check card.",
+    contents:[
+    "Needle driver","Curved Kelly clamps","Curved Mayo scissors","Toothed tissue forceps",
+    "Scalpel No. 10 blade","Povidone-iodine swabsticks","Silk 0 suture on a cutting needle",
+    "10 mL syringe + 18 g draw and 25 g needles","Foley catheter 16 Fr"],
+    confirm:["Curved Mayo scissors","Toothed tissue forceps","Silk 0 suture on a cutting needle",
+             "Foley catheter 16 Fr"] },
   "kit-pigtail": { name:"Pigtail Thoracostomy Kit", cat:"kit", std:["ACS-COT"], contents:[
     "Sterile gown, mask, eye protection, gloves, drapes","Ultrasound with a sterile probe cover and gel",
     "25 G and 21 G needles","Lidocaine 1%","Introducer needle","Marked guidewire","Sequential dilators",

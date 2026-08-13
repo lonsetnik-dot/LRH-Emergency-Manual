@@ -85,13 +85,19 @@ const KITS = [
     ],
   },
   {
+    // Rebuilt 2026-08-13 from the kit assembled for providers. The poster is asserted here too:
+    // it now carries a second sheet that IS the check card taped beside the bag, so a contents
+    // change that missed it would put a wrong list on the wall next to a right list in the app.
     name: 'Chest Tube Kit',
     location: /ROOM 7|TRAUMA CART|OB \/ NEONATAL CART/i,
-    items: ['Scalpel No. 10 blade', 'Kelly clamps', 'Heavy suture 0 or 2-0'],
+    items: ['Needle driver', 'Curved Kelly clamps', 'Curved Mayo scissors', 'Toothed tissue forceps',
+            'Scalpel No. 10 blade', 'Povidone-iodine swabsticks', 'Silk 0 suture on a cutting needle',
+            'Foley catheter 16 Fr'],
     artifacts: [
-      { file: 'procedures/index.html', role: 'interactive card' },
-      { file: 'labels/index.html',     role: 'kit card + build sheet' },
-      { file: 'inventory.js',          role: 'inventory catalog' },
+      { file: 'procedures/index.html',          role: 'interactive card' },
+      { file: 'labels/index.html',              role: 'kit card + build sheet' },
+      { file: 'inventory.js',                   role: 'inventory catalog' },
+      { file: 'posters/chest-tube/index.html',  role: 'wall poster + kit check card' },
     ],
   },
   {
