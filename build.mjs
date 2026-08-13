@@ -25,6 +25,10 @@ const MARKER_INV = '/* @inventory */';
    same glyph — see issue #131 and the header of equipment-icons.js. */
 const ICONS = readFileSync('equipment-icons.js', 'utf8').trim();
 const MARKER_ICONS = '/* @icons */';
+/* The upstream guideline registry, shared by sources/ (the freshness page) and
+   read outside the browser by check_guidelines.mjs — see GUIDELINE-WATCH.md. */
+const GDL = readFileSync('guidelines.js', 'utf8').trim();
+const MARKER_GDL = '/* @guidelines */';
 const SW_TEMPLATE = readFileSync('sw-template.js', 'utf8');
 const SW_REGISTER = readFileSync('sw-register.js', 'utf8').trim();
 const OUT = 'dist';
@@ -32,7 +36,7 @@ const OUT = 'dist';
 // Not part of the deployed site (dev tooling, docs, build inputs, VCS).
 const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', '.github']);
 const SKIP_ROOT_FILES = new Set([
-  'design-system.css', 'design-system-live.css', 'inventory.js', 'equipment-icons.js', 'build.mjs', 'run-tests.sh', 'netlify.toml',
+  'design-system.css', 'design-system-live.css', 'inventory.js', 'equipment-icons.js', 'guidelines.js', 'build.mjs', 'run-tests.sh', 'netlify.toml',
   'package.json', 'package-lock.json', 'shot.mjs', '.gitignore',
   'sw-template.js', 'sw-register.js',   // build inputs — emitted as dist/sw.js / inlined
 ]);
@@ -51,7 +55,7 @@ function walk(src, dst, atRoot) {
     if (statSync(s).isDirectory()) walk(s, d, false);
     else if (name.endsWith('.html')) {
       const html = readFileSync(s, 'utf8');
-      writeFileSync(d, injectSW(html.split(MARKER).join(CSS).split(MARKER_LIVE).join(CSS_LIVE).split(MARKER_INV).join(INV).split(MARKER_ICONS).join(ICONS)));
+      writeFileSync(d, injectSW(html.split(MARKER).join(CSS).split(MARKER_LIVE).join(CSS_LIVE).split(MARKER_INV).join(INV).split(MARKER_ICONS).join(ICONS).split(MARKER_GDL).join(GDL)));
     } else copyFileSync(s, d);
   }
 }

@@ -195,6 +195,12 @@ catch(e){ document.body.dataset.theme='dark'; }
       <div class="desc">Visually Enhanced Mental Simulation &mdash; a laminatable patient poster, monitor cards and equipment cards drawn with the same glyphs as the cart drawer labels. A table, the deck and fifteen minutes; no mannequin.</div>
     </a>
 
+    <!-- ===== CATEGORY: Guideline sources (beta · GRAY) -> /sources/ ===== -->
+    <a class="lrh-cat" style="--cc:var(--gray)" href="sources/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">Guideline Sources</span><span class="spacer"></span><span class="count lrh-mono">provenance</span></div>
+      <div class="desc">Which guideline each tool is written against, which edition, when a human last checked it, and exactly which cards move if it changes. A scheduled job watches each body monthly; the review calendar catches what the watching misses.</div>
+    </a>
+
     <!-- ===== Add a category/tool: create a lowercase, hyphenated folder with an
          index.html, add a card above (href to that folder, --cc to a -- token),
          and add matching entries to the SEARCH INDEX in the script below. ===== -->
@@ -340,6 +346,14 @@ catch(e){ document.body.dataset.theme='dark'; }
     {t:"Equipment — MH cart and dantrolene stock", c:"Equipment", k:"malignant hyperthermia mh cart dantrolene ryanodex sterile water cold saline hotline succinylcholine triggering agent stock", u:"equipment-readiness/?from=home#s-MHAUS"},
     {t:"Equipment — ASRA rescue kit stock", c:"Equipment", k:"asra last lipid emulsion rescue kit stock intralipid twenty percent local anesthetic systemic toxicity tubing syringes checklist stored together", u:"equipment-readiness/?from=home#s-ASRA-LAST"},
     {t:"Equipment — weight-band cart packing check", c:"Equipment", k:"broselow weight band packing grey pink red purple yellow white blue orange green drawer contents weight band cart diff", u:"equipment-readiness/?from=home#walk"},
+    /* Guideline-source entries deliberately carry NO body acronyms (nrp, das,
+       aha, acog…) as keywords, even though the page covers all of them. Search
+       ranks title matches first and leaves everything else in array order, so
+       putting "nrp" here would let a provenance page share a result list with the
+       newborn-resuscitation card at 3 a.m. Provenance vocabulary only. */
+    {t:"Guideline sources — what each tool is written against", c:"Sources", k:"guideline guidelines source sources citation citations reference references evidence provenance bibliography which guideline where did this number come from upstream body society", u:"sources/?from=home"},
+    {t:"Guideline editions — is the manual current?", c:"Sources", k:"edition editions version current up to date outdated stale superseded new guideline published republished last reviewed review date freshness overdue when was this checked", u:"sources/?from=home#bysource"},
+    {t:"Guideline sources by tool — what a tool owes", c:"Sources", k:"which guideline does this tool follow per tool dependencies affected cards what moves if the guideline changes scope of a guideline change", u:"sources/?from=home#bytool"},
     /* Simulations are deliberately NOT in the search index (rule-9 exception,
        Lon 2026-08-12): the bedside search must never surface a training script
        next to a clinical card. The tool is reached via its landing tile only. */

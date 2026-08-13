@@ -1,0 +1,156 @@
+name: guideline-watch
+
+# Once a month, check every upstream body the manual cites (guidelines.js) for a
+# new edition, and open a GitHub issue naming WHICH TOOLS AND CARDS MOVE if one
+# has appeared. Also runnable on demand from the Actions tab.
+#
+# This is the automated half of GUIDELINE-WATCH.md. The other half is human and
+# cannot be automated: someone has to read the new guideline and decide what the
+# manual should now say. What this workflow removes is the failure mode where
+# nobody notices for two years.
+#
+# Monthly, not weekly, on purpose. The review intervals in guidelines.js are 180
+# and 365 days, so a monthly check is already far finer-grained than the decision
+# it feeds, and a bot that posts every week is a bot that gets muted. To go
+# weekly anyway, change the cron below to '0 13 * * 1'.
+
+on:
+  schedule:
+    - cron: '0 13 1 * *'      # 09:00 US Eastern (13:00 UTC) on the 1st
+  workflow_dispatch:
+    inputs:
+      bootstrap_days:
+        description: 'PubMed lookback for sources checked for the first time'
+        required: false
+        default: '180'
+
+# issues: write  — to open/comment the watch issue.
+# contents: write — to push the fingerprint state to its own branch (below).
+permissions:
+  contents: write
+  issues: write
+
+concurrency:
+  group: guideline-watch
+  cancel-in-progress: false
+
+env:
+  # The fingerprint state lives on its OWN branch, never on main. It is machine
+  # output, it changes every run, and it must never appear in a clinical diff or
+  # need a review — but it also must not be lost between runs, which rules out
+  # an artifact (retention) and the actions cache (eviction).
+  STATE_BRANCH: guideline-watch-state
+  STATE_FILE: guideline-watch-state.json
+
+jobs:
+  watch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+
+      # Pull last run's fingerprints off the state branch. A first run has no
+      # branch: that is not an error, it just means every page probe records a
+      # baseline this time and can only detect changes from next run onward.
+      - name: Restore fingerprint state
+        run: |
+          if git fetch origin "$STATE_BRANCH" 2>/dev/null \
+             && git show "origin/$STATE_BRANCH:$STATE_FILE" > "$STATE_FILE" 2>/dev/null; then
+            echo "restored fingerprint state from origin/$STATE_BRANCH"
+          else
+            echo "no previous state — this run records the baseline"
+          fi
+
+      - name: Run the watcher
+        id: watch
+        env:
+          # Optional: set these repo secrets to raise the PubMed rate limit.
+          # The watcher works fine without them.
+          NCBI_API_KEY: ${{ secrets.NCBI_API_KEY }}
+          NCBI_EMAIL: ${{ secrets.NCBI_EMAIL }}
+        run: |
+          node check_guidelines.mjs \
+            --report guideline-watch-report.md \
+            --json guideline-watch-report.json \
+            --bootstrap-days "${{ github.event.inputs.bootstrap_days || '180' }}"
+          echo "actionable=$(node -e "console.log(require('./guideline-watch-report.json').actionable)")" >> "$GITHUB_OUTPUT"
+
+      # Keep the full report and JSON regardless of whether an issue was opened,
+      # so a quiet month still leaves an auditable record that the check ran.
+      - name: Upload report
+        uses: actions/upload-artifact@v4
+        with:
+          name: guideline-watch-${{ github.run_number }}
+          path: |
+            guideline-watch-report.md
+            guideline-watch-report.json
+          retention-days: 90
+
+      # One long-lived issue per open watch, commented on each month, rather than
+      # a new issue every run: the history of what was noticed and what was done
+      # about it belongs in one thread. A new issue opens only once the previous
+      # one has been closed out.
+      - name: Open or update the watch issue
+        if: steps.watch.outputs.actionable != '0'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          gh label create guideline-watch \
+            --color 0E8A16 \
+            --description "Upstream clinical guideline may have changed" 2>/dev/null || true
+
+          # GitHub rejects bodies over 65536 characters.
+          head -c 60000 guideline-watch-report.md > body.md
+          if [ "$(wc -c < guideline-watch-report.md)" -gt 60000 ]; then
+            printf '\n\n_Report truncated — full version in this run'"'"'s artifacts._\n' >> body.md
+          fi
+
+          existing=$(gh issue list --label guideline-watch --state open \
+                       --limit 1 --json number --jq '.[0].number // empty')
+          if [ -n "$existing" ]; then
+            gh issue comment "$existing" --body-file body.md
+            echo "commented on #$existing"
+          else
+            gh issue create \
+              --title "Guideline watch — $(date -u +%Y-%m-%d)" \
+              --label guideline-watch \
+              --body-file body.md
+          fi
+
+      - name: Report when nothing needs a human
+        if: steps.watch.outputs.actionable == '0'
+        run: echo "No change detected and nothing due. No issue opened."
+
+      # Commit the new fingerprints straight to the state branch with plumbing —
+      # no checkout, no orphan-branch dance, and it works whether or not the
+      # branch already exists. main is never touched, so branch protection on
+      # main is irrelevant to this workflow.
+      - name: Save fingerprint state
+        if: always()
+        run: |
+          set -euo pipefail
+          [ -f "$STATE_FILE" ] || exit 0
+          git config user.name  "guideline-watch"
+          git config user.email "guideline-watch@users.noreply.github.com"
+          blob=$(git hash-object -w "$STATE_FILE")
+          tree=$(printf '100644 blob %s\t%s\n' "$blob" "$STATE_FILE" | git mktree)
+          parent=$(git rev-parse -q --verify "refs/remotes/origin/$STATE_BRANCH" || true)
+          # Nothing to record if the fingerprints are byte-identical to what is already
+          # stored — which is what a failed watcher run leaves behind, since the file is
+          # then just the one restored at the start.
+          if [ -n "$parent" ] && [ "$(git rev-parse "$parent:$STATE_FILE" 2>/dev/null)" = "$blob" ]; then
+            echo "fingerprints unchanged — nothing to push"; exit 0
+          fi
+          msg="guideline watch fingerprints $(date -u +%Y-%m-%d)"
+          if [ -n "$parent" ]; then
+            commit=$(git commit-tree "$tree" -p "$parent" -m "$msg")
+          else
+            commit=$(git commit-tree "$tree" -m "$msg")
+          fi
+          git push origin "$commit:refs/heads/$STATE_BRANCH"
