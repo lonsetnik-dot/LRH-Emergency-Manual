@@ -211,9 +211,9 @@ var INV_CATALOG = {
      The drapes are now spelled out as one regular + one fenestrated, which is
      what the bag actually holds. */
   "kit-chest-tube": { name:"Chest Tube Kit", cat:"kit", std:["ACS-COT"], contents:[
-    "Scalpel No. 10 blade","Kelly clamps","Heavy suture 0 or 2-0 + needle driver",
+    "Scalpel No. 10 blade","Kelly clamps","Suture 0 silk + needle driver",
     "Lidocaine 1% 20 mL + 10 mL syringe + 21 g and 25 g needles","Chlorhexidine prep",
-    "Sterile drapes — 1 regular, 1 fenestrated"] },
+    "Fenestrated drape","Regular 1/2 drape","Large Tegaderm"] },
   "kit-pigtail": { name:"Pigtail Thoracostomy Kit", cat:"kit", std:["ACS-COT"], contents:[
     "Sterile gown, mask, eye protection, gloves, drapes","Ultrasound with a sterile probe cover and gel",
     "25 G and 21 G needles","Lidocaine 1%","Introducer needle","Marked guidewire","Sequential dilators",
