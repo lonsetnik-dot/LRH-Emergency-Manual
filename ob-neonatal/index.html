@@ -238,7 +238,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   try{ if(/(^|[?&])startnewcase=1(&|$)/.test(location.search)) openModal(); }catch(e){}
 })();
 </script>
-<div id="summarymodal" style="display:none; position:fixed; inset:0; z-index:20; background:rgba(15,28,44,0.55); padding:14px; overflow:auto;">
+<div id="summarymodal" style="display:none; position:fixed; inset:0; z-index:40; background:rgba(15,28,44,0.55); padding:14px; overflow:auto;">
   <div style="max-width:560px; margin:22px auto; background:var(--card); border:2px solid var(--gray); box-shadow:0 12px 44px rgba(0,0,0,0.32);">
     <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; background:linear-gradient(135deg,#005596,#003e6e); color:var(--on-sev); border-bottom:5px solid var(--sev-crit);">
       <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.1em;">CASE TIMELINE</div>
@@ -2320,7 +2320,7 @@ var CASESTATE = (function(){
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "1.14", lastReviewed: "2026-08-13",
+  version: "1.15", lastReviewed: "2026-08-13",
   /* DEFERRED CORD CLAMPING (issue #140). Was "30–60 s" here while the live
      engine at /neonatal/ said "at least 60 s" — two screens a clinician can
      open in the same delivery, giving different numbers. The 2025 AHA/AAP
@@ -2830,16 +2830,39 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
     return text;
   }
   var lastText='';
-  function open(){ lastText=render(); modal.style.display='block'; }
-  function close(){ modal.style.display='none'; }
-  btn.addEventListener('click', open);
-  closeb.addEventListener('click', close);
-  modal.addEventListener('click', function(e){ if(e.target===modal) close(); });
+  /* CASE TIMELINE — open, close, and copy (bug reported 2026-08-13).
+     This tool already had the backdrop tap; what it lacked was Escape, and COPY
+     TO CLIPBOARD left the timeline sitting open over the card you were working
+     from. Copying the timeline is the last thing you do with it, so it now
+     confirms and gets out of the way.
+
+     Its old copy handler also called done() from inside a try that ignored the
+     result, so a failed execCommand still said COPIED. It now reports failure
+     and stays open — closing on a failed copy would tell you the timeline is
+     safely on the clipboard when it is not.
+
+     Deliberately duplicated in codes/, peds/ and ob-neonatal/ rather than
+     shared: single-file offline tools, share the contract not the code.
+     verify_timeline_close.mjs holds the three copies to the same behavior. */
+  function openModal(){ lastText=render(); modal.style.display='block'; }
+  function closeModal(){ modal.style.display='none'; }
+  btn.addEventListener('click', openModal);
+  closeb.addEventListener('click', closeModal);
+  modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape' && modal.style.display!=='none') closeModal();
+  });
   copyb.addEventListener('click', function(){
     var t=lastText||render();
-    function done(){ copyb.textContent='COPIED'; setTimeout(function(){ copyb.textContent='COPY TO CLIPBOARD'; },1200); }
-    function fallback(){ var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0';
-      document.body.appendChild(ta); ta.focus(); ta.select(); try{ document.execCommand('copy'); done(); }catch(e){} document.body.removeChild(ta); }
+    function done(){ copyb.textContent='COPIED'; setTimeout(function(){ closeModal(); copyb.textContent='COPY TO CLIPBOARD'; }, 700); }
+    function failed(){ copyb.textContent='COPY FAILED — SELECT AND COPY MANUALLY';
+      setTimeout(function(){ copyb.textContent='COPY TO CLIPBOARD'; }, 2400); }
+    function fallback(){
+      var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok=false; try{ ok=document.execCommand('copy'); }catch(e){ ok=false; }
+      document.body.removeChild(ta); if(ok) done(); else failed();
+    }
     if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done, fallback); } else { fallback(); }
   });
 })();</script>
