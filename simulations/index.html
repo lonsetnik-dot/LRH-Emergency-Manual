@@ -95,7 +95,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <div style="padding:16px 14px 6px;">
     <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:var(--ink2); font-weight:700;">{{site.hospitalShort}} · {{site.deptName}}</div>
     <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Simulations — the patient is a pillow</h1>
-    <p style="margin:0; color:var(--ink2); font-size:14.5px;">Ten-to-fifteen-minute low-fidelity drills that chain the manual's real workflows together — birth into dystocia into a blue baby, asthma into arrest into post-ROSC. One person reads the script; the recorder drives the actual cards. No mannequin required.</p>
+    <p style="margin:0; color:var(--ink2); font-size:14.5px;">Ten-to-fifteen-minute low-fidelity drills that chain the manual's real workflows together — birth into dystocia into a blue baby, sepsis into pressors into a transfer call. One person reads the script; the recorder drives the actual cards. No mannequin required. <b>Every drill ends with the localization gaps it tends to surface</b> — the local facts nobody thought to write down until a workflow stalled on them. See <code>ONBOARDING.md</code>.</p>
   </div>
 
   <!-- ===== HOW TO RUN / SAFETY (applies to every sim) ===== -->
@@ -132,6 +132,13 @@ catch(e){ document.body.dataset.theme='dark'; }
         <a class="edm-row" style="--cc:var(--red)" href="#s05" data-kw="stemi vf arrest pea code status goals of care family conversation debrief lytics tnk"><span class="t">SIM 5 · STEMI → VF Arrest → PEA → Code Status → Debrief</span><span class="spacer"></span><span class="tag">MEDICAL · 18 MIN</span></a>
         <a class="edm-row" style="--cc:var(--red)" href="#s06" data-kw="hyperkalemia dialysis potassium bradycardia pacing transcutaneous transvenous tvp calcium"><span class="t">SIM 6 · Hyperkalemia → Unstable Bradycardia → Transvenous Pacing</span><span class="spacer"></span><span class="tag">MEDICAL · 12 MIN</span></a>
         <a class="edm-row" style="--cc:var(--red)" href="#s09" data-kw="airway angioedema failed intubation ladder das cico fona cric salad suction surgical"><span class="t">SIM 9 · Angioedema → Failed Airway Ladder → FONA</span><span class="spacer"></span><span class="tag">MEDICAL · 15 MIN</span></a>
+        <a class="edm-row" style="--cc:var(--red)" href="#s11" data-kw="sepsis septic shock lactate blood cultures antibiotics fluid bolus pressors norepinephrine source control icu boarding transfer qsofa"><span class="t">SIM 11 · Sepsis &rarr; Septic Shock &rarr; Pressors &rarr; Disposition</span><span class="spacer"></span><span class="tag">MEDICAL · 15 MIN</span></a>
+        <a class="edm-row" style="--cc:var(--red)" href="#s12" data-kw="stroke code stroke last known well lkw nihss ct head lytic tnk tenecteplase alteplase thrombectomy transfer door to needle"><span class="t">SIM 12 · Acute Stroke &rarr; Lytic Decision &rarr; Thrombectomy Transfer</span><span class="spacer"></span><span class="tag">MEDICAL · 15 MIN</span></a>
+        <a class="edm-row" style="--cc:var(--red)" href="#s13" data-kw="stemi ekg ecg reperfusion pci cath lab lytic tnk transfer clock door to balloon activation"><span class="t">SIM 13 · STEMI &rarr; Reperfusion Decision &rarr; Transfer Clock</span><span class="spacer"></span><span class="tag">MEDICAL · 12 MIN</span></a>
+        <a class="edm-row" style="--cc:var(--red)" href="#s14" data-kw="anaphylaxis epinephrine im autoinjector refractory infusion push dose airway angioedema biphasic"><span class="t">SIM 14 · Anaphylaxis &rarr; Refractory &rarr; Epinephrine Infusion</span><span class="spacer"></span><span class="tag">MEDICAL · 10 MIN</span></a>
+        <a class="edm-row" style="--cc:var(--purple)" href="#s15" data-kw="dka diabetic ketoacidosis peds pediatric insulin infusion cerebral edema hypertonic saline mannitol potassium fluid"><span class="t">SIM 15 · Pediatric DKA &rarr; Cerebral Edema</span><span class="spacer"></span><span class="tag">PEDS · 15 MIN</span></a>
+        <a class="edm-row" style="--cc:var(--red)" href="#s16" data-kw="hematemesis gi bleed variceal blakemore balloon tamponade octreotide transfusion endoscopy transfer massive"><span class="t">SIM 16 · Massive Hematemesis &rarr; Balloon Tamponade &rarr; Transfer</span><span class="spacer"></span><span class="tag">MEDICAL · 15 MIN</span></a>
+        <a class="edm-row" style="--cc:var(--red)" href="#s17" data-kw="overdose toxicology tox poison control antidote naloxone bicarbonate lipid emulsion intubation undifferentiated ingestion"><span class="t">SIM 17 · Undifferentiated Overdose &rarr; Antidote &rarr; Poison Control</span><span class="spacer"></span><span class="tag">MEDICAL · 12 MIN</span></a>
         <a class="edm-row" style="--cc:var(--orange)" href="#s07" data-kw="trauma blunt mvc level 1 activation tension pneumothorax chest tube mtp transfer"><span class="t">SIM 7 · Blunt Trauma → Tension Pneumothorax → Chest Tube → MTP</span><span class="spacer"></span><span class="tag">TRAUMA · 15 MIN</span></a>
         <a class="edm-row" style="--cc:var(--orange)" href="#s08" data-kw="trauma penetrating stab tca traumatic arrest thoracotomy clamshell death notification spikes"><span class="t">SIM 8 · Penetrating Trauma → TCA → Thoracotomy → Notification</span><span class="spacer"></span><span class="tag">TRAUMA · 18 MIN</span></a>
       </div>
@@ -658,6 +665,658 @@ catch(e){ document.body.dataset.theme='dark'; }
           <li class="t-div" style="padding:8px 0; font-size:14px;">The neck is owned and marked <i>before</i> the first look. Every rung is named before it's climbed. CICO is declared by its name — the failure mode this sim exists to kill is the room that keeps trying "one more look" at sat 70.</li>
           <li class="t-div" style="padding:8px 0; font-size:14px;"><a href="../conversations/?from=home#c04">Debrief card</a> prompts: <i>what sat number or attempt count is OUR line in the sand — and did we say it before or after we crossed it?</i> · <i>could every person in the room find the FONA kit blind?</i></li>
         </ul>
+      </details>
+    </div>
+  </article>
+
+  <!-- ================= SIM 11 — SEPSIS ================= -->
+  <article id="s11">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">S11</span>Sepsis &rarr; Septic Shock &rarr; Pressors &rarr; Disposition</h2>
+        <span class="t-mono-r">MEDICAL · 15 MIN + DEBRIEF</span>
+      </div>
+      <div class="chain"><span class="ph">RECOGNITION</span><span class="arw">&rarr;</span><span class="ph">BUNDLE</span><span class="arw">&rarr;</span><span class="ph">SHOCK</span><span class="arw">&rarr;</span><span class="ph">DISPOSITION</span></div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">SETUP · 2 MIN</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Pillow patient on a stretcher, gowned. Whiteboard: <b>72-year-old, three days of cough, sent in by the nursing home. HR 118 · BP 88/50 · RR 26 · T 38.9 · SpO&#8322; 91% on room air.</b></li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Roles: leader &middot; recorder (drives the card) &middot; nurse (access, blood) &middot; facilitator (voices vitals and the lab).</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;"><b>Run this one on a real clock.</b> Sepsis is the drill where the finding is almost always a duration, not a decision — how long antibiotics actually took, not whether the team knew to give them.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow + gown &middot; whiteboard &middot; two SIM-labeled blood culture bottles &middot; an empty fluid bag marked SIM.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Walk to the pressors.</b> Point at where norepinephrine actually lives &mdash; and say out loud whether it is a premixed bag, a vial somebody has to mix, or a pharmacy call. That answer is the sim.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Point at the antibiotics.</b> Which of them are in the automated cabinet on this floor, and which need pharmacy? Do not open anything.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 1 · RECOGNITION AND THE BUNDLE CLOCK</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;She is hot, confused, and breathing fast. The nurse says the blood pressure has been in the 80s since triage &mdash; <b>about forty minutes ago.</b>&rdquo;</div>
+          <a class="golink" href="../codes/?from=home#c28">OPEN &rsaquo; CODES &middot; SEPSIS / SEPTIC SHOCK</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Team names sepsis out loud and starts the clock. Cultures before antibiotics, lactate sent, access obtained, fluids started &mdash; all stated with who is doing each one.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;"><b>Facilitator, time these for real:</b> minutes from &ldquo;sepsis&rdquo; being said to antibiotics being <i>ordered</i>, and to antibiotics being <i>hung</i>. The gap between those two numbers is usually the finding.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN &rsaquo; cultures, lactate, access and antibiotics are all assigned to named people.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 2 · CURVEBALL &mdash; FLUID DOES NOT FIX IT</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;Thirty mL/kg is in. <b>MAP is 54.</b> Lactate came back at <b>5.8</b>. She is more confused than she was.&rdquo;</div>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Team moves to vasopressors and says the target out loud. Recorder logs the time pressors were <b>started</b>, not ordered.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;"><b>Ask the question that finds the gap:</b> &ldquo;Is this going through a peripheral line, and for how long is that acceptable here?&rdquo; Then: &ldquo;Who is putting in the central line, and how long until they are here?&rdquo;</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">If a central line is the answer, the recorder opens it and the team says the site and the size.<br><a class="golink" href="../procedures/?from=home#c06">OPEN &rsaquo; PROCEDURES &middot; CENTRAL VENOUS CATHETER</a></li>
+          </ul>
+          <div class="adv">ADVANCE WHEN &rsaquo; a pressor is running, a MAP target is named, and the route is settled.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 3 · SOURCE AND DISPOSITION</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;Chest film shows a dense right lower lobe. She is on 0.15 of norepinephrine. <b>It is 2am.</b> Where is this patient in an hour?&rdquo;</div>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Team decides: ICU here, or transfer. Say the actual answer for this department at this hour &mdash; not the daytime one.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">If transfer: the call goes out now, while the resuscitation continues. Recorder logs who was called and when.</li>
+          </ul>
+          <div class="adv">END WHEN &rsaquo; a disposition is named with a person attached to it, and the transfer call is either placed or explicitly not needed.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-green">
+        <summary class="t-head t-head-green">WHAT GOOD LOOKS LIKE + DEBRIEF</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Somebody says the word &ldquo;sepsis&rdquo; out loud in the first two minutes, and a clock starts when they do.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Antibiotics are hung, not just ordered. The team knows the difference and tracks the second number.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Pressors start when fluid fails, not after a second round of fluid that nobody expected to work.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;"><a href="../conversations/?from=home#c04">Debrief card</a> prompts: <i>how long was it between deciding on antibiotics and them being in the patient &mdash; and where did that time go?</i> &middot; <i>did anyone have to leave the room to find something?</i></li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">&#9888; LOCALIZATION GAPS THIS DRILL SURFACES</summary>
+        <div style="padding:4px 12px 12px;">
+          <p style="margin:6px 0; font-size:13.5px; line-height:1.4;">This is the drill's second job. Write down <b>every moment somebody had to ask a question the manual should have answered</b> &mdash; those moments are the backlog. The keys below are the ones this case usually exposes; the list is a starting point, not a checklist.</p>
+          <ul style="margin:0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>contacts.transferPrimary.*</code> &mdash; if the answer was &ldquo;transfer&rdquo;, did anyone have to look up the number?</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>caps.criticalAccess</code> &middot; ICU capability &mdash; the honest 2am answer, not the policy one.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>physical.resusRoom</code> &middot; <code>physical.cartDrawers</code> &mdash; anything anyone had to hunt for.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><b>Not yet a config key:</b> your pressor stock form (premixed vs mixed vs pharmacy), your lactate turnaround, and how long a peripheral pressor is acceptable here. If your team argued about any of those, that is a value worth adding to <code>localization.manifest.mjs</code> &mdash; see ONBOARDING.md, &ldquo;If something is not localizable&rdquo;.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- ================= SIM 12 — STROKE ================= -->
+  <article id="s12">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">S12</span>Acute Stroke &rarr; Lytic Decision &rarr; Thrombectomy Transfer</h2>
+        <span class="t-mono-r">MEDICAL · 15 MIN + DEBRIEF</span>
+      </div>
+      <div class="chain"><span class="ph">LAST KNOWN WELL</span><span class="arw">&rarr;</span><span class="ph">IMAGING</span><span class="arw">&rarr;</span><span class="ph">LYTIC</span><span class="arw">&rarr;</span><span class="ph">TRANSFER</span></div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">SETUP · 2 MIN</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Pillow patient. Whiteboard: <b>68-year-old, right-sided weakness and no speech. Husband is in the waiting room.</b> BP 186/98 · glucose 7.2 · afebrile.</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Roles: leader &middot; recorder &middot; nurse &middot; facilitator (voices the husband, the scanner and the receiving center). <b>The husband role matters</b> &mdash; last known well only exists if somebody asks him properly.</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Real clock. Door-to-needle is the whole point, and it is measured in minutes people can feel.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow + gown &middot; whiteboard &middot; a printed blank stroke scale &middot; a phone that is actually in the room.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Walk the route to CT</b> with a stretcher, at speed, and time it. Nobody knows this number until they measure it, and it is on the critical path of every stroke you will ever have.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Point at the lytic.</b> Where is it kept, who mixes it, and does that person have to be called in? Do not open it.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 1 · LAST KNOWN WELL</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;EMS says &lsquo;found down, unclear onset.&rsquo; The husband is outside and has not been asked anything yet.&rdquo;</div>
+          <a class="golink" href="../codes/?from=home#c04">OPEN &rsaquo; CODES &middot; SUSPECTED ACUTE STROKE</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Somebody is <b>sent to the husband</b> with the specific question &mdash; not &ldquo;when did this start&rdquo; but &ldquo;when did you last see her completely normal?&rdquo; Facilitator gives <b>&ldquo;she was fine when I brought her tea, about 55 minutes ago.&rdquo;</b></li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Recorder stamps LKW. A stroke scale is done and the number said out loud.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN &rsaquo; LKW is a real time on the record and a scale score has been stated.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 2 · IMAGING AND THE LYTIC DECISION</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;CT: <b>no hemorrhage.</b> No other exclusions on the checklist. Blood pressure is still 186/98.&rdquo;</div>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Team works the inclusion/exclusion checklist on the card out loud, then names <b>the lytic this department actually stocks and its dose</b>. If the card shows a placeholder rather than an agent, stop and write that down &mdash; that is the finding.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Blood pressure is addressed before the lytic, and the target is stated.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;"><b>Facilitator:</b> log the door-to-needle time. Announce it at the debrief, not before.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN &rsaquo; the lytic decision is made and the agent, dose and route are said out loud by name.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 3 · CURVEBALL &mdash; SHE IS A THROMBECTOMY CANDIDATE</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;CTA shows a <b>proximal M1 occlusion.</b> The receiving center wants to know your last known well and your scale score &mdash; and asks whether you have given the lytic.&rdquo;</div>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">The transfer call is placed <b>from the room, on the card's tap-to-call link</b>. If that link does not dial anything, that is the finding &mdash; write it down.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Team hands over in a structured way: LKW, scale, imaging, lytic given or not, and the time of each.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Somebody is assigned to the husband before the patient leaves.</li>
+          </ul>
+          <div class="adv">END WHEN &rsaquo; the transfer is accepted, the mode of transport is named, and the handover has been given once, completely.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-green">
+        <summary class="t-head t-head-green">WHAT GOOD LOOKS LIKE + DEBRIEF</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Somebody went to the family in the first three minutes. LKW is a time, not &ldquo;this morning&rdquo;.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">The scan happened while the checklist was being worked, not after it.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">The transfer conversation started before the lytic was finished, not after.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;"><a href="../conversations/?from=home#c04">Debrief card</a> prompts: <i>what was our door-to-needle, and which single minute is the easiest one to get back?</i> &middot; <i>who spoke to the husband, and when?</i></li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">&#9888; LOCALIZATION GAPS THIS DRILL SURFACES</summary>
+        <div style="padding:4px 12px 12px;">
+          <p style="margin:6px 0; font-size:13.5px; line-height:1.4;">Write down <b>every moment somebody had to ask a question the manual should have answered</b>. The keys below are the ones this case usually exposes.</p>
+          <ul style="margin:0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>formulary.strokeLytic</code> &mdash; the card must name your agent and dose. Tenecteplase and alteplase are dosed completely differently.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>formulary.thrombectomyTrigger</code> &mdash; what actually triggers the CTA and the call here.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>contacts.transfer</code> &middot; <code>contacts.transferPrimary.*</code> &mdash; did the tap-to-call link work, and did it reach the right desk?</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>policy.stroke</code> &mdash; does the card cite <i>your</i> protocol, or is it still citing somebody else's, or none?</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><b>Not yet a config key:</b> your stretcher-to-CT time, who mixes the lytic out of hours, and whether your scanner is ever occupied. If any of those changed the outcome, they are worth writing into the card.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- ================= SIM 13 — STEMI ================= -->
+  <article id="s13">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">S13</span>STEMI &rarr; Reperfusion Decision &rarr; Transfer Clock</h2>
+        <span class="t-mono-r">MEDICAL · 12 MIN + DEBRIEF</span>
+      </div>
+      <div class="chain"><span class="ph">EKG</span><span class="arw">&rarr;</span><span class="ph">ACTIVATION</span><span class="arw">&rarr;</span><span class="ph">REPERFUSION</span><span class="arw">&rarr;</span><span class="ph">TRANSFER</span></div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">SETUP · 2 MIN</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Pillow patient. Whiteboard: <b>58-year-old, crushing chest pain for 40 minutes, diaphoretic.</b> HR 92 · BP 132/84 · SpO&#8322; 96%.</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Print or draw an EKG with <b>inferior ST elevation</b> and hand it over at the right moment. A card that says &ldquo;the EKG shows STEMI&rdquo; teaches nothing; a piece of paper somebody has to interpret does.</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Roles: leader &middot; recorder &middot; nurse &middot; facilitator (voices the receiving cardiologist, who will push back).</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow + gown &middot; a printed EKG &middot; whiteboard &middot; a real phone.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Walk to wherever the STEMI or chest-pain bundle lives</b> &mdash; a box in the automated cabinet, a shelf, or nowhere. Say out loud what is in it. Do not open it.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;">If this department gives a lytic for STEMI, point at it and name who mixes it.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 1 · EKG TO ACTIVATION</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;Triage hands you this EKG. It was taken <b>four minutes ago.</b>&rdquo; <i>(Hand over the paper.)</i></div>
+          <a class="golink" href="../codes/?from=home#c21">OPEN &rsaquo; CODES &middot; STEMI</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;"><b>Read the top of the card first.</b> It states whether this department has on-site PCI &mdash; and therefore whether this card is even the right pathway. If it says nobody has recorded that yet, stop the sim and write it down. That single unanswered boolean is the whole reperfusion strategy.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Team activates. <b>Who is paged, by whom, on what number?</b> Say it, then actually do it as far as is safe.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Recorder stamps EKG time and activation time.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN &rsaquo; activation has happened and both times are on the record.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 2 · THE REPERFUSION DECISION</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;The receiving center says: <b>&lsquo;Our lab is 90 minutes away by ground and the helicopter is weathered out.&rsquo;</b> What are you doing?&rdquo;</div>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">The team makes the PCI-versus-lytic call explicitly and says the reasoning out loud, including the time estimate it depends on.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">If a lytic: name the agent, the dose, the contraindication check, and who is drawing it up. If PCI: name the transport and the time it will actually take at this hour.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Antiplatelet and anticoagulant decisions are said out loud, with doses.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN &rsaquo; a reperfusion strategy is chosen, justified, and being executed by a named person.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 3 · CURVEBALL &mdash; HE ARRESTS IN THE BAY</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;Mid-conversation he goes stiff and stops responding. <b>Monitor shows VF.</b>&rdquo;</div>
+          <a class="golink" href="../arrest/?from=home">OPEN &rsaquo; ARREST ENGINE</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Recorder switches to the arrest engine and reads the <b>first shock energy off the screen</b>. If it shows a placeholder instead of a number, the defibrillator has not been configured &mdash; write that down, it is the highest-value finding available in any drill.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Facilitator gives ROSC after two shocks. Team returns to the transfer, and the recorder notices whether the transfer conversation survived the arrest.</li>
+          </ul>
+          <div class="adv">END WHEN &rsaquo; ROSC is announced, the transfer plan is restated, and somebody has been sent to the family.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-green">
+        <summary class="t-head t-head-green">WHAT GOOD LOOKS LIKE + DEBRIEF</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px;">The EKG is read by a physician within minutes of arriving, and the activation call is made before the workup is complete.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">The reperfusion decision is a stated comparison of two times, not a reflex.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">The transfer plan is picked up again within a minute of ROSC, by name.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;"><a href="../conversations/?from=home#c04">Debrief card</a> prompts: <i>who decided, and what number did they decide against?</i> &middot; <i>when the rhythm changed, what got dropped?</i></li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">&#9888; LOCALIZATION GAPS THIS DRILL SURFACES</summary>
+        <div style="padding:4px 12px 12px;">
+          <p style="margin:6px 0; font-size:13.5px; line-height:1.4;">This drill exists mostly to test one boolean. Write down <b>every moment somebody had to ask a question the manual should have answered</b>.</p>
+          <ul style="margin:0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>caps.cathLab</code> &mdash; the card's entire structure depends on it. Include the nights-and-weekends answer, which is often different.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>policy.stemiActivation</code> &mdash; who gets paged and on what number. If anybody hesitated, it is not written down well enough.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>contacts.transfer</code> &mdash; and whether the entry says what that destination is <i>for</i>.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>defib.mfr</code> &middot; <code>defib.adultJoules</code> &mdash; surfaced by the arrest curveball. Check every cart, not just the one in the resus bay.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><b>Not yet a config key:</b> realistic ground and air transport times by hour and weather, and what is in your chest-pain bundle. Both changed the decision here.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- ================= SIM 14 — ANAPHYLAXIS ================= -->
+  <article id="s14">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">S14</span>Anaphylaxis &rarr; Refractory &rarr; Epinephrine Infusion</h2>
+        <span class="t-mono-r">MEDICAL · 10 MIN + DEBRIEF</span>
+      </div>
+      <div class="chain"><span class="ph">RECOGNITION</span><span class="arw">&rarr;</span><span class="ph">IM EPINEPHRINE</span><span class="arw">&rarr;</span><span class="ph">REFRACTORY</span><span class="arw">&rarr;</span><span class="ph">AIRWAY</span></div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">SETUP · 1 MIN</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Pillow patient, sitting up. Whiteboard: <b>34-year-old, ate at a restaurant 20 minutes ago, now covered in hives and says her throat feels tight.</b> HR 124 · BP 92/54 · RR 24 · SpO&#8322; 94%.</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Roles: leader &middot; recorder &middot; nurse &middot; facilitator. Three people is enough. <b>This is the shortest drill here and the easiest to run on a quiet night</b> &mdash; run it first if you are trying to build the habit.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow + gown &middot; whiteboard.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>The whole drill in one instruction:</b> send one person to physically fetch the epinephrine, and time them. Not the drawer it should be in &mdash; the actual vial or autoinjector, from wherever it actually is, at this hour. Then put it back unopened.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;">Point at the infusion supplies: pump, tubing, and whatever concentration this department mixes.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 1 · IM EPINEPHRINE, FAST</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;She is scratching at her neck. Her voice has changed since triage. <b>&lsquo;It's getting harder to swallow.&rsquo;</b>&rdquo;</div>
+          <a class="golink" href="../codes/?from=home#c08">OPEN &rsaquo; CODES &middot; ANAPHYLAXIS</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Team names anaphylaxis and gives IM epinephrine &mdash; dose, concentration, site, said out loud. The runner comes back with it and the facilitator logs the time.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Positioning, oxygen and IV access happen in parallel, not in sequence.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN &rsaquo; IM epinephrine is given with the dose and concentration stated correctly.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 2 · CURVEBALL &mdash; IT IS NOT WORKING</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;Five minutes. Second dose is in. <b>BP 78/40, stridor at rest, she is frightened and tiring.</b>&rdquo;</div>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Team escalates: fluids wide open and an <b>epinephrine infusion</b> &mdash; who mixes it, at what concentration, on what pump, and what is the starting rate? Say all four.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Somebody names the airway plan <b>before</b> it is needed, and says who would do it.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN &rsaquo; an infusion is being prepared by a named person and an airway plan has been stated.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 3 · THE AIRWAY</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;Stridor is worse. She cannot lie flat. <b>You are going to have to take this airway, and it is going to be swollen.</b>&rdquo;</div>
+          <a class="golink" href="../airway/?from=home">OPEN &rsaquo; AIRWAY &middot; FAILED INTUBATION LADDER</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Team states the plan out loud: who intubates, who is the second pair of hands, what the smaller tube size is, and what the front-of-neck plan is &mdash; <b>before</b> any drug is given.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Point at the surgical airway kit. Do not open it. Say who would use it.</li>
+          </ul>
+          <div class="adv">END WHEN &rsaquo; a full airway plan with a named operator and a named failure plan has been said out loud.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-green">
+        <summary class="t-head t-head-green">WHAT GOOD LOOKS LIKE + DEBRIEF</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px;">IM epinephrine is given in the first two minutes, in the thigh, at the right concentration &mdash; and nobody had to think about which vial.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">The infusion is started before the airway becomes the emergency, not after.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">The failure plan is spoken before the first attempt.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;"><a href="../conversations/?from=home#c04">Debrief card</a> prompts: <i>how long did it take to physically get epinephrine into the room, and where was it?</i> &middot; <i>did anyone reach for the wrong concentration?</i></li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">&#9888; LOCALIZATION GAPS THIS DRILL SURFACES</summary>
+        <div style="padding:4px 12px 12px;">
+          <p style="margin:6px 0; font-size:13.5px; line-height:1.4;">Write down <b>every moment somebody had to ask a question the manual should have answered</b>.</p>
+          <ul style="margin:0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>physical.cartDrawers</code> &mdash; if the runner hesitated, the drawer map is wrong or too coarse.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>physical.supraglotticSizes</code> &mdash; named in the airway plan; check it against the packets, size by size.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>formulary.rsiInduction</code> &mdash; the agent for a swollen, hypotensive airway is a local decision.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>policy.angioedema</code> &mdash; the histaminergic-versus-bradykinin branch and the airway approach come from a local document, if you have one.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><b>Not yet a config key:</b> which epinephrine forms you stock and where, your infusion concentration and starting rate, and whether the autoinjector and the vial live in the same place. All three are worth writing into the card.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- ================= SIM 15 — PEDS DKA ================= -->
+  <article id="s15">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">S15</span>Pediatric DKA &rarr; Cerebral Edema</h2>
+        <span class="t-mono-r">PEDS · 15 MIN + DEBRIEF</span>
+      </div>
+      <div class="chain"><span class="ph">DKA</span><span class="arw">&rarr;</span><span class="ph">FLUIDS &amp; INSULIN</span><span class="arw">&rarr;</span><span class="ph">DETERIORATION</span><span class="arw">&rarr;</span><span class="ph">TRANSFER</span></div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">SETUP · 2 MIN</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Child-sized pillow. Whiteboard: <b>9-year-old, new diagnosis, vomiting for two days, breathing deeply.</b> Glucose 34 mmol/L (610 mg/dL) &middot; pH 7.05 &middot; HCO&#8323; 6 &middot; K&#8314; 3.2. HR 138 · BP 96/60 · <b>weight 28 kg</b>.</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Roles: leader &middot; recorder (enters the weight, which drives every dose) &middot; nurse &middot; facilitator (voices labs and the child's mother).</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Have a paper towel and pen ready for the fluid and insulin arithmetic. Whether the team does it on paper, in their head, or on the card is itself a finding.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> child-sized pillow &middot; whiteboard &middot; an empty fluid bag marked SIM.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Point at the pediatric weight tape</b> and confirm the bands on it match the ones on the card. A tape that disagrees with the screen is a silent hazard.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;">Point at hypertonic saline and mannitol. Say which one is stocked, in what concentration, and where. If nobody is sure, that is the finding.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 1 · FLUIDS, INSULIN, POTASSIUM</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;He is Kussmaul breathing and sleepy but rousable. Mum is terrified and asking what is happening.&rdquo;</div>
+          <a class="golink" href="../peds/?from=home#p07">OPEN &rsaquo; PEDS &middot; DIABETIC KETOACIDOSIS</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Recorder enters the weight. Team states the fluid plan and the insulin plan with numbers &mdash; and says explicitly <b>when insulin starts relative to fluids</b>, and what happens to potassium first.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Somebody is assigned to mum with an actual sentence, not &ldquo;we'll update you&rdquo;.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN &rsaquo; fluid rate, insulin rate and the potassium decision are all stated as numbers.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 2 · CURVEBALL &mdash; HE STOPS MAKING SENSE</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;Ninety minutes in. <b>He has a headache, he is confused, and his heart rate has dropped to 62 while his blood pressure went up.</b> Mum says &lsquo;he's not right.&rsquo;&rdquo;</div>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Team names cerebral edema out loud &mdash; the bradycardia-with-hypertension pattern is the point of the case. Fluids are addressed, the head is elevated, and hyperosmolar therapy is given with a dose calculated from the weight.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;"><b>Say which agent and which concentration</b>, and send somebody to point at it.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN &rsaquo; cerebral edema is named and a weight-based hyperosmolar dose is stated.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 3 · WHERE DOES THIS CHILD GO?</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;He is a little better. He needs a pediatric ICU. <b>It is a weekend.</b>&rdquo;</div>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Team names the receiving pediatric center and places the call. Handover includes weight, the numbers, what has been given, and the neurologic change with its time.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Somebody asks who travels with the child and whether mum can go.</li>
+          </ul>
+          <div class="adv">END WHEN &rsaquo; a pediatric destination is named, the call is placed, and transport is decided.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-green">
+        <summary class="t-head t-head-green">WHAT GOOD LOOKS LIKE + DEBRIEF</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px;">The weight is entered once, early, and every dose comes off it &mdash; nobody recomputes in their head.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">The neurologic change is named as cerebral edema within a minute, not investigated for ten.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Mum was spoken to twice, by the same person.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;"><a href="../conversations/?from=home#c04">Debrief card</a> prompts: <i>where did the insulin rate come from, and did two people agree on it?</i> &middot; <i>could we lay hands on hypertonic saline in under a minute?</i></li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">&#9888; LOCALIZATION GAPS THIS DRILL SURFACES</summary>
+        <div style="padding:4px 12px 12px;">
+          <p style="margin:6px 0; font-size:13.5px; line-height:1.4;">Write down <b>every moment somebody had to ask a question the manual should have answered</b>.</p>
+          <ul style="margin:0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>policy.pedsOrderSet</code> &mdash; several pediatric doses come from a named local order set. Does the card cite yours?</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>physical.cartDrawers</code> &mdash; and specifically whether the pediatric supplies are on the same cart or a different one.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>contacts.transfer</code> &mdash; a pediatric destination is often a different one. If your list has a single entry, it is probably incomplete.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><b>Not yet a config key:</b> your insulin infusion protocol, which hyperosmolar agent you stock and at what concentration, and whether your length-based tape matches the bands on the screen. All three deserve to be written down.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- ================= SIM 16 — MASSIVE HEMATEMESIS ================= -->
+  <article id="s16">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">S16</span>Massive Hematemesis &rarr; Balloon Tamponade &rarr; Transfer</h2>
+        <span class="t-mono-r">MEDICAL · 15 MIN + DEBRIEF</span>
+      </div>
+      <div class="chain"><span class="ph">RESUSCITATE</span><span class="arw">&rarr;</span><span class="ph">AIRWAY</span><span class="arw">&rarr;</span><span class="ph">TAMPONADE</span><span class="arw">&rarr;</span><span class="ph">TRANSFER</span></div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">SETUP · 2 MIN</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Pillow patient. Whiteboard: <b>54-year-old, known cirrhosis, vomiting large volumes of blood in the ambulance bay.</b> HR 132 · BP 82/48 · alert but grey.</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Roles: leader &middot; recorder &middot; two nurses &middot; facilitator. This case needs more hands than it looks like it does, and noticing that is part of the drill.</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;"><b>A towel soaked in red-dyed water</b> makes this drill land in a way a whiteboard number cannot. Optional, effective, and easy to clean up.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow + gown &middot; whiteboard &middot; two suction canisters if you have them.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Find the balloon tamponade tube.</b> Physically. This is the classic item everyone believes exists until the night it is needed. Note which tube it is, where it is, and whether the manometer is with it. Do not open it.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Two suction units</b> &mdash; point at both. A single working suction is not enough for this case, and finding that out now is cheap.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;">Point at the massive transfusion cooler route: who goes, where, and how long it takes.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 1 · BLOOD, NOT CRYSTALLOID</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;He fills a basin, then another. The nurse says &lsquo;I can't get a second line.&rsquo;&rdquo;</div>
+          <a class="golink" href="../codes/?from=home#c23">OPEN &rsaquo; CODES &middot; MASSIVE HEMATEMESIS</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Team calls for blood and activates massive transfusion &mdash; saying <b>how</b> it is activated here, and who is being called.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Large-bore access is prioritized out loud. If a resuscitation line is the answer, open it and say the site.<br><a class="golink" href="../procedures/?from=home#c14">OPEN &rsaquo; PROCEDURES &middot; RESUSCITATION LINE</a></li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Somebody names the drug therapy &mdash; the vasoactive agent and the antibiotic &mdash; with doses.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN &rsaquo; blood is on its way, MTP is activated by the real mechanism, and access is being secured.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 2 · CURVEBALL &mdash; HE CANNOT PROTECT HIS AIRWAY</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;He is drowsy now and still bleeding into his own mouth. <b>Sat is 88 and the suction is full.</b>&rdquo;</div>
+          <a class="golink" href="../procedures/?from=home#c15">OPEN &rsaquo; PROCEDURES &middot; SALAD &mdash; CONTAMINATED AIRWAY</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Team intubates with a contaminated-airway plan &mdash; two suctions, positioning, and who is doing what &mdash; stated before any drug.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Facilitator empties one suction canister mid-attempt. Somebody has to notice and fix it.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN &rsaquo; the airway is secured and confirmed, with the suction problem solved by a named person.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 3 · TAMPONADE AND THE TRANSFER</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;Four units in and he is still losing it. <b>Endoscopy is not available here tonight.</b>&rdquo;</div>
+          <a class="golink" href="../posters/blakemore/">OPEN &rsaquo; BALLOON TAMPONADE POSTER</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Somebody fetches the tube for real and the team walks the steps on the pillow &mdash; <b>naming which tube it is</b>, because the placement differs between them. Nothing is inserted and nothing is opened.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">The transfer call happens <b>in parallel</b> with the tamponade, not after it. Recorder logs both times.</li>
+          </ul>
+          <div class="adv">END WHEN &rsaquo; the tamponade steps have been narrated in order and the transfer is accepted.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-green">
+        <summary class="t-head t-head-green">WHAT GOOD LOOKS LIKE + DEBRIEF</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Blood is called for in the first minute, and nobody spends the first ten on crystalloid.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">The airway plan accounts for the fact that the airway is full of blood, before the first attempt.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">The team can physically produce the tamponade tube, and knows which one it is.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;"><a href="../conversations/?from=home#c04">Debrief card</a> prompts: <i>how long did the first unit of blood actually take to arrive?</i> &middot; <i>did we have two working suctions, and did we know that before we needed them?</i></li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">&#9888; LOCALIZATION GAPS THIS DRILL SURFACES</summary>
+        <div style="padding:4px 12px 12px;">
+          <p style="margin:6px 0; font-size:13.5px; line-height:1.4;">This drill finds equipment problems more reliably than any other. Write down <b>every moment somebody had to ask a question the manual should have answered</b>.</p>
+          <ul style="margin:0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>physical.balloonTamponadeTube</code> &mdash; which tube, and where. If it took more than a minute to find, the location string is wrong.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>contacts.bloodBank.how</code> &mdash; the real activation mechanism, in the words the lab expects to hear.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>caps.plateletsOnSite</code> &middot; <code>formulary.mtpRatio</code> &mdash; what is in the first cooler, and how long it took.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>physical.resusRoom</code> &mdash; and whether the kit is actually in the room the card says it is.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><b>Not yet a config key:</b> your endoscopy availability by hour, your real first-unit-of-blood time, and how many working suction units this room has. Write all three down somewhere the next team will find them.</li>
+          </ul>
+        </div>
+      </details>
+    </div>
+  </article>
+
+  <!-- ================= SIM 17 — TOXICOLOGY ================= -->
+  <article id="s17">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">S17</span>Undifferentiated Overdose &rarr; Antidote &rarr; Poison Control</h2>
+        <span class="t-mono-r">MEDICAL · 12 MIN + DEBRIEF</span>
+      </div>
+      <div class="chain"><span class="ph">UNKNOWN INGESTION</span><span class="arw">&rarr;</span><span class="ph">TOXIDROME</span><span class="arw">&rarr;</span><span class="ph">ANTIDOTE</span><span class="arw">&rarr;</span><span class="ph">CONSULT</span></div>
+    </div>
+
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-info">
+        <summary class="t-head t-head-info">SETUP · 2 MIN</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Pillow patient. Whiteboard: <b>22-year-old found unresponsive with empty blister packs nearby. Nobody knows what or how much.</b> HR 128 · BP 96/58 · RR 8 · GCS 8 · pupils mid.</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Roles: leader &middot; recorder &middot; nurse &middot; facilitator (voices the paramedic, the EKG and poison control).</li>
+          <li class="t-div" style="padding:9px 0; font-size:14px; line-height:1.35;">Have a printed EKG with a <b>wide QRS</b> ready to hand over in phase 2.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">EQUIPMENT TO STAGE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow + gown &middot; whiteboard &middot; empty blister packs &middot; a printed EKG &middot; a real phone.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Walk to wherever antidotes live.</b> Say out loud which of these are in the building right now: sodium bicarbonate, lipid emulsion, naloxone, high-dose insulin, glucagon, hydroxocobalamin. Do not open anything. Most departments discover a gap in this exercise alone.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;">Put the poison control number on the whiteboard <b>from memory or from the card</b> &mdash; not from a phone search. Then check it.</li>
+        </ul>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 1 · RESUSCITATE BEFORE YOU DIAGNOSE</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;He is barely breathing. The paramedic says &lsquo;his housemate found him, we don't know what he took.&rsquo;&rdquo;</div>
+          <a class="golink" href="../codes/?from=home#c36">OPEN &rsaquo; CODES &middot; TOXICOLOGY CRASH CARD</a>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Airway and breathing addressed first. Glucose checked. Naloxone considered out loud with a dose and a reason, not reflexively.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Team asks the paramedic the right questions: what was at the scene, what is he prescribed, who else lives there.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN &rsaquo; airway is managed, glucose is known, and a toxidrome has been named or explicitly deferred.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">PHASE 2 · CURVEBALL &mdash; THE QRS IS WIDE</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;Here is the EKG.&rdquo; <i>(Hand over the paper.)</i> &ldquo;<b>QRS 148 and widening. He just had a brief seizure.</b>&rdquo;</div>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Team recognizes sodium-channel blockade and treats it &mdash; naming the agent, the dose, the endpoint, and who is drawing it up. Somebody is sent to fetch it for real.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Ventilation strategy is stated, and hyperventilation is discussed rather than assumed.</li>
+          </ul>
+          <div class="adv">ADVANCE WHEN &rsaquo; the antidote is named with a dose and an endpoint, and somebody has physically located it.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">PHASE 3 · POISON CONTROL AND DISPOSITION</summary>
+        <div style="padding:2px 12px 12px;">
+          <div class="stem">&ldquo;QRS is narrowing. <b>Now call poison control</b> &mdash; and be ready to tell them what you have already done.&rdquo;</div>
+          <ul style="margin:6px 0 0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:8px 0; font-size:14px;"><b>Place the call on the card's link.</b> If the number is a placeholder, or the link does not dial, that is the finding &mdash; write it down and stop pretending.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">The team gives a structured toxicology handover: agent suspected, amount, time, EKG, what has been given, response.</li>
+            <li class="t-div" style="padding:8px 0; font-size:14px;">Disposition named, including the mental-health question &mdash; who assesses, and where does he wait?</li>
+          </ul>
+          <div class="adv">END WHEN &rsaquo; poison control is called, advice is documented, and a disposition with a named owner exists.</div>
+        </div>
+      </details>
+
+      <details open class="t-box-green">
+        <summary class="t-head t-head-green">WHAT GOOD LOOKS LIKE + DEBRIEF</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Resuscitation came before diagnosis, and nobody spent the first five minutes guessing the drug.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">The wide QRS was recognized from the paper, by the team, without a prompt.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;">Poison control was called from the card, not from a search engine.</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px;"><a href="../conversations/?from=home#c04">Debrief card</a> prompts: <i>which antidotes did we discover we do not stock?</i> &middot; <i>how long did it take to get poison control on the phone?</i></li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">&#9888; LOCALIZATION GAPS THIS DRILL SURFACES</summary>
+        <div style="padding:4px 12px 12px;">
+          <p style="margin:6px 0; font-size:13.5px; line-height:1.4;">Write down <b>every moment somebody had to ask a question the manual should have answered</b>.</p>
+          <ul style="margin:0; padding:0; list-style:none;">
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>contacts.poisonControl.display</code> &middot; <code>contacts.poisonControl.tel</code> &mdash; and whether the link actually dialed.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>physical.cartDrawers</code> &mdash; where the antidotes are, drawer by drawer.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><code>formulary.rsiInduction</code> &mdash; the induction agent for a hypotensive poisoned patient.</li>
+            <li class="t-div" style="padding:7px 0; font-size:13.5px;"><b>Not yet a config key:</b> your antidote stock list &mdash; which are in the building, which are a pharmacy call, and which you simply do not have. That list is the single most useful thing this drill produces, and it belongs somewhere permanent. See ONBOARDING.md, &ldquo;If something is not localizable&rdquo;.</li>
+          </ul>
+        </div>
       </details>
     </div>
   </article>

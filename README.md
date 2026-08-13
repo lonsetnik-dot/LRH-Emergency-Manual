@@ -3,6 +3,12 @@
 Static site hosting personal, unofficial clinical decision-support tools.
 **Not part of any hospital IT system / EHR.** Nothing here replaces clinical judgment.
 
+**Adopting this for your own emergency department?** Start at
+[`ONBOARDING.md`](ONBOARDING.md) — 69 questions, answered into one file, with
+the parts you have not answered saying so on screen rather than guessing.
+[`TEMPLATE.md`](TEMPLATE.md) explains what was stripped out and why nothing
+falls back to a default.
+
 ## Structure
 
 ```

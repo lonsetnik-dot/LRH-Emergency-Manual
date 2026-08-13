@@ -168,4 +168,5 @@ plumbing.**
 | `CLAUDE.md` | the rules Claude follows when editing |
 | `DESIGN-SYSTEM.md`, `LAYOUT.md`, `TERMINOLOGY.md` | design, layout, and wording standards |
 | `WORKFLOW.md` | this file |
-| `LOCALIZING.md` | how another hospital adapts the project for itself |
+| `ONBOARDING.md` | how another hospital adapts the project for itself — generated from `localization.manifest.mjs`, do not edit directly |
+| `TEMPLATE.md` | what the stripped template branch is, and why nothing in it defaults |

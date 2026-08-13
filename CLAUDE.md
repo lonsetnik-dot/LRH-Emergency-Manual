@@ -213,6 +213,27 @@ airway suite this way is what surfaced that `/airway/` read its config for the
 ladder's behavior but printed hand-typed numbers on screen — a localized site
 would have got a screen that contradicted itself.
 
+## Localization & onboarding (`ONBOARDING.md`)
+
+Every site-specific value is declared once in `localization.manifest.mjs` and
+answered once in `site.config.json`. `ONBOARDING.md` is **generated** from that
+manifest — never edit it directly; edit the manifest (for questions) or the
+PROLOGUE/EPILOGUE strings in `gen_onboarding.mjs` (for prose), then:
+
+```
+node gen_onboarding.mjs && node gen_site_config.mjs && node build.mjs
+```
+
+Adding a site-specific value is four steps: a manifest entry, a `{{token}}` or
+`LOCAL('key')` in the tool, a regenerate, and a run of
+`verify_localization.mjs`. The build **fails** on a token nobody declared, so a
+typo stops the build instead of shipping literal braces to a bedside screen.
+
+The test for whether something belongs in the manifest is not "is it a number".
+It is: *would a different ED have a different answer, and would inheriting ours
+be wrong?* If yes, it does not belong hard-coded in a checklist — including
+sentences that state what the department can and cannot do.
+
 ## Deploy & test workflow
 
 Give Lon this four-step close-out after every deliverable that touches a
@@ -289,7 +310,12 @@ test it" is not sufficient close-out for a deliverable.
 - `debrief/` — redirect stub only; the debrief card lives in `conversations/`
   (card 04). Kept so old links and printed QR codes still resolve.
 - `simulations/` — pillow-patient in-situ drill scripts chaining the tools'
-  workflows (deliberately excluded from the site search).
+  workflows (deliberately excluded from the site search — the tool's own filter
+  is its search surface, so a new sim needs a menu row with `data-kw`
+  keywords, **not** a `SEARCH_INDEX` entry). Every sim ends with a
+  **LOCALIZATION GAPS THIS DRILL SURFACES** block naming the config keys that
+  case tends to expose; that block is what turns a drill into onboarding work,
+  so a new sim is not finished without one.
 - `vems/` — Visually Enhanced Mental Simulation kit: the printable, laminatable
   card deck (patient poster, monitor cards, equipment cards, facilitator run
   sheet) that runs a case on a table instead of a mannequin. See **Shared
