@@ -470,6 +470,10 @@ var INV_LOCATIONS = {
   /* --- kits (locations confirmed from labels/ + procedure cards) --- */
   "kit-canthotomy":      { loc:"Trauma Cart · Drawer 6 · Canthotomy Kit", par:1 },
   "kit-chest-tube":      { loc:"Room 7 · Chest Drainage", par:1 },
+  /* Co-located with the insertion kit, confirmed by Lon 2026-08-14. Same
+     section, two bags: the provider takes one and the nurse takes the other,
+     which is exactly why they are separate kits rather than one long list. */
+  "kit-chest-tube-dressing": { loc:"Room 7 · Chest Drainage", par:1 },
   "kit-pigtail":         { loc:"Room 7 · Chest Drainage (pigtail)", par:2 },
   "kit-thoracotomy":     { loc:"Trauma Cart · Shelf A · Thoracostomy + Rib Spreader", par:1 },
   "kit-burr-hole":       { loc:"Trauma Cart · Shelf A · Burr Hole", par:1 },
