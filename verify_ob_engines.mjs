@@ -227,8 +227,20 @@ for (const [term, want] of [['postpartum hemorrhage', 'pph/'], ['shoulder dystoc
   const hrefs = await home.evaluate(() => [...document.querySelectorAll('#results a')].map(a => a.getAttribute('href')));
   ck(`9. searching "${term}" surfaces ${want}`, hrefs.some(h => h && h.includes(want)), true);
 }
-ck('9. the landing page has a PPH tile', await home.locator('a[href*="pph/"]').count() > 0, true);
-ck('9. and a dystocia tile', await home.locator('a[href*="dystocia/"]').count() > 0, true);
+/* The live engines are reached through search (asserted above) and through
+   the OB & Neonatal tool's own menu (verified in verify_guidelines.mjs-style
+   link checks elsewhere) — NOT as their own top-level category tiles next to
+   Equipment Readiness/Simulations/VEMS. A standalone tile would be exactly
+   the duplicate this whole rebuild exists to remove: one category for OB &
+   Neonatal, not one category plus three more for cards it already contains. */
+ck('9. no standalone landing-page tile for the PPH engine',
+   await home.locator('.lrh-cat[href*="pph/"]').count(), 0);
+ck('9. no standalone landing-page tile for the dystocia engine',
+   await home.locator('.lrh-cat[href*="dystocia/"]').count(), 0);
+ck('9. no standalone landing-page tile for the neonatal engine',
+   await home.locator('.lrh-cat[href^="neonatal/"]').count(), 0);
+ck('9. the OB & Neonatal Emergencies tile is the one entry point',
+   await home.locator('.lrh-cat[href*="ob-neonatal/"]').count(), 1);
 await home.close();
 
 /* Cards 03/06/07 no longer exist on ob-neonatal/ — replaced, not duplicated
