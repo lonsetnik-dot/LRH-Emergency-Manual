@@ -602,7 +602,7 @@ var CASES = [{
     { icon:"airway",  n:"OPA / NPA",             sz:"NEONATAL", inv:"opa" },
     { icon:"suction", n:"Bulb / Suction",        sz:"5–8 Fr", inv:"suction-cath" },
     { icon:"etco2",   n:"End-Tidal CO₂",         sz:"CONFIRMS THE TUBE", inv:"etco2" },
-    { icon:"ett",     n:"Neonatal ETT",          sz:"2.5–3.5 UNCUFFED", inv:"ett-cuffed" },
+    { icon:"ett",     n:"Neonatal ETT",          sz:"2.5–3.5 UNCUFFED", inv:"ett-uncuffed" },
     { icon:"dl",      n:"Laryngoscope",          sz:"MILLER 0–1", inv:"blades-miller" },
     { icon:"iv",      n:"UVC Kit",               sz:"3.5 / 5 Fr", inv:"uvc" },
     { icon:"meds",    n:"Epinephrine",           sz:"NRP DOSE — SAY IT", drawer:"OB / Neonatal Cart · Circulation" },
@@ -698,7 +698,7 @@ var CASES = [{
       adv:"massage is happening, two medications are verbalized with doses, and a second IV is named." },
 
     { n:"BEAT 2 · MEDS ARE IN, SHE IS STILL BLEEDING", flip:"M2",
-      say:"“Uterotonics are in. Loss is past 1.1 litres. Heart rate 114, pressure 104 over 62. <b>Is this working?</b>”",
+      say:"“Uterotonics are in. Loss is past 1.1 liters. Heart rate 114, pressure 104 over 62. <b>Is this working?</b>”",
       link:{ t:"OB · POSTPARTUM HEMORRHAGE", h:"../ob-neonatal/?from=home#c06" },
       does:["The team should be reading the TRAJECTORY — loss climbing, pressure falling — not waiting for a threshold.",
             "TXA and its time window are stated out loud.",
@@ -707,7 +707,7 @@ var CASES = [{
       fail:"the team settles in to wait and see — say “she has lost another 400 mL while you talked” and run the beat again." },
 
     { n:"BEAT 3 · SHE IS CRASHING", flip:"M3",
-      say:"“Loss is past 1.6 litres. <b>Pressure 78 over 40, heart rate 132.</b> She is pale and confused. Uterotonics are in. <b>What now, and who are you calling?</b>”",
+      say:"“Loss is past 1.6 liters. <b>Pressure 78 over 40, heart rate 132.</b> She is pale and confused. Uterotonics are in. <b>What now, and who are you calling?</b>”",
       link:{ t:"CODES · MASSIVE TRANSFUSION PROTOCOL", h:"../codes/?from=home#c12" },
       does:["Somebody activates MTP by the actual process — say it, do not dial. The call should be a sentence, not a debate.",
             "A blood RUNNER and a blood CHECKER are named as people, not as roles in the abstract.",
@@ -717,7 +717,7 @@ var CASES = [{
       fail:"MTP is discussed but never actually activated — this is the most common real-world failure in this case. Rewind and make them say it." },
 
     { n:"BEAT 4 · PRODUCTS ARE RUNNING", flip:"M4",
-      say:"“First units are up. Loss is 1.9 litres, pressure 88 over 50. <b>What are you doing mechanically while the blood runs?</b>”",
+      say:"“First units are up. Loss is 1.9 liters, pressure 88 over 50. <b>What are you doing mechanically while the blood runs?</b>”",
       link:{ t:"PROCEDURES · JADA", h:"../procedures/?from=home#c13" },
       does:["Blood alone is not the treatment — the bleeding has to be stopped. The mechanical step is named and staged.",
             "Somebody states where the JADA kit lives on the new cart, and what else it needs that is not in the bag.",
@@ -762,7 +762,7 @@ var CASES = [{
     "Royal College ICE Blog, 12 April 2022; and Brazil V, et al. <i>Recommendations for the design and "+
     "delivery of Visually Enhanced Mental Simulation.</i> Journal of Healthcare Simulation 2025, "+
     "doi:10.54531/NDXV6633. The clinical content is the manual's own "+
-    "<a href=\"../ob-neonatal/?from=home#c06\">postpartum haemorrhage</a> and "+
+    "<a href=\"../ob-neonatal/?from=home#c06\">postpartum hemorrhage</a> and "+
     "<a href=\"../codes/?from=home#c12\">massive transfusion</a> cards, which carry their own citations. "+
     "<b>This kit adds no clinical values of its own</b>; every dose and threshold stays on the card that "+
     "cites it. The blood-loss figures here are scenario values for a drill, not clinical thresholds."

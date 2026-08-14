@@ -110,7 +110,7 @@ await fresh();
 await pg.fill('#wIn', '20'); await pg.waitForTimeout(250);
 ck('3. pediatric mode on under 50 kg', await txt('#wnote'), '20 kg · pediatric');
 ck('3. peds banner names the Broselow band', /Broselow Blue/.test(await txt('#pedsbanner')), true);
-ck('3. accent becomes the band colour', await pg.evaluate(() =>
+ck('3. accent becomes the band color', await pg.evaluate(() =>
   getComputedStyle(document.body).getPropertyValue('--accent').trim()), '#2E86C1');
 await pg.click('#startbtn'); await pg.waitForTimeout(300);
 ck(`3. first peds shock is ${CFG.peds.defibPerKg1} J/kg = ${CFG.peds.defibPerKg1 * 20} J`,
@@ -337,7 +337,7 @@ ck('13. amiodarone is de-emphasised in a non-shockable rhythm', await txt('#amio
 ck('13. but is still tappable — nothing is locked', await pg.locator('#amiobtn').isEnabled(), true);
 ck('13. the shock button no longer says a joule count', /SHOCK — NOT FOR THIS RHYTHM/.test(await txt('#shocklabel')), true);
 ck('13. and says why', /PEA and asystole are not shocked/.test(await txt('#shocksub')), true);
-ck('13. it is demoted by colour, not by fading it out of legibility',
+ck('13. it is demoted by color, not by fading it out of legibility',
   await pg.evaluate(() => { const cs = getComputedStyle(document.getElementById('shockbtn'));
     return cs.opacity + '|' + (cs.backgroundColor === 'rgb(198, 50, 56)' || cs.backgroundColor === 'rgb(229, 72, 77)'); }), '1|false');
 ck('13. but still tappable if the rhythm has changed', await pg.locator('#shockbtn').isEnabled(), true);

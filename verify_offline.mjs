@@ -40,7 +40,7 @@ const TYPES = {
   '.json': 'application/json',
 };
 
-/* Minimal static server. Mirrors the two Netlify behaviours the worker depends
+/* Minimal static server. Mirrors the two Netlify behaviors the worker depends
    on: directory URLs serve index.html, and sw.js is never cached. */
 function startServer() {
   const sockets = new Set();
