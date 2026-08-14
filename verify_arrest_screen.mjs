@@ -266,12 +266,15 @@ ck('10. shock count cleared', await pg.inputValue('#wIn'), '');
 await pg.click('[data-acc="log"]'); await pg.waitForTimeout(250);
 ck('10. log cleared', /Nothing logged yet/.test(await txt('.accb')), true);
 
-/* ---- 11. theme, hit targets, and the stamp ---- */
+/* ---- 11. no theme toggle, feedback link, hit targets, and the stamp ----
+   Theme switching was removed from every tool except the landing page
+   (issue: feedback/theme consolidation) — arrest/ is dark-only now, and a
+   FEEDBACK mailto link sits where the toggle used to. */
 await fresh();
-await pg.click('#themebtn'); await pg.waitForTimeout(250);
-ck('11. theme toggles to light', await pg.evaluate(() => document.body.dataset.theme), 'light');
-ck('11. light accent is Dartmouth green', await pg.evaluate(() =>
-  getComputedStyle(document.body).getPropertyValue('--accent').trim()), '#00693E');
+ck('11. no theme toggle button on this tool', await pg.locator('#themebtn').count(), 0);
+ck('11. still dark (only theme now)', await pg.evaluate(() => document.body.dataset.theme), 'dark');
+ck('11. a feedback link is in the header', await pg.locator('#feedbacklink').count(), 1);
+ck('11. it is a mailto: link', (await pg.getAttribute('#feedbacklink', 'href') || '').startsWith('mailto:'), true);
 await pg.click('#startbtn'); await pg.waitForTimeout(300);
 const small = await pg.evaluate(() => [...document.querySelectorAll('button')]
   .filter(el => el.offsetParent !== null && el.getBoundingClientRect().height < 38)

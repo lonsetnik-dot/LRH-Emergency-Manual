@@ -28,10 +28,6 @@
   --purple:#9B7BD4; --teal:#3AA6A6; --orange:#E08A3C;
   --accent:#E08A3C; --accentInk:#141E2B;
 }
-body[data-theme="light"]{
-  --purple:#6C4FA3; --teal:#1F7E7E; --orange:#B4661F;
-  --accent:#B4661F; --accentInk:#fff;
-}
 button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
 a{color:var(--blue);text-decoration:none}
 /* Category/section identity is a 4px left bar — never a filled header block, so
@@ -52,13 +48,6 @@ a{color:var(--blue);text-decoration:none}
 </style>
 </head>
 <body data-theme="dark">
-<script>
-/* Apply the shared persisted theme before paint (lrh-pref-theme namespace, the
-   same key the rest of the manual uses; outside any RESET sweep — CASE-STATE.md).
-   TCA used to ignore it and always load dark (weight-routing audit). */
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
-catch(e){ document.body.dataset.theme='dark'; }
-</script>
 <div class="wrap">
 
   <div class="hdr">
@@ -72,7 +61,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <div id="caseclock" style="display:none"></div>
     </div>
     <a class="ghost" id="backlink" href="../" data-noprint="1" style="display:inline-flex;align-items:center;text-decoration:none">&#8962; MANUAL</a>
-    <button class="ghost" id="themebtn" type="button" data-noprint="1">LIGHT</button>
+    <a class="ghost" id="feedbacklink" data-noprint="1" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20TCA" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
     <button class="ghost" id="resetbtn" type="button" data-noprint="1">RESET</button>
   </div>
 
@@ -668,7 +657,6 @@ function paint(){
     : S.phase==='ceased' ? 'CEASED' : 'RESUS RUNNING';
   $('plabel').textContent = planLabel();
 
-  $('themebtn').textContent = S.theme==='dark' ? 'LIGHT' : 'DARK';
   $('resetbtn').textContent = S.resetArm ? 'SURE?' : 'RESET';
   $('resetbtn').style.background = S.resetArm ? 'var(--red)' : 'var(--card)';
   $('resetbtn').style.color = S.resetArm ? '#fff' : 'var(--ink2)';
@@ -759,12 +747,6 @@ function doReset(){
 }
 
 function wire(){
-  $('themebtn').addEventListener('click', function(){
-    S.theme = S.theme==='dark' ? 'light' : 'dark';
-    document.body.dataset.theme = S.theme;
-    try{ localStorage.setItem('lrh-pref-theme', S.theme); }catch(e){}
-    paint();
-  });
   $('resetbtn').addEventListener('click', function(){
     if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){ S.resetArm=false; paint(); },2500); return; }
     doReset();

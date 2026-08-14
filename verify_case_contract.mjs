@@ -160,7 +160,17 @@ for (const t of WRITERS) {
    The blast radius clause. A RESET that takes the theme with it is a small
    annoyance; a RESET that leaves a previous patient's weight behind is not. */
 console.log('\n--- 5. reset blast radius ---');
-const RESETTABLE = TOOLS.filter(t => ['codes', 'peds', 'arrest', 'tca'].includes(t.id));
+/* neonatal/pph/dystocia/airway used to reset only their own in-memory state,
+   leaving the shared case clock and every other tool's state untouched — a
+   real gap (feedback/theme consolidation issue), now fixed to sweep the same
+   as arrest/tca. Not in TOOLS above (they write no shared adult weight), so
+   listed here directly rather than reshaping the weight-contract tool list. */
+const RESETTABLE = TOOLS.filter(t => ['codes', 'peds', 'arrest', 'tca'].includes(t.id)).concat([
+  { id: 'neonatal', path: '/neonatal/' },
+  { id: 'pph', path: '/pph/' },
+  { id: 'dystocia', path: '/dystocia/' },
+  { id: 'airway', path: '/airway/' },
+]);
 /* lrh-case-lastactive is the inactivity heartbeat, not case content: every tool
    re-stamps it on load, so finding it present straight after a RESET is correct.
    What must NOT survive is the OLD stamp — that would make a fresh case look

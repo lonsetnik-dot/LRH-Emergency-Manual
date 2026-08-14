@@ -244,7 +244,6 @@ table.kt td i{font-style:normal; color:var(--muted)}
    proof sheets judged in print preview; the toolbar/sheets below stay on
    their current fixed-light print styling. */
 body[data-theme]{--bg:#0D1420;--card:#161F2E;--ink2:#8FA0B5;--line:rgba(255,255,255,.10)}
-body[data-theme="light"]{--bg:#EFF2F5;--card:#FFFFFF;--ink2:#5A6A7D;--line:rgba(15,35,60,.13)}
 .lrh-hdr{display:flex;align-items:center;gap:10px;background:var(--bg);padding:8px 14px;
   border-bottom:1px solid var(--line)}
 .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--ink2)}
@@ -255,12 +254,11 @@ body[data-theme="light"]{--bg:#EFF2F5;--card:#FFFFFF;--ink2:#5A6A7D;--line:rgba(
 </head>
 <body data-theme="dark">
 
-<div class="lrh-hdr"><div class="crumb">CART &amp; CABINET LABELS</div><button type="button" id="lrhThemeBtn">LIGHT</button></div>
+<div class="lrh-hdr"><div class="crumb">CART &amp; CABINET LABELS</div><a href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Cart%20%26%20Cabinet%20Labels" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap;background:var(--card);border:1px solid var(--line);color:var(--ink2);font:700 11px &quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif;letter-spacing:.08em;padding:8px 11px;border-radius:9px;min-height:36px">FEEDBACK</a></div>
 <div class="toolbar">
   <a href="../?from=tool">&#9664; LRH EMERGENCY MANUAL</a>
   <button type="button" id="printbtn">PRINT — LETTER LANDSCAPE</button>
 </div>
-<script>(function(){var b=document.getElementById('lrhThemeBtn');if(!b)return;b.addEventListener('click',function(){var dark=document.body.dataset.theme!=='light';document.body.dataset.theme=dark?'light':'dark';b.textContent=dark?'DARK':'LIGHT';});})();</script>
 
 <div id="out"></div>
 

@@ -19,7 +19,6 @@ nav.bar a{color:#fff;border:1px solid rgba(255,255,255,.55);text-decoration:none
    tbody, and .places regions (targeted regex replace) — this header is
    untouched by that script and safe to hand-edit. */
 body[data-theme]{--bg:#0D1420;--card:#161F2E;--ink2:#8FA0B5;--line:rgba(255,255,255,.10)}
-body[data-theme="light"]{--bg:#EFF2F5;--card:#FFFFFF;--ink2:#5A6A7D;--line:rgba(15,35,60,.13)}
 .lrh-hdr{display:flex;align-items:center;gap:10px;background:var(--bg);padding:8px 14px;
   border-bottom:1px solid var(--line)}
 .lrh-hdr .crumb{flex:1;min-width:0;font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--ink2)}
@@ -51,9 +50,8 @@ tr:hover td{background:#f4f7fa}tr:hover td.y{background:#dfeee3}tr:hover td.n{ba
 .legend{margin-top:14px;font-size:12px;color:var(--muted);line-height:1.65}
 @media(max-width:900px){table{display:block;overflow-x:auto}}
 .places{display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:12px;margin-top:16px}.place{background:var(--paper);border:1px solid var(--rule);padding:12px 14px}.place h3{margin:0 0 7px;font-size:14px}.place h3 a{color:var(--ink);text-decoration:none}.place ul{margin:0;padding-left:16px;font-size:11.5px;line-height:1.55;color:var(--muted)}.place b{color:var(--ink);font-weight:700}</style></head><body data-theme="dark">
-<div class="lrh-hdr"><div class="crumb">SYSTEM MAP</div><button type="button" id="lrhThemeBtn">LIGHT</button></div>
+<div class="lrh-hdr"><div class="crumb">SYSTEM MAP</div><a href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20System%20Map" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap;background:var(--card);border:1px solid var(--line);color:var(--ink2);font:700 11px &quot;Helvetica Neue&quot;,Helvetica,Arial,sans-serif;letter-spacing:.08em;padding:8px 11px;border-radius:9px;min-height:36px">FEEDBACK</a></div>
 <nav class="bar"><a href="../?from=tool">&#9664; MANUAL</a><a href="../procedures/?from=home">PROCEDURES</a><a href="../labels/">LABELS</a><a href="../posters/">POSTERS</a></nav>
-<script>(function(){var b=document.getElementById('lrhThemeBtn');if(!b)return;b.addEventListener('click',function(){var dark=document.body.dataset.theme!=='light';document.body.dataset.theme=dark?'light':'dark';b.textContent=dark?'DARK':'LIGHT';});})();</script>
 <div class="wrap">
 <h1>System map — procedures &amp; physical cards</h1>
 <p class="sub">Every procedure card, plus any Codes card that has a poster, a kit or a cabinet label, and the artifacts connected to each. Green is connected, red is a gap. A Codes card earns a row here only once something physical hangs off it &mdash; that is why bradycardia is absent and massive hematemesis is not.

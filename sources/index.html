@@ -72,16 +72,12 @@
 </style>
 </head>
 <body data-theme="dark">
-<script>
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
-catch(e){ document.body.dataset.theme='dark'; }
-</script>
 <div id="stickytop">
 <div class="hdr">
   <a class="ghost" href="../?from=tool">&#9664; MANUAL</a>
   <span class="plabel">SOURCES</span>
   <button type="button" class="ghost" onclick="window.print()">PRINT</button>
-  <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
+  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Guideline%20Sources" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
 </div>
 </div>
 
@@ -260,21 +256,6 @@ try{ window.SITE = SITE; }catch(e){}
         + '<span class="s">'+list+'</span></div>';
     }).join('');
   })();
-})();
-</script>
-<script>
-/* Theme toggle — same behavior and storage key as every other tool. */
-(function(){
-  var btn = document.getElementById('lrhThemeBtn');
-  if (!btn) return;
-  function sync(){ btn.textContent = document.body.dataset.theme === 'light' ? 'DARK' : 'LIGHT'; }
-  btn.addEventListener('click', function(){
-    var next = document.body.dataset.theme === 'light' ? 'dark' : 'light';
-    document.body.dataset.theme = next;
-    try{ localStorage.setItem('lrh-pref-theme', next); }catch(e){}
-    sync();
-  });
-  sync();
 })();
 </script>
 </body>

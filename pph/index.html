@@ -43,10 +43,6 @@
 </style>
 </head>
 <body data-theme="dark">
-<script>
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
-catch(e){ document.body.dataset.theme='dark'; }
-</script>
 <div class="wrap">
 
   <div class="hdr">
@@ -61,7 +57,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <div id="caseclock" style="display:none"></div>
     </div>
     <a class="ghost" id="backlink" href="../?from=tool" style="display:inline-flex;align-items:center;text-decoration:none">&#8962; MANUAL</a>
-    <button class="ghost" id="themebtn" type="button">LIGHT</button>
+    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20PPH" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
     <button class="ghost" id="resetbtn" type="button">RESET</button>
   </div>
 
@@ -240,7 +236,11 @@ var CS = {
   set:function(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
   getCaseStartMs:function(){ var v=CS.get('lrh-case-startms'); return v===null?null:(+v||null); },
   markCaseStarted:function(){ if(CS.getCaseStartMs()===null) CS.set('lrh-case-startms', String(Date.now())); },
-  touchActive:function(){ CS.set('lrh-case-lastactive', String(Date.now())); }
+  touchActive:function(){ CS.set('lrh-case-lastactive', String(Date.now())); },
+  /* RESET's manual-wide sweep — same shape as arrest's/tca's SS.sweep(): every
+     lrh- key on the origin except the lrh-pref- preferences namespace. */
+  sweep:function(){ try{ for(var i=localStorage.length-1;i>=0;i--){ var k=localStorage.key(i);
+    if(k && k.indexOf('lrh-')===0 && k.indexOf('lrh-pref-')!==0) localStorage.removeItem(k); } }catch(e){} }
 };
 /* Heads-up summary — EBL total and which uterotonics are given, so the sticky
    header answers "what have we done" without scrolling down. */
@@ -432,7 +432,6 @@ function paint(){
   $('rundot').style.display = live ? '' : 'none';
   $('statusword').textContent = S.phase==='idle' ? 'READY' : (S.phase==='done' ? 'CONTROLLED' : (S.ebl+' mL'));
   $('plabel').textContent = live ? ('PPH · '+band().label.split(' ·')[0]) : 'PPH · ENGINE';
-  $('themebtn').textContent = S.theme==='dark' ? 'LIGHT' : 'DARK';
   $('resetbtn').textContent = S.resetArm ? 'SURE?' : 'RESET';
   $('resetbtn').style.background = S.resetArm ? 'var(--red)' : 'var(--card)';
   $('resetbtn').style.color = S.resetArm ? '#fff' : 'var(--ink2)';
@@ -508,14 +507,13 @@ document.addEventListener('click', function(e){
     paint(); return;
   }
 
-  if(id==='themebtn'){
-    S.theme=S.theme==='dark'?'light':'dark';
-    document.body.dataset.theme=S.theme;
-    try{ localStorage.setItem('lrh-pref-theme', S.theme); }catch(err){}
-    paint(); return;
-  }
   if(id==='resetbtn'){
     if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){S.resetArm=false;paint();},2500); return; }
+    /* One case, one reset: sweep the shared lrh- namespace (preserving the
+       lrh-pref- preferences) so a reset here clears the shared case clock and
+       every other tool's case state too — the same sweep arrest/tca run
+       (CASE-STATE.md). Then re-init this tool in memory. */
+    CS.sweep();
     S={ theme:S.theme, phase:'idle', t0:null, ebl:0, given:{}, flags:{}, eblSaid:{}, lastCall:0,
         events:[], open:null, resetArm:false, doneAt:null, showCustom:false };
     paint(); return;

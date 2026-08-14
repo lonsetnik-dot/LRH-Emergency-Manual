@@ -23,13 +23,6 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
 </style>
 </head>
 <body data-theme="dark">
-<script>
-/* Apply the shared persisted theme before paint (lrh-pref-theme namespace, the
-   same key the rest of the manual uses; outside any RESET sweep — CASE-STATE.md).
-   Keeps this tool's theme in sync with wherever the clinician came from. */
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
-catch(e){ document.body.dataset.theme='dark'; }
-</script>
 <div class="wrap">
 
   <div class="hdr">
@@ -44,7 +37,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <div id="donesum" style="display:none"></div>
       <div id="caseclock" style="display:none"></div>
     </div>
-    <button class="ghost" id="themebtn" type="button">LIGHT</button>
+    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Arrest" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
     <button class="ghost" id="resetbtn" type="button">RESET</button>
   </div>
 
@@ -491,7 +484,7 @@ function wallTime(ms){
 /* phase: 'idle' | 'cpr' | 'resp' | 'rosc' | 'ceased'
    rhythm: null until the first rhythm check — the whole point of the code blue
    front door is that the algorithm is NOT chosen at the moment CPR starts. */
-var S = { theme:(document.body.dataset.theme==='light'?'light':'dark'), kg:null, ageY:null, phase:'idle', codeStart:null, cycleStart:null,
+var S = { theme:'dark', kg:null, ageY:null, phase:'idle', codeStart:null, cycleStart:null,
           shocks:0, epiN:0, lastEpiAt:null, amioN:0, airway:false, roles:false,
           override:false, pedsDismissed:false, events:[], open:null, met:false,
           resetArm:false, roscAt:null, rcOpen:false, rcOrg:false, showCustom:false,
@@ -968,7 +961,6 @@ function paint(){
     : S.phase==='rosc' ? 'ROSC'
     : S.phase==='resp' ? 'RESCUE BREATHING' : 'CODE RUNNING';
   $('plabel').textContent = planLabel();
-  $('themebtn').textContent = S.theme==='dark' ? 'LIGHT' : 'DARK';
   $('resetbtn').textContent = S.resetArm ? 'SURE?' : 'RESET';
   $('resetbtn').style.background = S.resetArm ? 'var(--red)' : 'var(--card)';
   $('resetbtn').style.color = S.resetArm ? '#fff' : 'var(--ink2)';
@@ -1200,12 +1192,6 @@ function doReset(){
 }
 
 function wire(){
-  $('themebtn').addEventListener('click', function(){
-    S.theme = S.theme==='dark' ? 'light' : 'dark';
-    document.body.dataset.theme = S.theme;
-    try{ localStorage.setItem('lrh-pref-theme', S.theme); }catch(e){}
-    paint();
-  });
   /* Back link: default to the manual hub, but if we were opened from a specific
      tool (?from=<slug>), route back there instead. Forward-compatible with the
      Codes hand-off (?from=codes). */

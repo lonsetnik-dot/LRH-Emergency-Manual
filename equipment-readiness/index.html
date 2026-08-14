@@ -90,16 +90,12 @@
 </style>
 </head>
 <body data-theme="dark">
-<script>
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
-catch(e){ document.body.dataset.theme='dark'; }
-</script>
 <div id="stickytop">
 <div class="hdr">
   <a class="ghost" href="../?from=tool">&#9664; MANUAL</a>
   <span class="plabel">EQUIPMENT READINESS</span>
   <button type="button" class="ghost" onclick="window.print()">PRINT WALK</button>
-  <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
+  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Equipment%20Readiness" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
 </div>
 </div>
 
@@ -673,18 +669,6 @@ try{ window.SITE = SITE; }catch(e){}
   if (location.hash.length > 1) {
     var landing = document.getElementById(location.hash.slice(1));
     if (landing) setTimeout(function(){ reveal(landing); }, 60);
-  }
-
-  /* theme toggle */
-  var b = document.getElementById('lrhThemeBtn');
-  if (b) {
-    b.textContent = document.body.dataset.theme === 'light' ? 'DARK' : 'LIGHT';
-    b.addEventListener('click', function(){
-      var dark = document.body.dataset.theme !== 'light';
-      document.body.dataset.theme = dark ? 'light' : 'dark';
-      b.textContent = dark ? 'DARK' : 'LIGHT';
-      try { localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); } catch(e){}
-    });
   }
 })();
 </script>

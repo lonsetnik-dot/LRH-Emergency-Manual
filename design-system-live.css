@@ -33,12 +33,6 @@
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Roboto Mono",monospace;
 }
-body[data-theme="light"]{
-  --bg:#EFF2F5; --card:#FFFFFF; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D;
-  --line:rgba(15,35,60,.13);
-  --red:#C63238; --gray:#6B7A8D; --blue:#2F6FB5; --green:#1F7F49; --amber:#B07E13;
-  --accent:#00693E;
-}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
 button,input{font-family:inherit}

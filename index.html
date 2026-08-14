@@ -3,18 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#005596">
+<meta name="theme-color" content="#0D1420">
 <title>LRH Emergency Manual</title>
 <style>
   /* Landing page. The theme tokens, the .hdr chrome bar, .sr-only, .lrh-mono and
      the themed body all come from the shared design-system.css injected at the
      marker below (build.mjs) — edited once for the whole manual. Only this page's
      search box, category grid, note and the beta-splash front door live here. */
-  :root{
-    /* The beta-splash front door stays brand-blue regardless of theme — it's the
-       only remaining consumer of the legacy brand vars. */
-    --brand-primary:#005596; --brand-primary-dark:#003e6e; --brand-secondary:#6cb33f;
-  }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   /* @design-system */
@@ -55,20 +50,22 @@
     color:var(--ink);font-size:.8rem;border-radius:12px;padding:12px 15px;margin-top:26px}
   .lrh-footer{text-align:center;color:var(--ink2);font-size:.76rem;margin-top:22px}
 
-  /* ---- Beta splash (site front door; shown every visit, stores nothing) ---- */
+  /* ---- Beta splash (site front door; shown every visit, stores nothing).
+     Uses the same shared tokens as every other screen in the manual — no more
+     fixed brand-blue identity independent of the site's own theme. ---- */
   #betasplash{position:fixed; inset:0; z-index:999; display:flex; flex-direction:column;
     align-items:center; justify-content:center; gap:18px; text-align:center; padding:32px 26px;
-    background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-dark)); color:#fff}
-  #betasplash .eyebrow{font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:#bcd6ec}
+    background:var(--bg); color:var(--ink)}
+  #betasplash .eyebrow{font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:var(--ink2)}
   #betasplash .title{font-size:2rem; font-weight:800; line-height:1.05; letter-spacing:-.01em}
-  #betasplash .beta{display:inline-block; padding:5px 14px; border:2px solid var(--brand-secondary);
-    color:#dff0c9; font-weight:700; letter-spacing:.16em; font-size:.8rem; border-radius:6px}
-  #betasplash .lead{max-width:480px; font-size:1.02rem; line-height:1.45; color:#eaf2f9}
-  #betasplash .fine{max-width:480px; font-size:.86rem; line-height:1.4; color:#bcd6ec}
+  #betasplash .beta{display:inline-block; padding:5px 14px; border:2px solid var(--accent);
+    color:var(--accent); font-weight:700; letter-spacing:.16em; font-size:.8rem; border-radius:6px}
+  #betasplash .lead{max-width:480px; font-size:1.02rem; line-height:1.45; color:var(--ink)}
+  #betasplash .fine{max-width:480px; font-size:.86rem; line-height:1.4; color:var(--ink2)}
   #betasplash button{margin-top:6px; min-height:54px; padding:0 26px; border-radius:10px; cursor:pointer;
-    background:#fff; color:var(--brand-primary-dark); border:2px solid #fff; font-weight:700;
+    background:var(--accent); color:var(--on-sev); border:2px solid var(--accent); font-weight:700;
     letter-spacing:.06em; font-size:.92rem}
-  #betasplash button:hover{background:#eaf2f9}
+  #betasplash button:hover{filter:brightness(1.1)}
 </style>
 </head>
 <body data-theme="dark">
@@ -92,6 +89,7 @@ catch(e){ document.body.dataset.theme='dark'; }
 
 <div class="hdr">
   <span class="plabel">EMERGENCY MANUAL</span>
+  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Landing%20page" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
   <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
 </div>
 

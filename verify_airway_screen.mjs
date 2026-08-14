@@ -325,12 +325,15 @@ ck('13. the second tap clears to idle', await pg.locator('#idle').isVisible(), t
 ck('13. the plan is back to A', /AIRWAY · DAS 2025 LADDER/.test(await txt('#plabel')), true);
 ck('13. the log is empty again', /Nothing logged yet/.test(await openAcc('log')), true);
 
-/* ---- 14. theme, hit targets and the stamp ---- */
+/* ---- 14. no theme toggle, feedback link, hit targets and the stamp ----
+   Theme switching was removed from every tool except the landing page
+   (issue: feedback/theme consolidation) — airway/ is dark-only now, and a
+   FEEDBACK mailto link sits where the toggle used to. */
 await fresh();
-await tap('#themebtn', 250);
-ck('14. theme toggles to light', await pg.evaluate(() => document.body.dataset.theme), 'light');
-ck('14. light accent is Dartmouth green', await pg.evaluate(() =>
-  getComputedStyle(document.body).getPropertyValue('--accent').trim()), '#00693E');
+ck('14. no theme toggle button on this tool', await pg.locator('#themebtn').count(), 0);
+ck('14. still dark (only theme now)', await pg.evaluate(() => document.body.dataset.theme), 'dark');
+ck('14. a feedback link is in the header', await pg.locator('#feedbacklink').count(), 1);
+ck('14. it is a mailto: link', (await pg.getAttribute('#feedbacklink', 'href') || '').startsWith('mailto:'), true);
 await tap('#startbtn', 300);
 const small = await pg.evaluate(() => [...document.querySelectorAll('button')]
   .filter(el => el.offsetParent !== null && el.getBoundingClientRect().height < 38)
