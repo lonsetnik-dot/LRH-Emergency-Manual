@@ -53,20 +53,25 @@ catch(e){ document.body.dataset.theme='dark'; }
         <span id="rundot" style="display:none"><span class="dot"></span></span>
         <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:600">READY</span>
       </div>
+      <div id="donesum" style="display:none"></div>
+      <div id="caseclock" style="display:none"></div>
     </div>
     <a class="ghost" id="backlink" href="../?from=tool" style="display:inline-flex;align-items:center;text-decoration:none">&#8962; MANUAL</a>
     <button class="ghost" id="themebtn" type="button">LIGHT</button>
     <button class="ghost" id="resetbtn" type="button">RESET</button>
   </div>
 
-  <!-- The routing sentence. A newborn at delivery is not a small child, and the
-       two pathways give different epinephrine doses — this is the same guard the
-       weight-routing audit put on /arrest/ and /peds/. -->
-  <div class="card" id="scopebar" style="margin-top:12px;padding:11px 12px;border-color:var(--amber);font-size:13.5px;line-height:1.45">
-    <b>This is the newborn at delivery.</b> Ventilation is the treatment, and the heart rate is the decision.
-    If this is an infant <b>beyond the newborn period</b> — presenting to the department rather than being born in it —
-    that is <a href="../peds/?from=home" style="color:var(--blue)">pediatric resuscitation</a>, not this screen;
-    the doses differ. For the mother, go to <a href="../ob-neonatal/?from=home" style="color:var(--blue)">OB &amp; Neonatal</a>.
+  <!-- The routing sentence, compressed to one line so it doesn't stack with the
+       review banner below it into a wall of prose ahead of the START button —
+       the full original wording (same facts, same links) lives on as the SCOPE
+       accordion entry in the reference section at the bottom, a genuine
+       footnote rather than a deletion. A newborn at delivery is not a small
+       child, and the two pathways give different epinephrine doses — this is
+       the same guard the weight-routing audit put on /arrest/ and /peds/. -->
+  <div class="card" id="scopebar" style="margin-top:12px;padding:9px 12px;border-color:var(--amber);font-size:12.5px;line-height:1.45">
+    <b>Newborn at delivery</b> — ventilation is the treatment. Older infant?
+    <a href="../peds/?from=home" style="color:var(--blue)">Pediatric resuscitation</a> — doses differ.
+    For the mother: <a href="../ob-neonatal/?from=home" style="color:var(--blue)">OB &amp; Neonatal</a>.
   </div>
 
   <div class="rev" id="revbanner"></div>
@@ -306,7 +311,8 @@ var SITE = {
     cart:"OB / Neonatal Cart · Airway / Breathing drawer",
     uvcCart:"OB / Neonatal Cart · Circulation drawer",
     warmer:"radiant warmer",
-    call:"call OB and the neonatal team"
+    call:"call OB and the neonatal team",
+    teleNicu:"Activate tele-NICU"
   }
 };
 /* Exposed for the verify suite and so a champion can read the in-effect values
@@ -324,6 +330,43 @@ function fmt(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String
 function since(){ return S.birth ? (Date.now()-S.birth)/1000 : 0; }
 function clk(){ return S.birth ? fmt(since()) : '0:00'; }
 function log(l){ S.events.unshift({t:clk(), label:l}); }
+
+/* ---- Shared case clock (CASE-STATE.md's lrh-case-startms) ------------------
+   This tool keeps no other cross-tool state — only theme, same as before. This
+   is additive only: the clock above (time since birth) is still the number
+   every dose/target/Apgar prompt on this screen runs from, never touched here.
+   It only lets the header ALSO show how long the whole case has been running,
+   if a clinician arrives here having already started the clock elsewhere
+   (dystocia's head-to-body interval, a prior tele-NICU activation…). */
+var CS = {
+  get:function(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set:function(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+  getCaseStartMs:function(){ var v=CS.get('lrh-case-startms'); return v===null?null:(+v||null); },
+  markCaseStarted:function(){ if(CS.getCaseStartMs()===null) CS.set('lrh-case-startms', String(Date.now())); },
+  touchActive:function(){ CS.set('lrh-case-lastactive', String(Date.now())); }
+};
+/* Heads-up summary — Apgar marks, epi doses, compressions — so the sticky
+   header answers "what have we done" without scrolling down. */
+function paintDoneSum(){
+  var parts=[], el=$('donesum');
+  Object.keys(S.apgarScores).map(Number).sort(function(a,b){return a-b;}).forEach(function(m){
+    parts.push('Apgar '+m+"'="+S.apgarScores[m]);
+  });
+  if(S.compressions) parts.push('compressions started');
+  if(S.epiDoses) parts.push('epi ×'+S.epiDoses);
+  if(parts.length){ el.style.display=''; el.textContent=parts.join(' · '); }
+  else { el.style.display='none'; }
+}
+/* Only shown when it says something the clock above does not: that this case
+   was already running before this screen was opened. If THIS tool started
+   the case (birth stamped here), the two numbers would be near-identical and
+   just be a second, confusing clock — so that case is suppressed. */
+function paintCaseClock(){
+  var ms = CS.getCaseStartMs(), el = $('caseclock');
+  var elsewhere = ms && (!S.birth || ms < S.birth - 1000);
+  if(elsewhere){ el.style.display=''; el.textContent = 'Case running '+fmt((Date.now()-ms)/1000)+' — started elsewhere'; }
+  else { el.style.display='none'; }
+}
 
 /* Round a computed dose the way it gets said out loud, without ever showing a
    confident 0 — the same guard the codes tool needed. */
@@ -424,13 +467,31 @@ function startPacer(){
   }
 }
 
+/* ---- Verbal time announcements — Web Speech API, synthesised, no audio
+   files (rule 1). Speaks elapsed time only, on the same 30-second mark the
+   chime already lands on, so the room hears the number as well as the tone
+   without anyone splitting attention to read the clock. Silently does
+   nothing where speechSynthesis isn't available — feature-detected, not
+   assumed. Follows the same SOUND ON/OFF control as the rest of the pacer. */
+function sayElapsed(totalSec){
+  if(!window.speechSynthesis) return;
+  var m=Math.floor(totalSec/60), s=totalSec%60, words;
+  if(m===0) words=s+' seconds';
+  else if(s===0) words=m+' minute'+(m===1?'':'s');
+  else words=m+' minute'+(m===1?'':'s')+' '+s+' seconds';
+  try{ var u=new SpeechSynthesisUtterance(words); u.rate=1.0; u.volume=1.0; window.speechSynthesis.speak(u); }catch(e){}
+}
+
 /* The 30-second chime is measured off the birth clock, not off the pacer, so it
    lands on the same half-minutes the reassessment cycles do however many times
    the pacer has been restarted. */
 function maybeChime(){
   if(!S.birth) return;
   var block = Math.floor(since() / SITE.pacer.chimeEverySec);
-  if(block > 0 && block !== lastChime){ lastChime = block; chime(); }
+  if(block > 0 && block !== lastChime){
+    lastChime = block; chime();
+    if(sound) sayElapsed(block*SITE.pacer.chimeEverySec);
+  }
 }
 
 function soundOn(on){
@@ -461,10 +522,11 @@ function phaseBox(){
        stepRow(1,'<b>Cord management plan</b> — the first step on the 2025 algorithm. Defer clamping '+
                  '<b>at least '+SITE.cord.deferSec+' s</b> unless this baby needs resuscitation now. '+
                  esc(SITE.cord.milking)+milkingNote())+
-       stepRow(2,'Baby to the <b>'+esc(SITE.local.warmer)+'</b>.')+
-       thermalRows(3)+
-       stepRow(5,'Clear the airway <b>only if obstructed</b>.')+
-       stepRow(6,'Pulse oximeter on the <b>right hand</b>. Cardiac monitor if resuscitating.')+
+       stepRow(2,'<b>'+esc(SITE.local.teleNicu)+'</b> — a second person can do this while the cord and warmer are handled.')+
+       stepRow(3,'Baby to the <b>'+esc(SITE.local.warmer)+'</b>.')+
+       thermalRows(4)+
+       stepRow(6,'Clear the airway <b>only if obstructed</b>.')+
+       stepRow(7,'Pulse oximeter on the <b>right hand</b>. Cardiac monitor if resuscitating.')+
        '</div>'+
        '<div class="say"><b>Say it out loud:</b> “Newborn is not vigorous — starting resuscitation.” Claim the roles by name: airway, compressions, meds, recorder.</div>'+
        '<button class="btn" id="toassess" type="button" style="width:100%;min-height:72px;margin-top:10px;background:var(--blue);color:#fff;border:none;font-size:19px">INITIAL STEPS DONE — CHECK THE HEART RATE</button>';
@@ -715,6 +777,11 @@ function figAirway(){
 
 /* ===== reference ========================================================= */
 var ACC=[
+  { id:'scope', t:'SCOPE — FULL DETAIL', b:function(){
+      return '<p><b>This is the newborn at delivery.</b> Ventilation is the treatment, and the heart rate is the decision.</p>'+
+        '<p>If this is an infant <b>beyond the newborn period</b> — presenting to the department rather than being born in it — '+
+        'that is <a href="../peds/?from=home" style="color:var(--blue)">pediatric resuscitation</a>, not this screen; the doses differ. '+
+        'For the mother, go to <a href="../ob-neonatal/?from=home" style="color:var(--blue)">OB &amp; Neonatal</a>.</p>'; } },
   { id:'mrsopa', t:'NO CHEST RISE — MR SOPA', b:function(){
       return figMrSopa()+
         '<p style="margin-top:10px">Reassess the heart rate after '+SITE.cycle.reassessSec+
@@ -785,8 +852,8 @@ var ACC=[
         'which does cross the '+SITE.cord.milkingFromWeeks+'-week milking line, and leaves a gestation '+
         'in the record that cannot be reproduced.</p>'+
         '<p><b>What was NOT individually verified.</b> Everything else — the doses, the SpO₂ target table, the '+
-        'compression ratio and the airway sizes — was carried across unchanged from card 03 of '+
-        '<a href="../ob-neonatal/?from=home#c03">ob-neonatal/</a>, which carried no citation of its own. '+
+        'compression ratio and the airway sizes — was carried across unchanged from ob-neonatal/\'s former '+
+        'card 03 (retired in favor of this engine), which carried no citation of its own. '+
         'Nothing was authored fresh and no number was altered in the move, but the full NRP 9th edition '+
         'textbook was not available when this was built, so those values have not been checked line by line '+
         'against it. Do that against your own NRP materials.</p>'+
@@ -806,6 +873,8 @@ function phiReason(t){
 /* ===== paint ============================================================= */
 function paint(){
   $('clock').textContent=clk();
+  paintCaseClock();
+  paintDoneSum();
   var live = S.phase==='live';
   $('rundot').style.display = live ? '' : 'none';
   $('statusword').textContent = S.phase==='idle' ? 'READY' : (S.phase==='stable' ? 'STABLE' : stepWord());
@@ -824,7 +893,7 @@ function paint(){
     'birth</b>, and every reassessment, Apgar prompt and SpO₂ target on this screen is measured from it.';
   $('preinduce').innerHTML =
     'Turn the '+esc(SITE.local.warmer)+' on — warm-up takes real time. Name who takes the newborn <b>before</b> '+
-    'the birth. '+esc(SITE.local.call)+'. Kit lives in the '+esc(SITE.local.cart)+'.';
+    'the birth. '+esc(SITE.local.teleNicu)+'. '+esc(SITE.local.call)+'. Kit lives in the '+esc(SITE.local.cart)+'.';
 
   $('idle').style.display = S.phase==='idle' ? '' : 'none';
   $('live').style.display = live ? '' : 'none';
@@ -1005,6 +1074,12 @@ document.addEventListener('click', function(e){
   }
   if(id==='startbtn'){
     S.phase='live'; S.birth=Date.now(); S.step='initial';
+    CS.markCaseStarted();
+    /* Sound on by default (issue: /arrest/'s compression tone already starts
+       this way — an opt-out MUTE, not an opt-in SOUND ON). This tap is itself
+       the user gesture browsers require before audio can start, so there is
+       no reason to make someone find and tap a second button afterward. */
+    soundOn(true);
     log('<b>Time of birth</b> — clock started');
     paint(); return;
   }
@@ -1109,6 +1184,8 @@ $('wIn').addEventListener('input', readWeight);
 $('gIn').addEventListener('input', readWeight);
 $('gdIn').addEventListener('input', readWeight);
 
+document.addEventListener('click', CS.touchActive, true);
+CS.touchActive();
 paint();
 setInterval(paint, 500);
 })();

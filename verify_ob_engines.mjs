@@ -137,8 +137,12 @@ await pg.fill('#customin', 'MRN 4457821'); await tap('#customlog');
 ck('P7. a record number is refused', await pg.locator('#customwarn').isVisible(), true);
 await pg.fill('#customin', 'bimanual compression started'); await tap('#customlog');
 ck('P7. a clinical note is accepted', await pg.locator('#customrow').isVisible(), false);
-ck('P7. localStorage holds only the theme preference',
-   (await pg.evaluate(() => Object.keys(localStorage))).filter(k => k !== 'lrh-pref-theme').join(',') || 'none', 'none');
+/* Since the shared case-clock (CASE-STATE.md's lrh-case-startms) landed, this
+   engine also touches lrh-case-lastactive and — once a clock anywhere in the
+   case has started — lrh-case-startms. Neither carries anything patient-
+   identifying (a timestamp only); everything else must still be just theme. */
+ck('P7. localStorage holds only theme + the shared case-clock keys',
+   (await pg.evaluate(() => Object.keys(localStorage))).filter(k => !['lrh-pref-theme','lrh-case-lastactive','lrh-case-startms'].includes(k)).join(',') || 'none', 'none');
 
 /* ===================== SHOULDER DYSTOCIA ===================== */
 console.log('\n--- /dystocia/ ---');
@@ -223,18 +227,34 @@ for (const [term, want] of [['postpartum hemorrhage', 'pph/'], ['shoulder dystoc
   const hrefs = await home.evaluate(() => [...document.querySelectorAll('#results a')].map(a => a.getAttribute('href')));
   ck(`9. searching "${term}" surfaces ${want}`, hrefs.some(h => h && h.includes(want)), true);
 }
-ck('9. the landing page has a PPH tile', await home.locator('a[href*="pph/"]').count() > 0, true);
-ck('9. and a dystocia tile', await home.locator('a[href*="dystocia/"]').count() > 0, true);
+/* The live engines are reached through search (asserted above) and through
+   the OB & Neonatal tool's own menu (verified in verify_guidelines.mjs-style
+   link checks elsewhere) — NOT as their own top-level category tiles next to
+   Equipment Readiness/Simulations/VEMS. A standalone tile would be exactly
+   the duplicate this whole rebuild exists to remove: one category for OB &
+   Neonatal, not one category plus three more for cards it already contains. */
+ck('9. no standalone landing-page tile for the PPH engine',
+   await home.locator('.lrh-cat[href*="pph/"]').count(), 0);
+ck('9. no standalone landing-page tile for the dystocia engine',
+   await home.locator('.lrh-cat[href*="dystocia/"]').count(), 0);
+ck('9. no standalone landing-page tile for the neonatal engine',
+   await home.locator('.lrh-cat[href^="neonatal/"]').count(), 0);
+ck('9. the OB & Neonatal Emergencies tile is the one entry point',
+   await home.locator('.lrh-cat[href*="ob-neonatal/"]').count(), 1);
 await home.close();
 
-/* The cards they replace must still resolve and must point across. */
-const card = await b.newPage();
-await card.goto(BASE + '/ob-neonatal/?from=home#c06', { waitUntil: 'networkidle' });
-await card.waitForTimeout(300);
-const cardHrefs = await card.evaluate(() => [...document.querySelectorAll('a[href]')].map(a => a.getAttribute('href')));
-ck('9. card 06 links across to the PPH engine', cardHrefs.some(h => /pph\//.test(h)), true);
-ck('9. card 07 links across to the dystocia engine', cardHrefs.some(h => /dystocia\//.test(h)), true);
-await card.close();
+/* Cards 03/06/07 no longer exist on ob-neonatal/ — replaced, not duplicated
+   (issue: two parallel "reference view" copies of the same clinical content
+   is exactly what this rebuild was meant to stop). A deep-link to any of
+   those old anchors must redirect straight to the live engine instead of
+   landing on nothing. */
+for (const [hash, engine] of [['#c03', 'neonatal/'], ['#c06', 'pph/'], ['#c07', 'dystocia/']]) {
+  const card = await b.newPage();
+  await card.goto(BASE + '/ob-neonatal/?from=home' + hash, { waitUntil: 'networkidle' });
+  await card.waitForTimeout(300);
+  ck(`9. a ${hash} deep-link redirects to /${engine}`, new URL(card.url()).pathname, '/' + engine);
+  await card.close();
+}
 
 ck('10. no page or console errors across the whole run', errs.length, 0);
 if (errs.length) errs.slice(0, 6).forEach(e => console.log('    ' + e));

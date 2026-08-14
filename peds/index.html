@@ -269,7 +269,7 @@ catch(e){ document.body.dataset.theme='dark'; }
      manual-wide (lrh-case-nrpdismiss, shared with arrest/codes) — RESET FOR
      NEXT CASE and the stale-case sweep restore it for the next patient. -->
 <div id="nrpbanner" style="display:none; align-items:center; gap:10px; margin:0; padding:10px 14px; background:#fbeaec; border-bottom:2px solid #9b1c2e; border-left:10px solid #9b1c2e;">
-  <div style="flex:1; font-size:13.5px; line-height:1.45; color:#16324f;"><b style="color:#9b1c2e;">NEWLY BORN (first days of life)?</b> Use <a href="../ob-neonatal/?from=peds#c03" style="color:#9b1c2e; font-weight:800;">NEONATAL RESUSCITATION (NRP) &rarr;</a> — doses differ: epi <b>0.02 mg/kg</b> (NRP) vs 0.01 mg/kg (PALS). Older infant who simply weighs &lt;3 kg? Dismiss and continue with PALS.</div>
+  <div style="flex:1; font-size:13.5px; line-height:1.45; color:#16324f;"><b style="color:#9b1c2e;">NEWLY BORN (first days of life)?</b> Use <a href="../neonatal/?from=peds" style="color:#9b1c2e; font-weight:800;">NEONATAL RESUSCITATION (NRP) &rarr;</a> — doses differ: epi <b>0.02 mg/kg</b> (NRP) vs 0.01 mg/kg (PALS). Older infant who simply weighs &lt;3 kg? Dismiss and continue with PALS.</div>
   <button type="button" id="dismissnrp" style="min-height:44px; padding:8px 14px; background:none; border:1px solid #9b1c2e; color:#9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">DISMISS</button>
 </div>
 <div id="summarymodal" style="display:none; position:fixed; inset:0; z-index:40; background:rgba(15,28,44,0.55); padding:14px; overflow:auto;">
@@ -1238,10 +1238,15 @@ var CASESTATE = (function(){
   function rm(k){ try{ localStorage.removeItem(k); }catch(e){} }
 
   function getClocks(){ return rd('lrh-case-clocks', {}); }
-  function setClock(name, ms){ var c=getClocks(); if(ms===null||ms===undefined){ delete c[name]; } else { c[name]=ms; } wr('lrh-case-clocks', c); }
+  function setClock(name, ms){ var c=getClocks(); if(ms===null||ms===undefined){ delete c[name]; } else { c[name]=ms; markCaseStarted(); } wr('lrh-case-clocks', c); }
   function getClock(name){ var c=getClocks(); return (name in c) ? c[name] : null; }
   function clearClocks(names){ var c=getClocks(); names.forEach(function(n){ delete c[n]; }); wr('lrh-case-clocks', c); }
   function anyClockRunning(){ return Object.keys(getClocks()).length>0; }
+
+  function getStartMs(){ var v=rdRaw('lrh-case-startms'); return v===null?null:(+v||null); }
+  /* first action of the case, in ANY tool — set once, never overwritten until RESET */
+  function markCaseStarted(){ if(getStartMs()===null) wrRaw('lrh-case-startms', String(Date.now())); }
+  function clearStartMs(){ rm('lrh-case-startms'); }
 
   function getCounts(){ return rd('lrh-case-counts', {}); }
   function setCount(name, n){ var c=getCounts(); c[name]=n; wr('lrh-case-counts', c); }
@@ -1337,6 +1342,7 @@ var CASESTATE = (function(){
 
   return {
     getClocks:getClocks, setClock:setClock, getClock:getClock, clearClocks:clearClocks, anyClockRunning:anyClockRunning,
+    getStartMs:getStartMs, markCaseStarted:markCaseStarted, clearStartMs:clearStartMs,
     getCounts:getCounts, setCount:setCount, getCount:getCount, clearCounts:clearCounts,
     getWtKg:getWtKg, setWtKg:setWtKg, getWtSrc:getWtSrc, setWtSrc:setWtSrc,
     getWtMs:getWtMs, setWtMs:setWtMs,
