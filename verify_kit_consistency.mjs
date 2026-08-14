@@ -104,7 +104,7 @@ const KITS = [
     // change that missed it would put a wrong list on the wall next to a right list in the app.
     name: 'Chest Tube Kit',
     location: /ROOM 7|TRAUMA CART|OB \/ NEONATAL CART/i,
-    items: ['Chloropropyl 10.5 mL swab', 'Povidone-iodine swab', 'Silk 0 sutures',
+    items: ['ChloraPrep 10.5 mL swab', 'Povidone-iodine swab', 'Silk 0 sutures',
             'Scalpel No. 10', 'Blunt needle', '10 mL syringe', '25 gauge 1½ needle',
             'Long curved blunt scissors', 'Large needle driver', 'Large Kelly clamp',
             'Medium Kelly clamp', 'Fenestrated drape', 'Half drape'],

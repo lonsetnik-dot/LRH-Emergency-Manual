@@ -211,9 +211,12 @@ var INV_CATALOG = {
      and is the source of truth now.
 
      What the sheet changed, relative to what was here:
-       - BOTH preps are in the bag — a Chloropropyl 10.5 mL swab AND a
+       - BOTH preps are in the bag — a ChloraPrep 10.5 mL swab AND a
          povidone-iodine swab. The previous list carried one or the other and
-         the two sessions had argued about which; the answer is both.
+         the two sessions had argued about which; the answer is both. (The typed
+         sheet spells it "Chloropropyl"; Lon confirmed 2026-08-14 that it is
+         ChloraPrep, so the product name is corrected here rather than
+         transcribed. The 10.5 mL applicator size is kept from the sheet.)
        - Silk 0 is TWO sutures, not one, and the sheet does not specify the
          needle. "on a cutting needle" is therefore dropped rather than carried
          forward unverified.
@@ -235,7 +238,7 @@ var INV_CATALOG = {
      the drug comes from the Omnicell. */
   "kit-chest-tube": { name:"Chest Tube Kit", cat:"kit", std:["ACS-COT"],
     contents:[
-    "Chloropropyl 10.5 mL swab","Povidone-iodine swab","Silk 0 sutures",
+    "ChloraPrep 10.5 mL swab","Povidone-iodine swab","Silk 0 sutures",
     "Scalpel No. 10","Blunt needle","10 mL syringe","25 gauge 1½ needle",
     "Long curved blunt scissors","Large needle driver","Large Kelly clamp",
     "Medium Kelly clamp","Fenestrated drape","Half drape"],
