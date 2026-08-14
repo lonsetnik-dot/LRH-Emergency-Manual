@@ -161,11 +161,11 @@ catch(e){ document.body.dataset.theme='dark'; }
           <div style="font-size:12px;font-weight:600;color:var(--ink2);margin-top:2px" id="amiosub"></div>
         </button>
         <button class="btn" id="rcbtn" type="button" style="min-height:52px;font:700 14px var(--sans)">RHYTHM CHECK</button>
-        <button class="btn" id="logtoggle" type="button" style="min-height:52px;font:700 14px var(--sans)">+ LOG EVENT</button>
+        <button class="btn" id="logtoggle" type="button" style="min-height:52px;font:700 14px var(--sans)">LOG IT</button>
       </div>
       <div id="customrow" style="display:none;gap:8px;margin-top:8px">
         <input id="customin" class="inp" style="flex:1;text-align:left;font-size:15px;font-weight:400;border-radius:10px;padding:12px" placeholder="e.g. IO placed right tibia, calcium given…">
-        <button id="customlog" type="button" style="border:none;border-radius:10px;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG</button>
+        <button id="customlog" type="button" style="border:none;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG IT</button>
       </div>
       <div id="customwarn" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>
       <div style="margin-top:8px;font-size:12.5px;color:var(--ink2)">Anything can be tapped at any time — the algorithm is a guide, not a lock.</div>
@@ -197,6 +197,8 @@ catch(e){ document.body.dataset.theme='dark'; }
       <span style="display:inline-flex;align-items:center;justify-content:center;gap:10px">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21C7 17 3 13.5 3 9.5 3 7 5 5 7.5 5c1.8 0 3.4 1 4.5 2.6C13.1 6 14.7 5 16.5 5 19 5 21 7 21 9.5c0 4-4 7.5-9 11.5z"></path><path d="M5 12h4l1.5-3 2 5 1.5-2h5"></path></svg>ROSC — PULSE RETURNED</span>
     </button>
+    <button id="ceasebtn" type="button" style="width:100%;margin-top:8px;min-height:52px;border:1px solid var(--line);border-radius:12px;background:transparent;color:var(--ink2);font:800 13px var(--sans);letter-spacing:.05em;cursor:pointer">CEASE RESUSCITATION</button>
+    <div id="ceaseconfirm" style="display:none;margin-top:8px"><div style="font-size:13px;color:var(--ink2);line-height:1.4;margin-bottom:6px">This stamps the time of death and stops the clock. The event log is kept.</div><button id="ceaseyes" type="button" style="width:100%;min-height:56px;border:none;border-radius:12px;background:var(--gray);color:#fff;font:800 15px var(--sans);cursor:pointer">CONFIRM — STAMP TIME OF DEATH</button></div>
   </div>
 
   <!-- ===================== RESPIRATORY ARREST WITH A PULSE =====================
@@ -270,12 +272,12 @@ catch(e){ document.body.dataset.theme='dark'; }
       <button class="btn" id="respok" type="button" style="min-height:64px;border-color:var(--green);color:var(--green);font:800 15px var(--sans)">BREATHING ON THEIR OWN</button>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-      <button class="btn" id="resplog" type="button" style="min-height:48px;font:700 13px var(--sans)">+ LOG EVENT</button>
+      <button class="btn" id="resplog" type="button" style="min-height:48px;font:700 13px var(--sans)">LOG IT</button>
       <a class="btn" id="resplink" href="../airway/" style="min-height:48px;font:700 13px var(--sans);display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--blue);border-color:var(--blue)">CANNOT VENTILATE →</a>
     </div>
     <div id="customrow2" style="display:none;gap:8px;margin-top:8px">
       <input id="customin2" class="inp" style="flex:1;text-align:left;font-size:15px;font-weight:400;border-radius:10px;padding:12px" placeholder="e.g. naloxone 0.4 mg IV, chest rising well">
-      <button id="customlog2" type="button" style="border:none;border-radius:10px;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG</button>
+      <button id="customlog2" type="button" style="border:none;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG IT</button>
     </div>
     <div id="customwarn2" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>
   </div>
@@ -283,7 +285,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <div id="rosc" style="display:none">
     <div class="card" style="margin-top:14px;border:2px solid var(--green);border-radius:16px;padding:16px">
       <div class="sec" style="color:var(--green)">ROSC — POST-ARREST CARE</div>
-      <div style="font-size:20px;font-weight:800;margin:4px 0 10px">Pulse returned at <span id="roscat" class="mono">0:00</span></div>
+      <div style="font-size:20px;font-weight:800;margin:4px 0 10px">Pulse returned at <span id="roscwall" class="mono">--:--</span> <span style="font-size:13px;font-weight:600;color:var(--ink2)">(<span id="roscat" class="mono">0:00</span> into the code)</span></div>
       <div style="font-size:14.5px;line-height:1.6">
         · Support airway + oxygenation — target SpO₂ 94–99%, avoid hyperventilation<br>
         · Blood pressure — treat hypotension (fluids / vasoactives)<br>
@@ -294,6 +296,29 @@ catch(e){ document.body.dataset.theme='dark'; }
       <button id="roscvent" type="button" style="width:100%;margin-top:8px;min-height:60px;border:2px solid var(--blue);border-radius:12px;background:transparent;color:var(--blue);font:800 16px var(--sans);cursor:pointer">NOT BREATHING ADEQUATELY — RESCUE BREATHING</button>
       <button id="rearrestbtn" type="button" style="width:100%;margin-top:8px;min-height:60px;border:none;border-radius:12px;background:var(--red);color:#fff;font:800 17px var(--sans);cursor:pointer">RE-ARREST — RESUME CPR</button>
       <a class="btn" href="../debrief/?from=home" style="display:flex;align-items:center;justify-content:center;width:100%;margin-top:8px;min-height:52px;text-decoration:none;border-color:var(--accent);color:var(--accent);font:800 14px var(--sans);letter-spacing:.02em">OPEN THE DEBRIEF TOOL &rarr;</a>
+    </div>
+  </div>
+
+  <!-- ============================ CEASED ==============================
+       arrest/ had no way to pronounce at all: the engine you run a medical code
+       on could reach ROSC but not death (issue #129). -->
+  <div id="ceased" style="display:none">
+    <div class="card" style="margin-top:14px;border:2px solid var(--gray);border-radius:16px;padding:16px">
+      <div class="sec">RESUSCITATION CEASED</div>
+      <!-- The wall-clock time is what gets written down, so it is the one in
+           large type. Elapsed sits beside it because it is what the debrief
+           talks about. -->
+      <div style="font-size:22px;font-weight:800;margin:4px 0 4px">Time of death <span id="deathwall" class="mono">--:--</span></div>
+      <div style="font-size:13px;color:var(--ink2);margin-bottom:10px"><span id="deathat" class="mono">0:00</span> of resuscitation · <span id="deathshocks"></span></div>
+      <div style="font-size:14.5px;line-height:1.6">
+        · <b>Say the time out loud</b> and make sure somebody writes it down<br>
+        · The event log below is the record of what was done — do not reset until it is captured<br>
+        · Care for the team. Run an <b>immediate check-in</b> as soon as it is practical<br>
+        · Family notification, and the conversation that goes with it
+      </div>
+      <a class="btn" href="../conversations/?from=home#c03" style="display:flex;align-items:center;justify-content:center;width:100%;margin-top:12px;min-height:52px;text-decoration:none;border-color:var(--blue);color:var(--blue);font:800 14px var(--sans)">DELIVERING THE NEWS — SPIKES &rsaquo;</a>
+      <a class="btn" href="../conversations/?from=home#c04" style="display:flex;align-items:center;justify-content:center;width:100%;margin-top:8px;min-height:52px;text-decoration:none;border-color:var(--accent);color:var(--accent);font:800 14px var(--sans)">OPEN THE DEBRIEF &rsaquo;</a>
+      <button id="resumearrest" type="button" style="width:100%;margin-top:8px;min-height:52px;border:none;border-radius:12px;background:var(--gray);color:#fff;font:800 14px var(--sans);cursor:pointer">RESUMED — BACK TO THE CODE</button>
     </div>
   </div>
 
@@ -432,7 +457,18 @@ function L(k){ return LOCALE.hasOwnProperty(k) ? LOCALE[k] : k; }        /* lowe
 function Lc(k){ var s=L(k); return s.charAt(0).toUpperCase()+s.slice(1); } /* Capitalized   */
 function Lu(k){ return L(k).toUpperCase(); }                              /* UPPERCASE     */
 
-/* phase: 'idle' | 'cpr' | 'resp' | 'rosc'
+/* A moment for the RECORD is a wall-clock time, not an elapsed one (issue #129).
+   Elapsed answers "how long have we been going"; the chart, the death
+   certificate and the debrief all need "at what time did this happen", and
+   nobody can reconstruct that from a stopwatch afterwards. Both are shown —
+   elapsed stays because it is what drives the room. 24-hour local, because that
+   is how it gets written down. */
+function wallTime(ms){
+  var d = new Date(typeof ms==='number' ? ms : Date.now());
+  return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
+
+/* phase: 'idle' | 'cpr' | 'resp' | 'rosc' | 'ceased'
    rhythm: null until the first rhythm check — the whole point of the code blue
    front door is that the algorithm is NOT chosen at the moment CPR starts. */
 var S = { theme:(document.body.dataset.theme==='light'?'light':'dark'), kg:null, ageY:null, phase:'idle', codeStart:null, cycleStart:null,
@@ -833,6 +869,12 @@ function paint(){
   $('cpr').style.display  = running ? '' : 'none';
   $('resp').style.display = S.phase==='resp' ? '' : 'none';
   $('rosc').style.display = S.phase==='rosc' ? '' : 'none';
+  $('ceased').style.display = S.phase==='ceased' ? '' : 'none';
+  if(S.phase==='ceased'){
+    $('deathwall').textContent = S.deathWall || wallTime();
+    $('deathat').textContent = S.deathAt || clockNow();
+    $('deathshocks').textContent = S.shocks ? (S.shocks+' shock'+(S.shocks===1?'':'s')) : 'no shocks';
+  }
 
   $('breathn').textContent = S.breaths;
   $('bradygate').style.display = (S.phase==='idle' && isPeds()) ? '' : 'none';
@@ -932,7 +974,10 @@ function paint(){
     VENT.stop();
   }
 
-  if(S.phase==='rosc') $('roscat').textContent = S.roscAt || clockNow();
+  if(S.phase==='rosc'){
+    $('roscat').textContent = S.roscAt || clockNow();
+    $('roscwall').textContent = S.roscWall || wallTime();
+  }
 
   $('sheet').style.display = S.rcOpen ? 'flex' : 'none';
   if(S.rcOpen){
@@ -1151,9 +1196,30 @@ function wire(){
     S.airway=true; log('Advanced airway placed — continuous compressions + breath q6s'); paint();
   });
   $('roscbtn').addEventListener('click', function(){
-    S.phase='rosc'; S.roscAt=clockNow(); S.rcOpen=false; S.rcOrg=false; MET.stop();
+    S.phase='rosc'; S.roscAt=clockNow(); S.roscWall=wallTime(); S.rcOpen=false; S.rcOrg=false; MET.stop();
     SS.setClock('rosc', Date.now());
     log('ROSC — pulse returned'); paint();
+  });
+
+  /* Ceasing is two taps, like RESET: pronouncing is not something a stray touch
+     should be able to do, and the confirm line says exactly what will happen. */
+  $('ceasebtn').addEventListener('click', function(){
+    var cc = $('ceaseconfirm');
+    cc.style.display = (cc.style.display === 'none' || !cc.style.display) ? 'block' : 'none';
+  });
+  $('ceaseyes').addEventListener('click', function(){
+    S.phase = 'ceased';
+    S.deathAt = clockNow();
+    S.deathWall = wallTime();
+    $('ceaseconfirm').style.display = 'none';
+    try{ MET.stop(); }catch(e){}
+    log('<b>Resuscitation ceased</b> — time of death ' + S.deathWall + ' (' + S.deathAt + ' of resuscitation)');
+    paint();
+  });
+  $('resumearrest').addEventListener('click', function(){
+    S.phase = 'cpr';
+    log('Resuscitation resumed');
+    paint();
   });
   $('rearrestbtn').addEventListener('click', function(){
     S.rhythm=null; toCPR('RE-ARREST — CPR resumed, rhythm not yet known');
@@ -1232,7 +1298,7 @@ function wire(){
   });
   $('rcorg').addEventListener('click', function(){ S.rcOrg=true; paint(); });
   $('rcpulse').addEventListener('click', function(){
-    S.phase='rosc'; S.roscAt=clockNow(); S.rcOpen=false; S.rcOrg=false; MET.stop(); VENT.stop();
+    S.phase='rosc'; S.roscAt=clockNow(); S.roscWall=wallTime(); S.rcOpen=false; S.rcOrg=false; MET.stop(); VENT.stop();
     SS.setClock('rosc', Date.now());
     log('Rhythm check: organized rhythm WITH pulse — ROSC'); paint();
   });

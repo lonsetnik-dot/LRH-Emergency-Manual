@@ -98,7 +98,8 @@ candidate to reconsider in a later workstream, not a bug.
 **codes**
 - `lrh-codes-shockarmed` — the DEFIB button's armed/idle UI flag (flash-or-not), not a case fact.
 - `lrh-codes-checks-ts` — bookkeeping timestamp for codes' own 1-hour checklist auto-clear TTL (the checks themselves live in the shared `lrh-case-checks`).
-- `lrh-codes-rsiinduct`, `lrh-codes-rsiparalytic`, `lrh-codes-c06etco2` — RSI/airway push timestamps (card 06). WS5.2 candidate for consolidation into a shared `airway` clock with marks.
+- `lrh-codes-rsiinduct`, `lrh-codes-rsiparalytic`, `lrh-codes-c06analgesia`, `lrh-codes-c06sedation`, `lrh-codes-c06etco2` — RSI/airway push timestamps (card 06): induction, paralytic, post-intubation analgesia, post-intubation sedation, tube confirmation. WS5.2 candidate for consolidation into a shared `airway` clock with marks.
+- `lrh-codes-rsiinductdrug`, `lrh-codes-rsiparalyticdrug`, `lrh-codes-c06analgesiadrug`, `lrh-codes-c06sedationdrug` — the drug(s) tapped in each of those four card-06 lanes, as a JSON array of `{drug, dose}` (`dose` is the empty string when no weight was entered). Paired one-to-one with the timestamp keys above and cleared with them. Device-local operational state, no identifiers — the same drug/dose strings are also appended to the shared `lrh-case-log`, which is the record; these exist so the lane can repaint its cue and its "already tapped" markers after a reload. The awake-paralysis check on card 06 is the one cross-key reader: paralytic-drug key filled + both post-intubation drug keys empty.
 - `lrh-codes-airway` — metronome "advanced airway placed" checkbox state.
 - `lrh-codes-lkw`, `lrh-codes-tnkms` — stroke card: last-known-well time, tPA administration time.
 - `lrh-codes-stmid21`, `lrh-codes-sttnk21`, `lrh-codes-stemi-xfer21` — STEMI card: door times, transfer-call tracking.

@@ -203,11 +203,11 @@ catch(e){ document.body.dataset.theme='dark'; }
     </div>
 
     <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px">
-      <button class="btn" id="logtoggle" type="button" style="min-height:48px;font:700 13px var(--sans)">+ LOG EVENT</button>
+      <button class="btn" id="logtoggle" type="button" style="min-height:48px;font:700 13px var(--sans)">LOG IT</button>
     </div>
     <div id="customrow" style="display:none;gap:8px;margin-top:8px">
       <input id="customin" class="inp" style="flex:1;text-align:left;font-size:15px;font-weight:400;border-radius:10px;padding:12px" placeholder="e.g. left thoracostomy — gush of air, IO humeral head">
-      <button id="customlog" type="button" style="border:none;border-radius:10px;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG</button>
+      <button id="customlog" type="button" style="border:none;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG IT</button>
     </div>
     <div id="customwarn" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>
     <div style="margin-top:10px;font-size:12.5px;color:var(--ink2)">Anything can be tapped at any time — the algorithm is a guide, not a lock.</div>
@@ -232,7 +232,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <div id="ceased" style="display:none">
     <div class="card" style="margin-top:14px;padding:16px;border-color:var(--gray)">
       <div class="sec">RESUSCITATION CEASED</div>
-      <div style="font-size:18px;font-weight:800;margin:4px 0 8px">Time of death <span id="deathat" class="mono">0:00</span> <span style="font-size:13px;font-weight:600;color:var(--ink2)">(elapsed on this clock)</span></div>
+      <div style="font-size:18px;font-weight:800;margin:4px 0 8px">Time of death <span id="deathwall" class="mono">--:--</span> <span style="font-size:13px;font-weight:600;color:var(--ink2)">(<span id="deathat" class="mono">0:00</span> of resuscitation)</span></div>
       <div style="font-size:14px;line-height:1.6;color:var(--ink)">
         Care for the team. A traumatic arrest is one of the hardest things a department does — the patient's appearance and the circumstances both weigh on people.
         Run an <b>immediate check-in (&ldquo;hot debrief&rdquo;)</b> as soon as it is practical.
@@ -405,9 +405,16 @@ var S = { theme:'dark', mode:SITE.mode, kg:null, ageY:null, override:false,
           phase:'idle', codeStart:null, checked:{}, pregnant:false,
           reversibleAddressed:false, addressedAt:null,
           events:[], open:null, resetArm:false, showCustom:false,
-          roscAt:null, deathAt:null, ceaseArm:false };
+          roscAt:null, deathAt:null, deathWall:null, ceaseArm:false };
 
 var $ = function(id){ return document.getElementById(id); };
+/* A moment for the RECORD is a wall-clock time, not an elapsed one (issue #129).
+   The chart and the death certificate need "at what time", and nobody can
+   reconstruct that from a stopwatch afterwards. */
+function wallTime(ms){
+  var d = new Date(typeof ms==='number' ? ms : Date.now());
+  return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
 function fmt(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
 function clockNow(){ return S.codeStart ? fmt((Date.now()-S.codeStart)/1000) : '0:00'; }
 
@@ -698,7 +705,10 @@ function paint(){
   }
 
   if(S.phase==='rosc')   $('roscat').textContent = S.roscAt || clockNow();
-  if(S.phase==='ceased') $('deathat').textContent = S.deathAt || clockNow();
+  if(S.phase==='ceased'){
+    $('deathat').textContent = S.deathAt || clockNow();
+    $('deathwall').textContent = S.deathWall || wallTime();
+  }
 
   $('verstamp').textContent = 'v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
   renderAccordions();
@@ -723,7 +733,7 @@ function doReset(){
         phase:'idle', codeStart:null, checked:{}, pregnant:false,
         reversibleAddressed:false, addressedAt:null,
         events:[], open:null, resetArm:false, showCustom:false,
-        roscAt:null, deathAt:null, ceaseArm:false };
+        roscAt:null, deathAt:null, deathWall:null, ceaseArm:false };
   $('wIn').value=''; $('aIn').value=''; $('customin').value='';
   paint();
 }
@@ -842,8 +852,8 @@ function wire(){
   $('ceasebtn').addEventListener('click', function(){ S.ceaseArm=true; paint(); });
   $('ceaseback').addEventListener('click', function(){ S.ceaseArm=false; paint(); });
   $('ceaseconfirm').addEventListener('click', function(){
-    S.phase='ceased'; S.deathAt=clockNow(); S.ceaseArm=false;
-    log('Resuscitation ceased — no ROSC after reversible causes addressed, no cardiac activity on eFAST'); paint();
+    S.phase='ceased'; S.deathAt=clockNow(); S.deathWall=wallTime(); S.ceaseArm=false;
+    log('<b>Resuscitation ceased</b> — time of death '+S.deathWall+' ('+S.deathAt+' of resuscitation). No ROSC after reversible causes addressed, no cardiac activity on eFAST'); paint();
   });
 
   function toggleCustom(){ S.showCustom=!S.showCustom; paint();

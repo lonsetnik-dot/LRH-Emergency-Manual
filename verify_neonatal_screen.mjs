@@ -287,6 +287,115 @@ await openAcc('airway');
 ck('10c. the airway ladder draws a figure per size band',
    await pg.locator('.accb svg').count(), CFG.airway.length);
 
+/* ---- 10d. GESTATIONAL AGE IN WEEKS AND DAYS (issue #144) ----
+   Days cannot move a baby across an integer completed-weeks threshold, so what
+   is asserted here is what days actually buy: a gestation the screen PRINTS as
+   w+d rather than rounding, and a days field that refuses a value outside 0–6.
+   Test inputs are derived from the config, not typed, so a fork that moves its
+   milking line stays green. */
+await fresh();
+await tap('#startbtn', 320);
+const GA = async (w, d) => { await pg.fill('#gIn', String(w)); await pg.fill('#gdIn', String(d)); await pg.waitForTimeout(320); };
+await pg.fill('#wIn', '2.4'); await pg.waitForTimeout(200);
+
+const MILK = CFG.cord.milkingFromWeeks;
+await GA(MILK - 1, 6);
+ck(`10d. ${MILK - 1}+6 renders as weeks+days, not a decimal`,
+   lit(`${MILK - 1}+6 wks`).test(await txt('#wnote')), true);
+ck(`10d. and ${MILK - 1}+6 is BELOW the ${MILK}-week milking line`,
+   /below the/i.test(await txt('#phasebox')), true);
+await GA(MILK, 0);
+ck(`10d. ${MILK}+0 is AT the milking line`,
+   /at or above/i.test(await txt('#phasebox')), true);
+/* The whole reason days matter: one day either side of the same week. */
+await GA(MILK - 1, 6);
+ck(`10d. one day back across the line flips it again`,
+   /below the/i.test(await txt('#phasebox')), true);
+await pg.fill('#gdIn', '9'); await pg.waitForTimeout(300);
+ck('10d. a day count outside 0–6 is refused rather than swallowed',
+   /days must be 0.6/i.test(await txt('#gerr')), true);
+
+/* ---- 10e. UNDER THE WRAP THRESHOLD THE BABY IS NOT DRIED (issue #143) ----
+   Not a softer version of "warm, dry, stimulate" — the opposite instruction.
+   The threshold is config; that the two branches CONTRADICT each other, and
+   that the headline follows the branch, is the invariant. */
+const WRAP = CFG.temp.wrapUnderWeeks;
+const WRAPG = CFG.temp.wrapUnderGrams;
+/* A weight comfortably ABOVE the gram arm, so the gestation tests isolate
+   gestation. Derived from config, not typed, so a fork that raises its gram
+   threshold does not silently turn these into weight tests. */
+const HEAVY = WRAPG ? ((WRAPG + 1500) / 1000).toFixed(1) : '3.2';
+await fresh();
+await tap('#startbtn', 320);
+await pg.fill('#wIn', HEAVY); await pg.waitForTimeout(200);
+
+await GA(WRAP, 0);
+const atThreshold = await txt('#phasebox');
+ck(`10e. at exactly ${WRAP}+0 (and ${HEAVY} kg) the baby IS dried`, /dry and stimulate/i.test(atThreshold), true);
+ck(`10e. and ${WRAP}+0 is not told to skip drying`, /do not dry/i.test(atThreshold), false);
+
+await GA(WRAP - 1, 6);
+const below = await txt('#phasebox');
+ck(`10e. one day under — at ${WRAP - 1}+6 — the screen says DO NOT DRY`,
+   /do not dry this baby/i.test(below), true);
+ck('10e. it names the wrap bundle from config', lit(CFG.temp.wrapBundle).test(below), true);
+ck('10e. and it does NOT also say "dry and stimulate"', /dry and stimulate/i.test(below), false);
+ck('10e. stimulation still happens — through the wrap', /stimulate through the wrap/i.test(below), true);
+ck('10e. the headline follows the branch', /wrap, do not dry/i.test(below), true);
+ck('10e. the weight bar flags it too', /WRAP, DO NOT DRY/i.test(await txt('#wnote')), true);
+ck('10e. and it says WHICH number put the baby in the band', lit(`under ${WRAP} weeks`).test(below), true);
+
+/* ---- 10f. THE GRAM ARM IS AN OR, NOT AN AND ----
+   The clinical point Lon confirmed: either trigger is enough. A
+   growth-restricted baby well past 32 weeks can still be under 1500 g, and an
+   estimated gestation can be wrong or simply not known yet. A suite that only
+   ever tested the gestation arm would pass with the OR silently built as an
+   AND — which is the failure that leaves a 1200 g 33-weeker being towel-dried. */
+if (WRAPG) {
+  const LIGHT = ((WRAPG - 200) / 1000).toFixed(2);   /* under the gram line */
+  const ATG   = (WRAPG / 1000).toFixed(2);           /* exactly on it */
+  await fresh();
+  await tap('#startbtn', 320);
+
+  /* Gestation WELL ABOVE the week line, weight below the gram line. */
+  await GA(WRAP + 6, 0);
+  await pg.fill('#wIn', LIGHT); await pg.waitForTimeout(320);
+  const byWt = await txt('#phasebox');
+  ck(`10f. ${WRAP + 6}+0 but ${LIGHT} kg — the gram arm alone triggers the wrap`,
+     /do not dry this baby/i.test(byWt), true);
+  ck('10f. and it names the GRAM reason, not the gestation',
+     lit(`under ${WRAPG} g`).test(byWt), true);
+  ck('10f. it does not also say "dry and stimulate"', /dry and stimulate/i.test(byWt), false);
+
+  /* Exactly on the gram line is NOT under it. */
+  await pg.fill('#wIn', ATG); await pg.waitForTimeout(320);
+  ck(`10f. exactly ${WRAPG} g is not under ${WRAPG} g — baby IS dried`,
+     /dry and stimulate/i.test(await txt('#phasebox')), true);
+
+  /* Both arms firing at once names both. */
+  await GA(WRAP - 2, 0);
+  await pg.fill('#wIn', LIGHT); await pg.waitForTimeout(320);
+  ck('10f. when both arms fire the screen names both',
+     /under both/i.test(await txt('#phasebox')), true);
+}
+
+/* With nothing entered the fork is invisible unless the screen says so — the
+   person holding a 28-weeker has not typed anything yet. */
+await fresh();
+await tap('#startbtn', 320);
+const blank = await txt('#phasebox');
+ck(`10e. with nothing entered it warns that under ${WRAP} weeks this changes`,
+   lit(`Under ${WRAP} weeks`).test(blank), true);
+if (WRAPG) ck(`10e. and that it also changes under ${WRAPG} g`,
+   lit(`${WRAPG} g`).test(blank), true);
+
+/* The thresholds must be cited on screen, not just in a source comment. */
+const srcTxt = await openAcc('src');
+ck('10e. the wrap threshold is cited in SOURCE & PROVENANCE',
+   /S524.S550/.test(srcTxt) && lit(`under ${WRAP} weeks`).test(srcTxt), true);
+if (WRAPG) ck('10e. and the OR is stated, not left for the reader to infer',
+   /either trigger is enough/i.test(srcTxt), true);
+
 /* ---- 11. stamp and disclaimer ---- */
 await fresh();
 ck(`11. stamped v${CFG.version}, last reviewed ${CFG.lastReviewed}`,

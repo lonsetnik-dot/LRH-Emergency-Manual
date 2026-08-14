@@ -204,19 +204,17 @@ var INV_CATALOG = {
      procedure cards — verify_kit_consistency.mjs asserts that. ----------- */
   "kit-canthotomy": { name:"Canthotomy Kit", cat:"kit", std:["ACS-COT"], contents:[
     "3 mL syringe","Needle to draw","Needle to inject","Mosquito clamp","Toothed forceps","Blunt-tipped iris scissors"] },
-  /* Rebuilt 2026-08-13 from the kit the department is assembling for providers
-     (photo of the build). Instruments are peel-packed singly rather than as a
-     tray, so each pack is its own line and its own expiry. Lines marked
-     `confirm:true` were read off the build photo and are not yet verified
-     against the assembled bag — they print with a ◇ on the check card. */
-  "kit-chest-tube": { name:"Chest Tube Kit", cat:"kit", std:["ACS-COT"],
-    draft:"Assembled build not yet verified item-for-item — see the check card.",
-    contents:[
-    "Needle driver","Curved Kelly clamps","Curved Mayo scissors","Toothed tissue forceps",
-    "Scalpel No. 10 blade","Povidone-iodine swabsticks","Silk 0 suture on a cutting needle",
-    "10 mL syringe + 18 g draw and 25 g needles","Foley catheter 16 Fr"],
-    confirm:["Curved Mayo scissors","Toothed tissue forceps","Silk 0 suture on a cutting needle",
-             "Foley catheter 16 Fr"] },
+  /* Corrected on the cart walk 2026-08-13 (Lon). Two things that had been listed
+     as bag contents are NOT in the bag: PPE lives in the Trauma Cart PPE drawer
+     (see "ppe-splash" below, which already carries that location), and the
+     dressing supplies are their own separate bag. Listing either one here sends
+     someone rummaging in a chest-tube bag for a gown while a patient is waiting.
+     The drapes are now spelled out as one regular + one fenestrated, which is
+     what the bag actually holds. */
+  "kit-chest-tube": { name:"Chest Tube Kit", cat:"kit", std:["ACS-COT"], contents:[
+    "Scalpel No. 10 blade","Kelly clamps","Suture 0 silk + needle driver",
+    "Lidocaine 1% 20 mL + 10 mL syringe + 21 g and 25 g needles","ChloraPrep",
+    "Fenestrated drape","Regular 1/2 drape","Large Tegaderm"] },
   "kit-pigtail": { name:"Pigtail Thoracostomy Kit", cat:"kit", std:["ACS-COT"], contents:[
     "Sterile gown, mask, eye protection, gloves, drapes","Ultrasound with a sterile probe cover and gel",
     "25 G and 21 G needles","Lidocaine 1%","Introducer needle","Marked guidewire","Sequential dilators",

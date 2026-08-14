@@ -1028,6 +1028,15 @@ function where(item){
          someone to the wrong drawer teaches the wrong drawer. */
       return e.loc + (e.verify ? ' · CONFIRM ON YOUR CART' : '');
     }
+    /* An `inv` key that no longer resolves must be LOUD. This is how the OB
+       decks broke: inventory.js was restructured to size-level rows, several
+       keys were renamed, and where() quietly returned an empty string — so the
+       cards printed with a blank drawer line and nothing failed until the
+       suite was run on another branch. A missing key is now visible on the
+       card itself and, below, fails the build-time check. */
+    if(item.inv && (typeof INV_LOCATIONS!=='object' || !INV_LOCATIONS[item.inv])){
+      return 'UNKNOWN INVENTORY KEY: '+item.inv;
+    }
   }catch(err){}
   return (item.drawer || '') + (item.unconfirmed ? ' · CONFIRM ON YOUR CART' : '');
 }

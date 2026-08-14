@@ -223,12 +223,16 @@ for (const id of CASE_IDS) {
     beats: document.querySelectorAll('.rs .rb').length,
     blank: [...document.querySelectorAll('.cardgrid.eq .pcard svg')].filter(s => !s.innerHTML.trim()).length,
     noloc: [...document.querySelectorAll('.cardgrid.eq .pcard .lo')].filter(e => !e.textContent.trim()).length,
+    badkey: [...document.querySelectorAll('.cardgrid.eq .pcard .lo')].filter(e => /UNKNOWN INVENTORY KEY/.test(e.textContent)).length,
     decoys: document.querySelectorAll('.vchip.decoy').length,
     sats:  [...document.querySelectorAll('.cardgrid.mon .pcard')].length,
   }));
   ck(`11. [${id}] has its own patient figure`, d.fig, 1);
   ck(`11. [${id}] every equipment card draws a glyph`, d.blank, 0);
   ck(`11. [${id}] every equipment card names a location`, d.noloc, 0);
+  /* A renamed inventory key used to blank the location silently. It now renders
+     loudly, so assert the loud version never ships either. */
+  ck(`11. [${id}] no card carries an unresolved inventory key`, d.badkey, 0);
   ck(`11. [${id}] carries decoy cards`, d.decoys > 0, true);
   ck(`11. [${id}] the run sheet has setup, beats and debrief`, d.beats >= 5, true);
   ck(`11. [${id}] poster prints on one sheet`, await pdfPages('poster'), 1);

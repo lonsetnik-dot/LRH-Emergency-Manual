@@ -238,7 +238,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   try{ if(/(^|[?&])startnewcase=1(&|$)/.test(location.search)) openModal(); }catch(e){}
 })();
 </script>
-<div id="summarymodal" style="display:none; position:fixed; inset:0; z-index:20; background:rgba(15,28,44,0.55); padding:14px; overflow:auto;">
+<div id="summarymodal" style="display:none; position:fixed; inset:0; z-index:40; background:rgba(15,28,44,0.55); padding:14px; overflow:auto;">
   <div style="max-width:560px; margin:22px auto; background:var(--card); border:2px solid var(--gray); box-shadow:0 12px 44px rgba(0,0,0,0.32);">
     <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; background:linear-gradient(135deg,#005596,#003e6e); color:var(--on-sev); border-bottom:5px solid var(--sev-crit);">
       <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.1em;">CASE TIMELINE</div>
@@ -431,12 +431,12 @@ catch(e){ document.body.dataset.theme='dark'; }
     <!-- any-NO now routes straight to card 03 (neonatal resuscitation): first 30 s → pulse check → triage -->
 
     <details open id="c02y" style="border:2px solid var(--teal); align-self:start; scroll-margin-top:60px;">
-      <summary style="background:var(--teal); color:var(--on-sev); padding:11px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><span>ALL FOUR YES · DELAYED CORD CLAMPING</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:400; opacity:0.8; text-align:right;">30–60 S</span></summary>
+      <summary style="background:var(--teal); color:var(--on-sev); padding:11px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><span>ALL FOUR YES · DELAYED CORD CLAMPING</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:400; opacity:0.8; text-align:right;">AT LEAST 60 S</span></summary>
       <div style="padding:12px 14px 0; text-align:center;">
         <div style="font-size:22px; font-weight:800; letter-spacing:-0.01em; color:var(--teal); line-height:1.08;">DELAYED CORD CLAMPING</div>
-        <div style="margin-top:5px; font-size:14px; line-height:1.35; color:var(--ink);">Baby skin-to-skin, dry, hat. Wait for the cord — <b>30–60 s</b>, or until it stops pulsating.</div>
+        <div style="margin-top:5px; font-size:14px; line-height:1.35; color:var(--ink);">Baby skin-to-skin, dry, hat. Wait for the cord — <b>at least 60 s</b>, or until it stops pulsating.</div>
         <div id="clamptimer" style="margin-top:12px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:52px; font-weight:700; line-height:1; color:var(--ink2);">0:00</div>
-        <div id="clampband" style="margin-top:3px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.08em; color:var(--ink2);">TARGET 30–60 S</div>
+        <div id="clampband" style="margin-top:3px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.08em; color:var(--ink2);">KEEP WAITING · AT LEAST 60 S</div>
       </div>
       <div style="padding:0 14px 12px;"><figure style="margin:0; border:2px solid var(--gray); background:var(--card); display:flex; flex-direction:column;">
         <div style="background:var(--gray); color:var(--on-sev); padding:9px 12px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.12em;">FIG 1 · CORD — TWO CLAMPS, CUT BETWEEN</div>
@@ -454,7 +454,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <line x1="76" y1="114" x2="76" y2="126" stroke="#5a6a78" stroke-width="1.5"/>
   <line x1="150" y1="114" x2="150" y2="126" stroke="#5a6a78" stroke-width="1.5"/>
   <text x="113" y="140" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="11" fill="#5a6a78">2–3 in / 5–8 cm</text></svg></div>
-        <figcaption style="padding:10px 12px; font-size:14px; line-height:1.35; color:var(--ink); border-top:1px solid var(--line);">Delay 30–60 s if vigorous. Two clamps 2–3 in from the abdomen, cut between them. No cord traction on the placenta.</figcaption>
+        <figcaption style="padding:10px 12px; font-size:14px; line-height:1.35; color:var(--ink); border-top:1px solid var(--line);">Delay at least 60 s if vigorous. Two clamps 2–3 in from the abdomen, cut between them. No cord traction on the placenta.</figcaption>
       </figure></div>
       <div style="padding:4px 14px 14px;">
         <button type="button" id="clampbtn" data-logevent="CORD CLAMPED" data-logcard="02" style="width:100%; min-height:58px; background:var(--teal); color:var(--on-sev); border:2px solid var(--teal); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">CORD IS CLAMPED</button>
@@ -963,6 +963,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <span style="flex:1; text-align:right; color:var(--ink2);">CALL OB STAT · RECORD THE TIME</span>
     </div>
     <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:var(--ink);">Postpartum hemorrhage</h2>
+      <div style="margin-top:10px;padding:11px 12px;border:2px solid var(--sev-info);background:var(--card2);border-radius:12px;font-size:13.5px;line-height:1.45"><b>There is now a live engine for this.</b> <a href="../pph/?from=home" style="color:var(--blue);font-weight:700">Open the postpartum hemorrhage engine &rsaquo;</a> — it runs the clock from recognition, keeps a running blood loss on screen, and greys out a uterotonic your patient cannot have. This card stays as the reference view, and both are built from the same numbers.</div>
     <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:11px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:var(--ink2);">CART</span><a href="#d4" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:var(--card2); border:1px solid var(--sev-crit); text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:var(--sev-crit); flex:none;"><span style="display:block; width:0; height:0; border-left:5.4px solid transparent; border-right:5.4px solid transparent; border-bottom:9px solid var(--on-sev);"></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:var(--red);">4 · POSTPARTUM HEMORRHAGE</span></a></div>
   </header>
   <div class="console" style="position:sticky; top:calc(var(--sticky-h,54px) + env(safe-area-inset-top,0px)); z-index:4; padding:10px 18px; background:var(--card2); border-top:2px solid var(--sev-crit); border-bottom:2px solid var(--sev-crit);">
@@ -1056,6 +1057,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <span style="flex:1; text-align:right; color:var(--ink2);">ANNOUNCE IT · START THE CLOCK</span>
     </div>
     <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:var(--ink);">Shoulder dystocia</h2>
+      <div style="margin-top:10px;padding:11px 12px;border:2px solid var(--sev-info);background:var(--card2);border-radius:12px;font-size:13.5px;line-height:1.45"><b>There is now a live engine for this.</b> <a href="../dystocia/?from=home" style="color:var(--blue);font-weight:700">Open the shoulder dystocia engine &rsaquo;</a> — it holds the head-to-body interval where the room can see it and records every maneuver with its time. This card stays as the reference view, and both are built from the same numbers.</div>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:11px;"><a href="#c02s2" style="display:flex; align-items:center; justify-content:center; min-height:44px; background:var(--card2); border:2px solid var(--gray); color:var(--ink); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em;">← DELIVERY (02)</a><a href="#c03" style="display:flex; align-items:center; justify-content:center; min-height:44px; background:var(--card2); border:2px solid var(--sev-crit); color:var(--red); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em;">→ RESUS (03)</a></div>
     <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:11px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:var(--ink2);">CART</span><a href="#d6" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:var(--card2); border:1px solid var(--green); text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:var(--green); flex:none;"><span style="display:flex; flex-direction:column; gap:2.7px;"><span style="display:block; width:12.6px; height:2.7px; background:var(--card);"></span><span style="display:block; width:12.6px; height:2.7px; background:var(--card);"></span></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:var(--green);">6 · VAGINAL DELIVERY</span></a></div>
   </header>
@@ -2317,7 +2319,20 @@ var CASESTATE = (function(){
 </script>
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
-var SITE = { version: "1.13", lastReviewed: "2026-08-07" };
+var SITE = {
+  version: "1.15", lastReviewed: "2026-08-13",
+  /* DEFERRED CORD CLAMPING (issue #140). Was "30–60 s" here while the live
+     engine at /neonatal/ said "at least 60 s" — two screens a clinician can
+     open in the same delivery, giving different numbers. The 2025 AHA/AAP
+     guideline (Part 5: Neonatal Resuscitation, Circulation, doi:10.1161/
+     CIR.0000000000001367) is at least 60 s for the newborn who does not need
+     immediate resuscitation; this card now matches the engine. Confirmed by
+     Lon 2026-08-13.
+
+     One number, read by the prose, the summary chip and the countdown band, so
+     the three cannot drift apart again. */
+  cordDeferSec: 60
+};
 (function(){
   var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
   Array.prototype.forEach.call(document.querySelectorAll('.verstamp'), function(vs){ vs.textContent=stampText; });
@@ -2815,16 +2830,39 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
     return text;
   }
   var lastText='';
-  function open(){ lastText=render(); modal.style.display='block'; }
-  function close(){ modal.style.display='none'; }
-  btn.addEventListener('click', open);
-  closeb.addEventListener('click', close);
-  modal.addEventListener('click', function(e){ if(e.target===modal) close(); });
+  /* CASE TIMELINE — open, close, and copy (bug reported 2026-08-13).
+     This tool already had the backdrop tap; what it lacked was Escape, and COPY
+     TO CLIPBOARD left the timeline sitting open over the card you were working
+     from. Copying the timeline is the last thing you do with it, so it now
+     confirms and gets out of the way.
+
+     Its old copy handler also called done() from inside a try that ignored the
+     result, so a failed execCommand still said COPIED. It now reports failure
+     and stays open — closing on a failed copy would tell you the timeline is
+     safely on the clipboard when it is not.
+
+     Deliberately duplicated in codes/, peds/ and ob-neonatal/ rather than
+     shared: single-file offline tools, share the contract not the code.
+     verify_timeline_close.mjs holds the three copies to the same behavior. */
+  function openModal(){ lastText=render(); modal.style.display='block'; }
+  function closeModal(){ modal.style.display='none'; }
+  btn.addEventListener('click', openModal);
+  closeb.addEventListener('click', closeModal);
+  modal.addEventListener('click', function(e){ if(e.target===modal) closeModal(); });
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape' && modal.style.display!=='none') closeModal();
+  });
   copyb.addEventListener('click', function(){
     var t=lastText||render();
-    function done(){ copyb.textContent='COPIED'; setTimeout(function(){ copyb.textContent='COPY TO CLIPBOARD'; },1200); }
-    function fallback(){ var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0';
-      document.body.appendChild(ta); ta.focus(); ta.select(); try{ document.execCommand('copy'); done(); }catch(e){} document.body.removeChild(ta); }
+    function done(){ copyb.textContent='COPIED'; setTimeout(function(){ closeModal(); copyb.textContent='COPY TO CLIPBOARD'; }, 700); }
+    function failed(){ copyb.textContent='COPY FAILED — SELECT AND COPY MANUALLY';
+      setTimeout(function(){ copyb.textContent='COPY TO CLIPBOARD'; }, 2400); }
+    function fallback(){
+      var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok=false; try{ ok=document.execCommand('copy'); }catch(e){ ok=false; }
+      document.body.removeChild(ta); if(ok) done(); else failed();
+    }
     if(navigator.clipboard&&navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done, fallback); } else { fallback(); }
   });
 })();</script>
@@ -2861,9 +2899,13 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
       if(t0===null||clamped) return;
       var s=Math.floor((Date.now()-t0)/1000); if(s<0) s=0;
       if(disp) disp.textContent=fmt(s);
-      if(s<30){ if(disp)disp.style.color='#5a6a78'; if(band){band.textContent='TARGET 30–60 S'; band.style.color='#8a8578';} }
-      else if(s<=60){ if(disp)disp.style.color='#0e7c86'; if(band){band.textContent='IN WINDOW · OK TO CLAMP'; band.style.color='#0e7c86';} }
-      else { if(disp)disp.style.color='#8a6d1f'; if(band){band.textContent='PAST 60 S'; band.style.color='#8a6d1f';} }
+      /* Two bands, not three. Under "at least 60 s" there is no longer an upper
+         edge to warn about — passing 60 s is the goal, not an overrun, so the
+         old amber "PAST 60 S" state would now scold someone for doing the right
+         thing. */
+      var goal=(SITE&&SITE.cordDeferSec)||60;
+      if(s<goal){ if(disp)disp.style.color='#5a6a78'; if(band){band.textContent='KEEP WAITING · AT LEAST '+goal+' S'; band.style.color='#8a8578';} }
+      else { if(disp)disp.style.color='#0e7c86'; if(band){band.textContent=goal+' S REACHED · OK TO CLAMP'; band.style.color='#0e7c86';} }
     }
     function startTimer(startMs){
       if(clamped||startMs==null) return;
@@ -3008,7 +3050,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
       /* Clear the in-memory clamp state + on-screen timer so the next case starts clean. */
       clamped=false; t0=null; if(tick){ clearInterval(tick); tick=null; }
       if(disp){ disp.textContent='0:00'; disp.style.color='#5a6a78'; }
-      if(band){ band.textContent='TARGET 30–60 S'; band.style.color='#8a8578'; }
+      if(band){ band.textContent='KEEP WAITING · AT LEAST '+((SITE&&SITE.cordDeferSec)||60)+' S'; band.style.color='#8a8578'; }
       if(cbtn){ cbtn.textContent='CORD IS CLAMPED'; cbtn.style.opacity=''; cbtn.disabled=false; }
       /* Un-highlight the 4-YES gate and re-collapse the delayed-clamp section. */
       yes={};

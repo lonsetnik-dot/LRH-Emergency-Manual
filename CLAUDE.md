@@ -251,6 +251,15 @@ test it" is not sufficient close-out for a deliverable.
   and has not been reconciled with NRP 9th edition — the review banner stays up
   until a clinician signs it off, and `verify_neonatal_screen.mjs` fails if
   anyone switches it off quietly.**
+- `pph/` — the postpartum hemorrhage **engine** (issue #135): clock from
+  recognition, running blood loss as first-class state, escalation prompts that
+  fire on the trend, and uterotonics greyed out by a contraindication asked once
+  up front. Card 06 stays as the reference view.
+- `dystocia/` — the shoulder dystocia **engine** (issue #135): the head-to-body
+  interval as the clock, HELPERR one rung at a time, and a record of every
+  maneuver with its time. **The clock does not restart when the sequence is run
+  again** — the interval is continuous, and `verify_ob_engines.mjs` asserts it.
+  Card 07 stays as the reference view.
 - `peds/` — Pediatric Emergencies.
 - `procedures/` — Rare, high-stakes procedure checklists (chest tube,
   thoracotomy, burr hole, canthotomy, CVC, TVP, tourniquet, JADA, etc.).
