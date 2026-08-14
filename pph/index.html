@@ -241,9 +241,14 @@ var CS = {
   markCaseStarted:function(){ if(CS.getCaseStartMs()===null) CS.set('lrh-case-startms', String(Date.now())); },
   touchActive:function(){ CS.set('lrh-case-lastactive', String(Date.now())); }
 };
+/* Only shown when it says something the clock above does not: that this case
+   was already running before this screen was opened. If THIS tool started
+   the case, the two numbers would be near-identical and just be a second,
+   confusing clock — so that case is suppressed. */
 function paintCaseClock(){
   var ms = CS.getCaseStartMs(), el = $('caseclock');
-  if(ms){ el.style.display=''; el.textContent = 'CASE T+'+fmt((Date.now()-ms)/1000); }
+  var elsewhere = ms && (!S.t0 || ms < S.t0 - 1000);
+  if(elsewhere){ el.style.display=''; el.textContent = 'Case running '+fmt((Date.now()-ms)/1000)+' — started elsewhere'; }
   else { el.style.display='none'; }
 }
 

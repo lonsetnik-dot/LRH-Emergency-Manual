@@ -344,9 +344,14 @@ var CS = {
   markCaseStarted:function(){ if(CS.getCaseStartMs()===null) CS.set('lrh-case-startms', String(Date.now())); },
   touchActive:function(){ CS.set('lrh-case-lastactive', String(Date.now())); }
 };
+/* Only shown when it says something the clock above does not: that this case
+   was already running before this screen was opened. If THIS tool started
+   the case (birth stamped here), the two numbers would be near-identical and
+   just be a second, confusing clock — so that case is suppressed. */
 function paintCaseClock(){
   var ms = CS.getCaseStartMs(), el = $('caseclock');
-  if(ms){ el.style.display=''; el.textContent = 'CASE T+'+fmt((Date.now()-ms)/1000); }
+  var elsewhere = ms && (!S.birth || ms < S.birth - 1000);
+  if(elsewhere){ el.style.display=''; el.textContent = 'Case running '+fmt((Date.now()-ms)/1000)+' — started elsewhere'; }
   else { el.style.display='none'; }
 }
 
@@ -504,10 +509,11 @@ function phaseBox(){
        stepRow(1,'<b>Cord management plan</b> — the first step on the 2025 algorithm. Defer clamping '+
                  '<b>at least '+SITE.cord.deferSec+' s</b> unless this baby needs resuscitation now. '+
                  esc(SITE.cord.milking)+milkingNote())+
-       stepRow(2,'Baby to the <b>'+esc(SITE.local.warmer)+'</b>.')+
-       thermalRows(3)+
-       stepRow(5,'Clear the airway <b>only if obstructed</b>.')+
-       stepRow(6,'Pulse oximeter on the <b>right hand</b>. Cardiac monitor if resuscitating.')+
+       stepRow(2,'<b>'+esc(SITE.local.teleNicu)+'</b> — a second person can do this while the cord and warmer are handled.')+
+       stepRow(3,'Baby to the <b>'+esc(SITE.local.warmer)+'</b>.')+
+       thermalRows(4)+
+       stepRow(6,'Clear the airway <b>only if obstructed</b>.')+
+       stepRow(7,'Pulse oximeter on the <b>right hand</b>. Cardiac monitor if resuscitating.')+
        '</div>'+
        '<div class="say"><b>Say it out loud:</b> “Newborn is not vigorous — starting resuscitation.” Claim the roles by name: airway, compressions, meds, recorder.</div>'+
        '<button class="btn" id="toassess" type="button" style="width:100%;min-height:72px;margin-top:10px;background:var(--blue);color:#fff;border:none;font-size:19px">INITIAL STEPS DONE — CHECK THE HEART RATE</button>';

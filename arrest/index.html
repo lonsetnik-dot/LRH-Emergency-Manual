@@ -137,6 +137,24 @@ catch(e){ document.body.dataset.theme='dark'; }
       <button class="ghost" id="rhythmchange" type="button" style="white-space:nowrap">RE-CHECK</button>
     </div>
 
+    <!-- First-seconds checklist — assign roles and activate tele-ED — comes
+         right after the top status bar and before the cycle card, so it is
+         visible without scrolling past the whole shock/epi block. Compressions
+         are already presumed running (that is how this screen was reached);
+         this is the very next thing to do in parallel. -->
+    <div id="rolesstep" class="card" style="margin-top:10px;border:1px dashed var(--accent);padding:12px">
+      <div style="display:flex;gap:10px;align-items:center">
+        <div style="flex:1">
+          <div class="sec" style="color:var(--accent)">GET ORGANIZED — NAME THE ROLES</div>
+          <div style="font-size:12.5px;color:var(--ink2);margin-top:2px">Assign aloud · rotate compressor every 2 min · <span id="teleed">Activate tele-ED</span></div>
+        </div>
+        <button id="rolesbtn" type="button" style="min-height:56px;border:none;border-radius:12px;background:var(--accent);color:var(--accentInk);font:800 13px var(--sans);padding:0 14px;cursor:pointer;white-space:nowrap">ASSIGNED — LOG IT</button>
+      </div>
+      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
+        <span class="chip">Compressor</span><span class="chip">Airway / ventilation</span><span class="chip">Meds / IV-IO</span><span class="chip">Defibrillator</span><span class="chip">Recorder</span><span class="chip">Tele-ED</span>
+      </div>
+    </div>
+
     <div class="card" id="cyclecard" style="margin-top:10px;padding:14px;border-radius:16px">
       <div style="display:flex;align-items:center;justify-content:space-between">
         <div class="sec">CPR CYCLE — RHYTHM CHECK AT 0:00</div>
@@ -170,19 +188,6 @@ catch(e){ document.body.dataset.theme='dark'; }
       </div>
       <div id="customwarn" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>
       <div style="margin-top:8px;font-size:12.5px;color:var(--ink2)">Anything can be tapped at any time — the algorithm is a guide, not a lock.</div>
-    </div>
-
-    <div id="rolesstep" class="card" style="margin-top:10px;border:1px dashed var(--accent);padding:12px">
-      <div style="display:flex;gap:10px;align-items:center">
-        <div style="flex:1">
-          <div class="sec" style="color:var(--accent)">GET ORGANIZED — NAME THE ROLES</div>
-          <div style="font-size:12.5px;color:var(--ink2);margin-top:2px">Assign aloud · rotate compressor every 2 min · <span id="teleed">Activate tele-ED</span></div>
-        </div>
-        <button id="rolesbtn" type="button" style="min-height:56px;border:none;border-radius:12px;background:var(--accent);color:var(--accentInk);font:800 13px var(--sans);padding:0 14px;cursor:pointer;white-space:nowrap">ASSIGNED — LOG IT</button>
-      </div>
-      <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
-        <span class="chip">Compressor</span><span class="chip">Airway / ventilation</span><span class="chip">Meds / IV-IO</span><span class="chip">Defibrillator</span><span class="chip">Recorder</span><span class="chip">Tele-ED</span>
-      </div>
     </div>
 
     <div id="airwaystep" class="card" style="display:none;gap:10px;align-items:center;margin-top:10px;border:1px dashed var(--blue);padding:12px">
@@ -487,9 +492,14 @@ function clockNow(){ return S.codeStart ? fmt((Date.now()-S.codeStart)/1000) : '
 /* This tool's own clock (above) is what every dose/shock/rhythm decision on
    this screen runs from — never replaced. This is only a second, smaller
    readout: how long the whole case has been running, wherever it started. */
+/* Only shown when it says something the clock above does not: that this case
+   was already running before this screen was opened. If THIS tool started
+   the case, the two numbers would be near-identical and just be a second,
+   confusing clock — so that case is suppressed. */
 function paintCaseClock(){
   var ms = SS.getCaseStartMs(), el = $('caseclock');
-  if(ms){ el.style.display=''; el.textContent = 'CASE T+'+fmt((Date.now()-ms)/1000); }
+  var elsewhere = ms && (!S.codeStart || ms < S.codeStart - 1000);
+  if(elsewhere){ el.style.display=''; el.textContent = 'Case running '+fmt((Date.now()-ms)/1000)+' — started elsewhere'; }
   else { el.style.display='none'; }
 }
 /* ---- Verbal time announcements — Web Speech API, synthesised, no audio

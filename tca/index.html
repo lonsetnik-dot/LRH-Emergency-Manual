@@ -425,9 +425,14 @@ function clockNow(){ return S.codeStart ? fmt((Date.now()-S.codeStart)/1000) : '
 /* This tool's own clock (above) still drives every timing decision here —
    never replaced. This is only a second, smaller readout: how long the whole
    case has been running, wherever it started. */
+/* Only shown when it says something the clock above does not: that this case
+   was already running before this screen was opened. If THIS tool started
+   the case, the two numbers would be near-identical and just be a second,
+   confusing clock — so that case is suppressed. */
 function paintCaseClock(){
   var ms = SS.getCaseStartMs(), el = $('caseclock');
-  if(ms){ el.style.display=''; el.textContent = 'CASE T+'+fmt((Date.now()-ms)/1000); }
+  var elsewhere = ms && (!S.codeStart || ms < S.codeStart - 1000);
+  if(elsewhere){ el.style.display=''; el.textContent = 'Case running '+fmt((Date.now()-ms)/1000)+' — started elsewhere'; }
   else { el.style.display='none'; }
 }
 

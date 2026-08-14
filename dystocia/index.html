@@ -158,6 +158,7 @@ var SITE = {
     { k:"H", n:"Announce &amp; start the clock", at:0,
       short:"Say it out loud. Bed flat, foot of the bed off.",
       who:[["TEAM","Say it out loud: “We have a shoulder dystocia.” Activate OB, anesthesia and Pediatrics."],
+           ["TEAM","<b>Activate tele-NICU.</b>"],
            ["TIMEKEEPER","Start the clock. Call the elapsed time every 30 s."],
            ["TEAM","Bed completely flat, foot of the bed off. <b>No fundal pressure. No pulling.</b>"]] },
     { k:"P", n:"Pressure — suprapubic", at:0,
@@ -233,9 +234,14 @@ var CS = {
   markCaseStarted:function(){ if(CS.getCaseStartMs()===null) CS.set('lrh-case-startms', String(Date.now())); },
   touchActive:function(){ CS.set('lrh-case-lastactive', String(Date.now())); }
 };
+/* Only shown when it says something the clock above does not: that this case
+   was already running before this screen was opened. If THIS tool started
+   the case, the two numbers would be near-identical and just be a second,
+   confusing clock — so that case is suppressed. */
 function paintCaseClock(){
   var ms = CS.getCaseStartMs(), el = $('caseclock');
-  if(ms){ el.style.display=''; el.textContent = 'CASE T+'+fmt((Date.now()-ms)/1000); }
+  var elsewhere = ms && (!S.t0 || ms < S.t0 - 1000);
+  if(elsewhere){ el.style.display=''; el.textContent = 'Case running '+fmt((Date.now()-ms)/1000)+' — started elsewhere'; }
   else { el.style.display='none'; }
 }
 
@@ -354,7 +360,7 @@ function paint(){
   $('prestart').innerHTML =
     'Announce it as you tap — naming it out loud is what starts everyone else moving. The clock is the '+
     '<b>head-to-body interval</b>, and it is the number that gets reconstructed wrongly afterwards. '+
-    'Bed flat, foot of the bed off. '+esc(SITE.local.teleNicu)+'. Kit lives in the '+esc(SITE.local.cart)+'.';
+    'Bed flat, foot of the bed off. Kit lives in the '+esc(SITE.local.cart)+'.';
 
   $('idle').style.display = S.phase==='idle' ? '' : 'none';
   $('live').style.display = live ? '' : 'none';
