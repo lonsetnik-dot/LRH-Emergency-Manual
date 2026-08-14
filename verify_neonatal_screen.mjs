@@ -260,14 +260,19 @@ ck('10. the log is empty again', /Nothing logged yet/.test(await openAcc('log'))
 
 /* ---- 10b. the audio pacer ----
    It shipped missing and was the one gap found in bedside testing. Synthesised
-   rather than a file, so the offline shell still holds. */
+   rather than a file, so the offline shell still holds. Sound defaults ON —
+   the START tap is itself the user gesture browsers require, so it is used to
+   start audio immediately rather than making someone find a second button
+   (same opt-out convention /arrest/'s compression tone already uses). */
 await fresh(); await tap('#startbtn', 300);
 ck('10b. the pacer is on the running screen', await pg.locator('#pacerbox').isVisible(), true);
-ck('10b. it starts silent — audio needs a gesture', /SOUND OFF/.test(await txt('#soundbtn')), true);
+ck('10b. sound starts ON — the START tap is the gesture', /SOUND ON/.test(await txt('#soundbtn')), true);
 ck(`10b. a PPV rate button per configured rate (${CFG.pacer.ppvRates.join('/')})`,
    await pg.locator('[data-rate]').count(), CFG.pacer.ppvRates.length);
 await tap('#soundbtn');
-ck('10b. tapping it turns sound on', /SOUND ON/.test(await txt('#soundbtn')), true);
+ck('10b. tapping it again mutes it', /SOUND OFF/.test(await txt('#soundbtn')), true);
+await tap('#soundbtn');
+ck('10b. tapping it a third time turns sound back on', /SOUND ON/.test(await txt('#soundbtn')), true);
 ck('10b. it explains what the sounds mean', lit(CFG.pacer.note).test(await txt('#pacerbox')), true);
 ck('10b. it warns about the iPhone silent switch', /silent switch/i.test(await txt('#pacerbox')), true);
 await tap('#toassess'); await tap('[data-hr="low"]');

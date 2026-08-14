@@ -479,7 +479,7 @@ var S = { theme:(document.body.dataset.theme==='light'?'light':'dark'), kg:null,
           override:false, pedsDismissed:false, events:[], open:null, met:false,
           resetArm:false, roscAt:null, rcOpen:false, rcOrg:false, showCustom:false,
           rhythm:null, breaths:0, lastBeatAt:null, pulseFrom:null,
-          respSpont:false, ventMuted:false };
+          respSpont:false, ventMuted:false, lastSpokenMin:0 };
 
 var $ = function(id){ return document.getElementById(id); };
 function fmt(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
@@ -491,6 +491,26 @@ function paintCaseClock(){
   var ms = SS.getCaseStartMs(), el = $('caseclock');
   if(ms){ el.style.display=''; el.textContent = 'CASE T+'+fmt((Date.now()-ms)/1000); }
   else { el.style.display='none'; }
+}
+/* ---- Verbal time announcements — Web Speech API, synthesised, no audio
+   files (rule 1). Elapsed time only, once a minute of code duration — the
+   compression tone already runs continuously, so this stays infrequent
+   rather than competing with it. Silently does nothing where
+   speechSynthesis isn't available. Never muted while the code is running,
+   matching this screen's own existing rule that the compression tone itself
+   has no mute — essential timing audio stays on for the length of a code. */
+function sayElapsed(totalSec){
+  if(!window.speechSynthesis) return;
+  var m=Math.floor(totalSec/60), s=totalSec%60, words;
+  if(m===0) words=s+' seconds';
+  else if(s===0) words=m+' minute'+(m===1?'':'s');
+  else words=m+' minute'+(m===1?'':'s')+' '+s+' seconds';
+  try{ var u=new SpeechSynthesisUtterance(words); u.rate=1.0; u.volume=1.0; window.speechSynthesis.speak(u); }catch(e){}
+}
+function maybeSpeakElapsed(){
+  if(!S.codeStart || (S.phase!=='cpr' && S.phase!=='resp')) return;
+  var min = Math.floor((Date.now()-S.codeStart)/60000);
+  if(min>0 && min!==S.lastSpokenMin){ S.lastSpokenMin=min; sayElapsed(min*60); }
 }
 
 /* ---- PHI GUARD -------------------------------------------------------------
@@ -850,6 +870,7 @@ function paint(){
   $('clock').textContent = clockNow();
   $('rundot').style.display = (running || S.phase==='resp') ? '' : 'none';
   paintCaseClock();
+  maybeSpeakElapsed();
   $('statusword').textContent = S.phase==='idle' ? 'READY'
     : S.phase==='rosc' ? 'ROSC'
     : S.phase==='resp' ? 'RESCUE BREATHING' : 'CODE RUNNING';
@@ -1063,7 +1084,7 @@ function doReset(){
         override:false, pedsDismissed:false, events:[], open:null, met:false,
         resetArm:false, roscAt:null, rcOpen:false, rcOrg:false, showCustom:false,
         rhythm:null, breaths:0, lastBeatAt:null, pulseFrom:null,
-        respSpont:false, ventMuted:false };
+        respSpont:false, ventMuted:false, lastSpokenMin:0 };
   $('wIn').value=''; $('aIn').value=''; $('customin').value=''; $('customin2').value='';
   SS.touchActive();
   paint();

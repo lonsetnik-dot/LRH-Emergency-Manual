@@ -61,11 +61,13 @@ catch(e){ document.body.dataset.theme='dark'; }
     <button class="ghost" id="resetbtn" type="button">RESET</button>
   </div>
 
-  <div class="card" id="scopebar" style="margin-top:12px;padding:11px 12px;border-color:var(--amber);font-size:13.5px;line-height:1.45">
-    <b>The head is out and the shoulders will not come.</b> The clock on this screen is the
-    <b>head-to-body interval</b> — the number that matters clinically and the one that gets reconstructed
-    wrongly afterwards. Work the maneuvers <b>in order</b>. When the baby is out, go to
-    <a href="../neonatal/?from=home" style="color:var(--blue)">neonatal resuscitation</a> and stamp the time of birth.
+  <!-- Compressed to one line so it doesn't stack with the review banner below
+       it into a wall of prose ahead of the START button — the full original
+       wording lives on as the SCOPE accordion entry at the bottom, a genuine
+       footnote rather than a deletion. -->
+  <div class="card" id="scopebar" style="margin-top:12px;padding:9px 12px;border-color:var(--amber);font-size:12.5px;line-height:1.45">
+    <b>Head out, shoulders won't come.</b> Clock = <b>head-to-body interval</b>. Work maneuvers <b>in order</b>.
+    Baby out → <a href="../neonatal/?from=home" style="color:var(--blue)">neonatal resuscitation</a>, stamp time of birth.
   </div>
 
   <div class="rev" id="revbanner"></div>
@@ -205,6 +207,19 @@ function since(){ return S.t0 ? (Date.now()-S.t0)/1000 : 0; }
 function clk(){ return S.t0 ? fmt(since()) : '0:00'; }
 function log(l){ S.events.unshift({t:clk(), label:l}); }
 
+/* ---- Verbal time announcements — Web Speech API, synthesised, no audio
+   files (rule 1). Speaks elapsed time only, on the same 30-second mark the
+   card already asks a human to call out loud. Silently does nothing where
+   speechSynthesis isn't available — feature-detected, not assumed. */
+function sayElapsed(totalSec){
+  if(!window.speechSynthesis) return;
+  var m=Math.floor(totalSec/60), s=totalSec%60, words;
+  if(m===0) words=s+' seconds';
+  else if(s===0) words=m+' minute'+(m===1?'':'s');
+  else words=m+' minute'+(m===1?'':'s')+' '+s+' seconds';
+  try{ var u=new SpeechSynthesisUtterance(words); u.rate=1.0; u.volume=1.0; window.speechSynthesis.speak(u); }catch(e){}
+}
+
 /* ---- Shared case clock (CASE-STATE.md's lrh-case-startms) ------------------
    Additive only — the head-to-body interval above is still the clinical
    number, and it does not restart on a second run of the ladder (verified by
@@ -278,6 +293,11 @@ function hbiBox(){
 
 /* ===== reference ========================================================= */
 var ACC=[
+  { id:'scope', t:'SCOPE — FULL DETAIL', b:function(){
+      return '<p><b>The head is out and the shoulders will not come.</b> The clock on this screen is the '+
+        '<b>head-to-body interval</b> — the number that matters clinically and the one that gets reconstructed '+
+        'wrongly afterwards.</p><p>Work the maneuvers <b>in order</b>. When the baby is out, go to '+
+        '<a href="../neonatal/?from=home" style="color:var(--blue)">neonatal resuscitation</a> and stamp the time of birth.</p>'; } },
   { id:'ladderref', t:'HELPERR — THE FULL LADDER', b:function(){
       return SITE.ladder.map(function(r){
         return '<p><b>'+r.k+' — '+r.n+'</b><br>'+esc(r.short)+'</p>';
@@ -346,9 +366,12 @@ function paint(){
     $('phasebox').innerHTML = phaseBox();
     $('ladder').innerHTML = ladderBox();
     $('customrow').style.display = S.showCustom ? 'flex' : 'none';
-    /* The 30-second call, logged so the record shows it happened. */
+    /* The 30-second call, logged so the record shows it happened, and now
+       spoken so it happens even if the room is too loud/busy to remember
+       to say it — the instruction below still says "call it out" for when
+       speech synthesis isn't available. */
     var blk = Math.floor(since()/SITE.callEverySec);
-    if(blk > S.saidCall){ S.saidCall = blk; log('Elapsed '+clk()+' called out'); }
+    if(blk > S.saidCall){ S.saidCall = blk; log('Elapsed '+clk()+' called out'); sayElapsed(blk*SITE.callEverySec); }
   }
   if(S.phase==='out'){
     $('outat').textContent = S.outAt || clk();

@@ -64,11 +64,13 @@ catch(e){ document.body.dataset.theme='dark'; }
     <button class="ghost" id="resetbtn" type="button">RESET</button>
   </div>
 
-  <div class="card" id="scopebar" style="margin-top:12px;padding:11px 12px;border-color:var(--amber);font-size:13.5px;line-height:1.45">
-    <b>This is the mother after delivery.</b> Escalate on the <b>trend</b> — loss climbing while pressure falls —
-    not on a single number. If the newborn also needs help that is
-    <a href="../neonatal/?from=home" style="color:var(--blue)">neonatal resuscitation</a>, and it needs a
-    <b>different person</b>: say out loud who is staying with her.
+  <!-- Compressed to one line so it doesn't stack with the review banner below
+       it into a wall of prose ahead of the START button — the full original
+       wording lives on as the SCOPE accordion entry at the bottom, a genuine
+       footnote rather than a deletion. -->
+  <div class="card" id="scopebar" style="margin-top:12px;padding:9px 12px;border-color:var(--amber);font-size:12.5px;line-height:1.45">
+    <b>Mother after delivery</b> — escalate on the <b>trend</b>, not a single number. Newborn also needs help?
+    <a href="../neonatal/?from=home" style="color:var(--blue)">Neonatal resuscitation</a> — say out loud who is staying with her.
   </div>
 
   <div class="rev" id="revbanner"></div>
@@ -214,6 +216,20 @@ function mins(){ return since()/60; }
 function clk(){ return S.t0 ? fmt(since()) : '0:00'; }
 function log(l){ S.events.unshift({t:clk(), label:l}); }
 
+/* ---- Verbal time announcements — Web Speech API, synthesised, no audio
+   files (rule 1). Speaks elapsed time only, once a minute — this screen has
+   no existing per-30-second cadence the way dystocia/neonatal do, so a plain
+   minute mark is the natural one (the escalation bands are minute-scale too).
+   Silently does nothing where speechSynthesis isn't available. */
+function sayElapsed(totalSec){
+  if(!window.speechSynthesis) return;
+  var m=Math.floor(totalSec/60), s=totalSec%60, words;
+  if(m===0) words=s+' seconds';
+  else if(s===0) words=m+' minute'+(m===1?'':'s');
+  else words=m+' minute'+(m===1?'':'s')+' '+s+' seconds';
+  try{ var u=new SpeechSynthesisUtterance(words); u.rate=1.0; u.volume=1.0; window.speechSynthesis.speak(u); }catch(e){}
+}
+
 /* ---- Shared case clock (CASE-STATE.md's lrh-case-startms) ------------------
    Additive only — the clock above (time since recognition) still drives every
    escalation band on this screen. This only lets the header ALSO show how
@@ -337,6 +353,11 @@ function checkEbl(){
 
 /* ===== reference ========================================================= */
 var ACC=[
+  { id:'scope', t:'SCOPE — FULL DETAIL', b:function(){
+      return '<p><b>This is the mother after delivery.</b> Escalate on the <b>trend</b> — loss climbing while pressure falls — '+
+        'not on a single number.</p><p>If the newborn also needs help that is '+
+        '<a href="../neonatal/?from=home" style="color:var(--blue)">neonatal resuscitation</a>, and it needs a '+
+        '<b>different person</b>: say out loud who is staying with her.</p>'; } },
   { id:'flags', t:'CONTRAINDICATIONS — ASK ONCE, NOW', b:function(){
       var h='<p>Answered up front so the screen can rule a drug out for you, rather than you '+
         'recalling it at 1.5 litres.</p><div class="tog">';
@@ -417,6 +438,8 @@ function paint(){
     $('addrow').innerHTML = addRow();
     $('phasebox').innerHTML = phaseBox();
     $('customrow').style.display = S.showCustom ? 'flex' : 'none';
+    var blk = Math.floor(mins());
+    if(blk > S.lastCall){ S.lastCall = blk; sayElapsed(blk*60); }
   }
   if(S.phase==='done'){
     $('doneat').textContent = S.doneAt || clk();

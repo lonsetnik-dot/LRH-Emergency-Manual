@@ -60,14 +60,17 @@ catch(e){ document.body.dataset.theme='dark'; }
     <button class="ghost" id="resetbtn" type="button">RESET</button>
   </div>
 
-  <!-- The routing sentence. A newborn at delivery is not a small child, and the
-       two pathways give different epinephrine doses — this is the same guard the
-       weight-routing audit put on /arrest/ and /peds/. -->
-  <div class="card" id="scopebar" style="margin-top:12px;padding:11px 12px;border-color:var(--amber);font-size:13.5px;line-height:1.45">
-    <b>This is the newborn at delivery.</b> Ventilation is the treatment, and the heart rate is the decision.
-    If this is an infant <b>beyond the newborn period</b> — presenting to the department rather than being born in it —
-    that is <a href="../peds/?from=home" style="color:var(--blue)">pediatric resuscitation</a>, not this screen;
-    the doses differ. For the mother, go to <a href="../ob-neonatal/?from=home" style="color:var(--blue)">OB &amp; Neonatal</a>.
+  <!-- The routing sentence, compressed to one line so it doesn't stack with the
+       review banner below it into a wall of prose ahead of the START button —
+       the full original wording (same facts, same links) lives on as the SCOPE
+       accordion entry in the reference section at the bottom, a genuine
+       footnote rather than a deletion. A newborn at delivery is not a small
+       child, and the two pathways give different epinephrine doses — this is
+       the same guard the weight-routing audit put on /arrest/ and /peds/. -->
+  <div class="card" id="scopebar" style="margin-top:12px;padding:9px 12px;border-color:var(--amber);font-size:12.5px;line-height:1.45">
+    <b>Newborn at delivery</b> — ventilation is the treatment. Older infant?
+    <a href="../peds/?from=home" style="color:var(--blue)">Pediatric resuscitation</a> — doses differ.
+    For the mother: <a href="../ob-neonatal/?from=home" style="color:var(--blue)">OB &amp; Neonatal</a>.
   </div>
 
   <div class="rev" id="revbanner"></div>
@@ -446,13 +449,31 @@ function startPacer(){
   }
 }
 
+/* ---- Verbal time announcements — Web Speech API, synthesised, no audio
+   files (rule 1). Speaks elapsed time only, on the same 30-second mark the
+   chime already lands on, so the room hears the number as well as the tone
+   without anyone splitting attention to read the clock. Silently does
+   nothing where speechSynthesis isn't available — feature-detected, not
+   assumed. Follows the same SOUND ON/OFF control as the rest of the pacer. */
+function sayElapsed(totalSec){
+  if(!window.speechSynthesis) return;
+  var m=Math.floor(totalSec/60), s=totalSec%60, words;
+  if(m===0) words=s+' seconds';
+  else if(s===0) words=m+' minute'+(m===1?'':'s');
+  else words=m+' minute'+(m===1?'':'s')+' '+s+' seconds';
+  try{ var u=new SpeechSynthesisUtterance(words); u.rate=1.0; u.volume=1.0; window.speechSynthesis.speak(u); }catch(e){}
+}
+
 /* The 30-second chime is measured off the birth clock, not off the pacer, so it
    lands on the same half-minutes the reassessment cycles do however many times
    the pacer has been restarted. */
 function maybeChime(){
   if(!S.birth) return;
   var block = Math.floor(since() / SITE.pacer.chimeEverySec);
-  if(block > 0 && block !== lastChime){ lastChime = block; chime(); }
+  if(block > 0 && block !== lastChime){
+    lastChime = block; chime();
+    if(sound) sayElapsed(block*SITE.pacer.chimeEverySec);
+  }
 }
 
 function soundOn(on){
@@ -737,6 +758,11 @@ function figAirway(){
 
 /* ===== reference ========================================================= */
 var ACC=[
+  { id:'scope', t:'SCOPE — FULL DETAIL', b:function(){
+      return '<p><b>This is the newborn at delivery.</b> Ventilation is the treatment, and the heart rate is the decision.</p>'+
+        '<p>If this is an infant <b>beyond the newborn period</b> — presenting to the department rather than being born in it — '+
+        'that is <a href="../peds/?from=home" style="color:var(--blue)">pediatric resuscitation</a>, not this screen; the doses differ. '+
+        'For the mother, go to <a href="../ob-neonatal/?from=home" style="color:var(--blue)">OB &amp; Neonatal</a>.</p>'; } },
   { id:'mrsopa', t:'NO CHEST RISE — MR SOPA', b:function(){
       return figMrSopa()+
         '<p style="margin-top:10px">Reassess the heart rate after '+SITE.cycle.reassessSec+
@@ -1029,6 +1055,11 @@ document.addEventListener('click', function(e){
   if(id==='startbtn'){
     S.phase='live'; S.birth=Date.now(); S.step='initial';
     CS.markCaseStarted();
+    /* Sound on by default (issue: /arrest/'s compression tone already starts
+       this way — an opt-out MUTE, not an opt-in SOUND ON). This tap is itself
+       the user gesture browsers require before audio can start, so there is
+       no reason to make someone find and tap a second button afterward. */
+    soundOn(true);
     log('<b>Time of birth</b> — clock started');
     paint(); return;
   }
