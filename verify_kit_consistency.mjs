@@ -85,6 +85,20 @@ const KITS = [
     ],
   },
   {
+    /* The nursing half of the same procedure, and its own physical bag. Asserted
+       separately because a provider who reaches into the insertion kit for a
+       dressing will not find one — the two bags share a shelf, not contents. */
+    name: 'Chest Tube Dressing Kit (nursing)',
+    location: /ROOM 7|Room 7/i,
+    items: ['Large Op-Site 6x8', '4x4 drain sponge', '2x2 gauze',
+            'Xeroform (or petroleum) dressing 5x9', 'Safety pin', '3 inch tape',
+            'Chest tube clamp', 'Chest tube troubleshooting resource'],
+    artifacts: [
+      { file: 'procedures/index.html', role: 'interactive card' },
+      { file: 'inventory.js',          role: 'inventory catalog' },
+    ],
+  },
+  {
     // Rebuilt 2026-08-13 from the kit assembled for providers. The poster is asserted here too:
     // it now carries a second sheet that IS the check card taped beside the bag, so a contents
     // change that missed it would put a wrong list on the wall next to a right list in the app.
