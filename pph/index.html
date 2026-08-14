@@ -196,7 +196,8 @@ var SITE = {
     cart:"OB / Neonatal Cart · Postpartum Hemorrhage drawer",
     call:"Call OB STAT",
     mtp:"the massive transfusion protocol — say it, do not dial",
-    jada:"Balloon tamponade (Bakri, or the JADA System)"
+    jada:"Balloon tamponade (Bakri, or the JADA System)",
+    teleNicu:"Activate tele-NICU"
   }
 };
 try{ window.SITE = SITE; }catch(e){}
@@ -234,6 +235,7 @@ function phaseBox(){
     h+='<div style="font-size:22px;font-weight:800;margin-top:4px">Massage · call · access</div>'+
        '<div style="margin-top:8px">'+
        row('TEAM','Say it out loud: “Postpartum hemorrhage.” <b>'+esc(SITE.local.call)+'.</b>')+
+       row('TEAM','<b>'+esc(SITE.local.teleNicu)+'</b> if the newborn needs support.')+
        row('PROVIDER','<b>Bimanual fundal massage</b> — start it now, it costs nothing.')+
        row('PROVIDER','Sweep clots from the vagina and cervix — the uterus cannot clamp down over retained clot.')+
        row('RN','Foley catheter.')+

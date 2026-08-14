@@ -166,7 +166,7 @@ ck('4. the estimate is logged AS an estimate', /ESTIMATED/.test(await txt('.accb
 await fresh();
 await pg.fill('#wIn', '2'); await pg.waitForTimeout(300);
 ck('4b. under 3 kg shows the NRP banner', await pg.locator('#nrpbanner').isVisible(), true);
-ck('4b. the banner links to the NRP card', /ob-neonatal\/\?from=arrest#c03/.test(await pg.getAttribute('#nrpbanner a', 'href')), true);
+ck('4b. the banner links to the NRP engine', /neonatal\/\?from=arrest/.test(await pg.getAttribute('#nrpbanner a', 'href')), true);
 ck('4b. under 3 kg claims no Broselow drawer', await pg.locator('#brosechip').isVisible(), false);
 await pg.click('#dismissnrp'); await pg.waitForTimeout(250);
 ck('4b. dismiss hides the banner but keeps PALS mode', await pg.locator('#nrpbanner').isVisible(), false);

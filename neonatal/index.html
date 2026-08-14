@@ -306,7 +306,8 @@ var SITE = {
     cart:"OB / Neonatal Cart · Airway / Breathing drawer",
     uvcCart:"OB / Neonatal Cart · Circulation drawer",
     warmer:"radiant warmer",
-    call:"call OB and the neonatal team"
+    call:"call OB and the neonatal team",
+    teleNicu:"Activate tele-NICU"
   }
 };
 /* Exposed for the verify suite and so a champion can read the in-effect values
@@ -824,7 +825,7 @@ function paint(){
     'birth</b>, and every reassessment, Apgar prompt and SpO₂ target on this screen is measured from it.';
   $('preinduce').innerHTML =
     'Turn the '+esc(SITE.local.warmer)+' on — warm-up takes real time. Name who takes the newborn <b>before</b> '+
-    'the birth. '+esc(SITE.local.call)+'. Kit lives in the '+esc(SITE.local.cart)+'.';
+    'the birth. '+esc(SITE.local.teleNicu)+'. '+esc(SITE.local.call)+'. Kit lives in the '+esc(SITE.local.cart)+'.';
 
   $('idle').style.display = S.phase==='idle' ? '' : 'none';
   $('live').style.display = live ? '' : 'none';

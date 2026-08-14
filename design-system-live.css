@@ -44,6 +44,16 @@ body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-web
 button,input{font-family:inherit}
 button{-webkit-appearance:none;appearance:none;touch-action:manipulation}
 .wrap{max-width:680px;margin:0 auto;padding:0 14px 40px}
+/* iPad (and other tablets, portrait ~768px through landscape ~1024px+): the
+   680px column left ~150-340px of dead margin on each side and the header's
+   ghost buttons were sized for a thumb on a phone, not a finger on a mounted
+   iPad. Widening the column stops text lines from feeling lost on a bigger
+   screen; the touch-target bump is the 44px Apple HIG minimum for anything
+   tapped at arm's length off a cart mount. */
+@media (min-width:768px){
+  .wrap{max-width:760px}
+  .ghost{min-height:44px}
+}
 .mono{font-family:var(--mono)}
 .hdr{position:sticky;top:0;z-index:30;background:var(--bg);padding:12px 0 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
 .plabel{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--accent)}

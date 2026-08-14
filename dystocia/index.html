@@ -190,7 +190,7 @@ var SITE = {
   never:"NO FUNDAL PRESSURE · NO PULLING",
   neverWhy:"Fundal pressure impacts the shoulder further and ruptures uteri.",
 
-  local:{ cart:"OB / Neonatal Cart · Vaginal Delivery drawer" }
+  local:{ cart:"OB / Neonatal Cart · Vaginal Delivery drawer", teleNicu:"Activate tele-NICU" }
 };
 try{ window.SITE = SITE; }catch(e){}
 
@@ -313,7 +313,7 @@ function paint(){
   $('prestart').innerHTML =
     'Announce it as you tap — naming it out loud is what starts everyone else moving. The clock is the '+
     '<b>head-to-body interval</b>, and it is the number that gets reconstructed wrongly afterwards. '+
-    'Bed flat, foot of the bed off. Kit lives in the '+esc(SITE.local.cart)+'.';
+    'Bed flat, foot of the bed off. '+esc(SITE.local.teleNicu)+'. Kit lives in the '+esc(SITE.local.cart)+'.';
 
   $('idle').style.display = S.phase==='idle' ? '' : 'none';
   $('live').style.display = live ? '' : 'none';
