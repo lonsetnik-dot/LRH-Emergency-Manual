@@ -136,6 +136,22 @@
 </head>
 <body>
 <script>
+/* Cards 03 (neonatal resuscitation), 06 (PPH) and 07 (shoulder dystocia) were
+   retired in favor of the dedicated live engines — this card content no
+   longer exists on this page, so a fresh load / deep-link / QR code / old
+   printed label that arrives on one of these hashes is sent straight to the
+   engine instead of landing on a blank scroll target. from=obneonatal so
+   the engine's own back-link context is clear. In-session hashchange (an
+   internal link on this page, not a fresh load) is handled by a matching
+   listener further down. */
+try{
+  var _obhh=location.hash||'';
+  if(_obhh==='#c03'){ location.replace('../neonatal/?from=obneonatal'); }
+  else if(_obhh==='#c06'){ location.replace('../pph/?from=obneonatal'); }
+  else if(_obhh==='#c07'){ location.replace('../dystocia/?from=obneonatal'); }
+}catch(e){}
+</script>
+<script>
 try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
 catch(e){ document.body.dataset.theme='dark'; }
 </script>
@@ -280,21 +296,21 @@ catch(e){ document.body.dataset.theme='dark'; }
         <div class="lrh-group-hd"><span class="dot" style="background:var(--gray)"></span><span class="label">DELIVERY</span><span class="rule"></span></div>
         <div class="lrh-row-grid">
           <a href="#c02" data-k="labor birth precipitous apgar nuchal cord crowning" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">02</span><span class="t">Imminent normal delivery</span></a>
-          <a href="#c07" data-k="shoulder dystocia helperr mcroberts suprapubic pressure maneuvers" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">07</span><span class="t">Shoulder dystocia</span></a>
+          <a href="../dystocia/?from=obneonatal" data-k="shoulder dystocia helperr mcroberts suprapubic pressure maneuvers" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">07</span><span class="t">Shoulder dystocia — live engine</span></a>
           <a href="#c08" data-k="breech buttocks footling frank complete" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">08</span><span class="t">Breech delivery</span></a>
           <a href="#c09" data-k="cord prolapse presenting" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">09</span><span class="t">Umbilical cord prolapse</span></a>
         </div>
 
         <div class="lrh-group-hd"><span class="dot" style="background:var(--teal)"></span><span class="label">NEWBORN</span><span class="rule"></span></div>
         <div class="lrh-row-grid">
-          <a href="#c03" data-k="nrp newborn resus ppv chest compressions heart rate metronome apgar" class="lrh-row" style="--cc:var(--teal)"><span class="n lrh-mono">03</span><span class="t">Neonatal resuscitation</span></a>
+          <a href="../neonatal/?from=obneonatal" data-k="nrp newborn resus ppv chest compressions heart rate metronome apgar" class="lrh-row" style="--cc:var(--teal)"><span class="n lrh-mono">03</span><span class="t">Neonatal resuscitation — live engine</span></a>
           <a href="#c04" data-k="uvc umbilical vein line venous access emergency" class="lrh-row" style="--cc:var(--teal)"><span class="n lrh-mono">04</span><span class="t">Umbilical vein catheterization</span></a>
         </div>
 
         <div class="lrh-group-hd"><span class="dot" style="background:var(--red)"></span><span class="label">MATERNAL EMERGENCY</span><span class="rule"></span></div>
         <div class="lrh-row-grid">
           <a href="#c05" data-k="cesarean c-section section operative" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">05</span><span class="t">ED C-Section</span></a>
-          <a href="#c06" data-k="pph bleeding hemorrhage uterotonics oxytocin tranexamic txa uterine massage atony" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">06</span><span class="t">Postpartum hemorrhage</span></a>
+          <a href="../pph/?from=obneonatal" data-k="pph bleeding hemorrhage uterotonics oxytocin tranexamic txa uterine massage atony" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">06</span><span class="t">Postpartum hemorrhage — live engine</span></a>
           <a href="#c10" data-k="hysterotomy perimortem c-section cesarean maternal arrest fundus umbilicus procedures" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">10</span><span class="t">Resuscitative hysterotomy</span></a>
           <a href="#c11" data-k="eclampsia preeclampsia severe hypertension pregnancy seizure magnesium sulfate mag labetalol hydralazine nifedipine postpartum hellp toxemia" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">11</span><span class="t">Eclampsia / severe preeclampsia</span></a>
         </div>
@@ -377,7 +393,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         </li>
         <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="02-5-0" class="t-ck"><span>Gown, gloves, eye protection. Mother semi-recumbent, buttocks at the edge of the bed, legs supported.</span></label></li>
         <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="02-5-1" class="t-ck"><span><b>Let the head deliver slowly</b> between contractions — one hand on the perineum, the other controlling the speed of the head. Coach her to pant, not push.</span></label></li>
-        <li style="padding:2px 0 10px;"><a href="#c07" style="display:block; padding:9px 11px; background:var(--card2); border:2px solid var(--gray); text-decoration:none; color:var(--ink);"><span style="display:block; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.07em; color:var(--ink);">SHOULDER DYSTOCIA →</span><span style="display:block; margin-top:3px; font-size:12.5px; line-height:1.2;">Head delivers then retracts (turtle sign)</span></a></li>
+        <li style="padding:2px 0 10px;"><a href="../dystocia/?from=obneonatal" style="display:block; padding:9px 11px; background:var(--card2); border:2px solid var(--gray); text-decoration:none; color:var(--ink);"><span style="display:block; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.07em; color:var(--ink);">SHOULDER DYSTOCIA →</span><span style="display:block; margin-top:3px; font-size:12.5px; line-height:1.2;">Head delivers then retracts (turtle sign)</span></a></li>
         <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="02-5-2" class="t-ck"><span>Never pull. The mother delivers the baby; you guide it.</span></label></li>
         <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="02-5-3" class="t-ck"><span>As the head restitutes and turns, <b>sweep one finger around the neck</b> to feel for a nuchal cord.</span></label></li>
         <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="02-5-4" class="t-ck"><span>Wipe the face; suction only if there is obstruction.</span></label></li>
@@ -423,7 +439,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <div style="width:0; height:0; border-left:8px solid transparent; border-right:8px solid transparent; border-top:10px solid var(--gray);"></div>
   <div style="width:100%; display:grid; grid-template-columns:1fr 1fr; gap:8px;">
     <div style="border:2px solid var(--teal); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--teal);">ALL 4 YES</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Skin-to-skin, dry hard, remove wet towels, hat.</div></div>
-    <a href="#c03" style="border:2px solid var(--sev-crit); background:var(--card2); padding:9px 9px; text-decoration:none; display:block; cursor:pointer;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--red);">ANY ONE NO ›</div><div style="margin-top:4px; font-size:13px; line-height:1.25; color:var(--ink);">Clamp and cut now → warmer → start NRP.</div></a>
+    <a href="../neonatal/?from=obneonatal" style="border:2px solid var(--sev-crit); background:var(--card2); padding:9px 9px; text-decoration:none; display:block; cursor:pointer;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--red);">ANY ONE NO ›</div><div style="margin-top:4px; font-size:13px; line-height:1.25; color:var(--ink);">Clamp and cut now → warmer → start NRP.</div></a>
   </div></div></div>
         <figcaption style="padding:10px 12px; font-size:14px; line-height:1.35; color:var(--ink); border-top:1px solid var(--line);">Say the answers aloud so the recorder hears them. Tap <b>ANY ONE NO</b> to go to neonatal resuscitation; the fourth YES moves to delayed cord clamping below.</figcaption>
       </figure></div>
@@ -502,195 +518,6 @@ catch(e){ document.body.dataset.theme='dark'; }
         </div>
       </div>
     </details>
-  </div>
-
-  <div style="margin:14px 18px 0;"><a href="#top" style="display:flex; align-items:center; justify-content:center; min-height:46px; border:1px solid #d8d3c7; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.12em; color:var(--ink2); text-decoration:none;">↑ INDEX</a></div>
-</article>
-
-<article id="c03" data-audience="any" style="background:var(--card); border-top:6px solid var(--teal); padding:0 0 22px;">
-  <header style="padding:18px 18px 14px;">
-    <div style="display:flex; align-items:center; gap:10px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.08em; color:var(--teal);">
-      <span>03</span>
-      <span style="flex:1; text-align:right; color:var(--ink2);">LMA BY WEIGHT · CALL THE CLOCK EVERY 30 S</span>
-    </div>
-    <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:var(--ink);">Neonatal resuscitation</h2>
-      <div style="margin-top:10px;padding:11px 12px;border:2px solid var(--sev-info);background:var(--card2);border-radius:12px;font-size:13.5px;line-height:1.45"><b>There is now a live engine for this.</b> <a href="../neonatal/?from=home" style="color:var(--blue);font-weight:700">Open the neonatal resuscitation engine &rsaquo;</a> — it stamps the time of birth, runs the 30-second cycles off that clock, prompts the Apgar marks, and shows the SpO&#8322; target for the minute you are actually in. This card stays as the reference view, and both are built from the same numbers.</div>
-    <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:11px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:var(--ink2);">CART</span><a href="#d1" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:var(--card2); border:1px solid var(--teal); text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:var(--teal); flex:none;"><span style="display:block; width:9.9px; height:9.9px; border:2.16px solid var(--on-sev); border-radius:50%; box-sizing:border-box;"></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:var(--teal);">1 · AIRWAY / BREATHING</span></a><a href="#d2" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:var(--card2); border:1px solid var(--blue); text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:var(--blue); flex:none;"><span style="display:block; width:8.1px; height:8.1px; background:var(--card); transform:rotate(45deg);"></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:var(--blue);">2 · CIRCULATION</span></a></div>
-  </header>
-  <div id="pcclock" style="position:sticky; top:calc(var(--sticky-h,54px) + env(safe-area-inset-top,0px)); z-index:4; padding:5px 18px 6px; background:var(--card2); border-top:2px solid var(--gray); border-bottom:2px solid var(--gray);">
-    <div style="display:grid; grid-template-columns:1fr auto; gap:10px; align-items:center;">
-      <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:34px; font-weight:700; line-height:1; color:var(--ink);" id="pctime">0:00</div>
-      <div id="pccue" style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11px; font-weight:700; letter-spacing:0.08em; color:var(--ink2); text-align:right; line-height:1.3;">REASSESS<br>EVERY 30 S</div>
-    </div>
-    <div style="margin-top:8px; display:flex; gap:6px;">
-      <button type="button" id="pcrun" style="flex:2; min-height:46px; background:var(--teal); color:var(--on-sev); border:2px solid var(--teal); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">START</button>
-      <button type="button" id="pcreset" style="flex:1; min-height:46px; background:var(--card); color:var(--ink); border:2px solid var(--gray); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">UNDO</button>
-      <button type="button" id="pcmute" style="flex:1; min-height:46px; background:var(--card); color:var(--ink); border:2px solid var(--gray); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">SOUND ON</button>
-    </div>
-    <div data-loglane="03" style="margin-top:8px; display:flex; gap:6px; align-items:center; overflow-x:auto; -webkit-overflow-scrolling:touch; min-height:28px; scrollbar-width:none;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--ink); opacity:0.7; white-space:nowrap;">NOTHING LOGGED YET</span></div>
-  </div>
-
-  <!-- WS-audit: quick-entry so a team landing directly on this card (baby already
-       delivered elsewhere) isn't stuck reading "enter weight on card 02" with no
-       way to do it here. Synced live with card 02's #babyweight/#gaweeks via the
-       .wt-sync/.ga-sync classes — see the equipment/code-dose engine script. -->
-  <div style="margin:12px 18px 0; display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding:9px 12px; background:var(--card2); border:2px solid var(--gray);">
-    <div style="display:flex; align-items:center; gap:8px; flex:none;">
-      <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.06em; color:var(--ink); white-space:nowrap;">WEIGHT</span>
-      <input type="number" id="babyweight-c03" class="wt-sync" inputmode="decimal" step="0.1" min="0" placeholder="kg" style="width:78px; min-height:44px; padding:4px 8px; border:2px solid var(--gray); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px;">
-      <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; color:var(--ink2); white-space:nowrap;">kg or g</span>
-    </div>
-    <div style="display:flex; align-items:center; gap:8px; flex:none;">
-      <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.06em; color:var(--ink); white-space:nowrap;">OR WKS GESTATION</span>
-      <input type="number" id="gaweeks-c03" class="ga-sync" inputmode="numeric" step="1" min="20" max="44" placeholder="wk" style="width:64px; min-height:44px; padding:4px 8px; border:2px solid var(--gray); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px;">
-    </div>
-  </div>
-  <div class="eqpanel" style="margin:8px 18px 0;"></div>
-
-  <div style="margin:10px 18px 0; padding:9px 12px; background:var(--note-bg); border-left:4px solid var(--sev-caution); font-size:13px; line-height:1.35; color:var(--ink);"><b>Meconium + not vigorous:</b> start PPV now — do <b>not</b> delay for routine tracheal suction (suction only an obstructed airway).</div>
-  <div class="nca" style="padding:0 18px;">
-    <div style="padding:11px 14px; background:var(--card2); border-left:4px solid var(--sev-crit);">
-      <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.14em; color:var(--red);">NAME</div>
-      <div style="margin-top:4px;">“Newborn is not vigorous — starting resuscitation.”</div>
-    </div>
-    <div style="padding:11px 14px; background:var(--card2); border-left:4px solid var(--gray);">
-      <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.14em; color:var(--ink2);">CLAIM</div>
-      <div style="margin-top:4px;">Airway lead · compressions · meds · recorder — by name.</div>
-    </div>
-    <div style="padding:11px 14px; background:var(--card2); border-left:4px solid var(--gray);">
-      <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.14em; color:var(--ink2);">AIM</div>
-      <div style="margin-top:4px;">Chest rise, HR &gt;100, SpO₂ on target. Reassess every 30 s.</div>
-    </div>
-  </div>
-  <div class="steps" style="padding:14px 18px 0;">
-    <details open style="border:2px solid var(--sev-crit); align-self:start;">
-      <summary style="background:var(--sev-crit); color:var(--on-sev); padding:11px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><span>PACER — TIMER &amp; RHYTHM</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:400; opacity:0.8; text-align:right;">SOUND ON</span></summary>
-      <div style="padding:12px 14px 14px; display:flex; flex-direction:column; gap:11px;">
-        <div style="display:flex; gap:6px; flex-wrap:wrap;">
-          <button type="button" class="pcmode" data-m="p40" style="flex:1; min-width:74px; min-height:56px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; padding:6px 4px; background:var(--card); border:2px solid var(--line); color:var(--ink); font:inherit; cursor:pointer;"><span style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:14px; font-weight:700;">40</span><span style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10px; letter-spacing:0.06em; color:var(--ink2);">PPV / MIN</span></button><button type="button" class="pcmode" data-m="p50" style="flex:1; min-width:74px; min-height:56px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; padding:6px 4px; background:var(--card); border:2px solid var(--line); color:var(--ink); font:inherit; cursor:pointer;"><span style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:14px; font-weight:700;">50</span><span style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10px; letter-spacing:0.06em; color:var(--ink2);">PPV / MIN</span></button><button type="button" class="pcmode" data-m="p60" style="flex:1; min-width:74px; min-height:56px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; padding:6px 4px; background:var(--card); border:2px solid var(--line); color:var(--ink); font:inherit; cursor:pointer;"><span style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:14px; font-weight:700;">60</span><span style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10px; letter-spacing:0.06em; color:var(--ink2);">PPV / MIN</span></button><button type="button" class="pcmode" data-m="cpr" style="flex:1; min-width:74px; min-height:56px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; padding:6px 4px; background:var(--card); border:2px solid var(--line); color:var(--ink); font:inherit; cursor:pointer;"><span style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:14px; font-weight:700;">3:1</span><span style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10px; letter-spacing:0.06em; color:var(--ink2);">90 + 30</span></button>
-        </div>
-        <div id="pcbeats" style="display:flex; gap:8px; align-items:center; justify-content:center; min-height:44px; padding:8px; background:var(--card2); border:1px solid var(--line);"></div>
-        <div style="font-size:13px; line-height:1.3; color:var(--ink);">Low click = compression. Long tone = squeeze the bag. Double chime marks every 30 s — call the heart rate out loud.</div>
-        <div id="pchint" style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11px; letter-spacing:0.04em; color:var(--amber); line-height:1.35;">On iPhone the silent switch mutes web audio — flip it off before you start.</div>
-      </div>
-    </details>
-    <details open style="border:2px solid var(--gray); align-self:start;">
-      <summary style="background:var(--gray); color:var(--on-sev); padding:11px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><span>1 · INITIAL STEPS</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:400; opacity:0.8; text-align:right;">FIRST 30 S</span></summary>
-      <ul style="margin:0; padding:4px 14px 13px; list-style:none;">
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="03-0-5" data-log="TO WARMER · NRP" class="t-ck t-ck-crit"><span><b>Clamp &amp; cut the cord now</b> if not already — don't wait for pulsation. Baby to the radiant warmer.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="03-0-0" data-log="WARMER" class="t-ck"><span>Warm — radiant warmer, hat, plastic wrap if preterm (&lt;34 wk); fine any time if dates are unknown and the baby is small. Target 36.5–37.5 °C.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="03-0-1" class="t-ck"><span>Dry and stimulate. Remove wet linen.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="03-0-2" class="t-ck"><span>Position sniffing. Clear the airway only if obstructed.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="03-0-3" class="t-ck"><span>Pulse oximeter on the <span>right hand</span>; cardiac monitor if resuscitating.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="03-0-4" class="t-ck"><span>Assess breathing and heart rate at 30 s.</span></label></li>
-      </ul>
-    </details>
-    <details open style="border:2px solid var(--gray); align-self:start;">
-      <summary style="background:var(--gray); color:var(--on-sev); padding:11px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><span>2 · HEART RATE CHECK</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:400; opacity:0.8; text-align:right;">NEXT 30 S</span></summary>
-      <ul style="margin:0; padding:4px 14px 13px; list-style:none;">
-        <li style="padding:10px 0; border-top:1px solid var(--line);">
-          <div class="hrleft" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.06em; color:var(--amber); line-height:1.3;">CHECK THE HEART RATE — TAP THE BAND</div>
-          <div style="margin-top:8px; display:grid; grid-template-columns:repeat(3,1fr); gap:6px;"><button type="button" class="hrband" data-band="high" data-logevent="HR ≥100" data-logcard="03" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; min-height:58px; padding:6px 4px; background:var(--card); border:2px solid var(--teal); color:var(--teal); font:inherit; cursor:pointer;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px; font-weight:700; line-height:1;">≥100</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10px; letter-spacing:0.06em; line-height:1.1; text-align:center;">BREATHING?</span></button><button type="button" class="hrband" data-band="mid" data-logevent="HR 60–100" data-logcard="03" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; min-height:58px; padding:6px 4px; background:var(--card); border:2px solid var(--gray); color:var(--ink); font:inherit; cursor:pointer;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px; font-weight:700; line-height:1;">60–100</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10px; letter-spacing:0.06em; line-height:1.1; text-align:center;">PPV 40–60</span></button><button type="button" class="hrband" data-band="low" data-logevent="HR &lt;60" data-logcard="03" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; min-height:58px; padding:6px 4px; background:var(--card); border:2px solid var(--sev-crit); color:var(--red); font:inherit; cursor:pointer;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px; font-weight:700; line-height:1;">&lt;60</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10px; letter-spacing:0.06em; line-height:1.1; text-align:center;">3:1 CPR</span></button></div>
-        </li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="hrcycle" data-k="03-1-0" class="t-ck"><span><span style="display:block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.04em; color:var(--ink); margin-bottom:3px;">≥100</span>Breathing well: routine care, skin-to-skin, keep monitoring.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="hrcycle" data-k="03-1-1" data-log="PPV START" class="t-ck"><span><span style="display:block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.04em; color:var(--ink); margin-bottom:3px;">&lt;100</span>Start <b>PPV, 40–60 breaths per minute</b> — room air at term, 21–30% if preterm. Confirm chest rise.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="hrcycle" data-k="03-1-2" data-log="MR SOPA" class="t-ck"><span><span style="display:block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.04em; color:var(--ink); margin-bottom:3px;">NO CHEST RISE — MR SOPA</span><b>Mask</b> adjust · <b>Reposition</b> head · <b>Suction</b> mouth and nose · <b>Open</b> the mouth · <b>Pressure</b> up · <b>Airway</b> alternative (LMA or ETT).</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="hrcycle" data-k="03-1-3" class="t-ck"><span>Reassess the heart rate after 30 s of chest-rising PPV — say the number out loud.</span></label></li>
-<li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="hrcycle" data-k="03-1-4" data-log="CPAP / O₂" class="t-ck"><span><span style="display:block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.04em; color:var(--ink); margin-bottom:3px;">≥100 BUT NOT COMFORTABLE</span>Labored breathing or persistent cyanosis: <b>CPAP 5 cm H₂O</b> or free-flow O₂, pulse ox on the right hand. Not routine care.</span></label></li>
-<li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="hrcycle" data-k="03-1-5" data-log="PPV FOR APNEA" class="t-ck"><span><span style="display:block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.04em; color:var(--ink); margin-bottom:3px;">ANY HEART RATE</span><b>Apnea or gasping — start PPV now</b>, even if the rate is above 100.</span></label></li>
-      </ul>
-    </details>
-    <details open style="border:2px solid var(--sev-crit); align-self:start;">
-      <summary style="background:var(--sev-crit); color:var(--on-sev); padding:11px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><span>3 · HR STILL <60</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:400; opacity:0.8; text-align:right;">1-MINUTE CYCLES</span></summary>
-      <ul style="margin:0; padding:4px 14px 13px; list-style:none;">
-        <li style="padding:10px 0; border-top:1px solid var(--line);">
-          <div class="hrleft" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.06em; color:var(--amber); line-height:1.3;">CHECK THE HEART RATE — TAP THE BAND</div>
-          <div style="margin-top:8px; display:grid; grid-template-columns:repeat(3,1fr); gap:6px;"><button type="button" class="hrband" data-band="high" data-logevent="HR ≥100" data-logcard="03" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; min-height:58px; padding:6px 4px; background:var(--card); border:2px solid var(--teal); color:var(--teal); font:inherit; cursor:pointer;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px; font-weight:700; line-height:1;">≥100</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10px; letter-spacing:0.06em; line-height:1.1; text-align:center;">BREATHING?</span></button><button type="button" class="hrband" data-band="mid" data-logevent="HR 60–100" data-logcard="03" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; min-height:58px; padding:6px 4px; background:var(--card); border:2px solid var(--gray); color:var(--ink); font:inherit; cursor:pointer;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px; font-weight:700; line-height:1;">60–100</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10px; letter-spacing:0.06em; line-height:1.1; text-align:center;">PPV 40–60</span></button><button type="button" class="hrband" data-band="low" data-logevent="HR &lt;60" data-logcard="03" style="display:flex; flex-direction:column; align-items:center; justify-content:center; gap:3px; min-height:58px; padding:6px 4px; background:var(--card); border:2px solid var(--sev-crit); color:var(--red); font:inherit; cursor:pointer;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px; font-weight:700; line-height:1;">&lt;60</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10px; letter-spacing:0.06em; line-height:1.1; text-align:center;">3:1 CPR</span></button></div>
-        </li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="hrcycle" data-k="03-2-0" data-log="AIRWAY" class="t-ck t-ck-crit"><span>Secure the airway (LMA or ETT), 100% O₂, and give <b>30 s of chest-rising PPV</b> — then start compressions and run 60-second cycles.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="hrcycle" data-k="03-2-1" data-log="COMPRESSIONS 3:1" class="t-ck t-ck-crit"><span><span style="display:block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.04em; color:var(--red); margin-bottom:3px;">3:1</span>90 compressions + 30 breaths per minute. Count “one-and-two-and-three-and-breathe.”</span></label></li>
-        <li style="padding:10px 0 4px; border-top:1px solid var(--line);"><figure style="margin:0; border:2px solid var(--sev-crit); background:var(--card);"><div style="background:var(--sev-crit); color:var(--on-sev); padding:8px 12px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.1em;">FIG 1 · TWO-THUMB ENCIRCLING — HAND PLACEMENT</div><div style="padding:12px; display:flex; justify-content:center; background:var(--card2);"><svg viewBox="0 0 240 138" style="width:100%; max-width:236px; height:auto; display:block;" xmlns="http://www.w3.org/2000/svg"><circle cx="120" cy="20" r="13" fill="#ffe6d2" stroke="#16324f" stroke-width="2"/><ellipse cx="120" cy="78" rx="46" ry="50" fill="#ffe6d2" stroke="#16324f" stroke-width="2"/><line x1="88" y1="66" x2="152" y2="66" stroke="#9b1c2e" stroke-width="1.5" stroke-dasharray="4 3"/><circle cx="105" cy="66" r="2.5" fill="#9b1c2e"/><circle cx="135" cy="66" r="2.5" fill="#9b1c2e"/><path d="M74 60 Q92 62 96 70" fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round"/><path d="M72 74 Q92 76 96 82" fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round"/><path d="M74 88 Q92 90 96 94" fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round"/><path d="M166 60 Q148 62 144 70" fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round"/><path d="M168 74 Q148 76 144 82" fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round"/><path d="M166 88 Q148 90 144 94" fill="none" stroke="#16324f" stroke-width="3" stroke-linecap="round"/><rect x="112" y="70" width="8" height="26" rx="4" fill="#16324f"/><rect x="120" y="70" width="8" height="26" rx="4" fill="#16324f"/><text x="120" y="122" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="9" font-weight="700" fill="#9b1c2e">LOWER ⅓ STERNUM</text></svg></div><figcaption style="padding:9px 12px; font-size:13px; line-height:1.35; color:var(--ink); border-top:1px solid #f0d3d8;">Both thumbs on the <b>lower third of the sternum</b> (just below the nipple line); fingers <b>encircle the torso</b> and support the back. Compress <b>⅓ of the chest depth</b>.</figcaption></figure></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="hrcycle" data-k="03-2-2" data-log="EPI" class="t-ck t-ck-crit"><span><span style="display:block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.04em; color:var(--red); margin-bottom:3px;">EPI · IV/UVC</span>0.02 mg/kg IV = 0.2 mL/kg of 0.1 mg/mL, via UVC (card 04). Repeat every 3–5 min.<span class="epimini" style="display:block; margin-top:5px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14px; font-weight:700; color:var(--red);"></span></span></label></li>
-        <!-- ETT epi is its own item with its own computed figure (weight-routing
-             audit): the calculated IV volume used to render as the last line of a
-             bullet whose nearest sentence was the ETT instruction — a 2.5–5x
-             larger dose that was never computed. -->
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="hrcycle" data-k="03-2-2b" data-log="EPI ETT" class="t-ck t-ck-crit"><span><span style="display:block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.04em; color:var(--red); margin-bottom:3px;">EPI · ETT (NO ACCESS YET)</span><b>Once</b>, while the UVC goes in: 0.05–0.1 mg/kg down the ETT = 0.5–1 mL/kg of 0.1 mg/mL — a larger volume than the IV dose above.<span class="epiettmini" style="display:block; margin-top:5px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14px; font-weight:700; color:var(--red);"></span></span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="hrcycle" data-k="03-2-3" data-log="NS BOLUS" class="t-ck t-ck-crit"><span>Blood loss or poor perfusion: <b>NS 10 mL/kg</b> over 5–10 min.<span class="nsmini" style="display:block; margin-top:5px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14px; font-weight:700; color:var(--red);"></span></span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="hrcycle" data-k="03-2-4" class="t-ck t-ck-crit"><span>At the end of every cycle: state the heart rate, SpO₂, and elapsed time aloud.</span></label></li>
-      </ul>
-    </details>
-    <details id="c03lma" style="border:2px solid var(--teal); align-self:start;">
-      <summary style="background:var(--teal); color:var(--on-sev); padding:11px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><span>WHICH LMA FITS?</span><span id="c03lmacue" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:400; opacity:0.85; text-align:right;">SIZE BY WEIGHT</span></summary>
-      <div style="padding:11px 14px 0; display:flex; align-items:center; gap:9px; flex-wrap:wrap; background:var(--card2);">
-        <a href="#d1" style="display:inline-flex; align-items:center; gap:6px; padding:3px 8px 3px 3px; background:var(--card2); border:1px solid var(--teal); text-decoration:none; flex:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; background:var(--teal);"><span style="display:block; width:9px; height:9px; border:2px solid var(--on-sev); border-radius:50%; box-sizing:border-box;"></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; font-weight:700; letter-spacing:0.06em; color:var(--teal);">DRAWER 1</span></a><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:var(--teal);">AIRWAY / BREATHING — TOP DRAWER</span>
-      </div>
-      <div style="padding:12px 14px; background:var(--card2);">
-        <svg viewBox="0 0 300 176" style="width:100%; max-width:290px; height:auto; display:block; margin:0 auto;" xmlns="http://www.w3.org/2000/svg">
-          
-  <ellipse cx="74" cy="108" rx="26" ry="34" fill="#e6f2f3" stroke="#0f7a86" stroke-width="2.5"/>
-  <ellipse cx="74" cy="108" rx="14" ry="20" fill="#fffefb" stroke="#0f7a86" stroke-width="1.5"/>
-  <rect x="66.5" y="34" width="15" height="48" rx="7.5" fill="#0f7a86" opacity="0.8"/>
-  <rect x="62.5" y="18" width="23" height="16" rx="3" fill="#0f7a86"/>
-          <text x="74" y="156" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="14" font-weight="700" fill="#0f7a86">LMA 0</text>
-          <text x="74" y="170" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="11.5" fill="#5a6a78">under 2 kg</text>
-          <line x1="150" y1="24" x2="150" y2="150" stroke="#c4cdd8" stroke-width="1.5"/>
-          
-  <ellipse cx="224" cy="104" rx="33" ry="42" fill="#e6f2f3" stroke="#0f7a86" stroke-width="2.5"/>
-  <ellipse cx="224" cy="104" rx="21" ry="28" fill="#fffefb" stroke="#0f7a86" stroke-width="1.5"/>
-  <rect x="215" y="26" width="18" height="44" rx="9" fill="#0f7a86" opacity="0.8"/>
-  <rect x="211" y="10" width="26" height="16" rx="3" fill="#0f7a86"/>
-          <text x="224" y="156" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="14" font-weight="700" fill="#0f7a86">LMA 0.5</text>
-          <text x="224" y="170" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="11.5" fill="#5a6a78">2 kg and over</text>
-        </svg>
-      </div>
-      <ul style="margin:0; padding:4px 14px 13px; list-style:none;">
-        <li style="padding:11px 0; border-top:1px solid var(--line); display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:baseline;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; color:var(--teal); white-space:nowrap;">LMA 0</span><span><span style="display:block; font-size:15px; font-weight:700;">Under 2 kg</span><span style="display:block; margin-top:2px; font-size:13.5px; color:var(--ink2);">ETT 2.5–3.0 · blade 00–0 · depth = weight in kg + 6 cm</span></span></li>
-        <li style="padding:11px 0; border-top:1px solid var(--line); display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:baseline;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; color:var(--teal); white-space:nowrap;">LMA 0.5</span><span><span style="display:block; font-size:15px; font-weight:700;">2 kg and over</span><span style="display:block; margin-top:2px; font-size:13.5px; color:var(--ink2);">ETT 3.5 (≥3 kg: 3.5–4.0) · blade 0–1 · depth = weight in kg + 6 cm</span></span></li>
-        <li style="padding:11px 0; border-top:1px solid var(--line); font-size:13.5px; line-height:1.3; color:var(--ink2);">Seat the cuff, confirm chest rise and ETCO₂. An LMA beats a failed intubation — reach for it early.</li>
-        <li style="padding:11px 0 2px; border-top:1px solid var(--line);"><button type="button" id="lmadone" data-logevent="LMA PLACED" data-logcard="03" style="width:100%; min-height:52px; background:var(--teal); color:var(--on-sev); border:2px solid var(--teal); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">LMA PLACED — LOG IT</button></li>
-      </ul>
-    </details>
-  </div>
-
-
-  <div class="figs" style="padding:14px 18px 0;">
-    <figure style="margin:0; border:2px solid var(--gray); background:var(--card); display:flex; flex-direction:column;">
-      <div style="background:var(--gray); color:var(--on-sev); padding:9px 12px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.12em;">FIG 2 · HEART RATE DECIDES THE NEXT MOVE</div>
-      <div style="flex:1; background:var(--card2); padding:16px 12px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:11px;"><div style="width:100%; max-width:340px; display:flex; flex-direction:column; align-items:center; gap:6px;"><div style="width:100%; display:grid; grid-template-columns:86px 1fr; border:2px solid var(--gray); background:var(--card);"><div style="background:var(--gray); color:var(--on-sev); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:15px; font-weight:700; display:flex; align-items:center; justify-content:center; text-align:center; padding:9px 4px; line-height:1.1;">≥100</div><div style="padding:9px 10px; font-size:13.5px; line-height:1.28;">Breathing well — routine care, skin-to-skin, keep monitoring.</div></div><div style="width:0; height:0; border-left:8px solid transparent; border-right:8px solid transparent; border-top:10px solid var(--gray);"></div><div style="width:100%; display:grid; grid-template-columns:86px 1fr; border:2px solid var(--sev-caution); background:var(--card);"><div style="background:var(--sev-caution); color:var(--on-sev); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:15px; font-weight:700; display:flex; align-items:center; justify-content:center; text-align:center; padding:9px 4px; line-height:1.1;">60–99</div><div style="padding:9px 10px; font-size:13.5px; line-height:1.28;"><b>PPV 40–60 / min.</b> No chest rise → MR SOPA. Reassess in 30 s.</div></div><div style="width:0; height:0; border-left:8px solid transparent; border-right:8px solid transparent; border-top:10px solid var(--gray);"></div><div style="width:100%; display:grid; grid-template-columns:86px 1fr; border:2px solid var(--sev-crit); background:var(--card);"><div style="background:var(--sev-crit); color:var(--on-sev); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:15px; font-weight:700; display:flex; align-items:center; justify-content:center; text-align:center; padding:9px 4px; line-height:1.1;">&lt;60</div><div style="padding:9px 10px; font-size:13.5px; line-height:1.28;"><b>Secure airway, 100% O₂, compressions 3:1.</b> Epi 0.02 mg/kg via UVC.</div></div></div></div>
-      <figcaption style="padding:10px 12px; font-size:14px; line-height:1.35; color:var(--ink); border-top:1px solid var(--line);">Recheck every 30 s and call the number out loud. Chest rise is the test that PPV is working.</figcaption>
-    </figure>
-    <figure style="margin:0; border:2px solid var(--teal); background:var(--card); display:flex; flex-direction:column;">
-      <div style="background:var(--teal); color:var(--on-sev); padding:9px 12px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.12em;">FIG 3 · TARGET PREDUCTAL SpO₂ — PROBE ON THE RIGHT HAND</div>
-      <div style="flex:1; background:var(--card2); padding:16px 12px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:11px;"><div style="width:100%; max-width:330px; display:flex; flex-direction:column; gap:5px;">
-<div style="display:grid; grid-template-columns:54px 1fr 70px; align-items:center; gap:8px; width:100%;">
-<div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; color:var(--ink); text-align:right;">1 MIN</div>
-<div style="position:relative; height:15px; background:var(--card2); border:1px solid var(--line);"><div style="position:absolute; top:0; bottom:0; left:20%; width:10%; background:var(--teal);"></div></div>
-<div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; font-weight:700; color:var(--teal);">60–65%</div></div><div style="display:grid; grid-template-columns:54px 1fr 70px; align-items:center; gap:8px; width:100%;">
-<div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; color:var(--ink); text-align:right;">2 MIN</div>
-<div style="position:relative; height:15px; background:var(--card2); border:1px solid var(--line);"><div style="position:absolute; top:0; bottom:0; left:30%; width:10%; background:var(--teal);"></div></div>
-<div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; font-weight:700; color:var(--teal);">65–70%</div></div><div style="display:grid; grid-template-columns:54px 1fr 70px; align-items:center; gap:8px; width:100%;">
-<div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; color:var(--ink); text-align:right;">3 MIN</div>
-<div style="position:relative; height:15px; background:var(--card2); border:1px solid var(--line);"><div style="position:absolute; top:0; bottom:0; left:40%; width:10%; background:var(--teal);"></div></div>
-<div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; font-weight:700; color:var(--teal);">70–75%</div></div><div style="display:grid; grid-template-columns:54px 1fr 70px; align-items:center; gap:8px; width:100%;">
-<div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; color:var(--ink); text-align:right;">4 MIN</div>
-<div style="position:relative; height:15px; background:var(--card2); border:1px solid var(--line);"><div style="position:absolute; top:0; bottom:0; left:50%; width:10%; background:var(--teal);"></div></div>
-<div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; font-weight:700; color:var(--teal);">75–80%</div></div><div style="display:grid; grid-template-columns:54px 1fr 70px; align-items:center; gap:8px; width:100%;">
-<div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; color:var(--ink); text-align:right;">5 MIN</div>
-<div style="position:relative; height:15px; background:var(--card2); border:1px solid var(--line);"><div style="position:absolute; top:0; bottom:0; left:60%; width:10%; background:var(--teal);"></div></div>
-<div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; font-weight:700; color:var(--teal);">80–85%</div></div><div style="display:grid; grid-template-columns:54px 1fr 70px; align-items:center; gap:8px; width:100%;">
-<div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; color:var(--ink); text-align:right;">10 MIN</div>
-<div style="position:relative; height:15px; background:var(--card2); border:1px solid var(--line);"><div style="position:absolute; top:0; bottom:0; left:70%; width:20%; background:var(--teal);"></div></div>
-<div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; font-weight:700; color:var(--teal);">85–95%</div></div>
-<div style="display:grid; grid-template-columns:54px 1fr 70px; gap:8px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10px; color:var(--ink2);"><span></span><span style="display:flex; justify-content:space-between;"><span>50%</span><span>75%</span><span>100%</span></span><span></span></div></div></div>
-      <figcaption style="padding:10px 12px; font-size:14px; line-height:1.35; color:var(--ink); border-top:1px solid var(--line);">A blue baby at 3 minutes with SpO₂ 72% is on target. Do not chase 100%.</figcaption>
-    </figure>
-    <figure style="margin:0; border:2px solid var(--sev-crit); background:var(--card); display:flex; flex-direction:column;">
-      <div style="background:var(--sev-crit); color:var(--on-sev); padding:9px 12px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.12em;">FIG 4 · COMPRESSIONS — 3 : 1, NOT ADULT CPR</div>
-      <div style="flex:1; background:var(--card2); padding:16px 12px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:11px;"><div style="display:flex; align-items:flex-end; gap:7px;"><div style="width:11px; height:34px; background:var(--gray); border-radius:2px;"></div><div style="width:11px; height:34px; background:var(--gray); border-radius:2px;"></div><div style="width:11px; height:34px; background:var(--gray); border-radius:2px;"></div><div style="width:20px; height:52px; background:var(--teal); border-radius:3px; display:flex; align-items:flex-end; justify-content:center; color:var(--on-sev); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10px; padding-bottom:3px; box-sizing:border-box;">B</div><div style="width:8px;"></div><div style="width:11px; height:34px; background:var(--gray); border-radius:2px;"></div><div style="width:11px; height:34px; background:var(--gray); border-radius:2px;"></div><div style="width:11px; height:34px; background:var(--gray); border-radius:2px;"></div><div style="width:20px; height:52px; background:var(--teal); border-radius:3px; display:flex; align-items:flex-end; justify-content:center; color:var(--on-sev); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10px; padding-bottom:3px; box-sizing:border-box;">B</div></div>
-<div style="display:grid; gap:5px; width:100%; max-width:320px;"><div style="display:grid; grid-template-columns:18px 1fr; gap:8px; align-items:start; font-size:12.5px; line-height:1.25; color:var(--ink);"><span style="font-weight:700; color:var(--ink);">1</span><span><b>90 compressions + 30 breaths</b> every minute — 4 events every 2 seconds.</span></div><div style="display:grid; grid-template-columns:18px 1fr; gap:8px; align-items:start; font-size:12.5px; line-height:1.25; color:var(--ink);"><span style="font-weight:700; color:var(--ink);">2</span><span>Count aloud: “one-and-two-and-three-and-<b>breathe</b>.”</span></div><div style="display:grid; grid-template-columns:18px 1fr; gap:8px; align-items:start; font-size:12.5px; line-height:1.25; color:var(--ink);"><span style="font-weight:700; color:var(--ink);">3</span><span>Thumbs encircling, lower third of sternum, depth ⅓ of the chest.</span></div></div></div>
-      <figcaption style="padding:10px 12px; font-size:14px; line-height:1.35; color:var(--ink); border-top:1px solid var(--line);">Two rescuers: one holds the airway and gives the breath, one compresses. Reassess HR after 60 s.</figcaption>
-    </figure>
   </div>
 
   <div style="margin:14px 18px 0;"><a href="#top" style="display:flex; align-items:center; justify-content:center; min-height:46px; border:1px solid #d8d3c7; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.12em; color:var(--ink2); text-decoration:none;">↑ INDEX</a></div>
@@ -956,316 +783,6 @@ catch(e){ document.body.dataset.theme='dark'; }
   <div style="margin:14px 18px 0;"><a href="#top" style="display:flex; align-items:center; justify-content:center; min-height:46px; border:1px solid #d8d3c7; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.12em; color:var(--ink2); text-decoration:none;">↑ INDEX</a></div>
 </article>
 
-<article id="c06" data-audience="any" style="background:var(--card); border-top:6px solid var(--sev-crit); padding:0 0 22px;">
-  <header style="padding:18px 18px 14px;">
-    <div style="display:flex; align-items:center; gap:10px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.08em; color:var(--red);">
-      <span>06</span>
-      <span style="flex:1; text-align:right; color:var(--ink2);">CALL OB STAT · RECORD THE TIME</span>
-    </div>
-    <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:var(--ink);">Postpartum hemorrhage</h2>
-      <div style="margin-top:10px;padding:11px 12px;border:2px solid var(--sev-info);background:var(--card2);border-radius:12px;font-size:13.5px;line-height:1.45"><b>There is now a live engine for this.</b> <a href="../pph/?from=home" style="color:var(--blue);font-weight:700">Open the postpartum hemorrhage engine &rsaquo;</a> — it runs the clock from recognition, keeps a running blood loss on screen, and greys out a uterotonic your patient cannot have. This card stays as the reference view, and both are built from the same numbers.</div>
-    <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:11px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:var(--ink2);">CART</span><a href="#d4" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:var(--card2); border:1px solid var(--sev-crit); text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:var(--sev-crit); flex:none;"><span style="display:block; width:0; height:0; border-left:5.4px solid transparent; border-right:5.4px solid transparent; border-bottom:9px solid var(--on-sev);"></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:var(--red);">4 · POSTPARTUM HEMORRHAGE</span></a></div>
-  </header>
-  <div class="console" style="position:sticky; top:calc(var(--sticky-h,54px) + env(safe-area-inset-top,0px)); z-index:4; padding:10px 18px; background:var(--card2); border-top:2px solid var(--sev-crit); border-bottom:2px solid var(--sev-crit);">
-    <div style="display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-      <div id="pphtime" class="cs-numeric" style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-weight:700; line-height:1; color:var(--red); letter-spacing:0.02em; min-width:104px;">00:00</div>
-      <div style="display:flex; gap:8px; flex:1; min-width:170px;">
-        <button type="button" id="pphstart" class="cs-secondary" style="flex:1; padding:0 12px; background:var(--sev-crit); color:var(--on-sev); border:2px solid var(--sev-crit); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">START</button>
-        <button type="button" id="pphreset" class="cs-secondary" style="padding:0 12px; background:var(--card); color:var(--red); border:2px solid var(--sev-crit); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">UNDO</button>
-      </div>
-    </div>
-    <div id="pphstamp" style="margin-top:7px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.06em; color:var(--red);">Start the clock at recognition — the time is stamped here.</div>
-    <div data-loglane="06" style="margin-top:8px; display:flex; gap:6px; align-items:center; overflow-x:auto; -webkit-overflow-scrolling:touch; min-height:28px; scrollbar-width:none;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--red); opacity:0.7; white-space:nowrap;">NOTHING LOGGED YET</span></div>
-  </div>
-
-  <div class="nca" style="padding:0 18px;">
-    <div style="padding:11px 14px; background:var(--card2); border-left:4px solid var(--sev-crit);">
-      <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.14em; color:var(--red);">NAME</div>
-      <div style="margin-top:4px;">“Postpartum hemorrhage in the ED.” &gt;500 mL or signs of shock.</div>
-    </div>
-    <div style="padding:11px 14px; background:var(--card2); border-left:4px solid var(--gray);">
-      <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.14em; color:var(--ink2);">CLAIM</div>
-      <div style="margin-top:4px;">One provider on massage · RN on access · recorder on the clock.</div>
-    </div>
-    <div style="padding:11px 14px; background:var(--card2); border-left:4px solid var(--gray);">
-      <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.14em; color:var(--ink2);">AIM</div>
-      <div style="margin-top:4px;">Uterus firm, bleeding stopped, OB at the bedside.</div>
-    </div>
-  </div>
-  <div class="figs" style="padding:14px 18px 0;">
-    <figure style="margin:0; border:2px solid var(--sev-crit); background:var(--card); display:flex; flex-direction:column;">
-      <div style="background:var(--sev-crit); color:var(--on-sev); padding:9px 12px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.12em;">FIG 1 · PPH CLOCK — THE RECORDER CALLS EVERY 5 MIN</div>
-      <div style="flex:1; background:var(--card2); padding:16px 12px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:11px;"><div id="pphbands" style="width:100%; max-width:340px; display:flex; flex-direction:column; gap:7px;">
-<div data-band data-lo="0" data-hi="0" style="display:grid; grid-template-columns:76px 1fr; gap:9px; width:100%; align-items:stretch; transition:opacity .2s;"><div style="background:var(--gray); color:var(--on-sev); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12.5px; font-weight:700; display:flex; align-items:center; justify-content:center; text-align:center; padding:8px 4px; line-height:1.15;">0 MIN</div><div style="padding:8px 10px; background:var(--card); border:2px solid var(--gray); font-size:13.5px; line-height:1.28;">Note the time · call OB STAT · fundal massage · Foley.</div></div>
-<div data-band data-lo="0" data-hi="5" style="display:grid; grid-template-columns:76px 1fr; gap:9px; width:100%; align-items:stretch; transition:opacity .2s;"><div style="background:var(--gray); color:var(--on-sev); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12.5px; font-weight:700; display:flex; align-items:center; justify-content:center; text-align:center; padding:8px 4px; line-height:1.15;">0–5 MIN</div><div style="padding:8px 10px; background:var(--card); border:2px solid var(--gray); font-size:13.5px; line-height:1.28;">Two large-bore IVs · type &amp; cross · <b>oxytocin</b> 10 u IM + 10 u/L wide open · <b>TXA</b> 1 g.</div></div>
-<div data-band data-lo="5" data-hi="15" style="display:grid; grid-template-columns:76px 1fr; gap:9px; width:100%; align-items:stretch; transition:opacity .2s;"><div style="background:var(--sev-caution); color:var(--on-sev); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12.5px; font-weight:700; display:flex; align-items:center; justify-content:center; text-align:center; padding:8px 4px; line-height:1.15;">5–15 MIN</div><div style="padding:8px 10px; background:var(--card); border:2px solid var(--sev-caution); font-size:13.5px; line-height:1.28;"><b>Misoprostol</b> 1000 mcg PR · <b>methylergonovine</b> 0.2 mg IM (no HTN) · <b>carboprost</b> 250 mcg IM (no asthma) · bimanual compression.</div></div>
-<div data-band data-lo="15" data-hi="999" style="display:grid; grid-template-columns:76px 1fr; gap:9px; width:100%; align-items:stretch; transition:opacity .2s;"><div style="background:var(--sev-crit); color:var(--on-sev); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12.5px; font-weight:700; display:flex; align-items:center; justify-content:center; text-align:center; padding:8px 4px; line-height:1.15;">&gt;15 MIN</div><div style="padding:8px 10px; background:var(--card); border:2px solid var(--sev-crit); font-size:13.5px; line-height:1.28;">2 units O-negative · pack the vault with Kerlix · OB at the bedside.</div></div>
-</div></div>
-      <figcaption style="padding:10px 12px; font-size:14px; line-height:1.35; color:var(--ink); border-top:1px solid var(--line);">Start the clock at recognition, not at arrival. Every dose and every EBL number goes to the recorder.</figcaption>
-    </figure>
-  </div>
-
-  <div class="steps" style="padding:14px 18px 0;">
-    <details open style="border:2px solid var(--gray); align-self:start;">
-      <summary style="background:var(--gray); color:var(--on-sev); padding:11px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><span>STEP 1 · RECORD TIME</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:400; opacity:0.8; text-align:right;">0 MIN</span></summary>
-      <ul style="margin:0; padding:4px 14px 13px; list-style:none;">
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-0-0" class="t-ck"><span><span style="display:inline-block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--blue); background:var(--card2); padding:2px 6px; border-radius:3px; margin-right:7px; vertical-align:1px;">RECORDER</span>Time of onset: ____________</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-0-1" class="t-ck"><span><span style="display:inline-block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--blue); background:var(--card2); padding:2px 6px; border-radius:3px; margin-right:7px; vertical-align:1px;">TEAM</span>Call OB STAT: “Postpartum hemorrhage in the ED.”</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-0-2" data-log="MASSAGE" class="t-ck"><span><span style="display:inline-block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--blue); background:var(--card2); padding:2px 6px; border-radius:3px; margin-right:7px; vertical-align:1px;">PROVIDER</span>Start bimanual fundal massage.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-0-4" data-log="CLOTS SWEPT" class="t-ck"><span><span style="display:inline-block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--blue); background:var(--card2); padding:2px 6px; border-radius:3px; margin-right:7px; vertical-align:1px;">PROVIDER</span>Sweep clots from the vagina and the area of the cervix — the uterus can't clamp down over retained clot.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-0-3" class="t-ck"><span><span style="display:inline-block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--blue); background:var(--card2); padding:2px 6px; border-radius:3px; margin-right:7px; vertical-align:1px;">RN</span>Foley catheter. Order the OB postpartum bleeding subphase.</span></label></li>
-      </ul>
-    </details>
-    <details open style="border:2px solid var(--gray); align-self:start;">
-      <summary style="background:var(--gray); color:var(--on-sev); padding:11px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><span>STEP 2 · ACCESS & MEDS</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:400; opacity:0.8; text-align:right;">0–5 MIN</span></summary>
-      <ul style="margin:0; padding:4px 14px 13px; list-style:none;">
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-1-0" data-log="2 LARGE-BORE IV" class="t-ck"><span><span style="display:inline-block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--blue); background:var(--card2); padding:2px 6px; border-radius:3px; margin-right:7px; vertical-align:1px;">RN</span>Two large-bore IVs (14 or 16 G).</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-1-1" data-log="TYPE & CROSS" class="t-ck"><span><span style="display:inline-block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--blue); background:var(--card2); padding:2px 6px; border-radius:3px; margin-right:7px; vertical-align:1px;">RN</span>STAT type &amp; cross, CBC, CMP, D-dimer, fibrinogen, PT/PTT.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-1-2" data-log="OXYTOCIN" class="t-ck"><span><span style="display:inline-block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--blue); background:var(--card2); padding:2px 6px; border-radius:3px; margin-right:7px; vertical-align:1px;">TEAM</span><span>Oxytocin</span> 10 units IM <span>and</span> 10 units in 1 L NS/LR wide open.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-1-3" data-log="TXA" class="t-ck"><span><span style="display:inline-block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--blue); background:var(--card2); padding:2px 6px; border-radius:3px; margin-right:7px; vertical-align:1px;">TEAM</span><span>TXA</span> 1 g IV over 10 min — within 3 h of birth. May redose 1 g IV every 30 min if still bleeding / clinically indicated.</span></label></li>
-      </ul>
-    </details>
-    <details open style="border:2px solid var(--gray); align-self:start;">
-      <summary style="background:var(--gray); color:var(--on-sev); padding:11px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><span>STEP 3 · IF STILL BLEEDING</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:400; opacity:0.8; text-align:right;">5–15 MIN</span></summary>
-      <ul style="margin:0; padding:4px 14px 13px; list-style:none;">
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-2-0" data-log="MISOPROSTOL" class="t-ck"><span><span>Misoprostol</span> 1000 mcg PR.</span></label></li>
-<li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-2-2" data-log="METHERGINE" class="t-ck"><span><b>Methylergonovine</b> 0.2 mg IM — <b>not</b> in hypertension or preeclampsia. May repeat in 2–4 h.</span></label></li>
-<li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-2-3" data-log="CARBOPROST" class="t-ck"><span><b>Carboprost</b> 250 mcg IM — <b>not</b> in asthma. May repeat every 15–90 min, max 8 doses.</span></label></li>
-<li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-2-4" data-log="BIMANUAL COMPRESSION" class="t-ck"><span><b>Bimanual uterine compression</b> — fist in the anterior fornix, other hand on the fundus, squeeze the uterus between them.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-2-1" class="t-ck"><span>Massage continues. Reassess tone, volume, and vitals out loud.</span></label></li>
-      </ul>
-    </details>
-    <details open style="border:2px solid var(--sev-crit); align-self:start;">
-      <summary style="background:var(--sev-crit); color:var(--on-sev); padding:11px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><span>STEP 4 · IF IT PERSISTS</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:400; opacity:0.8; text-align:right;">>15 MIN</span></summary>
-      <ul style="margin:0; padding:4px 14px 13px; list-style:none;">
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-3-0" data-log="O-NEG BLOOD" class="t-ck t-ck-crit"><span>Hypotensive or tachycardic: hang 2 units uncrossmatched O-negative.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-3-1" data-log="VAULT PACKED" class="t-ck t-ck-crit"><span>OB delayed &gt;15 min: firmly pack the vaginal vault with sterile Kerlix.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-3-2" class="t-ck t-ck-crit"><span><b>Balloon tamponade</b> (Bakri, or <a href="../procedures/?from=home#c13">JADA System — Procedures card 13</a>) if OB is at the bedside and the uterus is atonic.</span></label></li>
-<li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-3-3" class="t-ck t-ck-crit"><span>Hand off to the arriving OB attending.</span></label></li>
-      </ul>
-    </details>
-  </div>
-
-
-  <div style="margin:14px 18px 0;"><a href="#top" style="display:flex; align-items:center; justify-content:center; min-height:46px; border:1px solid #d8d3c7; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.12em; color:var(--ink2); text-decoration:none;">↑ INDEX</a></div>
-</article>
-
-<article id="c07" data-audience="any" style="background:var(--card); border-top:6px solid var(--gray); padding:0 0 22px;">
-  <header style="padding:18px 18px 14px;">
-    <div style="display:flex; align-items:center; gap:10px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.08em; color:var(--ink);">
-      <span>07</span>
-      <span style="flex:1; text-align:right; color:var(--ink2);">ANNOUNCE IT · START THE CLOCK</span>
-    </div>
-    <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:var(--ink);">Shoulder dystocia</h2>
-      <div style="margin-top:10px;padding:11px 12px;border:2px solid var(--sev-info);background:var(--card2);border-radius:12px;font-size:13.5px;line-height:1.45"><b>There is now a live engine for this.</b> <a href="../dystocia/?from=home" style="color:var(--blue);font-weight:700">Open the shoulder dystocia engine &rsaquo;</a> — it holds the head-to-body interval where the room can see it and records every maneuver with its time. This card stays as the reference view, and both are built from the same numbers.</div>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:11px;"><a href="#c02s2" style="display:flex; align-items:center; justify-content:center; min-height:44px; background:var(--card2); border:2px solid var(--gray); color:var(--ink); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em;">← DELIVERY (02)</a><a href="#c03" style="display:flex; align-items:center; justify-content:center; min-height:44px; background:var(--card2); border:2px solid var(--sev-crit); color:var(--red); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em;">→ RESUS (03)</a></div>
-    <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:11px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:var(--ink2);">CART</span><a href="#d6" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:var(--card2); border:1px solid var(--green); text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:var(--green); flex:none;"><span style="display:flex; flex-direction:column; gap:2.7px;"><span style="display:block; width:12.6px; height:2.7px; background:var(--card);"></span><span style="display:block; width:12.6px; height:2.7px; background:var(--card);"></span></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:var(--green);">6 · VAGINAL DELIVERY</span></a></div>
-  </header>
-  <div class="console" style="position:sticky; top:calc(var(--sticky-h,54px) + env(safe-area-inset-top,0px)); z-index:4; margin:0 0 2px; padding:10px 18px; background:var(--note-bg); border-top:2px solid var(--sev-caution); border-bottom:2px solid var(--sev-caution); display:flex; align-items:center; gap:10px; flex-wrap:wrap;">
-    <div id="sdtime" class="cs-numeric" style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-weight:700; line-height:1; color:var(--amber); letter-spacing:0.02em; min-width:96px;">00:00</div>
-    <div style="display:flex; gap:8px; flex:1; min-width:170px;">
-      <button type="button" id="sdstart" class="cs-secondary" style="flex:1; padding:0 12px; background:var(--sev-caution); color:var(--on-sev); border:2px solid var(--sev-caution); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">START</button>
-      <button type="button" id="sdreset" class="cs-secondary" style="padding:0 12px; background:var(--card); color:var(--amber); border:2px solid var(--sev-caution); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">UNDO</button>
-    </div>
-    <div id="sdnow" style="width:100%; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.06em; color:var(--amber);">Start the clock as you announce it. Roughly 30 s per maneuver.</div>
-    <div data-loglane="07" style="margin-top:8px; display:flex; gap:6px; align-items:center; overflow-x:auto; -webkit-overflow-scrolling:touch; min-height:28px; scrollbar-width:none;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--amber); opacity:0.7; white-space:nowrap;">NOTHING LOGGED YET</span></div>
-  </div>
-
-  <div class="nca" style="padding:0 18px;">
-    <div style="padding:11px 14px; background:var(--card2); border-left:4px solid var(--sev-crit);">
-      <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.14em; color:var(--red);">NAME</div>
-      <div style="margin-top:4px;">“Shoulder dystocia.” Say the word out loud.</div>
-    </div>
-    <div style="padding:11px 14px; background:var(--card2); border-left:4px solid var(--gray);">
-      <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.14em; color:var(--ink2);">CLAIM</div>
-      <div style="margin-top:4px;">Physician at the perineum · 2 assistants on legs · 1 suprapubic · timekeeper.</div>
-    </div>
-    <div style="padding:11px 14px; background:var(--card2); border-left:4px solid var(--gray);">
-      <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.14em; color:var(--ink2);">AIM</div>
-      <div style="margin-top:4px;">Deliver the shoulder in maneuver order. No fundal pressure.</div>
-    </div>
-  </div>
-  <div class="steps" style="padding:14px 18px 0;">
-    <details open data-sdband data-lo="-1" data-hi="-1" style="border:2px solid var(--sev-caution); align-self:start; transition:opacity .2s;">
-      <summary style="background:var(--sev-caution); color:var(--on-sev); padding:10px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; align-items:center; gap:11px;"><span data-badge style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; flex:none; background:var(--card); color:var(--amber); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:17px; font-weight:700;">H</span><span data-title style="flex:1;">ANNOUNCE &amp; START THE CLOCK</span><span data-win style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:400; opacity:0.85; text-align:right; white-space:nowrap;">0:00</span></summary>
-      <ul style="margin:0; padding:4px 14px 13px; list-style:none;">
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-0-0" class="t-ck"><span><span style="display:inline-block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--blue); background:var(--card2); padding:2px 6px; border-radius:3px; margin-right:7px; vertical-align:1px;">TEAM</span>Say it out loud: <b>“We have a shoulder dystocia.”</b> Activate <b>OB, anesthesia, and Pediatrics.</b></span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-0-1" class="t-ck"><span><span style="display:inline-block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--blue); background:var(--card2); padding:2px 6px; border-radius:3px; margin-right:7px; vertical-align:1px;">TIMEKEEPER</span>Start the clock above. Call the elapsed time every 30 s.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-0-2" class="t-ck"><span><span style="display:inline-block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--blue); background:var(--card2); padding:2px 6px; border-radius:3px; margin-right:7px; vertical-align:1px;">TEAM</span>Bed completely flat, foot of the bed off. <b>No fundal pressure. No pulling.</b></span></label></li>
-      </ul>
-    </details>
-    <details open data-sdband data-man="1" data-lo="0" data-hi="30" style="border:2px solid var(--gray); align-self:start; transition:opacity .2s;">
-      <summary style="background:var(--gray); color:var(--on-sev); padding:10px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; align-items:center; gap:11px;"><span data-badge style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; flex:none; background:var(--card); color:var(--ink); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:17px; font-weight:700;">P</span><span data-title style="flex:1;">PRESSURE — SUPRAPUBIC</span><span data-win style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:400; opacity:0.85; text-align:right; white-space:nowrap;">0:00–0:30</span></summary>
-      <figure style="margin:0; border:2px solid var(--gray); background:var(--card); display:flex; flex-direction:column;">
-        <div style="background:var(--gray); color:var(--on-sev); padding:9px 12px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.12em;">FIG 1 · PRESSURE — SUPRAPUBIC</div>
-      <div style="padding:12px 14px 0; background:var(--card2);"><svg viewBox="0 0 330 214" style="width:100%; max-width:330px; height:auto; display:block; margin:0 auto;" xmlns="http://www.w3.org/2000/svg">
-  <text x="80" y="18" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="12" font-weight="700" fill="#0e7c86">✓ SUPRAPUBIC</text>
-  <ellipse cx="80" cy="112" rx="58" ry="76" fill="#fffefb" stroke="#16324f" stroke-width="2"/>
-  <text x="80" y="52" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10" fill="#5a6a78">FUNDUS</text>
-  <rect x="50" y="166" width="60" height="9" rx="4" fill="#16324f"/>
-  <text x="80" y="202" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" fill="#5a6a78">PUBIC BONE</text>
-  <rect x="58" y="132" width="44" height="22" rx="6" fill="#d8eef0" stroke="#0e7c86" stroke-width="2.5"/>
-  <polygon points="72,158 88,158 80,168" fill="#0e7c86"/>
-  <line x1="165" y1="30" x2="165" y2="196" stroke="#c4cdd8" stroke-width="1.5"/>
-  <text x="250" y="18" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="12" font-weight="700" fill="#9b1c2e">✕ NEVER FUNDAL</text>
-  <ellipse cx="250" cy="112" rx="58" ry="76" fill="#fffefb" stroke="#16324f" stroke-width="2"/>
-  <rect x="228" y="58" width="44" height="22" rx="6" fill="#fbeaec" stroke="#9b1c2e" stroke-width="2.5"/>
-  <g stroke="#9b1c2e" stroke-width="4" stroke-linecap="round"><line x1="226" y1="54" x2="274" y2="84"/><line x1="274" y1="54" x2="226" y2="84"/></g>
-  <rect x="220" y="166" width="60" height="9" rx="4" fill="#16324f"/>
-  <text x="250" y="202" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" fill="#5a6a78">PUBIC BONE</text></svg></div>
-      </figure>
-      <div style="padding:8px 14px 11px; background:var(--card2); font-size:13.5px; line-height:1.3; color:var(--ink);">Heel of the hand just above the pubic bone, pushing down and toward the baby’s face. Steady for 30 s, then rocking. Fundal pressure impacts the shoulder further and ruptures uteri.</div>      <ul style="margin:0; padding:4px 14px 13px; list-style:none;">
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-3-0" data-log="SUPRAPUBIC" class="t-ck"><span><span style="display:inline-block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--blue); background:var(--card2); padding:2px 6px; border-radius:3px; margin-right:7px; vertical-align:1px;">3RD ASST</span>CPR-style suprapubic pressure, down and lateral.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-3-1" class="t-ck"><span><span style="display:inline-block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--blue); background:var(--card2); padding:2px 6px; border-radius:3px; margin-right:7px; vertical-align:1px;">TEAM</span>Say aloud: <b>“Suprapubic — not fundal.”</b></span></label></li>
-      </ul>
-    </details>
-    <details open data-sdband data-man="2" data-lo="30" data-hi="60" style="border:2px solid var(--gray); align-self:start; transition:opacity .2s;">
-      <summary style="background:var(--gray); color:var(--on-sev); padding:10px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; align-items:center; gap:11px;"><span data-badge style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; flex:none; background:var(--card); color:var(--ink); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:17px; font-weight:700;">L</span><span data-title style="flex:1;">LEGS — McROBERTS</span><span data-win style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:400; opacity:0.85; text-align:right; white-space:nowrap;">0:30–1:00</span></summary>
-      <figure style="margin:0; border:2px solid var(--gray); background:var(--card); display:flex; flex-direction:column;">
-        <div style="background:var(--gray); color:var(--on-sev); padding:9px 12px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.12em;">FIG 2 · LEGS — McROBERTS</div>
-      <div style="padding:12px 14px 0; background:var(--card2);"><svg viewBox="0 0 330 206" style="width:100%; max-width:330px; height:auto; display:block; margin:0 auto;" xmlns="http://www.w3.org/2000/svg">
-  <line x1="14" y1="178" x2="152" y2="178" stroke="#c4cdd8" stroke-width="3"/>
-  <line x1="180" y1="178" x2="318" y2="178" stroke="#c4cdd8" stroke-width="3"/>
-  <line x1="166" y1="26" x2="166" y2="196" stroke="#c4cdd8" stroke-width="1.5"/>
-  <text x="82" y="18" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#5a6a78">STUCK — LITHOTOMY</text>
-  <text x="248" y="18" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#0e7c86">McROBERTS</text>
-  
-  <line x1="112" y1="152" x2="52" y2="130" stroke="#16324f" stroke-width="11" stroke-linecap="round"/>
-  <circle cx="40" cy="124" r="12" fill="#fffefb" stroke="#16324f" stroke-width="2.5"/>
-  <line x1="112" y1="152" x2="150" y2="116" stroke="#0e7c86" stroke-width="9" stroke-linecap="round"/>
-  <line x1="150" y1="116" x2="146" y2="74" stroke="#0e7c86" stroke-width="9" stroke-linecap="round"/>
-  <circle cx="112" cy="152" r="6" fill="#16324f"/>
-  
-  <line x1="286" y1="152" x2="226" y2="130" stroke="#16324f" stroke-width="11" stroke-linecap="round"/>
-  <circle cx="214" cy="124" r="12" fill="#fffefb" stroke="#16324f" stroke-width="2.5"/>
-  <line x1="286" y1="152" x2="238" y2="100" stroke="#0e7c86" stroke-width="9" stroke-linecap="round"/>
-  <line x1="238" y1="100" x2="272" y2="74" stroke="#0e7c86" stroke-width="9" stroke-linecap="round"/>
-  <circle cx="286" cy="152" r="6" fill="#16324f"/>
-  <path d="M 300 150 q 22 -30 -4 -50" fill="none" stroke="#0e7c86" stroke-width="2.5"/>
-  <path d="M 296 100 l 0 12 l 11 -5 z" fill="#0e7c86"/>
-  <path d="M 120 160 a 26 26 0 0 0 24 -18" fill="none" stroke="#5a6a78" stroke-width="1.5" stroke-dasharray="4 3"/>
-  <path d="M 294 160 a 30 30 0 0 0 -12 -28" fill="none" stroke="#0e7c86" stroke-width="1.5" stroke-dasharray="4 3"/>
-  <text x="82" y="196" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" fill="#5a6a78">pelvic inlet blocked</text>
-  <text x="248" y="190" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" fill="#0e7c86">thighs tight to her abdomen</text>
-  <text x="248" y="201" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" fill="#0e7c86">sacrum flattens · inlet opens</text></svg></div>
-      </figure>
-      <div style="padding:8px 14px 11px; background:var(--card2); font-size:13.5px; line-height:1.3; color:var(--ink);">Two assistants, one leg each: hyperflex the thighs onto her abdomen, knees toward the ears. Attempt gentle downward traction with the next contraction.</div>      <ul style="margin:0; padding:4px 14px 13px; list-style:none;">
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-2-0" data-log="McROBERTS" class="t-ck"><span><span style="display:inline-block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--blue); background:var(--card2); padding:2px 6px; border-radius:3px; margin-right:7px; vertical-align:1px;">2 ASSTS</span>Hyperflex both thighs tight to her abdomen.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-2-1" class="t-ck"><span><span style="display:inline-block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--blue); background:var(--card2); padding:2px 6px; border-radius:3px; margin-right:7px; vertical-align:1px;">PHYSICIAN</span>Gentle axial traction only — one attempt.</span></label></li>
-      </ul>
-    </details>
-    <details open data-sdband data-man="3" data-lo="60" data-hi="120" style="border:2px solid var(--gray); align-self:start; transition:opacity .2s;">
-      <summary style="background:var(--gray); color:var(--on-sev); padding:10px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; align-items:center; gap:11px;"><span data-badge style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; flex:none; background:var(--card); color:var(--ink); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:17px; font-weight:700;">E</span><span data-title style="flex:1;">ENTER — CORKSCREW</span><span data-win style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:400; opacity:0.85; text-align:right; white-space:nowrap;">1:00–2:00</span></summary>
-      <figure style="margin:0; border:2px solid var(--gray); background:var(--card); display:flex; flex-direction:column;">
-        <div style="background:var(--gray); color:var(--on-sev); padding:9px 12px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.12em;">FIG 3 · ENTER — CORKSCREW</div>
-      <div style="padding:12px 14px 0; background:var(--card2);"><svg viewBox="0 0 330 226" style="width:100%; max-width:330px; height:auto; display:block; margin:0 auto;" xmlns="http://www.w3.org/2000/svg">
-  <text x="165" y="16" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#5a6a78">LOOKING DOWN INTO THE PELVIS</text>
-  <ellipse cx="150" cy="120" rx="96" ry="76" fill="#fffefb" stroke="#16324f" stroke-width="2.5"/>
-  <rect x="124" y="36" width="52" height="11" rx="5" fill="#16324f"/>
-  <text x="150" y="30" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" fill="#5a6a78">SYMPHYSIS</text>
-  <text x="150" y="212" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" fill="#5a6a78">SACRUM</text>
-  <line x1="150" y1="58" x2="150" y2="182" stroke="#9b1c2e" stroke-width="7" stroke-linecap="round" opacity="0.85"/>
-  <circle cx="150" cy="58" r="13" fill="#fbeaec" stroke="#9b1c2e" stroke-width="2.5"/>
-  <circle cx="150" cy="182" r="13" fill="#fbeaec" stroke="#9b1c2e" stroke-width="2.5"/>
-  <text x="150" y="62" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10" font-weight="700" fill="#9b1c2e">A</text>
-  <text x="150" y="186" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10" font-weight="700" fill="#9b1c2e">P</text>
-  <line x1="96" y1="76" x2="204" y2="164" stroke="#0e7c86" stroke-width="6" stroke-linecap="round" stroke-dasharray="10 7"/>
-  <circle cx="96" cy="76" r="12" fill="#e4f2f3" stroke="#0e7c86" stroke-width="2.5"/>
-  <circle cx="204" cy="164" r="12" fill="#e4f2f3" stroke="#0e7c86" stroke-width="2.5"/>
-  <path d="M 186 66 a 46 46 0 0 1 6 26" fill="none" stroke="#0e7c86" stroke-width="2.5"/>
-  <path d="M 192 92 l 7 -9 l -13 -2 z" fill="#0e7c86"/>
-  <rect x="167" y="52" width="20" height="7" rx="3.5" fill="#16324f" transform="rotate(38 177 55)"/>
-  <rect x="176" y="64" width="20" height="7" rx="3.5" fill="#16324f" transform="rotate(38 186 67)"/>
-  <text x="250" y="60" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9" fill="#16324f">fingers behind</text>
-  <text x="250" y="72" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9" fill="#16324f">the anterior</text>
-  <text x="250" y="84" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9" fill="#16324f">shoulder</text>
-  <text x="248" y="128" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#9b1c2e">stuck: AP</text>
-  <text x="248" y="146" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#0e7c86">goal: oblique</text></svg></div>
-      </figure>
-      <div style="padding:8px 14px 11px; background:var(--card2); font-size:13.5px; line-height:1.3; color:var(--ink);">Rubin II: two fingers behind the anterior shoulder, push it toward the baby’s chest and rotate 30° out of the AP diameter into the oblique. Woods corkscrew: add fingers in front of the posterior shoulder and turn the same way.</div>      <ul style="margin:0; padding:4px 14px 13px; list-style:none;">
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-4-0" data-log="CORKSCREW" class="t-ck"><span><b>Rubin II</b> — push the anterior shoulder toward the chest, rotate to oblique.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-4-1" class="t-ck"><span><b>Woods corkscrew</b>, then <b>reverse Woods</b> if it will not turn.</span></label></li>
-      </ul>
-    </details>
-    <details open data-sdband data-man="4" data-lo="120" data-hi="180" style="border:2px solid var(--sev-crit); align-self:start; transition:opacity .2s;">
-      <summary style="background:var(--sev-crit); color:var(--on-sev); padding:10px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; align-items:center; gap:11px;"><span data-badge style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; flex:none; background:var(--card); color:var(--red); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:17px; font-weight:700;">R</span><span data-title style="flex:1;">REMOVE THE POSTERIOR ARM</span><span data-win style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:400; opacity:0.85; text-align:right; white-space:nowrap;">2:00–3:00</span></summary>
-      <figure style="margin:0; border:2px solid var(--sev-crit); background:var(--card); display:flex; flex-direction:column;">
-        <div style="background:var(--sev-crit); color:var(--on-sev); padding:9px 12px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.12em;">FIG 4 · REMOVE THE POSTERIOR ARM</div>
-      <div style="padding:12px 14px 0; background:var(--card2);"><svg viewBox="0 0 330 210" style="width:100%; max-width:330px; height:auto; display:block; margin:0 auto;" xmlns="http://www.w3.org/2000/svg">
-  <circle cx="70" cy="46" r="23" fill="#fffefb" stroke="#16324f" stroke-width="2.5"/>
-  <rect x="44" y="74" width="52" height="88" rx="20" fill="#fffefb" stroke="#16324f" stroke-width="2.5"/>
-  <text x="70" y="50" text-anchor="middle" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9" fill="#5a6a78">BABY</text>
-  <polyline points="96,90 128,116 126,150" fill="none" stroke="#0e7c86" stroke-width="8" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="128" cy="116" r="7" fill="#0e7c86"/>
-  <path d="M 126 150 q -38 20 -58 -6" fill="none" stroke="#8a6d1f" stroke-width="2.5" stroke-dasharray="6 5"/>
-  <path d="M 68 144 l 3 12 l 10 -8 z" fill="#8a6d1f"/>
-  <path d="M 60 152 q -14 22 2 42" fill="none" stroke="#8a6d1f" stroke-width="2.5" stroke-dasharray="6 5"/>
-  <path d="M 62 194 l 8 -6 l -12 -6 z" fill="#8a6d1f"/>
-  <text x="164" y="60" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#16324f">1 · FOLLOW THE ARM</text>
-  <text x="176" y="72" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" fill="#5a6a78">down to the elbow</text>
-  <text x="164" y="98" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#16324f">2 · FLEX THE ELBOW</text>
-  <text x="176" y="110" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" fill="#5a6a78">grasp the wrist</text>
-  <text x="164" y="136" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#16324f">3 · SWEEP ACROSS</text>
-  <text x="176" y="148" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" fill="#5a6a78">the chest and out</text>
-  <text x="164" y="176" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#9b1c2e">NEVER PULL THE ARM</text>
-  <text x="176" y="188" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" fill="#9b1c2e">straight — it snaps</text></svg></div>
-      </figure>
-      <div style="padding:8px 14px 11px; background:var(--card2); font-size:13.5px; line-height:1.3; color:var(--ink);">Hand in along the posterior curve of the sacrum. Follow the arm to the elbow, flex it, grasp the wrist, sweep it across the chest and out. This buys about 2 cm — often the one that works.</div>      <ul style="margin:0; padding:4px 14px 13px; list-style:none;">
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-5-0" data-log="POSTERIOR ARM" class="t-ck t-ck-crit"><span>Follow the arm to the elbow, flex, grasp the wrist, sweep across the chest.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-5-1" class="t-ck t-ck-crit"><span>Rotate the baby 180° and repeat if the shoulder is still stuck.</span></label></li>
-      </ul>
-    </details>
-    <details open data-sdband data-man="5" data-lo="180" data-hi="240" style="border:2px solid var(--sev-crit); align-self:start; transition:opacity .2s;">
-      <summary style="background:var(--sev-crit); color:var(--on-sev); padding:10px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; align-items:center; gap:11px;"><span data-badge style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; flex:none; background:var(--card); color:var(--red); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:17px; font-weight:700;">R</span><span data-title style="flex:1;">ROLL TO HANDS AND KNEES</span><span data-win style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:400; opacity:0.85; text-align:right; white-space:nowrap;">3:00–4:00</span></summary>
-      <figure style="margin:0; border:2px solid var(--sev-crit); background:var(--card); display:flex; flex-direction:column;">
-        <div style="background:var(--sev-crit); color:var(--on-sev); padding:9px 12px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.12em;">FIG 5 · ROLL TO HANDS AND KNEES</div>
-      <div style="padding:12px 14px 0; background:var(--card2);"><svg viewBox="0 0 330 190" style="width:100%; max-width:330px; height:auto; display:block; margin:0 auto;" xmlns="http://www.w3.org/2000/svg">
-  <line x1="24" y1="160" x2="306" y2="160" stroke="#c4cdd8" stroke-width="3"/>
-  <path d="M 100 92 q 58 -10 112 4" fill="none" stroke="#16324f" stroke-width="12" stroke-linecap="round"/>
-  <circle cx="82" cy="100" r="16" fill="#fffefb" stroke="#16324f" stroke-width="2.5"/>
-  <line x1="106" y1="96" x2="106" y2="156" stroke="#0e7c86" stroke-width="9" stroke-linecap="round"/>
-  <polyline points="208,98 208,152 250,155" fill="none" stroke="#0e7c86" stroke-width="9" stroke-linecap="round" stroke-linejoin="round"/>
-  <circle cx="208" cy="152" r="6" fill="#16324f"/>
-  <text x="214" y="176" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9" fill="#5a6a78">knees on the bed</text>
-  <path d="M 224 106 q 22 16 18 34" fill="none" stroke="#8a6d1f" stroke-width="2.5"/>
-  <path d="M 242 140 l 7 -10 l -13 -1 z" fill="#8a6d1f"/>
-  <text x="256" y="102" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#8a6d1f">POSTERIOR</text>
-  <text x="256" y="114" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#8a6d1f">SHOULDER</text>
-  <text x="256" y="126" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#8a6d1f">DELIVERS</text>
-  <text x="256" y="138" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#8a6d1f">FIRST</text>
-  <text x="24" y="24" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#16324f">GASKIN — HANDS AND KNEES</text>
-  <text x="24" y="40" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" fill="#5a6a78">Gravity and the change of position add</text>
-  <text x="24" y="52" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" fill="#5a6a78">1–2 cm to the sacral outlet.</text></svg></div>
-      </figure>
-      <div style="padding:8px 14px 11px; background:var(--card2); font-size:13.5px; line-height:1.3; color:var(--ink);">Gaskin. Get her onto all fours and repeat the sequence — the posterior shoulder is now the one delivered first.</div>      <ul style="margin:0; padding:4px 14px 13px; list-style:none;">
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-6-0" data-log="ALL FOURS" class="t-ck t-ck-crit"><span>Roll her to hands and knees, then run the sequence again.</span></label></li>
-      </ul>
-    </details>
-    <div class="console" style="padding:2px 0 0;">
-      <button type="button" id="sdagain" class="cs-secondary" style="width:100%; background:var(--card); color:var(--amber); border:2px dashed var(--sev-caution); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.1em; cursor:pointer;">↻ RUN THE SEQUENCE AGAIN — CLOCK KEEPS RUNNING</button>
-    </div>
-    <details open data-sdband data-lo="240" data-hi="99999" style="border:2px solid var(--sev-crit); align-self:start; transition:opacity .2s;">
-      <summary style="background:var(--sev-crit); color:var(--on-sev); padding:10px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; align-items:center; gap:11px;"><span data-badge style="display:inline-flex; align-items:center; justify-content:center; width:30px; height:30px; flex:none; background:var(--card); color:var(--red); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:17px; font-weight:700;">!</span><span data-title style="flex:1;">STILL STUCK — LAST RESORT</span><span data-win style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:400; opacity:0.85; text-align:right; white-space:nowrap;">&gt;4:00</span></summary>
-      <ul style="margin:0; padding:4px 14px 13px; list-style:none;">
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-7-0" data-log="CLEIDOTOMY" class="t-ck t-ck-crit"><span>Deliberately fracture the clavicle (cleidotomy) — press the clavicle outward against the ramus.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-7-1" data-log="ZAVANELLI" class="t-ck t-ck-crit"><span>Zavanelli: replace the head and go to cesarean. Symphysiotomy if no other option.</span></label></li>
-        <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="07-7-2" class="t-ck t-ck-crit"><span>Record every maneuver, the order, and the times. Debrief the team and the family.</span></label></li>
-      </ul>
-    </details>
-    <details open style="border:2px solid var(--teal); align-self:start;">
-      <summary style="background:var(--teal); color:var(--on-sev); padding:11px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><span>THE BABY IS OUT</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:400; opacity:0.85; text-align:right;">NEXT</span></summary>
-      <div style="padding:11px 14px 0; font-size:13.5px; line-height:1.3; color:var(--ink); background:var(--card2);">Hand the baby off and go straight to the birth sequence — stamp the time of birth, then ask the four questions out loud.</div>
-      <div style="padding:11px 14px 13px; background:var(--card2);">
-        <a href="#c03" class="babyout" data-logevent="BABY OUT" data-logcard="02" style="display:flex; align-items:center; justify-content:center; min-height:56px; background:var(--sev-crit); color:var(--on-sev); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; text-align:center; margin-bottom:9px;">BABY IS OUT — STAMP TIME → NEONATAL RESUS</a>
-        <a href="#c02s2" style="display:flex; align-items:center; justify-content:center; min-height:52px; background:var(--teal); color:var(--on-sev); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.1em; text-align:center;">→ 02 · TIME OF BIRTH + THE 4-YES CHECK</a>
-        <div style="margin-top:9px; font-size:13.5px; line-height:1.3; color:var(--ink);">All four yes: skin-to-skin and delayed clamping. Any one no: clamp now, warmer, <b>neonatal resuscitation (card 03)</b>.</div>
-      </div>
-    </details>
-  </div>
-
-  <div style="margin:14px 18px 0;"><a href="#top" style="display:flex; align-items:center; justify-content:center; min-height:46px; border:1px solid #d8d3c7; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.12em; color:var(--ink2); text-decoration:none;">↑ INDEX</a></div>
-</article>
-
 <article id="c08" data-audience="any" style="background:var(--card); border-top:6px solid var(--gray); padding:0 0 22px;">
   <header style="padding:18px 18px 14px;">
     <div style="display:flex; align-items:center; gap:10px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.08em; color:var(--ink);">
@@ -1273,7 +790,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <span style="flex:1; text-align:right; color:var(--ink2);">ACTIVATE OB · PREP THE WARMER</span>
     </div>
     <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:var(--ink);">Breech delivery</h2>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:11px;"><a href="#c02s2" style="display:flex; align-items:center; justify-content:center; min-height:44px; background:var(--card2); border:2px solid var(--gray); color:var(--ink); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em;">← DELIVERY (02)</a><a href="#c03" style="display:flex; align-items:center; justify-content:center; min-height:44px; background:var(--card2); border:2px solid var(--sev-crit); color:var(--red); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em;">→ RESUS (03)</a></div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:11px;"><a href="#c02s2" style="display:flex; align-items:center; justify-content:center; min-height:44px; background:var(--card2); border:2px solid var(--gray); color:var(--ink); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em;">← DELIVERY (02)</a><a href="../neonatal/?from=obneonatal" style="display:flex; align-items:center; justify-content:center; min-height:44px; background:var(--card2); border:2px solid var(--sev-crit); color:var(--red); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em;">→ NRP ENGINE</a></div>
     <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:11px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:var(--ink2);">CART</span><a href="#d6" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:var(--card2); border:1px solid var(--green); text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:var(--green); flex:none;"><span style="display:flex; flex-direction:column; gap:2.7px;"><span style="display:block; width:12.6px; height:2.7px; background:var(--card);"></span><span style="display:block; width:12.6px; height:2.7px; background:var(--card);"></span></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:var(--green);">6 · VAGINAL DELIVERY</span></a><a href="#d1" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:var(--card2); border:1px solid var(--teal); text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:var(--teal); flex:none;"><span style="display:block; width:9.9px; height:9.9px; border:2.16px solid var(--on-sev); border-radius:50%; box-sizing:border-box;"></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:var(--teal);">1 · AIRWAY / BREATHING</span></a></div>
   </header>
   <div class="nca" style="padding:0 18px;">
@@ -1316,7 +833,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <summary style="background:var(--teal); color:var(--on-sev); padding:11px 14px; font-size:15.5px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none; display:flex; justify-content:space-between; align-items:baseline; gap:10px;"><span>THE BABY IS OUT</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:400; opacity:0.85; text-align:right;">NEXT</span></summary>
       <div style="padding:11px 14px 0; font-size:13.5px; line-height:1.3; color:var(--ink); background:var(--card2);">Hand the baby off and go straight to the birth sequence — stamp the time of birth, then ask the four questions out loud.</div>
       <div style="padding:11px 14px 13px; background:var(--card2);">
-        <a href="#c03" class="babyout" data-logevent="BABY OUT" data-logcard="02" style="display:flex; align-items:center; justify-content:center; min-height:56px; background:var(--sev-crit); color:var(--on-sev); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; text-align:center; margin-bottom:9px;">BABY IS OUT — STAMP TIME → NEONATAL RESUS</a>
+        <a href="../neonatal/?from=obneonatal" class="babyout" data-logevent="BABY OUT" data-logcard="02" style="display:flex; align-items:center; justify-content:center; min-height:56px; background:var(--sev-crit); color:var(--on-sev); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; text-align:center; margin-bottom:9px;">BABY IS OUT — STAMP TIME → NEONATAL RESUS</a>
         <a href="#c02s2" style="display:flex; align-items:center; justify-content:center; min-height:52px; background:var(--teal); color:var(--on-sev); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.1em; text-align:center;">→ 02 · TIME OF BIRTH + THE 4-YES CHECK</a>
         <div style="margin-top:9px; font-size:13.5px; line-height:1.3; color:var(--ink);">All four yes: skin-to-skin and delayed clamping. Any one no: clamp now, warmer, <b>neonatal resuscitation (card 03)</b>.</div>
       </div>
@@ -1408,7 +925,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <span style="flex:1; text-align:right; color:var(--ink2);">CALL STAT · DELIVERY IS BY C-SECTION</span>
     </div>
     <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:var(--ink);">Umbilical cord prolapse</h2>
-    <div style="display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:11px;"><a href="#c02s2" style="display:flex; align-items:center; justify-content:center; min-height:44px; background:var(--card2); border:2px solid var(--gray); color:var(--ink); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em;">← DELIVERY (02)</a><a href="#c03" style="display:flex; align-items:center; justify-content:center; min-height:44px; background:var(--card2); border:2px solid var(--sev-crit); color:var(--red); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em;">→ RESUS (03)</a></div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:11px;"><a href="#c02s2" style="display:flex; align-items:center; justify-content:center; min-height:44px; background:var(--card2); border:2px solid var(--gray); color:var(--ink); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em;">← DELIVERY (02)</a><a href="../neonatal/?from=obneonatal" style="display:flex; align-items:center; justify-content:center; min-height:44px; background:var(--card2); border:2px solid var(--sev-crit); color:var(--red); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em;">→ NRP ENGINE</a></div>
     <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:11px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:var(--ink2);">CART</span><a href="#d6" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:var(--card2); border:1px solid var(--green); text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:var(--green); flex:none;"><span style="display:flex; flex-direction:column; gap:2.7px;"><span style="display:block; width:12.6px; height:2.7px; background:var(--card);"></span><span style="display:block; width:12.6px; height:2.7px; background:var(--card);"></span></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:var(--green);">6 · VAGINAL DELIVERY</span></a></div>
   </header>
   <div class="nca" style="padding:0 18px;">
@@ -1614,7 +1131,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <div id="rhbabywall" style="margin-top:2px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; font-size:18px; line-height:1.3; color:var(--ink);">not yet delivered</div>
     </div>
     <button type="button" id="rhbaby" class="cs-secondary" style="width:100%; background:var(--green); color:var(--on-sev); border:none; border-top:1px solid var(--on-sev); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">BABY OUT — LOG IT</button>
-    <a id="rhnrplink" href="#c03" style="display:none; align-items:center; justify-content:center; gap:8px; width:100%; min-height:50px; background:var(--teal); color:var(--on-sev); border:none; border-top:1px solid var(--on-sev); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; text-decoration:none;">NEONATAL RESUSCITATION — CARD 3 →</a>
+    <a id="rhnrplink" href="../neonatal/?from=obneonatal" style="display:none; align-items:center; justify-content:center; gap:8px; width:100%; min-height:50px; background:var(--teal); color:var(--on-sev); border:none; border-top:1px solid var(--on-sev); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; text-decoration:none;">NEONATAL RESUSCITATION — LIVE ENGINE →</a>
   </div>
 
 
@@ -1706,7 +1223,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <div style="display:flex; flex-wrap:wrap; align-items:center; gap:7px; margin-top:12px; padding-top:11px; border-top:2px solid #e6f2f3;">
           <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:var(--ink2);">USED BY</span>
           <a href="#c02" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--teal); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--teal); text-decoration:none;">02 Imminent normal delivery</a>
-          <a href="#c03" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--teal); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--teal); text-decoration:none;">03 Neonatal resuscitation</a>
+          <a href="../neonatal/?from=obneonatal" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--teal); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--teal); text-decoration:none;">03 Neonatal resuscitation</a>
           <a href="#c05" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--teal); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--teal); text-decoration:none;">05 ED C-Section</a>
           <a href="#c08" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--teal); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--teal); text-decoration:none;">08 Breech delivery</a>
           <a href="#c10" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--teal); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--teal); text-decoration:none;">10 Resuscitative hysterotomy</a>
@@ -1729,9 +1246,9 @@ catch(e){ document.body.dataset.theme='dark'; }
         </ul>
         <div style="display:flex; flex-wrap:wrap; align-items:center; gap:7px; margin-top:12px; padding-top:11px; border-top:2px solid #e9eff8;">
           <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:var(--ink2);">USED BY</span>
-          <a href="#c03" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--blue); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--blue); text-decoration:none;">03 Neonatal resuscitation</a>
+          <a href="../neonatal/?from=obneonatal" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--blue); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--blue); text-decoration:none;">03 Neonatal resuscitation</a>
           <a href="#c04" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--blue); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--blue); text-decoration:none;">04 Umbilical vein catheterization</a>
-          <a href="#c06" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--blue); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--blue); text-decoration:none;">06 Postpartum hemorrhage</a>
+          <a href="../pph/?from=obneonatal" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--blue); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--blue); text-decoration:none;">06 Postpartum hemorrhage</a>
         </div>
       </div>
     </details>
@@ -1752,7 +1269,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <div style="display:flex; flex-wrap:wrap; align-items:center; gap:7px; margin-top:12px; padding-top:11px; border-top:2px solid #efeaf8;">
           <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:var(--ink2);">USED BY</span>
           <a href="#c04" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--purple); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--purple); text-decoration:none;">04 Umbilical vein catheterization</a>
-          <a href="#c06" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--purple); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--purple); text-decoration:none;">06 Postpartum hemorrhage</a>
+          <a href="../pph/?from=obneonatal" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--purple); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--purple); text-decoration:none;">06 Postpartum hemorrhage</a>
         </div>
       </div>
     </details>
@@ -1774,7 +1291,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         </ul>
         <div style="display:flex; flex-wrap:wrap; align-items:center; gap:7px; margin-top:12px; padding-top:11px; border-top:2px solid #fbeaec;">
           <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:var(--ink2);">USED BY</span>
-          <a href="#c06" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--sev-crit); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--red); text-decoration:none;">06 Postpartum hemorrhage</a>
+          <a href="../pph/?from=obneonatal" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--sev-crit); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--red); text-decoration:none;">06 Postpartum hemorrhage</a>
           <a href="../procedures/?from=home#c13" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--sev-crit); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--red); text-decoration:none;">Procedures 13 · JADA insertion</a>
         </div>
       </div>
@@ -1817,7 +1334,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <div style="display:flex; flex-wrap:wrap; align-items:center; gap:7px; margin-top:12px; padding-top:11px; border-top:2px solid #e8f2ea;">
           <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:var(--ink2);">USED BY</span>
           <a href="#c02" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--green); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--green); text-decoration:none;">02 Imminent normal delivery</a>
-          <a href="#c07" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--green); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--green); text-decoration:none;">07 Shoulder dystocia</a>
+          <a href="../dystocia/?from=obneonatal" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--green); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--green); text-decoration:none;">07 Shoulder dystocia</a>
           <a href="#c08" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--green); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--green); text-decoration:none;">08 Breech delivery</a>
           <a href="#c09" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--green); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--green); text-decoration:none;">09 Umbilical cord prolapse</a>
           <a href="#c10" style="display:inline-flex; align-items:center; min-height:34px; padding:4px 10px; border:1px solid var(--green); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; letter-spacing:0.06em; color:var(--green); text-decoration:none;">10 Resuscitative hysterotomy</a>
@@ -3023,7 +2540,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
         gaNote.innerHTML = term
           ? '<b>'+w+' weeks — term.</b> TERM answered yes. Ask the other three out loud.'
           : '<b>'+w+' weeks — less than term.</b> That is a NO on the 4-yes check: '+
-            'warmer and initial steps, <a href="#c03" style="color:var(--red);font-weight:700">neonatal resuscitation</a>. '+
+            'warmer and initial steps, <a href="../neonatal/?from=obneonatal" style="color:var(--red);font-weight:700">neonatal resuscitation</a>. '+
             'Cord management still runs to your plan — being preterm is not on its own a reason to clamp early.';
         if(term && gate()){
           startTimer(ensureBirthMs());
@@ -3200,17 +2717,18 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
       var nt=(c&&c.haveW)?('→ this baby: '+Math.round(10*c.w)+' mL'):'→ enter weight for the mL dose';
       var nss=document.querySelectorAll('.nsmini'); for(i=0;i<nss.length;i++){ nss[i].textContent=nt; }
       /* Card 02's entry-point echo — the weight box there used to drive a
-         panel that only exists on cards 03/04, so a grams entry at the moment
-         of birth got zero feedback where it was typed. */
+         panel that only exists on card 04 (03 retired to the neonatal engine),
+         so a grams entry at the moment of birth got zero feedback where it was
+         typed. */
       var echo='';
       if(c&&c.hardstop) echo='⚠ '+c.hardstop.replace(/<[^>]*>/g,' ');
-      else if(c&&c.haveW) echo='= '+(c.grams?(c.grams+' g = '+c.w+' kg'):(c.w+' kg'))+' · drives sizes + doses on cards 03/04';
+      else if(c&&c.haveW) echo='= '+(c.grams?(c.grams+' g = '+c.w+' kg'):(c.w+' kg'))+' · drives sizes + doses on card 04';
       else if(c&&c.err) echo='⚠ '+c.err.replace(/<[^>]*>/g,' ');
       var ecs=document.querySelectorAll('.wtecho'); for(i=0;i<ecs.length;i++){ ecs[i].textContent=echo; ecs[i].style.display=echo?'block':'none'; }
     }
     /* WS-audit: weight/gestation can now be entered on card 02 (birth banner /
-       PREPARE) OR directly on cards 03/04 via the .wt-sync/.ga-sync quick-entry
-       rows added there — all instances share one localStorage value and stay
+       PREPARE) OR directly on card 04 via the .wt-sync/.ga-sync quick-entry
+       row added there — all instances share one localStorage value and stay
        live-synced with each other, typing in any one updates the rest. */
     function wireSync(cls, key){
       var els=document.querySelectorAll('.'+cls);
@@ -3313,6 +2831,20 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
       fInput.value=''; applyFilter();
     }
   });
+})();
+</script>
+<script>
+/* In-session half of the card 03/06/07 redirect above — covers a hash that
+   changes while this page is already open (an internal link someone forgot
+   to update, or a hand-typed URL), not just a fresh load. */
+(function(){
+  function toEngine(){
+    var h=location.hash||'';
+    if(h==='#c03'){ location.replace('../neonatal/?from=obneonatal'); }
+    else if(h==='#c06'){ location.replace('../pph/?from=obneonatal'); }
+    else if(h==='#c07'){ location.replace('../dystocia/?from=obneonatal'); }
+  }
+  window.addEventListener('hashchange', toEngine, false);
 })();
 </script>
 </body>

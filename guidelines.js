@@ -169,7 +169,7 @@ var GDL_SOURCES = [
     impact: "high",
     reconciled: false,
     reconcileNote: "neonatal/ carries content brought over unchanged from ob-neonatal/ card 03 and NOT yet reconciled line-by-line with the NRP 9th edition. The tool shows a review banner and verify_neonatal_screen.mjs fails if the banner is switched off quietly. Flip reconciled to true only when a clinician has signed the reconciliation off — not when the banner is removed.",
-    dependents: ["neonatal/", "ob-neonatal/#c03", "peds/", "arrest/"],
+    dependents: ["neonatal/", "peds/", "arrest/"],
     watch: [
       { kind: "page", label: "AAP NRP program page",
         url: "https://www.aap.org/en/learning/neonatal-resuscitation-program/" },
@@ -336,7 +336,7 @@ var GDL_SOURCES = [
     lastVerified: null,
     citedSince: "2026-08-12",
     impact: "high",
-    dependents: ["pph/", "ob-neonatal/#c06"],
+    dependents: ["pph/"],
     watch: [
       { kind: "page", label: "ACOG clinical guidance index",
         url: "https://www.acog.org/clinical/clinical-guidance" },
@@ -355,7 +355,7 @@ var GDL_SOURCES = [
     lastVerified: null,
     citedSince: "2026-08-12",
     impact: "high",
-    dependents: ["dystocia/", "ob-neonatal/#c07"],
+    dependents: ["dystocia/"],
     watch: [
       { kind: "page", label: "ACOG clinical guidance index",
         url: "https://www.acog.org/clinical/clinical-guidance" },

@@ -231,14 +231,18 @@ ck('9. the landing page has a PPH tile', await home.locator('a[href*="pph/"]').c
 ck('9. and a dystocia tile', await home.locator('a[href*="dystocia/"]').count() > 0, true);
 await home.close();
 
-/* The cards they replace must still resolve and must point across. */
-const card = await b.newPage();
-await card.goto(BASE + '/ob-neonatal/?from=home#c06', { waitUntil: 'networkidle' });
-await card.waitForTimeout(300);
-const cardHrefs = await card.evaluate(() => [...document.querySelectorAll('a[href]')].map(a => a.getAttribute('href')));
-ck('9. card 06 links across to the PPH engine', cardHrefs.some(h => /pph\//.test(h)), true);
-ck('9. card 07 links across to the dystocia engine', cardHrefs.some(h => /dystocia\//.test(h)), true);
-await card.close();
+/* Cards 03/06/07 no longer exist on ob-neonatal/ — replaced, not duplicated
+   (issue: two parallel "reference view" copies of the same clinical content
+   is exactly what this rebuild was meant to stop). A deep-link to any of
+   those old anchors must redirect straight to the live engine instead of
+   landing on nothing. */
+for (const [hash, engine] of [['#c03', 'neonatal/'], ['#c06', 'pph/'], ['#c07', 'dystocia/']]) {
+  const card = await b.newPage();
+  await card.goto(BASE + '/ob-neonatal/?from=home' + hash, { waitUntil: 'networkidle' });
+  await card.waitForTimeout(300);
+  ck(`9. a ${hash} deep-link redirects to /${engine}`, new URL(card.url()).pathname, '/' + engine);
+  await card.close();
+}
 
 ck('10. no page or console errors across the whole run', errs.length, 0);
 if (errs.length) errs.slice(0, 6).forEach(e => console.log('    ' + e));
