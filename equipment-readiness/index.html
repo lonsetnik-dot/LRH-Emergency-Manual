@@ -205,7 +205,7 @@ catch(e){ document.body.dataset.theme='dark'; }
 var SITE = {
   version: "0.2",
   lastReviewed: "2026-08-12",
-  storeKey: "lrh-eq-readiness-v1",   /* device-local only; cleared by RESET */
+  storeKey: INV_STORE_KEY,           /* shared with simulations/; cleared by RESET */
   site: "LRH"
 };
 try{ window.SITE = SITE; }catch(e){}
@@ -215,14 +215,12 @@ try{ window.SITE = SITE; }catch(e){}
 
   function esc(x){ var d=document.createElement('div'); d.textContent=x==null?'':x; return d.innerHTML; }
 
-  /* ---------- device-local capture (CLAUDE.md rule 3: no PHI, no network,
-     cleared by RESET). Shape: { rows:{ rowId:{s:state,l:location} }, label } */
-  var ST = { rows:{}, label:'' };
-  try {
-    var raw = localStorage.getItem(SITE.storeKey);
-    if (raw) { var p = JSON.parse(raw); if (p && p.rows) ST = { rows:p.rows, label:p.label||'' }; }
-  } catch(e){}
-  function save(){ try{ localStorage.setItem(SITE.storeKey, JSON.stringify(ST)); }catch(e){} }
+  /* ---------- device-local capture — the SHARED store from inventory.js, so a
+     simulation's equipment walk and this readiness walk write the same record
+     (CLAUDE.md rule 3: no PHI, no network, cleared by RESET). */
+  var ST = { rows: INV_CAPTURE.rows(), label: INV_CAPTURE.label() };
+  function save(){ INV_CAPTURE.label(ST.label); }
+  function put(rowId, state, loc){ INV_CAPTURE.set(rowId, state, loc, 'cart walk'); ST.rows = INV_CAPTURE.rows(); }
 
   /* ---------- status ---------- */
   var CHIP = {
@@ -233,15 +231,7 @@ try{ window.SITE = SITE; }catch(e){}
     na : '<span class="st st-na">N/A</span>',
     "new": '<span class="st st-new">NOT REVIEWED</span>'
   };
-  function statusOf(rowId){
-    var u = ST.rows[rowId];
-    if (u && u.s) return (u.s==='loc'||u.s==='in') ? 'set' : u.s;   /* gap | na | set */
-    var base = rowId.split('#')[0];
-    if (INV_GAP_ISSUES[base]) return 'gap';
-    var b = invBaseline(rowId);
-    if (!b) return 'new';
-    return b.verify ? 'vf' : 'ok';
-  }
+  var statusOf = invStatus;   /* shared with simulations/ — one definition */
   function whereOf(rowId, kind){
     var u = ST.rows[rowId];
     if (u && u.s === 'gap') return kind === 'kit' ? 'MISSING — recorded as not in the bag' : 'GAP — recorded as not stocked here';
@@ -518,26 +508,24 @@ try{ window.SITE = SITE; }catch(e){}
     var row = sel.closest('.eqrow'), rid = row.getAttribute('data-row');
     var inp = row.querySelector('.eqloc');
     var v = sel.value;
-    if (!v) { delete ST.rows[rid]; inp.hidden = true; }
-    else {
-      var rec = ST.rows[rid] || {};
-      rec.s = v;
-      if (v === 'loc') {
-        var b = invBaseline(rid);
-        if (!rec.l) rec.l = (b && b.loc) || '';
-        inp.value = rec.l; inp.hidden = false;
-      } else { inp.hidden = true; }
-      ST.rows[rid] = rec;
+    if (!v) { put(rid, ''); inp.hidden = true; }
+    else if (v === 'loc') {
+      var prev = INV_CAPTURE.get(rid), b = invBaseline(rid);
+      var loc = (prev && prev.l) || (b && b.loc) || '';
+      put(rid, 'loc', loc);
+      inp.value = loc; inp.hidden = false;
+    } else {
+      put(rid, v);
+      inp.hidden = true;
     }
-    save(); repaint(row); refresh();
+    repaint(row); refresh();
     if (v === 'loc') inp.focus();
   });
   mainEl.addEventListener('input', function(ev){
     var inp = ev.target.closest('.eqloc'); if (!inp) return;
     var row = inp.closest('.eqrow'); if (!row) return;   /* the walk label is not a row */
     var rid = row.getAttribute('data-row');
-    var rec = ST.rows[rid] || { s:'loc' };
-    rec.l = inp.value; ST.rows[rid] = rec; save();
+    put(rid, (INV_CAPTURE.get(rid) || {}).s || 'loc', inp.value);
     row.querySelector('.where').innerHTML = whereOf(rid, row.getAttribute('data-kind'));
   });
   /* Open every collapsed ancestor of a jump target — a link into a closed
@@ -591,9 +579,13 @@ try{ window.SITE = SITE; }catch(e){}
     var ids = Object.keys(ST.rows), locs = [], gaps = [], nas = [], miss = [];
     ids.forEach(function(rid){
       var r = ST.rows[rid];
-      if (r.s === 'loc') locs.push('  "'+rid+'": { loc:"'+String(r.l||'').replace(/"/g,'\\"')+'" },');
+      /* provenance: a row confirmed during a drill and one confirmed on a
+         deliberate cart walk are the same fact, but a champion reviewing the
+         export deserves to know which. */
+      var prov = r.w ? '   /* found at ' + r.w + ' */' : '';
+      if (r.s === 'loc') locs.push('  "'+rid+'": { loc:"'+String(r.l||'').replace(/"/g,'\\"')+'" },'+prov);
       else if (r.s === 'in') { /* kit content confirmed in place — nothing to patch */ }
-      else if (r.s === 'gap') (rid.indexOf('@')>-1 ? miss : gaps).push('  /* GAP  '+rid+'  —  '+labelFor(rid)+' */');
+      else if (r.s === 'gap') (rid.indexOf('@')>-1 ? miss : gaps).push('  /* GAP  '+rid+'  —  '+labelFor(rid)+(r.w?'  ('+r.w+')':'')+' */');
       else if (r.s === 'na')  nas.push('  /* N/A  '+rid+'  —  '+labelFor(rid)+' */');
     });
     var confirmedKitItems = ids.filter(function(rid){ return ST.rows[rid].s === 'in'; }).length;
@@ -631,8 +623,8 @@ try{ window.SITE = SITE; }catch(e){}
   });
   document.getElementById('btn-reset').addEventListener('click', function(){
     if (!window.confirm('Clear everything recorded on this device? The manual’s own baseline is untouched.')) return;
-    ST = { rows:{}, label:'' };
-    try { localStorage.removeItem(SITE.storeKey); } catch(e){}
+    INV_CAPTURE.clear();
+    ST = { rows: INV_CAPTURE.rows(), label: '' };
     document.getElementById('exportbox').value = '';
     wl.value = '';
     document.querySelectorAll('.eqrow[data-row]').forEach(function(row){

@@ -343,3 +343,58 @@ Per CLAUDE.md's config-driven rule it reads all of that from the page's own
 injected inventory, so a fork with different sizes, locations or standards
 stays green — proven both ways before shipping, including a mutation run where
 the page's logic was broken with the config left alone.
+
+## 9. Phase 3 — the sims are the orientation walk (2026-08-12)
+
+The readiness walk assumed a champion with an hour and a clipboard. The
+department already runs a thing where people stand in the resuscitation bay and
+reach for equipment under time pressure, and it already knows exactly which
+items each case needs: the sims. So each sim now carries a **FIND IT** block —
+the equipment that case actually requires, with where the manual says it lives
+— and it writes into the **same** device-local record as the cart walk.
+
+That is the whole design: a new nurse locating the pediatric pads during SIM 3
+has established precisely the fact the readiness audit exists to establish. It
+would be absurd to make someone record it twice, and worse to let the two
+records disagree.
+
+### 9.1 What it means for orientation
+
+An orientation session stops being a tour and becomes an audit. The person
+being oriented finds each item and says the location out loud; the preceptor
+taps **FOUND** when it matches the manual, types where it really was when it
+does not, and logs a **gap** when it is not there at all. The new hire learns
+the room; the department learns what is missing. Same hour, two products.
+
+### 9.2 Design constraints that shaped it
+
+- **One tap is the common case.** The default option is *FOUND — where the
+  manual says*, which stores the manual's own location string without anyone
+  typing. Typing is reserved for the case worth capturing in words: reality
+  disagreeing with the manual. A row the manual has no location for offers no
+  one-tap option, because there is nothing to confirm.
+- **Kits at kit level only.** The sims say *point, don't open* — a sealed tray
+  costs a full re-check to reseal. Kit contents are audited in
+  `equipment-readiness/`, never in a drill. `verify_sim_equipment.mjs` asserts
+  no sim asks for a `kit@n` row.
+- **Provenance travels with the fact.** Each record carries *where it was
+  confirmed* ("SIM 3", "cart walk") and the export prints it, because a champion
+  reviewing findings deserves to know which came from a drill.
+- **One store, one RESET.** The clear control lives only in
+  `equipment-readiness/`. A second reset button in the sims would be a second
+  thing to forget, and orientation data surviving a reset someone believed was
+  total is worse than no reset at all.
+- **Sims stay out of site search** (CLAUDE.md rule 9's standing exception), so
+  nothing here adds a `SEARCH_INDEX` entry. An orientation checklist must never
+  surface next to a clinical card at the bedside. The landing tile carries the
+  orientation framing instead.
+
+### 9.3 Where the code lives
+
+`INV_CAPTURE` and `invStatus()` moved into `inventory.js`, which both tools
+already inject — so the store, the four states, and what MAPPED / RECORDED /
+GAP / NOT REVIEWED mean are defined exactly once. `SIM_EQUIPMENT` (which rows
+each case needs) stays in `simulations/` as site config, since it describes the
+scenario rather than the inventory. A mistyped id renders an **UNKNOWN ROW**
+line on screen and fails the suite, because an orientation checklist that
+silently drops the chest tube is worse than no checklist.

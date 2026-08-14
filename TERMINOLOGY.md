@@ -25,6 +25,36 @@ non-US medical and general-English terms. Findings and fixes below.
 | trauma centre | trauma center | `procedures/index.html` |
 | salbutamol (paired with albuterol) | albuterol only | `peds/index.html` — was `Bronchodilators (albuterol/salbutamol)`, simplified to `Bronchodilators (albuterol)` since the US card doesn't need the INN alongside the USAN |
 
+## Audit — 2026-08-12 (second sweep)
+
+The 2026-08-07 pass caught the drug names and the obvious spellings but missed
+whole clusters of clinical vocabulary, because it searched for the terms it
+already expected. This pass ran the full alias table below as one regex across
+every `.html`, `.js` and `.mjs` in the repo and inspected each hit in context.
+
+| Found (non-US) | Replaced with (US) | Where |
+|---|---|---|
+| oesophagus / oesophageal / OESOPHAGUS | esophagus / esophageal / ESOPHAGUS | `procedures/` SALAD card (×11, incl. the infographic label and the search keywords), `system/` (×1), `airway/` DOPE line (×1), landing `index.html` search keywords (×1) |
+| haemothorax / Haemothorax | hemothorax / Hemothorax | `procedures/` pigtail card (×8) |
+| haemoptysis / Haemoptysis | hemoptysis / Hemoptysis | `procedures/` SALAD card (×2) |
+| haemorrhage | hemorrhage | `procedures/` (×3), `labels/` (×1) |
+| haemodynamic / haemodynamically | hemodynamic / hemodynamically | `procedures/` pigtail card (×2) |
+| oedema (standalone) | edema | `procedures/` (×4 — pulmonary edema, re-expansion edema) |
+| anaesthetic / anaesthesia | anesthetic / anesthesia | `procedures/` (×1), `labels/` (×1), `airway/` (×3 — our sentences *about* DAS, which is British; the prose is ours, not a quotation) |
+| centred / receiving centre | centered / receiving center | `procedures/` (×2), `system/` (×2), `codes/` (×2) |
+| litres | liters | `procedures/`, `system/`, `posters/ava3xi/` (×2 each) |
+| behaviour | behavior | `codes/` (magnet behavior), `arrest/`, `verify_offline.mjs` comment |
+| colour / colours / Colour / COLOUR | color / colors / Color / COLOR | `labels/` (×13 — the whole design-rationale comment block and the cart notes), `airway/` (a JS parameter name), `verify_arrest_screen.mjs` (×2 test labels) |
+
+Test suites were updated in the same pass where they assert on the changed
+prose (`verify_issues_20260809.mjs` — "proximal esophagus", "hemothorax routed
+to a chest tube"; `verify_airway_screen.mjs` — "written for anesthesia"). A
+terminology fix that leaves a suite red teaches people to ignore a red suite.
+
+**Note on `angioedema`:** that IS the US spelling. A naive `oedema → edema`
+search-and-replace corrupts it in `codes/`, `peds/`, `simulations/`, `vems/`
+and the landing page. Any future sweep must exclude it explicitly.
+
 ## Deliberately left unchanged — not our prose
 
 A few instances of British/Commonwealth spelling survive on purpose because
@@ -39,6 +69,17 @@ misquote the source:
 - `procedures/index.html` — **Alfred Emergency Academic Centre** (Alfred
   Health, Melbourne, Australia) and **Royal College of Surgeons Edinburgh** —
   real institution names in citations.
+- `codes/index.html` — **LITFL, "Haemoptysis"** — the linked page's own title on
+  an Australian site.
+- `airway/index.html`, `codes/index.html`, `verify_airway_screen.mjs` — **Br J
+  Anaesth** — the journal's name.
+- `airway/index.html` — **"paediatric (APA/DAS)"** in the list of DAS
+  guidelines — that is the guideline's actual title.
+- `arrest/index.html` — the `LOCALE` block's `/* UK: adrenaline */`,
+  `/* UK: lignocaine */`, `/* UK: paediatric */`, `/* UK: anaesthetic */`
+  comments, and the same convention in `verify_airway_screen.mjs`
+  (`UK: suxamethonium`). These comments exist *to* name the alias; "fixing"
+  them deletes the localization map.
 - Anywhere **Tactical Combat Casualty Care (TCCC)** appears — "casualty" here
   is the actual name of a US DoD program, not the British word for an ED.
 - "Mass casualty," "multiple casualties" — standard US EMS/trauma terminology,

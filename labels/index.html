@@ -23,25 +23,25 @@
 
    The design language is constant; the amount of it that fits is not. What
    survives at every size, in this order, is the RULE OF THREE:
-       1. colour + number   (which drawer)      - survives to 3 m
+       1. color + number   (which drawer)      - survives to 3 m
        2. the name          (which contents)    - survives to 1 m
        3. a pictogram       (recognise it fast) - survives to 1 m
    Everything beyond that (key fact, sizes, PAR, expiry, QR) is added back only
    where there is physical room. On SLIM labels there is not, so stock moves to
    a single CHECK CARD per cart rather than being repeated per drawer.
 
-   ---- COLOUR -------------------------------------------------------------
-   Colour encodes WHERE and nothing else: which drawer, counting down the cart.
+   ---- COLOR -------------------------------------------------------------
+   Color encodes WHERE and nothing else: which drawer, counting down the cart.
    Never severity, never tool identity. It is never the only carrier - every
    label also has a number, a name and a shape, so the whole system still works
    photocopied in black and white.
 
-   Cart identity does NOT need encoding: the carts are already different colours
+   Cart identity does NOT need encoding: the carts are already different colors
    in the room (code = red, OB = navy, trauma = tan/orange). Do not spend a
    channel on something the furniture already says.
    ========================================================================== */
 :root{
-  /* Drawer position colours. Red is excluded on purpose - the code cart is red. */
+  /* Drawer position colors. Red is excluded on purpose - the code cart is red. */
   --p1:#6f4fa8; --p2:#0f7a86; --p3:#2f62a8; --p4:#8a6011; --p5:#2f7a3f; --p6:#7a3f6d;
   --shelf:#5a6a78;
 
@@ -346,7 +346,17 @@ var QRS = {
 function qr(key, inches){
   var q=QRS[key]; if(!q) return '';
   var Z=4, n=q.n, side=n+2*Z;
-  return '<svg viewBox="'+(-Z)+' '+(-Z)+' '+side+' '+side+'" style="width:'+inches+';height:'+inches+';display:block" '+
+  /* flex-shrink:0 is load-bearing, not decorative. Every caller drops this into a
+     flex row (.pfoot, .wqr) next to a text sibling of variable length. Without it,
+     a note that grows past the row's width silently squashes the SVG along the
+     main axis instead of wrapping the text — width crushed toward zero while the
+     explicit height holds, because flexbox only protects the axis you fix. The
+     code still LOOKS fine at a glance (it is still a square-ish blue pattern) but
+     no longer decodes: found live via verify_qr_scan.mjs + verify_qr_decode.py
+     when a chest-tube note grew just long enough to trigger it (2026-08-13). A
+     rendering check would have caught the visual glitch eventually; only a decode
+     check catches "still looks like a QR, no longer scans to anything." */
+  return '<svg viewBox="'+(-Z)+' '+(-Z)+' '+side+' '+side+'" style="width:'+inches+';height:'+inches+';flex-shrink:0;display:block" '+
     'role="img" aria-label="QR code to '+q.u+'"><rect x="'+(-Z)+'" y="'+(-Z)+'" width="'+side+'" height="'+side+'" fill="#fff"/>'+
     '<path d="'+q.d+'" fill="#16324f"/></svg>';
 }
@@ -374,7 +384,7 @@ var CARTS = [
  {
   id:'code', name:'Code Cart', body:'#c8102e', format:'full',
   note:'Bare drawer fronts with no card holders, so these are full-size adhesive faces. '+
-       'Red is not used as a drawer colour here because the cart itself is red.',
+       'Red is not used as a drawer color here because the cart itself is red.',
   drawers:[
    /* WS-cart (2026-08-09) — rebuilt from the photograph of the real cart. It has FIVE drawers,
       the bottom one deep, and the categories printed on its own label strip are used verbatim:
@@ -421,7 +431,7 @@ var CARTS = [
       {t:'Suction',tag:'CODE CART · DRAWER 4',icon:'suction',big:'TWO UNITS · TEST BOTH BEFORE INDUCTION',
        sub:'Rigid large-bore for a contaminated airway. One suction is not a setup.',par:2},
       {t:'I.V. Fluids',tag:'CODE CART · DRAWER 4',icon:'fluid',big:'CRYSTALLOID · GIVING SETS · PRESSURE BAGS',
-       sub:'In haemorrhage this is not the resuscitation fluid — blood is.',par:2}]},
+       sub:'In hemorrhage this is not the resuscitation fluid — blood is.',par:2}]},
    {n:5,c:'--p5',deep:true,labels:[
       {t:'I.V. Supplies',tag:'CODE CART · DRAWER 5 · DEEP',icon:'iv',big:'CANNULAE · EXTENSION SETS · DRESSINGS',
        sub:'Cart-front face. If peripheral access fails twice, stop and go intraosseous.',par:1},
@@ -429,7 +439,7 @@ var CARTS = [
        sub:'Nothing runs until it is flushed. Lidocaine first in the awake patient. <b>Under 3 kg / newly born → umbilical vein catheter (OB cart), not an IO.</b>',
        sizes:['15 mm · 3–39 kg','25 mm · ≥40 kg','45 mm · humeral'],par:3},
       {t:'Miscellaneous',tag:'CODE CART · DRAWER 5 · DEEP',icon:'ppe',big:'PPE · SHARPS · DOCUMENTATION · SPARE PADS',
-       sub:'Shares the deep drawer with I.V. Supplies. Two labels, one drawer, one spine colour.',par:1}]},
+       sub:'Shares the deep drawer with I.V. Supplies. Two labels, one drawer, one spine color.',par:1}]},
    {n:'S',c:'--shelf',side:true,labels:[
       {t:'Pacemaker Magnet',tag:'SIDE PANEL',icon:'magnet',big:'ICD → SHOCKS SUSPENDED · PACER → ASYNCHRONOUS',
        sub:'The effect stops the moment the magnet comes off. Never leave it unattended.',par:1}]}
@@ -470,9 +480,9 @@ var CARTS = [
   ] },
  {
   id:'peds', name:'Pediatric (Broselow) Cart', body:'#d9dde2', format:'slim', broselow:true,
-  note:'The one place colour does NOT mean drawer position. Broselow bands encode PATIENT WEIGHT, '+
+  note:'The one place color does NOT mean drawer position. Broselow bands encode PATIENT WEIGHT, '+
        'a national standard already on this cart and already driving the Peds tool’s dosing. The chip '+
-       'therefore carries the kilogram band rather than a drawer number, and the colours are taken '+
+       'therefore carries the kilogram band rather than a drawer number, and the colors are taken '+
        'verbatim from peds/index.html so the screen and the drawer always agree.',
   drawers:[
    {n:'3–5',   c:'--bz-grey',   labels:[{t:'GREY',   tag:'3–5 kg',   icon:'child'}]},
@@ -490,7 +500,7 @@ var CARTS = [
 
 /* Cabinets — door labels. Contents are PLACEHOLDERS pending a walk-round. */
 var CABINETS = {
-  note:'The cabinets are where the system used to stop: tiny typed slips, no colour, no icon, posters taped on ad hoc. '+
+  note:'The cabinets are where the system used to stop: tiny typed slips, no color, no icon, posters taped on ad hoc. '+
        'A door label carries what a drawer label cannot — a short contents list — because a closed door hides everything '+
        'and there is no handle strip to read. Several items that had no home anywhere (arterial line, pigtail catheter, '+
        'the relocated LP tray) live here. Contents still need a walk-round to confirm.',
@@ -515,7 +525,7 @@ var CABINETS = {
     {t:'Epistaxis',c:'--p4',icon:'nose',list:['Nasal speculum + headlamp','Rapid Rhino 5.5 / 7.5 / 9 cm','Merocel tampons','Silver nitrate sticks','Foley 12-14 Fr + 20 mL syringe','Oxymetazoline 0.05% + lidocaine 4%']},
     {t:'SALAD Suction',c:'--p2',icon:'suction',list:['DuCanto rigid catheter x2','HI-D Big Stick','Meconium aspirator','Spare ETT 8.0','Suction tubing + canisters']},
     {t:'Procedure Trays',c:'--p1',icon:'lp',list:['Lumbar puncture tray','Suture trays','Minor procedure set']},
-    {t:'Suture / Wound',c:'--p4',icon:'suture',list:['3-0 / 4-0 / 5-0','Skin stapler','Local anaesthetic','Irrigation']},
+    {t:'Suture / Wound',c:'--p4',icon:'suture',list:['3-0 / 4-0 / 5-0','Skin stapler','Local anesthetic','Irrigation']},
     {t:'Specimens',c:'--p6',icon:'tube',list:['Blood tubes','Cultures','Swabs','Urine containers']},
     {t:'Splints',c:'--p4',icon:'splint',list:['Rigid splints','Casting supplies','Slings']},
     {t:'Transvenous Pacing',c:'--p3',icon:'pacer',list:['Introducer sheath 6-7 Fr','Pacing catheter 5 Fr','External generator + fresh battery','Connecting cable','Spare 9 V batteries']},
@@ -586,7 +596,7 @@ CARTS.forEach(function(cart){
       ' · SLIM INSERTS 3.4 × 0.85 in</span><span>PRINT AT 100% — CUT ON THE BORDER</span></div>'+
       '<div class="slimwrap">'+slims+'</div>'+
       '<p class="note screenonly"><b>Why these carry less.</b> A 3.4 × 0.85 in slot cannot hold a key fact, a size '+
-      'chart and a stock block as well. What survives is the rule of three — colour + number, name, pictogram. '+
+      'chart and a stock block as well. What survives is the rule of three — color + number, name, pictogram. '+
       'The clinical detail is on the wall poster and the phone card; the stock detail is on the cart check card below.</p></div>');
 
     /* --- one check card per slim cart, replacing per-label stock fields --- */
@@ -634,7 +644,7 @@ out.push('<div class="sheet" id="loc-room7"><div class="sheettitle"><span>ROOM 7
   '<span>FORMAT: DOOR</span></div>'+doors+
   '<p class="note"><b>'+CABINETS.note+'</b></p>'+
   '<p class="note screenonly">A door label is the one place a contents list earns its space: a closed cupboard hides '+
-  'everything, and unlike a drawer there is no handle strip to scan. Same colour code, same icons, same rule of three '+
+  'everything, and unlike a drawer there is no handle strip to scan. Same color code, same icons, same rule of three '+
   '— plus four to six lines of what is actually inside, which is what stops someone opening six doors in a row.</p></div>');
 
 /* ============ PROCEDURE INFOGRAPHIC CARDS (issue #33) ============
@@ -669,8 +679,12 @@ var PROCS = [
      (#148). Every other card still scans to its checklist, so the scan line is
      per-card rather than a single shared string that would now be wrong here. */
   scan:'Scan to record the check.',
-  items:['Scalpel No. 10 blade','Kelly clamps x2','Suture 0 silk + needle driver','Lidocaine 1% 20 mL + 10 mL syringe + 21 g and 25 g needles','ChloraPrep','Fenestrated drape','Regular 1/2 drape','Large Tegaderm'],
-  note:'The drain never gates the incision — finger thoracostomy decompresses on its own and needs no drain at all. The RN primes the UWSD in parallel, ready before the TUBE is connected. Sizes live loose on the shelf, not in the bag.'},
+  /* Reconciled 2026-08-13 — see the long comment on this kit in inventory.js
+     for why: ChloraPrep not povidone-iodine, drapes and Tegaderm added, and the
+     priming correction, all confirmed directly by Lon over a parallel photo-
+     based rebuild. */
+  items:['Needle driver','Curved Kelly clamps x2','Curved Mayo scissors','Toothed tissue forceps','Scalpel No. 10 blade','ChloraPrep','Silk 0 suture on a cutting needle','10 mL syringe + 18 g draw and 25 g needles','Foley catheter 16 Fr','Fenestrated drape','Regular 1/2 drape','Large Tegaderm'],
+  note:'Twelve peel packs, twelve expiries. The drain never gates the incision — the RN primes the UWSD in parallel, ready before the TUBE is connected. Tubes live loose on the shelf.'},
  {t:'Thoracotomy Tray',icon:'spreader',c:'--p1',loc:'TRAUMA CART · SHELF A',qr:'Thoracotomy Tray',
   items:['Finochietto rib spreader','Gigli saw with handles','Mayo scissors, heavy','Scalpel No. 20 blade','Long artery forceps x2','Vascular (aortic) cross-clamp','3-0 monofilament on a large needle x3','Skin stapler','Foley 16 Fr + 20 mL syringe'],
   note:'The decision is the procedure. Do not open this to browse it — resealing needs a full re-check.'},
@@ -747,7 +761,7 @@ out.push('<div class="sheet"><div class="sheettitle"><span>PROCEDURE INFOGRAPHIC
 /* ============ KIT BUILD SHEETS (drafts) ============ */
 out.push('<div class="sheet screenonly" id="kits"><div class="sheettitle"><span>KIT BUILD SHEETS</span><span>ALL DRAFTS</span></div>'+
  '<p class="note"><b>These bags do not exist yet.</b> One sheet per kit: quantities, how it is packed, what is deliberately NOT in the bag, and four signature fields. Take the sheet and a box of stock to a bench, build the bag, sign it, then hang the matching 4 \u00d7 6 in card on the cabinet. Quantities are starting proposals drawn from each card\u2019s own equipment list \u2014 they are not PAR levels and nothing here has clinical sign-off.</p></div>');
-out.push("<div class=\"sheet\"><div class=\"sheettitle\"><span>KIT BUILD SHEET \\u00b7 CHEST TUBE KIT</span><span>DRAFT \\u00b7 NOT YET ASSEMBLED</span></div><p class=\"kloc\">ROOM 7 (RESUS BAY) CABINET · CHEST DRAINAGE</p><p class=\"knote\"><b>Pack:</b> Clear zip bag, poster wrapped round it, behind the door label.</p><table class=\"kt\"><thead><tr><th>QTY</th><th>ITEM</th><th>IN BAG</th><th>EXPIRY</th></tr></thead><tbody><tr><td>1</td><td>Scalpel No. 10 blade</td><td></td><td></td></tr><tr><td>2</td><td>Kelly clamps <i>one to dissect, one on the tube</i></td><td></td><td></td></tr><tr><td>1</td><td>Suture 0 silk + needle driver</td><td></td><td></td></tr><tr><td>1</td><td>Lidocaine 1% 20 mL + 10 mL syringe + 21 g and 25 g needles <i>awake patient</i></td><td></td><td></td></tr><tr><td>1</td><td>ChloraPrep</td><td></td><td></td></tr><tr><td>1</td><td>Fenestrated drape</td><td></td><td></td></tr><tr><td>1</td><td>Regular 1/2 drape</td><td></td><td></td></tr><tr><td>1</td><td>Large Tegaderm</td><td></td><td></td></tr></tbody></table><p class=\"knote\"><b>Also needed, not in the bag:</b> Chest tube — stocked loose on the Chest Drainage shelf. PPE — Trauma Cart · Drawer 5 · PPE. Dressing kit — a separate bag.</p><p class=\"knote\"><b>Watch:</b> The drain never gates the incision — finger thoracostomy decompresses on its own and needs no drain at all. The RN primes the UWSD in parallel, ready before the TUBE is connected. Sizes live loose on the shelf, not in the bag.</p><div class=\"ksign\"><div><span class=\"fl\">BUILT BY \\u00b7 DATE</span><div class=\"w\"></div></div><div><span class=\"fl\">CHECKED BY \\u00b7 DATE</span><div class=\"w\"></div></div><div><span class=\"fl\">EARLIEST EXPIRY IN BAG</span><div class=\"w\"></div></div><div><span class=\"fl\">CLINICAL SIGN-OFF</span><div class=\"w\"></div></div></div></div>");
+out.push("<div class=\"sheet\"><div class=\"sheettitle\"><span>KIT BUILD SHEET \u00b7 CHEST TUBE KIT</span><span>DRAFT \u00b7 CORRECTED 2026-08-13, NOT YET RE-VERIFIED</span></div><p class=\"kloc\">ROOM 7 (RESUS BAY) CABINET · CHEST DRAINAGE</p><p class=\"knote\"><b>Pack:</b> Clear zip bag, poster wrapped round it, behind the door label. Instruments stay in their individual peel packs \u2014 twelve packs, twelve expiries, so this sheet is checked per pack.</p><table class=\"kt\"><thead><tr><th>QTY</th><th>ITEM</th><th>IN BAG</th><th>EXPIRY</th></tr></thead><tbody><tr><td>1</td><td>Needle driver <i>tungsten carbide, gold rings</i></td><td></td><td></td></tr><tr><td>2</td><td>Curved Kelly clamps <i>one to dissect, one on the tube</i></td><td></td><td></td></tr><tr><td>1</td><td>Curved Mayo scissors</td><td></td><td></td></tr><tr><td>1</td><td>Toothed tissue forceps</td><td></td><td></td></tr><tr><td>1</td><td>Scalpel No. 10 blade</td><td></td><td></td></tr><tr><td>1</td><td>ChloraPrep</td><td></td><td></td></tr><tr><td>1</td><td>Silk 0 suture on a cutting needle</td><td></td><td></td></tr><tr><td>1</td><td>10 mL syringe + 18 g draw and 25 g needles <i>lidocaine comes from the Omnicell</i></td><td></td><td></td></tr><tr><td>1</td><td>Foley catheter 16 Fr</td><td></td><td></td></tr><tr><td>1</td><td>Fenestrated drape</td><td></td><td></td></tr><tr><td>1</td><td>Regular 1/2 drape</td><td></td><td></td></tr><tr><td>1</td><td>Large Tegaderm</td><td></td><td></td></tr></tbody></table><p class=\"knote\"><b>Also needed, not in the bag:</b> Chest tube 28\u201332 Fr and 24\u201328 Fr, 14 Fr pigtail, and the primed underwater-seal drain \u2014 all stocked loose on the Chest Drainage shelf. Gown, gloves, mask and eye protection \u2014 Trauma Cart \u00b7 Drawer 5 \u00b7 PPE. Gauze packs, occlusive dressing and tape \u2014 a separate dressing kit bag. Lidocaine 1% from the Omnicell.</p><p class=\"knote\"><b>Watch:</b> The drain never gates the incision \u2014 finger thoracostomy decompresses on its own and needs no drain at all. The RN primes the UWSD in parallel, ready before the TUBE is connected. Sizes live loose on the shelf, not in the bag. Record the EARLIEST expiry across the twelve packs \u2014 that is the date the bag expires.</p><div class=\"ksign\"><div><span class=\"fl\">BUILT BY \u00b7 DATE</span><div class=\"w\"></div></div><div><span class=\"fl\">CHECKED BY \u00b7 DATE</span><div class=\"w\"></div></div><div><span class=\"fl\">EARLIEST EXPIRY IN BAG</span><div class=\"w\"></div></div><div><span class=\"fl\">CLINICAL SIGN-OFF</span><div class=\"w\"></div></div></div></div>");
 out.push("<div class=\"sheet\"><div class=\"sheettitle\"><span>KIT BUILD SHEET \\u00b7 THORACOTOMY TRAY</span><span>DRAFT \\u00b7 NOT YET ASSEMBLED</span></div><p class=\"kloc\">TRAUMA CART · SHELF A</p><p class=\"knote\"><b>Pack:</b> Sealed rigid tray. Break the seal only for the procedure or the annual check.</p><table class=\"kt\"><thead><tr><th>QTY</th><th>ITEM</th><th>IN BAG</th><th>EXPIRY</th></tr></thead><tbody><tr><td>1</td><td>Finochietto rib spreader</td><td></td><td></td></tr><tr><td>1</td><td>Gigli saw with handles <i>or heavy shears for the sternum</i></td><td></td><td></td></tr><tr><td>1</td><td>Mayo scissors, heavy</td><td></td><td></td></tr><tr><td>1</td><td>Scalpel No. 20 blade</td><td></td><td></td></tr><tr><td>2</td><td>Long artery forceps <i>to tent the pericardium</i></td><td></td><td></td></tr><tr><td>1</td><td>Vascular (aortic) cross-clamp <i>if stocked</i></td><td></td><td></td></tr><tr><td>3</td><td>3-0 monofilament on a large needle <i>nylon or prolene, for the cardiac wound</i></td><td></td><td></td></tr><tr><td>1</td><td>Skin stapler <i>the fast option for a ventricular wound</i></td><td></td><td></td></tr><tr><td>1</td><td>Foley 16 Fr + 20 mL syringe <i>balloon tamponade of a cardiac wound</i></td><td></td><td></td></tr></tbody></table><p class=\"knote\"><b>Also needed, not in the bag:</b> PPE (gown, DOUBLE gloves, eye protection) and splash prep are on the cart, not in the tray — you put them on before you open it. Internal paddles live with the defibrillator.</p><p class=\"knote\"><b>Watch:</b> The decision is the procedure. Do not open this to browse it — resealing needs a full re-check.</p><div class=\"ksign\"><div><span class=\"fl\">BUILT BY \\u00b7 DATE</span><div class=\"w\"></div></div><div><span class=\"fl\">CHECKED BY \\u00b7 DATE</span><div class=\"w\"></div></div><div><span class=\"fl\">EARLIEST EXPIRY IN BAG</span><div class=\"w\"></div></div><div><span class=\"fl\">CLINICAL SIGN-OFF</span><div class=\"w\"></div></div></div></div>");
 out.push("<div class=\"sheet\"><div class=\"sheettitle\"><span>KIT BUILD SHEET \\u00b7 BURR HOLE KIT</span><span>DRAFT \\u00b7 NOT YET ASSEMBLED</span></div><p class=\"kloc\">TRAUMA CART · SHELF A</p><p class=\"knote\"><b>Pack:</b> Sealed rigid tray, alongside the thoracotomy tray.</p><table class=\"kt\"><thead><tr><th>QTY</th><th>ITEM</th><th>IN BAG</th><th>EXPIRY</th></tr></thead><tbody><tr><td>1</td><td>Codman disposable perforator <i>clutched / self-stopping</i></td><td></td><td></td></tr><tr><td>1</td><td>Hudson brace or driver <i>whichever your perforator fits</i></td><td></td><td></td></tr><tr><td>1</td><td>Scalpel No. 10 blade <i>4 cm incision</i></td><td></td><td></td></tr><tr><td>1</td><td>Self-retaining retractor</td><td></td><td></td></tr><tr><td>1</td><td>Sharp dural hook</td><td></td><td></td></tr><tr><td>1</td><td>Bone nibbler <i>in case the hole must be enlarged</i></td><td></td><td></td></tr><tr><td>1</td><td>Lidocaine 1% with epinephrine 10 mL + syringe</td><td></td><td></td></tr><tr><td>1</td><td>Clippers <i>shave widely</i></td><td></td><td></td></tr><tr><td>1</td><td>Sterile saline 500 mL for irrigation</td><td></td><td></td></tr></tbody></table><p class=\"knote\"><b>Also needed, not in the bag:</b> Cefazolin 2 g IV comes from the Omnicell, not the tray. Suction is set up separately.</p><p class=\"knote\"><b>Watch:</b> Confirm the perforator is the clutched, self-stopping type before it is stocked. A non-clutched bit in this tray is a hazard, not a spare.</p><div class=\"ksign\"><div><span class=\"fl\">BUILT BY \\u00b7 DATE</span><div class=\"w\"></div></div><div><span class=\"fl\">CHECKED BY \\u00b7 DATE</span><div class=\"w\"></div></div><div><span class=\"fl\">EARLIEST EXPIRY IN BAG</span><div class=\"w\"></div></div><div><span class=\"fl\">CLINICAL SIGN-OFF</span><div class=\"w\"></div></div></div></div>");
 out.push("<div class=\"sheet\"><div class=\"sheettitle\"><span>KIT BUILD SHEET \\u00b7 TRANSVENOUS PACING KIT</span><span>DRAFT \\u00b7 NOT YET ASSEMBLED</span></div><p class=\"kloc\">ROOM 7 (RESUS BAY) CABINET · TRANSVENOUS PACING</p><p class=\"knote\"><b>Pack:</b> Clear zip bag with the generator beside it, not inside it.</p><table class=\"kt\"><thead><tr><th>QTY</th><th>ITEM</th><th>IN BAG</th><th>EXPIRY</th></tr></thead><tbody><tr><td>1</td><td>Introducer sheath 6–7 Fr with sterile sleeve <i>Cordis-type, its own sheath, never a multi-lumen port</i></td><td></td><td></td></tr><tr><td>1</td><td>Balloon-tipped bipolar pacing catheter 5 Fr <i>depth-marked every 10 cm</i></td><td></td><td></td></tr><tr><td>1</td><td>Balloon syringe capped at 1.5 mL</td><td></td><td></td></tr><tr><td>1</td><td>Connecting cable</td><td></td><td></td></tr><tr><td>1</td><td>Suture 2-0 + needle driver</td><td></td><td></td></tr><tr><td>1</td><td>Sterile probe cover + gel <i>mechanical-capture confirmation</i></td><td></td><td></td></tr></tbody></table><p class=\"knote\"><b>Also needed, not in the bag:</b> External generator with a FRESH battery, stored beside the bag. Standard central-access sterile bundle from the CVC shelf. Transcutaneous pads on and push-dose epinephrine drawn up before you start — those are the backup, not the kit.</p><p class=\"knote\"><b>Watch:</b> Find the generator and check its battery on the monthly check — the night you need this is the wrong time to discover a flat one.</p><div class=\"ksign\"><div><span class=\"fl\">BUILT BY \\u00b7 DATE</span><div class=\"w\"></div></div><div><span class=\"fl\">CHECKED BY \\u00b7 DATE</span><div class=\"w\"></div></div><div><span class=\"fl\">EARLIEST EXPIRY IN BAG</span><div class=\"w\"></div></div><div><span class=\"fl\">CLINICAL SIGN-OFF</span><div class=\"w\"></div></div></div></div>");
@@ -767,7 +781,7 @@ out.push('<div class="sheet screenonly"><div class="sheettitle"><span>WHAT STILL
  '<p class="note"><b>1b. DONE 2026-08-09 — the drawers were swapped.</b> Surgical / Supraglottic moved '+
  'UP to drawer 2; I.V. Supplies moved DOWN into the deep drawer alongside Miscellaneous. The reason: the '+
  'cricothyroidotomy kit is the most time-critical item on the cart and it was in the slowest drawer in the room to '+
- 'reach — you crouch for it, under everything. I.V. supplies are reached for early and calmly instead. Colour and '+
+ 'reach — you crouch for it, under everything. I.V. supplies are reached for early and calmly instead. Color and '+
  'shape follow the POSITION, not the contents, so drawer 2 is blue-with-a-diamond and drawer 5 is gold-with-a-pill '+
  'exactly as before; only the words and pictograms moved. <b>Two physical jobs follow: move the contents, and reprint '+
  'the cart’s own label strip.</b> Note the one cost — the EZ-IO is now in the deep drawer. If that bothers you it can '+

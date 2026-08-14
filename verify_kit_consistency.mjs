@@ -85,21 +85,29 @@ const KITS = [
     ],
   },
   {
+    // Rebuilt 2026-08-13 from the kit assembled for providers. The poster is asserted here too:
+    // it now carries a second sheet that IS the check card taped beside the bag, so a contents
+    // change that missed it would put a wrong list on the wall next to a right list in the app.
     name: 'Chest Tube Kit',
     location: /ROOM 7|TRAUMA CART|OB \/ NEONATAL CART/i,
-    items: ['Scalpel No. 10 blade', 'Kelly clamps', 'Suture 0 silk + needle driver',
-            'ChloraPrep', 'Fenestrated drape', 'Regular 1/2 drape', 'Large Tegaderm'],
-    /* Corrected on the cart walk 2026-08-13: PPE lives in the Trauma Cart PPE
-       drawer and the dressing supplies are their own bag, so neither may be
-       listed as CONTENTS of this one. Listing them here is what sends someone
-       rummaging in a chest-tube bag for a gown while a patient waits, so the
-       absence is asserted rather than left to whoever edits next. The strings
-       may still appear as "not in this bag" prose — see absentFrom. */
-    absent: ['Gown, gloves, mask, eye protection', 'Gauze packs + occlusive dressing + tape'],
+    items: ['Needle driver', 'Curved Kelly clamps', 'Curved Mayo scissors', 'Toothed tissue forceps',
+            'Scalpel No. 10 blade', 'ChloraPrep', 'Silk 0 suture on a cutting needle',
+            'Foley catheter 16 Fr', 'Fenestrated drape', 'Regular 1/2 drape', 'Large Tegaderm'],
+    /* Corrected 2026-08-13, twice: PPE lives in the Trauma Cart PPE drawer and
+       the dressing supplies are their own bag, so neither may be listed as
+       CONTENTS of this one (Lon, first cart walk) — and this kit's prep is
+       ChloraPrep, never povidone-iodine (Lon, confirmed explicitly after a
+       parallel session's photo-based rebuild had it as iodine). Both absences
+       are asserted rather than left to whoever edits next. The strings may
+       still appear as "not in this bag" / superseded-value prose — see the
+       per-artifact allowance in the runner below. */
+    absent: ['Gown, gloves, mask, eye protection', 'Gauze packs + occlusive dressing + tape',
+             'Povidone-iodine swabsticks'],
     artifacts: [
-      { file: 'procedures/index.html', role: 'interactive card' },
-      { file: 'labels/index.html',     role: 'kit card + build sheet' },
-      { file: 'inventory.js',          role: 'inventory catalog' },
+      { file: 'procedures/index.html',          role: 'interactive card' },
+      { file: 'labels/index.html',              role: 'kit card + build sheet' },
+      { file: 'inventory.js',                   role: 'inventory catalog' },
+      { file: 'posters/chest-tube/index.html',  role: 'wall poster + kit check card' },
     ],
   },
   {
