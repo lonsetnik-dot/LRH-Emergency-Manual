@@ -92,7 +92,7 @@ const KITS = [
     location: /ROOM 7|TRAUMA CART|OB \/ NEONATAL CART/i,
     items: ['Needle driver', 'Curved Kelly clamps', 'Curved Mayo scissors', 'Toothed tissue forceps',
             'Scalpel No. 10 blade', 'Povidone-iodine swabsticks', 'Silk 0 suture on a cutting needle',
-            'Foley catheter 16 Fr'],
+            '10 mL syringe + 18 g draw and 25 g needles'],
     /* Corrected on the cart walk 2026-08-13: PPE lives in the Trauma Cart PPE
        drawer and the dressing supplies are their own bag, so neither may be
        listed as CONTENTS of this one. Listing them here is what sends someone
@@ -104,6 +104,12 @@ const KITS = [
        Asserting their absence stops the old list creeping back one artifact at a time. */
     absent: ['Gown, gloves, mask, eye protection', 'Gauze packs + occlusive dressing + tape',
              'Fenestrated drape', 'Large Tegaderm'],
+    /* The Foley 16 Fr was also removed from this kit (Lon, checked on the branch
+       deploy 2026-08-14) — it sat apart from the peel packs in the build photo
+       and does not belong to this bag. It is NOT asserted here, because `absent`
+       is a whole-file text search and the Foley is a genuine item of the neck
+       tamponade kit, which lives in these same files. Guarding it would fail on
+       the other kit's contents. */
     artifacts: [
       { file: 'procedures/index.html',          role: 'interactive card' },
       { file: 'labels/index.html',              role: 'kit card + build sheet' },

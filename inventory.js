@@ -224,11 +224,18 @@ var INV_CATALOG = {
 
      Still true from the cart walk, because they are facts about where things
      live rather than about this bag: PPE is in Trauma Cart drawer 5 (see
-     "ppe-splash") and the dressing supplies are their own separate bag. */
+     "ppe-splash") and the dressing supplies are their own separate bag.
+
+     NOT in this kit, checked on the branch deploy 2026-08-14 (Lon): the Foley
+     catheter. It was read off the build photo, where it sat apart from the
+     peel packs, and it does not belong to this bag — the Foley that IS a kit
+     item lives in the neck tamponade kit — which is why its absence here is a
+     comment rather than an `absent` assertion: that check is a whole-file text
+     search and the neck tamponade kit sits in the same files. */
   "kit-chest-tube": { name:"Chest Tube Kit", cat:"kit", std:["ACS-COT"], contents:[
     "Needle driver","Curved Kelly clamps","Curved Mayo scissors","Toothed tissue forceps",
     "Scalpel No. 10 blade","Povidone-iodine swabsticks","Silk 0 suture on a cutting needle",
-    "10 mL syringe + 18 g draw and 25 g needles","Foley catheter 16 Fr"] },
+    "10 mL syringe + 18 g draw and 25 g needles"] },
   "kit-pigtail": { name:"Pigtail Thoracostomy Kit", cat:"kit", std:["ACS-COT"], contents:[
     "Sterile gown, mask, eye protection, gloves, drapes","Ultrasound with a sterile probe cover and gel",
     "25 G and 21 G needles","Lidocaine 1%","Introducer needle","Marked guidewire","Sequential dilators",
