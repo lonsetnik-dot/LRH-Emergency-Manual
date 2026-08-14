@@ -306,7 +306,12 @@ await pg.fill('#customin', 'ELM applied, size 4 iGel in');
 await tap('#customlog');
 ck('12. a clinical note is accepted', await pg.locator('#customrow').isVisible(), false);
 ck('12. and appears in the log', /ELM applied, size 4 iGel in/.test(await openAcc('log')), true);
-ck('12. nothing is written to localStorage', await pg.evaluate(() => localStorage.length), 0);
+/* Since the shared case-clock (CASE-STATE.md's lrh-case-startms) landed, this
+   screen also touches lrh-case-lastactive and — once the ladder starts —
+   lrh-case-startms. Neither carries anything patient-identifying (a
+   timestamp only); nothing else may be written. */
+ck('12. only the shared case-clock keys are written to localStorage',
+   (await pg.evaluate(() => Object.keys(localStorage))).filter(k => !['lrh-case-lastactive','lrh-case-startms'].includes(k)).join(',') || 'none', 'none');
 ck('12. nothing is written to sessionStorage', await pg.evaluate(() => sessionStorage.length), 0);
 
 /* ---- 13. reset is two taps, and it clears everything ---- */

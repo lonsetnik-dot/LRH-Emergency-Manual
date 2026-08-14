@@ -241,8 +241,12 @@ await pg.fill('#customin', 'LMA 0.5 in, chest rising'); await tap('#customlog');
 ck('9. a clinical note is accepted', await pg.locator('#customrow').isVisible(), false);
 ck('9. and appears in the log', /LMA 0.5 in, chest rising/.test(await openAcc('log')), true);
 const keys = await pg.evaluate(() => Object.keys(localStorage));
-ck('9. localStorage holds only the theme preference',
-   keys.filter(k => k !== 'lrh-pref-theme').join(',') || 'none', 'none');
+/* Since the shared case-clock (CASE-STATE.md's lrh-case-startms) landed, this
+   engine also touches lrh-case-lastactive and — once a clock anywhere in the
+   case has started — lrh-case-startms. Neither carries anything patient-
+   identifying (a timestamp only); everything else must still be just theme. */
+ck('9. localStorage holds only theme + the shared case-clock keys',
+   keys.filter(k => !['lrh-pref-theme','lrh-case-lastactive','lrh-case-startms'].includes(k)).join(',') || 'none', 'none');
 
 /* ---- 10. reset is two taps and clears the case ---- */
 await pg.click('[data-acc="log"]'); await pg.waitForTimeout(150);

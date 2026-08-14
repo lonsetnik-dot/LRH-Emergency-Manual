@@ -41,6 +41,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <span id="rundot" style="display:none"><span class="dot"></span></span>
         <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:600">READY</span>
       </div>
+      <div id="caseclock" style="display:none"></div>
     </div>
     <button class="ghost" id="themebtn" type="button">LIGHT</button>
     <button class="ghost" id="resetbtn" type="button">RESET</button>
@@ -175,12 +176,12 @@ catch(e){ document.body.dataset.theme='dark'; }
       <div style="display:flex;gap:10px;align-items:center">
         <div style="flex:1">
           <div class="sec" style="color:var(--accent)">GET ORGANIZED — NAME THE ROLES</div>
-          <div style="font-size:12.5px;color:var(--ink2);margin-top:2px">Assign aloud · rotate compressor every 2 min</div>
+          <div style="font-size:12.5px;color:var(--ink2);margin-top:2px">Assign aloud · rotate compressor every 2 min · <span id="teleed">Activate tele-ED</span></div>
         </div>
         <button id="rolesbtn" type="button" style="min-height:56px;border:none;border-radius:12px;background:var(--accent);color:var(--accentInk);font:800 13px var(--sans);padding:0 14px;cursor:pointer;white-space:nowrap">ASSIGNED — LOG IT</button>
       </div>
       <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
-        <span class="chip">Compressor</span><span class="chip">Airway / ventilation</span><span class="chip">Meds / IV-IO</span><span class="chip">Defibrillator</span><span class="chip">Recorder</span>
+        <span class="chip">Compressor</span><span class="chip">Airway / ventilation</span><span class="chip">Meds / IV-IO</span><span class="chip">Defibrillator</span><span class="chip">Recorder</span><span class="chip">Tele-ED</span>
       </div>
     </div>
 
@@ -422,7 +423,9 @@ var SITE = {
      dose on this screen computes from the exact kg entered, never from a band. */
   bands: [[5,'#8E8E93','Grey'],[7,'#E75480','Pink'],[9,'#D22B2B','Red'],[11,'#7D3C98','Purple'],
           [14,'#D4AC0D','Yellow'],[18,'#B9BEC4','White'],[23,'#2E86C1','Blue'],
-          [29,'#E67E22','Orange'],[36,'#229954','Green']]
+          [29,'#E67E22','Orange'],[36,'#229954','Green']],
+
+  local:{ teleEd:"Activate tele-ED" }
 };
 /* Expose the site config for inspection and for the verify suites.
    Read-only in practice: nothing in this file reads window.SITE, it reads
@@ -481,6 +484,14 @@ var S = { theme:(document.body.dataset.theme==='light'?'light':'dark'), kg:null,
 var $ = function(id){ return document.getElementById(id); };
 function fmt(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
 function clockNow(){ return S.codeStart ? fmt((Date.now()-S.codeStart)/1000) : '0:00'; }
+/* This tool's own clock (above) is what every dose/shock/rhythm decision on
+   this screen runs from — never replaced. This is only a second, smaller
+   readout: how long the whole case has been running, wherever it started. */
+function paintCaseClock(){
+  var ms = SS.getCaseStartMs(), el = $('caseclock');
+  if(ms){ el.style.display=''; el.textContent = 'CASE T+'+fmt((Date.now()-ms)/1000); }
+  else { el.style.display='none'; }
+}
 
 /* ---- PHI GUARD -------------------------------------------------------------
    CLAUDE.md rule 3 is absolute: nothing that could hold PHI. The design asks
@@ -542,7 +553,14 @@ var SS = {
     if(ms===null||ms===undefined) delete c[name]; else c[name]=ms;
     SS.set('lrh-case-clocks', JSON.stringify(c));
   },
-  touchActive:function(){ SS.set('lrh-case-lastactive', String(Date.now())); }
+  touchActive:function(){ SS.set('lrh-case-lastactive', String(Date.now())); },
+  /* First action of THIS case, anywhere in the manual (lrh-case-startms —
+     CASE-STATE.md). Only sets it if nothing has claimed it yet, so the
+     earliest algorithm to start wins and later ones just read it. Lets the
+     header keep counting case-wide time if a clinician arrives here having
+     already started the clock somewhere else (codes' seizure card, /tca/...). */
+  getCaseStartMs:function(){ var v=SS.get('lrh-case-startms'); return v===null?null:(+v||null); },
+  markCaseStarted:function(){ if(SS.getCaseStartMs()===null) SS.set('lrh-case-startms', String(Date.now())); }
 };
 
 /* Every logged event goes to BOTH the in-tool event-log accordion (in-memory
@@ -831,6 +849,7 @@ function paint(){
 
   $('clock').textContent = clockNow();
   $('rundot').style.display = (running || S.phase==='resp') ? '' : 'none';
+  paintCaseClock();
   $('statusword').textContent = S.phase==='idle' ? 'READY'
     : S.phase==='rosc' ? 'ROSC'
     : S.phase==='resp' ? 'RESCUE BREATHING' : 'CODE RUNNING';
@@ -879,6 +898,7 @@ function paint(){
   $('breathn').textContent = S.breaths;
   $('bradygate').style.display = (S.phase==='idle' && isPeds()) ? '' : 'none';
   $('bradyhr').textContent  = SITE.brady.pedsHrCpr;
+  $('teleed').textContent = SITE.local.teleEd;
   $('bradyhr2').textContent = SITE.brady.pedsHrCpr;
 
   if(running){
@@ -1000,10 +1020,12 @@ function ensureStarted(){
     S.codeStart=n; S.cycleStart=n; S.phase='cpr';
     MET.start();
   }
+  SS.markCaseStarted();
 }
 function startCode(){
   var n=Date.now(); S.codeStart=n; S.cycleStart=n; S.phase='cpr'; S.rhythm=null;
   VENT.stop(); MET.start();
+  SS.markCaseStarted();
   log('Code blue called — no pulse, CPR started, defibrillator attached, rhythm not yet known');
   paint();
 }
@@ -1012,6 +1034,7 @@ function startCode(){
 function toResp(why){
   var n=Date.now();
   if(!S.codeStart) S.codeStart=n;
+  SS.markCaseStarted();
   MET.stop();
   S.phase='resp'; S.respSpont=false; S.pulseFrom=n; S.breaths=0; S.lastBeatAt=null;
   S.rcOpen=false; S.rcOrg=false; S.showCustom=false;

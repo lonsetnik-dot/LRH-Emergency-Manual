@@ -2857,7 +2857,7 @@ var CASESTATE = (function(){
   function rm(k){ try{ localStorage.removeItem(k); }catch(e){} }
 
   function getClocks(){ return rd('lrh-case-clocks', {}); }
-  function setClock(name, ms){ var c=getClocks(); if(ms===null||ms===undefined){ delete c[name]; } else { c[name]=ms; } wr('lrh-case-clocks', c); }
+  function setClock(name, ms){ var c=getClocks(); if(ms===null||ms===undefined){ delete c[name]; } else { c[name]=ms; markCaseStarted(); } wr('lrh-case-clocks', c); }
   function getClock(name){ var c=getClocks(); return (name in c) ? c[name] : null; }
   function clearClocks(names){ var c=getClocks(); names.forEach(function(n){ delete c[n]; }); wr('lrh-case-clocks', c); }
 

@@ -1893,10 +1893,15 @@ var CASESTATE = (function(){
   function rm(k){ try{ localStorage.removeItem(k); }catch(e){} }
 
   function getClocks(){ return rd('lrh-case-clocks', {}); }
-  function setClock(name, ms){ var c=getClocks(); if(ms===null||ms===undefined){ delete c[name]; } else { c[name]=ms; } wr('lrh-case-clocks', c); }
+  function setClock(name, ms){ var c=getClocks(); if(ms===null||ms===undefined){ delete c[name]; } else { c[name]=ms; markCaseStarted(); } wr('lrh-case-clocks', c); }
   function getClock(name){ var c=getClocks(); return (name in c) ? c[name] : null; }
   function clearClocks(names){ var c=getClocks(); names.forEach(function(n){ delete c[n]; }); wr('lrh-case-clocks', c); }
   function anyClockRunning(){ return Object.keys(getClocks()).length>0; }
+
+  function getStartMs(){ var v=rdRaw('lrh-case-startms'); return v===null?null:(+v||null); }
+  /* first action of the case, in ANY tool — set once, never overwritten until RESET */
+  function markCaseStarted(){ if(getStartMs()===null) wrRaw('lrh-case-startms', String(Date.now())); }
+  function clearStartMs(){ rm('lrh-case-startms'); }
 
   function touchActive(){ wrRaw('lrh-case-lastactive', String(Date.now())); }
   function getLastActive(){ var v=rdRaw('lrh-case-lastactive'); return v===null?0:(+v||0); }
@@ -1988,6 +1993,7 @@ var CASESTATE = (function(){
 
   return {
     getClocks:getClocks, setClock:setClock, getClock:getClock, clearClocks:clearClocks, anyClockRunning:anyClockRunning,
+    getStartMs:getStartMs, markCaseStarted:markCaseStarted, clearStartMs:clearStartMs,
     touchActive:touchActive, getLastActive:getLastActive,
     getChecks:getChecks, setChecked:setChecked, isChecked:isChecked, clearToolChecks:clearToolChecks,
     addLog:addLog, getLog:getLog, removeLogByKey:removeLogByKey, setLogElapsed:setLogElapsed,

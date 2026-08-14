@@ -54,6 +54,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <span id="rundot" style="display:none"><span class="dot"></span></span>
         <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:600">READY</span>
       </div>
+      <div id="caseclock" style="display:none"></div>
     </div>
     <a class="ghost" id="backlink" href="../?from=tool" style="display:inline-flex;align-items:center;text-decoration:none">&#8962; MANUAL</a>
     <button class="ghost" id="themebtn" type="button">LIGHT</button>
@@ -204,6 +205,25 @@ function since(){ return S.t0 ? (Date.now()-S.t0)/1000 : 0; }
 function clk(){ return S.t0 ? fmt(since()) : '0:00'; }
 function log(l){ S.events.unshift({t:clk(), label:l}); }
 
+/* ---- Shared case clock (CASE-STATE.md's lrh-case-startms) ------------------
+   Additive only — the head-to-body interval above is still the clinical
+   number, and it does not restart on a second run of the ladder (verified by
+   verify_ob_engines.mjs); this shared key is a completely separate concept
+   and never touches S.t0. It only lets the header ALSO show how long the
+   whole case has been running, if it started elsewhere. */
+var CS = {
+  get:function(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
+  set:function(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
+  getCaseStartMs:function(){ var v=CS.get('lrh-case-startms'); return v===null?null:(+v||null); },
+  markCaseStarted:function(){ if(CS.getCaseStartMs()===null) CS.set('lrh-case-startms', String(Date.now())); },
+  touchActive:function(){ CS.set('lrh-case-lastactive', String(Date.now())); }
+};
+function paintCaseClock(){
+  var ms = CS.getCaseStartMs(), el = $('caseclock');
+  if(ms){ el.style.display=''; el.textContent = 'CASE T+'+fmt((Date.now()-ms)/1000); }
+  else { el.style.display='none'; }
+}
+
 /* ===== the pathway ======================================================= */
 function phaseBox(){
   var r=SITE.ladder[S.rung], h='';
@@ -297,6 +317,7 @@ function phiReason(t){
 /* ===== paint ============================================================= */
 function paint(){
   $('clock').textContent=clk();
+  paintCaseClock();
   var live = S.phase==='live';
   $('rundot').style.display = live ? '' : 'none';
   $('statusword').textContent = S.phase==='idle' ? 'READY'
@@ -371,6 +392,7 @@ document.addEventListener('click', function(e){
   }
   if(id==='startbtn'){
     S.phase='live'; S.t0=Date.now();
+    CS.markCaseStarted();
     log('<b>Shoulder dystocia announced</b> — head-to-body clock started');
     paint(); return;
   }
@@ -405,6 +427,8 @@ function submitCustom(){
 }
 $('customin').addEventListener('keydown', function(e){ if(e.key==='Enter') submitCustom(); });
 
+document.addEventListener('click', CS.touchActive, true);
+CS.touchActive();
 paint();
 setInterval(paint, 500);
 })();

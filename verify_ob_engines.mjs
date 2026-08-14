@@ -137,8 +137,12 @@ await pg.fill('#customin', 'MRN 4457821'); await tap('#customlog');
 ck('P7. a record number is refused', await pg.locator('#customwarn').isVisible(), true);
 await pg.fill('#customin', 'bimanual compression started'); await tap('#customlog');
 ck('P7. a clinical note is accepted', await pg.locator('#customrow').isVisible(), false);
-ck('P7. localStorage holds only the theme preference',
-   (await pg.evaluate(() => Object.keys(localStorage))).filter(k => k !== 'lrh-pref-theme').join(',') || 'none', 'none');
+/* Since the shared case-clock (CASE-STATE.md's lrh-case-startms) landed, this
+   engine also touches lrh-case-lastactive and — once a clock anywhere in the
+   case has started — lrh-case-startms. Neither carries anything patient-
+   identifying (a timestamp only); everything else must still be just theme. */
+ck('P7. localStorage holds only theme + the shared case-clock keys',
+   (await pg.evaluate(() => Object.keys(localStorage))).filter(k => !['lrh-pref-theme','lrh-case-lastactive','lrh-case-startms'].includes(k)).join(',') || 'none', 'none');
 
 /* ===================== SHOULDER DYSTOCIA ===================== */
 console.log('\n--- /dystocia/ ---');

@@ -69,6 +69,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <span id="rundot" style="display:none"><span class="dot"></span></span>
         <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:600">READY</span>
       </div>
+      <div id="caseclock" style="display:none"></div>
     </div>
     <a class="ghost" id="backlink" href="../" data-noprint="1" style="display:inline-flex;align-items:center;text-decoration:none">&#8962; MANUAL</a>
     <button class="ghost" id="themebtn" type="button" data-noprint="1">LIGHT</button>
@@ -398,7 +399,11 @@ var SS = {
   },
   sweep:function(){ try{ for(var i=localStorage.length-1;i>=0;i--){ var k=localStorage.key(i);
     if(k && k.indexOf('lrh-')===0 && k.indexOf('lrh-pref-')!==0) localStorage.removeItem(k); } }catch(e){} },
-  touchActive:function(){ SS.set('lrh-case-lastactive', String(Date.now())); }
+  touchActive:function(){ SS.set('lrh-case-lastactive', String(Date.now())); },
+  /* First action of THIS case, anywhere in the manual (lrh-case-startms —
+     CASE-STATE.md). Only sets it if nothing has claimed it yet. */
+  getCaseStartMs:function(){ var v=SS.get('lrh-case-startms'); return v===null?null:(+v||null); },
+  markCaseStarted:function(){ if(SS.getCaseStartMs()===null) SS.set('lrh-case-startms', String(Date.now())); }
 };
 
 var S = { theme:'dark', mode:SITE.mode, kg:null, ageY:null, override:false,
@@ -417,6 +422,14 @@ function wallTime(ms){
 }
 function fmt(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
 function clockNow(){ return S.codeStart ? fmt((Date.now()-S.codeStart)/1000) : '0:00'; }
+/* This tool's own clock (above) still drives every timing decision here —
+   never replaced. This is only a second, smaller readout: how long the whole
+   case has been running, wherever it started. */
+function paintCaseClock(){
+  var ms = SS.getCaseStartMs(), el = $('caseclock');
+  if(ms){ el.style.display=''; el.textContent = 'CASE T+'+fmt((Date.now()-ms)/1000); }
+  else { el.style.display='none'; }
+}
 
 /* ---- PHI GUARD (CLAUDE.md rule 3) — the free-text log is the one place an
    identifier could be typed. Entries live in memory only, never localStorage,
@@ -642,6 +655,7 @@ function planLabel(){
 function paint(){
   /* --accent is set per theme in CSS (orange = Trauma category); no JS override. */
   $('clock').textContent = clockNow();
+  paintCaseClock();
   var running = (S.phase==='active');
   $('rundot').style.display = running ? '' : 'none';
   $('statusword').textContent = S.phase==='idle' ? 'READY'
@@ -719,6 +733,7 @@ function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
 /* =============================== ACTIONS =================================== */
 function startTCA(){
   S.codeStart = Date.now(); S.phase='active';
+  SS.markCaseStarted();
   log('TRAUMATIC CARDIAC ARREST declared — '+(S.mode==='sequential'?'sequential / limited team':'simultaneous / full team'));
   log(SITE.local.activation);
   if(S.pregnant) log('Pregnant ≥'+SITE.pregGestWeeks+' wk — OB + neonatal called, hysterotomy planned within '+SITE.hysterotomyByMin+' min');
@@ -893,6 +908,7 @@ function wire(){
    ONLY on state changes (user actions); this tick just advances the clocks. */
 function tick(){
   $('clock').textContent = clockNow();
+  paintCaseClock();
   if(S.phase==='active' && S.reversibleAddressed && S.addressedAt){
     var remain = SITE.conventionalResusMin*60 - (Date.now()-S.addressedAt)/1000;
     $('convclock').textContent = fmt(remain);
