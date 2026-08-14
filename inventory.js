@@ -211,10 +211,24 @@ var INV_CATALOG = {
      someone rummaging in a chest-tube bag for a gown while a patient is waiting.
      The drapes are now spelled out as one regular + one fenestrated, which is
      what the bag actually holds. */
+  /* Rebuilt kit, confirmed by Lon 2026-08-14: the build photographed on the
+     13th is the bag that is going out to providers, and it supersedes the older
+     bag walked the same day. Instruments are peel-packed singly, so each pack is
+     its own line and its own expiry date.
+
+     What the previous bag carried and this one does not: ChloraPrep (the prep is
+     now povidone-iodine swabsticks), the fenestrated and regular 1/2 drapes, and
+     the large Tegaderm. Those come off the shelf now and the cards say so — a
+     drape someone expects in the bag and does not find is the same lost minute
+     as a missing clamp.
+
+     Still true from the cart walk, because they are facts about where things
+     live rather than about this bag: PPE is in Trauma Cart drawer 5 (see
+     "ppe-splash") and the dressing supplies are their own separate bag. */
   "kit-chest-tube": { name:"Chest Tube Kit", cat:"kit", std:["ACS-COT"], contents:[
-    "Scalpel No. 10 blade","Kelly clamps","Suture 0 silk + needle driver",
-    "Lidocaine 1% 20 mL + 10 mL syringe + 21 g and 25 g needles","ChloraPrep",
-    "Fenestrated drape","Regular 1/2 drape","Large Tegaderm"] },
+    "Needle driver","Curved Kelly clamps","Curved Mayo scissors","Toothed tissue forceps",
+    "Scalpel No. 10 blade","Povidone-iodine swabsticks","Silk 0 suture on a cutting needle",
+    "10 mL syringe + 18 g draw and 25 g needles","Foley catheter 16 Fr"] },
   "kit-pigtail": { name:"Pigtail Thoracostomy Kit", cat:"kit", std:["ACS-COT"], contents:[
     "Sterile gown, mask, eye protection, gloves, drapes","Ultrasound with a sterile probe cover and gel",
     "25 G and 21 G needles","Lidocaine 1%","Introducer needle","Marked guidewire","Sequential dilators",

@@ -90,15 +90,20 @@ const KITS = [
     // change that missed it would put a wrong list on the wall next to a right list in the app.
     name: 'Chest Tube Kit',
     location: /ROOM 7|TRAUMA CART|OB \/ NEONATAL CART/i,
-    items: ['Scalpel No. 10 blade', 'Kelly clamps', 'Suture 0 silk + needle driver',
-            'ChloraPrep', 'Fenestrated drape', 'Regular 1/2 drape', 'Large Tegaderm'],
+    items: ['Needle driver', 'Curved Kelly clamps', 'Curved Mayo scissors', 'Toothed tissue forceps',
+            'Scalpel No. 10 blade', 'Povidone-iodine swabsticks', 'Silk 0 suture on a cutting needle',
+            'Foley catheter 16 Fr'],
     /* Corrected on the cart walk 2026-08-13: PPE lives in the Trauma Cart PPE
        drawer and the dressing supplies are their own bag, so neither may be
        listed as CONTENTS of this one. Listing them here is what sends someone
        rummaging in a chest-tube bag for a gown while a patient waits, so the
        absence is asserted rather than left to whoever edits next. The strings
        may still appear as "not in this bag" prose — see absentFrom. */
-    absent: ['Gown, gloves, mask, eye protection', 'Gauze packs + occlusive dressing + tape'],
+    /* Superseded by the rebuilt bag (2026-08-14) as well as absent from the walked one:
+       the drapes and the Tegaderm are off the shelf now, and the prep is povidone-iodine.
+       Asserting their absence stops the old list creeping back one artifact at a time. */
+    absent: ['Gown, gloves, mask, eye protection', 'Gauze packs + occlusive dressing + tape',
+             'Fenestrated drape', 'Large Tegaderm'],
     artifacts: [
       { file: 'procedures/index.html',          role: 'interactive card' },
       { file: 'labels/index.html',              role: 'kit card + build sheet' },
