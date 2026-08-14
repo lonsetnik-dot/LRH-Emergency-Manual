@@ -53,7 +53,10 @@ DEST = {
  'Pacemaker Magnet':       '/codes/?from=home#c26',
  'Procedure Trays':        '/procedures/?from=home#c16',
  # Kit build sheets and their 4x6 cabinet cards resolve to the procedure they belong to.
- 'Chest Tube Kit':           '/procedures/?from=home#c01',
+ # Retargeted 2026-08-13: the kit card's QR is the entry point to the CHECK,
+ # not to the reading. A tech scanning the card on the cabinet wants the walk
+ # screen; the contents are already on the card in their hand.
+ 'Chest Tube Kit':           '/equipment-readiness/?from=qr#kitcheck',
  'Thoracotomy Tray':         '/procedures/?from=home#c02',
  'Burr Hole Kit':            '/procedures/?from=home#c04',
  'Central Line Kit':         '/procedures/?from=home#c06',

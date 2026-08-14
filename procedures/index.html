@@ -88,6 +88,38 @@
     .steps { grid-template-columns:repeat(3,1fr); }
     .figs { grid-template-columns:repeat(3,1fr); }
   }
+
+  /* ---- RN / MD ROLE LANES — PREVIEW, chest tube card only (Lon, 2026-08-13)
+     "maybe we need tasks for RN and tasks for MD on the checklist and they can
+     be separated."
+
+     The reason this matters clinically is the priming correction that prompted
+     it: the drain never gated the incision, but a single undifferentiated list
+     reads as a sequence, so a step that belongs to the RN and runs in PARALLEL
+     looks like a step the MD has to wait for. Splitting the lanes is what makes
+     "prime it while I cut" visible on the page.
+
+     Deliberately scoped to card 01 for now, and labeled a preview on screen,
+     because the role assignments are a departmental decision and Lon has not
+     reviewed them yet. Rolling them across the other procedure cards is a
+     separate job. */
+  .role{display:inline-block;min-width:34px;margin-right:8px;padding:2px 7px;border-radius:999px;
+    font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;font-size:10px;font-weight:700;
+    letter-spacing:.08em;text-align:center;vertical-align:2px}
+  .role-md{background:var(--sev-info);color:var(--on-sev)}
+  .role-rn{background:var(--sev-caution);color:var(--on-sev)}
+  .role-both{background:var(--gray);color:var(--on-sev)}
+  .rolebar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;padding:10px 14px 2px}
+  .rolebar button{min-height:36px;padding:6px 13px;border-radius:999px;cursor:pointer;font:inherit;
+    font-size:12px;font-weight:700;letter-spacing:.06em;background:var(--card);color:var(--ink2);
+    border:1px solid var(--line)}
+  .rolebar button[aria-pressed="true"]{background:var(--ink);color:var(--card);border-color:var(--ink)}
+  .rolebar .rolehint{font-size:12px;color:var(--ink2)}
+  li[data-role].rolehide{display:none}
+  /* The two prep lanes sit side by side on anything wider than a small phone —
+     they are meant to be read simultaneously by two people. Below that they
+     stack, because two 160px columns of clinical text is unreadable. */
+  @media (max-width:430px){ .preplanes{grid-template-columns:1fr !important; gap:4px !important} }
 </style>
 </head>
 <body data-theme="dark">
@@ -366,10 +398,10 @@ catch(e){ document.body.dataset.theme='dark'; }
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck t-ck-teal"><span><b>Chest tube:</b> 28–32 Fr for trauma/hemothorax; 24–28 Fr — or a 14 Fr pigtail — for simple pneumothorax.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck t-ck-teal"><span><b>Underwater-seal drain (UWSD)</b> — primed <i>before</i> you cut.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck t-ck-teal"><span><b>Scalpel</b> (No. 10 or 11 blade) + <b>two Kelly clamps</b> / curved artery forceps.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck t-ck-teal"><span><b>Sterile field:</b> chlorhexidine prep, drapes, gown/gloves/mask.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck t-ck-teal"><span><b>Sterile field:</b> ChloraPrep, drapes, gown/gloves/mask.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck t-ck-teal"><span><b>Lidocaine 1%,</b> 10–20 mL, syringe + needle — if the patient is awake.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck t-ck-teal"><span><b>To secure:</b> heavy suture (0 or 2-0) + needle driver, gauze, occlusive dressing, tape.</span></label></li>
-        <li style="border-top:1px solid var(--line); padding:9px 0 3px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.12em; color:var(--ink2);">IN THE KIT &mdash; 7 ITEMS &middot; ROOM 7 (RESUS BAY) CABINET · CHEST DRAINAGE</li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-k1" class="t-ck t-ck-teal"><span><b>Scalpel No. 10 blade</b> <span style="color:var(--ink2);">&times;1</span></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-k2" class="t-ck t-ck-teal"><span><b>Kelly clamps</b> &mdash; one to dissect, one on the tube <span style="color:var(--ink2);">&times;2</span></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-k3" class="t-ck t-ck-teal"><span><b>Heavy suture 0 or 2-0 + needle driver</b> <span style="color:var(--ink2);">&times;1</span></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-k4" class="t-ck t-ck-teal"><span><b>Lidocaine 1% 20 mL + 10 mL syringe + 21 g and 25 g needles</b> &mdash; awake patient <span style="color:var(--ink2);">&times;1</span></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-k5" class="t-ck t-ck-teal"><span><b>Chlorhexidine prep + sterile drapes</b> <span style="color:var(--ink2);">&times;1</span></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-k6" class="t-ck t-ck-teal"><span><b>Gown, gloves, mask, eye protection</b> <span style="color:var(--ink2);">&times;1</span></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-k7" class="t-ck t-ck-teal"><span><b>Gauze packs + occlusive dressing + tape</b> <span style="color:var(--ink2);">&times;4</span></span></label></li><li style="border-top:1px solid var(--line); padding:9px 0 3px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.12em; color:var(--ink2);">ALSO NEEDED &mdash; NOT IN THE KIT</li><li style="border-top:1px solid var(--line); padding:11px 0; font-size:14px; line-height:1.4; color:var(--ink);">Chest tube 28–32 Fr and 24–28 Fr, 14 Fr pigtail, and the primed underwater-seal drain — all stocked loose on the Chest Drainage shelf, not inside the bag.</li><li style="border-top:1px solid var(--line); padding:11px 0; font-size:13px; line-height:1.4; color:var(--amber);"><b>DRAFT &mdash; not yet assembled or signed off.</b> Prime the underwater seal BEFORE you cut. Sizes live loose on the shelf, not in the bag. <a href="../labels/#kits" style="color:var(--teal);">Build sheet and expiry card</a>.</li></ul>
+        <li style="border-top:1px solid var(--line); padding:9px 0 3px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.12em; color:var(--ink2);">IN THE KIT &mdash; 8 ITEMS &middot; ROOM 7 (RESUS BAY) CABINET · CHEST DRAINAGE</li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-k1" class="t-ck t-ck-teal"><span><b>Scalpel No. 10 blade</b> <span style="color:var(--ink2);">&times;1</span></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-k2" class="t-ck t-ck-teal"><span><b>Kelly clamps</b> &mdash; one to dissect, one on the tube <span style="color:var(--ink2);">&times;2</span></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-k3" class="t-ck t-ck-teal"><span><b>Suture 0 silk + needle driver</b> <span style="color:var(--ink2);">&times;1</span></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-k4" class="t-ck t-ck-teal"><span><b>Lidocaine 1% 20 mL + 10 mL syringe + 21 g and 25 g needles</b> &mdash; awake patient <span style="color:var(--ink2);">&times;1</span></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-k5" class="t-ck t-ck-teal"><span><b>ChloraPrep</b> <span style="color:var(--ink2);">&times;1</span></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-k6" class="t-ck t-ck-teal"><span><b>Fenestrated drape</b> <span style="color:var(--ink2);">&times;1</span></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-k7" class="t-ck t-ck-teal"><span><b>Regular 1/2 drape</b> <span style="color:var(--ink2);">&times;1</span></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-k8" class="t-ck t-ck-teal"><span><b>Large Tegaderm</b> <span style="color:var(--ink2);">&times;1</span></span></label></li><li style="border-top:1px solid var(--line); padding:9px 0 3px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.12em; color:var(--ink2);">ALSO NEEDED &mdash; NOT IN THE KIT</li><li style="border-top:1px solid var(--line); padding:11px 0; font-size:14px; line-height:1.4; color:var(--ink);"><b>Chest tube</b> &mdash; stocked loose on the Chest Drainage shelf, not inside the bag.</li><li style="border-top:1px solid var(--line); padding:11px 0; font-size:14px; line-height:1.4; color:var(--ink);"><b>PPE</b> &mdash; <b>Trauma Cart &middot; Drawer 5 &middot; PPE</b>.</li><li style="border-top:1px solid var(--line); padding:11px 0; font-size:14px; line-height:1.4; color:var(--ink);"><b>Dressing kit</b> &mdash; a separate bag.</li><li style="border-top:1px solid var(--line); padding:11px 0; font-size:13px; line-height:1.4; color:var(--amber);"><b>DRAFT &mdash; not yet assembled or signed off.</b> The drain never gates the incision — finger thoracostomy decompresses on its own and needs no drain at all. The RN primes the UWSD in parallel, ready before the TUBE is connected. Sizes live loose on the shelf, not in the bag. <a href="../labels/#kits" style="color:var(--teal);">Build sheet and expiry card</a>.</li></ul>
       </details>
       <details open class="t-box-neutral">
         <summary class="t-head t-head-neutral">INDICATIONS</summary>
@@ -378,20 +410,20 @@ catch(e){ document.body.dataset.theme='dark'; }
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Pleural lavage</b> — active internal rewarming in severe hypothermia.</span></label></li>
         </ul>
       </details>
-      <details open class="t-box-neutral">
+      <details open class="t-box-neutral"><summary class="t-head t-head-neutral">PREP &mdash; MD AND RN IN PARALLEL</summary><div style="padding:4px 12px 12px"><p style="margin:6px 0 2px;font-size:13px;line-height:1.4;color:var(--ink2)">Two columns because these run <b>at the same time</b>, not in order. Neither list waits for the other, and nothing here delays decompression.</p><div class="preplanes" style="display:grid;grid-template-columns:1fr 1fr;gap:0 18px"><div style="min-width:0"><div style="display:flex;align-items:center;gap:8px;padding:6px 0 2px"><span class="role role-md">MD</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;font-size:11px;font-weight:700;letter-spacing:0.12em;color:var(--ink2)">MD PREP</span></div><ul style="margin:0;padding:0;list-style:none"><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:10px; align-items:start; min-height:40px; padding:8px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span>Open <b>your kit</b> onto the sterile field.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:10px; align-items:start; min-height:40px; padding:8px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Gown and gloves.</b></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:10px; align-items:start; min-height:40px; padding:8px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Select the tube size</b> — 28&ndash;32 Fr for blood, 24&ndash;28 Fr for air, 14 Fr pigtail. Sizes live loose on the shelf.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:10px; align-items:start; min-height:40px; padding:8px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Prep the skin</b> — ChloraPrep.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:10px; align-items:start; min-height:40px; padding:8px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Drape.</b> Fenestrated + regular &frac12; drape &mdash; <b>both are in the kit</b>.</span></label></li></ul></div><div style="min-width:0"><div style="display:flex;align-items:center;gap:8px;padding:6px 0 2px"><span class="role role-rn">RN</span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;font-size:11px;font-weight:700;letter-spacing:0.12em;color:var(--ink2)">RN PREP</span></div><ul style="margin:0;padding:0;list-style:none"><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:10px; align-items:start; min-height:40px; padding:8px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span>Draw up <b>lidocaine 1%</b>, 20 mL, with the 21 g and 25 g needles.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:10px; align-items:start; min-height:40px; padding:8px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><span data-abx><b>Antibiotic prophylaxis.</b></span></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:10px; align-items:start; min-height:40px; padding:8px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Prime the Pleur-evac</b> (underwater-seal drain) and bring it to the bedside.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:10px; align-items:start; min-height:40px; padding:8px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Monitor and analgesia</b> — continuous pulse oximetry and cardiac monitor; analgesia or sedation per order.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:10px; align-items:start; min-height:40px; padding:8px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Have ready:</b> large Tegaderm from the kit, and the separate dressing kit.</span></label></li></ul></div></div></div></details><details open class="t-box-neutral">
         <summary class="t-head t-head-neutral">TECHNIQUE — STEP BY STEP</summary>
-        <ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Position:</b> supine or head up 30–45°, arm on the affected side abducted or behind the head.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Landmark the safe triangle:</b> 4th–5th intercostal space, anterior-to-mid axillary line — anterior border of latissimus dorsi, lateral border of pectoralis major, above the 5th ICS (nipple line). Palpate and confirm before prepping.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Prep and drape;</b> in the conscious patient infiltrate lidocaine through skin, muscle, periosteum, and pleura.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Incise 2–4 cm</b> through skin, parallel to and directly over the rib <i>below</i> the target space.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Blunt-dissect with the Kelly over the TOP of that rib</b> — the neurovascular bundle runs under each rib's inferior edge.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Punch through the parietal pleura</b> with the closed clamp — expect a give and a hiss of air or rush of blood — then spread to widen the track.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Finger thoracostomy:</b> insert a full gloved finger, sweep 360° to confirm you are intrapleural, clear adherent lung. In arrest this <i>is</i> the complete procedure — do it bilaterally in traumatic arrest, and re-finger if tension physiology recurs.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Tube:</b> clamp the distal end; guide the tip through the track on curved forceps or your finger — apically for air, posterobasally for blood. Every fenestration must sit inside the pleura.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Connect to the primed UWSD;</b> confirm fogging, respiratory swing, drainage or bubbling.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Secure:</b> heavy suture (anchor stitch, wrap and tie to the tube), occlusive dressing; keep the drain ≥45 cm below the chest. CXR to confirm; document the depth marking at skin.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck t-ck-crit"><span><b>Massive hemothorax on insertion</b> → activate <a href="../codes/?from=home#c12">MTP (Codes card 12)</a> and prepare for possible transfer/operative management.</span></label></li>
+        <div class="rolebar" data-rolebar><button type="button" data-rolefilter="ALL" aria-pressed="true">ALL</button><button type="button" data-rolefilter="MD" aria-pressed="false">MD</button><button type="button" data-rolefilter="RN" aria-pressed="false">RN</button><span class="rolehint">PREVIEW &mdash; roles on this card only. RN steps run in parallel, not after.</span></div><ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" data-role="BOTH"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-both">BOTH</span><span><b>Position:</b> supine or head up 30–45°, arm on the affected side abducted or behind the head.</span></label></li>
+          <li class="t-div" data-role="MD"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-md">MD</span><span><b>Landmark the safe triangle:</b> 4th–5th intercostal space, anterior-to-mid axillary line — anterior border of latissimus dorsi, lateral border of pectoralis major, above the 5th ICS (nipple line). Palpate and confirm before prepping.</span></label></li>
+          
+          <li class="t-div" data-role="MD"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-md">MD</span><span><b>Incise 2–4 cm</b> through skin, parallel to and directly over the rib <i>below</i> the target space.</span></label></li>
+          <li class="t-div" data-role="MD"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-md">MD</span><span><b>Blunt-dissect with the Kelly over the TOP of that rib</b> — the neurovascular bundle runs under each rib's inferior edge.</span></label></li>
+          <li class="t-div" data-role="MD"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-md">MD</span><span><b>Punch through the parietal pleura</b> with the closed clamp — expect a give and a hiss of air or rush of blood — then spread to widen the track.</span></label></li>
+          <li class="t-div" data-role="MD"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-md">MD</span><span><b>Finger thoracostomy:</b> insert a full gloved finger, sweep 360° to confirm you are intrapleural, clear adherent lung. In arrest this <i>is</i> the complete procedure — do it bilaterally in traumatic arrest, and re-finger if tension physiology recurs.</span></label></li>
+          <li class="t-div" data-role="MD"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-md">MD</span><span><b>Tube:</b> clamp the distal end; guide the tip through the track on curved forceps or your finger — apically for air, posterobasally for blood. Every fenestration must sit inside the pleura.</span></label></li>
+          <li class="t-div" data-role="BOTH"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-both">BOTH</span><span><b>Connect to the primed UWSD;</b> confirm fogging, respiratory swing, drainage or bubbling.</span></label></li>
+          <li class="t-div" data-role="BOTH"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-both">BOTH</span><span><b>Secure:</b> heavy suture (anchor stitch, wrap and tie to the tube), occlusive dressing; keep the drain ≥45 cm below the chest. CXR to confirm; document the depth marking at skin.</span></label></li><li class="t-div" data-role="RN"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-rn">RN</span><span><b>Document</b> time of incision, tube size, depth at skin, and initial drainage volume. Obtain the confirmatory CXR.</span></label></li><li class="t-div" data-role="RN"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-rn">RN</span><span><b>Watch the output and call the numbers out loud</b> — &gt;1500 mL immediately, or &gt;200 mL/hr. Those are the thoracotomy triggers on this card.</span></label></li>
+          <li class="t-div" data-role="BOTH"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck t-ck-crit"><span class="role role-both">BOTH</span><span><b>Massive hemothorax on insertion</b> → activate <a href="../codes/?from=home#c12">MTP (Codes card 12)</a> and prepare for possible transfer/operative management.</span></label></li>
         </ul>
       </details>
     </div>
@@ -1439,8 +1471,35 @@ catch(e){ document.body.dataset.theme='dark'; }
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "1.2",
-  lastReviewed: "2026-08-09"
+  /* ANTIBIOTIC PROPHYLAXIS FOR TUBE THORACOSTOMY (Lon, 2026-08-13).
+
+     Agent, dose and the allergy alternative are a pharmacy/antibiogram decision
+     rather than a literature one, so they live here and an adopting ED changes
+     them in one place. LRH: cefazolin (Ancef) 2 g IV; clindamycin 900 mg IV if
+     penicillin ANAPHYLAXIS.
+
+     The word anaphylaxis is load-bearing and is deliberately not softened to
+     "allergy". Most patients labeled penicillin-allergic tolerate cefazolin,
+     and withholding it for a rash or an unverified childhood label is the
+     common error this line exists to prevent — so the screen says which kind of
+     reaction actually changes the drug.
+
+     Evidence for giving anything at all: EAST Practice Management Guideline,
+     Presumptive Antibiotic Use in Tube Thoracostomy for Traumatic
+     Hemopneumothorax — Moore FO et al., J Trauma Acute Care Surg
+     2012;73(5 Suppl 4):S341-4. It is a CONDITIONAL recommendation for a
+     first-generation cephalosporin for no more than 24 h, and the guideline is
+     candid that the evidence is weak and contested. Stated as such on screen
+     rather than as a rule. */
+  abx: {
+    agent: "Cefazolin (Ancef) 2 g IV",
+    allergyTrigger: "penicillin anaphylaxis",
+    alternative: "Clindamycin 900 mg IV",
+    note: "Most patients labeled penicillin-allergic tolerate cefazolin — a rash or an unverified childhood label is not a reason to switch.",
+    cite: "EAST PMG, presumptive antibiotics in tube thoracostomy for traumatic hemopneumothorax (Moore FO et al., J Trauma Acute Care Surg 2012;73(5 Suppl 4):S341-4) — conditional recommendation, first-generation cephalosporin, no more than 24 h."
+  },
+  version: "1.3",
+  lastReviewed: "2026-08-13"
 };
 (function(){
   var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
@@ -1523,5 +1582,48 @@ var SITE = {
   });
 })();
 </script>
+
+<script>(function(){
+  /* Role filter for the chest tube technique list (preview — see the .role CSS
+     note). BOTH rows always stay visible: filtering to MD must not hide a step
+     the MD is part of, or the list stops being a procedure. Device-local and
+     PHI-free; nothing persisted, because a filter left on from a previous case
+     hiding half a checklist is a worse failure than re-tapping it. */
+  function boot(){
+    var bar=document.querySelector('[data-rolebar]'); if(!bar) return;
+    var list=bar.parentNode.querySelector('ul'); if(!list) return;
+    var rows=list.querySelectorAll('li[data-role]');
+    bar.addEventListener('click', function(ev){
+      var b=ev.target.closest('[data-rolefilter]'); if(!b) return;
+      var want=b.getAttribute('data-rolefilter');
+      Array.prototype.forEach.call(bar.querySelectorAll('[data-rolefilter]'), function(x){
+        x.setAttribute('aria-pressed', x===b ? 'true' : 'false');
+      });
+      Array.prototype.forEach.call(rows, function(r){
+        var role=r.getAttribute('data-role');
+        var show = (want==='ALL') || (role==='BOTH') || (role===want);
+        r.classList.toggle('rolehide', !show);
+      });
+    }, false);
+  }
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
+})();</script>
+
+<script>(function(){
+  /* Render the antibiotic line from SITE.abx (issue-less, Lon 2026-08-13) so the
+     dose on screen and the dose in config cannot drift — the split #117 keeps
+     finding. Nothing here is hand-typed twice. */
+  function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function boot(){
+    var a=(typeof SITE==='object'&&SITE.abx)?SITE.abx:null; if(!a) return;
+    var els=document.querySelectorAll('[data-abx]');
+    var html='<b>Antibiotic prophylaxis.</b> '+esc(a.agent)+'. If <b>'+esc(a.allergyTrigger)+'</b>, '+
+             esc(a.alternative)+'.<br><span style="color:var(--ink2)">'+esc(a.note)+'</span>'+
+             '<br><span style="color:var(--ink2);font-size:12.5px">'+esc(a.cite)+'</span>'+
+             '<br><b style="color:var(--red)">Never delay decompression for it.</b>';
+    for(var i=0;i<els.length;i++){ els[i].innerHTML=html; }
+  }
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
+})();</script>
 </body>
 </html>

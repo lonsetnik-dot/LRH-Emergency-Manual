@@ -116,3 +116,22 @@
   .steps details[style*="border:2px solid"], article details[style*="border:2px solid"], #cart details[style*="border:2px solid"],
   .steps details[style*="border: 2px solid"], article details[style*="border: 2px solid"], #cart details[style*="border: 2px solid"]{
     overflow:hidden}
+
+  /* ---- Issue #71: a link to a procedure is underlined --------------------
+     The card tools set text-decoration:none broadly for the menu rows and the
+     drawer badges, which swept up genuine prose links with them. A link INTO
+     the procedures tool is a link to a procedure wherever it is written, so it
+     is underlined here rather than at each of the ~30 call sites.
+     The companion half of #71 — logging is a round button saying "LOG IT" —
+     lives in design-system-live.css, because every logging control in the
+     manual is in one of the six live engines.
+
+     ONE DELIBERATE EXCEPTION. A few procedure links are written as bordered
+     chips that set text-decoration:none inline. Inline wins over this rule, so
+     they keep the chip look — and that is correct rather than a miss: a
+     bordered pill is already unmistakably a navigation control, and an
+     underline inside one reads as a rendering fault. The underline is for
+     PROSE links, where a reader otherwise cannot tell "this records something"
+     from "this takes you somewhere". verify_design_language.mjs pins both
+     halves so neither drifts. */
+  a[href*="procedures/"]{text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1.5px}
