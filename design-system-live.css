@@ -64,6 +64,12 @@ button{-webkit-appearance:none;appearance:none;touch-action:manipulation}
    (time-of-birth, head-to-body interval, downtime) stays the number that
    decides anything here — this is a second, smaller readout underneath it. */
 #caseclock{font-size:11px;color:var(--ink2);font-weight:600;margin-top:2px;letter-spacing:.02em}
+/* What's been done so far in THIS case — a running summary (shocks given,
+   maneuvers completed, EBL, meds) so the header works as a heads-up display,
+   not just a stopwatch. Accent-colored so it reads as "this case" rather
+   than the muted, cross-tool #caseclock underneath it. Hidden until there is
+   something to report. */
+#donesum{font-size:11px;color:var(--accent);font-weight:700;margin-top:2px;letter-spacing:.02em}
 .plabel{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--accent)}
 .sec{font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--ink2)}
 .card{background:var(--card);border:1px solid var(--line);border-radius:14px}

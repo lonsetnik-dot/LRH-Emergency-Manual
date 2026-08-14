@@ -41,6 +41,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <span id="rundot" style="display:none"><span class="dot"></span></span>
         <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:600">READY</span>
       </div>
+      <div id="donesum" style="display:none"></div>
       <div id="caseclock" style="display:none"></div>
     </div>
     <button class="ghost" id="themebtn" type="button">LIGHT</button>
@@ -489,6 +490,20 @@ var S = { theme:(document.body.dataset.theme==='light'?'light':'dark'), kg:null,
 var $ = function(id){ return document.getElementById(id); };
 function fmt(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
 function clockNow(){ return S.codeStart ? fmt((Date.now()-S.codeStart)/1000) : '0:00'; }
+/* Heads-up summary — what has actually happened in this code so far, so the
+   sticky header answers "what have we done" without scrolling down to the
+   event log. Only lists things that have happened; empty until the first one. */
+function paintDoneSum(){
+  var parts=[], el=$('donesum');
+  if(S.shocks) parts.push(S.shocks+' shock'+(S.shocks===1?'':'s'));
+  if(S.epiN) parts.push('epi ×'+S.epiN);
+  if(S.amioN) parts.push('amio ×'+S.amioN);
+  if(S.roles) parts.push('roles ✓');
+  if(S.airway) parts.push('airway ✓');
+  if(S.roscAt) parts.push('ROSC '+S.roscAt);
+  if(parts.length){ el.style.display=''; el.textContent=parts.join(' · '); }
+  else { el.style.display='none'; }
+}
 /* This tool's own clock (above) is what every dose/shock/rhythm decision on
    this screen runs from — never replaced. This is only a second, smaller
    readout: how long the whole case has been running, wherever it started. */
@@ -881,6 +896,7 @@ function paint(){
   $('rundot').style.display = (running || S.phase==='resp') ? '' : 'none';
   paintCaseClock();
   maybeSpeakElapsed();
+  paintDoneSum();
   $('statusword').textContent = S.phase==='idle' ? 'READY'
     : S.phase==='rosc' ? 'ROSC'
     : S.phase==='resp' ? 'RESCUE BREATHING' : 'CODE RUNNING';

@@ -57,6 +57,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <span id="rundot" style="display:none"><span class="dot"></span></span>
         <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:600">READY</span>
       </div>
+      <div id="donesum" style="display:none"></div>
       <div id="caseclock" style="display:none"></div>
     </div>
     <a class="ghost" id="backlink" href="../?from=tool" style="display:inline-flex;align-items:center;text-decoration:none">&#8962; MANUAL</a>
@@ -241,6 +242,15 @@ var CS = {
   markCaseStarted:function(){ if(CS.getCaseStartMs()===null) CS.set('lrh-case-startms', String(Date.now())); },
   touchActive:function(){ CS.set('lrh-case-lastactive', String(Date.now())); }
 };
+/* Heads-up summary — EBL total and which uterotonics are given, so the sticky
+   header answers "what have we done" without scrolling down. */
+function paintDoneSum(){
+  var parts=[], el=$('donesum');
+  if(S.ebl) parts.push('EBL '+S.ebl+' mL');
+  SITE.meds.forEach(function(m){ if(S.given[m.id]) parts.push(m.n+' ✓'); });
+  if(parts.length){ el.style.display=''; el.textContent=parts.join(' · '); }
+  else { el.style.display='none'; }
+}
 /* Only shown when it says something the clock above does not: that this case
    was already running before this screen was opened. If THIS tool started
    the case, the two numbers would be near-identical and just be a second,
@@ -417,6 +427,7 @@ function phiReason(t){
 function paint(){
   $('clock').textContent=clk();
   paintCaseClock();
+  paintDoneSum();
   var live = S.phase==='live';
   $('rundot').style.display = live ? '' : 'none';
   $('statusword').textContent = S.phase==='idle' ? 'READY' : (S.phase==='done' ? 'CONTROLLED' : (S.ebl+' mL'));
