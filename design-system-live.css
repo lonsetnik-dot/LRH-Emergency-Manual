@@ -66,3 +66,28 @@ button{-webkit-appearance:none;appearance:none;touch-action:manipulation}
 .due{animation:duepulse 1.2s infinite}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--red);display:inline-block;animation:blink 1.4s infinite}
 @media (prefers-reduced-motion: reduce){.due,.dot{animation:none}}
+
+/* ---- Issue #71: one idiom per action ------------------------------------
+   Lon's rule, and the reason it matters is that these two things look alike
+   today and do completely different jobs: one writes a line into the case
+   record, the other navigates away from the screen you are standing on.
+
+     LOGGING  → a ROUND button that says "LOG IT".
+     A LINK TO A PROCEDURE → underlined text.
+
+   Both live here rather than in each engine so a seventh engine inherits the
+   idiom by existing, which is the same reason the offline shell and the icons
+   are shared. #logtoggle opens the composer and #customlog commits the entry;
+   both are logging, so both are round and both carry the words.
+
+   The procedure-underline rule below has one deliberate exception: bordered
+   chips that set text-decoration:none inline keep their chip look, because a
+   pill is already unmistakably a navigation control. See design-system.css. */
+#logtoggle,#customlog,#customlog2{border-radius:999px}
+#logtoggle{letter-spacing:.02em}
+/* Quick-log chips write to the same timeline, so they take the same shape. */
+[data-log]{border-radius:999px}
+
+/* A link INTO the procedures tool is a link to a procedure, wherever it is
+   written. Underlined and offset so it survives the mono/condensed faces. */
+a[href*="procedures/"]{text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1.5px}
