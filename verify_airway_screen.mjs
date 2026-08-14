@@ -279,7 +279,7 @@ ck('11. attributes DOPES to Codes card 14, not to DAS', /Codes card 14, not from
 ck('11. points a soiled airway at the SALAD card', /SALAD card/.test(why), true);
 
 const scopeAcc = await openAcc('scope');
-ck('11. names the guideline as anaesthesia-only', /written for anaesthesia/i.test(scopeAcc), true);
+ck('11. names the guideline as anesthesia-only', /written for anesthesia/i.test(scopeAcc), true);
 ck('11. lists the un-updated sibling guidelines', /obstetric \(OAA\/DAS 2015\)/.test(scopeAcc), true);
 ck('11. tracheostomy is flagged as not DAS at all', /National Tracheostomy Safety Project/.test(scopeAcc), true);
 

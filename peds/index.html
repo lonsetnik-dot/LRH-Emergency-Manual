@@ -272,7 +272,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <div style="flex:1; font-size:13.5px; line-height:1.45; color:#16324f;"><b style="color:#9b1c2e;">NEWLY BORN (first days of life)?</b> Use <a href="../ob-neonatal/?from=peds#c03" style="color:#9b1c2e; font-weight:800;">NEONATAL RESUSCITATION (NRP) &rarr;</a> — doses differ: epi <b>0.02 mg/kg</b> (NRP) vs 0.01 mg/kg (PALS). Older infant who simply weighs &lt;3 kg? Dismiss and continue with PALS.</div>
   <button type="button" id="dismissnrp" style="min-height:44px; padding:8px 14px; background:none; border:1px solid #9b1c2e; color:#9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">DISMISS</button>
 </div>
-<div id="summarymodal" style="display:none; position:fixed; inset:0; z-index:20; background:rgba(15,28,44,0.55); padding:14px; overflow:auto;">
+<div id="summarymodal" style="display:none; position:fixed; inset:0; z-index:40; background:rgba(15,28,44,0.55); padding:14px; overflow:auto;">
   <div style="max-width:560px; margin:22px auto; background:var(--card); border:2px solid var(--gray); box-shadow:0 12px 44px rgba(0,0,0,0.32);">
     <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; background:linear-gradient(135deg,#005596,#003e6e); color:var(--on-sev); border-bottom:5px solid var(--blue);">
       <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.1em;">CASE TIMELINE</div>
@@ -1208,8 +1208,8 @@ catch(e){ document.body.dataset.theme='dark'; }
 <script>
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "1.4",
-  lastReviewed: "2026-08-07",
+  version: "1.5",
+  lastReviewed: "2026-08-13",
   /* WS10.2 — minutes of manual-wide inactivity (lrh-case-lastactive) before the weight
      strip appends an "ENTERED HH:MM · N MIN AGO" line and ambers its border. Purely
      informational — never hides the kg value, its color, or any .wdose span. A
@@ -1880,10 +1880,45 @@ var PEDSDOSE = (function(){
     return text;
   }
   var lastText='';
-  btn.addEventListener('click', function(){ lastText=render(); modal.style.display='block'; });
-  if(closeb) closeb.addEventListener('click', function(){ modal.style.display='none'; });
+  /* CASE TIMELINE — open, close, and copy (bug reported 2026-08-13).
+     Three defects, and the second is why the button felt dead: the modal could
+     only be dismissed by the CLOSE button (no backdrop tap, no Escape), COPY TO
+     CLIPBOARD gave no feedback at all, and it left the timeline sitting open
+     over the card you were working from. Copying the timeline is the last thing
+     you do with it, so it now confirms and gets out of the way.
+
+     Deliberately duplicated in codes/, peds/ and ob-neonatal/ rather than
+     shared: these are single-file offline tools and the rule is share the
+     contract, not the code. verify_timeline_close.mjs holds the three copies to
+     the same behavior. */
+  function openModal(){ lastText=render(); modal.style.display='block'; }
+  function closeModal(){ modal.style.display='none'; }
+  btn.addEventListener('click', openModal);
+  if(closeb) closeb.addEventListener('click', closeModal);
+  /* Tap the dimmed backdrop — the idiom this tool's RESET modal already uses.
+     ev.target===modal means the tap landed on the overlay itself, not inside
+     the panel, so a tap on the timeline text never dismisses it. */
+  modal.addEventListener('click', function(ev){ if(ev.target===modal) closeModal(); });
+  document.addEventListener('keydown', function(ev){
+    if(ev.key==='Escape' && modal.style.display!=='none') closeModal();
+  });
   if(copyb) copyb.addEventListener('click', function(){
-    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(lastText).catch(function(){});
+    var t=lastText||render();
+    /* Confirm, then close. The pause is long enough to read COPIED and short
+       enough not to feel stuck. On failure it says so and STAYS OPEN — closing
+       on a failed copy would tell you the timeline is safely on the clipboard
+       when it is not. */
+    function done(){ copyb.textContent='COPIED'; setTimeout(function(){ closeModal(); copyb.textContent='COPY TO CLIPBOARD'; }, 700); }
+    function failed(){ copyb.textContent='COPY FAILED — SELECT AND COPY MANUALLY';
+      setTimeout(function(){ copyb.textContent='COPY TO CLIPBOARD'; }, 2400); }
+    function fallback(){
+      var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok=false; try{ ok=document.execCommand('copy'); }catch(e){ ok=false; }
+      document.body.removeChild(ta); if(ok) done(); else failed();
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done, fallback); }
+    else { fallback(); }
   });
 })();
 

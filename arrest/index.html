@@ -161,11 +161,11 @@ catch(e){ document.body.dataset.theme='dark'; }
           <div style="font-size:12px;font-weight:600;color:var(--ink2);margin-top:2px" id="amiosub"></div>
         </button>
         <button class="btn" id="rcbtn" type="button" style="min-height:52px;font:700 14px var(--sans)">RHYTHM CHECK</button>
-        <button class="btn" id="logtoggle" type="button" style="min-height:52px;font:700 14px var(--sans)">+ LOG EVENT</button>
+        <button class="btn" id="logtoggle" type="button" style="min-height:52px;font:700 14px var(--sans)">LOG IT</button>
       </div>
       <div id="customrow" style="display:none;gap:8px;margin-top:8px">
         <input id="customin" class="inp" style="flex:1;text-align:left;font-size:15px;font-weight:400;border-radius:10px;padding:12px" placeholder="e.g. IO placed right tibia, calcium given…">
-        <button id="customlog" type="button" style="border:none;border-radius:10px;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG</button>
+        <button id="customlog" type="button" style="border:none;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG IT</button>
       </div>
       <div id="customwarn" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>
       <div style="margin-top:8px;font-size:12.5px;color:var(--ink2)">Anything can be tapped at any time — the algorithm is a guide, not a lock.</div>
@@ -272,12 +272,12 @@ catch(e){ document.body.dataset.theme='dark'; }
       <button class="btn" id="respok" type="button" style="min-height:64px;border-color:var(--green);color:var(--green);font:800 15px var(--sans)">BREATHING ON THEIR OWN</button>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-      <button class="btn" id="resplog" type="button" style="min-height:48px;font:700 13px var(--sans)">+ LOG EVENT</button>
+      <button class="btn" id="resplog" type="button" style="min-height:48px;font:700 13px var(--sans)">LOG IT</button>
       <a class="btn" id="resplink" href="../airway/" style="min-height:48px;font:700 13px var(--sans);display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--blue);border-color:var(--blue)">CANNOT VENTILATE →</a>
     </div>
     <div id="customrow2" style="display:none;gap:8px;margin-top:8px">
       <input id="customin2" class="inp" style="flex:1;text-align:left;font-size:15px;font-weight:400;border-radius:10px;padding:12px" placeholder="e.g. naloxone 0.4 mg IV, chest rising well">
-      <button id="customlog2" type="button" style="border:none;border-radius:10px;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG</button>
+      <button id="customlog2" type="button" style="border:none;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG IT</button>
     </div>
     <div id="customwarn2" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>
   </div>
@@ -605,7 +605,7 @@ function applyAccent(){
 
 /* =============================== METRONOME =================================
    Same contract as the manual's: paces RATE only, 30:2 versus continuous is a
-   label not a behaviour, and it starts with the code clock rather than needing
+   label not a behavior, and it starts with the code clock rather than needing
    its own tap — the commonest way a code drifts off rate is a running clock
    with nobody being paced. */
 /* One AudioContext, two engines. They must never both run: compressions and

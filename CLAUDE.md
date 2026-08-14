@@ -321,7 +321,10 @@ test it" is not sufficient close-out for a deliverable.
 - `debrief/` — redirect stub only; the debrief card lives in `conversations/`
   (card 04). Kept so old links and printed QR codes still resolve.
 - `simulations/` — pillow-patient in-situ drill scripts chaining the tools'
-  workflows (deliberately excluded from the site search).
+  workflows (deliberately excluded from the site search). Each sim also carries
+  a **FIND IT** equipment walk that writes into the shared readiness record
+  (`INV_CAPTURE`), so a drill or a new-hire orientation doubles as an audit.
+  Kits appear at kit level only — the sims say point, don't open.
 - `vems/` — Visually Enhanced Mental Simulation kit: the printable, laminatable
   card deck (patient poster, monitor cards, equipment cards, facilitator run
   sheet) that runs a case on a table instead of a mannequin. See **Shared

@@ -103,7 +103,7 @@ ck('procedures card 15 exists', await proc.locator('#c15').count(), 1);
   const t = await textOf(proc, '#c15');
   ck('decontaminate then intubate framing', /Decontaminate, then intubate/i.test(t), true);
   // the three trajectories are the reason this card is better than a generic SALAD description
-  ck('trajectory 1 — from the gut', /Coming UP from the GI tract/i.test(t) && /proximal oesophagus/i.test(t), true);
+  ck('trajectory 1 — from the gut', /Coming UP from the GI tract/i.test(t) && /proximal esophagus/i.test(t), true);
   ck('trajectory 2 — from the lung', /Coming UP from the respiratory tract/i.test(t) && /toward the source of the froth/i.test(t), true);
   ck('trajectory 3 — from above', /Coming DOWN from above/i.test(t) && /do NOT park deep/i.test(t), true);
   ck('resus.me credited for the framework', await proc.locator('#c15 a[href*="resus.me"]').count() > 0, true);
@@ -123,8 +123,8 @@ ck('procedures card 16 exists', await proc.locator('#c16').count(), 1);
   ck('over the upper border of the rib', /over the upper border of the rib below/i.test(t), true);
   ck('one stocked size, 14 Fr, stated plainly', /LRH stocks one size: 14 Fr/.test(t), true);
   ck('lidocaine ceiling', /3 mg\/kg/.test(t) && /250 mg/.test(t), true);
-  // LRH resolved this: haemothorax is a chest tube. P-CAT stays as the reason the question exists.
-  ck('haemothorax routed to a chest tube', /at LRH this is a chest tube, not a pigtail/i.test(t) && /28–32 Fr/.test(t) && /P-CAT/.test(t), true);
+  // LRH resolved this: hemothorax is a chest tube. P-CAT stays as the reason the question exists.
+  ck('hemothorax routed to a chest tube', /at LRH this is a chest tube, not a pigtail/i.test(t) && /28–32 Fr/.test(t) && /P-CAT/.test(t), true);
   ck('wire depth given as two options', /Two options for depth/i.test(t) && /15–20 cm/.test(t), true);
   ck('never clamp a bubbling drain', /Never clamp a bubbling drain/i.test(t), true);
   ck('1.5 L then clamp', /1\.5 L/.test(t), true);
@@ -186,7 +186,7 @@ console.log('--- code cart: five drawers, bottom one deep');
   ck('cric kit sits under drawer 2', /Cricothyroidotomy kit/.test((await codes.locator('#d2').innerText())), true);
   ck('EZ-IO sits under drawer 5', /Intraosseous|EZ-IO|I\.V\./i.test((await codes.locator('#d5').innerText())), true);
   ck('drawer 5 USED BY still lists card 01', await codes.locator('#d5 a[href="#c01"]').count() > 0, true);
-  // colour AND shape encode position, not contents — they must NOT have travelled with the swap
+  // color AND shape encode position, not contents — they must NOT have travelled with the swap
   ck('drawer 2 badge is still blue', /2 · SURGICAL \/ SGA/.test(
       await codes.evaluate(() => [...document.querySelectorAll('a[href="#d2"]')].map(a => a.textContent).join('|'))), true);
   ck('drawer 2 keeps the diamond shape', await codes.evaluate(() =>

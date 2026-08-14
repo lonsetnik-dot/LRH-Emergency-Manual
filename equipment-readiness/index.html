@@ -143,6 +143,20 @@ catch(e){ document.body.dataset.theme='dark'; }
       <div id="kit-body" style="padding:0 12px 12px"></div>
     </details>
 
+    <!-- ===== KIT CHECK PILOT — chest tube only (issue #148) =====
+         Scoped to one kit on purpose. The full system waits on #136, which turns
+         the inventory item-level -> size-level; building the row model twice
+         would mean throwing one away. One kit proves the loop: scan, check,
+         export, and a date that means something.
+
+         Contents are read from INV_CATALOG, never re-typed here — the same rule
+         that makes verify_kit_consistency.mjs meaningful. -->
+    <details class="t-box-teal" id="kitcheck" open>
+      <summary class="t-head t-head-teal">KIT CHECK &mdash; PILOT (CHEST TUBE)</summary>
+      <div class="t-sub" style="padding-top:12px">Walk to the kit, work down the list, then <b>EXPORT CSV</b>. The check lives on <b>this device only</b> &mdash; the CSV is the only way it leaves the iPad, so an un-exported walk is not a record.</div>
+      <div id="kc-body" style="padding:0 12px 14px"></div>
+    </details>
+
     <details class="t-box-neutral" id="dir">
       <summary class="t-head t-head-neutral">WHERE IS IT &mdash; CARTS &amp; CABINETS</summary>
       <div id="dir-body" style="padding:4px 12px 12px"></div>
@@ -191,7 +205,7 @@ catch(e){ document.body.dataset.theme='dark'; }
 var SITE = {
   version: "0.2",
   lastReviewed: "2026-08-12",
-  storeKey: "lrh-eq-readiness-v1",   /* device-local only; cleared by RESET */
+  storeKey: INV_STORE_KEY,           /* shared with simulations/; cleared by RESET */
   site: "LRH"
 };
 try{ window.SITE = SITE; }catch(e){}
@@ -201,14 +215,12 @@ try{ window.SITE = SITE; }catch(e){}
 
   function esc(x){ var d=document.createElement('div'); d.textContent=x==null?'':x; return d.innerHTML; }
 
-  /* ---------- device-local capture (CLAUDE.md rule 3: no PHI, no network,
-     cleared by RESET). Shape: { rows:{ rowId:{s:state,l:location} }, label } */
-  var ST = { rows:{}, label:'' };
-  try {
-    var raw = localStorage.getItem(SITE.storeKey);
-    if (raw) { var p = JSON.parse(raw); if (p && p.rows) ST = { rows:p.rows, label:p.label||'' }; }
-  } catch(e){}
-  function save(){ try{ localStorage.setItem(SITE.storeKey, JSON.stringify(ST)); }catch(e){} }
+  /* ---------- device-local capture — the SHARED store from inventory.js, so a
+     simulation's equipment walk and this readiness walk write the same record
+     (CLAUDE.md rule 3: no PHI, no network, cleared by RESET). */
+  var ST = { rows: INV_CAPTURE.rows(), label: INV_CAPTURE.label() };
+  function save(){ INV_CAPTURE.label(ST.label); }
+  function put(rowId, state, loc){ INV_CAPTURE.set(rowId, state, loc, 'cart walk'); ST.rows = INV_CAPTURE.rows(); }
 
   /* ---------- status ---------- */
   var CHIP = {
@@ -219,15 +231,7 @@ try{ window.SITE = SITE; }catch(e){}
     na : '<span class="st st-na">N/A</span>',
     "new": '<span class="st st-new">NOT REVIEWED</span>'
   };
-  function statusOf(rowId){
-    var u = ST.rows[rowId];
-    if (u && u.s) return (u.s==='loc'||u.s==='in') ? 'set' : u.s;   /* gap | na | set */
-    var base = rowId.split('#')[0];
-    if (INV_GAP_ISSUES[base]) return 'gap';
-    var b = invBaseline(rowId);
-    if (!b) return 'new';
-    return b.verify ? 'vf' : 'ok';
-  }
+  var statusOf = invStatus;   /* shared with simulations/ — one definition */
   function whereOf(rowId, kind){
     var u = ST.rows[rowId];
     if (u && u.s === 'gap') return kind === 'kit' ? 'MISSING — recorded as not in the bag' : 'GAP — recorded as not stocked here';
@@ -504,26 +508,24 @@ try{ window.SITE = SITE; }catch(e){}
     var row = sel.closest('.eqrow'), rid = row.getAttribute('data-row');
     var inp = row.querySelector('.eqloc');
     var v = sel.value;
-    if (!v) { delete ST.rows[rid]; inp.hidden = true; }
-    else {
-      var rec = ST.rows[rid] || {};
-      rec.s = v;
-      if (v === 'loc') {
-        var b = invBaseline(rid);
-        if (!rec.l) rec.l = (b && b.loc) || '';
-        inp.value = rec.l; inp.hidden = false;
-      } else { inp.hidden = true; }
-      ST.rows[rid] = rec;
+    if (!v) { put(rid, ''); inp.hidden = true; }
+    else if (v === 'loc') {
+      var prev = INV_CAPTURE.get(rid), b = invBaseline(rid);
+      var loc = (prev && prev.l) || (b && b.loc) || '';
+      put(rid, 'loc', loc);
+      inp.value = loc; inp.hidden = false;
+    } else {
+      put(rid, v);
+      inp.hidden = true;
     }
-    save(); repaint(row); refresh();
+    repaint(row); refresh();
     if (v === 'loc') inp.focus();
   });
   mainEl.addEventListener('input', function(ev){
     var inp = ev.target.closest('.eqloc'); if (!inp) return;
     var row = inp.closest('.eqrow'); if (!row) return;   /* the walk label is not a row */
     var rid = row.getAttribute('data-row');
-    var rec = ST.rows[rid] || { s:'loc' };
-    rec.l = inp.value; ST.rows[rid] = rec; save();
+    put(rid, (INV_CAPTURE.get(rid) || {}).s || 'loc', inp.value);
     row.querySelector('.where').innerHTML = whereOf(rid, row.getAttribute('data-kind'));
   });
   /* Open every collapsed ancestor of a jump target — a link into a closed
@@ -577,9 +579,13 @@ try{ window.SITE = SITE; }catch(e){}
     var ids = Object.keys(ST.rows), locs = [], gaps = [], nas = [], miss = [];
     ids.forEach(function(rid){
       var r = ST.rows[rid];
-      if (r.s === 'loc') locs.push('  "'+rid+'": { loc:"'+String(r.l||'').replace(/"/g,'\\"')+'" },');
+      /* provenance: a row confirmed during a drill and one confirmed on a
+         deliberate cart walk are the same fact, but a champion reviewing the
+         export deserves to know which. */
+      var prov = r.w ? '   /* found at ' + r.w + ' */' : '';
+      if (r.s === 'loc') locs.push('  "'+rid+'": { loc:"'+String(r.l||'').replace(/"/g,'\\"')+'" },'+prov);
       else if (r.s === 'in') { /* kit content confirmed in place — nothing to patch */ }
-      else if (r.s === 'gap') (rid.indexOf('@')>-1 ? miss : gaps).push('  /* GAP  '+rid+'  —  '+labelFor(rid)+' */');
+      else if (r.s === 'gap') (rid.indexOf('@')>-1 ? miss : gaps).push('  /* GAP  '+rid+'  —  '+labelFor(rid)+(r.w?'  ('+r.w+')':'')+' */');
       else if (r.s === 'na')  nas.push('  /* N/A  '+rid+'  —  '+labelFor(rid)+' */');
     });
     var confirmedKitItems = ids.filter(function(rid){ return ST.rows[rid].s === 'in'; }).length;
@@ -617,8 +623,8 @@ try{ window.SITE = SITE; }catch(e){}
   });
   document.getElementById('btn-reset').addEventListener('click', function(){
     if (!window.confirm('Clear everything recorded on this device? The manual’s own baseline is untouched.')) return;
-    ST = { rows:{}, label:'' };
-    try { localStorage.removeItem(SITE.storeKey); } catch(e){}
+    INV_CAPTURE.clear();
+    ST = { rows: INV_CAPTURE.rows(), label: '' };
     document.getElementById('exportbox').value = '';
     wl.value = '';
     document.querySelectorAll('.eqrow[data-row]').forEach(function(row){
@@ -682,5 +688,171 @@ try{ window.SITE = SITE; }catch(e){}
   }
 })();
 </script>
+
+<script>(function(){
+/* ===== KIT CHECK PILOT (issue #148) — chest tube kit only =====================
+   The loop this proves: walk to the kit, mark each item, sign with initials,
+   export a CSV. Scoped to one kit deliberately — the full system waits on #136,
+   which changes the inventory from item-level to size-level rows, and building
+   that row model twice would mean throwing one away.
+
+   THREE DECISIONS FROM LON, 2026-08-13, and each one shows up in the code:
+
+   1. CSV, not xlsx. A client-side Blob download, so no zip writer and no
+      dependency. On the iPad it lands in Files.
+   2. ONE SHARED DEPARTMENTAL iPAD. So the initials box starts EMPTY at every
+      walk and is never remembered — a stored initial on a shared device would
+      silently attribute one tech's walk to whoever set it last, and a wrong
+      name on a compliance record is worse than no name at all.
+   3. Because the iPad stays in the department, the CSV is the ONLY way the
+      record leaves it. So an un-exported walk is shown as un-exported rather
+      than quietly looking finished.
+
+   State is lrh-kit-* and NOT lrh-case-*: this must survive the case RESET
+   sweep. verify_case_contract.mjs would fail it otherwise, correctly. */
+  var KIT='kit-chest-tube', K='lrh-kit-check';
+  var STATUS=[{v:'ok',t:'OK'},{v:'missing',t:'MISSING'},{v:'short',t:'SHORT'},{v:'expired',t:'EXPIRED'}];
+  function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function load(){ try{ return JSON.parse(localStorage.getItem(K)||'{}')||{}; }catch(e){ return {}; } }
+  function save(st){ try{ localStorage.setItem(K, JSON.stringify(st)); }catch(e){} }
+  function contents(){
+    try{ return (INV_CATALOG[KIT] && INV_CATALOG[KIT].contents) || []; }catch(e){ return []; }
+  }
+  function where(){
+    try{ var l=INV_LOCATIONS[KIT]; return l && l.loc ? l.loc : 'location not recorded'; }catch(e){ return 'location not recorded'; }
+  }
+  function kitName(){ try{ return INV_CATALOG[KIT].name; }catch(e){ return 'Kit'; } }
+  function pad(n){ return (n<10?'0':'')+n; }
+  function stamp(ms){ var d=new Date(ms);
+    return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate())+' '+pad(d.getHours())+':'+pad(d.getMinutes()); }
+
+  /* Initials, not names. Same shape of guard as the case log's PHI rule: this is
+     an equipment record and must never become a staff record. Two or three
+     letters, optionally with a dot. Anything longer is a name. */
+  function badInitials(v){
+    if(!v) return 'Enter your initials before exporting.';
+    if(v.length>4) return 'Initials only — not a full name.';
+    if(/\d/.test(v)) return 'Initials only — no employee numbers.';
+    if(!/^[A-Za-z]{2,3}\.?$/.test(v)) return 'Two or three letters.';
+    return null;
+  }
+
+  function render(){
+    var host=document.getElementById('kc-body'); if(!host) return;
+    var st=load(), items=contents(), marks=st.marks||{};
+    var done=items.filter(function(_,i){ return marks[i]; }).length;
+    var bad=items.filter(function(_,i){ return marks[i] && marks[i]!=='ok'; }).length;
+
+    var h='';
+    h+='<div style="display:flex;gap:8px;flex-wrap:wrap;align-items:baseline;padding:8px 0 2px">'
+      +'<b style="font-size:16px">'+esc(kitName())+'</b>'
+      +'<span class="lrh-mono" style="font-size:11.5px;color:var(--ink2)">'+esc(where())+'</span></div>';
+
+    h+='<div class="lrh-mono" style="font-size:11.5px;color:var(--ink2);padding-bottom:8px">LAST CHECKED '
+      +(st.lastChecked ? esc(st.lastChecked.when)+' &middot; '+esc(st.lastChecked.by)
+                       : '&mdash; never recorded on this device')
+      +(st.lastExported ? '' : (st.lastChecked ? ' &middot; <b style="color:var(--amber)">NOT EXPORTED</b>' : ''))
+      +'</div>';
+
+    items.forEach(function(name,i){
+      var cur=marks[i]||'';
+      h+='<div style="border-top:1px solid var(--line);padding:9px 0">'
+        +'<div style="font-size:14.5px;line-height:1.35">'+esc(name)+'</div>'
+        +'<div style="display:flex;gap:6px;flex-wrap:wrap;margin-top:6px">';
+      STATUS.forEach(function(s){
+        var on = cur===s.v;
+        h+='<button type="button" class="eqbtn" data-kc="'+i+'" data-v="'+s.v+'" aria-pressed="'+(on?'true':'false')+'"'
+          +' style="min-height:38px;padding:4px 12px;border-radius:999px;font-size:12px'
+          +(on?';background:var(--ink);color:var(--card);border-color:var(--ink)':'')+'">'+s.t+'</button>';
+      });
+      h+='</div></div>';
+    });
+
+    h+='<div style="border-top:2px solid var(--line);margin-top:10px;padding-top:10px">'
+      +'<div class="lrh-mono" style="font-size:11.5px;color:var(--ink2)">'+done+' of '+items.length+' marked'
+      +(bad?' &middot; <b style="color:var(--red)">'+bad+' NOT OK</b>':'')+'</div>'
+      +'<label style="display:block;font-size:12.5px;color:var(--ink2);margin:10px 0 4px" for="kc-init">Your initials '
+      +'&mdash; initials only, never a full name (shared device)</label>'
+      /* No maxlength: it silently truncated "Lon Setnik" to "Lon", which the
+         guard then accepted as initials — recording a WRONG attribution instead
+         of refusing one. Let the full name be typed and rejected out loud. */
+      +'<input id="kc-init" class="eqloc" type="text" inputmode="text" autocomplete="off" '
+      +'style="flex:none;width:120px" placeholder="e.g. LS">'
+      +'<div id="kc-warn" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>'
+      +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">'
+      +'<button type="button" class="eqbtn" id="kc-save">RECORD THIS CHECK</button>'
+      +'<button type="button" class="eqbtn" id="kc-csv">EXPORT CSV</button>'
+      +'<button type="button" class="eqbtn danger" id="kc-clear">CLEAR THIS WALK</button>'
+      +'</div>'
+      +'<div class="t-sub" style="padding:10px 0 0">The kit contents come from <span class="lrh-mono">inventory.js</span>, '
+      +'so they always match the cart label, the build sheet and the procedure card. '
+      +'<a href="../procedures/?from=home#c01">Chest tube card</a> &middot; '
+      +'<a href="../labels/#kits">Build sheet</a></div>'
+      +'</div>';
+    host.innerHTML=h;
+  }
+
+  function csv(){
+    var st=load(), items=contents(), marks=st.marks||{}, by=(st.lastChecked&&st.lastChecked.by)||'';
+    var when=(st.lastChecked&&st.lastChecked.when)||stamp(Date.now());
+    /* Quote every field: kit and item names contain commas today (see the
+       lidocaine row) and an unquoted CSV would silently split them into extra
+       columns — which looks like data rather than a bug once it is in Excel. */
+    function q(v){ return '"'+String(v==null?'':v).replace(/"/g,'""')+'"'; }
+    var rows=[['kit','location','item','status','checked_by','checked_at'].map(q).join(',')];
+    items.forEach(function(name,i){
+      rows.push([kitName(), where(), name, marks[i]||'not checked', by, when].map(q).join(','));
+    });
+    return rows.join('\r\n')+'\r\n';
+  }
+
+  function download(text){
+    var blob=new Blob([text],{type:'text/csv;charset=utf-8'});
+    var url=URL.createObjectURL(blob), a=document.createElement('a');
+    a.href=url; a.download='kit-check-chest-tube.csv';
+    document.body.appendChild(a); a.click(); document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  }
+
+  function warn(msg){
+    var w=document.getElementById('kc-warn'); if(!w) return;
+    w.style.display = msg ? '' : 'none'; w.textContent = msg || '';
+  }
+
+  function boot(){
+    if(!document.getElementById('kc-body')) return;
+    render();
+    document.getElementById('kc-body').addEventListener('click', function(ev){
+      var b=ev.target.closest('[data-kc]');
+      if(b){
+        var st=load(); st.marks=st.marks||{};
+        var i=b.getAttribute('data-kc'), v=b.getAttribute('data-v');
+        /* Tap the same status again to clear it — a mis-tap must be undoable
+           without clearing the whole walk. */
+        if(st.marks[i]===v) delete st.marks[i]; else st.marks[i]=v;
+        st.lastExported=false; save(st); render(); return;
+      }
+      var id=ev.target.id;
+      if(id==='kc-save'){
+        var v=(document.getElementById('kc-init').value||'').trim();
+        var why=badInitials(v); if(why){ warn(why); return; }
+        warn('');
+        var st2=load(); st2.lastChecked={ by:v.toUpperCase(), when:stamp(Date.now()) };
+        st2.lastExported=false; save(st2); render(); return;
+      }
+      if(id==='kc-csv'){
+        var st3=load();
+        if(!st3.lastChecked){ warn('Record the check first — the CSV needs initials and a time.'); return; }
+        warn(''); download(csv());
+        st3.lastExported=true; save(st3); render(); return;
+      }
+      if(id==='kc-clear'){
+        try{ localStorage.removeItem(K); }catch(e){}
+        render(); return;
+      }
+    }, false);
+  }
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
+})();</script>
 </body>
 </html>

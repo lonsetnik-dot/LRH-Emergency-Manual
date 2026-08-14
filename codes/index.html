@@ -139,6 +139,24 @@
      bar that scrolled off three screens ago. */
   .wdose.unset { display:inline-flex; align-items:center; color:var(--red); font-weight:700; font-style:normal; font-size:0.82em; letter-spacing:0.02em; background:var(--card2); border:1px solid var(--sev-crit); border-radius:10px; padding:1px 8px; cursor:pointer; white-space:nowrap; }
   .wdose.unset:hover, .wdose.unset:focus-visible { background:var(--card); }
+  /* Card 06 drug pickers — the drug IS the button. One tap picks the agent,
+     stamps the clock and writes the name + the weight-based dose to the case
+     timeline, instead of a generic "PUSHED" that records that something went in
+     but not what. Buttons carry .cs-secondary so they inherit the same target-
+     size floor as every other action control in a .console (see LAYOUT.md).
+     The 1px gap over a --line background draws the grid lines for free. */
+  .drugpick { display:grid; grid-template-columns:1fr 1fr; gap:1px; background:var(--line); border-top:2px solid var(--line); }
+  .drugpick button { display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:2px; text-align:left; padding:8px 11px; background:var(--card); color:var(--ink); border:none; cursor:pointer; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; }
+  .drugpick button:hover, .drugpick button:focus-visible { background:var(--card2); }
+  .drugpick button.dp-wide { grid-column:1 / -1; }
+  .drugpick .dp-n { font-size:13px; font-weight:700; letter-spacing:0.05em; }
+  .drugpick .dp-dose { font-size:15px; font-weight:700; letter-spacing:0.02em; }
+  .drugpick .dp-note { font-size:11px; font-weight:400; line-height:1.3; letter-spacing:0.01em; color:var(--ink2); }
+  /* Already tapped this lane — a quiet marker, never a lock-out: a second dose
+     of the same agent is a real event and must stay one tap away. */
+  .drugpick button.picked { background:var(--card2); box-shadow:inset 4px 0 0 var(--accent); }
+  .drugpick .wdose.unset { font-size:11px; }
+  @media print { .drugpick { display:none; } }
   @keyframes wtbarflash { 0%,100% { background:var(--card2); } 50% { background:var(--blue); } }
   #wtbar.flash { animation: wtbarflash 0.5s ease-in-out 2; }
   @media (prefers-reduced-motion: reduce) { #wtbar.flash { animation:none; } }
@@ -314,7 +332,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <div style="flex:1; font-size:13.5px; line-height:1.45; color:var(--ink);"><b style="color:var(--red);">NEWLY BORN (first days of life)?</b> Use <a href="../ob-neonatal/?from=codes#c03" style="color:var(--red); font-weight:800;">NEONATAL RESUSCITATION (NRP) &rarr;</a> — doses differ: epi <b>0.02 mg/kg</b> (NRP) vs 0.01 mg/kg (PALS). Older infant who simply weighs &lt;3 kg? Dismiss — and use the <a href="../peds/?from=codes" style="color:var(--red); font-weight:800;">Peds tool</a>, not these adult cards.</div>
   <button type="button" id="dismissnrp" style="min-height:44px; padding:8px 14px; background:none; border:1px solid var(--red); color:var(--red); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">DISMISS</button>
 </div>
-<div id="summarymodal" style="display:none; position:fixed; inset:0; z-index:20; background:rgba(15,28,44,0.55); padding:14px; overflow:auto;">
+<div id="summarymodal" style="display:none; position:fixed; inset:0; z-index:40; background:rgba(15,28,44,0.55); padding:14px; overflow:auto;">
   <div style="max-width:560px; margin:22px auto; background:#fffefb; border:2px solid #16324f; box-shadow:0 12px 44px rgba(0,0,0,0.32);">
     <div style="display:flex; align-items:center; justify-content:space-between; gap:10px; padding:12px 14px; background:linear-gradient(135deg,#005596,#003e6e); color:#fffefb; border-bottom:5px solid #2f62a8;">
       <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.1em;">CASE TIMELINE</div>
@@ -351,7 +369,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <a href="#c04" data-k="stroke code stroke tpa tnk tenecteplase alteplase thrombectomy last known well nihss ct head lytic omnicell" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">04</span><span class="t">Suspected Acute Stroke</span></a>
         <a href="#c21" data-k="stemi st elevation mi myocardial infarction chest pain heart cognitive aid mimics aspirin heparin enoxaparin atorvastatin tenecteplase tnk weight band pressor norepinephrine dobutamine cardiogenic shock reperfusion arrhythmia aivr transfer dartmouth concord omnicell code" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">21</span><span class="t">STEMI</span></a>
         <a href="#c05" data-k="respiratory arrest apnea bag mask ventilation bvm reversible causes naloxone code" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">05</span><span class="t">Respiratory Arrest</span></a>
-        <a href="#c06" data-k="intubation rsi rapid sequence intubation checklist airway induction paralytic sedation etomidate ketamine propofol rocuronium succinylcholine capnography preoxygenation cico emcrit push dose timer" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">06</span><span class="t">Intubation / RSI Checklist</span></a>
+        <a href="#c06" data-k="intubation rsi rapid sequence intubation checklist airway induction paralytic sedation etomidate ketamine propofol rocuronium succinylcholine capnography preoxygenation cico emcrit push dose timer post intubation sedation post intubation analgesia postintubation opioid opiate fentanyl hydromorphone morphine sedative drip infusion awake paralysis paralyzed" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">06</span><span class="t">Intubation / RSI Checklist</span></a>
         <a href="#c07" data-k="intracranial hemorrhage ich subarachnoid subdural blood pressure control anticoagulation reversal neurosurgery code" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">07</span><span class="t">Intracranial Hemorrhage</span></a>
         <a href="#c08" data-k="anaphylaxis epinephrine allergic reaction angioedema stridor epi im code omnicell" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">08</span><span class="t">Anaphylaxis</span></a>
         <a href="#c09" data-k="bleeding hemorrhagic shock trauma resuscitation blood products lethal triad tranexamic txa code" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">09</span><span class="t">Bleeding / Hemorrhagic Shock</span></a>
@@ -717,37 +735,42 @@ catch(e){ document.body.dataset.theme='dark'; }
       </details>
     </div>
 
-    <!-- ---- RSI MEDICATION PUSH TIMERS ---- -->
-    <div style="margin:14px 14px 0; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2);">RSI MEDICATION TIMES — TAP WHEN EACH DRUG IS PUSHED</div>
+    <!-- ---- RSI MEDICATION PUSH TIMERS ----
+         The drug menus inside .drugpick are rendered from SITE.rsiDrugs by the
+         picker module in the script block below (which runs before the shared
+         .wdose dose engine starts, so these get the same arithmetic, the same
+         "no weight" state and the same live recompute as every other dose span
+         in this file). Do not hand-write drug buttons here — an adopting ED
+         changes its agents in one config block, not in four places. ---- -->
+    <div style="margin:14px 14px 0; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2);">RSI MEDICATION TIMES — TAP THE DRUG AS IT IS PUSHED</div>
     <div class="console">
     <div style="margin:6px 14px 0; border:2px solid var(--gray);">
       <div style="padding:10px 14px; background:var(--card2);">
         <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2);">SEDATION / INDUCTION AGENT</div>
         <div id="rsiinductclock" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1.1; color:var(--ink);">0:00</div>
-        <div id="rsiinductcue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap when the induction agent/sedative is pushed.</div>
+        <div id="rsiinductcue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap the agent as it is pushed — starts the clock and logs the drug and dose.</div>
       </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
-        <button type="button" id="rsiinductgive" class="cs-secondary" style="background:var(--gray); color:var(--on-sev); border:none; border-right:1px solid var(--on-sev); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">PUSHED — START CLOCK</button>
-        <button type="button" id="rsiinductreset" class="cs-secondary" style="background:var(--card); color:var(--ink); border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">UNDO</button>
-      </div>
+      <div class="drugpick" id="rsiinductpick"></div>
+      <button type="button" id="rsiinductreset" class="cs-secondary" style="width:100%; background:var(--card); color:var(--ink); border:none; border-top:1px solid var(--line); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">UNDO — CLEAR THIS LANE</button>
     </div>
     <div style="margin:8px 14px 0; border:2px solid var(--sev-crit);">
       <div style="padding:10px 14px; background:var(--card2);">
         <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--red);">PARALYTIC</div>
         <div id="rsiparalyticclock" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1.1; color:var(--red);">0:00</div>
-        <div id="rsiparalyticcue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap when the paralytic is pushed.</div>
+        <div id="rsiparalyticcue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap the paralytic as it is pushed — starts the clock and logs the drug and dose.</div>
       </div>
-      <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
-        <button type="button" id="rsiparalyticgive" class="cs-secondary" style="background:var(--sev-crit); color:var(--on-sev); border:none; border-right:1px solid var(--on-sev); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">PUSHED — START CLOCK</button>
-        <button type="button" id="rsiparalyticreset" class="cs-secondary" style="background:var(--card); color:var(--red); border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">UNDO</button>
-      </div>
+      <div class="drugpick" id="rsiparalyticpick"></div>
+      <button type="button" id="rsiparalyticreset" class="cs-secondary" style="width:100%; background:var(--card); color:var(--red); border:none; border-top:1px solid var(--line); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">UNDO — CLEAR THIS LANE</button>
     </div>
     </div><!-- /.console -->
+    <div style="margin:8px 14px 0; font-size:12px; line-height:1.4; color:var(--ink2);">
+      Doses come from the weight in the bar at the top and are <b>rounded to the nearest practical increment</b> (10 mg for the RSI agents) — the syringe gets drawn to a round number, not to 84 mg. No weight entered → the tap still stamps the time and logs the drug, and says the dose was not recorded. <b>Obesity:</b> succinylcholine is dosed on total body weight; the right dosing weight for rocuronium is debated (total vs. ideal) — this calculator uses whatever weight is in the bar.
+    </div>
 
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid var(--gray);">
         <summary style="background:var(--gray); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">RSI DRUGS — TYPICAL RANGES</summary>
-        <div style="margin:11px 12px 0; border:2px solid var(--sev-caution); background:var(--note-bg); color:var(--note-tx); padding:11px 14px; font-size:13px; line-height:1.4;">LRH's Adult Airway Guide leaves the specific induction agent, paralytic, and push-dose-pressor recipe to the intubating clinician's judgment/pharmacy stock — it doesn't name one combination. Ranges below are standard EM references, not an LRH-specific order set; confirm your preferred combo with pharmacy before printing a fixed choice.</div>
+        <div style="margin:11px 12px 0; border:2px solid var(--sev-caution); background:var(--note-bg); color:var(--note-tx); padding:11px 14px; font-size:13px; line-height:1.4;">LRH's Adult Airway Guide leaves the specific induction agent, paralytic, and push-dose-pressor recipe to the intubating clinician's judgment/pharmacy stock — it doesn't name one combination. Ranges below are standard EM references, not an LRH-specific order set; confirm your preferred combo with pharmacy before printing a fixed choice.<br><br><b>Why this section and the tap-to-log buttons above show different numbers:</b> this section is the exact per-kg arithmetic across the whole range (etomidate 0.3 mg/kg at 78 kg = 23 mg). The buttons above take one dose from each range and round it to the nearest 10 mg, because that is how the syringe actually gets drawn (23 mg → 20 mg). Neither is wrong — the rounded number is the one that goes in the syringe, and it is the one written to the case timeline.</div>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-10" class="t-ck"><span><b>Induction:</b> etomidate 0.3 mg/kg (<span class="wdose" data-perkg="0.3" data-max="40" data-unit="mg" data-decimals="0">enter weight ↑</span>; max 40 mg), or ketamine 1–2 mg/kg (<span class="wdose" data-perkg="1" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="2" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>; max 200 mg), or propofol 1–2 mg/kg (<span class="wdose" data-perkg="1" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="2" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>; max 200 mg) — reduce/avoid in shock. Caps are display ceilings for extreme weights (reviewed for LRH 2026-08-12) — verify locally.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-11" class="t-ck"><span><b>Paralytic:</b> succinylcholine 1–1.5 mg/kg (<span class="wdose" data-perkg="1" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="1.5" data-max="200" data-unit="mg" data-decimals="0">enter weight ↑</span>; max 200 mg), or rocuronium 1–1.2 mg/kg (<span class="wdose" data-perkg="1" data-max="120" data-unit="mg" data-decimals="0">enter weight ↑</span>–<span class="wdose" data-perkg="1.2" data-max="120" data-unit="mg" data-decimals="0">enter weight ↑</span>; max 120 mg).</span></label></li>
@@ -762,14 +785,50 @@ catch(e){ document.body.dataset.theme='dark'; }
         </div>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-13" class="t-ck"><span><b>Secure &amp; confirm:</b> bilateral breath sounds confirmed; tube secured at proper depth; OG tube placed and taped at depth; CXR ordered and checked.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-14" class="t-ck"><span><b>Post-airway management:</b> analgesia/sedation initiated; ventilator settings confirmed and documented; team leader calls for a debrief and learning points.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-14" class="t-ck t-ck-crit"><span><b>Post-airway management:</b> analgesia <b>and</b> sedation started (tap them in below); ventilator settings confirmed and documented; team leader calls for a debrief and learning points.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-15" class="t-ck"><span>If the patient decompensates on the vent later → <a href="#c14">see card 14 (DOPE)</a>.</span></label></li>
         </ul>
       </details>
     </div>
 
+    <!-- ---- POST-INTUBATION ANALGESIA & SEDATION ----
+         Same machinery as the RSI lanes above and the same rule: the menus are
+         rendered from SITE.rsiDrugs, not hand-written here. Analgesia is listed
+         first because that is the order it should be given in — a tube and a
+         paralytic are painful before they are frightening. ---- -->
+    <div style="margin:16px 14px 0; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2);">POST-INTUBATION — TAP THE DRUG AS IT IS GIVEN</div>
+    <!-- Fires whenever a paralytic has been logged and neither post-intubation lane
+         has anything in it. Not localizable and not dismissible: an awake, paralyzed
+         patient is the specific harm this block exists to prevent. -->
+    <div id="c06awakepara" style="display:none; margin:6px 14px 0; border:2px solid var(--sev-crit); background:var(--card2); color:var(--red); padding:11px 14px; font-size:13px; line-height:1.4;">
+      ⚠ <b>PARALYTIC GIVEN, NOTHING LOGGED FOR PAIN OR SEDATION.</b> Rocuronium at an RSI dose lasts about 45–60 minutes and succinylcholine wears off in minutes — either way the patient can be awake and unable to move or signal. <b>Analgesia and sedation now</b>, before the vent settings and before the CXR.
+    </div>
+    <div class="console">
+    <div style="margin:6px 14px 0; border:2px solid var(--purple);">
+      <div style="padding:10px 14px; background:var(--card2);">
+        <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--purple);">ANALGESIA — OPIOID, FIRST DOSE</div>
+        <div id="c06analgesiaclock" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1.1; color:var(--purple);">0:00</div>
+        <div id="c06analgesiacue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap the opioid as it is given — starts the clock and logs the drug and dose.</div>
+      </div>
+      <div class="drugpick" id="c06analgesiapick"></div>
+      <button type="button" id="c06analgesiareset" class="cs-secondary" style="width:100%; background:var(--card); color:var(--ink); border:none; border-top:1px solid var(--line); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">UNDO — CLEAR THIS LANE</button>
+    </div>
+    <div style="margin:8px 14px 0; border:2px solid var(--blue);">
+      <div style="padding:10px 14px; background:var(--card2);">
+        <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--blue);">SEDATION — FIRST DOSE / INFUSION START</div>
+        <div id="c06sedationclock" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1.1; color:var(--blue);">0:00</div>
+        <div id="c06sedationcue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap the sedative as it is started — starts the clock and logs the drug and dose.</div>
+      </div>
+      <div class="drugpick" id="c06sedationpick"></div>
+      <button type="button" id="c06sedationreset" class="cs-secondary" style="width:100%; background:var(--card); color:var(--ink); border:none; border-top:1px solid var(--line); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">UNDO — CLEAR THIS LANE</button>
+    </div>
+    </div><!-- /.console -->
+    <div style="margin:8px 14px 0; font-size:12px; line-height:1.4; color:var(--ink2);">
+      These are <b>first doses</b> for an average adult, not a sedation plan — reassess, retitrate, and hand over a target depth of sedation. <b>Analgesia first, then sedation</b> (SCCM PADIS 2018 analgesia-first/analgosedation approach), and treat the newly intubated hypotensive patient's sedation as a hemodynamic drug: propofol and midazolam both drop the pressure, ketamine usually does not. Every one of these is <b>reduced in shock, in the elderly and in liver or renal failure</b>.
+    </div>
+
     <div style="padding:16px 14px 6px; font-size:12.5px; line-height:1.4; color:var(--ink2);">
-      <b>Sources:</b> Littleton Regional Hospital Adult Airway Guide — the Pre-Airway Preparation / Induction &amp; Airway Attempt / Post-Tube Confirmation structure and most checklist items (denitrogenation/ApOx targets, ear-to-sternal-notch positioning, VL vs. DL call, ELM, bougie/2nd-intubator/iGel/cric backup plan, capnography+breath-sounds+OG+CXR confirmation) are drawn directly from it; it does not specify an induction/paralytic combination or pressor recipe. Merged into the checklist above: Weingart S, "Checkboxed Checklist" (rev. 2020-12-21), EMCrit Blog, <a href="https://emcrit.org/" style="color:inherit;">emcrit.org</a> — physiologic-optimization ("HOp killers": hypotension/hypoxemia/pH — EMCrit's peri-intubation resuscitation-sequence concept, not a verbatim quote from the printed card), push-dose epinephrine/post-tube norepinephrine, cricothyroid-membrane marking, pulse-ox placement, large-bore rigid suction, eye/face protection, and video-laryngoscope recording items were added from it; redundant items already covered by the LRH checklist were not duplicated. Two numeric items differ between the sources and are flagged rather than silently merged: apneic-oxygenation flow (LRH 15 L/min vs. EMCrit's 20 L/min) and the preoxygenation SpO₂ target (LRH ≥95% vs. EMCrit's 100%/CPAP) — LRH's figures are used as the primary checklist values. Cross-check the EMCrit item against the current version there, since EMCrit has since updated to a v2.5 checklist. RSI induction/paralytic dose ranges are standard EM references (LITFL and similar) pending an LRH-specific order set; waveform capnography as the gold-standard confirmation method also aligns with AHA/ASA airway guidance. Ventilator settings are institution-specific — confirm against LRH's own RT protocols. CICO trigger criteria (can't intubate, can't oxygenate despite BVM/iGel, SpO₂ &lt;70% and falling) per DAS 2025 — see card 18.
+      <b>Sources:</b> Littleton Regional Hospital Adult Airway Guide — the Pre-Airway Preparation / Induction &amp; Airway Attempt / Post-Tube Confirmation structure and most checklist items (denitrogenation/ApOx targets, ear-to-sternal-notch positioning, VL vs. DL call, ELM, bougie/2nd-intubator/iGel/cric backup plan, capnography+breath-sounds+OG+CXR confirmation) are drawn directly from it; it does not specify an induction/paralytic combination or pressor recipe. Merged into the checklist above: Weingart S, "Checkboxed Checklist" (rev. 2020-12-21), EMCrit Blog, <a href="https://emcrit.org/" style="color:inherit;">emcrit.org</a> — physiologic-optimization ("HOp killers": hypotension/hypoxemia/pH — EMCrit's peri-intubation resuscitation-sequence concept, not a verbatim quote from the printed card), push-dose epinephrine/post-tube norepinephrine, cricothyroid-membrane marking, pulse-ox placement, large-bore rigid suction, eye/face protection, and video-laryngoscope recording items were added from it; redundant items already covered by the LRH checklist were not duplicated. Two numeric items differ between the sources and are flagged rather than silently merged: apneic-oxygenation flow (LRH 15 L/min vs. EMCrit's 20 L/min) and the preoxygenation SpO₂ target (LRH ≥95% vs. EMCrit's 100%/CPAP) — LRH's figures are used as the primary checklist values. Cross-check the EMCrit item against the current version there, since EMCrit has since updated to a v2.5 checklist. RSI induction/paralytic dose ranges are standard EM references (LITFL and similar) pending an LRH-specific order set; waveform capnography as the gold-standard confirmation method also aligns with AHA/ASA airway guidance. Ventilator settings are institution-specific — confirm against LRH's own RT protocols. CICO trigger criteria (can't intubate, can't oxygenate despite BVM/iGel, SpO₂ &lt;70% and falling) per DAS 2025 — see card 18. <b>The tap-to-log drug menus</b> (RSI and post-intubation) are rendered from this file's <code>SITE.rsiDrugs</code> config block, which carries a per-drug source note; the per-kg figures are the mid/standard point of the ranges printed above rather than a separate recommendation, and rocuronium 1.2 mg/kg and succinylcholine 1.5 mg/kg additionally match the RSI doses in DAS 2025 (Ahmad I, El-Boghdadly K, Iliff H, et al. <i>Br J Anaesth</i> 2026;136(1):283&ndash;307), which <a href="../airway/" style="color:inherit;">/airway/</a> carries as its own config. <b>Post-intubation:</b> analgesia-before-sedation, opioid-first for non-neuropathic pain, and a light target depth of sedation are from Devlin JW, Skrobik Y, Gélinas C, et al., <i>Clinical Practice Guidelines for the Prevention and Management of Pain, Agitation/Sedation, Delirium, Immobility, and Sleep Disruption in Adult Patients in the ICU</i> (PADIS), <i>Crit Care Med</i> 2018;46(9):e825&ndash;e873. PADIS states the principle but publishes <b>no per-kg ED bolus</b>, so the first doses offered here (fentanyl 1 mcg/kg within a conventional 0.5&ndash;2 mcg/kg range; propofol infusion started at 20 mcg/kg/min within a 5&ndash;50 mcg/kg/min range; midazolam 0.05 mg/kg; ketamine 0.5 mg/kg) are standard EM/critical-care starting doses, not guideline numbers — confirm them against your own pharmacy's concentrations and order sets before relying on them. Rounding to a practical increment (10 mg for the RSI agents, 25 mcg for fentanyl) is a local convenience decision, not a clinical recommendation.
     </div>
     <div style="padding:0 14px 20px; font-size:12px; color:var(--ink2);">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -2008,7 +2067,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     <div style="margin:12px 14px 0; padding:9px 12px; background:var(--card2); border-left:4px solid var(--teal); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; line-height:1.45; color:var(--ink);">ROOM 7 (RESUS BAY) CABINET &middot; LUNG ISOLATION / HEMOPTYSIS KIT<br><span style="color:var(--ink2);">bronchial blocker, coud&eacute; bougie, large ETTs and the nebulized-TXA setup &middot; <a href="../labels/#loc-room7" style="color:var(--teal);">door label</a></span></div>
 
     <div class="steps" style="padding:14px 14px 0;">
-      <details open style="border:2px solid var(--sev-crit);"><summary style="background:var(--sev-crit); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">FIRST MOVES — THIS IS AN AIRWAY PROBLEM</summary><ul style="margin:0; padding:4px 12px 12px; list-style:none;"><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-1" class="t-ck t-ck-crit"><span><b>They drown, they do not exsanguinate.</b> The anatomic dead space is only about <b>150&ndash;200 mL</b> &mdash; that much blood in the bronchial tree kills before blood loss does. Everything below is about keeping one lung clean. <span style="color:var(--ink2);">(150 mL LITFL/emDocs, ~200 mL First10EM/StatPearls.)</span></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-2" class="t-ck t-ck-crit"><span><b>Bleeding lung DOWN.</b> Lateral decubitus, bleeding side dependent, so blood drains away from the good lung. If you do not know the side, or it is bilateral: sit them up / reverse Trendelenburg.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-3" class="t-ck t-ck-caution"><span><b>An awake patient with an effective cough is doing a better job than your tube.</b> Sit them upright and let them clear it. Intubate for failure of oxygenation, exhaustion, altered mentation or an ineffective cough &mdash; not for the sight of blood.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-4" class="t-ck"><span><b>Two working suctions</b>, tested, both at the head of the bed. Two large-bore IVs. High-flow oxygen if SpO&#8322; &lt;90%.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-5" class="t-ck"><span><b>Send:</b> CBC, PT/INR, fibrinogen, type &amp; screen, VBG, renal, ionized calcium. <b>Targets:</b> INR &lt;1.5, platelets &gt;50 &times;10&#8313;/L, fibrinogen &gt;1.5 g/L. Fibrinogen &lt;150 mg/dL &rarr; cryoprecipitate or fibrinogen concentrate, not FFP.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-6" class="t-ck"><span><b>Reverse anticoagulation immediately</b> &mdash; <a href="#c10">card 10</a>. Add <b>DDAVP 0.3 mcg/kg IV</b> if they are on antiplatelets, uremic, or have platelet dysfunction.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-7" class="t-ck t-ck-caution"><span><b>Is it really from the lungs?</b> Pseudohemoptysis from the nasopharynx (<a href="#c25">card 25</a>) or the GI tract (<a href="#c23">card 23</a>) is common and changes everything you do next.</span></label></li></ul></details><details open style="border:2px solid var(--gray);"><summary style="background:var(--gray); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">AIRWAY — AND HOW TO ISOLATE THE BLEEDING LUNG</summary><ul style="margin:0; padding:4px 12px 12px; list-style:none;"><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-8" class="t-ck t-ck-crit"><span><b>Use the biggest tube you have &mdash; ETT <span style="white-space:nowrap">&ge;8.0 mm</span>.</b> Not for ventilation: a bronchoscope has to fit down it at the receiving centre, and a 7.0 tube forecloses that. This is the single easiest thing to get right here and the hardest to undo.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-9" class="t-ck"><span><b>Direct laryngoscopy beats video</b> when the airway is full of blood &mdash; blood on the lens blinds a camera and a Macintosh blade does not care. Head up 30&ndash;45&deg;, lead with suction, stay high and anterior. Full SALAD setup: <a href="../procedures/?from=home#c15">procedures card 15</a>.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-10" class="t-ck t-ck-caution"><span><b>Mark the cricothyroid membrane before you start.</b> Two attempts, then front of neck &mdash; <a href="#c18">card 18</a>.</span></label></li><li style="border-top:1px solid var(--line); padding:9px 0 3px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.12em; color:var(--ink2);">LUNG ISOLATION &mdash; INTUBATE THE <u>GOOD</u> SIDE</li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-11" class="t-ck t-ck-crit"><span><b>Left lung bleeding</b> &rarr; advance the ETT blindly into the <b>right</b> mainstem. It works about <b>95%</b> of the time because the right mainstem is the straighter path.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-12" class="t-ck t-ck-crit"><span><b>Right lung bleeding</b> &rarr; harder (blind success ~73%). Coud&eacute; bougie, tip angled <b>left</b>, rotate the head toward the bleeding side, advance to resistance, then railroad the tube. Inflate the cuff, confirm on CXR, then put the <i>non</i>-bleeding side up.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-13" class="t-ck t-ck-caution"><span><b>LRH stocks neither a bronchial blocker nor a double-lumen tube &mdash; so mainstem intubation with a single large ETT <u>is</u> your isolation technique.</b> That is not a compromise you should feel bad about: First10EM and emDocs both advise against a DLT in the ED anyway, because they are misplaced constantly by people who do not place them weekly and they block the bronchoscope. A blocker is a receiving-centre tool; ask for it on the transfer call rather than looking for one here. No source gives a safe ETT insertion depth in cm for blind mainstem intubation &mdash; confirm with CXR, do not trust a number.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-14" class="t-ck"><span><b>One-lung ventilation:</b> tidal volume <b>3&ndash;4 mL/kg</b> predicted body weight with a higher rate. The usual 6&ndash;8 mL/kg into a single lung is a barotrauma injury.</span></label></li></ul></details><details open style="border:2px solid var(--sev-caution);"><summary style="background:var(--sev-caution); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">TXA &mdash; NEBULIZED, IV, OR BOTH</summary><ul style="margin:0; padding:4px 12px 12px; list-style:none;"><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-15" class="t-ck t-ck-caution"><span><b>Nebulized TXA 500 mg</b> &mdash; three times a day (Wand 2018 RCT: 96% resolution by day 5 vs 50% placebo). Two published intervals: <b>q8h</b> (emDocs) or <b>q8&ndash;12h</b> (LITFL).</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-16" class="t-ck t-ck-caution"><span><b>IV TXA</b> &mdash; three published options &mdash; <b>1 g over 10 min</b> (First10EM), <b>1 g q8h</b> (LITFL), or <b>1&ndash;2 g</b> (emDocs). All are the same order of magnitude; pick one and write down which.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-17" class="t-ck t-ck-caution"><span><b>Nebulized appears to beat IV.</b> Gopinath 2023 (n=110, 500 mg TID both arms): bleeding stopped at 30 min in <b>72.7% nebulized vs 50.9% IV</b> (p=0.0019), and fewer went on to embolization (25.5% vs 47.7%). For a genuinely massive bleed EMOttawa gives <b>both</b> &mdash; 2 g IV and 500 mg nebulized.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-18" class="t-ck"><span><b>Note the contrast with GI bleeding</b>, where TXA is now contraindicated (<a href="#c23">card 23</a>, HALT-IT). Hemoptysis is a different question with different trials &mdash; do not let one rule bleed into the other.</span></label></li></ul></details><details open style="border:2px solid var(--gray);"><summary style="background:var(--gray); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">DEFINITIVE CONTROL — CALL EARLY, TRANSFER EARLY</summary><ul style="margin:0; padding:4px 12px 12px; list-style:none;"><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-19" class="t-ck t-ck-crit"><span><b>Bronchial artery embolization is the definitive treatment</b> and it is not available here. Success <b>70&ndash;99%</b> across series. That makes the transfer call part of the resuscitation, not the disposition &mdash; DHMC Transfer Center <b>(877) 999-9870</b>.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-20" class="t-ck"><span>Call <b>IR, thoracic surgery and pulmonology at the same time</b>, not in sequence. Some centers take every life-threatening case straight to the OR for rigid bronchoscopy first; the receiving center decides that, so give them the picture early.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-21" class="t-ck t-ck-caution"><span><b>Rebleeding after embolization is common</b> &mdash; 9&ndash;57% across series, roughly 30% by 30 days. &ldquo;The IR fixed it&rdquo; is not a reason to relax monitoring.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-22" class="t-ck"><span>Emergent surgical resection carries <b>35&ndash;40%</b> mortality; the same operation after hemostasis is achieved is about <b>4%</b>. That gap is the argument for embolization first wherever it is possible.</span></label></li></ul></details><details open style="border:2px solid var(--sev-caution);"><summary style="background:var(--sev-caution); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">PITFALLS</summary><ul style="margin:0; padding:4px 12px 12px; list-style:none;"><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-23" class="t-ck t-ck-caution"><span>Intubating a patient whose own cough was working.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-24" class="t-ck t-ck-caution"><span>A 7.0 tube &mdash; now nobody can bronchoscope or place a blocker.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-25" class="t-ck t-ck-caution"><span>One suction. Reaching for a double-lumen tube you have never placed. Soiling the video laryngoscope on the first look.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-26" class="t-ck t-ck-caution"><span>Waiting for stability before making the transfer call &mdash; the stability is what the transfer is for.</span></label></li></ul></details>
+      <details open style="border:2px solid var(--sev-crit);"><summary style="background:var(--sev-crit); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">FIRST MOVES — THIS IS AN AIRWAY PROBLEM</summary><ul style="margin:0; padding:4px 12px 12px; list-style:none;"><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-1" class="t-ck t-ck-crit"><span><b>They drown, they do not exsanguinate.</b> The anatomic dead space is only about <b>150&ndash;200 mL</b> &mdash; that much blood in the bronchial tree kills before blood loss does. Everything below is about keeping one lung clean. <span style="color:var(--ink2);">(150 mL LITFL/emDocs, ~200 mL First10EM/StatPearls.)</span></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-2" class="t-ck t-ck-crit"><span><b>Bleeding lung DOWN.</b> Lateral decubitus, bleeding side dependent, so blood drains away from the good lung. If you do not know the side, or it is bilateral: sit them up / reverse Trendelenburg.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-3" class="t-ck t-ck-caution"><span><b>An awake patient with an effective cough is doing a better job than your tube.</b> Sit them upright and let them clear it. Intubate for failure of oxygenation, exhaustion, altered mentation or an ineffective cough &mdash; not for the sight of blood.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-4" class="t-ck"><span><b>Two working suctions</b>, tested, both at the head of the bed. Two large-bore IVs. High-flow oxygen if SpO&#8322; &lt;90%.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-5" class="t-ck"><span><b>Send:</b> CBC, PT/INR, fibrinogen, type &amp; screen, VBG, renal, ionized calcium. <b>Targets:</b> INR &lt;1.5, platelets &gt;50 &times;10&#8313;/L, fibrinogen &gt;1.5 g/L. Fibrinogen &lt;150 mg/dL &rarr; cryoprecipitate or fibrinogen concentrate, not FFP.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-6" class="t-ck"><span><b>Reverse anticoagulation immediately</b> &mdash; <a href="#c10">card 10</a>. Add <b>DDAVP 0.3 mcg/kg IV</b> if they are on antiplatelets, uremic, or have platelet dysfunction.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-7" class="t-ck t-ck-caution"><span><b>Is it really from the lungs?</b> Pseudohemoptysis from the nasopharynx (<a href="#c25">card 25</a>) or the GI tract (<a href="#c23">card 23</a>) is common and changes everything you do next.</span></label></li></ul></details><details open style="border:2px solid var(--gray);"><summary style="background:var(--gray); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">AIRWAY — AND HOW TO ISOLATE THE BLEEDING LUNG</summary><ul style="margin:0; padding:4px 12px 12px; list-style:none;"><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-8" class="t-ck t-ck-crit"><span><b>Use the biggest tube you have &mdash; ETT <span style="white-space:nowrap">&ge;8.0 mm</span>.</b> Not for ventilation: a bronchoscope has to fit down it at the receiving center, and a 7.0 tube forecloses that. This is the single easiest thing to get right here and the hardest to undo.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-9" class="t-ck"><span><b>Direct laryngoscopy beats video</b> when the airway is full of blood &mdash; blood on the lens blinds a camera and a Macintosh blade does not care. Head up 30&ndash;45&deg;, lead with suction, stay high and anterior. Full SALAD setup: <a href="../procedures/?from=home#c15">procedures card 15</a>.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-10" class="t-ck t-ck-caution"><span><b>Mark the cricothyroid membrane before you start.</b> Two attempts, then front of neck &mdash; <a href="#c18">card 18</a>.</span></label></li><li style="border-top:1px solid var(--line); padding:9px 0 3px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.12em; color:var(--ink2);">LUNG ISOLATION &mdash; INTUBATE THE <u>GOOD</u> SIDE</li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-11" class="t-ck t-ck-crit"><span><b>Left lung bleeding</b> &rarr; advance the ETT blindly into the <b>right</b> mainstem. It works about <b>95%</b> of the time because the right mainstem is the straighter path.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-12" class="t-ck t-ck-crit"><span><b>Right lung bleeding</b> &rarr; harder (blind success ~73%). Coud&eacute; bougie, tip angled <b>left</b>, rotate the head toward the bleeding side, advance to resistance, then railroad the tube. Inflate the cuff, confirm on CXR, then put the <i>non</i>-bleeding side up.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-13" class="t-ck t-ck-caution"><span><b>LRH stocks neither a bronchial blocker nor a double-lumen tube &mdash; so mainstem intubation with a single large ETT <u>is</u> your isolation technique.</b> That is not a compromise you should feel bad about: First10EM and emDocs both advise against a DLT in the ED anyway, because they are misplaced constantly by people who do not place them weekly and they block the bronchoscope. A blocker is a receiving-center tool; ask for it on the transfer call rather than looking for one here. No source gives a safe ETT insertion depth in cm for blind mainstem intubation &mdash; confirm with CXR, do not trust a number.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-14" class="t-ck"><span><b>One-lung ventilation:</b> tidal volume <b>3&ndash;4 mL/kg</b> predicted body weight with a higher rate. The usual 6&ndash;8 mL/kg into a single lung is a barotrauma injury.</span></label></li></ul></details><details open style="border:2px solid var(--sev-caution);"><summary style="background:var(--sev-caution); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">TXA &mdash; NEBULIZED, IV, OR BOTH</summary><ul style="margin:0; padding:4px 12px 12px; list-style:none;"><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-15" class="t-ck t-ck-caution"><span><b>Nebulized TXA 500 mg</b> &mdash; three times a day (Wand 2018 RCT: 96% resolution by day 5 vs 50% placebo). Two published intervals: <b>q8h</b> (emDocs) or <b>q8&ndash;12h</b> (LITFL).</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-16" class="t-ck t-ck-caution"><span><b>IV TXA</b> &mdash; three published options &mdash; <b>1 g over 10 min</b> (First10EM), <b>1 g q8h</b> (LITFL), or <b>1&ndash;2 g</b> (emDocs). All are the same order of magnitude; pick one and write down which.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-17" class="t-ck t-ck-caution"><span><b>Nebulized appears to beat IV.</b> Gopinath 2023 (n=110, 500 mg TID both arms): bleeding stopped at 30 min in <b>72.7% nebulized vs 50.9% IV</b> (p=0.0019), and fewer went on to embolization (25.5% vs 47.7%). For a genuinely massive bleed EMOttawa gives <b>both</b> &mdash; 2 g IV and 500 mg nebulized.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-18" class="t-ck"><span><b>Note the contrast with GI bleeding</b>, where TXA is now contraindicated (<a href="#c23">card 23</a>, HALT-IT). Hemoptysis is a different question with different trials &mdash; do not let one rule bleed into the other.</span></label></li></ul></details><details open style="border:2px solid var(--gray);"><summary style="background:var(--gray); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">DEFINITIVE CONTROL — CALL EARLY, TRANSFER EARLY</summary><ul style="margin:0; padding:4px 12px 12px; list-style:none;"><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-19" class="t-ck t-ck-crit"><span><b>Bronchial artery embolization is the definitive treatment</b> and it is not available here. Success <b>70&ndash;99%</b> across series. That makes the transfer call part of the resuscitation, not the disposition &mdash; DHMC Transfer Center <b>(877) 999-9870</b>.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-20" class="t-ck"><span>Call <b>IR, thoracic surgery and pulmonology at the same time</b>, not in sequence. Some centers take every life-threatening case straight to the OR for rigid bronchoscopy first; the receiving center decides that, so give them the picture early.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-21" class="t-ck t-ck-caution"><span><b>Rebleeding after embolization is common</b> &mdash; 9&ndash;57% across series, roughly 30% by 30 days. &ldquo;The IR fixed it&rdquo; is not a reason to relax monitoring.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-22" class="t-ck"><span>Emergent surgical resection carries <b>35&ndash;40%</b> mortality; the same operation after hemostasis is achieved is about <b>4%</b>. That gap is the argument for embolization first wherever it is possible.</span></label></li></ul></details><details open style="border:2px solid var(--sev-caution);"><summary style="background:var(--sev-caution); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">PITFALLS</summary><ul style="margin:0; padding:4px 12px 12px; list-style:none;"><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-23" class="t-ck t-ck-caution"><span>Intubating a patient whose own cough was working.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-24" class="t-ck t-ck-caution"><span>A 7.0 tube &mdash; now nobody can bronchoscope or place a blocker.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-25" class="t-ck t-ck-caution"><span>One suction. Reaching for a double-lumen tube you have never placed. Soiling the video laryngoscope on the first look.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="24-26" class="t-ck t-ck-caution"><span>Waiting for stability before making the transfer call &mdash; the stability is what the transfer is for.</span></label></li></ul></details>
     </div>
     <div style="padding:14px; font-size:12px; line-height:1.5; color:var(--ink2); border-top:1px solid var(--line); margin-top:14px;"><b>Sources:</b> Volume thresholds, dead space, bleeding-side-down positioning, ETT &ge;8.0, blind mainstem success rates, DDAVP and the argument against a DLT &mdash; First10EM, <a href="https://first10em.com/massive-hemoptysis/" target="_blank" rel="noopener">Massive hemoptysis</a>; LITFL, <a href="https://litfl.com/haemoptysis/" target="_blank" rel="noopener">Haemoptysis</a>; emDocs, <a href="https://www.emdocs.net/emdocs-podcast-episode-116-massive-hemoptysis/" target="_blank" rel="noopener">Podcast 116</a> and <a href="https://www.emdocs.net/em3am-hemoptysis/" target="_blank" rel="noopener">EM@3AM Hemoptysis</a>; StatPearls, <a href="https://www.ncbi.nlm.nih.gov/books/NBK538278/" target="_blank" rel="noopener">Pulmonary hemorrhage</a>. Bougie rotation technique and the give-both-TXA-routes position &mdash; <a href="https://emottawablog.com/2025/05/practical-management-of-acute-hemoptysis/" target="_blank" rel="noopener">EMOttawa, Practical management of acute hemoptysis</a>. TXA trial numbers (Wand 2018, Gopinath 2023) &mdash; <a href="https://rebelem.com/txa-for-hemoptysis-we-put-that-t-on-everything-that-bleeds/" target="_blank" rel="noopener">REBEL EM</a>. <b>Where more than one published value exists it is shown as options rather than narrowed to one:</b> the definition of &ldquo;massive&rdquo; (&gt;100 mL/h, &gt;500 mL/24 h, &gt;600 mL/24 h and &gt;50 mL per cough are all in print), the dead-space figure, and the TXA interval. No source gives an ETT depth in cm for blind mainstem intubation, so none is printed here.</div>
     <div style="padding:0 14px 20px; font-size:12px; color:var(--ink2);">
@@ -2054,7 +2113,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid var(--sev-crit);"><summary style="background:var(--sev-crit); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">THE MAGNET — GET THIS RIGHT OR YOU WILL HARM SOMEONE</summary><ul style="margin:0; padding:4px 12px 12px; list-style:none;"><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-1" class="t-ck t-ck-crit"><span><b>A magnet does two completely different things depending on the device, and confusing them is dangerous.</b></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-2" class="t-ck t-ck-crit"><span><b>Over an ICD:</b> it suspends tachyarrhythmia detection &mdash; no ATP, no shocks &mdash; <u>while it stays in place</u>. It does <b>not</b> change the pacing mode at all. So a magnet will not fix pacemaker-mediated tachycardia in an ICD patient.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-3" class="t-ck t-ck-crit"><span><b>Over a pacemaker:</b> it switches to asynchronous pacing (VOO/DOO) at a fixed magnet rate &mdash; roughly 85/min Medtronic, 100/min Boston Scientific, ~98.6/min St Jude. <i>That</i> is what breaks PMT, restores output during oversensing, and rescues a runaway pacemaker.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-4" class="t-ck t-ck-caution"><span><b>A magnet rate more than 10% below the programmed rate suggests battery depletion.</b></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-5" class="t-ck"><span>Place it <b>directly over the generator and tape it there.</b> Boston Scientific ICDs beep while therapy is inhibited &mdash; a continuous tone means tachy therapy is off. Some devices can be programmed to ignore magnets, and some Boston Scientific ICDs may not revert on removal, so <b>interrogate afterwards either way</b>.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-6" class="t-ck t-ck-crit"><span><b>Do NOT use a magnet when:</b> the shocks are <u>appropriate</u> (the device is saving them); the patient is pacing-dependent with a pacemaker (asynchronous pacing risks R-on-T); or you do not have external pads and a defibrillator already on the patient.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-7" class="t-ck t-ck-teal"><span><b>Where it lives:</b> code cart <b>side panel</b> &mdash; <a href="#cart">cart section</a>. It is the one item on this card that has to be in your hand within seconds.</span></label></li></ul></details><details open style="border:2px solid var(--gray);"><summary style="background:var(--gray); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">IS THE SHOCK APPROPRIATE OR NOT?</summary><ul style="margin:0; padding:4px 12px 12px; list-style:none;"><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-8" class="t-ck"><span><b>Appropriate</b> favors: syncope or presyncope <i>before</i> the shock; a documented ventricular arrhythmia; the patient looked unwell. <b>Inappropriate</b> favors: shocked while awake, alert and talking, at rest, with palpitations only. A conscious, hemodynamically intact patient being shocked repeatedly is inappropriate until proven otherwise.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-9" class="t-ck"><span><b>Causes of inappropriate shocks:</b> AF/flutter or SVT conducting above the rate cut-off; T-wave oversensing; <b>lead fracture or insulation failure</b> (non-physiologic high-frequency noise, often clusters with arm movement &mdash; provoke it and check the CXR); electromagnetic interference; myopotential oversensing.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-10" class="t-ck t-ck-caution"><span><b>Interrogation is the only reliable way</b> to separate appropriate, inappropriate and phantom shocks &mdash; and phantom shocks (perceived, none delivered) run at about 9% per year. Manufacturer representatives are available around the clock.</span></label></li></ul></details><details open style="border:2px solid var(--sev-crit);"><summary style="background:var(--sev-crit); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">ELECTRICAL STORM</summary><ul style="margin:0; padding:4px 12px 12px; list-style:none;"><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-11" class="t-ck t-ck-crit"><span><b>Definition: 3 or more separate sustained VT/VF episodes, or appropriate ICD shocks, in 24 hours</b> (WikEM, LITFL, Europace). First10EM states it more loosely as more than two or three.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-12" class="t-ck t-ck-crit"><span><b>Hunt the trigger while you treat:</b> ischemia, potassium, magnesium, QT-prolonging drugs, fever, thyroid. The ECG is not uninterpretable just because it is paced &mdash; missing the STEMI that is driving the storm is the classic error.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-13" class="t-ck t-ck-caution"><span><b>First-line drug &mdash; two options.</b> <b>A: beta-blockade first</b> (WikEM), citing a 49-patient series with <b>67% vs 5%</b> survival for esmolol/propranolol over ACLS antiarrhythmics. <b>B: procainamide 10 mg/kg IV over 20 min first</b> (First10EM), with amiodarone second-line and a beta-blocker alongside. Both options put beta-blockade in early; they differ only on what leads.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-14" class="t-ck"><span><b>Doses.</b> Esmolol <b>300&ndash;500 mcg/kg</b> over 1 min, then 25&ndash;100 mcg/kg/min. Propranolol <b>0.15 mg/kg IV</b> over 10 min. Metoprolol <b>2.5&ndash;5 mg IV</b> q2&ndash;5 min, max 15 mg. Amiodarone <b>150 mg</b> over 10 min, may repeat once, then 1 mg/min &times;6 h then 0.5 mg/min &times;18 h. Magnesium <b>1&ndash;2 g IV</b> for torsades.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-15" class="t-ck t-ck-caution"><span><b>Sedation is treatment, not comfort</b> &mdash; it withdraws the sympathetic drive feeding the storm. Ketamine first-line; avoid propofol if they are unstable; intubate and use general anesthesia for refractory storm.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-16" class="t-ck t-ck-crit"><span><b>Brugada or early-repolarization storm is the exception: isoproterenol, NOT beta-blockers.</b></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-17" class="t-ck t-ck-crit"><span><b>Escalate early</b> &mdash; stellate ganglion block, EP ablation, mechanical support. All are transfer conversations here: DHMC Transfer Center <b>(877) 999-9870</b>. <b>Admit every electrical storm.</b></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-18" class="t-ck t-ck-caution"><span><b>The trap:</b> antiarrhythmics can slow VT below the device detection rate. The shocking stops, everyone relaxes, and the patient is still in VT.</span></label></li></ul></details><details open style="border:2px solid var(--gray);"><summary style="background:var(--gray); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">PACEMAKER MALFUNCTION — WHAT THE ECG SHOWS</summary><ul style="margin:0; padding:4px 12px 12px; list-style:none;"><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-19" class="t-ck"><span><b>Failure to capture</b> &mdash; a spike with no QRS after it. Lead displacement or fracture, electrolytes, infarction, exit block. Correct K&#8314;/Mg&#178;&#8314;, interrogate, transcutaneous pace if symptomatic.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-20" class="t-ck"><span><b>Failure to output</b> &mdash; no spikes where there should be. Usually oversensing, fracture or interference. <b>Magnet</b> converts to asynchronous and restores output.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-21" class="t-ck"><span><b>Undersensing</b> &mdash; spikes landing where they should have been inhibited, including on or after a native QRS. Risk of R-on-T. Needs reprogramming.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-22" class="t-ck"><span><b>Oversensing</b> &mdash; inappropriate inhibition and pauses. Provoke it with pectoral muscle contraction. <b>Magnet.</b></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-23" class="t-ck t-ck-caution"><span><b>Pacemaker-mediated tachycardia</b> &mdash; atrial-sensed, ventricular-paced, at or just under the upper tracking rate, typically <b>160&ndash;180/min</b>, with retrograde P waves. Needs a dual-chamber device and intact VA conduction. <b>Magnet</b> (or adenosine); the definitive fix is lengthening the PVARP.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-24" class="t-ck t-ck-crit"><span><b>Runaway pacemaker</b> &mdash; rapid spikes around <b>200/min</b> with falling amplitude, at battery end of life. The magnet is life-saving; the generator change is urgent.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-25" class="t-ck"><span><b>Pacemaker syndrome</b> &mdash; loss of AV synchrony with VVI pacing: fatigue, dizziness, neck pulsations, and a systolic drop &gt;20 mmHg between the native and paced rhythm. <b>Twiddler’s syndrome</b> &mdash; the patient has rotated the generator and coiled the leads; look for hiccups or arm twitching, and coiled leads on the CXR.</span></label></li></ul></details><details open style="border:2px solid var(--sev-crit);"><summary style="background:var(--sev-crit); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">CPR AND DEFIBRILLATION IN A PATIENT WITH A DEVICE</summary><ul style="margin:0; padding:4px 12px 12px; list-style:none;"><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-26" class="t-ck t-ck-crit"><span><b>Do not withhold defibrillation.</b> Place the pads <b>at least 8 cm from the generator</b>, anterior-posterior.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-27" class="t-ck"><span><b>Compressions continue</b> if the ICD fires. No source quantifies real harm to a rescuer from an ICD discharge during CPR; reported effects of contact during external shocks are tingling and muscle soreness. If repeated discharges are genuinely disrupting the resuscitation, put a magnet on.</span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-28" class="t-ck"><span><b>Order:</b> 12-lead during the tachycardia if you can catch it, telemetry, BMP with magnesium, troponin, CXR for lead position/fracture/coiling, echo if perforation or tamponade is suspected. <b>Interrogation after any reported shock is mandatory.</b></span></label></li><li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="26-29" class="t-ck t-ck-caution"><span><b>Disposition:</b> discharge only for a proven phantom shock, a resolved PMT, or a single shock in an asymptomatic patient with no chest pain, dyspnea or syncope and assured cardiology follow-up. Everything else is admitted.</span></label></li></ul></details>
     </div>
-    <div style="padding:14px; font-size:12px; line-height:1.5; color:var(--ink2); border-top:1px solid var(--line); margin-top:14px;"><b>Sources:</b> First10EM, <a href="https://first10em.com/electrical-storm/" target="_blank" rel="noopener">Electrical storm</a> (procainamide-first position, sedation, Brugada/isoproterenol, the detection-rate trap). WikEM, <a href="https://wikem.org/wiki/Electrical_storm" target="_blank" rel="noopener">Electrical storm</a> (beta-blocker-first position and the 67% vs 5% series), <a href="https://wikem.org/wiki/Implantable_Cardioverter-Defibrillator_complication" target="_blank" rel="noopener">ICD complications</a> and <a href="https://wikem.org/wiki/Pacemaker_malfunction" target="_blank" rel="noopener">Pacemaker malfunction</a>. LITFL, <a href="https://litfl.com/pacemaker-malfunction-ecg-library/" target="_blank" rel="noopener">Pacemaker malfunction ECG library</a> (PMT 160&ndash;180/min, runaway ~200/min, Twiddler’s, pacemaker syndrome). Magnet behaviour by manufacturer and the ICD-does-not-change-pacing rule &mdash; <a href="https://academic.oup.com/europace/article/13/9/1222/551468" target="_blank" rel="noopener">Europace 2011</a>; appropriate-vs-inappropriate discrimination &mdash; <a href="https://academic.oup.com/europace/article/12/12/1673/431085" target="_blank" rel="noopener">Europace 2010</a>. emDocs, <a href="https://www.emdocs.net/pacemaker-and-aicd-management-in-the-emergency-department/" target="_blank" rel="noopener">Pacemaker and AICD management</a> (10% magnet-rate rule, pacing-dependent caution, pads &ge;8 cm). Pad distance also <a href="https://www.anzcor.org/home/adult-advanced-life-support/guideline-11-4-electrical-therapy-for-adult-advanced-life-support" target="_blank" rel="noopener">ANZCOR 11.4</a>. Rescuer-contact effects &mdash; <a href="https://www.ccjm.org/content/87/1/16" target="_blank" rel="noopener">Cleveland Clinic Journal of Medicine</a>. <b>The first-line drug for electrical storm is shown as two options with the source on each.</b> Magnet rates are manufacturer-specific and were cross-checked between WikEM and Europace, which differ slightly on end-of-life rates &mdash; confirm against the patient’s device card.</div>
+    <div style="padding:14px; font-size:12px; line-height:1.5; color:var(--ink2); border-top:1px solid var(--line); margin-top:14px;"><b>Sources:</b> First10EM, <a href="https://first10em.com/electrical-storm/" target="_blank" rel="noopener">Electrical storm</a> (procainamide-first position, sedation, Brugada/isoproterenol, the detection-rate trap). WikEM, <a href="https://wikem.org/wiki/Electrical_storm" target="_blank" rel="noopener">Electrical storm</a> (beta-blocker-first position and the 67% vs 5% series), <a href="https://wikem.org/wiki/Implantable_Cardioverter-Defibrillator_complication" target="_blank" rel="noopener">ICD complications</a> and <a href="https://wikem.org/wiki/Pacemaker_malfunction" target="_blank" rel="noopener">Pacemaker malfunction</a>. LITFL, <a href="https://litfl.com/pacemaker-malfunction-ecg-library/" target="_blank" rel="noopener">Pacemaker malfunction ECG library</a> (PMT 160&ndash;180/min, runaway ~200/min, Twiddler’s, pacemaker syndrome). Magnet behavior by manufacturer and the ICD-does-not-change-pacing rule &mdash; <a href="https://academic.oup.com/europace/article/13/9/1222/551468" target="_blank" rel="noopener">Europace 2011</a>; appropriate-vs-inappropriate discrimination &mdash; <a href="https://academic.oup.com/europace/article/12/12/1673/431085" target="_blank" rel="noopener">Europace 2010</a>. emDocs, <a href="https://www.emdocs.net/pacemaker-and-aicd-management-in-the-emergency-department/" target="_blank" rel="noopener">Pacemaker and AICD management</a> (10% magnet-rate rule, pacing-dependent caution, pads &ge;8 cm). Pad distance also <a href="https://www.anzcor.org/home/adult-advanced-life-support/guideline-11-4-electrical-therapy-for-adult-advanced-life-support" target="_blank" rel="noopener">ANZCOR 11.4</a>. Rescuer-contact effects &mdash; <a href="https://www.ccjm.org/content/87/1/16" target="_blank" rel="noopener">Cleveland Clinic Journal of Medicine</a>. <b>The first-line drug for electrical storm is shown as two options with the source on each.</b> Magnet rates are manufacturer-specific and were cross-checked between WikEM and Europace, which differ slightly on end-of-life rates &mdash; confirm against the patient’s device card.</div>
     <div style="padding:0 14px 20px; font-size:12px; color:var(--ink2);">
       <span class="verstamp"></span> &mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
     </div>
@@ -2655,8 +2714,8 @@ catch(e){ document.body.dataset.theme='dark'; }
 
 /* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
 var SITE = {
-  version: "3.2",
-  lastReviewed: "2026-08-09",
+  version: "3.3",
+  lastReviewed: "2026-08-13",
   /* WS10.2 — minutes of manual-wide inactivity (lrh-case-lastactive) before the weight
      strip appends an "ENTERED HH:MM · N MIN AGO" line and ambers #wtbar's border.
      Purely informational — never hides the kg value, its color, or any .wdose span.
@@ -2695,8 +2754,78 @@ var SITE = {
      the weight bar. A question, not a reroute — NRP applies to the newly born, not to a
      weight; an ex-preemie <3 kg can belong in PALS. NRP 8th ed epi 0.02 mg/kg IV/UVC
      (range 0.01–0.03) vs PALS 0.01 mg/kg is the divergence the banner names. */
-  nrp: { maxKg: 3, maxAgeYrs: 1/12 }
+  nrp: { maxKg: 3, maxAgeYrs: 1/12 },
+  /* ===== Card 06 — RSI and post-intubation drug menus =====
+     The menu a clinician taps mid-intubation. Each entry renders as one button
+     that stamps the time, computes its dose from the shared case weight and
+     writes drug + dose to the case timeline. THIS IS THE BLOCK AN ADOPTING ED
+     REWRITES: house first-choice agent, pharmacy stock and rounding practice
+     all differ, and LRH's own Adult Airway Guide deliberately names no
+     combination (see the card's Sources note).
+
+     Fields — label, perKg, max, round, unit, decimals, note. `max` is a display
+     ceiling for extreme weights, not a dosing rule. `round` is the practical
+     increment the number is rounded to: 10 mg for the RSI agents (Lon,
+     2026-08-13) because a syringe is drawn to a round number, not to 84 mg.
+     unit/decimals/max/round pass straight through to the shared .wdose engine,
+     so these doses obey exactly the same arithmetic as every hand-written dose
+     span in this file. An entry with `other:true` carries no dose and stamps
+     the time only — every lane must keep one, because the menu is a shortcut,
+     never the list of drugs a clinician is allowed to give.
+
+     Clinical invariants that must survive localization (asserted by
+     verify_rsi_drugs.mjs, not re-typed from this block): each lane ends in an
+     `other` entry; every dosed entry declares a max; analgesia is offered
+     before sedation; and a tap with no weight entered logs the drug and the
+     time but never a guessed dose.
+
+     Sources for the numbers, all standard EM/critical-care references rather
+     than an LRH order set — same footing as the printed ranges on this card:
+     · Induction and paralytic per-kg doses are the mid/standard point of the
+       ranges already printed in "RSI DRUGS — TYPICAL RANGES" above (LITFL and
+       similar). Rocuronium 1.2 mg/kg and succinylcholine 1.5 mg/kg also match
+       the RSI doses in DAS 2025 (Ahmad I, et al. Br J Anaesth 2026;136(1):
+       283-307), which /airway/ carries as its own config.
+     · Post-intubation analgesia-before-sedation, opioid-first and light-
+       sedation targets: Devlin JW, et al. Clinical Practice Guidelines for the
+       Prevention and Management of Pain, Agitation/Sedation, Delirium,
+       Immobility, and Sleep Disruption in Adult Patients in the ICU (PADIS).
+       Crit Care Med 2018;46(9):e825-e873. PADIS states the principle; it
+       publishes no per-kg ED bolus, so the boluses below are the conventional
+       EM starting doses (fentanyl 0.5-2 mcg/kg; propofol infusion 5-50
+       mcg/kg/min, started here at 20).
+     ==================================================================== */
+  rsiDrugs: {
+    induction: { logPrefix:'INDUCTION', drugs:[
+      { label:'Etomidate',       perKg:0.3, max:40,  round:10, unit:'mg', decimals:0, note:'0.3 mg/kg · hemodynamically the quietest' },
+      { label:'Ketamine',        perKg:1.5, max:200, round:10, unit:'mg', decimals:0, note:'1.5 mg/kg (range 1–2) · bronchodilator' },
+      { label:'Propofol',        perKg:1.5, max:200, round:10, unit:'mg', decimals:0, note:'1.5 mg/kg (range 1–2) · reduce/avoid in shock' },
+      { label:'Other agent',     other:true, note:'Stamps the time — name the agent in the chart' }
+    ] },
+    paralytic: { logPrefix:'PARALYTIC', drugs:[
+      { label:'Rocuronium',      perKg:1.2, max:120, round:10, unit:'mg', decimals:0, note:'1.2 mg/kg · lasts 45–60 min — sedate them' },
+      { label:'Succinylcholine', perKg:1.5, max:200, round:10, unit:'mg', decimals:0, note:'1.5 mg/kg · check K⁺, burns, crush, myopathy' },
+      { label:'Other paralytic', other:true, note:'Stamps the time — name the agent in the chart' }
+    ] },
+    postAnalgesia: { logPrefix:'POST-INTUBATION ANALGESIA', drugs:[
+      { label:'Fentanyl',        perKg:1,     max:100, round:25,  unit:'mcg', decimals:0, note:'1 mcg/kg (range 0.5–2) · first bolus' },
+      { label:'Hydromorphone',   perKg:0.005, max:0.5, round:0.1, unit:'mg',  decimals:1, note:'0.005 mg/kg · first bolus' },
+      { label:'Morphine',        perKg:0.05,  max:5,   round:1,   unit:'mg',  decimals:0, note:'0.05 mg/kg · histamine release, avoid in shock' },
+      { label:'Other opioid',    other:true, note:'Stamps the time — name the agent in the chart' }
+    ] },
+    postSedation: { logPrefix:'POST-INTUBATION SEDATION', drugs:[
+      { label:'Propofol drip',   perKg:1.2,  max:200, round:5,  unit:'mg/hr', decimals:0, note:'start 20 mcg/kg/min (range 5–50) · titrate, do not bolus · drops BP' },
+      { label:'Ketamine',        perKg:0.5,  max:50,  round:10, unit:'mg',    decimals:0, note:'0.5 mg/kg, then 0.5–1 mg/kg/hr · BP-friendly' },
+      { label:'Midazolam',       perKg:0.05, max:5,   round:1,  unit:'mg',    decimals:0, note:'0.05 mg/kg first bolus · drops BP, accumulates' },
+      { label:'Other sedative',  other:true, note:'Stamps the time — name the agent in the chart' }
+    ] }
+  }
 };
+/* Expose the site config for the verify suites and for a champion who wants to read the
+   in-effect values from the browser console rather than from source (issues #116/#117/#118) —
+   the same one-liner /arrest/, /tca/ and /airway/ carry. Read-only in practice: nothing in
+   this file reads window.SITE, it reads the local SITE. */
+try{ window.SITE = SITE; }catch(e){}
 /* energy for the Nth shock (n is 1-based: 1st, 2nd, 3rd...) per ZOLL's protocol */
 function zollJoules(n){ return n<=1 ? SITE.defib.shock1 : (n===2 ? SITE.defib.shock2 : SITE.defib.shock3plus); }
 (function(){
@@ -3439,9 +3568,13 @@ var CODES_WT = (function(){
      #wtbar is sticky (position:sticky, top:0) so it's already on-screen; scrollIntoView is a
      no-op there but kept as a safety net in case a future revision un-stickies it. */
   if(kgEl){
+    /* data-inline spans are opted out (see CODESDOSE): they live inside a card-06 drug
+       button, whose own handler already stops this event — this check is the belt to that
+       braces, so a future control that forgets to stop propagation still can't steal focus
+       and open a keyboard over the screen mid-push. */
     document.addEventListener('click', function(ev){
       var t=ev.target.closest ? ev.target.closest('.wdose.unset') : null;
-      if(!t) return;
+      if(!t || t.hasAttribute('data-inline')) return;
       kgEl.scrollIntoView({behavior:'smooth', block:'nearest'});
       kgEl.focus();
       var bar=document.getElementById('wtbar');
@@ -3450,7 +3583,7 @@ var CODES_WT = (function(){
     document.addEventListener('keydown', function(ev){
       if(ev.key!=='Enter' && ev.key!==' ') return;
       var t=ev.target.closest ? ev.target.closest('.wdose.unset') : null;
-      if(!t) return;
+      if(!t || t.hasAttribute('data-inline')) return;
       ev.preventDefault();
       kgEl.scrollIntoView({behavior:'smooth', block:'nearest'});
       kgEl.focus();
@@ -3534,6 +3667,40 @@ var CODES_WT = (function(){
    intended purpose. Another site adopting this file should still re-derive
    them against its own formulary — hence the "verify locally" note that
    remains on the card text. ---- */
+/* ---- Card 06 drug pickers — built from SITE.rsiDrugs, deliberately BEFORE CODESDOSE ----
+   The shared dose engine below collects its .wdose spans once, at start-up, so a picker
+   rendered after it would be a dead screen: doses that never compute and never repaint when
+   the weight changes. Rendering here instead means a config-driven drug button gets exactly
+   the same arithmetic, max/rounding, "no weight" state and live recompute as a hand-written
+   dose span anywhere else in this file — one dose engine, one set of rounding rules. */
+(function(){
+  if(typeof SITE!=='object' || !SITE.rsiDrugs) return;
+  var LANES={ rsiinductpick:'induction', rsiparalyticpick:'paralytic',
+              c06analgesiapick:'postAnalgesia', c06sedationpick:'postSedation' };
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  Object.keys(LANES).forEach(function(id){
+    var host=document.getElementById(id); if(!host) return;
+    var lane=SITE.rsiDrugs[LANES[id]]; if(!lane || !lane.drugs || !lane.drugs.length) return;
+    /* An odd-length menu leaves a hole in the two-up grid; the last tile (always the
+       "other" entry — see the config block) spans both columns to close it. Derived, so a
+       fork that adds or drops an agent keeps a tidy grid without touching CSS. */
+    var wideLast = (lane.drugs.length % 2) === 1;
+    var h='';
+    lane.drugs.forEach(function(d, i){
+      var cls='cs-secondary'+((wideLast && i===lane.drugs.length-1) ? ' dp-wide' : '');
+      h+='<button type="button" class="'+cls+'" data-drug="'+esc(d.label)+'">'+
+         '<span class="dp-n">'+esc(d.label).toUpperCase()+'</span>';
+      if(!d.other){
+        h+='<span class="dp-dose"><span class="wdose" data-perkg="'+esc(d.perKg)+'" data-max="'+esc(d.max)+
+           '" data-round="'+esc(d.round)+'" data-unit="'+esc(d.unit)+'" data-decimals="'+esc(d.decimals)+
+           '" data-inline="1">NO WEIGHT</span></span>';
+      }
+      h+='<span class="dp-note">'+esc(d.note)+'</span></button>';
+    });
+    host.innerHTML=h;
+  });
+})();
+
 var CODESDOSE = (function(){
   var spans=Array.prototype.slice.call(document.querySelectorAll('.wdose'));
   function fmtVol(n){ return String(Math.round(n*100)/100); }
@@ -3549,9 +3716,19 @@ var CODESDOSE = (function(){
          where that matters (lidocaine → nearest 50 mg). Left off (the default) for anything
          where the raw figure is exactly what should be given. */
       var round=el.hasAttribute('data-round')?parseFloat(el.getAttribute('data-round')):null;
+      /* data-inline — this span already sits INSIDE an interactive control (a card-06 drug
+         button), so it must not also advertise itself as one: a role="button" nested in a
+         <button> is a screen-reader trap, and the page-wide "tap an unset dose to jump to
+         the weight bar" handler would pop the keyboard open over the screen at the exact
+         moment the drug is being pushed. The unset TEXT still shows — only the separate
+         button affordance is suppressed. */
+      var inline=el.hasAttribute('data-inline');
       if(kg===null||kg===undefined||isNaN(kg)||kg<=0||isNaN(perkg)){
-        el.textContent='enter weight ↑'; el.classList.add('unset');
-        el.setAttribute('tabindex','0'); el.setAttribute('role','button'); el.setAttribute('aria-label','Enter weight to calculate this dose');
+        el.textContent = inline ? 'NO WEIGHT' : 'enter weight ↑';
+        el.classList.add('unset');
+        if(!inline){
+          el.setAttribute('tabindex','0'); el.setAttribute('role','button'); el.setAttribute('aria-label','Enter weight to calculate this dose');
+        }
         return;
       }
       var val=perkg*kg;
@@ -3820,40 +3997,131 @@ var AUDIENCE = (function(){
   });
 })();
 
-/* ---- Card 06: RSI medication push timers — sedation/induction + paralytic ---- */
+/* ---- Card 06: RSI + post-intubation drug lanes ----
+   Four lanes — induction, paralytic, post-intubation analgesia, post-intubation sedation.
+   Each is a clock plus the drug menu rendered from SITE.rsiDrugs, and the drug IS the
+   button: one tap stamps the time AND writes "<drug> <dose>" to the case timeline, instead
+   of the generic "PUSHED" this used to log, which recorded that something went in but never
+   what. Three deliberate properties:
+
+   · The dose written to the timeline is READ OFF THE BUTTON, never recomputed here. The
+     record therefore cannot disagree with the number the clinician was looking at when
+     they pushed it — including the rounding, the max clamp and any localized per-kg value.
+   · With no weight in the bar the tap still logs. The time a paralytic went in matters more
+     than the milligrams, and the entry says the dose was not recorded rather than a guess.
+   · A lane accepts more than one drug (a second agent, a repeat dose). The clock keeps
+     measuring from the FIRST push in that lane, because that is the interval anyone asks
+     about afterwards; every later push is its own timeline entry.
+
+   UNDO clears the lane's clock and its drug list. It does not retract timeline entries —
+   the shared case log is append-only by design (same as this card's ETCO₂ stamp), so an
+   UNDO after a real push leaves the push in the record where it belongs. */
 (function(){
   function pad(n){ return (n<10?'0':'')+n; }
   function mmss(sec){ return Math.floor(sec/60)+':'+pad(sec%60); }
-  function makeTimer(opts){
+  function makeLane(opts){
     var clock=document.getElementById(opts.clockId), cue=document.getElementById(opts.cueId),
-        giveBtn=document.getElementById(opts.giveId), resetBtn=document.getElementById(opts.resetId);
-    if(!giveBtn) return;
-    var t0=null, tick=null;
+        pick=document.getElementById(opts.pickId), resetBtn=document.getElementById(opts.resetId);
+    if(!clock || !cue || !pick) return;
+    var lane=(window.SITE && SITE.rsiDrugs && SITE.rsiDrugs[opts.lane]) || null;
+    var logPrefix=(lane && lane.logPrefix) || opts.lane.toUpperCase();
+    var t0=null, given=[], tick=null;
     try{ var s=localStorage.getItem(opts.key); if(s) t0=+s||null; }catch(e){}
+    try{ var g=localStorage.getItem(opts.drugKey); if(g) given=JSON.parse(g); }catch(e){ given=null; }
+    if(!given || typeof given.length!=='number') given=[];
+    given=given.filter(function(e){ return e && typeof e.drug==='string'; }); /* a hand-edited or half-written key must not throw on paint */
     function expose(){ if(opts.exposeGlobal) window[opts.exposeGlobal]=t0; }
     expose();
-    function save(){ try{ if(t0) localStorage.setItem(opts.key,String(t0)); else localStorage.removeItem(opts.key); }catch(e){} }
+    function save(){
+      try{
+        if(t0) localStorage.setItem(opts.key,String(t0)); else localStorage.removeItem(opts.key);
+        if(given.length) localStorage.setItem(opts.drugKey, JSON.stringify(given)); else localStorage.removeItem(opts.drugKey);
+      }catch(e){}
+    }
+    /* What the button says right now — never re-derived from config, so the log and the
+       screen can't drift. An unset span means no weight was entered. */
+    function doseOn(btn){
+      var d=btn.querySelector('.wdose');
+      if(!d || d.classList.contains('unset')) return '';
+      return (d.textContent||'').trim();
+    }
     function paint(){
-      if(t0===null){ clock.textContent='0:00'; clock.style.color=opts.color; cue.textContent=opts.idleText; return; }
+      Array.prototype.forEach.call(pick.querySelectorAll('button[data-drug]'), function(b){
+        var name=b.getAttribute('data-drug'), on=false;
+        for(var i=0;i<given.length;i++){ if(given[i] && given[i].drug===name){ on=true; break; } }
+        if(on) b.classList.add('picked'); else b.classList.remove('picked');
+      });
+      /* The clock's color stays in the markup (a --token), never assigned here. The retired
+         version of this module wrote a hardcoded light-theme hex onto the element on every
+         idle paint, which in dark mode left the induction clock navy-on-navy and effectively
+         unreadable until the first drug was pushed. */
+      if(t0===null){ clock.textContent='0:00'; cue.textContent=opts.idleText; return; }
       var s=Math.max(0,Math.floor((Date.now()-t0)/1000));
       clock.textContent=mmss(s);
-      cue.textContent=opts.label+' pushed '+mmss(s)+' ago.';
+      var names=given.map(function(e){ return e.dose ? (e.drug+' '+e.dose) : (e.drug+' (dose not recorded)'); });
+      cue.textContent = names.join(' · ') + ' — ' + (names.length>1 ? 'first given ' : 'given ') + mmss(s) + ' ago.';
     }
-    function notify(){ document.dispatchEvent(new Event('rsitimerchange')); } /* lets the pinned-CICO-button controller react without polling */
-    giveBtn.addEventListener('click', function(){
-      t0=Date.now(); save(); expose(); if(tick) clearInterval(tick); tick=setInterval(paint,1000); paint(); notify();
-      if(window.__codeslog) window.__codeslog.add('06', opts.label.toUpperCase()+' PUSHED');
+    function notify(){ document.dispatchEvent(new Event('rsitimerchange')); } /* pinned-CICO button + the awake-paralysis check react without polling */
+    function clear(){ t0=null; given=[]; save(); expose(); if(tick){ clearInterval(tick); tick=null; } paint(); notify(); }
+    Array.prototype.forEach.call(pick.querySelectorAll('button[data-drug]'), function(btn){
+      btn.addEventListener('click', function(ev){
+        /* Stop the page-wide "tap an unset dose chip to focus the weight bar" handler: a
+           keyboard sliding up over the card at the moment of the push is the last thing
+           anyone needs. The cue says the dose was not recorded instead. */
+        if(ev.stopPropagation) ev.stopPropagation();
+        var name=btn.getAttribute('data-drug'), dose=doseOn(btn);
+        var first=(t0===null);
+        if(first) t0=Date.now();
+        given.push({drug:name, dose:dose});
+        save(); expose();
+        if(first){ if(tick) clearInterval(tick); tick=setInterval(paint,1000); }
+        paint(); notify();
+        if(window.__codeslog){
+          window.__codeslog.add('06', logPrefix+' — '+name+(dose ? (' '+dose) : ' (dose not recorded — no weight entered)'));
+        }
+      });
     });
-    resetBtn.addEventListener('click', function(){ t0=null; save(); expose(); if(tick){ clearInterval(tick); tick=null; } paint(); notify(); });
+    if(resetBtn) resetBtn.addEventListener('click', clear);
     var rb=document.getElementById('resetbtn');
-    if(rb) rb.addEventListener('click', function(){ t0=null; try{ localStorage.removeItem(opts.key); }catch(e){} expose(); if(tick){ clearInterval(tick); tick=null; } paint(); notify(); });
+    if(rb) rb.addEventListener('click', clear);
     if(t0!==null) tick=setInterval(paint,1000);
     paint();
   }
-  makeTimer({ clockId:'rsiinductclock', cueId:'rsiinductcue', giveId:'rsiinductgive', resetId:'rsiinductreset',
-    key:'lrh-codes-rsiinduct', color:'#16324f', label:'Sedation/induction agent', idleText:'Tap when the induction agent/sedative is pushed.', exposeGlobal:'__rsiInductT0' });
-  makeTimer({ clockId:'rsiparalyticclock', cueId:'rsiparalyticcue', giveId:'rsiparalyticgive', resetId:'rsiparalyticreset',
-    key:'lrh-codes-rsiparalytic', color:'#9b1c2e', label:'Paralytic', idleText:'Tap when the paralytic is pushed.', exposeGlobal:'__rsiParalyticT0' });
+  makeLane({ lane:'induction', clockId:'rsiinductclock', cueId:'rsiinductcue', pickId:'rsiinductpick', resetId:'rsiinductreset',
+    key:'lrh-codes-rsiinduct', drugKey:'lrh-codes-rsiinductdrug',
+    idleText:'Tap the agent as it is pushed — starts the clock and logs the drug and dose.', exposeGlobal:'__rsiInductT0' });
+  makeLane({ lane:'paralytic', clockId:'rsiparalyticclock', cueId:'rsiparalyticcue', pickId:'rsiparalyticpick', resetId:'rsiparalyticreset',
+    key:'lrh-codes-rsiparalytic', drugKey:'lrh-codes-rsiparalyticdrug',
+    idleText:'Tap the paralytic as it is pushed — starts the clock and logs the drug and dose.', exposeGlobal:'__rsiParalyticT0' });
+  makeLane({ lane:'postAnalgesia', clockId:'c06analgesiaclock', cueId:'c06analgesiacue', pickId:'c06analgesiapick', resetId:'c06analgesiareset',
+    key:'lrh-codes-c06analgesia', drugKey:'lrh-codes-c06analgesiadrug',
+    idleText:'Tap the opioid as it is given — starts the clock and logs the drug and dose.' });
+  makeLane({ lane:'postSedation', clockId:'c06sedationclock', cueId:'c06sedationcue', pickId:'c06sedationpick', resetId:'c06sedationreset',
+    key:'lrh-codes-c06sedation', drugKey:'lrh-codes-c06sedationdrug',
+    idleText:'Tap the sedative as it is started — starts the clock and logs the drug and dose.' });
+})();
+
+/* ---- Card 06: awake-paralysis check ----
+   Fires when a paralytic has been logged and neither post-intubation lane has anything in
+   it. Not a config value and not dismissible: a patient who is paralyzed but neither
+   sedated nor treated for pain is the specific harm the post-intubation block exists to
+   prevent, and it is a gap that only shows up as an ABSENCE — nothing on the screen goes
+   wrong, so nothing prompts unless something checks for the hole. Lives inside the
+   post-intubation block, i.e. where a reader already is once the tube is in, so it can't
+   interrupt an attempt that is still running. ---- */
+(function(){
+  var el=document.getElementById('c06awakepara');
+  if(!el) return;
+  function filled(k){ try{ var v=localStorage.getItem(k); return !!v && v!=='[]'; }catch(e){ return false; } }
+  function refresh(){
+    var paralyzed=filled('lrh-codes-rsiparalyticdrug');
+    var covered=filled('lrh-codes-c06analgesiadrug') || filled('lrh-codes-c06sedationdrug');
+    el.style.display=(paralyzed && !covered) ? 'block' : 'none';
+  }
+  document.addEventListener('rsitimerchange', refresh, false);
+  var rb=document.getElementById('resetbtn');
+  if(rb) rb.addEventListener('click', function(){ setTimeout(refresh,0); });
+  refresh();
 })();
 
 /* ---- Pinned CICO button controller (design-review item 13) — visible only while card 06
@@ -4343,10 +4611,45 @@ var AUDIENCE = (function(){
     return text;
   }
   var lastText='';
-  btn.addEventListener('click', function(){ lastText=render(); modal.style.display='block'; });
-  if(closeb) closeb.addEventListener('click', function(){ modal.style.display='none'; });
+  /* CASE TIMELINE — open, close, and copy (bug reported 2026-08-13).
+     Three defects, and the second is why the button felt dead: the modal could
+     only be dismissed by the CLOSE button (no backdrop tap, no Escape), COPY TO
+     CLIPBOARD gave no feedback at all, and it left the timeline sitting open
+     over the card you were working from. Copying the timeline is the last thing
+     you do with it, so it now confirms and gets out of the way.
+
+     Deliberately duplicated in codes/, peds/ and ob-neonatal/ rather than
+     shared: these are single-file offline tools and the rule is share the
+     contract, not the code. verify_timeline_close.mjs holds the three copies to
+     the same behavior. */
+  function openModal(){ lastText=render(); modal.style.display='block'; }
+  function closeModal(){ modal.style.display='none'; }
+  btn.addEventListener('click', openModal);
+  if(closeb) closeb.addEventListener('click', closeModal);
+  /* Tap the dimmed backdrop — the idiom this tool's RESET modal already uses.
+     ev.target===modal means the tap landed on the overlay itself, not inside
+     the panel, so a tap on the timeline text never dismisses it. */
+  modal.addEventListener('click', function(ev){ if(ev.target===modal) closeModal(); });
+  document.addEventListener('keydown', function(ev){
+    if(ev.key==='Escape' && modal.style.display!=='none') closeModal();
+  });
   if(copyb) copyb.addEventListener('click', function(){
-    if(navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(lastText).catch(function(){});
+    var t=lastText||render();
+    /* Confirm, then close. The pause is long enough to read COPIED and short
+       enough not to feel stuck. On failure it says so and STAYS OPEN — closing
+       on a failed copy would tell you the timeline is safely on the clipboard
+       when it is not. */
+    function done(){ copyb.textContent='COPIED'; setTimeout(function(){ closeModal(); copyb.textContent='COPY TO CLIPBOARD'; }, 700); }
+    function failed(){ copyb.textContent='COPY FAILED — SELECT AND COPY MANUALLY';
+      setTimeout(function(){ copyb.textContent='COPY TO CLIPBOARD'; }, 2400); }
+    function fallback(){
+      var ta=document.createElement('textarea'); ta.value=t; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.focus(); ta.select();
+      var ok=false; try{ ok=document.execCommand('copy'); }catch(e){ ok=false; }
+      document.body.removeChild(ta); if(ok) done(); else failed();
+    }
+    if(navigator.clipboard && navigator.clipboard.writeText){ navigator.clipboard.writeText(t).then(done, fallback); }
+    else { fallback(); }
   });
 })();
 

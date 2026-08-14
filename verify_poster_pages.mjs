@@ -1,8 +1,14 @@
 /* LRH Emergency Manual — poster page-count guard.
  *
- * Every poster in posters/ is a print-first letter-portrait one-pager for the resus-bay wall and
- * the trauma cart. "Exactly one page" is a hard requirement: a poster that silently spills onto a
- * second page prints as a useless orphan strip (usually the QR block) that nobody tapes up.
+ * Every poster in posters/ is print-first letter-portrait for the resus-bay wall and the trauma
+ * cart, and its page count is a hard requirement: a poster that silently spills onto an extra page
+ * prints as a useless orphan strip (usually the QR block) that nobody tapes up.
+ *
+ * A poster is one page unless it DECLARES otherwise with <meta name="poster-sheets" content="N">.
+ * That declaration is deliberate — chest-tube carries a second sheet (the kit check card that gets
+ * taped beside the bag), and a guard that could not tell "two sheets on purpose" from "one sheet
+ * that overflowed" would either block the check card or stop catching real overflow. Each .sheet is
+ * measured against the page box separately, so an overflowing sheet still fails on a 2-sheet poster.
  *
  * This drifted once already — a QR block added after the posters were first verified pushed five
  * of them onto a second page without anyone noticing, because nothing re-checked pagination.
@@ -65,28 +71,35 @@ for (const name of names) {
     await pg.emulateMedia({ media: 'print' });
     await pg.waitForTimeout(250);
 
-    // Measured height: furthest bottom edge of anything inside .sheet, relative to the sheet top.
-    const h = await pg.evaluate(() => {
-      const s = document.querySelector('.sheet');
-      if (!s) return null;
-      const top = s.getBoundingClientRect().top;
-      let bottom = 0;
-      s.querySelectorAll('*').forEach(el => {
-        const r = el.getBoundingClientRect();
-        if (r.height) bottom = Math.max(bottom, r.bottom);
-      });
-      return Math.round(bottom - top);
+    // Declared sheet count (default 1), and the measured height of EACH sheet.
+    const want = await pg.evaluate(() => {
+      const m = document.querySelector('meta[name="poster-sheets"]');
+      const n = m ? parseInt(m.getAttribute('content'), 10) : 1;
+      return Number.isFinite(n) && n > 0 ? n : 1;
     });
+    const heights = await pg.evaluate(() =>
+      [...document.querySelectorAll('.sheet')].map(s => {
+        const top = s.getBoundingClientRect().top;
+        let bottom = 0;
+        s.querySelectorAll('*').forEach(el => {
+          const r = el.getBoundingClientRect();
+          if (r.height) bottom = Math.max(bottom, r.bottom);
+        });
+        return Math.round(bottom - top);
+      }));
+    const h = heights.length ? Math.max(...heights) : null;
 
     // Authoritative check: what the print engine actually produces.
     const pdf = await pg.pdf({ preferCSSPageSize: true, printBackground: true });
     const pages = (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) || []).length;
 
     const overBy = h === null ? null : Math.round(h - PRINT_H);
-    const ok = pages === 1;
+    // Both must hold: the right number of printed pages, AND no individual sheet
+    // taller than the page box (which is what pushes an orphan strip onto page N+1).
+    const ok = pages === want && heights.length === want && !(overBy > 0);
     if (!ok) fail++;
-    line += (ok ? 'PASS  ' : 'FAIL  ') + pages + ' page(s)';
-    if (h !== null) line += '   content ' + h + 'px ' + (overBy > 0 ? '(OVER by ' + overBy + 'px)' : '(' + -overBy + 'px spare)');
+    line += (ok ? 'PASS  ' : 'FAIL  ') + pages + ' page(s)' + (want === 1 ? '' : ' of ' + want + ' declared');
+    if (h !== null) line += '   tallest sheet ' + h + 'px ' + (overBy > 0 ? '(OVER by ' + overBy + 'px)' : '(' + -overBy + 'px spare)');
     if (errs.length) line += '   [page errors: ' + errs.length + ']';
   } catch (e) {
     fail++; line += 'ERROR  ' + e.message.slice(0, 60);
@@ -96,5 +109,5 @@ for (const name of names) {
 }
 
 await browser.close();
-console.log('\n=== ' + (names.length - fail) + '/' + names.length + ' posters print to exactly one page ===');
+console.log('\n=== ' + (names.length - fail) + '/' + names.length + ' posters print to their declared page count ===');
 process.exit(fail ? 1 : 0);

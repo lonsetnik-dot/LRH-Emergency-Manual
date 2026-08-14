@@ -36,13 +36,13 @@
   </div>
 
   <!-- The single most important sentence on this screen. DAS 2025 is an
-       anaesthesia guideline; it has no cardiac-arrest algorithm. Saying so is
+       anesthesia guideline; it has no cardiac-arrest algorithm. Saying so is
        not a disclaimer, it is the routing instruction. -->
   <div class="card" id="scopebar" style="margin-top:12px;padding:11px 12px;border-color:var(--amber);font-size:13.5px;line-height:1.45">
     <b>This is the ladder for a patient you cannot intubate.</b> If there is <b>no pulse</b>, this is not the screen —
     go to <a href="../arrest/" style="color:var(--blue)">cardiac arrest</a>. If there is <b>a pulse but no breathing</b> and you can
     ventilate them, that is <a href="../arrest/" style="color:var(--blue)">rescue breathing</a>, not this ladder.
-    DAS 2025 is written for anaesthesia and gives no arrest algorithm; its wake-the-patient options do not exist here.
+    DAS 2025 is written for anesthesia and gives no arrest algorithm; its wake-the-patient options do not exist here.
   </div>
 
   <div id="idle">
@@ -72,12 +72,12 @@
     </div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
-      <button class="btn" id="logtoggle" type="button" style="min-height:52px;font:700 14px var(--sans)">+ LOG EVENT</button>
+      <button class="btn" id="logtoggle" type="button" style="min-height:52px;font:700 14px var(--sans)">LOG IT</button>
       <button class="btn" id="securedbtn" type="button" style="min-height:52px;font:700 14px var(--sans);border-color:var(--green);color:var(--green)">AIRWAY SECURED</button>
     </div>
     <div id="customrow" style="display:none;gap:8px;margin-top:8px">
       <input id="customin" style="flex:1;background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:12px;font-size:15px" placeholder="e.g. ELM applied, size 4 iGel in">
-      <button id="customlog" type="button" style="border:none;border-radius:10px;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG</button>
+      <button id="customlog" type="button" style="border:none;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG IT</button>
     </div>
     <div id="customwarn" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>
   </div>
@@ -174,10 +174,10 @@ var PHI=[{re:/\b\d{3}-?\d{2}-?\d{4}\b/,why:'looks like a social security number'
  {re:/\b(dob|date of birth)\b/i,why:'mentions a date of birth'}];
 function phiReason(t){ for(var i=0;i<PHI.length;i++){ if(PHI[i].re.test(t)) return PHI[i].why; } return null; }
 
-function pips(n,max,colour){
+function pips(n,max,color){
   var h='';
   for(var i=0;i<max;i++){
-    h+='<span class="pip" style="'+(i<n?('background:'+colour+';border-color:'+colour):'')+'"></span>';
+    h+='<span class="pip" style="'+(i<n?('background:'+color+';border-color:'+color):'')+'"></span>';
   }
   return h;
 }
@@ -306,9 +306,9 @@ var ACC=[
      'depend on whether you could palpate the membrane, 2025 says that if there is any uncertainty about palpability, '+
      'go vertical.</p>';
  }},
- {id:'why',t:'WHY IS THIS FAILING?',b:function(){ return '<p><b>DAS 2025 does not publish a causes mnemonic</b> — so this is two lists it does not claim, kept separate because they answer different questions.</p>'+'<p style="font-weight:700;margin-bottom:4px">Still trying to intubate — change SOMETHING between attempts</p>'+'<p style="margin-top:0">This part <i>is</i> DAS 2025: a repeat attempt that changes nothing is not an attempt, it is the same attempt. Change the <b>operator</b> · the <b>blade</b> (hyperangulated vs Mac) · add a <b>stylet or bougie</b> · <b>external laryngeal manipulation</b> · the <b>position</b> (ramp, head lift) · <b>suction</b> if the view is soiled · confirm <b>full neuromuscular block</b>.</p>'+'<p style="font-weight:700;margin-bottom:4px">It was ventilating and stopped — DOPES</p>'+'<div style="display:grid;gap:6px;margin:4px 0 10px">'+'<div><b>D — Displacement</b> <span style="color:var(--ink2)">— oesophageal or endobronchial. Capnography and depth.</span></div>'+'<div><b>O — Obstruction</b> <span style="color:var(--ink2)">— secretions, blood, kink, bitten tube. Pass a suction catheter.</span></div>'+'<div><b>P — Pneumothorax</b> <span style="color:var(--ink2)">— tension. Decompress on suspicion.</span></div>'+'<div><b>E — Equipment</b> <span style="color:var(--ink2)">— circuit, oxygen supply, valve, ventilator. Disconnect and bag.</span></div>'+'<div><b>S — Stacked breaths</b> <span style="color:var(--ink2)">— breath stacking in obstruction. Disconnect and let them exhale.</span></div>'+'</div>'+'<p style="margin-bottom:0">DOPES is carried from this manual&rsquo;s own Codes card 14, not from DAS. If the airway is soiled rather than difficult, that is a different problem — see the SALAD card.</p>'; }},
+ {id:'why',t:'WHY IS THIS FAILING?',b:function(){ return '<p><b>DAS 2025 does not publish a causes mnemonic</b> — so this is two lists it does not claim, kept separate because they answer different questions.</p>'+'<p style="font-weight:700;margin-bottom:4px">Still trying to intubate — change SOMETHING between attempts</p>'+'<p style="margin-top:0">This part <i>is</i> DAS 2025: a repeat attempt that changes nothing is not an attempt, it is the same attempt. Change the <b>operator</b> · the <b>blade</b> (hyperangulated vs Mac) · add a <b>stylet or bougie</b> · <b>external laryngeal manipulation</b> · the <b>position</b> (ramp, head lift) · <b>suction</b> if the view is soiled · confirm <b>full neuromuscular block</b>.</p>'+'<p style="font-weight:700;margin-bottom:4px">It was ventilating and stopped — DOPES</p>'+'<div style="display:grid;gap:6px;margin:4px 0 10px">'+'<div><b>D — Displacement</b> <span style="color:var(--ink2)">— esophageal or endobronchial. Capnography and depth.</span></div>'+'<div><b>O — Obstruction</b> <span style="color:var(--ink2)">— secretions, blood, kink, bitten tube. Pass a suction catheter.</span></div>'+'<div><b>P — Pneumothorax</b> <span style="color:var(--ink2)">— tension. Decompress on suspicion.</span></div>'+'<div><b>E — Equipment</b> <span style="color:var(--ink2)">— circuit, oxygen supply, valve, ventilator. Disconnect and bag.</span></div>'+'<div><b>S — Stacked breaths</b> <span style="color:var(--ink2)">— breath stacking in obstruction. Disconnect and let them exhale.</span></div>'+'</div>'+'<p style="margin-bottom:0">DOPES is carried from this manual&rsquo;s own Codes card 14, not from DAS. If the airway is soiled rather than difficult, that is a different problem — see the SALAD card.</p>'; }},
  {id:'scope',t:'WHAT THIS GUIDELINE DOES NOT COVER',b:function(){
-   return '<p>DAS 2025 is written for <b>anaesthesia</b>. It contains <b>no cardiac-arrest algorithm</b> and no '+
+   return '<p>DAS 2025 is written for <b>anesthesia</b>. It contains <b>no cardiac-arrest algorithm</b> and no '+
      'apnoeic-arrest-specific guidance. Its Plan B and Plan C options include waking the patient, which does not exist '+
      'in an arrest.</p>'+
      '<p>Separate DAS documents, <b>not updated in 2025</b> and carrying their own older algorithms — do not blend them '+

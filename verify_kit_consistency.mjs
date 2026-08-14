@@ -85,13 +85,29 @@ const KITS = [
     ],
   },
   {
+    // Rebuilt 2026-08-13 from the kit assembled for providers. The poster is asserted here too:
+    // it now carries a second sheet that IS the check card taped beside the bag, so a contents
+    // change that missed it would put a wrong list on the wall next to a right list in the app.
     name: 'Chest Tube Kit',
     location: /ROOM 7|TRAUMA CART|OB \/ NEONATAL CART/i,
-    items: ['Scalpel No. 10 blade', 'Kelly clamps', 'Heavy suture 0 or 2-0'],
+    items: ['Needle driver', 'Curved Kelly clamps', 'Curved Mayo scissors', 'Toothed tissue forceps',
+            'Scalpel No. 10 blade', 'ChloraPrep', 'Silk 0 suture on a cutting needle',
+            'Foley catheter 16 Fr', 'Fenestrated drape', 'Regular 1/2 drape', 'Large Tegaderm'],
+    /* Corrected 2026-08-13, twice: PPE lives in the Trauma Cart PPE drawer and
+       the dressing supplies are their own bag, so neither may be listed as
+       CONTENTS of this one (Lon, first cart walk) — and this kit's prep is
+       ChloraPrep, never povidone-iodine (Lon, confirmed explicitly after a
+       parallel session's photo-based rebuild had it as iodine). Both absences
+       are asserted rather than left to whoever edits next. The strings may
+       still appear as "not in this bag" / superseded-value prose — see the
+       per-artifact allowance in the runner below. */
+    absent: ['Gown, gloves, mask, eye protection', 'Gauze packs + occlusive dressing + tape',
+             'Povidone-iodine swabsticks'],
     artifacts: [
-      { file: 'procedures/index.html', role: 'interactive card' },
-      { file: 'labels/index.html',     role: 'kit card + build sheet' },
-      { file: 'inventory.js',          role: 'inventory catalog' },
+      { file: 'procedures/index.html',          role: 'interactive card' },
+      { file: 'labels/index.html',              role: 'kit card + build sheet' },
+      { file: 'inventory.js',                   role: 'inventory catalog' },
+      { file: 'posters/chest-tube/index.html',  role: 'wall poster + kit check card' },
     ],
   },
   {
@@ -203,10 +219,20 @@ for (const kit of KITS) {
 
     const missing = kit.items.filter(i => !txt.includes(i));
     const hasLoc  = kit.location.test(txt);
-    const ok = missing.length === 0 && hasLoc;
+    /* Items a kit must NOT claim to contain. Matched only where the artifact
+       presents contents, so the "not in this bag — it is in the Trauma Cart"
+       pointer is allowed to name the thing it is pointing at. */
+    const strayed = (kit.absent || []).filter(i => {
+      const at = txt.indexOf(i);
+      if (at < 0) return false;
+      const before = txt.slice(Math.max(0, at - 160), at);
+      return !/not in (this |the )?bag|Also needed|Not in this bag|separate/i.test(before);
+    });
+    const ok = missing.length === 0 && hasLoc && strayed.length === 0;
     if (!ok) fail++;
     console.log(`  ${ok ? 'PASS' : 'FAIL'}  ${a.file.padEnd(34)} ${a.role}`);
     if (missing.length) console.log(`        missing items: ${missing.join(', ')}`);
+    if (strayed.length) console.log(`        listed as kit CONTENTS but is not in this kit: ${strayed.join(', ')}`);
     if (!hasLoc)        console.log(`        storage location does not match ${kit.location}`);
   }
 }

@@ -28,6 +28,35 @@
      green is not a shared severity. */
   .t-box-green{border:2px solid var(--green);border-radius:12px;overflow:hidden}
   .t-head-green{background:var(--green)}
+  /* ---- EQUIPMENT WALK (orientation) — the rows a team physically finds during
+     the sim. Same visual language as equipment-readiness/, because it writes
+     the same record. ---- */
+  .swrow{border-top:1px solid var(--line);padding:9px 0;font-size:14px;line-height:1.35}
+  .swtop{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:baseline}
+  .swrow .where{display:block;font-size:12.5px;color:var(--ink2)}
+  .swctl{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
+  .swsel,.swloc{font:inherit;font-size:13px;min-height:36px;background:var(--card2);color:var(--ink);
+    border:1px solid var(--line);border-radius:8px;padding:4px 8px;-webkit-appearance:none;appearance:none}
+  .swsel{flex:0 0 auto;max-width:100%}
+  .swloc{flex:1 1 190px;min-width:0}
+  .swsel:focus-visible,.swloc:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
+  .swrow[data-state="gap"] .swsel{border-color:var(--red);color:var(--red)}
+  .swrow[data-state="set"] .swsel{border-color:var(--green)}
+  .st{display:inline-block;font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+    font-size:10.5px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:6px;white-space:nowrap}
+  .st-ok{background:rgba(61,163,93,.18);color:var(--green);border:1px solid var(--green)}
+  .st-set{background:rgba(61,163,93,.28);color:var(--green);border:1px solid var(--green)}
+  .st-vf{background:var(--note-bg);color:var(--note-tx);border:1px solid var(--note-tx)}
+  .st-gap{background:rgba(229,72,77,.15);color:var(--red);border:1px solid var(--red)}
+  .st-new{background:var(--card2);color:var(--ink2);border:1px solid var(--line)}
+  .st-na{background:var(--card2);color:var(--ink2);border:1px dashed var(--ink2)}
+  .swsum{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.06em;color:var(--ink2)}
+  .swbtn{min-height:44px;padding:0 14px;background:var(--card2);border:1px solid var(--line);color:var(--ink2);
+    font:inherit;font-weight:700;letter-spacing:.04em;cursor:pointer;border-radius:8px}
+  .swbtn:hover{border-color:var(--accent);color:var(--accent)}
+  .orient{margin:14px 14px 0;border:2px solid var(--green);background:var(--card);padding:12px 14px;
+    border-radius:12px;font-size:13.5px;line-height:1.45}
+  .orient h2{margin:0 0 6px;font-size:15px;letter-spacing:.02em}
   /* the workflow chain strip at the top of each sim: phase chips joined by arrows */
   .chain{display:flex;flex-wrap:wrap;align-items:center;gap:6px;margin:8px 0 2px}
   .chain .ph{font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;font-size:11px;
@@ -103,6 +132,19 @@ catch(e){ document.body.dataset.theme='dark'; }
     ⚠ <b>IN-SITU SIM SAFETY:</b> announce "<b>this is a simulation</b>" at start and end, and post someone to catch real patients/calls. Never open real medications or sterile kits — sim props stay labeled <b>SIM</b> and never enter real stock. A real clinical need ends the sim immediately. Nothing about a real patient goes on the whiteboard or into the tools.
   </div>
 
+  <!-- ===== ORIENTATION MODE — the sims double as the equipment walk-through ===== -->
+  <div class="orient" id="orient">
+    <h2>ORIENTATION MODE &mdash; new provider, nurse or tech?</h2>
+    <p style="margin:0 0 8px">Every sim below carries a <b>FIND IT</b> block: the equipment that case actually needs, with where the manual says it lives. Walk it with the person you are orienting &mdash; <b>they</b> find each item and say the location out loud, you tap <b>FOUND</b>. Anything that is not where it should be gets logged as a gap right there.</p>
+    <p style="margin:0 0 8px">What you record goes into the <b>same readiness record</b> as the department's cart walk, on this device only. So an orientation session stops being a tour and starts being an audit: the new hire learns the room, and the department learns what is missing.</p>
+    <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+      <button type="button" class="swbtn" id="sw-expand">OPEN EVERY FIND-IT BLOCK</button>
+      <a class="swbtn" style="text-decoration:none;display:inline-flex;align-items:center" href="../equipment-readiness/?from=tool#record">EXPORT WHAT WE FOUND &#9654;</a>
+      <span class="swsum" id="sw-total"></span>
+    </div>
+    <p style="margin:8px 0 0;color:var(--ink2);font-size:12.5px">Sealed trays stay sealed &mdash; point at the thoracotomy tray, do not open it. Finding it is the drill; opening it costs a re-check.</p>
+  </div>
+
   <div class="steps" style="padding:14px 14px 0;">
     <details open class="t-box-info">
       <summary class="t-head t-head-info">HOW TO RUN A PILLOW SIM</summary>
@@ -166,6 +208,12 @@ catch(e){ document.body.dataset.theme='dark'; }
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>OB / Neonatal Cart · AIRWAY / BREATHING drawer:</b> point — infant BVM + masks. Stage a separate SIM-labeled infant BVM if you want hands-on PPV.</li>
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Radiant warmer:</b> turn it on for real — warm-up time is part of the drill.</li>
         </ul>
+      </details>
+
+      <details class="t-box-green" id="w-s01" data-simwalk="s01">
+        <summary class="t-head t-head-green">FIND IT &mdash; EQUIPMENT WALK <span class="swsum" data-simsum="s01"></span></summary>
+        <div class="t-sub" style="padding-top:10px">The person being oriented finds each item and says where it is. Tap <b>FOUND</b> to confirm the location the manual carries, or record where it really was. Not there? Log the gap.</div>
+        <div style="padding:0 12px 12px" data-simrows="s01"></div>
       </details>
 
       <details open class="t-box-neutral">
@@ -247,6 +295,12 @@ catch(e){ document.body.dataset.theme='dark'; }
         </ul>
       </details>
 
+      <details class="t-box-green" id="w-s02" data-simwalk="s02">
+        <summary class="t-head t-head-green">FIND IT &mdash; EQUIPMENT WALK <span class="swsum" data-simsum="s02"></span></summary>
+        <div class="t-sub" style="padding-top:10px">The person being oriented finds each item and says where it is. Tap <b>FOUND</b> to confirm the location the manual carries, or record where it really was. Not there? Log the gap.</div>
+        <div style="padding:0 12px 12px" data-simrows="s02"></div>
+      </details>
+
       <details open class="t-box-neutral">
         <summary class="t-head t-head-neutral">PHASE 1 · IT'S NOT STOPPING</summary>
         <div style="padding:2px 12px 12px;">
@@ -310,6 +364,12 @@ catch(e){ document.body.dataset.theme='dark'; }
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>SIM-labeled pediatric BVM</b> (or mime it) · defib pads mimed on the pillow.</li>
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · MEDICATIONS drawer:</b> point — epi is named with its weight-based dose, never drawn up.</li>
         </ul>
+      </details>
+
+      <details class="t-box-green" id="w-s03" data-simwalk="s03">
+        <summary class="t-head t-head-green">FIND IT &mdash; EQUIPMENT WALK <span class="swsum" data-simsum="s03"></span></summary>
+        <div class="t-sub" style="padding-top:10px">The person being oriented finds each item and says where it is. Tap <b>FOUND</b> to confirm the location the manual carries, or record where it really was. Not there? Log the gap.</div>
+        <div style="padding:0 12px 12px" data-simrows="s03"></div>
       </details>
 
       <details open class="t-box-neutral">
@@ -388,6 +448,12 @@ catch(e){ document.body.dataset.theme='dark'; }
         </ul>
       </details>
 
+      <details class="t-box-green" id="w-s04" data-simwalk="s04">
+        <summary class="t-head t-head-green">FIND IT &mdash; EQUIPMENT WALK <span class="swsum" data-simsum="s04"></span></summary>
+        <div class="t-sub" style="padding-top:10px">The person being oriented finds each item and says where it is. Tap <b>FOUND</b> to confirm the location the manual carries, or record where it really was. Not there? Log the gap.</div>
+        <div style="padding:0 12px 12px" data-simrows="s04"></div>
+      </details>
+
       <details open class="t-box-neutral">
         <summary class="t-head t-head-neutral">PHASE 1 · STILL SEIZING</summary>
         <div style="padding:2px 12px 12px;">
@@ -458,6 +524,12 @@ catch(e){ document.body.dataset.theme='dark'; }
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Defibrillator:</b> pads mimed on the pillow; shocks are called out loud with the tool's timer.</li>
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Transfer:</b> the DHMC transfer number visible on the whiteboard (say it, don't dial).</li>
         </ul>
+      </details>
+
+      <details class="t-box-green" id="w-s05" data-simwalk="s05">
+        <summary class="t-head t-head-green">FIND IT &mdash; EQUIPMENT WALK <span class="swsum" data-simsum="s05"></span></summary>
+        <div class="t-sub" style="padding-top:10px">The person being oriented finds each item and says where it is. Tap <b>FOUND</b> to confirm the location the manual carries, or record where it really was. Not there? Log the gap.</div>
+        <div style="padding:0 12px 12px" data-simrows="s05"></div>
       </details>
 
       <details open class="t-box-neutral">
@@ -532,6 +604,12 @@ catch(e){ document.body.dataset.theme='dark'; }
         </ul>
       </details>
 
+      <details class="t-box-green" id="w-s06" data-simwalk="s06">
+        <summary class="t-head t-head-green">FIND IT &mdash; EQUIPMENT WALK <span class="swsum" data-simsum="s06"></span></summary>
+        <div class="t-sub" style="padding-top:10px">The person being oriented finds each item and says where it is. Tap <b>FOUND</b> to confirm the location the manual carries, or record where it really was. Not there? Log the gap.</div>
+        <div style="padding:0 12px 12px" data-simrows="s06"></div>
+      </details>
+
       <details open class="t-box-neutral">
         <summary class="t-head t-head-neutral">PHASE 1 · CRASH THE POTASSIUM</summary>
         <div style="padding:2px 12px 12px;">
@@ -602,6 +680,12 @@ catch(e){ document.body.dataset.theme='dark'; }
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · SURGICAL / SUPRAGLOTTIC + iGEL + FRONT OF NECK ACCESS drawers:</b> point — every person in the room should be able to find FONA blind.</li>
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Room 7 cabinets · SALAD SUCTION:</b> point — suction leads in the soiled-airway phase.</li>
         </ul>
+      </details>
+
+      <details class="t-box-green" id="w-s09" data-simwalk="s09">
+        <summary class="t-head t-head-green">FIND IT &mdash; EQUIPMENT WALK <span class="swsum" data-simsum="s09"></span></summary>
+        <div class="t-sub" style="padding-top:10px">The person being oriented finds each item and says where it is. Tap <b>FOUND</b> to confirm the location the manual carries, or record where it really was. Not there? Log the gap.</div>
+        <div style="padding:0 12px 12px" data-simrows="s09"></div>
       </details>
 
       <details open class="t-box-neutral">
@@ -690,6 +774,12 @@ catch(e){ document.body.dataset.theme='dark'; }
         </ul>
       </details>
 
+      <details class="t-box-green" id="w-s07" data-simwalk="s07">
+        <summary class="t-head t-head-green">FIND IT &mdash; EQUIPMENT WALK <span class="swsum" data-simsum="s07"></span></summary>
+        <div class="t-sub" style="padding-top:10px">The person being oriented finds each item and says where it is. Tap <b>FOUND</b> to confirm the location the manual carries, or record where it really was. Not there? Log the gap.</div>
+        <div style="padding:0 12px 12px" data-simrows="s07"></div>
+      </details>
+
       <details open class="t-box-neutral">
         <summary class="t-head t-head-neutral">PHASE 1 · THE FIVE MINUTES BEFORE</summary>
         <div style="padding:2px 12px 12px;">
@@ -763,6 +853,12 @@ catch(e){ document.body.dataset.theme='dark'; }
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Trauma Cart · THORACOSTOMY + RIB SPREADER shelves:</b> point, don't open — the thoracotomy is talked through with the card.</li>
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Family actor:</b> briefed separately before the sim starts (they should not hear the script).</li>
         </ul>
+      </details>
+
+      <details class="t-box-green" id="w-s08" data-simwalk="s08">
+        <summary class="t-head t-head-green">FIND IT &mdash; EQUIPMENT WALK <span class="swsum" data-simsum="s08"></span></summary>
+        <div class="t-sub" style="padding-top:10px">The person being oriented finds each item and says where it is. Tap <b>FOUND</b> to confirm the location the manual carries, or record where it really was. Not there? Log the gap.</div>
+        <div style="padding:0 12px 12px" data-simrows="s08"></div>
       </details>
 
       <details open class="t-box-crit">
@@ -918,8 +1014,50 @@ catch(e){ document.body.dataset.theme='dark'; }
 </main>
 
 <script>
-/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
-var SITE = { version: "0.1", lastReviewed: "2026-08-12" };
+/* @inventory */
+</script>
+<script>
+/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device =====
+   SIM_EQUIPMENT is the only site-adjustable part of the equipment walk: which
+   inventory rows a case actually needs. The ids come from inventory.js — an
+   item id, or `id#size` where the size is the point (a pediatric arrest needs
+   the 15 mm IO, not "an IO"). Kits are listed at kit level on purpose: the
+   sims say point, do not open, and a sealed tray costs a full re-check to
+   reseal. Kit CONTENTS are audited in equipment-readiness/, not here.
+   A typo shows up as an UNKNOWN ROW line on screen, and fails the suite. */
+var SITE = { version: "0.2", lastReviewed: "2026-08-12" };
+var SIM_EQUIPMENT = {
+  s01: ["ob-delivery-kit","radiant-warmer","neo-thermal","bvm#infant · 450 mL",
+        "face-masks#preterm / 00","face-masks#neonatal / 0","tpiece-resus","o2-blender",
+        "suction-cath#8 Fr","bulb-syringe","meconium-aspirator","pulseox#neonatal",
+        "ecg-electrodes#neonatal / infant","sga-neonatal#LMA 0 · under 2 kg","glucometer"],
+  s02: ["kit-jada","intrauterine-balloon","uterotonics#oxytocin","uterotonics#methylergonovine",
+        "uterotonics#carboprost","uterotonics#misoprostol","txa","qbl-kit","ob-long-instruments",
+        "vaginal-packing","urinary-cath#16 Fr","mtp-cooler","blood-tubing-filters",
+        "pressure-infuser","fluid-warmer","mtp-protocol-card","iv-cath#16 g"],
+  s03: ["broselow-tape","scale-kg","peds-dosing-ref","defib#pediatric pads / attenuator",
+        "bvm#infant · 450 mL","face-masks#child / 2","o2-masks#child",
+        "io-needles#15 mm · 3–39 kg","iv-cath#22 g","ett-cuffed#4.5","blades-miller#2",
+        "etco2#pediatric line","glucometer"],
+  s04: ["broselow-tape","ett-cuffed#5.0","stylets#neonatal / pediatric 6 Fr","blades-mac#2",
+        "videolaryngoscope#pediatric blade","sga-igel#2 · 10–25 kg","suction-rigid#Yankauer",
+        "etco2#pediatric line","io-needles#15 mm · 3–39 kg","bvm#infant · 450 mL","ng-tubes#10 Fr"],
+  s05: ["defib#adult pads","etco2#adult line","io-needles#25 mm · 40 kg and over","iv-cath#18 g",
+        "bvm#adult · 1000 mL","ett-cuffed#7.5","bougie#adult 15 Fr","videolaryngoscope#adult blade",
+        "suction-rigid#Yankauer","kit-pacer-magnet"],
+  s06: ["kit-tvp","kit-resus-line","defib#adult pads","ecg-electrodes#adult","ultrasound",
+        "art-line#20 g adult","iv-cath#18 g","glucometer"],
+  s07: ["needle-decompression","chest-tubes#28 Fr","chest-tubes#32 Fr","kit-chest-tube",
+        "drainage-system","kit-pneumo-tray","pelvic-binder","c-collars#regular adult","tourniquet",
+        "hemostatic-gauze","mtp-cooler","rapid-infuser","fluid-warmer","warming-device",
+        "ultrasound","ppe-splash","trauma-shears","txa"],
+  s08: ["kit-thoracotomy","defib#internal paddles (thoracotomy)","ppe-splash","kit-resus-line",
+        "mtp-cooler","chest-tubes#36–40 Fr","kit-neck-tamponade","txa","ultrasound","suction-units"],
+  s09: ["kit-difficult-airway","videolaryngoscope#adult blade","videolaryngoscope#hyperangulated blade",
+        "bougie#adult 15 Fr","sga-igel#4 · 50–90 kg","sga-igel#5 · 90+ kg","ett-cuffed#6.0",
+        "fona-kit","jet-vent","suction-rigid#large-bore rigid","kit-salad","exchange-catheter",
+        "flex-scope","co2-detector#pediatric / adult","topical-airway"]
+};
 (function(){
   document.querySelectorAll('.verstamp').forEach(function(el){ el.textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH'; });
   var s=document.getElementById('betasplash'), b=document.getElementById('betago');
@@ -943,6 +1081,150 @@ var SITE = { version: "0.1", lastReviewed: "2026-08-12" };
     b.textContent = dark ? 'DARK' : 'LIGHT';
     try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
   });
+})();
+
+/* ===== EQUIPMENT WALK — the sims as an orientation tool ======================
+   Renders SIM_EQUIPMENT into each sim's FIND IT block and writes what the team
+   confirms into INV_CAPTURE — the SAME device-local record the readiness cart
+   walk uses (inventory.js). That is the whole point of doing this here: a new
+   nurse locating the pediatric pads during SIM 3 is exactly the fact the
+   readiness audit is trying to establish, and nobody should have to record it
+   twice. Nothing leaves the device; RESET lives in equipment-readiness/.
+
+   Design notes:
+   - The default action is ONE TAP: "FOUND — <where the manual says>". Typing is
+     only needed when reality disagrees with the manual, which is the case
+     worth capturing in words.
+   - A row whose location the manual does not know offers no one-tap option —
+     there is nothing to confirm, so the team types it or logs a gap.
+   - "point, don't open" still applies: kits are rows, kit contents are not. */
+(function(){
+  if (typeof SIM_EQUIPMENT !== 'object' || typeof INV_CAPTURE !== 'object') return;
+
+  function esc(x){ var d=document.createElement('div'); d.textContent=x==null?'':x; return d.innerHTML; }
+  var CHIP = {
+    ok :'<span class="st st-ok">MAPPED</span>',   set:'<span class="st st-set">FOUND</span>',
+    vf :'<span class="st st-vf">VERIFY</span>',   gap:'<span class="st st-gap">GAP</span>',
+    na :'<span class="st st-na">N/A</span>',      "new":'<span class="st st-new">NOT CHECKED</span>'
+  };
+
+  function nameOf(rowId){
+    if (typeof INV_ROWS === 'object' && INV_ROWS[rowId]) return INV_ROWS[rowId].name;
+    if (typeof INV_CATALOG === 'object' && INV_CATALOG[rowId]) return INV_CATALOG[rowId].name;
+    return null;
+  }
+  function whereText(rowId){
+    var u = INV_CAPTURE.get(rowId);
+    if (u && u.s === 'gap') return 'GAP — logged as not found';
+    if (u && u.s === 'na')  return 'not applicable at this site';
+    if (u && (u.s === 'loc' || u.s === 'in')) return (u.l || 'confirmed') + (u.w ? ' — recorded at ' + u.w : '');
+    var b = invBaseline(rowId);
+    if (b) return b.loc;
+    var issue = INV_GAP_ISSUES[rowId.split('#')[0]];
+    if (issue) return 'no home in the manual — already filed as issue #' + issue;
+    return 'the manual does not know — find it and say where';
+  }
+  /* which option the stored record corresponds to */
+  function chosen(rowId){
+    var u = INV_CAPTURE.get(rowId), b = invBaseline(rowId);
+    if (!u || !u.s) return '';
+    if (u.s === 'gap') return 'gap';
+    if (u.s === 'na')  return 'na';
+    return (b && u.l === b.loc) ? 'here' : 'loc';
+  }
+
+  function rowHTML(sid, rowId){
+    var nm = nameOf(rowId);
+    if (!nm) {
+      return '<div class="swrow" data-unknown="'+esc(rowId)+'"><b>UNKNOWN ROW — '+esc(rowId)+'</b>'
+        + '<span class="where">This sim asks for an inventory row that does not exist. Fix the id in SIM_EQUIPMENT.</span></div>';
+    }
+    var b = invBaseline(rowId), st = invStatus(rowId), sel = chosen(rowId);
+    var opts = [['','— not checked —']];
+    if (b) opts.push(['here','FOUND — where the manual says']);
+    opts.push(['loc', b ? 'FOUND — somewhere else…' : 'FOUND — type where']);
+    opts.push(['gap','NOT FOUND — log a gap']);
+    var u = INV_CAPTURE.get(rowId);
+    return '<div class="swrow" data-row="'+esc(rowId)+'" data-sim="'+esc(sid)+'" data-state="'+st+'">'
+      + '<div class="swtop"><span><b>'+esc(nm)+'</b><span class="where">'+esc(whereText(rowId))+'</span></span>'
+      + '<span>'+CHIP[st]+'</span></div>'
+      + '<div class="swctl"><select class="swsel" aria-label="Did you find '+esc(nm)+'">'
+      + opts.map(function(o){ return '<option value="'+o[0]+'"'+(sel===o[0]?' selected':'')+'>'+esc(o[1])+'</option>'; }).join('')
+      + '</select><input class="swloc" type="text" autocomplete="off" spellcheck="false"'
+      + ' aria-label="Where '+esc(nm)+' actually is" placeholder="where it actually is"'
+      + ' value="'+esc((u&&u.l)||'')+'"'+(sel==='loc'?'':' hidden')+'></div>'
+      + '</div>';
+  }
+
+  Object.keys(SIM_EQUIPMENT).forEach(function(sid){
+    var host = document.querySelector('[data-simrows="'+sid+'"]');
+    if (!host) return;
+    host.innerHTML = SIM_EQUIPMENT[sid].map(function(rowId){ return rowHTML(sid, rowId); }).join('');
+  });
+
+  function tally(ids){
+    var t = { ok:0, set:0, vf:0, gap:0, na:0, "new":0 };
+    ids.forEach(function(r){ if (nameOf(r)) t[invStatus(r)]++; });
+    return t;
+  }
+  function refresh(){
+    var all = [], seen = {};
+    Object.keys(SIM_EQUIPMENT).forEach(function(sid){
+      var ids = SIM_EQUIPMENT[sid], t = tally(ids);
+      var el = document.querySelector('[data-simsum="'+sid+'"]');
+      if (el) el.textContent = ' · ' + t.set + '/' + ids.length + ' FOUND' + (t.gap ? ' · ' + t.gap + ' GAP' : '');
+      ids.forEach(function(r){ if (!seen[r]) { seen[r] = 1; all.push(r); } });
+    });
+    var T = tally(all);
+    var tot = document.getElementById('sw-total');
+    if (tot) tot.textContent = T.set + ' of ' + all.length + ' items found across every sim'
+      + (T.gap ? ' · ' + T.gap + ' gap' + (T.gap === 1 ? '' : 's') + ' logged' : '');
+  }
+
+  function repaint(row){
+    var rid = row.getAttribute('data-row'), st = invStatus(rid);
+    row.setAttribute('data-state', st);
+    var top = row.querySelector('.swtop');
+    top.querySelector('.where').textContent = whereText(rid);
+    top.lastElementChild.innerHTML = CHIP[st];
+  }
+
+  document.addEventListener('change', function(ev){
+    var sel = ev.target.closest ? ev.target.closest('.swsel') : null;
+    if (!sel) return;
+    var row = sel.closest('.swrow'), rid = row.getAttribute('data-row');
+    var sid = row.getAttribute('data-sim'), inp = row.querySelector('.swloc');
+    var whence = 'SIM ' + sid.replace(/^s0?/, '');
+    var b = invBaseline(rid), v = sel.value;
+    if (!v) { INV_CAPTURE.set(rid, ''); inp.hidden = true; }
+    else if (v === 'here') { INV_CAPTURE.set(rid, 'loc', b ? b.loc : '', whence); inp.hidden = true; }
+    else if (v === 'loc') {
+      var prev = INV_CAPTURE.get(rid);
+      var start = (prev && prev.l && !(b && prev.l === b.loc)) ? prev.l : '';
+      INV_CAPTURE.set(rid, 'loc', start, whence);
+      inp.value = start; inp.hidden = false; inp.focus();
+    }
+    else { INV_CAPTURE.set(rid, v, null, whence); inp.hidden = true; }
+    repaint(row); refresh();
+  });
+  document.addEventListener('input', function(ev){
+    var inp = ev.target.closest ? ev.target.closest('.swloc') : null;
+    if (!inp) return;
+    var row = inp.closest('.swrow'), rid = row.getAttribute('data-row');
+    INV_CAPTURE.set(rid, 'loc', inp.value, 'SIM ' + row.getAttribute('data-sim').replace(/^s0?/, ''));
+    row.querySelector('.where').textContent = whereText(rid);
+    refresh();
+  });
+
+  var exp = document.getElementById('sw-expand');
+  if (exp) exp.addEventListener('click', function(){
+    var blocks = document.querySelectorAll('[data-simwalk]');
+    var anyClosed = Array.prototype.some.call(blocks, function(d){ return !d.open; });
+    Array.prototype.forEach.call(blocks, function(d){ d.open = anyClosed; });
+    exp.textContent = anyClosed ? 'CLOSE EVERY FIND-IT BLOCK' : 'OPEN EVERY FIND-IT BLOCK';
+  });
+
+  refresh();
 })();
 
 /* Sim search — filters the menu rows by title + data-kw. Local to this tool by
