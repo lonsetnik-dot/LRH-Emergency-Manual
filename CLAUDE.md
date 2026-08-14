@@ -78,6 +78,18 @@ unclear. If a request conflicts with a rule below, flag it before proceeding.
     "Tactical Combat Casualty Care" — even if it's spelled the Commonwealth
     way. Quote it exactly as the source has it.
 
+11. **Register every upstream source in `guidelines.js`.** Rule 5 says cite the
+    value; this rule says the *body you cited* must also exist as a row in the
+    registry, with the edition the content is written against and the tool or
+    card listed under `dependents`. A citation in prose answers "where did this
+    number come from"; only a registry row answers "AHA republished — what in
+    this manual moves?" and "when did anyone last check this is still true?".
+    If a new clinical value comes from a body already in the registry, add the
+    tool/card to that row's `dependents`. If the body is new, add a row —
+    `lastVerified: null` until a human has actually checked it, never a
+    backfilled date. `verify_guidelines.mjs` fails when a clinical tool has no
+    source row and no written exemption. See **Keeping content current** below.
+
 ## Adding a new tool
 
 1. Create a folder `<tool>/` with `index.html`, copying an existing tool as the
@@ -87,7 +99,9 @@ unclear. If a request conflicts with a rule below, flag it before proceeding.
 4. Add a `SEARCH_INDEX` entry for the tool (and for each of its cards) in the
    landing page's `index.html` — see golden rule 9.
 5. Write all prose in US English — see golden rule 10.
-6. Verify the logic; stamp version + last-reviewed date.
+6. Register the tool's upstream guideline sources in `guidelines.js` — see
+   golden rule 11.
+7. Verify the logic; stamp version + last-reviewed date.
 
 ## Adding a new card (inside an existing tool)
 
@@ -100,7 +114,9 @@ editing:
 2. Add a `SEARCH_INDEX` entry in the landing page's `index.html` pointing to
    the card's `#cXX` anchor — see golden rule 9.
 3. Write all prose in US English — see golden rule 10.
-4. Cite every clinical value; verify the logic; stamp version + last-reviewed
+4. Add the card to its source's `dependents` in `guidelines.js`, or add a row
+   if it cites a body not in the registry yet — see golden rule 11.
+5. Cite every clinical value; verify the logic; stamp version + last-reviewed
    date on the tool file the card lives in.
 
 ## Offline shell (issue #120)
@@ -193,6 +209,42 @@ airway suite this way is what surfaced that `/airway/` read its config for the
 ladder's behavior but printed hand-typed numbers on screen — a localized site
 would have got a screen that contradicted itself.
 
+## Keeping content current — the guideline watch (`GUIDELINE-WATCH.md`)
+
+`guidelines.js` is the single source for every upstream body the manual takes
+numbers from, in the same spirit as `inventory.js` for physical items: injected
+at build wherever a tool carries the `/* @guidelines */` marker (consumer today:
+`sources/`), and read outside the browser by `check_guidelines.mjs`. A monthly
+GitHub Actions job runs the watcher and opens a `guideline-watch` issue when
+something needs a human.
+
+Four rules when touching it:
+
+- **The `edition` field is a claim about the CONTENT, not about the world.** It
+  names the edition the manual is *written against*. Bump it only in the same
+  commit that reconciles the content — never on merely noticing a newer edition
+  exists. A row whose `edition` names an edition nobody reconciled to is the one
+  failure this whole system is built to prevent.
+- **`lastVerified: null` is a real answer, not a missing value.** It means
+  nobody has checked through this process, and it is the honest state for a new
+  row. Never backfill a date for a check that did not happen — the same
+  distinction `inventory.js` draws between NOT REVIEWED and GAP. A fabricated
+  date buys 180 days of silence and looks like diligence on screen.
+- **A dependent that no longer exists breaks the scoping, silently.** The
+  `dependents` list is the sentence a guideline change gets scoped from, so
+  renaming or splitting a tool means updating every row that names it.
+  `verify_guidelines.mjs` asserts every path and every `#cXX` anchor resolves.
+- **Detection is partial and the wording must stay honest.** The probes miss a
+  body that swaps a revised PDF in at the same URL. That is why every row also
+  carries `reviewEvery`, and why the report, the page and the docs all say "no
+  change detected" rather than "nothing changed". Do not tighten that wording,
+  and do not drop a `reviewEvery` because a probe looks reliable.
+
+Known open item carried in the registry itself: `nrp` has `reconciled:false` —
+`neonatal/` still carries content not reconciled line-by-line with NRP 9th
+edition. Flip it to true only on a clinician's sign-off, not when the review
+banner comes down.
+
 ## Deploy & test workflow
 
 Give Lon this four-step close-out after every deliverable that touches a
@@ -278,6 +330,9 @@ test it" is not sufficient close-out for a deliverable.
   sheet) that runs a case on a table instead of a mannequin. See **Shared
   equipment icons** above — its equipment cards must carry the same glyphs as
   the cart drawer labels.
+- `sources/` — the upstream guideline registry rendered for humans: which
+  edition each tool is written against, when a human last checked it, and which
+  cards move if it changes. Read-only; see **Keeping content current** above.
 - `equipment-readiness/` — searchable equipment locations **size by size**, a
   readiness score against seven national standards, and the cart-walk capture
   that turns a walk into a git change. Rendered from the root `inventory.js`
