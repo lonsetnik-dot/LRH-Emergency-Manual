@@ -204,37 +204,52 @@ var INV_CATALOG = {
      procedure cards — verify_kit_consistency.mjs asserts that. ----------- */
   "kit-canthotomy": { name:"Canthotomy Kit", cat:"kit", std:["ACS-COT"], contents:[
     "3 mL syringe","Needle to draw","Needle to inject","Mosquito clamp","Toothed forceps","Blunt-tipped iris scissors"] },
-  /* Reconciled 2026-08-13 — two independent Claude sessions rebuilt this same
-     kit hours apart from two different sources (Lon's cart-walk corrections vs.
-     a photo of the department's actual build) and landed on genuinely different
-     contents. Adjudicated by Lon directly rather than picked by either session:
+  /* SUPERSEDED 2026-08-14 — Lon supplied the department's own typed kit sheet,
+     which replaces BOTH earlier reconstructions. Two Claude sessions had rebuilt
+     this bag hours apart from different sources (a cart walk vs. a build photo),
+     disagreed, and were adjudicated by hand; the typed sheet ends that argument
+     and is the source of truth now.
 
-       - PREP IS ChloraPrep, NOT povidone-iodine — confirmed twice, explicitly,
-         after the photo-based list had it as iodine swabsticks. The photo is
-         either stale or the physical build has not caught up to this; either
-         way, someone needs to check the actual bag matches this list.
-       - Fenestrated drape, regular 1/2 drape and large Tegaderm ARE in the bag
-         — Lon stated this directly. The photo-based list had put all drapes
-         "off the shelf", which this now contradicts; that too needs a physical
-         recheck, not just a documentation fix.
+     What the sheet changed, relative to what was here:
+       - BOTH preps are in the bag — a Chloropropyl 10.5 mL swab AND a
+         povidone-iodine swab. The previous list carried one or the other and
+         the two sessions had argued about which; the answer is both.
+       - Silk 0 is TWO sutures, not one, and the sheet does not specify the
+         needle. "on a cutting needle" is therefore dropped rather than carried
+         forward unverified.
+       - Scissors are LONG CURVED BLUNT, not curved Mayo.
+       - Kelly clamps are one LARGE and one MEDIUM — two different sizes, which
+         "curved Kelly clamps x2" hid.
+       - The needle driver is the LARGE one.
+       - The syringe, the blunt draw needle and the 25 gauge 1½ needle are three
+         separate peel packs, not one combined line.
+       - OUT of the bag: the Foley catheter 16 Fr, the toothed tissue forceps,
+         and the large Tegaderm. All three were on the previous list.
+       - Fenestrated drape and half drape stay in, confirmed directly.
 
-     Everything else keeps the photo session's structure: instruments are
-     peel-packed singly, so each pack is its own line and its own expiry, and
-     lidocaine itself is NOT bagged — only the draw/inject supplies are, the
-     drug comes from the Omnicell. `confirm:true`-marked lines were read off the
-     build photo and are not yet verified against the assembled bag; they print
-     with a ◇ on the check card. The drape/Tegaderm additions are NOT marked
-     confirm — Lon stated them as fact — but the bag itself may not physically
-     hold them yet, which is exactly what the check card exists to catch. */
+     The dressing supplies are a SEPARATE nursing bag and are now itemized as
+     their own kit below rather than described in prose. PPE is not in either
+     bag — it is Trauma Cart drawer 5 (cart walk, 2026-08-13).
+
+     Lidocaine is still not bagged: only the draw and inject supplies are, and
+     the drug comes from the Omnicell. */
   "kit-chest-tube": { name:"Chest Tube Kit", cat:"kit", std:["ACS-COT"],
-    draft:"Corrected 2026-08-13 — ChloraPrep, drapes and Tegaderm added; not yet re-verified against the assembled bag. See the check card.",
     contents:[
-    "Needle driver","Curved Kelly clamps","Curved Mayo scissors","Toothed tissue forceps",
-    "Scalpel No. 10 blade","ChloraPrep","Silk 0 suture on a cutting needle",
-    "10 mL syringe + 18 g draw and 25 g needles","Foley catheter 16 Fr",
-    "Fenestrated drape","Regular 1/2 drape","Large Tegaderm"],
-    confirm:["Curved Mayo scissors","Toothed tissue forceps","Silk 0 suture on a cutting needle",
-             "Foley catheter 16 Fr"] },
+    "Chloropropyl 10.5 mL swab","Povidone-iodine swab","Silk 0 sutures",
+    "Scalpel No. 10","Blunt needle","10 mL syringe","25 gauge 1½ needle",
+    "Long curved blunt scissors","Large needle driver","Large Kelly clamp",
+    "Medium Kelly clamp","Fenestrated drape","Half drape"],
+    absent:["Foley catheter 16 Fr","Toothed tissue forceps","Curved Mayo scissors","Large Tegaderm"] },
+  /* The nursing half of the same procedure. Kept as its own kit because it is
+     its own physical bag, carried by different people at a different moment —
+     a provider reaching into the insertion kit for a dressing will not find one.
+     No INV_LOCATIONS entry yet: nobody has recorded where this bag lives, and
+     NOT REVIEWED is the honest state for that (INVENTORY-DESIGN.md). */
+  "kit-chest-tube-dressing": { name:"Chest Tube Dressing Kit (nursing)", cat:"kit", std:["ACS-COT"],
+    contents:[
+    "Large Op-Site 6x8","4x4 drain sponge","2x2 gauze",
+    "Xeroform (or petroleum) dressing 5x9","Safety pin","3 inch tape",
+    "Chest tube clamp","Chest tube troubleshooting resource"] },
   "kit-pigtail": { name:"Pigtail Thoracostomy Kit", cat:"kit", std:["ACS-COT"], contents:[
     "Sterile gown, mask, eye protection, gloves, drapes","Ultrasound with a sterile probe cover and gel",
     "25 G and 21 G needles","Lidocaine 1%","Introducer needle","Marked guidewire","Sequential dilators",
