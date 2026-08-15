@@ -13,6 +13,11 @@
  * that fundal pressure is never offered, that a contraindicated drug cannot be marked given, and
  * that both screens say plainly their doses are inherited rather than re-derived.
  *
+ * Both tools now carry the case shell (SHELL.md): the events read here live in the shell timeline
+ * (#shelltl, opened through the ⋯ menu) instead of the retired EVENT LOG accordion; PPH's running
+ * total rides the pinned dock's blue slot as well as the in-content box; dystocia's case-clock pill
+ * IS the head-to-body interval. The continuous-interval invariant is unchanged and still the point.
+ *
  *     node build.mjs && python3 -m http.server 8123 --directory dist
  *     node verify_ob_engines.mjs
  */
@@ -43,6 +48,13 @@ const tap = async (sel, ms = 250) => { await pg.click(sel); await pg.waitForTime
 const openAcc = async id => { await pg.click('[data-acc="' + id + '"]'); await pg.waitForTimeout(250);
   const t = (await pg.locator('.accb').innerText()).replace(/\s+/g, ' ').trim();
   await pg.click('[data-acc="' + id + '"]'); await pg.waitForTimeout(120); return t; };
+/* The event record lives in the case shell's timeline now (SHELL.md layer 8) —
+   opened the way a clinician on a phone opens it: ⋯ menu → Case timeline. */
+const openTL = async () => {
+  await pg.click('#menubtn'); await pg.waitForTimeout(200);
+  await pg.click('#tlbtn'); await pg.waitForTimeout(250);
+  const t = (await pg.locator('#tlrows').innerText()).replace(/\s+/g, ' ').trim();
+  await pg.click('#tlclose'); await pg.waitForTimeout(120); return t; };
 const load = async path => {
   await pg.goto(BASE + path + '?from=home', { waitUntil: 'networkidle' });
   await pg.evaluate(() => { window.__skew = 0; });
@@ -80,9 +92,19 @@ ck('P3. scope bar says escalate on the trend', /trend/i.test(pscope), true);
 ck('P3. it routes the newborn elsewhere and asks who stays with her',
    /neonatal resuscitation/i.test(pscope) && /who is staying with her/i.test(pscope), true);
 
+/* Case shell chrome (SHELL.md) — the pieces this tool maps. */
+ck('P3s. the tool switcher lists the six engines + manual home',
+   await pg.locator('#toolmenu .shellmenurow').count(), 7);
+ck('P3s. PPH is the marked current tool',
+   await pg.getAttribute('#toolmenu .shellmenurow.on', 'href'), '../pph/');
+ck('P3s. the tele button keeps this tool\'s own tele-NICU wording',
+   /TELE-NICU/i.test(await txt('#telebtn')), true);
+
 /* THE REASON THIS IS AN ENGINE — running blood loss. */
 await tap('#startbtn', 320);
-ck('P4. the clock starts at recognition', /recognized/i.test(await openAcc('log')), true);
+ck('P4. the clock starts at recognition', /recognized/i.test(await openTL()), true);
+ck('P4. the case-clock pill shows, tagged PPH',
+   await pg.locator('#casepill').isVisible() && /PPH/.test(await txt('#pilltag')), true);
 ck('P4. EBL starts at zero', /^0 mL/.test(await txt('#eblbox')), true);
 ck(`P4. one add button per configured step (${P.eblSteps.map(s => s.ml).join('/')})`,
    await pg.locator('[data-ebl]').count(), P.eblSteps.length);
@@ -90,9 +112,14 @@ const firstMark = P.eblMarks[0];
 let acc = 0;
 while (acc < firstMark.ml) { await tap(`[data-ebl="${P.eblSteps[P.eblSteps.length - 1].ml}"]`, 120); acc += P.eblSteps[P.eblSteps.length - 1].ml; }
 ck(`P4. the running total reaches ${acc} mL`, lit(acc + ' mL EBL').test(await txt('#eblbox')), true);
-ck('P4. the total is in the header, where it cannot scroll away', lit(acc + ' mL').test(await txt('#statusword')), true);
+ck('P4. the total rides the pinned dock\'s blue slot, where it cannot scroll away',
+   lit(acc + ' mL').test(await txt('#dockeblclock')), true);
 ck(`P4. crossing ${firstMark.ml} mL fires a trend prompt (SITE.eblMarks)`,
-   lit('EBL ' + firstMark.ml + ' mL').test(await openAcc('log')), true);
+   lit('EBL ' + firstMark.ml + ' mL').test(await openTL()), true);
+/* Tele — non-clinical, logs only, idempotent. */
+await tap('#telebtn');
+ck('P4. tele-NICU collapses to a confirmation row', await pg.locator('#teledone').isVisible(), true);
+ck('P4. and the request time is logged', /Tele-NICU activated/i.test(await openTL()), true);
 
 /* Contraindication guard — the thing a printed card cannot do. */
 const blockedMed = P.meds.filter(m => m.block)[0];
@@ -118,7 +145,13 @@ P.meds.filter(m => m.block).forEach(m =>
 const okMed = P.meds.filter(m => !m.block)[0];
 await tap(`[data-med="${okMed.id}"]`);
 ck(`P5. ${okMed.n} records the time it was given`, /✓ GIVEN \d+:\d\d/.test(await txt('#phasebox')), true);
-ck('P5. and it is logged with its dose', lit(okMed.n + ' given').test(await openAcc('log')), true);
+ck('P5. and it is logged with its dose', lit(okMed.n + ' given').test(await openTL()), true);
+/* The dock's purple slot must NOT be a second GIVEN path — it only brings the
+   guarded block into view. Tapping it logs nothing and gives nothing. */
+const evBefore = await pg.evaluate(() => document.querySelectorAll('#phasebox .med.given').length);
+await tap('#dockmeds');
+ck('P5. the dock\'s UTEROTONICS slot gives no drug (guard not bypassable from the dock)',
+   await pg.evaluate(() => document.querySelectorAll('#phasebox .med.given').length), evBefore);
 
 /* The bands advance with the clock, in order. */
 await skew(16 * 60 * 1000);
@@ -144,6 +177,18 @@ ck('P7. a clinical note is accepted', await pg.locator('#customrow').isVisible()
 ck('P7. localStorage holds only theme + the shared case-clock keys',
    (await pg.evaluate(() => Object.keys(localStorage))).filter(k => !['lrh-pref-theme','lrh-case-lastactive','lrh-case-startms'].includes(k)).join(',') || 'none', 'none');
 
+/* Shell reset (SHELL.md layer 9) — the two-tap SURE? in the ⋯ menu runs the
+   manual-wide lrh- sweep and raises the cleared toast. */
+await pg.click('#menubtn'); await pg.waitForTimeout(200);
+await pg.click('#resetbtn'); await pg.waitForTimeout(200);
+ck('P8. reset arms with SURE? on the first tap', /SURE\?/.test(await txt('#resetbtn')), true);
+await pg.click('#resetbtn'); await pg.waitForTimeout(400);
+ck('P8. the case-clock keys are swept',
+   (await pg.evaluate(() => Object.keys(localStorage).filter(k => k.indexOf('lrh-case-') === 0))).join(',') || 'none', 'none');
+ck('P8. the cleared toast shows', await pg.locator('#shelltoast').isVisible(), true);
+await tap('#toastok');
+ck('P8. back to idle for the next case', await pg.locator('#idle').isVisible(), true);
+
 /* ===================== SHOULDER DYSTOCIA ===================== */
 console.log('\n--- /dystocia/ ---');
 const D = await load('/dystocia/');
@@ -167,8 +212,18 @@ ck('D3. scope bar names the head-to-body interval', /head-to-body interval/i.tes
 ck('D3. it says to work the maneuvers in order', /in order/i.test(dscope), true);
 ck('D3. it hands off to neonatal resuscitation', /neonatal resuscitation/i.test(dscope), true);
 
+/* Case shell chrome (SHELL.md) — the pieces this tool maps. */
+ck('D3s. the tool switcher lists the six engines + manual home',
+   await pg.locator('#toolmenu .shellmenurow').count(), 7);
+ck('D3s. Dystocia is the marked current tool',
+   await pg.getAttribute('#toolmenu .shellmenurow.on', 'href'), '../dystocia/');
+ck('D3s. the tele button keeps this tool\'s own tele-NICU wording',
+   /TELE-NICU/i.test(await txt('#telebtn')), true);
+
 /* THE PROHIBITION — pinned, and not localizable away. */
 await tap('#startbtn', 320);
+ck('D4. the case-clock pill shows the interval, tagged DYSTOCIA',
+   await pg.locator('#casepill').isVisible() && /DYSTOCIA/.test(await txt('#pilltag')), true);
 ck('D4. the never-banner is on screen', await pg.locator('#neverbox').isVisible(), true);
 ck('D4. it forbids fundal pressure', /NO FUNDAL PRESSURE/i.test(await txt('#neverbox')), true);
 ck('D4. it forbids pulling', /NO PULLING/i.test(await txt('#neverbox')), true);
@@ -188,18 +243,21 @@ ck('D5. every completed rung is marked done', await pg.locator('.lrow.done').cou
 
 /* THE THING THAT MUST NOT HAPPEN: the clock restarting on round two. The
    head-to-body interval is continuous, and it is the number that ends up in
-   the record. */
+   the record — asserted on both its faces: the big in-content box and the
+   shell's case-clock pill, which is the same clock in the chrome. */
 await skew(90 * 1000);
-const beforeRound2 = await txt('#clock');
+const beforeRound2 = await txt('#hbiclock');
 await tap('#nextrung', 300);
 ck('D6. running the sequence again returns to the first rung',
    lit('RUNG 1 OF ' + D.ladder.length).test(await txt('#phasebox')), true);
 ck('D6. and says which round it is', /ROUND 2/.test(await txt('#plabel')), true);
-const afterRound2 = await txt('#clock');
+const afterRound2 = await txt('#hbiclock');
 const toSec = t => { const [m, s] = t.split(':').map(Number); return m * 60 + s; };
 ck('D6. THE CLOCK DOES NOT RESTART — head-to-body is continuous',
    toSec(afterRound2) >= toSec(beforeRound2), true);
-ck('D6. the restart is logged', /round 2/i.test(await openAcc('log')), true);
+ck('D6. the pill agrees with the in-content interval (one clock, two faces)',
+   Math.abs(toSec(await txt('#pillclock')) - toSec(await txt('#hbiclock'))) <= 1, true);
+ck('D6. the restart is logged', /round 2/i.test(await openTL()), true);
 
 /* Last resort only appears once late. */
 await skew((D.lastResortMin + 1) * 60 * 1000);
@@ -210,10 +268,12 @@ D.lastResort.forEach((x, i) =>
 /* Handoff. */
 await tap('#outbtn', 300);
 ck('D8. delivering shows the head-to-body interval', /\d+:\d\d/.test(await txt('#outat')), true);
+ck('D8. the pill freezes at the delivery stamp, tagged DELIVERED',
+   (await txt('#pillclock')) === (await txt('#outat')) && /DELIVERED/.test(await txt('#pilltag')), true);
 ck('D8. it sends the baby to neonatal resuscitation',
    await pg.getAttribute('#tonrp', 'href'), '../neonatal/?from=home');
 ck('D8. and warns about postpartum hemorrhage next', /PPH engine/.test(await txt('#outbody')), true);
-ck('D8. the maneuver record is in the log', /Announce/i.test(await openAcc('log')), true);
+ck('D8. the maneuver record is in the log', /Announce/i.test(await openTL()), true);
 
 /* ===================== both, wired in ===================== */
 console.log('\n--- discoverable ---');
