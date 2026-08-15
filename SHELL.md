@@ -42,14 +42,17 @@ A layer a tool doesn't need is absent entirely, never left empty.
 - All targets ≥44px. Bar is sticky. Nothing in it ever wraps.
 
 ### 2. Cadence + actions strip (only while a case runs)
-- **Phone:** pill chips under the bar, one per cadence timer; each chip IS
-  its action (`RHYTHM CHECK 1:44` · `EPI 2:41`). At 0:00 the chip turns
-  red and reads `DUE NOW` until acted on.
-- **≥768px:** the three dock buttons (layer 6) render up here instead,
-  dock-styled (54px, tinted bg + 1.5px colored border), countdown embedded
-  as a second mono line (red when due). Timer and action are one target.
-  Metronome group right-aligned; the strip may flex-wrap; labels never
-  truncate mid-word (`white-space:nowrap`, shorten text instead).
+- **Timers and doses ride the buttons** (2026-08-15 review): a cadence
+  that has a dock/strip action renders INSIDE that button — countdown as
+  a second mono line (red `DUE NOW` at zero), computed dose/energy in the
+  label (`SHOCK 64 J`, `EPI 0.16 mg`). One target = the timer, the dose,
+  and the action. This applies on BOTH widths.
+- **Phone:** chips appear ONLY for a cadence that has no dock slot;
+  a cadence with a dock button never gets a duplicate chip.
+- **≥768px:** the dock buttons (layer 6) render up here instead,
+  dock-styled (54px, tinted bg + 1.5px colored border). Metronome group
+  right-aligned; the strip may flex-wrap; labels never truncate mid-word
+  (`white-space:nowrap`, shorten text instead).
 
 ### 3. Metronome row (only for tools that have one)
 - Beating dot (CSS scale pulse at the compression/vent rate), mode label
@@ -71,21 +74,34 @@ A layer a tool doesn't need is absent entirely, never left empty.
   then collapses to a slim row `WEIGHT 16 kg ✎ tap to change`.
 - Every dose recomputes live from this value; unset weight renders
   `set weight` in place of a number — never a stale or default dose.
+- **Mode lives here, not in a banner** (2026-08-15 review): a mode that
+  changes dosing (pediatric vs adult) is stated in the strip's own row
+  (`16 kg · PALS (pediatric)`), and leaving it is an explicitly labeled
+  action (`TREAT AS ADULT`, undone by an equally explicit `UNDO`) —
+  never a `DISMISS`, which reads as "hide this warning" while leaving the
+  clinician unsure which dosing mode survived. Routing questions that
+  change TOOLS (the NRP off-ramp) may stay dismissible banners — there
+  the dismiss genuinely means "no, stay here," and dosing is unaffected.
 
-### 5. Tool content — face up
-Order inside the scroll area:
-1. **Idle only:** first-action prompt box (caution border) + primary start
-   button (red, full width). Both disappear once the case starts.
-2. **ACTIVATE TELE-ED** — face up from the first screen (blue-bordered,
-   full width). One tap logs the request time and collapses to a quiet
-   `TELE-ED ACTIVATED AT 0:12 ✓` row. Idempotent; never a second dialog.
-3. **DOSING — FACE UP:** the tool's ~3 primary doses as rows — name, rule
-   (small), computed value (mono, green, right-aligned). Never behind an
-   accordion.
-4. **OTHER MEDICATIONS / OTHER REFERENCE:** secondary doses. One tap to
-   expand on phone; face up ≥768px.
-5. Existing tool content (reference accordions, citations, disclaimer)
-   below, unchanged.
+### 5. Tool content — face up, operating card first
+The ordering differs by phase (2026-08-15 review — the running screen
+must put the thing you operate above the fold, never below reference):
+
+**Idle:** first-action prompt box (caution border) + primary start button
+(red, full width) → ACTIVATE TELE-ED → DOSING — FACE UP (the tool's ~3
+primary doses as rows — name, rule, computed value; never behind an
+accordion) → secondary doses → reference content.
+
+**Running:** the tool's OPERATING CARD (cycle clock, pathway rungs, EBL
+entry — whatever the tool is driven by) comes FIRST in the scroll area;
+tele-ED/roles rows compact beneath it; the DOSING block follows as
+reference (its next-step numbers already ride the action buttons, layer
+2/6), then secondary doses, then the existing reference accordions,
+citations, disclaimer. The start prompt and button are gone.
+
+**ACTIVATE TELE-ED** stays face up from the first screen (blue-bordered,
+full width). One tap logs the request time and collapses to a quiet
+`TELE-ED ACTIVATED AT 0:12 ✓` row. Idempotent; never a second dialog.
 
 ### 6. Pinned action dock (phone, only while a case runs)
 - Fixed to the bottom, thumb zone, above `env(safe-area-inset-bottom)`.
