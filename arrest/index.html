@@ -10,47 +10,105 @@
 <meta name="description" content="Mobile cognitive aid for cardiac arrest: code clock, 2-minute cycle, weight-based PALS dosing, rhythm-check branching and an event log. Personal aid, not hospital policy.">
 <style>
 /* @design-system-live */
-/* ---- Shared live-protocol skeleton (tokens, .hdr/.card/.btn/.acc/.chip/etc.,
-   the due/dot motion) is injected from design-system-live.css at the marker
-   above (build.mjs, issue #73) — arrest/ is the reference implementation
-   airway/ and tca/ copy. Genuinely arrest-specific chrome (the rhythm-check
-   bottom sheet) stays inline below. ---- */
+/* ---- Shared live-protocol skeleton (tokens, .card/.btn/.acc/.chip/etc., the
+   due/dot motion, and the WHOLE case shell — bar, strip, dock, picker,
+   timeline, toast; see SHELL.md) is injected from design-system-live.css at
+   the marker above (build.mjs, issue #73) — arrest/ is the case shell's
+   reference implementation; the rhythm-check sheet classes
+   (.sheetwrap/.sheet/.rcbtn/.rcsub) moved into the shared file with it. ---- */
 button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
-.sheetwrap{position:fixed;inset:0;z-index:60;background:rgba(5,10,18,.72);display:flex;align-items:flex-end;justify-content:center}
-.sheet{width:100%;max-width:680px;background:var(--card);border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));border:1px solid var(--line);box-sizing:border-box}
-.rcbtn{width:100%;min-height:76px;border:none;border-radius:14px;color:#fff;font:800 19px var(--sans);letter-spacing:.03em;cursor:pointer;text-align:left;padding:0 18px;display:flex;align-items:center;gap:14px}
-.rcsub{font-size:13px;font-weight:600;opacity:.85;margin-top:3px}
 </style>
 </head>
 <body data-theme="dark">
+
+<!-- ============ CASE SHELL layer 1 — app bar (SHELL.md) ============
+     One 56px row (60px ≥768px), sticky, never wraps. Left: back + the tool
+     name as the tool-switcher dropdown. Center: the master case-clock pill
+     while a case runs (tap = timeline). Right: ⋯ overflow on a phone;
+     TIMELINE / FEEDBACK / RESET inline ≥768px. -->
+<div class="shellbar" id="shellbar">
+  <a class="shellback shell-phone" id="backlink" href="../?from=tool" aria-label="Back to the manual">‹</a>
+  <a class="shellback shell-wide" id="backlinkwide" href="../?from=tool">MANUAL ›</a>
+  <button class="shelltool" id="toolbtn" type="button" aria-haspopup="true"><span class="shellsq" style="background:var(--red)"></span>ARREST<span class="shellcaret">▼</span></button>
+  <div class="shellbarmid">
+    <button class="shellpill" id="casepill" type="button" style="display:none" aria-label="Case clock — open the timeline"><span class="dot"></span><span class="shellpilltime" id="pillclock">0:00</span><span class="shellpilltag" id="pilltag">CODE</span></button>
+    <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:700;letter-spacing:.06em">READY</span>
+  </div>
+  <span class="shell-wide" style="gap:6px;align-items:center">
+    <button class="ghost" id="tlbtnwide" type="button">TIMELINE</button>
+    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Arrest" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+    <button class="ghost shellreset" id="resetwide" type="button">RESET</button>
+  </span>
+  <button class="shellmore shell-phone" id="menubtn" type="button" aria-label="Menu">⋯</button>
+</div>
+
+<!-- tool switcher: the six live engines + manual home. Plain links —
+     cross-tool case state (weight, clock, log) survives navigation per
+     CASE-STATE.md, so switching tools mid-case is safe by design. -->
+<div class="shellmenu left" id="toolmenu" style="display:none">
+  <a class="shellmenurow on" href="../arrest/"><span class="shellsq" style="background:var(--red)"></span><span style="flex:1">Arrest</span><span class="shellmenusub">CODE</span></a>
+  <a class="shellmenurow" href="../tca/"><span class="shellsq" style="background:#E08A3C"></span><span style="flex:1">TCA</span><span class="shellmenusub">TCA</span></a>
+  <a class="shellmenurow" href="../airway/"><span class="shellsq" style="background:#2FA372"></span><span style="flex:1">Airway</span><span class="shellmenusub">RSI</span></a>
+  <a class="shellmenurow" href="../neonatal/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Neonatal</span><span class="shellmenusub">NRP</span></a>
+  <a class="shellmenurow" href="../pph/"><span class="shellsq" style="background:#E75480"></span><span style="flex:1">PPH</span><span class="shellmenusub">PPH</span></a>
+  <a class="shellmenurow" href="../dystocia/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Dystocia</span><span class="shellmenusub">OB</span></a>
+  <div class="shellmenudiv"></div>
+  <a class="shellmenurow" href="../?from=tool"><span class="shellsq" style="background:var(--gray)"></span><span style="flex:1">Manual home</span></a>
+</div>
+
+<!-- ⋯ overflow (phone): timeline, feedback, then reset in red — the same
+     two-tap SURE? reset the wide button runs (SHELL.md layer 9). -->
+<div class="shellmenu right" id="moremenu" style="display:none">
+  <button class="shellmenurow" id="tlbtn" type="button">Case timeline</button>
+  <a class="shellmenurow" id="feedbackmenu" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Arrest">Feedback</a>
+  <div class="shellmenudiv"></div>
+  <button class="shellmenurow danger" id="resetbtn" type="button">Reset for next case</button>
+</div>
+
+<!-- ============ CASE SHELL layers 2+3 — cadence strip + metronome ============
+     Running only. Phone: each cadence chip IS its action (rhythm chip opens the
+     picker, epi chip logs the dose); DUE NOW red at zero. ≥768px the three dock
+     buttons render here instead with their countdowns embedded, and the
+     metronome group right-aligns into the same strip. -->
+<div class="shellstrip" id="shellstrip" style="display:none">
+  <button class="shellchip shell-phone" id="chiprc" type="button">RHYTHM CHECK <span class="mono" id="chiprcclock">2:00</span></button>
+  <button class="shellchip shell-phone" id="chipepi" type="button">EPI <span class="mono" id="chipepiclock">GIVE NOW</span></button>
+  <button class="shelldockbtn scheme-amber shell-wide" id="stripshock" type="button" style="flex:none"><span id="stripshocklabel">SHOCK</span></button>
+  <button class="shelldockbtn scheme-purple shell-wide" id="stripepi" type="button" style="flex:none">EPI GIVEN<span class="shelldockclock" id="stripepiclock">GIVE NOW</span></button>
+  <button class="shelldockbtn scheme-blue shell-wide" id="striprc" type="button" style="flex:none">RHYTHM ✓<span class="shelldockclock" id="striprcclock">2:00</span></button>
+  <div class="shellmetgroup" id="metgroup">
+    <span class="shellmetdot" id="metdot"></span>
+    <span style="min-width:0"><span class="shellmetmode" id="metmode">30:2 · 110</span><br><span class="shellmetstatus" id="metstatus">compress</span></span>
+    <span style="flex:1"></span>
+    <button class="shellsmallchip" id="advchip" type="button">ADV AIRWAY</button>
+    <button class="shellsmallchip" id="mutechip" type="button">MUTE</button>
+  </div>
+</div>
+
+<!-- ============ CASE SHELL layer 4 — weight strip ============
+     Phone: collapsed 44px row, tap to expand. ≥768px: expanded until a weight
+     is set, then a slim "✎ tap to change" row. Unset renders caution-amber;
+     set renders green. The inputs and ESTIMATE are the pre-shell ones. -->
+<button class="shellweight" id="wtoggle" type="button">
+  <span class="k">WEIGHT</span>
+  <span class="v unset" id="wlabel">not set</span>
+  <span class="m" id="wmark">▼</span>
+</button>
+<div class="shellweightform" id="wform" style="display:none">
+  <input class="inp" id="wIn" inputmode="decimal" style="width:64px" aria-label="Weight in kg">
+  <span style="font-size:13px;color:var(--ink2)">kg &nbsp;·&nbsp; or age</span>
+  <input class="inp" id="aIn" inputmode="decimal" placeholder="age" style="width:52px;font-size:16px" aria-label="Age">
+  <select class="inp" id="aUnit" aria-label="Age unit" style="width:auto;font-size:14px;min-height:38px"><option value="mo">mo</option><option value="yr" selected>yr</option></select>
+  <button class="btn" id="estbtn" type="button" style="font:700 12px var(--sans);padding:9px 12px;border-radius:9px;min-height:38px">ESTIMATE KG</button>
+  <button class="ghost" id="wdone" type="button" style="min-height:38px;border-color:var(--green);color:var(--green)">DONE ✓</button>
+  <span id="wnote" style="font-size:13px;font-weight:700;color:var(--accent)">enter weight</span>
+  <span id="werr" style="display:none;flex-basis:100%;font-size:12.5px;font-weight:700;color:var(--red)"></span>
+</div>
+
 <div class="wrap">
 
-  <div class="hdr">
-    <a class="ghost" id="backlink" href="../?from=tool" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">‹ MANUAL</a>
-    <div style="flex:1;min-width:0">
-      <div class="plabel" id="plabel">01 · PULSELESS VF / VT</div>
-      <div style="display:flex;align-items:baseline;gap:8px">
-        <span class="mono" id="clock" style="font-size:26px;font-weight:700">0:00</span>
-        <span id="rundot" style="display:none"><span class="dot"></span></span>
-        <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:600">READY</span>
-      </div>
-      <div id="donesum" style="display:none"></div>
-      <div id="caseclock" style="display:none"></div>
-    </div>
-    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Arrest" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
-    <button class="ghost" id="resetbtn" type="button">RESET</button>
-  </div>
-
-  <div class="card" style="display:flex;gap:8px;align-items:center;margin:12px 0 0;padding:10px 12px;flex-wrap:wrap">
-    <span class="sec">WEIGHT</span>
-    <input class="inp" id="wIn" inputmode="decimal" style="width:64px" aria-label="Weight in kg">
-    <span style="font-size:13px;color:var(--ink2)">kg &nbsp;·&nbsp; or age</span>
-    <input class="inp" id="aIn" inputmode="decimal" placeholder="age" style="width:52px;font-size:16px" aria-label="Age">
-    <select class="inp" id="aUnit" aria-label="Age unit" style="width:auto;font-size:14px;min-height:38px"><option value="mo">mo</option><option value="yr" selected>yr</option></select>
-    <button class="btn" id="estbtn" type="button" style="font:700 12px var(--sans);padding:9px 12px;border-radius:9px;min-height:38px">ESTIMATE KG</button>
-    <span id="wnote" style="font-size:13px;font-weight:700;color:var(--accent)">enter weight</span>
-    <span id="werr" style="display:none;flex-basis:100%;font-size:12.5px;font-weight:700;color:var(--red)"></span>
-  </div>
+  <div class="plabel" id="plabel" style="margin-top:10px">01 · PULSELESS VF / VT</div>
+  <div id="caseclock" style="display:none"></div>
 
   <!-- NRP off-ramp: NRP is for the NEWLY BORN (transition period), so this is a
        loud, dismissible question — never a silent reroute. An ex-preemie can
@@ -112,6 +170,27 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
     </div>
 
     <div style="margin-top:10px;font-size:13px;color:var(--ink2);text-align:center">Call the code · attach the defibrillator · enter weight above</div>
+  </div>
+
+  <!-- ============ CASE SHELL layer 5.2 — ACTIVATE TELE-ED ============
+       Face up from the first screen, idle or running. One tap logs the request
+       time and collapses to a quiet confirmation row. Idempotent — never a
+       second dialog. The roles card below keeps its own tele-ED reminder. -->
+  <button class="shelltele" id="telebtn" type="button">📞 ACTIVATE TELE-ED<span class="sub" id="telesub">one tap, the earlier the better — logs the request time</span></button>
+  <div class="shellteledone" id="teledone" style="display:none">📞 TELE-ED ACTIVATED AT <span class="mono" id="teleat">0:00</span> ✓</div>
+
+  <!-- ============ CASE SHELL layers 5.3/5.4 — dosing, face up ============
+       The three primary doses as rows — never behind an accordion. Adult: the
+       fixed sequence; pediatric: computed live from the weight, "set weight"
+       when unset (never a stale or default dose). Values render from SITE
+       config in paint(); the cited reference for every number stays in the
+       accordions below. Secondary doses live one tap away on a phone and face
+       up ≥768px. -->
+  <div id="dosingblock">
+    <div class="sec" style="margin-top:14px;letter-spacing:.12em">DOSING — FACE UP</div>
+    <div id="doserows" style="display:grid;gap:8px;margin-top:8px"></div>
+    <button class="shellothers" id="otherstoggle" type="button" style="margin-top:8px">OTHER MEDICATIONS <span style="margin-left:auto;font-size:11px" id="othersmark">▼</span></button>
+    <div id="otherrows" style="display:none;grid-auto-rows:auto;gap:8px;margin-top:8px"></div>
   </div>
 
   <div id="cpr" style="display:none">
@@ -184,14 +263,8 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
       <div style="margin-top:8px;font-size:12.5px;color:var(--ink2)">Anything can be tapped at any time — the algorithm is a guide, not a lock.</div>
     </div>
 
-    <div id="airwaystep" class="card" style="display:none;gap:10px;align-items:center;margin-top:10px;border:1px dashed var(--blue);padding:12px">
-      <div style="flex:1">
-        <div class="sec" style="color:var(--blue)">NEXT STEP</div>
-        <div style="font-size:14.5px;font-weight:700;margin-top:2px">Advanced airway placed?</div>
-        <div style="font-size:12.5px;color:var(--ink2)">Switches pacing to continuous compressions + 1 breath every 6 s</div>
-      </div>
-      <button id="airwaybtn" type="button" style="min-height:56px;border:none;border-radius:12px;background:var(--blue);color:#fff;font:800 14px var(--sans);padding:0 16px;cursor:pointer;white-space:nowrap">AIRWAY IN — SWITCH</button>
-    </div>
+    <!-- The old "Advanced airway placed?" card became the ADV AIRWAY toggle
+         chip in the shell's metronome group (SHELL.md layer 3). -->
 
     <button id="roscbtn" type="button" style="width:100%;margin-top:10px;min-height:60px;border:2px solid var(--green);border-radius:14px;background:transparent;color:var(--green);font:800 17px var(--sans);letter-spacing:.05em;cursor:pointer">
       <span style="display:inline-flex;align-items:center;justify-content:center;gap:10px">
@@ -332,9 +405,13 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
   </div>
 </div>
 
+<!-- ============ CASE SHELL layer 7 — the result picker ============
+     Bottom sheet on a phone, centered modal ≥768px (shared .sheetwrap/.sheet).
+     Opening it also starts the metronome's 10 s check pause; picking logs the
+     RESULT and restarts the cadence; ✕ closes without logging. -->
 <div id="sheet" class="sheetwrap" style="display:none">
   <div class="sheet" id="sheetinner">
-    <div class="sec" style="letter-spacing:.12em;margin-bottom:12px">AT THE RHYTHM CHECK — WHAT DO YOU SEE?</div>
+    <div class="sheethead"><span class="sec" style="letter-spacing:.12em">AT THE RHYTHM CHECK — WHAT DO YOU SEE?</span><button class="shellx" id="rcclose" type="button" aria-label="Close without logging">✕</button></div>
     <div id="rcalert" style="display:none;margin-bottom:10px;padding:9px 10px;border-radius:10px;background:var(--amber);color:#141E2B;font:800 12.5px var(--sans);text-align:center;letter-spacing:.02em">PAUSE OVER 10 S — COMPRESSIONS RESUMED ON THEIR OWN</div>
     <div id="rcmain">
       <button class="rcbtn" id="rcshock" type="button" style="background:var(--red)">
@@ -356,6 +433,38 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
   </div>
 </div>
 
+<!-- ============ CASE SHELL layer 6 — pinned action dock (phone, running) ====
+     Three thumb-zone buttons, semantic slot colors identical across every
+     tool: amber = intervention (SHOCK), purple = drug (EPI GIVEN), blue =
+     assessment (RHYTHM ✓ — opens the picker). The LOG ticker rides on top:
+     newest event + LOG ▲ → timeline. ≥768px there is no dock — the same three
+     buttons live in the strip. -->
+<div class="shelldock" id="shelldock" style="display:none">
+  <button class="shellticker" id="ticker" type="button" style="display:none"><span class="tk" id="tickertext"></span><span class="lg">LOG ▲</span></button>
+  <div class="shelldockrow">
+    <button class="shelldockbtn scheme-amber" id="dockshock" type="button"><span id="dockshocklabel">SHOCK</span></button>
+    <button class="shelldockbtn scheme-purple" id="dockepi" type="button">EPI GIVEN</button>
+    <button class="shelldockbtn scheme-blue" id="dockrc" type="button">RHYTHM ✓</button>
+  </div>
+</div>
+
+<!-- ============ CASE SHELL layer 8 — case timeline ============
+     Every action auto-logs with the case-clock stamp and a category color dot.
+     Bottom sheet on a phone; 320px right panel ≥768px. In-memory view of
+     S.events; the same entries also reach the shared, PHI-guarded
+     lrh-case-log through SS.addLog (CASE-STATE.md). -->
+<div class="shelltl" id="shelltl" style="display:none">
+  <div class="shelltlhead"><span class="t">CASE TIMELINE</span><button class="shellx" id="tlclose" type="button" aria-label="Close the timeline">✕</button></div>
+  <div class="shelltlbody" id="tlrows"></div>
+  <div class="shelltlfoot">device only · no identifiers · cleared on reset</div>
+</div>
+
+<!-- ============ CASE SHELL layer 9 — the cleared toast after RESET ============ -->
+<div class="shelltoast" id="shelltoast" style="display:none">
+  <span style="flex:1">Reset — weight, clocks, checks and the log are clean for a new case.</span>
+  <button class="shelltoastok" id="toastok" type="button">OK</button>
+</div>
+
 <script>
 (function(){
 'use strict';
@@ -369,9 +478,15 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
    adults. LRH runs a ZOLL rectilinear biphasic with a labelled escalating
    sequence, which is what the existing site implements, and the handoff says
    to keep the site's clinical logic where the two differ. So 120 / 150 / 200.
+
+   v0.2.1 (2026-08-15): rebuilt the chrome onto the case shell (SHELL.md) —
+   app bar + tool switcher, cadence chips/dock, metronome row with MUTE and
+   ADV AIRWAY chips, weight strip, face-up tele-ED and dosing rows, result
+   picker restyle, timeline sheet/panel, reset toast. No clinical value
+   changed; every number still reads from this block.
    ========================================================================== */
 var SITE = {
-  version: "0.2", lastReviewed: "2026-08-10",
+  version: "0.2.1", lastReviewed: "2026-08-15",
   /* compressionsPerCycle/breathsPerCycle: the 30:2 ratio (AHA 2025 BLS, no
      advanced airway). breathGapMs is not itself a cited number — it is how
      far apart the metronome spaces the two breath tones inside that pause,
@@ -490,25 +605,25 @@ var S = { theme:'dark', kg:null, ageY:null, phase:'idle', codeStart:null, cycleS
           resetArm:false, roscAt:null, rcOpen:false, rcOrg:false, showCustom:false,
           rhythm:null, breaths:0, lastBeatAt:null, pulseFrom:null,
           respSpont:false, ventMuted:false, lastSpokenMin:0,
-          rcOpenAt:null, rcAlertSounded:false };
+          rcOpenAt:null, rcAlertSounded:false,
+          /* case shell (SHELL.md) UI state — in-memory only, no new persisted
+             keys. teleAt is the case-clock string shown on the confirmation
+             row; wOpen is the user's explicit open/close of the weight form
+             (null = follow the responsive default); metMuted mutes the shell's
+             case audio (compression + breath tones) without touching timers. */
+          teleAt:null, othersOpen:false, wOpen:null, wConfirmed:false, metMuted:false,
+          toolMenuOpen:false, moreMenuOpen:false, tlOpen:false, toast:false };
 
 var $ = function(id){ return document.getElementById(id); };
 function fmt(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
 function clockNow(){ return S.codeStart ? fmt((Date.now()-S.codeStart)/1000) : '0:00'; }
-/* Heads-up summary — what has actually happened in this code so far, so the
-   sticky header answers "what have we done" without scrolling down to the
-   event log. Only lists things that have happened; empty until the first one. */
-function paintDoneSum(){
-  var parts=[], el=$('donesum');
-  if(S.shocks) parts.push(S.shocks+' shock'+(S.shocks===1?'':'s'));
-  if(S.epiN) parts.push('epi ×'+S.epiN);
-  if(S.amioN) parts.push('amio ×'+S.amioN);
-  if(S.roles) parts.push('roles ✓');
-  if(S.airway) parts.push('airway ✓');
-  if(S.roscAt) parts.push('ROSC '+S.roscAt);
-  if(parts.length){ el.style.display=''; el.textContent=parts.join(' · '); }
-  else { el.style.display='none'; }
-}
+/* Timeline category colors (SHELL.md layer 8) — the dot next to each event.
+   Semantic, matching the dock slots: amber intervention, purple drug, blue
+   assessment; red for phase changes, green/teal for airway + ROSC, gray for
+   everything operational. Plain hex (not var()) because the dot is painted
+   into generated HTML. */
+var EV = { red:'#E5484D', amber:'#F0B429', purple:'#9B7BD4', blue:'#4C8DDA',
+           green:'#3DA35D', teal:'#2FA372', gray:'#8FA0B5' };
 /* This tool's own clock (above) is what every dose/shock/rhythm decision on
    this screen runs from — never replaced. This is only a second, smaller
    readout: how long the whole case has been running, wherever it started. */
@@ -613,9 +728,11 @@ var SS = {
   markCaseStarted:function(){ if(SS.getCaseStartMs()===null) SS.set('lrh-case-startms', String(Date.now())); }
 };
 
-/* Every logged event goes to BOTH the in-tool event-log accordion (in-memory
-   S.events) and the shared manual-wide timeline (lrh-case-log, PHI-guarded). */
-function log(label){ S.events.unshift({ t: clockNow(), label: label }); SS.addLog(label); }
+/* Every logged event goes to BOTH the in-tool case timeline (in-memory
+   S.events, rendered by the shell's timeline sheet/panel) and the shared
+   manual-wide timeline (lrh-case-log, PHI-guarded). c is the category color
+   dot (EV.*); gray when unstated. */
+function log(label, c){ S.events.unshift({ t: clockNow(), label: label, c: c||EV.gray }); SS.addLog(label); }
 
 function kg(){ var k=S.kg; return (k>0 && k<300) ? k : null; }
 function autoPeds(){ var k=kg(); return (k!==null && k<SITE.trigger.maxKg) || (S.ageY!==null && S.ageY<=SITE.trigger.maxAgeYrs); }
@@ -737,7 +854,7 @@ var MET = (function(){
   }
   function tick(){
     if(rcPausing()) return; /* silent, but the 30:2 count is untouched */
-    AUDIO.tone(880, 60, 0.15);
+    if(!S.metMuted) AUDIO.tone(880, 60, 0.15); /* shell MUTE: tone off, cadence untouched */
     if(S.airway) return; /* continuous mode: never counts, never pauses for a breath */
     count++;
     if(count>=SITE.cpr.compressionsPerCycle){ count=0; breathPause(); }
@@ -756,7 +873,10 @@ var MET = (function(){
       gen++; clearPauseTimers(); count=0;
       S.met=false;
     },
-    running:function(){ return !!timer || pauseTimers.length>0; }
+    running:function(){ return !!timer || pauseTimers.length>0; },
+    /* True during the two-breath pause of a 30:2 cycle — the shell's beating
+       dot holds still and the status line reads "2 breaths" (SHELL.md l.3). */
+    inBreath:function(){ return !timer && pauseTimers.length>0; }
   };
 })();
 
@@ -908,16 +1028,9 @@ var ACC = [
      '<div><b>Post-arrest:</b> keep systolic/mean BP above the 10th percentile for age.</div>'+
      '<div><b>No '+L('pediatric')+' intra-arrest termination-of-resuscitation checklist exists</b> — see Codes card 13 for the broader '+L('pediatric')+'-death framework.</div>'+
      '</div>';
- }},
- {id:'log', title:'EVENT LOG', body:function(){
-   if(!S.events.length) return '<div style="font-size:13.5px;color:var(--ink2);padding:8px 0">Nothing logged yet.</div>';
-   var h='';
-   for(var i=0;i<S.events.length;i++){
-     h+='<div class="evrow"><span class="mono" style="font-weight:700;color:var(--accent);flex:none">'+S.events[i].t+
-        '</span><span style="line-height:1.4">'+S.events[i].label+'</span></div>';
-   }
-   return h;
  }}
+ /* The old EVENT LOG accordion is retired — the case shell's timeline
+    (layer 8, #shelltl) is the one view of S.events now. */
 ];
 
 function renderAccordions(d){
@@ -926,8 +1039,7 @@ function renderAccordions(d){
     var a=ACC[i];
     if(a.peds && !isPeds()) continue;   /* peds-only reference hidden in adult mode */
     var open=(S.open===a.id);
-    var count = (a.id==='log' && S.events.length) ? ' <span style="font-weight:600;color:var(--ink2);letter-spacing:0">· '+S.events.length+'</span>' : '';
-    h+='<div class="acc"><button class="acch" type="button" data-acc="'+a.id+'">'+a.title+count+
+    h+='<div class="acc"><button class="acch" type="button" data-acc="'+a.id+'">'+a.title+
        '<span style="color:var(--ink2)">'+(open?'−':'+')+'</span></button>'+
        (open ? '<div class="accb">'+a.body(d)+'</div>' : '')+'</div>';
   }
@@ -948,27 +1060,119 @@ function planLabel(){
   return 'CODE BLUE · CHECK A PULSE';
 }
 
+/* Repaint an innerHTML target only when its content actually changed — the
+   200 ms paint loop must not reset scroll position or churn the DOM. */
+function setHTML(el, h){ if(el._h!==h){ el._h=h; el.innerHTML=h; } }
+
+/* ---- DOSING — FACE UP (SHELL.md layer 5.3/5.4) ----------------------------
+   Three primary rows + the secondary rows behind OTHER MEDICATIONS. Every
+   number renders from SITE config / doses(); pediatric mode with no weight
+   renders "set weight", never a stale or default dose. The cited reference
+   for each value stays in the accordions below. */
+function doseRow(nm, rl, vl, unset){
+  return '<div class="shelldose"><div style="min-width:0"><div class="nm">'+nm+'</div><div class="rl">'+rl+
+         '</div></div><div class="vl'+(unset?' unset':'')+'">'+vl+'</div></div>';
+}
+function doseRowsHTML(d){
+  var P=SITE.peds, Ja=SITE.defib.adultJ;
+  if(isPeds()){
+    var known=!!d.pedsKnown;
+    return doseRow('DEFIBRILLATION', P.defibPerKg1+' J/kg first, then '+P.defibPerKgN+' J/kg — capped at the adult max',
+                   known ? d.e1+' J, then '+d.eN+' J' : 'set weight', !known)
+         + doseRow(Lu('epinephrine'), P.epiPerKg+' mg/kg ('+P.epiConc+' mg/mL) · every '+SITE.epi.intervalMin+' min',
+                   known ? d.epiMg+' mg = '+d.epiMl+' mL' : 'set weight', !known)
+         + doseRow(Lu('amiodarone'), P.amioPerKgDose1+' mg/kg, max '+P.amioMaxMgDose+' mg/dose',
+                   known ? d.amioMg+' mg' : 'set weight', !known);
+  }
+  return doseRow('DEFIBRILLATION', SITE.defib.mfrShort+' biphasic — per device label', Ja.join(' → ')+' J', false)
+       + doseRow(Lu('epinephrine'), 'every '+SITE.epi.intervalMin+' min', SITE.epi.adultMg+' mg IV/IO', false)
+       + doseRow(Lu('amiodarone'), 'refractory VF/pVT — after the 3rd shock', SITE.amio.adultDose1+' mg → '+SITE.amio.adultDose2+' mg', false);
+}
+function otherRowsHTML(d){
+  var P=SITE.peds;
+  if(isPeds()){
+    var known=!!d.pedsKnown;
+    return doseRow(Lu('lidocaine'), 'alternative — '+P.lidoPerKg1+' mg/kg, repeat '+P.lidoPerKg2+' mg/kg',
+                   known ? d.lidoMg+' mg, then '+d.lido2Mg+' mg' : 'set weight', !known)
+         + doseRow(Lu('epinephrine')+' VIA ETT', P.epiEttPerKg+' mg/kg — 2nd-line route only',
+                   known ? d.epiEttMg+' mg' : 'set weight', !known);
+  }
+  return doseRow(Lu('lidocaine'), 'alternative antiarrhythmic', '1–1.5 mg/kg, then 0.5–0.75 mg/kg', false);
+}
+
 function paint(){
   var d=doses(), running=(S.phase==='cpr');
   applyAccent();
-
-  $('clock').textContent = clockNow();
-  $('rundot').style.display = (running || S.phase==='resp') ? '' : 'none';
   paintCaseClock();
   maybeSpeakElapsed();
-  paintDoneSum();
-  $('statusword').textContent = S.phase==='idle' ? 'READY'
-    : S.phase==='rosc' ? 'ROSC'
-    : S.phase==='resp' ? 'RESCUE BREATHING' : 'CODE RUNNING';
   $('plabel').textContent = planLabel();
-  $('resetbtn').textContent = S.resetArm ? 'SURE?' : 'RESET';
-  $('resetbtn').style.background = S.resetArm ? 'var(--red)' : 'var(--card)';
-  $('resetbtn').style.color = S.resetArm ? '#fff' : 'var(--ink2)';
-  $('resetbtn').style.borderColor = S.resetArm ? 'var(--red)' : 'var(--line)';
 
-  var k=kg();
+  /* ---- CASE SHELL chrome (SHELL.md) ---- */
+  var caseOn = S.phase!=='idle';
+  $('statusword').style.display = caseOn ? 'none' : '';
+  $('casepill').style.display = caseOn ? '' : 'none';
+  if(caseOn){
+    $('pillclock').textContent = clockNow();
+    $('pilltag').textContent = S.phase==='cpr' ? 'CODE' : S.phase==='resp' ? 'RESP'
+                             : S.phase==='rosc' ? 'ROSC' : 'CEASED';
+  }
+  $('shellstrip').style.display = running ? 'flex' : 'none';
+  $('shelldock').style.display = running ? 'flex' : 'none';
+  document.body.classList.toggle('dockon', running);
+  $('toolmenu').style.display = S.toolMenuOpen ? '' : 'none';
+  $('moremenu').style.display = S.moreMenuOpen ? '' : 'none';
+  $('shelltoast').style.display = S.toast ? 'flex' : 'none';
+
+  /* Reset — one armed state, two entry points (⋯ menu row on a phone, the
+     inline red button ≥768px). Both are the same two-tap SURE? pattern. */
+  $('resetbtn').textContent = S.resetArm ? 'SURE? — tap again to clear' : 'Reset for next case';
+  $('resetwide').textContent = S.resetArm ? 'SURE?' : 'RESET';
+  $('resetwide').style.background = S.resetArm ? 'var(--red)' : '';
+  $('resetwide').style.color = S.resetArm ? '#fff' : '';
+
+  /* Weight strip (layer 4): collapsed row ↔ the input form. On a phone the
+     default is collapsed; ≥768px it stays open until a weight is set. The
+     user's own toggle (S.wOpen) always wins over the responsive default. */
+  var k=kg(), wide=window.matchMedia('(min-width:768px)').matches;
+  $('wlabel').textContent = k!==null ? k+' kg' : 'not set';
+  $('wlabel').className = 'v '+(k!==null?'set':'unset');
+  /* ≥768px the form stays open until CONFIRMED (DONE ✓ / ESTIMATE, or a weight
+     that was already set when the page opened) — typing alone must not snatch
+     the form away mid-entry. */
+  var wOpen = S.wOpen!==null ? S.wOpen : (wide && !S.wConfirmed);
+  $('wform').style.display = wOpen ? 'flex' : 'none';
+  $('wmark').textContent = wOpen ? '▲' : (wide ? '✎ tap to change' : '▼');
   $('wnote').textContent = k!==null ? (k+' kg · '+(isPeds()?L('pediatric'):'adult'))
                          : (autoPeds() ? L('pediatric')+' by age — enter kg' : 'enter weight');
+
+  /* Tele-ED (layer 5.2): idempotent — the button collapses to a quiet
+     confirmation row once tapped, and never asks twice. */
+  $('telebtn').style.display = S.teleAt===null ? '' : 'none';
+  $('teledone').style.display = S.teleAt===null ? 'none' : '';
+  if(S.teleAt!==null) $('teleat').textContent = S.teleAt;
+
+  /* Dosing — face up (layer 5.3/5.4), while the case is idle or running CPR. */
+  var doseOn = (S.phase==='idle' || running);
+  $('dosingblock').style.display = doseOn ? '' : 'none';
+  if(doseOn){
+    setHTML($('doserows'), doseRowsHTML(d));
+    var othersOpen = wide || S.othersOpen;      /* face up ≥768px; one tap on a phone */
+    $('otherstoggle').style.display = wide ? 'none' : 'flex';
+    $('othersmark').textContent = S.othersOpen ? '▲' : '▼';
+    $('otherrows').style.display = othersOpen ? 'grid' : 'none';
+    if(othersOpen) setHTML($('otherrows'), otherRowsHTML(d));
+  }
+
+  /* Timeline (layer 8). */
+  $('shelltl').style.display = S.tlOpen ? 'flex' : 'none';
+  if(S.tlOpen){
+    var th='';
+    if(!S.events.length) th='<div style="font-size:13.5px;color:var(--ink2);padding:10px 0">Nothing logged yet.</div>';
+    else for(var ti=0;ti<S.events.length;ti++){ var ev=S.events[ti];
+      th+='<div class="shelltlrow"><span class="tt">'+ev.t+'</span><span class="cdot" style="background:'+(ev.c||EV.gray)+
+          '"></span><span class="lbl">'+ev.label+'</span></div>'; }
+    setHTML($('tlrows'), th);
+  }
 
   /* NRP off-ramp (see #nrpbanner markup + SITE.nrp). Dismissal is per-case and
      manual-wide (lrh-case-nrpdismiss) — RESET / stale-case sweep restore it. */
@@ -1014,7 +1218,8 @@ function paint(){
     $('cycleclock').style.color = due ? 'var(--amber)' : 'var(--ink)';
     $('cyclecard').style.border = due ? '2px solid var(--amber)' : '1px solid var(--line)';
     $('shockn').textContent = S.shocks;
-    $('modelabel').textContent = (S.airway ? 'continuous · breath q6s · ' : '30:2 · ') + SITE.cpr.bpm + '/min';
+    $('modelabel').textContent = (S.airway ? 'continuous · breath q'+ventPlan().sec+'s · '
+      : SITE.cpr.compressionsPerCycle+':'+SITE.cpr.breathsPerCycle+' · ') + SITE.cpr.bpm + '/min';
     $('duebtn').style.display = due ? '' : 'none';
     $('shockbtn').style.display = due ? 'none' : '';
 
@@ -1033,8 +1238,58 @@ function paint(){
     $('amiosub').textContent = S.amioN>=SITE.peds.amioMaxDoses ? 'max 3 doses reached' : ('dose '+(S.amioN+1)+' of 3');
 
     $('rolesstep').style.display = S.roles ? 'none' : '';
-    $('airwaystep').style.display = (S.roles && !S.airway) ? 'flex' : 'none';
     $('customrow').style.display = S.showCustom ? 'flex' : 'none';
+
+    /* ---- shell strip chips + dock (layers 2/6): timer and action are one
+       target. The rhythm cadence is the cycle clock above; the epi cadence is
+       GIVE NOW before the first dose, then the SITE.epi.suggestSec countdown,
+       then DUE NOW red. The same values paint the phone chips, the ≥768px
+       strip buttons and the dock labels — one home per width, never two
+       behaviors. ---- */
+    var rcTxt = due ? 'DUE NOW' : fmt(remain);
+    $('chiprcclock').textContent = rcTxt;
+    $('chiprc').classList.toggle('due', due);
+    $('striprcclock').textContent = rcTxt;
+    $('striprcclock').classList.toggle('due', due);
+    var epiTxt = S.epiN===0 ? 'GIVE NOW' : (epiIn>0 ? fmt(epiIn) : 'DUE NOW');
+    var epiDue = S.epiN>0 && epiIn<=0;
+    $('chipepiclock').textContent = epiTxt;
+    $('chipepi').classList.toggle('due', epiDue);
+    $('stripepiclock').textContent = epiTxt;
+    $('stripepiclock').classList.toggle('due', epiDue);
+    var shockTxt = j===null ? 'SHOCK' : 'SHOCK '+j+' J';
+    $('dockshocklabel').textContent = shockTxt;
+    $('stripshocklabel').textContent = shockTxt;
+
+    /* LOG ticker — newest event, one line, tap for the timeline. */
+    var hasEv = S.events.length>0;
+    $('ticker').style.display = hasEv ? 'flex' : 'none';
+    if(hasEv) $('tickertext').textContent = S.events[0].t+' · '+String(S.events[0].label).replace(/<[^>]*>/g,'');
+
+    /* ---- metronome row (layer 3): the beating dot IS the cadence readout.
+       Gray + still when muted or stopped; held mid-beat for the check pause
+       (with its visible countdown) and for the two-breath phase of 30:2. ---- */
+    var metPaused = rcPausing();
+    var inBreath = MET.inBreath();
+    var metOn = MET.running();
+    var dot = $('metdot');
+    dot.classList.toggle('off', S.metMuted || !metOn);
+    dot.classList.toggle('hold', metPaused || inBreath);
+    dot.style.animationDuration = (60/SITE.cpr.bpm).toFixed(3)+'s';
+    $('metmode').textContent = (S.airway ? 'CONT' : SITE.cpr.compressionsPerCycle+':'+SITE.cpr.breathsPerCycle)
+                               +' · '+SITE.cpr.bpm;
+    var ms = $('metstatus');
+    if(!metOn){ ms.textContent='off'; ms.style.color='var(--ink2)'; }
+    else if(metPaused){
+      ms.textContent='paused '+Math.max(0,Math.ceil((SITE.cpr.rcAlertMs-(Date.now()-S.rcOpenAt))/1000))+' s';
+      ms.style.color='var(--amber)';
+    }
+    else if(S.metMuted){ ms.textContent='muted — timing continues'; ms.style.color='var(--ink2)'; }
+    else if(inBreath){ ms.textContent=SITE.cpr.breathsPerCycle+' breaths'; ms.style.color='var(--green)'; }
+    else { ms.textContent='compress'; ms.style.color='var(--green)'; }
+    $('advchip').textContent = S.airway ? 'ADV AIRWAY ✓' : 'ADV AIRWAY';
+    $('advchip').classList.toggle('on', S.airway);
+    $('mutechip').textContent = S.metMuted ? 'SOUND ON' : 'MUTE';
 
     /* Code blue front door: unknown until seen, then the named algorithm. */
     $('unknownbar').style.display = S.rhythm===null ? '' : 'none';
@@ -1147,7 +1402,9 @@ function startCode(){
   var n=Date.now(); S.codeStart=n; S.cycleStart=n; S.phase='cpr'; S.rhythm=null;
   VENT.stop(); MET.start();
   SS.markCaseStarted();
-  log('Code blue called — no pulse, CPR started, defibrillator attached, rhythm not yet known');
+  log('Code blue called — no pulse, CPR started, defibrillator attached, rhythm not yet known', EV.red);
+  /* Seed the timeline with a pre-case tele-ED activation (SHELL.md). */
+  if(S.teleAt!==null) log('Tele-ED already on the line', EV.blue);
   paint();
 }
 /* The two crossings between the algorithms. Both keep the code clock and the
@@ -1160,7 +1417,7 @@ function toResp(why){
   S.phase='resp'; S.respSpont=false; S.pulseFrom=n; S.breaths=0; S.lastBeatAt=null;
   S.rcOpen=false; S.rcOrg=false; S.showCustom=false;
   var v=ventPlan(); VENT.start(v.ms);
-  log(why+' — rescue breathing at '+v.rate);
+  log(why+' — rescue breathing at '+v.rate, EV.blue);
   paint();
 }
 function toCPR(why){
@@ -1170,7 +1427,7 @@ function toCPR(why){
   S.phase='cpr'; S.cycleStart=n; S.rcOpen=false; S.rcOrg=false; S.showCustom=false;
   SS.setClock('rosc', null);   /* back in arrest — no longer post-ROSC */
   MET.start();
-  log(why); paint();
+  log(why, EV.red); paint();
 }
 function doReset(){
   MET.stop(); VENT.stop();
@@ -1185,7 +1442,11 @@ function doReset(){
         resetArm:false, roscAt:null, rcOpen:false, rcOrg:false, showCustom:false,
         rhythm:null, breaths:0, lastBeatAt:null, pulseFrom:null,
         respSpont:false, ventMuted:false, lastSpokenMin:0,
-        rcOpenAt:null, rcAlertSounded:false };
+        rcOpenAt:null, rcAlertSounded:false,
+        teleAt:null, othersOpen:false, wOpen:null, wConfirmed:false, metMuted:false,
+        toolMenuOpen:false, moreMenuOpen:false, tlOpen:false,
+        /* the amber cleared toast (SHELL.md layer 9) — dismissed by OK */
+        toast:true };
   $('wIn').value=''; $('aIn').value=''; $('customin').value=''; $('customin2').value='';
   SS.touchActive();
   paint();
@@ -1197,12 +1458,76 @@ function wire(){
      Codes hand-off (?from=codes). */
   (function(){
     var m=/[?&]from=([a-z-]+)/.exec(location.search||''); var f=m&&m[1];
-    var b=$('backlink'); if(!b||!f||f==='home'||f==='tool') return;
-    b.href='../'+f+'/?from=tool'; b.textContent='‹ '+f.toUpperCase();
+    if(!f||f==='home'||f==='tool') return;
+    var b=$('backlink'), bw=$('backlinkwide');
+    if(b) b.href='../'+f+'/?from=tool';
+    if(bw){ bw.href='../'+f+'/?from=tool'; bw.textContent=f.toUpperCase()+' ›'; }
   })();
-  $('resetbtn').addEventListener('click', function(){
+  /* Two-tap SURE? reset, shared by both entry points (⋯ menu row on a phone,
+     inline red button ≥768px). The menu stays open while armed so the second
+     tap lands on the same control. */
+  function armReset(){
     if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){ S.resetArm=false; paint(); },2500); return; }
     doReset();
+  }
+  $('resetbtn').addEventListener('click', armReset);
+  $('resetwide').addEventListener('click', armReset);
+  $('toastok').addEventListener('click', function(){ S.toast=false; paint(); });
+
+  /* ---- shell bar: tool switcher, ⋯ overflow, pill, timeline ---- */
+  $('toolbtn').addEventListener('click', function(e){
+    e.stopPropagation();
+    S.toolMenuOpen=!S.toolMenuOpen; S.moreMenuOpen=false; paint();
+  });
+  $('menubtn').addEventListener('click', function(e){
+    e.stopPropagation();
+    S.moreMenuOpen=!S.moreMenuOpen; S.toolMenuOpen=false; paint();
+  });
+  function openTL(){ S.tlOpen=true; S.moreMenuOpen=false; S.toolMenuOpen=false; paint(); }
+  $('casepill').addEventListener('click', openTL);
+  $('tlbtn').addEventListener('click', openTL);
+  $('tlbtnwide').addEventListener('click', function(){ S.tlOpen=!S.tlOpen; paint(); });
+  $('ticker').addEventListener('click', openTL);
+  $('tlclose').addEventListener('click', function(){ S.tlOpen=false; paint(); });
+  /* Tap anywhere else closes an open dropdown (never the timeline — that has
+     its own ✕). The reset row keeps the menu open while armed, handled above
+     by stopPropagation on the menu itself. */
+  document.addEventListener('click', function(e){
+    if(!(S.toolMenuOpen||S.moreMenuOpen)) return;
+    if(e.target.closest && (e.target.closest('.shellmenu')||e.target.closest('#toolbtn')||e.target.closest('#menubtn'))) return;
+    S.toolMenuOpen=false; S.moreMenuOpen=false; paint();
+  });
+
+  /* ---- weight strip toggle (layer 4) ---- */
+  $('wtoggle').addEventListener('click', function(){
+    var visible = $('wform').style.display!=='none';
+    S.wOpen = !visible; paint();
+    if(S.wOpen) setTimeout(function(){ try{ $('wIn').focus(); }catch(e){} },30);
+  });
+  $('wdone').addEventListener('click', function(){ S.wConfirmed=true; S.wOpen=null; paint(); });
+
+  /* ---- tele-ED (layer 5.2): idempotent, logs the request time ---- */
+  $('telebtn').addEventListener('click', function(){
+    if(S.teleAt!==null) return;
+    S.teleAt = clockNow();
+    log('Tele-ED activated', EV.blue);
+    paint();
+  });
+
+  /* ---- other medications expand (layer 5.4, phone) ---- */
+  $('otherstoggle').addEventListener('click', function(){ S.othersOpen=!S.othersOpen; paint(); });
+
+  /* ---- metronome chips (layer 3) ---- */
+  $('advchip').addEventListener('click', function(){
+    if(S.airway) return; /* one-way, same as the card it replaced */
+    S.airway=true;
+    log('Advanced airway placed — continuous compressions + asynchronous breaths', EV.teal);
+    paint();
+  });
+  $('mutechip').addEventListener('click', function(){
+    S.metMuted=!S.metMuted; S.ventMuted=S.metMuted; /* case-wide, per SHELL.md */
+    log(S.metMuted ? 'Audio muted — cadence timers still running' : 'Audio unmuted');
+    paint();
   });
   /* Weight-bar error line: lives outside paint() (which runs on a 200 ms
      interval and would erase it), cleared on the next weight/age input. */
@@ -1287,6 +1612,7 @@ function wire(){
     clearWErr();
     $('wIn').value=String(est);
     commitKg(est,'estimated');
+    S.wConfirmed=true; S.wOpen=null;   /* ESTIMATE confirms — the strip collapses */
     log('Weight ESTIMATED from age — '+est+' kg (not measured)');
   });
   $('dismissnrp').addEventListener('click', function(){
@@ -1308,36 +1634,43 @@ function wire(){
   });
   $('startbtn').addEventListener('click', startCode);
 
-  $('shockbtn').addEventListener('click', function(){
+  /* One action, several homes: the cycle card's buttons, the phone dock, the
+     ≥768px strip buttons and the cadence chips all run the SAME handler —
+     the shell only moves where the target sits, never what it does. */
+  function doShock(){
     ensureStarted();
     var j=shockJ();
     S.shocks++; S.cycleStart=Date.now(); S.rcOpen=false; S.rcOrg=false;
-    log('SHOCK '+(j===null?'(energy not computed — no weight)':j+' J')+' delivered (#'+S.shocks+') — compressions resumed');
+    log('SHOCK '+(j===null?'(energy not computed — no weight)':j+' J')+' delivered (#'+S.shocks+') — compressions resumed', EV.amber);
     paint();
-  });
-  $('epibtn').addEventListener('click', function(){
+  }
+  function doEpi(){
     ensureStarted(); var d=doses();
     S.epiN++; S.lastEpiAt=Date.now();
-    log('EPI '+(d.pedsKnown?d.epiMg+' mg':'(dose not computed — no weight)')+' IV/IO (dose #'+S.epiN+')');
+    log('EPI '+(d.pedsKnown?d.epiMg+' mg':'(dose not computed — no weight)')+' IV/IO (dose #'+S.epiN+')', EV.purple);
     paint();
-  });
+  }
+  $('shockbtn').addEventListener('click', doShock);
+  $('dockshock').addEventListener('click', doShock);
+  $('stripshock').addEventListener('click', doShock);
+  $('epibtn').addEventListener('click', doEpi);
+  $('dockepi').addEventListener('click', doEpi);
+  $('stripepi').addEventListener('click', doEpi);
+  $('chipepi').addEventListener('click', doEpi);
   $('amiobtn').addEventListener('click', function(){
     ensureStarted(); var d=doses();
     S.amioN++;
     log('AMIODARONE '+(d.pedsKnown?d.amioMg+' mg':'(dose not computed — no weight)')+' IV/IO (dose #'+S.amioN+
-        (S.amioN>SITE.peds.amioMaxDoses?' — beyond max 3':'')+')');
+        (S.amioN>SITE.peds.amioMaxDoses?' — beyond max 3':'')+')', EV.purple);
     paint();
   });
   $('rolesbtn').addEventListener('click', function(){
     S.roles=true; log('Roles assigned — compressor, airway, meds, defib, recorder'); paint();
   });
-  $('airwaybtn').addEventListener('click', function(){
-    S.airway=true; log('Advanced airway placed — continuous compressions + breath q6s'); paint();
-  });
   $('roscbtn').addEventListener('click', function(){
     S.phase='rosc'; S.roscAt=clockNow(); S.roscWall=wallTime(); S.rcOpen=false; S.rcOrg=false; MET.stop();
     SS.setClock('rosc', Date.now());
-    log('ROSC — pulse returned'); paint();
+    log('ROSC — pulse returned', EV.green); paint();
   });
 
   /* Ceasing is two taps, like RESET: pronouncing is not something a stray touch
@@ -1352,7 +1685,7 @@ function wire(){
     S.deathWall = wallTime();
     $('ceaseconfirm').style.display = 'none';
     try{ MET.stop(); }catch(e){}
-    log('<b>Resuscitation ceased</b> — time of death ' + S.deathWall + ' (' + S.deathAt + ' of resuscitation)');
+    log('<b>Resuscitation ceased</b> — time of death ' + S.deathWall + ' (' + S.deathAt + ' of resuscitation)', EV.red);
     paint();
   });
   $('resumearrest').addEventListener('click', function(){
@@ -1421,25 +1754,37 @@ function wire(){
   $('customlog2').addEventListener('click', function(){ submitCustom('customin2','customwarn2'); });
   $('customin2').addEventListener('keydown', function(e){ if(e.key==='Enter') submitCustom('customin2','customwarn2'); });
 
-  $('rcbtn').addEventListener('click', function(){ S.rcOpen=true; S.rcOrg=false; S.rcOpenAt=Date.now(); S.rcAlertSounded=false; paint(); });
-  $('duebtn').addEventListener('click', function(){ S.rcOpen=true; S.rcOrg=false; S.rcOpenAt=Date.now(); S.rcAlertSounded=false; paint(); });
-  $('firstrcbtn').addEventListener('click', function(){ S.rcOpen=true; S.rcOrg=false; S.rcOpenAt=Date.now(); S.rcAlertSounded=false; paint(); });
-  $('rhythmchange').addEventListener('click', function(){ S.rcOpen=true; S.rcOrg=false; S.rcOpenAt=Date.now(); S.rcAlertSounded=false; paint(); });
+  /* Opening the picker from ANY entry point — cycle-card buttons, the phone
+     cadence chip, the dock's RHYTHM ✓, the ≥768px strip button — also starts
+     the metronome's 10 s check pause (rcPausing() reads rcOpenAt), with its
+     countdown visible in the met status line. SHELL.md layer 7. */
+  function openRC(){ S.rcOpen=true; S.rcOrg=false; S.rcOpenAt=Date.now(); S.rcAlertSounded=false; paint(); }
+  $('rcbtn').addEventListener('click', openRC);
+  $('duebtn').addEventListener('click', openRC);
+  $('firstrcbtn').addEventListener('click', openRC);
+  $('rhythmchange').addEventListener('click', openRC);
+  $('chiprc').addEventListener('click', openRC);
+  $('striprc').addEventListener('click', openRC);
+  $('dockrc').addEventListener('click', openRC);
+  $('rcclose').addEventListener('click', function(){ S.rcOpen=false; S.rcOrg=false; paint(); });
   $('rccancel').addEventListener('click', function(){ S.rcOpen=false; S.rcOrg=false; paint(); });
   $('sheet').addEventListener('click', function(e){ if(e.target===$('sheet')){ S.rcOpen=false; S.rcOrg=false; paint(); } });
   $('rcshock').addEventListener('click', function(){
-    var j=shockJ(); S.rcOpen=false; S.rhythm='shockable';
-    log('Rhythm check: SHOCKABLE (VF/pVT) — charging '+(j===null?'(no weight)':j+' J')); paint();
+    /* Picking a result restarts the rhythm cadence (SHELL.md) — the check
+       happened now, so the next one is a full cycle away. A shock delivered
+       after this re-anchors the cycle again via doShock. */
+    var j=shockJ(); S.rcOpen=false; S.cycleStart=Date.now(); S.rhythm='shockable';
+    log('Rhythm check: SHOCKABLE (VF/pVT) — charging '+(j===null?'(no weight)':j+' J'), EV.blue); paint();
   });
   $('rcnon').addEventListener('click', function(){
     S.rcOpen=false; S.cycleStart=Date.now(); S.rhythm='nonshockable';
-    log('Rhythm check: Non-shockable (PEA/asystole) — CPR resumed, epi ASAP'); paint();
+    log('Rhythm check: Non-shockable (PEA/asystole) — CPR resumed, epi ASAP', EV.blue); paint();
   });
   $('rcorg').addEventListener('click', function(){ S.rcOrg=true; paint(); });
   $('rcpulse').addEventListener('click', function(){
     S.phase='rosc'; S.roscAt=clockNow(); S.roscWall=wallTime(); S.rcOpen=false; S.rcOrg=false; MET.stop(); VENT.stop();
     SS.setClock('rosc', Date.now());
-    log('Rhythm check: organized rhythm WITH pulse — ROSC'); paint();
+    log('Rhythm check: organized rhythm WITH pulse — ROSC', EV.green); paint();
   });
   $('rcpulsenobreath').addEventListener('click', function(){
     S.roscAt=clockNow();
@@ -1447,7 +1792,7 @@ function wire(){
   });
   $('rcnopulse').addEventListener('click', function(){
     S.rcOpen=false; S.rcOrg=false; S.cycleStart=Date.now(); S.rhythm='nonshockable';
-    log('Rhythm check: organized rhythm, NO pulse — PEA, CPR resumed'); paint();
+    log('Rhythm check: organized rhythm, NO pulse — PEA, CPR resumed', EV.blue); paint();
   });
 
   document.addEventListener('click', function(e){
@@ -1460,7 +1805,7 @@ function wire(){
 /* Join the shared case: pick up a weight/age set in another tool, and keep the
    manual-wide "last active" heartbeat fresh on load and on every tap (WS2.5). */
 SS.loadWeight();
-if(S.kg!==null) $('wIn').value = String(S.kg);
+if(S.kg!==null){ $('wIn').value = String(S.kg); S.wConfirmed=true; }
 if(S.ageY!==null) $('aIn').value = String(S.ageY);
 /* Cross-tab / cross-tool re-sync (weight-routing audit): pick up a weight or
    age changed in another tool/tab instead of running the whole code off the

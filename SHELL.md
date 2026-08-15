@@ -25,8 +25,8 @@ block** — the shell renders config, it never carries numbers of its own.
 
 A layer a tool doesn't need is absent entirely, never left empty.
 
-### 1. App bar — one row, 56px (60px ≥760px), never wraps
-- **Left:** back control (`‹` phone / `MANUAL ›` breadcrumb ≥760px) +
+### 1. App bar — one row, 56px (60px ≥768px), never wraps
+- **Left:** back control (`‹` phone / `MANUAL ›` breadcrumb ≥768px) +
   **tool name as dropdown** — tap opens the tool switcher (the six live
   engines + manual home; each row = 9px color square in that tool's accent,
   name, count/tag). Replaces separate MANUAL/BACK buttons.
@@ -35,7 +35,7 @@ A layer a tool doesn't need is absent entirely, never left empty.
   `NRP` / `APNEA` / per tool). Tapping it opens the timeline.
 - **Right, phone:** single `⋯` overflow menu → Case timeline, Feedback,
   divider, Reset for next case (red text).
-- **Right, ≥760px:** the same items inline: TIMELINE, FEEDBACK, RESET
+- **Right, ≥768px:** the same items inline: TIMELINE, FEEDBACK, RESET
   (red border).
 - No Light/theme item anywhere — the manual is dark-only per PR #160
   (deliberate deviation from the prototype, which predates that decision).
@@ -45,7 +45,7 @@ A layer a tool doesn't need is absent entirely, never left empty.
 - **Phone:** pill chips under the bar, one per cadence timer; each chip IS
   its action (`RHYTHM CHECK 1:44` · `EPI 2:41`). At 0:00 the chip turns
   red and reads `DUE NOW` until acted on.
-- **≥760px:** the three dock buttons (layer 6) render up here instead,
+- **≥768px:** the three dock buttons (layer 6) render up here instead,
   dock-styled (54px, tinted bg + 1.5px colored border), countdown embedded
   as a second mono line (red when due). Timer and action are one target.
   Metronome group right-aligned; the strip may flex-wrap; labels never
@@ -67,7 +67,7 @@ A layer a tool doesn't need is absent entirely, never left empty.
 - **Phone:** collapsed 44px row `WEIGHT · 16 kg / not set ▼`; tap expands
   kg input + age input + ESTIMATE. `not set` renders caution-amber; a set
   weight renders green.
-- **≥760px:** expanded by default until confirmed (ESTIMATE or DONE ✓),
+- **≥768px:** expanded by default until confirmed (ESTIMATE or DONE ✓),
   then collapses to a slim row `WEIGHT 16 kg ✎ tap to change`.
 - Every dose recomputes live from this value; unset weight renders
   `set weight` in place of a number — never a stale or default dose.
@@ -83,7 +83,7 @@ Order inside the scroll area:
    (small), computed value (mono, green, right-aligned). Never behind an
    accordion.
 4. **OTHER MEDICATIONS / OTHER REFERENCE:** secondary doses. One tap to
-   expand on phone; face up ≥760px.
+   expand on phone; face up ≥768px.
 5. Existing tool content (reference accordions, citations, disclaimer)
    below, unchanged.
 
@@ -96,9 +96,9 @@ Order inside the scroll area:
   SAT ✓). The assessment slot (or amber ATTEMPT for RSI) opens the picker.
 - **LOG ticker** rides on top of the dock: one line, newest event +
   `LOG ▲`; tap → full timeline.
-- ≥760px there is no bottom dock — the same three buttons live in layer 2.
+- ≥768px there is no bottom dock — the same three buttons live in layer 2.
 
-### 7. Result picker (bottom sheet phone / centered modal ≥760px)
+### 7. Result picker (bottom sheet phone / centered modal ≥768px)
 - Triggered by the assessment action and by its cadence chip. Dimmed
   scrim, caps title (`AT THE RHYTHM CHECK — WHAT DO YOU SEE?`), 2–4
   full-width options: name (bold white) + one-line consequence. Option
@@ -109,14 +109,14 @@ Order inside the scroll area:
 
 ### 8. Case timeline
 - Every action auto-logs with the case-clock stamp and a category color
-  dot. Bottom sheet on phone; ~320px right side panel ≥760px (tool stays
+  dot. Bottom sheet on phone; ~320px right side panel ≥768px (tool stays
   visible). Footer: `device only · no identifiers · cleared on reset`.
 - Storage per CASE-STATE.md: localStorage where already contracted,
   PHI-free, cleared by RESET and the inactivity auto-clear. The PHI guard
   on log labels is unchanged.
 
 ### 9. Reset
-- RESET lives in the ⋯ menu (phone) / inline red-bordered button (≥760px).
+- RESET lives in the ⋯ menu (phone) / inline red-bordered button (≥768px).
   Confirm stays the existing pattern (two-tap SURE? on the engines).
   One reset clears clock, cadences, weight, log, metronome state, Tele-ED
   state — the manual-wide `lrh-` sweep per CASE-STATE.md — then shows the
