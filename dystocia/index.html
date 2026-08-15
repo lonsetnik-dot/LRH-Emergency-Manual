@@ -295,7 +295,7 @@ var SITE = {
 try{ window.SITE = SITE; }catch(e){}
 
 var S = { theme:'dark', phase:'idle', t0:null, rung:0, doneRungs:{}, saidCall:0,
-          events:[], open:null, resetArm:false, outAt:null, showCustom:false, rounds:1,
+          events:[], open:null, resetArm:false, outAt:null, outMs:null, showCustom:false, rounds:1,
           /* case shell (SHELL.md) UI state — in-memory only, no new persisted
              keys. teleAt is the case-clock string on the confirmation row. */
           teleAt:null, toolMenuOpen:false, moreMenuOpen:false, tlOpen:false, toast:false };
@@ -464,9 +464,14 @@ function paint(){
   if(caseOn){
     /* The pill IS the head-to-body interval — the same continuous clock as
        the big in-content box, never restarted by a re-run of the ladder.
-       Once the baby is out the interval is over, so the pill freezes at the
-       delivery stamp rather than ticking past the number that matters. */
-    $('pillclock').textContent = S.phase==='out' ? (S.outAt||clk()) : clk();
+       Once the baby is out that interval is OVER, logged, and held in the
+       record (#outat, the summary line, the timeline entry) — and the pill
+       starts a NEW count-up from delivery (Lon, 2026-08-15): the postpartum
+       phase has its own clock (PPH watch, newborn transition), while the one
+       case timeline keeps stamping on the original timebase so the two
+       phases stay connected in a single record. */
+    $('pillclock').textContent = (S.phase==='out' && S.outMs)
+      ? fmt((Date.now()-S.outMs)/1000) : clk();
     $('pilltag').textContent = S.phase==='out' ? 'DELIVERED' : 'DYSTOCIA';
   }
   /* The strip only exists ≥768px here (no phone cadence chips — see markup);
@@ -579,7 +584,7 @@ function armReset(){
      cleared toast (SHELL.md layer 9) up until OK. */
   CS.sweep();
   S={ theme:S.theme, phase:'idle', t0:null, rung:0, doneRungs:{}, saidCall:0, events:[], open:null,
-      resetArm:false, outAt:null, showCustom:false, rounds:1,
+      resetArm:false, outAt:null, outMs:null, showCustom:false, rounds:1,
       teleAt:null, toolMenuOpen:false, moreMenuOpen:false, tlOpen:false, toast:true };
   $('customin').value='';
   paint();
@@ -601,7 +606,8 @@ function doRung(){
   }
   paint();
 }
-function doOut(){ S.phase='out'; S.outAt=clk(); log('<b>Baby delivered</b> — head-to-body '+clk(), EV.green); paint(); }
+function doOut(){ S.phase='out'; S.outAt=clk(); S.outMs=Date.now();
+  log('<b>Baby delivered</b> — head-to-body '+clk()+' · postpartum clock started', EV.green); paint(); }
 
 /* Back link: default to the manual hub, but if we were opened from a specific
    tool (?from=<slug>), route back there instead — same pattern as /arrest/. */

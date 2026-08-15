@@ -268,8 +268,19 @@ D.lastResort.forEach((x, i) =>
 /* Handoff. */
 await tap('#outbtn', 300);
 ck('D8. delivering shows the head-to-body interval', /\d+:\d\d/.test(await txt('#outat')), true);
-ck('D8. the pill freezes at the delivery stamp, tagged DELIVERED',
-   (await txt('#pillclock')) === (await txt('#outat')) && /DELIVERED/.test(await txt('#pilltag')), true);
+/* Lon, 2026-08-15: once the baby is out the pill RESTARTS as a postpartum
+   count-up (PPH watch / newborn transition), tagged DELIVERED — while the
+   frozen head-to-body interval stays in the record (#outat + the timeline
+   entry), so the one timeline connects the two phases. The new pill clock
+   must be near zero (< the head-to-body interval this run accrued) and tick. */
+const pillAtOut = toSec(await txt('#pillclock'));
+ck('D8. the pill restarts from delivery, tagged DELIVERED',
+   pillAtOut < toSec(await txt('#outat')) && /DELIVERED/.test(await txt('#pilltag')), true);
+await pg.waitForTimeout(1600);
+ck('D8. the postpartum clock ticks (not frozen)',
+   toSec(await txt('#pillclock')) > pillAtOut, true);
+ck('D8. delivery entry carries the interval AND the new clock, one timeline',
+   /head-to-body \d+:\d\d.*postpartum clock started/i.test(await openTL()), true);
 ck('D8. it sends the baby to neonatal resuscitation',
    await pg.getAttribute('#tonrp', 'href'), '../neonatal/?from=home');
 ck('D8. and warns about postpartum hemorrhage next', /PPH engine/.test(await txt('#outbody')), true);
