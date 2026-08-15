@@ -139,18 +139,12 @@
 </style>
 </head>
 <body data-theme="dark">
-<script>
-/* Shared persisted theme, applied before paint (lrh-pref-theme; outside any
-   RESET sweep — CASE-STATE.md). */
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
-catch(e){ document.body.dataset.theme='dark'; }
-</script>
 
-<div id="betasplash" class="screenonly" style="position:fixed;inset:0;z-index:9999;background:linear-gradient(160deg,#005596,#003e6e);color:#fffefb;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center">
-  <div style="font:800 11px ui-monospace,monospace;letter-spacing:.22em;border:1.5px solid rgba(255,255,255,.6);padding:6px 12px;border-radius:999px">TRAINING ONLY</div>
+<div id="betasplash" class="screenonly" style="position:fixed;inset:0;z-index:9999;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center">
+  <div style="font:800 11px ui-monospace,monospace;letter-spacing:.22em;border:1.5px solid var(--accent);color:var(--accent);padding:6px 12px;border-radius:999px">TRAINING ONLY</div>
   <div style="font-size:25px;font-weight:800;margin:16px 0 8px;line-height:1.2">VEMS Kit</div>
   <div style="font-size:15px;line-height:1.5;max-width:26em;opacity:.92">Printed cards on a table. <b>The patient is a picture.</b> Nothing here is used during live patient care.</div>
-  <button type="button" id="betago" style="margin-top:22px;min-height:52px;padding:0 22px;border:none;border-radius:12px;background:#fffefb;color:#00365e;font:800 14px system-ui,sans-serif;cursor:pointer">I UNDERSTAND — CONTINUE</button>
+  <button type="button" id="betago" style="margin-top:22px;min-height:52px;padding:0 22px;border:none;border-radius:12px;background:var(--accent);color:var(--on-sev);font:800 14px system-ui,sans-serif;cursor:pointer">I UNDERSTAND — CONTINUE</button>
 </div>
 
 <div class="wrap">
@@ -158,7 +152,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <div class="hdr screenonly">
     <a class="ghost" href="../?from=tool" style="text-decoration:none">&#9664; MANUAL</a>
     <span class="plabel">VEMS KIT</span>
-    <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
+    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20VEMS%20Kit" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
   </div>
 
   <div class="t-localize screenonly">
@@ -1272,15 +1266,6 @@ Array.prototype.forEach.call(document.querySelectorAll('[data-print]'), function
     window.print();
   });
 });
-
-var tb=$('lrhThemeBtn');
-if(tb) tb.addEventListener('click', function(){
-  var next = document.body.dataset.theme==='light' ? 'dark' : 'light';
-  document.body.dataset.theme=next;
-  tb.textContent = next==='dark' ? 'LIGHT' : 'DARK';
-  try{ localStorage.setItem('lrh-pref-theme', next); }catch(e){}
-});
-if(tb) tb.textContent = document.body.dataset.theme==='dark' ? 'LIGHT' : 'DARK';
 
 /* Splash. Handlers attach BEFORE the query-param auto-dismiss so a parse
    failure can never trap someone behind it. */

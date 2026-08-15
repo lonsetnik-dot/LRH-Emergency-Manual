@@ -120,18 +120,14 @@
   }
 </style>
 </head>
-<body>
-<script>
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
-catch(e){ document.body.dataset.theme='dark'; }
-</script>
-<div id="betasplash" style="position:fixed; inset:0; z-index:999; background:linear-gradient(135deg,#005596,#003e6e); color:#fffefb; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
-  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:#a9c2dc;">LRH · EMERGENCY DEPARTMENT</div>
+<body data-theme="dark">
+<div id="betasplash" style="position:fixed; inset:0; z-index:999; background:var(--bg); color:var(--ink); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
+  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:var(--ink2);">LRH · EMERGENCY DEPARTMENT</div>
   <div style="font-size:30px; line-height:1.06; letter-spacing:-0.02em; font-weight:700;">Pediatric Emergencies</div>
-  <div style="display:inline-block; padding:6px 14px; border:2px solid #e0b93c; color:#f7d97a; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.16em;">BETA</div>
-  <div style="max-width:460px; font-size:17px; line-height:1.4; color:#dbe4ee;">Not yet ready for clinical use. Shared for feedback and practice only — do not use it to direct the care of a patient.</div>
-  <div style="max-width:460px; font-size:14.5px; line-height:1.35; color:#a9c2dc;">Content is unverified and unapproved. Every situation requires nuance; use your professional judgment and your department's policies. Weight-based doses are calculated live from the weight you enter — double-check every calculated dose yourself before giving it.</div>
-  <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
+  <div style="display:inline-block; padding:6px 14px; border:2px solid var(--accent); color:var(--accent); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.16em;">BETA</div>
+  <div style="max-width:460px; font-size:17px; line-height:1.4; color:var(--ink);">Not yet ready for clinical use. Shared for feedback and practice only — do not use it to direct the care of a patient.</div>
+  <div style="max-width:460px; font-size:14.5px; line-height:1.35; color:var(--ink2);">Content is unverified and unapproved. Every situation requires nuance; use your professional judgment and your department's policies. Weight-based doses are calculated live from the weight you enter — double-check every calculated dose yourself before giving it.</div>
+  <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:var(--accent); color:var(--on-sev); border:2px solid var(--accent); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
 </div>
 <div id="stickytop">
 <div class="hdr">
@@ -140,21 +136,8 @@ catch(e){ document.body.dataset.theme='dark'; }
   <span class="plabel">PEDS</span>
   <button class="ghost" id="summarybtn" type="button">TIMELINE</button>
   <button class="ghost danger" id="resetbtn" type="button">RESET</button>
-  <button class="ghost" id="lrhThemeBtn" type="button">LIGHT</button>
+  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Pediatric%20Emergencies" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
 </div>
-<script>
-(function(){
-  var b=document.getElementById('lrhThemeBtn');
-  if(!b) return;
-  b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
-  b.addEventListener('click', function(){
-    var dark = document.body.dataset.theme!=='light';
-    document.body.dataset.theme = dark ? 'light' : 'dark';
-    b.textContent = dark ? 'DARK' : 'LIGHT';
-    try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
-  });
-})();
-</script>
 <script>
 /* ---- Measure the real sticky-header height into --sticky-h, live ----
    Ported from codes/index.html's identical fix (same review finding: a

@@ -32,7 +32,7 @@
       </div>
       <div id="caseclock" style="display:none"></div>
     </div>
-    <button class="ghost" id="themebtn" type="button">LIGHT</button>
+    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Airway" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
     <button class="ghost" id="resetbtn" type="button">RESET</button>
   </div>
 
@@ -158,7 +158,11 @@ var CS = {
   set:function(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
   getCaseStartMs:function(){ var v=CS.get('lrh-case-startms'); return v===null?null:(+v||null); },
   markCaseStarted:function(){ if(CS.getCaseStartMs()===null) CS.set('lrh-case-startms', String(Date.now())); },
-  touchActive:function(){ CS.set('lrh-case-lastactive', String(Date.now())); }
+  touchActive:function(){ CS.set('lrh-case-lastactive', String(Date.now())); },
+  /* RESET's manual-wide sweep — same shape as arrest's/tca's SS.sweep(): every
+     lrh- key on the origin except the lrh-pref- preferences namespace. */
+  sweep:function(){ try{ for(var i=localStorage.length-1;i>=0;i--){ var k=localStorage.key(i);
+    if(k && k.indexOf('lrh-')===0 && k.indexOf('lrh-pref-')!==0) localStorage.removeItem(k); } }catch(e){} }
 };
 /* Only shown when it says something the clock above does not: that this case
    was already running before this screen was opened. If THIS tool started
@@ -369,7 +373,6 @@ function paint(){
   $('rundot').style.display = live ? '' : 'none';
   $('statusword').textContent = S.phase==='idle' ? 'READY' : (S.phase==='secured' ? 'SECURED' : ('PLAN '+S.plan));
   $('plabel').textContent = S.phase==='ladder' ? ('AIRWAY · PLAN '+S.plan+' · DAS 2025') : 'AIRWAY · DAS 2025 LADDER';
-  $('themebtn').textContent = S.theme==='dark' ? 'LIGHT' : 'DARK';
   $('resetbtn').textContent = S.resetArm ? 'SURE?' : 'RESET';
   $('resetbtn').style.background = S.resetArm ? 'var(--red)' : 'var(--card)';
   $('resetbtn').style.color = S.resetArm ? '#fff' : 'var(--ink2)';
@@ -408,9 +411,13 @@ document.addEventListener('click', function(e){
 
   if(acc){ S.open = (S.open===acc ? null : acc); paint(); return; }
 
-  if(id==='themebtn'){ S.theme = S.theme==='dark'?'light':'dark'; document.body.dataset.theme=S.theme; paint(); return; }
   if(id==='resetbtn'){
     if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){S.resetArm=false;paint();},2500); return; }
+    /* One case, one reset: sweep the shared lrh- namespace (preserving the
+       lrh-pref- preferences) so a reset here clears the shared case clock and
+       every other tool's case state too — the same sweep arrest/tca run
+       (CASE-STATE.md). Then re-init this tool in memory. */
+    CS.sweep();
     S={theme:S.theme,phase:'idle',t0:null,plan:'A',a:0,b:0,c:0,fonaStep:0,primed:false,stopThink:false,
        events:[],open:null,resetArm:false,securedAt:null,showCustom:false};
     $('customin').value=''; paint(); return;
