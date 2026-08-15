@@ -125,10 +125,18 @@ ck(`2. adult amio second dose ${CFG.amio.adultDose2} mg`, (await txt('#amiolabel
 await fresh();
 await fillW('#wIn', '20'); await pg.waitForTimeout(250);
 ck('3. pediatric mode on under 50 kg', await txt('#wnote'), '20 kg · pediatric');
-ck('3. peds banner names the Broselow band', /Broselow Blue/.test(await txt('#pedsbanner')), true);
+/* The dismissible peds banner is retired (SHELL.md 2026-08-15 review): the
+   dosing mode is stated by the weight strip's own collapsed row, and the
+   compact drawer chip carries the Broselow wayfinding. */
+ck('3. no dismissible peds-mode banner exists', await pg.locator('#pedsbanner').count(), 0);
+ck('3. the weight strip row states the mode instead', await txt('#wlabel'), '20 kg · PALS (pediatric)');
+ck('3. the drawer chip names the band + cart on one line', /BLUE 18–23 kg · PEDS CART/.test(await txt('#brosechip')), true);
 ck('3. accent becomes the band color', await pg.evaluate(() =>
   getComputedStyle(document.body).getPropertyValue('--accent').trim()), '#2E86C1');
 await pg.click('#startbtn'); await pg.waitForTimeout(300);
+/* 2026-08-15 review: the computed dose/energy rides the dock button labels. */
+ck(`3. dock SHOCK label carries the weight-computed energy`, await txt('#dockshocklabel'), `SHOCK ${CFG.peds.defibPerKg1 * 20} J`);
+ck(`3. dock EPI label carries the weight-computed dose`, await txt('#dockepilabel'), `EPI ${CFG.peds.epiPerKg * 20} mg`);
 ck(`3. first peds shock is ${CFG.peds.defibPerKg1} J/kg = ${CFG.peds.defibPerKg1 * 20} J`,
    (await txt('#shocklabel')).includes(`SHOCK ${CFG.peds.defibPerKg1 * 20} J`), true);
 await pg.click('#shockbtn'); await pg.waitForTimeout(200);
@@ -160,6 +168,9 @@ ck('4. age alone triggers pediatric mode', /pediatric by age/.test(await txt('#w
 await pg.click('#startbtn'); await pg.waitForTimeout(250);
 ck('4. refuses to print an energy with no weight', /ENTER WEIGHT/.test(await txt('#shocklabel')), true);
 ck('4. refuses to print an epi dose with no weight', /ENTER WEIGHT/.test(await txt('#epilabel')), true);
+/* Universal invariant on the dock too: bare labels, never an invented number. */
+ck('4. dock labels refuse a number with no weight',
+   (await txt('#dockshocklabel')) === 'SHOCK' && (await txt('#dockepilabel')) === 'EPI', true);
 if (!(await pg.locator('#estbtn').isVisible())) { await pg.click('#wtoggle'); await pg.waitForTimeout(200); }
 await pg.click('#estbtn'); await pg.waitForTimeout(300);
 /* APLS band for a 6-year-old is 3 x age + 7 — the manual's single estimator
@@ -195,14 +206,22 @@ await fresh();
 await fillW('#aIn', '0'); await pg.waitForTimeout(300);
 ck('4b. age 0 shows the NRP banner too', await pg.locator('#nrpbanner').isVisible(), true);
 
-/* ---- 5. the override is loud and reversible, not a silent switch ---- */
+/* ---- 5. the override is loud and reversible, not a silent switch ----
+   2026-08-15 review: leaving pediatric dosing is the explicitly labeled
+   TREAT AS ADULT inside the weight form — never a DISMISS, which read as
+   "hide this warning" while leaving the dosing mode ambiguous. */
 await fresh();
 await fillW('#wIn', '30'); await pg.waitForTimeout(250);
+ck('5. the form states pediatric criteria are met', /Pediatric criteria met — dosing is weight-based PALS/.test(await txt('#pedscrit')), true);
+ck('5. the way out is labeled TREAT AS ADULT, not DISMISS', await txt('#dismisspeds'), 'TREAT AS ADULT');
 await pg.click('#dismisspeds'); await pg.waitForTimeout(250);
-ck('5. dismiss switches to adult dosing', await txt('#wnote'), '30 kg · adult');
+ck('5. TREAT AS ADULT switches to adult dosing', await txt('#wnote'), '30 kg · adult');
+ck('5. the collapsed row states adult mode too', await txt('#wlabel'), '30 kg · adult');
 ck('5. an override bar stays visible', await pg.locator('#overridebar').isVisible(), true);
+ck('5. and the criteria line yields to it', await pg.locator('#pedscrit').isVisible(), false);
 await pg.click('#undooverride'); await pg.waitForTimeout(250);
 ck('5. undo returns to pediatric', await txt('#wnote'), '30 kg · pediatric');
+ck('5. and the row says PALS again', await txt('#wlabel'), '30 kg · PALS (pediatric)');
 
 /* ---- 6. cycle timer and the due state ---- */
 await fresh();
@@ -210,8 +229,10 @@ await fillW('#wIn', '70'); await pg.waitForTimeout(200);
 await pg.click('#startbtn'); await pg.waitForTimeout(300);
 ck('6. countdown starts at 2:00', /^[12]:\d\d$/.test(await txt('#cycleclock')), true);
 ck('6. shock button is showing, due button is not', await pg.locator('#duebtn').isVisible(), false);
-// jump the clock forward past the cycle rather than waiting two minutes
-await pg.evaluate(() => { const real = Date.now; window.Date.now = () => real.call(Date) + 125000; });
+// jump the clock forward past the cycle rather than waiting it out — derived
+// from SITE.cpr.cycleSec so a fork with a different cycle stays green (#117)
+await pg.evaluate(ms => { const real = Date.now; window.Date.now = () => real.call(Date) + ms; },
+  (Math.max(CFG.cpr.cycleSec, CFG.epi.suggestSec) + 5) * 1000);
 await pg.waitForTimeout(700);
 ck('6. rhythm-check due button appears at 0:00', await pg.locator('#duebtn').isVisible(), true);
 ck('6. shock button hides while due', await pg.locator('#shockbtn').isVisible(), false);
@@ -506,8 +527,9 @@ ck('20. the log is empty', /Nothing logged yet/.test(await tlText()), true);
 /* ======================= THE CASE SHELL (SHELL.md) =========================
    Layers 1-9 on the reference implementation. Config-driven like everything
    above: cadence durations, rates and energies come from window.SITE; what is
-   hardcoded is the universal shell contract — chip = action, DUE NOW at zero,
-   semantic slot colors, the 10 s check pause, the PHI-free timeline footer. */
+   hardcoded is the universal shell contract — the timer/dose/action are one
+   button (2026-08-15 review), DUE NOW at zero, semantic slot colors, the 10 s
+   check pause, the PHI-free timeline footer. */
 
 /* ---- 22. app bar: pill, tool switcher, tele-ED ---- */
 await fresh();
@@ -536,11 +558,16 @@ ck('22. tapping the pill opens the timeline', await (async () => {
   return open;
 })(), true);
 
-/* ---- 23. cadence strip + dock: the timer IS the button ---- */
+/* ---- 23. dock: the timer, the dose and the action are ONE button ----
+   2026-08-15 review: no phone cadence chips — a cadence with a dock slot
+   renders inside that button (countdown as a second mono line, DUE NOW red at
+   zero) and the computed energy/dose rides the label. */
 await fresh();
 await fillW('#wIn', '70'); await pg.waitForTimeout(200);
+await pg.click('#wtoggle'); await pg.waitForTimeout(200);   /* collapse — the running screen a clinician sees */
 await pg.click('#startbtn'); await pg.waitForTimeout(500);
 ck('23. the strip and dock appear with the case', (await vis('#shellstrip')) && (await vis('#shelldock')), true);
+ck('23. no phone cadence chips remain anywhere', await pg.locator('#chiprc, #chipepi, .shellchip').count(), 0);
 ck('23. dock slots carry the semantic scheme colors', await pg.evaluate(() =>
   document.getElementById('dockshock').classList.contains('scheme-amber') &&
   document.getElementById('dockepi').classList.contains('scheme-purple') &&
@@ -549,27 +576,44 @@ ck('23. dock buttons hold the 54px floor', await pg.evaluate(() =>
   ['dockshock','dockepi','dockrc'].every(id => document.getElementById(id).getBoundingClientRect().height >= 54)), true);
 ck('23. the dock never covers the last content', await pg.evaluate(() =>
   parseFloat(getComputedStyle(document.querySelector('.wrap')).paddingBottom) >= 120), true);
+/* The user's core complaint, held from here on: with a case running and a
+   weight set, the operating card's clock and every dock action fit on a
+   390x844 phone with NO scrolling. */
+ck('23. 390x844: cycle clock + all three dock buttons above the fold', await pg.evaluate(() => {
+  window.scrollTo(0, 0);
+  const vh = window.innerHeight;
+  const ok = id => { const r = document.getElementById(id).getBoundingClientRect();
+    return r.height > 0 && r.top >= 0 && r.bottom <= vh; };
+  return ['cycleclock', 'dockshock', 'dockepi', 'dockrc'].every(ok);
+}), true);
+ck('23. the running screen leads with the operating card, dosing last as reference', await pg.evaluate(() => {
+  const y = id => document.getElementById(id).getBoundingClientRect().top + window.scrollY;
+  return y('cyclecard') < y('rolesstep') && y('rolesstep') < y('telewrap') && y('telewrap') < y('dosingblock');
+}), true);
+ck('23. the dosing block is retitled as reference while running', await txt('#dosingtitle'), 'DOSING REFERENCE');
 {
-  const rc = await txt('#chiprcclock');
+  const rc = await txt('#dockrcclock');
   const full = CFG.cpr.cycleSec;
   const [m, sec] = rc.split(':').map(Number);
-  ck(`23. rhythm chip counts down from SITE.cpr.cycleSec (${full}s)`, (m * 60 + sec) > full - 6 && (m * 60 + sec) <= full, true);
+  ck(`23. RHYTHM ✓ counts down inside the button from SITE.cpr.cycleSec (${full}s)`, (m * 60 + sec) > full - 6 && (m * 60 + sec) <= full, true);
 }
-ck('23. epi chip reads GIVE NOW before the first dose', await txt('#chipepiclock'), 'GIVE NOW');
-await pg.click('#chipepi'); await pg.waitForTimeout(300);
-ck('23. the epi chip IS the epi action (logs a dose)', /EPI .*dose #1/.test(await txt('#tickertext')), true);
+ck('23. the EPI button reads GIVE NOW before the first dose', await txt('#dockepiclock'), 'GIVE NOW');
+ck(`23. the EPI label carries the config dose (${CFG.epi.adultMg} mg)`, await txt('#dockepilabel'), `EPI ${CFG.epi.adultMg} mg`);
+ck(`23. the SHOCK label carries the config energy (${J[0]} J)`, await txt('#dockshocklabel'), `SHOCK ${J[0]} J`);
+await pg.click('#dockepi'); await pg.waitForTimeout(300);
+ck('23. the EPI button IS the epi action (logs a dose)', /EPI .*dose #1/.test(await txt('#tickertext')), true);
 {
-  const ec = await txt('#chipepiclock');
+  const ec = await txt('#dockepiclock');
   const [m, sec] = ec.split(':').map(Number);
   ck(`23. then counts down from SITE.epi.suggestSec (${CFG.epi.suggestSec}s)`, (m * 60 + sec) > CFG.epi.suggestSec - 6 && (m * 60 + sec) <= CFG.epi.suggestSec, true);
 }
-/* Jump past both cadences: both chips must escalate to DUE NOW red. */
+/* Jump past both cadences: both in-button countdowns must escalate to DUE NOW red. */
 await skew((Math.max(CFG.cpr.cycleSec, CFG.epi.suggestSec) + 5) * 1000);
-ck('23. rhythm chip escalates to DUE NOW at zero', await txt('#chiprcclock'), 'DUE NOW');
-ck('23. and turns red (the .due state)', await pg.evaluate(() => document.getElementById('chiprc').classList.contains('due')), true);
-ck('23. epi chip escalates to DUE NOW too', await txt('#chipepiclock'), 'DUE NOW');
+ck('23. the RHYTHM countdown escalates to DUE NOW at zero', await txt('#dockrcclock'), 'DUE NOW');
+ck('23. and turns red (the .due state)', await pg.evaluate(() => document.getElementById('dockrcclock').classList.contains('due')), true);
+ck('23. the EPI countdown escalates to DUE NOW too', await txt('#dockepiclock'), 'DUE NOW');
 await pg.click('#dockshock'); await pg.waitForTimeout(300);
-ck('23. SHOCK resets the rhythm cadence', (await txt('#chiprcclock')) !== 'DUE NOW', true);
+ck('23. SHOCK resets the rhythm cadence', (await txt('#dockrcclock')) !== 'DUE NOW', true);
 ck('23. and logs the configured energy', new RegExp('SHOCK ' + J[0] + ' J').test(await txt('#tickertext')), true);
 ck('23. the ticker rides on the dock with LOG ->', /LOG/.test(await txt('#ticker')), true);
 
@@ -579,11 +623,11 @@ ck('24. RHYTHM opens the picker', await vis('#sheet'), true);
 ck('24. and pauses the metronome with a visible countdown', /paused \d+ s/.test(await txt('#metstatus')), true);
 await pg.click('#rcclose'); await pg.waitForTimeout(200);
 ck('24. the X closes without logging a check', /Rhythm check/.test(await txt('#tickertext')), false);
-await pg.click('#chiprc'); await pg.waitForTimeout(250);
-ck('24. the rhythm chip opens the same picker', await vis('#sheet'), true);
+await pg.click('#rcbtn'); await pg.waitForTimeout(250);
+ck('24. the cycle card\'s RHYTHM CHECK opens the same picker', await vis('#sheet'), true);
 await pg.click('#rcnon'); await pg.waitForTimeout(300);
 ck('24. picking a result logs the RESULT', /Non-shockable/.test(await txt('#tickertext')), true);
-ck('24. and restarts the cadence', (await txt('#chiprcclock')) !== 'DUE NOW', true);
+ck('24. and restarts the cadence', (await txt('#dockrcclock')) !== 'DUE NOW', true);
 ck('24. metronome mode reads the config ratio', await txt('#metmode'),
    CFG.cpr.compressionsPerCycle + ':' + CFG.cpr.breathsPerCycle + ' · ' + CFG.cpr.bpm);
 await pg.click('#advchip'); await pg.waitForTimeout(250);
@@ -622,6 +666,8 @@ ck('25. wide: the three actions render in the strip instead', await wideP.locato
    && await wideP.locator('#stripepi').isVisible() && await wideP.locator('#striprc').isVisible(), true);
 ck('25. wide: with the countdown embedded in the button', /^\d+:\d\d$|^DUE NOW$/.test(await wtxt('#striprcclock')), true);
 ck('25. wide: strip shock carries the configured energy', new RegExp('SHOCK ' + J[0] + ' J').test(await wtxt('#stripshocklabel')), true);
+ck(`25. wide: strip EPI label carries the config dose too`, await wtxt('#stripepilabel'), `EPI ${CFG.epi.adultMg} mg`);
+ck('25. wide: epi cadence rides that button as well', /^GIVE NOW$|^\d+:\d\d$|^DUE NOW$/.test(await wtxt('#stripepiclock')), true);
 await wideP.click('#tlbtnwide'); await wideP.waitForTimeout(300);
 ck('25. wide: the timeline is a side panel, not a sheet', await wideP.evaluate(() => {
   const r = document.getElementById('shelltl').getBoundingClientRect();
