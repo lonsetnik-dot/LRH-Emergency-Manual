@@ -91,9 +91,11 @@ Order inside the scroll area:
 - Fixed to the bottom, thumb zone, above `env(safe-area-inset-bottom)`.
   Three buttons, flex 1, 54px min-height.
 - Slot colors are semantic and identical across every tool:
-  **amber = intervention** (SHOCK / PPV ✓ / ATTEMPT), **purple = drug**
-  (EPI GIVEN / SAT <90), **blue = assessment** (RHYTHM ✓ / HR CHECK /
-  SAT ✓). The assessment slot (or amber ATTEMPT for RSI) opens the picker.
+  **amber = intervention** (SHOCK / PPV ✓ / ATTEMPT), **purple = drug or
+  deterioration** (EPI GIVEN / DESAT — never with a numeric threshold the
+  tool's guideline doesn't publish; DAS has no SpO₂ cut-off), **blue =
+  assessment** (RHYTHM ✓ / HR CHECK / SAT ✓). The assessment slot (or
+  amber ATTEMPT for RSI) opens the picker.
 - **LOG ticker** rides on top of the dock: one line, newest event +
   `LOG ▲`; tap → full timeline.
 - ≥768px there is no bottom dock — the same three buttons live in layer 2.
@@ -151,7 +153,7 @@ Order inside the scroll area:
 | arrest (adult) | CODE | NO PULSE — START CPR | rhythm (config), epi (config) | 30:2→CONT + ADV AIRWAY | SHOCK / EPI GIVEN / RHYTHM ✓ | Shockable / Non-shockable / Organized |
 | arrest (peds mode) | CODE | same | same | same | same, weight-computed doses | same |
 | neonatal (NRP) | NRP | BABY OUT — START THE CLOCK | HR check 0:30 | VENT cadence, no airway toggle | PPV ✓ / EPI GIVEN / HR CHECK | HR <60 / 60–99 / ≥100 |
-| airway (RSI/DAS) | APNEA | per tool | sat check (config) | none | ATTEMPT / SAT <90 / SAT ✓ | Passed / Failed—reoxygenate / CICO |
+| airway (RSI/DAS) | APNEA | per tool | sat check (config) | none | ATTEMPT / DESAT / SAT ✓ | Passed / Failed—reoxygenate / CICO |
 | tca | TCA | per tool | per tool | per tool | 3 slots, same semantics | per tool |
 | pph, dystocia | per tool | per tool | per tool | none | 3 slots, same semantics | per tool |
 | reference pages | — | — | — | — | — | — |
