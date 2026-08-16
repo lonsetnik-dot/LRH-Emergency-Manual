@@ -556,8 +556,8 @@
     <div class="cn-grid2" style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start">
       <div>
         <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 30px; margin: 0 0 14px">Open source, openly governed</h2>
-        <p style="font-size: 16px; line-height: 1.65; color: oklch(0.38 0.02 160); margin: 0 0 14px">Everything lives in a public repository under a permissive license: the manual, the cognitive aids, the kit lists, the label and poster templates, the simulation scripts, and the guideline-provenance records that say which source each tool is written against and when a human last checked it.</p>
-        <p style="font-size: 16px; line-height: 1.65; color: oklch(0.38 0.02 160); margin: 0">Adoption is by fork, not sign-up — your copy, your hosting, your clinical validation. No patient data, ever, by design.</p>
+        <p style="font-size: 16px; line-height: 1.65; color: oklch(0.38 0.02 160); margin: 0 0 14px">Everything lives in one repository under a permissive license: the manual, the cognitive aids, the kit lists, the label and poster templates, the simulation scripts, and the guideline-provenance records that say which source each tool is written against and when a human last checked it.</p>
+        <p style="font-size: 16px; line-height: 1.65; color: oklch(0.38 0.02 160); margin: 0">Adoption starts with an introduction: reach out, and we hand you the repository along with the people who maintain it. From there it's a fork — your copy, your hosting, your clinical validation. No patient data, ever, by design.</p>
       </div>
       <div style="background: #fff; border: 1px solid oklch(0.88 0.02 250); border-radius: 12px; padding: 28px">
         <h3 style="font-family: Bitter, serif; font-size: 20px; font-weight: 700; margin: 0 0 10px">Governance is being built</h3>
@@ -591,7 +591,7 @@
       <div>
         <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 34px; color: #fff; margin: 0 0 14px">Join the network</h2>
         <p style="font-size: 16.5px; line-height: 1.65; color: oklch(0.85 0.01 160); margin: 0 0 14px">Be the physician champion for your department — or just follow along while you decide. We'll connect you with the branch, the localization worksheet, and the people who have already walked the trail.</p>
-        <p style="font-size: 15px; line-height: 1.6; color: oklch(0.72 0.02 160); margin: 0">Prefer to start on your own? The repository is public — fork it today and say hello when you're ready.</p>
+        <p style="font-size: 15px; line-height: 1.6; color: oklch(0.72 0.02 160); margin: 0">Prefer to work at your own pace? Say so in the note — we'll send you the repository and the localization worksheet and leave you to it.</p>
       </div>
       <div style="background: #fff; border-radius: 12px; padding: 30px">
         <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
@@ -630,7 +630,7 @@
           <div style="text-align: center; padding: 30px 10px">
             <svg width="44" height="52" sc-camel-view-box="0 0 26 30" aria-hidden="true" style="margin-bottom: 14px"><rect x="7" y="1" width="12" height="7" rx="3.5" fill="#005596"></rect><rect x="4" y="11" width="18" height="7" rx="3.5" fill="#005596"></rect><rect x="1" y="21" width="24" height="8" rx="4" fill="#003a66"></rect></svg>
             <h3 style="font-family: Bitter, serif; font-size: 22px; font-weight: 700; margin: 0 0 8px">Another stone on the cairn.</h3>
-            <p style="font-size: 15.5px; line-height: 1.6; color: oklch(0.4 0.02 160); margin: 0">Thanks — we'll be in touch. In the meantime, the repository and the localization guide are open to everyone.</p>
+            <p style="font-size: 15.5px; line-height: 1.6; color: oklch(0.4 0.02 160); margin: 0">Thanks — we'll be in touch with the repository, the localization guide, and an introduction to the network.</p>
           </div>
         </sc-if>
       </div>
@@ -754,7 +754,7 @@ class Component extends DCLogic {
         { name: "Infographics & provenance", desc: "Wall posters for the resus bay, plus a provenance record for every tool: source guideline, edition, and the date a human last checked it." }
       ],
       steps: [
-        { num: "01", name: "Take a branch", desc: "Fork the public repository into your own copy — independent history, your hosting, your control. Free static hosting publishes it automatically." },
+        { num: "01", name: "Take a branch", desc: "Reach out and we'll hand you the repository. Fork it into your own copy — independent history, your hosting, your control. Free static hosting publishes it automatically." },
         { num: "02", name: "Localize it", desc: "Keep the parts that fit your ED. Edit the marked config blocks — your doses, assays, phone numbers, cart layout — then validate every value clinically." },
         { num: "03", name: "Practice with it", desc: "Run the simulations with your real team and real carts. New hires find the equipment; what they can't find feeds your readiness audit." },
         { num: "04", name: "Share it back", desc: "A better checklist, a clearer label, a gap in coverage — contribute it upstream so the next department starts further up the trail." }
