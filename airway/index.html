@@ -9,33 +9,87 @@
 <meta name="description" content="Mobile cognitive aid for the unanticipated difficult airway: DAS 2025 Plan A to Plan D with attempt counts, declare-out-loud prompts and scalpel-bougie-tube. Personal aid, not hospital policy.">
 <style>
 /* @design-system-live */
-/* ---- Shared live-protocol skeleton (tokens, .hdr/.card/.btn/.acc/.chip/etc.,
-   the due/dot motion) is injected from design-system-live.css at the marker
-   above (build.mjs, issue #73) — copied by hand from arrest/ until now, so
-   the two screens a person moves between mid-resuscitation stay identical
-   products. Genuinely airway-specific chrome (the SALAD "say it out loud"
-   callout, the attempt-count pips) stays inline below. ---- */
+/* ---- Shared live-protocol skeleton (tokens, .card/.btn/.acc/.chip/etc., the
+   due/dot motion, and the WHOLE case shell — bar, strip, dock, picker,
+   timeline, toast; see SHELL.md) is injected from design-system-live.css at
+   the marker above (build.mjs, issue #73) — arrest/ is the case shell's
+   reference implementation and this screen mirrors it, so the two screens a
+   person moves between mid-resuscitation stay identical products. Genuinely
+   airway-specific chrome (the SALAD "say it out loud" callout, the
+   attempt-count pips) stays inline below. ---- */
 .pip{display:inline-block;width:26px;height:26px;border-radius:50%;border:2px solid var(--line);margin-right:6px}
 .say{border-left:4px solid var(--amber);background:var(--card2);padding:9px 12px;border-radius:0 10px 10px 0;font-size:14px;line-height:1.45;margin-top:10px}
+button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
 </style>
 </head>
 <body data-theme="dark">
 <h1 class="sr-only">Failed Intubation — DAS 2025 Airway Ladder</h1>
+
+<!-- ============ CASE SHELL layer 1 — app bar (SHELL.md) ============
+     One 56px row (60px ≥768px), sticky, never wraps. Left: back + the tool
+     name as the tool-switcher dropdown. Center: the master case-clock pill
+     while a case runs (tap = timeline), tagged APNEA per SHELL.md's per-tool
+     table. Right: ⋯ overflow on a phone; TIMELINE / FEEDBACK / RESET inline
+     ≥768px. -->
+<div class="shellbar" id="shellbar">
+  <a class="shellback shell-phone" id="backlink" href="../?from=tool" aria-label="Back to the manual">‹</a>
+  <a class="shellback shell-wide" id="backlinkwide" href="../?from=tool">MANUAL ›</a>
+  <button class="shelltool" id="toolbtn" type="button" aria-haspopup="true"><span class="shellsq" style="background:var(--accent)"></span>AIRWAY<span class="shellcaret">▼</span></button>
+  <div class="shellbarmid">
+    <button class="shellpill" id="casepill" type="button" style="display:none" aria-label="Case clock — open the timeline"><span class="dot"></span><span class="shellpilltime" id="pillclock">0:00</span><span class="shellpilltag" id="pilltag">APNEA</span></button>
+    <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:700;letter-spacing:.06em">READY</span>
+  </div>
+  <span class="shell-wide" style="gap:6px;align-items:center">
+    <button class="ghost" id="tlbtnwide" type="button">TIMELINE</button>
+    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Airway" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+    <button class="ghost shellreset" id="resetwide" type="button">RESET</button>
+  </span>
+  <button class="shellmore shell-phone" id="menubtn" type="button" aria-label="Menu">⋯</button>
+</div>
+
+<!-- tool switcher: the six live engines + manual home. Plain links —
+     cross-tool case state (clock, log) survives navigation per CASE-STATE.md,
+     so switching tools mid-case is safe by design. Airway is the current tool
+     here, marked with its own accent square. -->
+<div class="shellmenu left" id="toolmenu" style="display:none">
+  <a class="shellmenurow" href="../arrest/"><span class="shellsq" style="background:var(--red)"></span><span style="flex:1">Arrest</span><span class="shellmenusub">CODE</span></a>
+  <a class="shellmenurow" href="../tca/"><span class="shellsq" style="background:#E08A3C"></span><span style="flex:1">TCA</span><span class="shellmenusub">TCA</span></a>
+  <a class="shellmenurow on" href="../airway/"><span class="shellsq" style="background:#2FA372"></span><span style="flex:1">Airway</span><span class="shellmenusub">RSI</span></a>
+  <a class="shellmenurow" href="../neonatal/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Neonatal</span><span class="shellmenusub">NRP</span></a>
+  <a class="shellmenurow" href="../pph/"><span class="shellsq" style="background:#E75480"></span><span style="flex:1">PPH</span><span class="shellmenusub">PPH</span></a>
+  <a class="shellmenurow" href="../dystocia/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Dystocia</span><span class="shellmenusub">OB</span></a>
+  <div class="shellmenudiv"></div>
+  <a class="shellmenurow" href="../?from=tool"><span class="shellsq" style="background:var(--gray)"></span><span style="flex:1">Manual home</span></a>
+</div>
+
+<!-- ⋯ overflow (phone): timeline, feedback, then reset in red — the same
+     two-tap SURE? reset the wide button runs (SHELL.md layer 9). -->
+<div class="shellmenu right" id="moremenu" style="display:none">
+  <button class="shellmenurow" id="tlbtn" type="button">Case timeline</button>
+  <a class="shellmenurow" id="feedbackmenu" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Airway">Feedback</a>
+  <div class="shellmenudiv"></div>
+  <button class="shellmenurow danger" id="resetbtn" type="button">Reset for next case</button>
+</div>
+
+<!-- ============ CASE SHELL layer 2 — cadence strip (running only) ============
+     Phone: the SAT CHECK chip IS its action — tapping it logs the check and
+     restarts the countdown; DUE NOW red at zero. ≥768px the three dock buttons
+     render here instead, the countdown embedded in SAT ✓. No metronome on this
+     tool (SHELL.md per-tool table). The cadence is the shell's own operational
+     prompt (DAS.satCheckSec, NOT a DAS value — see the config block); neither
+     the chip, the buttons nor their log lines ever carry an SpO₂ number,
+     because DAS 2025 publishes none. -->
+<div class="shellstrip" id="shellstrip" style="display:none">
+  <button class="shellchip shell-phone" id="chipsat" type="button">SAT CHECK <span class="mono" id="chipsatclock">1:00</span></button>
+  <button class="shelldockbtn scheme-amber shell-wide" id="stripattempt" type="button" style="flex:none">ATTEMPT</button>
+  <button class="shelldockbtn scheme-purple shell-wide" id="stripdesat" type="button" style="flex:none">DESAT</button>
+  <button class="shelldockbtn scheme-blue shell-wide" id="stripsat" type="button" style="flex:none">SAT ✓<span class="shelldockclock" id="stripsatclock">1:00</span></button>
+</div>
+
 <div class="wrap">
 
-  <div class="hdr">
-    <div style="flex:1;min-width:0">
-      <div id="plabel" style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--accent)">AIRWAY · DAS 2025 LADDER</div>
-      <div style="display:flex;align-items:baseline;gap:8px">
-        <span class="mono" id="clock" style="font-size:26px;font-weight:700">0:00</span>
-        <span id="rundot" style="display:none"><span class="dot"></span></span>
-        <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:600">READY</span>
-      </div>
-      <div id="caseclock" style="display:none"></div>
-    </div>
-    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Airway" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
-    <button class="ghost" id="resetbtn" type="button">RESET</button>
-  </div>
+  <div class="plabel" id="plabel" style="margin-top:10px">AIRWAY · DAS 2025 LADDER</div>
+  <div id="caseclock" style="display:none"></div>
 
   <!-- The single most important sentence on this screen. DAS 2025 is an
        anesthesia guideline; it has no cardiac-arrest algorithm. Saying so is
@@ -46,6 +100,13 @@
     ventilate them, that is <a href="../arrest/" style="color:var(--blue)">rescue breathing</a>, not this ladder.
     DAS 2025 is written for anesthesia and gives no arrest algorithm; its wake-the-patient options do not exist here.
   </div>
+
+  <!-- ============ CASE SHELL layer 5.2 — ACTIVATE TELE-ED ============
+       Face up from the first screen, idle or running. One tap logs the request
+       time and collapses to a quiet confirmation row. Idempotent — never a
+       second dialog. Non-clinical: it logs, nothing else. -->
+  <button class="shelltele" id="telebtn" type="button">📞 ACTIVATE TELE-ED<span class="sub" id="telesub">one tap, the earlier the better — logs the request time</span></button>
+  <div class="shellteledone" id="teledone" style="display:none">📞 TELE-ED ACTIVATED AT <span class="mono" id="teleat">0:00</span> ✓</div>
 
   <div id="idle">
     <button id="startbtn" type="button" style="width:100%;margin-top:14px;min-height:96px;border:none;border-radius:16px;background:var(--red);color:#fff;font:800 21px var(--sans);letter-spacing:.03em;cursor:pointer;box-shadow:0 6px 24px rgba(229,72,77,.25)">
@@ -107,26 +168,93 @@
   </div>
 </div>
 
+<!-- ============ CASE SHELL layer 7 — the attempt-result picker ============
+     Bottom sheet on a phone, centered modal ≥768px (shared .sheetwrap/.sheet).
+     Opened by the amber ATTEMPT slot; picking drives the SAME plan-ladder state
+     machine the on-page buttons drive (doAttempt/doSecured/doCico — never a
+     second copy of the logic); ✕ closes without logging. Option colors per
+     SHELL.md: blue = best path, slate = middle, red = worst. No option carries
+     an SpO₂ number — DAS 2025 publishes none. -->
+<div id="sheet" class="sheetwrap" style="display:none">
+  <div class="sheet" id="sheetinner">
+    <div class="sheethead"><span class="sec" style="letter-spacing:.12em">AFTER THIS ATTEMPT — WHAT HAPPENED?</span><button class="shellx" id="pkclose" type="button" aria-label="Close without logging">✕</button></div>
+    <button class="rcbtn" id="pkpass" type="button" style="background:var(--blue);display:block">PASSED — CONFIRM NOW<div class="rcsub">Waveform capnography — every time, no exceptions</div></button>
+    <button class="rcbtn" id="pkfail" type="button" style="background:var(--gray);margin-top:10px;display:block">FAILED — REOXYGENATE<div class="rcsub" id="pkfailsub">Change something before the next attempt</div></button>
+    <button class="rcbtn" id="pkcico" type="button" style="background:var(--red);margin-top:10px;display:block">CICO — DECLARE<div class="rcsub" id="pkcicosub">&ldquo;Cannot intubate, cannot oxygenate&rdquo; — front-of-neck airway, Plan D</div></button>
+    <button id="pkcancel" type="button" style="width:100%;margin-top:12px;min-height:48px;background:none;border:1px solid var(--line);border-radius:12px;color:var(--ink2);font:700 13px var(--sans);letter-spacing:.06em;cursor:pointer">CANCEL — BACK TO THE LADDER</button>
+  </div>
+</div>
+
+<!-- ============ CASE SHELL layer 6 — pinned action dock (phone, running) ====
+     Three thumb-zone buttons, semantic slot colors identical across every
+     tool: amber = intervention (ATTEMPT — opens the picker), purple = event
+     (DESAT — logs a desaturation, no number, ever), blue = assessment (SAT ✓ —
+     logs the check and restarts the cadence). The LOG ticker rides on top:
+     newest event + LOG ▲ → timeline. ≥768px there is no dock — the same three
+     buttons live in the strip. -->
+<div class="shelldock" id="shelldock" style="display:none">
+  <button class="shellticker" id="ticker" type="button" style="display:none"><span class="tk" id="tickertext"></span><span class="lg">LOG ▲</span></button>
+  <div class="shelldockrow">
+    <button class="shelldockbtn scheme-amber" id="dockattempt" type="button">ATTEMPT</button>
+    <button class="shelldockbtn scheme-purple" id="dockdesat" type="button">DESAT</button>
+    <button class="shelldockbtn scheme-blue" id="docksat" type="button">SAT ✓</button>
+  </div>
+</div>
+
+<!-- ============ CASE SHELL layer 8 — case timeline ============
+     Every action auto-logs with the case-clock stamp and a category color dot.
+     Bottom sheet on a phone; 320px right panel ≥768px. In-memory view of
+     S.events only — airway/ is not a contracted writer of lrh-case-log
+     (CASE-STATE.md), so nothing here persists. -->
+<div class="shelltl" id="shelltl" style="display:none">
+  <div class="shelltlhead"><span class="t">CASE TIMELINE</span><button class="shellx" id="tlclose" type="button" aria-label="Close the timeline">✕</button></div>
+  <div class="shelltlbody" id="tlrows"></div>
+  <div class="shelltlfoot">device only · no identifiers · cleared on reset</div>
+</div>
+
+<!-- ============ CASE SHELL layer 9 — the cleared toast after RESET ============ -->
+<div class="shelltoast" id="shelltoast" style="display:none">
+  <span style="flex:1">Reset — the clock, the ladder, the timers and the log are clean for a new case.</span>
+  <button class="shelltoastok" id="toastok" type="button">OK</button>
+</div>
+
 <script>
 (function(){
 'use strict';
 
 /* ============================ SITE CONFIG ==================================
-   Every number here is from ONE document: Ahmad I, El-Boghdadly K, Iliff H, et
-   al. Difficult Airway Society 2025 guidelines for management of unanticipated
-   difficult tracheal intubation in adults. Br J Anaesth 2026;136(1):283-307.
+   Every clinical number here is from ONE document: Ahmad I, El-Boghdadly K,
+   Iliff H, et al. Difficult Airway Society 2025 guidelines for management of
+   unanticipated difficult tracheal intubation in adults. Br J Anaesth
+   2026;136(1):283-307.
    DAS 2025 SUPERSEDES DAS 2015 — do not blend the two, and do not blend it with
    the DAS obstetric (2015), ICU (2017) or awake-intubation (2019) documents,
    which still carry their own older algorithms.
+
+   v0.2.1 (2026-08-15): rebuilt the chrome onto the case shell (SHELL.md) —
+   app bar + tool switcher, APNEA case pill, SAT CHECK cadence chip, action
+   dock (ATTEMPT / DESAT / SAT ✓), attempt-result picker driving the existing
+   ladder handlers, face-up tele-ED, timeline sheet/panel, reset toast. No
+   clinical value or wording changed; DAS 2025 publishes no SpO₂ cut-off and
+   none was added — the DESAT action logs the event with no number.
    ========================================================================== */
 var DAS = {
-  version:"0.2", lastReviewed:"2026-08-10",
+  version:"0.2.1", lastReviewed:"2026-08-15",
   attempts:{ planA:3, planASenior:1, planB:3, planBviaSAD:1, planC:3 },
   preox:{ eto2:"0.9", headUp:"30°", hfno:"30 L/min" },
   rsi:{ roc:"1.2 mg/kg", sux:"1.5 mg/kg" },
   cricoid:{ awake:"10 N", asleep:"30 N" },
   fona:{ blade:"size 10 scalpel", bougie:"coudé-tip bougie", bougieDepth:"10–15 cm",
-         tube:"6.0 mm cuffed", incision:"vertical midline, up to 8 cm" }
+         tube:"6.0 mm cuffed", incision:"vertical midline, up to 8 cm" },
+  /* satCheckSec is NOT a DAS 2025 value. The guideline's transition triggers
+     are attempt count, time taken and physiological response, and it
+     deliberately publishes NO SpO₂ cut-off and no check interval — the WHEN
+     TO MOVE ON accordion says so on screen. This is only how often the
+     shell's SAT CHECK chip prompts the airway assistant to call the
+     saturation out loud (SHELL.md layer 2): a site-tunable operational
+     prompt cadence, an implementation detail like arrest's breathGapMs,
+     never a clinical threshold. The prompt and its log line carry no number. */
+  satCheckSec:60
 };
 /* Expose the site config for inspection and for the verify suites.
    Read-only in practice: nothing in this file reads window.DAS, it reads
@@ -142,12 +270,29 @@ try{ window.DAS = DAS; }catch(e){}
 
 var S = { theme:'dark', phase:'idle', t0:null, plan:'A', a:0, b:0, c:0, fonaStep:0,
           primed:false, stopThink:false, events:[], open:null, resetArm:false,
-          securedAt:null, showCustom:false };
+          securedAt:null, showCustom:false,
+          /* case shell (SHELL.md) UI state — in-memory only, no new persisted
+             keys. satAnchor is the SAT CHECK cadence's start-of-countdown;
+             teleAt is the case-clock string on the tele-ED confirmation row;
+             pkOpen is the attempt-result picker. */
+          satAnchor:null, teleAt:null, pkOpen:false,
+          toolMenuOpen:false, moreMenuOpen:false, tlOpen:false, toast:false };
 
 var $=function(i){return document.getElementById(i);};
 function fmt(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
 function clk(){ return S.t0 ? fmt((Date.now()-S.t0)/1000) : '0:00'; }
-function log(l){ S.events.unshift({t:clk(), label:l}); }
+/* Timeline category colors (SHELL.md layer 8) — the dot next to each event.
+   Semantic, matching the dock slots: amber intervention, purple the desat
+   event, blue assessment; red for phase changes, green for a secured airway,
+   gray for everything operational. Plain hex (not var()) because the dot is
+   painted into generated HTML. */
+var EV = { red:'#E5484D', amber:'#F0B429', purple:'#9B7BD4', blue:'#4C8DDA',
+           green:'#3DA35D', gray:'#8FA0B5' };
+/* Every logged event goes to the in-tool case timeline (in-memory S.events,
+   rendered by the shell's timeline sheet/panel). Airway/ is not a contracted
+   writer of the shared lrh-case-log (CASE-STATE.md), so the log persists
+   nothing. c is the category color dot (EV.*); gray when unstated. */
+function log(l, c){ S.events.unshift({t:clk(), label:l, c:c||EV.gray}); }
 
 /* ---- Shared case clock (CASE-STATE.md's lrh-case-startms) ------------------
    Additive only — the ladder clock above still drives every attempt count and
@@ -284,7 +429,7 @@ function planBox(){
        '<b>Ensure full neuromuscular block.</b> Two-person technique, optimize position, oral and nasal adjuncts in.</div>'+
        '<button class="btn" id="attempt" type="button" style="width:100%;min-height:72px;margin-top:10px;background:var(--amber);color:#141E2B;border:none;font-size:19px">MASK ATTEMPT '+(S.c+1)+' — LOG IT</button>'+
        '<button class="btn" id="worksC" type="button" style="width:100%;min-height:60px;margin-top:8px;border-color:var(--green);color:var(--green)">IT IS VENTILATING — STOP, THINK, CALL SENIORS</button>'+
-       '<button class="btn" id="cico" type="button" type="button" style="width:100%;min-height:72px;margin-top:8px;background:var(--red);color:#fff;border:none;font-size:19px">DECLARE CICO → PLAN D</button>';
+       '<button class="btn" id="cico" type="button" style="width:100%;min-height:72px;margin-top:8px;background:var(--red);color:#fff;border:none;font-size:19px">DECLARE CICO → PLAN D</button>';
   }
   if(p==='D'){
     h+='<div class="sec" style="color:var(--red)">PLAN D — EMERGENCY FRONT OF NECK AIRWAY</div>'+
@@ -356,27 +501,51 @@ var ACC=[
      '<p style="margin-bottom:0">Other bodies differ: <b>ASA 2022</b> is a context-driven framework rather than a fixed '+
      'ladder with hard attempt caps, and the <b>Vortex</b> approach uses three lifelines with a best-effort rule rather '+
      'than 3+1. A published <i>BJA</i> comment argues DAS 2025 underweights anatomical endpoints in eFONA.</p>';
- }},
- {id:'log',t:'EVENT LOG',b:function(){
-   if(!S.events.length) return '<div style="font-size:13.5px;color:var(--ink2);padding:8px 0">Nothing logged yet.</div>';
-   var h='';
-   for(var i=0;i<S.events.length;i++)
-     h+='<div class="evrow"><span class="mono" style="font-weight:700;color:var(--accent);flex:none">'+S.events[i].t+
-        '</span><span style="line-height:1.4">'+S.events[i].label+'</span></div>';
-   return h;
  }}
+ /* The old EVENT LOG accordion is retired — the case shell's timeline
+    (layer 8, #shelltl) is the one view of S.events now. */
 ];
 
+/* Repaint an innerHTML target only when its content actually changed — the
+   500 ms paint loop must not reset scroll position or churn the DOM. */
+function setHTML(el, h){ if(el._h!==h){ el._h=h; el.innerHTML=h; } }
+
 function paint(){
-  $('clock').textContent=clk();
   paintCaseClock();
   var live = S.phase==='ladder';
-  $('rundot').style.display = live ? '' : 'none';
-  $('statusword').textContent = S.phase==='idle' ? 'READY' : (S.phase==='secured' ? 'SECURED' : ('PLAN '+S.plan));
-  $('plabel').textContent = S.phase==='ladder' ? ('AIRWAY · PLAN '+S.plan+' · DAS 2025') : 'AIRWAY · DAS 2025 LADDER';
-  $('resetbtn').textContent = S.resetArm ? 'SURE?' : 'RESET';
-  $('resetbtn').style.background = S.resetArm ? 'var(--red)' : 'var(--card)';
-  $('resetbtn').style.color = S.resetArm ? '#fff' : 'var(--ink2)';
+
+  /* ---- CASE SHELL chrome (SHELL.md) ---- */
+  var caseOn = S.phase!=='idle';
+  $('statusword').style.display = caseOn ? 'none' : '';
+  $('statusword').textContent = 'READY';
+  $('casepill').style.display = caseOn ? '' : 'none';
+  if(caseOn){
+    $('pillclock').textContent = clk();
+    $('pilltag').textContent = S.phase==='secured' ? 'SECURED' : 'APNEA';
+  }
+  $('shellstrip').style.display = live ? 'flex' : 'none';
+  $('shelldock').style.display = live ? 'flex' : 'none';
+  document.body.classList.toggle('dockon', live);
+  $('toolmenu').style.display = S.toolMenuOpen ? '' : 'none';
+  $('moremenu').style.display = S.moreMenuOpen ? '' : 'none';
+  $('shelltoast').style.display = S.toast ? 'flex' : 'none';
+
+  /* Reset — one armed state, two entry points (⋯ menu row on a phone, the
+     inline red button ≥768px). Both are the same two-tap SURE? pattern. */
+  $('resetbtn').textContent = S.resetArm ? 'SURE? — tap again to clear' : 'Reset for next case';
+  $('resetwide').textContent = S.resetArm ? 'SURE?' : 'RESET';
+  $('resetwide').style.background = S.resetArm ? 'var(--red)' : '';
+  $('resetwide').style.color = S.resetArm ? '#fff' : '';
+
+  /* Tele-ED (layer 5.2): idempotent — the button collapses to a quiet
+     confirmation row once tapped, and never asks twice. */
+  $('telebtn').style.display = S.teleAt===null ? '' : 'none';
+  $('teledone').style.display = S.teleAt===null ? 'none' : '';
+  if(S.teleAt!==null) $('teleat').textContent = S.teleAt;
+
+  $('plabel').textContent = live ? ('AIRWAY · PLAN '+S.plan+' · DAS 2025')
+                          : S.phase==='secured' ? 'AIRWAY · SECURED · DAS 2025'
+                          : 'AIRWAY · DAS 2025 LADDER';
 
   $('preinduce').innerHTML = preInduce();
   $('primetext').innerHTML = 'Scalpel, bougie and a '+DAS.fona.tube+' tube out of the bag now, while Plans A–C are still running.';
@@ -385,12 +554,56 @@ function paint(){
   $('ladder').style.display = live ? '' : 'none';
   $('secured').style.display = S.phase==='secured' ? '' : 'none';
   if(live){
-    $('planbox').innerHTML = planBox();
+    setHTML($('planbox'), planBox());
     $('planbox').style.border = (S.plan==='D') ? '2px solid var(--red)' : '1px solid var(--line)';
     $('primebox').style.display = (S.primed || S.plan==='D') ? 'none' : 'flex';
     $('customrow').style.display = S.showCustom ? 'flex' : 'none';
+
+    /* ---- shell strip chip + dock (layers 2/6): timer and action are one
+       target. The SAT CHECK cadence counts down from DAS.satCheckSec (an
+       operational prompt, not a DAS value) and escalates to DUE NOW red at
+       zero; SAT ✓ / the chip itself satisfies it. No number is ever shown —
+       the prompt is "call the saturation out loud", not a threshold. ---- */
+    var anchor = S.satAnchor || S.t0 || Date.now();
+    var remain = DAS.satCheckSec - (Date.now()-anchor)/1000;
+    var due = remain<=0;
+    var satTxt = due ? 'DUE NOW' : fmt(remain);
+    $('chipsatclock').textContent = satTxt;
+    $('chipsat').classList.toggle('due', due);
+    $('stripsatclock').textContent = satTxt;
+    $('stripsatclock').classList.toggle('due', due);
+
+    /* LOG ticker — newest event, one line, tap for the timeline. */
+    var hasEv = S.events.length>0;
+    $('ticker').style.display = hasEv ? 'flex' : 'none';
+    if(hasEv) $('tickertext').textContent = S.events[0].t+' · '+String(S.events[0].label).replace(/<[^>]*>/g,'');
   }
   if(S.phase==='secured') $('securedat').textContent = S.securedAt || clk();
+
+  /* Attempt-result picker (layer 7). The FAILED consequence line follows the
+     rung it will log against — the same between-attempts instruction the plan
+     card gives, never a saturation number. */
+  $('sheet').style.display = S.pkOpen ? 'flex' : 'none';
+  if(S.pkOpen){
+    var sub = S.plan==='A' ? 'Logs intubation attempt #'+(S.a+1)+' — change something before the next'
+            : S.plan==='B' ? 'Logs SAD attempt #'+(S.b+1)+' — change the size or the device'
+            : S.plan==='C' ? 'Logs facemask attempt #'+(S.c+1)+' — two people, four hands'
+            : 'Plan D is running — work the scalpel-bougie-tube sequence on screen';
+    $('pkfailsub').textContent = sub;
+    $('pkcicosub').textContent = S.plan==='D' ? 'Already declared — the eFONA sequence is on screen'
+      : '“Cannot intubate, cannot oxygenate” — front-of-neck airway, Plan D';
+  }
+
+  /* Timeline (layer 8). */
+  $('shelltl').style.display = S.tlOpen ? 'flex' : 'none';
+  if(S.tlOpen){
+    var th='';
+    if(!S.events.length) th='<div style="font-size:13.5px;color:var(--ink2);padding:10px 0">Nothing logged yet.</div>';
+    else for(var ti=0;ti<S.events.length;ti++){ var ev=S.events[ti];
+      th+='<div class="shelltlrow"><span class="tt">'+ev.t+'</span><span class="cdot" style="background:'+(ev.c||EV.gray)+
+          '"></span><span class="lbl">'+ev.label+'</span></div>'; }
+    setHTML($('tlrows'), th);
+  }
 
   var h='';
   for(var i=0;i<ACC.length;i++){
@@ -399,68 +612,144 @@ function paint(){
        '<span style="color:var(--ink2)">'+(open?'−':'+')+'</span></button>'+
        (open?'<div class="accb">'+a.b()+'</div>':'')+'</div>';
   }
-  $('accordions').innerHTML=h;
+  setHTML($('accordions'), h);
   $('verstamp').textContent='v'+DAS.version+' · last reviewed '+DAS.lastReviewed+' · {{SITE.abbrev}} · DAS 2025';
 }
 
-function toPlan(p, words){ S.plan=p; if(words) log(words); paint(); }
+function toPlan(p, words){ S.plan=p; if(words) log(words, EV.red); paint(); }
+
+/* ---- the ladder's actions, ONE implementation each --------------------------
+   The on-page plan buttons and the shell's picker both land here (SHELL.md:
+   the shell moves where a target sits, never what it does). */
+function doAttempt(){
+  if(S.plan==='A'){
+    S.a++;
+    log(S.a>DAS.attempts.planA ? ('Plan A — SENIOR attempt #'+S.a) : ('Plan A — intubation attempt #'+S.a), EV.amber);
+    if(S.a>=DAS.attempts.planA+DAS.attempts.planASenior) toPlan('B',DAS.attempts.planA+' plus '+DAS.attempts.planASenior+' attempts used — failed intubation declared, moving to Plan B');
+  } else if(S.plan==='B'){
+    S.b++; log('Plan B — SAD insertion attempt #'+S.b, EV.amber);
+    if(S.b>=DAS.attempts.planB) toPlan('C',DAS.attempts.planB+' SAD attempts used — failed SAD ventilation declared, moving to Plan C');
+  } else if(S.plan==='C'){
+    S.c++; log('Plan C — facemask attempt #'+S.c, EV.amber);
+    if(S.c>=DAS.attempts.planC) toPlan('D',DAS.attempts.planC+' facemask attempts used — CANNOT INTUBATE CANNOT OXYGENATE declared');
+  }
+  /* Plan D has no attempt counter — the eFONA stepper is the record there. */
+  paint();
+}
+function doSecured(){ S.phase='secured'; S.securedAt=clk(); log('Airway secured — capnography confirmed', EV.green); paint(); }
+function doCico(){
+  if(S.plan==='D'){ paint(); return; }   /* already declared — nothing to re-log */
+  toPlan('D','CANNOT INTUBATE CANNOT OXYGENATE declared — Plan D');
+}
+/* SAT ✓ — the cadence's satisfying action. Logs that the saturation was
+   checked and called out loud, and restarts the countdown. Deliberately no
+   value and no threshold: DAS 2025 publishes none. */
+function doSatCheck(){ S.satAnchor=Date.now(); log('Saturation checked — called out loud', EV.blue); paint(); }
+/* DESAT — logs the desaturation event, nothing more. No number, ever. */
+function doDesat(){ log('Desaturation — called out loud, reoxygenate', EV.purple); paint(); }
+
+/* Two-tap SURE? reset, shared by both entry points (⋯ menu row on a phone,
+   inline red button ≥768px). The menu stays open while armed so the second
+   tap lands on the same control. */
+function armReset(){
+  if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){S.resetArm=false;paint();},2500); return; }
+  /* One case, one reset: sweep the shared lrh- namespace (preserving the
+     lrh-pref- preferences) so a reset here clears the shared case clock and
+     every other tool's case state too — the same sweep arrest/tca run
+     (CASE-STATE.md). Then re-init this tool in memory, with the amber
+     cleared toast (SHELL.md layer 9) up until OK. */
+  CS.sweep();
+  S={theme:S.theme,phase:'idle',t0:null,plan:'A',a:0,b:0,c:0,fonaStep:0,primed:false,stopThink:false,
+     events:[],open:null,resetArm:false,securedAt:null,showCustom:false,
+     satAnchor:null,teleAt:null,pkOpen:false,
+     toolMenuOpen:false,moreMenuOpen:false,tlOpen:false,toast:true};
+  $('customin').value=''; paint();
+}
+
+/* Back link: default to the manual hub, but if we were opened from a specific
+   tool (?from=<slug>), route back there instead — same pattern as /arrest/. */
+(function(){
+  var m=/[?&]from=([a-z-]+)/.exec(location.search||''); var f=m&&m[1];
+  if(!f||f==='home'||f==='tool') return;
+  var b=$('backlink'), bw=$('backlinkwide');
+  if(b) b.href='../'+f+'/?from=tool';
+  if(bw){ bw.href='../'+f+'/?from=tool'; bw.textContent=f.toUpperCase()+' ›'; }
+})();
 
 document.addEventListener('click', function(e){
+  /* Tap anywhere else closes an open bar dropdown (never the timeline — that
+     has its own ✕). The reset row keeps working because it lives inside
+     .shellmenu, which is exempt from the close. */
+  if(S.toolMenuOpen||S.moreMenuOpen){
+    var inMenu = e.target.closest && (e.target.closest('.shellmenu')||e.target.closest('#toolbtn')||e.target.closest('#menubtn'));
+    if(!inMenu){ S.toolMenuOpen=false; S.moreMenuOpen=false; paint(); }
+  }
+  /* Scrim tap closes the picker without logging. */
+  if(e.target===$('sheet')){ S.pkOpen=false; paint(); return; }
+
   var t=e.target.closest ? e.target.closest('button') : null;
   if(!t) return;
   var id=t.id, acc=t.getAttribute('data-acc'), st=t.getAttribute('data-st');
 
   if(acc){ S.open = (S.open===acc ? null : acc); paint(); return; }
 
-  if(id==='resetbtn'){
-    if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){S.resetArm=false;paint();},2500); return; }
-    /* One case, one reset: sweep the shared lrh- namespace (preserving the
-       lrh-pref- preferences) so a reset here clears the shared case clock and
-       every other tool's case state too — the same sweep arrest/tca run
-       (CASE-STATE.md). Then re-init this tool in memory. */
-    CS.sweep();
-    S={theme:S.theme,phase:'idle',t0:null,plan:'A',a:0,b:0,c:0,fonaStep:0,primed:false,stopThink:false,
-       events:[],open:null,resetArm:false,securedAt:null,showCustom:false};
-    $('customin').value=''; paint(); return;
-  }
-  if(id==='startbtn'){
-    S.phase='ladder'; S.t0=Date.now(); S.plan='A';
-    CS.markCaseStarted();
-    log('Difficult airway declared — help called, eFONA primed in parallel'); paint(); return;
-  }
-  if(id==='primebtn'){ S.primed=true; log('eFONA kit primed — scalpel, bougie, '+DAS.fona.tube+' tube out'); paint(); return; }
+  /* ---- shell bar: tool switcher, ⋯ overflow, pill, timeline, toast ---- */
+  if(id==='toolbtn'){ S.toolMenuOpen=!S.toolMenuOpen; S.moreMenuOpen=false; paint(); return; }
+  if(id==='menubtn'){ S.moreMenuOpen=!S.moreMenuOpen; S.toolMenuOpen=false; paint(); return; }
+  if(id==='tlbtn'||id==='casepill'||id==='ticker'){ S.tlOpen=true; S.moreMenuOpen=false; S.toolMenuOpen=false; paint(); return; }
+  if(id==='tlbtnwide'){ S.tlOpen=!S.tlOpen; paint(); return; }
+  if(id==='tlclose'){ S.tlOpen=false; paint(); return; }
+  if(id==='toastok'){ S.toast=false; paint(); return; }
+  if(id==='resetbtn'||id==='resetwide'){ armReset(); return; }
 
-  if(id==='attempt'){
-    if(S.plan==='A'){
-      S.a++;
-      log(S.a>DAS.attempts.planA ? ('Plan A — SENIOR attempt #'+S.a) : ('Plan A — intubation attempt #'+S.a));
-      if(S.a>=DAS.attempts.planA+DAS.attempts.planASenior) toPlan('B',DAS.attempts.planA+' plus '+DAS.attempts.planASenior+' attempts used — failed intubation declared, moving to Plan B');
-    } else if(S.plan==='B'){
-      S.b++; log('Plan B — SAD insertion attempt #'+S.b);
-      if(S.b>=DAS.attempts.planB) toPlan('C',DAS.attempts.planB+' SAD attempts used — failed SAD ventilation declared, moving to Plan C');
-    } else if(S.plan==='C'){
-      S.c++; log('Plan C — facemask attempt #'+S.c);
-      if(S.c>=DAS.attempts.planC) toPlan('D',DAS.attempts.planC+' facemask attempts used — CANNOT INTUBATE CANNOT OXYGENATE declared');
-    }
+  /* ---- tele-ED (layer 5.2): idempotent, logs the request time ---- */
+  if(id==='telebtn'){
+    if(S.teleAt!==null) return;
+    S.teleAt = clk();
+    log('Tele-ED activated', EV.blue);
     paint(); return;
   }
+
+  if(id==='startbtn'){
+    S.phase='ladder'; S.t0=Date.now(); S.satAnchor=Date.now(); S.plan='A';
+    CS.markCaseStarted();
+    log('Difficult airway declared — help called, eFONA primed in parallel', EV.red);
+    /* Seed the timeline with a pre-case tele-ED activation (SHELL.md). */
+    if(S.teleAt!==null) log('Tele-ED already on the line', EV.blue);
+    paint(); return;
+  }
+  if(id==='primebtn'){ S.primed=true; log('eFONA kit primed — scalpel, bougie, '+DAS.fona.tube+' tube out', EV.amber); paint(); return; }
+
+  /* ---- shell dock/strip slots (layer 6): amber opens the picker; purple and
+     blue log. One action, several homes — same handlers as the plan card. ---- */
+  if(id==='dockattempt'||id==='stripattempt'){ S.pkOpen=true; paint(); return; }
+  if(id==='dockdesat'||id==='stripdesat'){ doDesat(); return; }
+  if(id==='docksat'||id==='stripsat'||id==='chipsat'){ doSatCheck(); return; }
+
+  /* ---- the picker's three results (layer 7) ---- */
+  if(id==='pkclose'||id==='pkcancel'){ S.pkOpen=false; paint(); return; }
+  if(id==='pkpass'){ S.pkOpen=false; doSecured(); return; }
+  if(id==='pkfail'){ S.pkOpen=false; doAttempt(); return; }
+  if(id==='pkcico'){ S.pkOpen=false; doCico(); return; }
+
+  if(id==='attempt'){ doAttempt(); return; }
   if(id==='failA'){ toPlan('B','Failed intubation declared — moving to Plan B'); return; }
   if(id==='failB'){ toPlan('C','Failed SAD ventilation declared — moving to Plan C'); return; }
-  if(id==='worksB'){ S.stopThink=true; log('Plan B — SAD ventilating. Stop and think.'); paint(); return; }
-  if(id==='worksC'){ log('Plan C — facemask ventilating. Stop, think, call seniors, consider waking.'); paint(); return; }
-  if(id==='cico'){ toPlan('D','CANNOT INTUBATE CANNOT OXYGENATE declared — Plan D'); return; }
+  if(id==='worksB'){ S.stopThink=true; log('Plan B — SAD ventilating. Stop and think.', EV.blue); paint(); return; }
+  if(id==='worksC'){ log('Plan C — facemask ventilating. Stop, think, call seniors, consider waking.', EV.blue); paint(); return; }
+  if(id==='cico'){ doCico(); return; }
 
-  if(st==='wake'){ log('Stop and think → wake the patient (the default option)'); S.phase='secured'; S.securedAt=clk(); paint(); return; }
-  if(st==='proceed'){ log('Stop and think → proceed using the SAD (high risk)'); S.phase='secured'; S.securedAt=clk(); paint(); return; }
-  if(st==='viaSAD'){ log('Stop and think → intubate through the SAD — '+numWord(DAS.attempts.planBviaSAD).toUpperCase()+' attempt, flexible bronchoscopy'); S.stopThink=false; paint(); return; }
+  if(st==='wake'){ log('Stop and think → wake the patient (the default option)', EV.green); S.phase='secured'; S.securedAt=clk(); paint(); return; }
+  if(st==='proceed'){ log('Stop and think → proceed using the SAD (high risk)', EV.green); S.phase='secured'; S.securedAt=clk(); paint(); return; }
+  if(st==='viaSAD'){ log('Stop and think → intubate through the SAD — '+numWord(DAS.attempts.planBviaSAD).toUpperCase()+' attempt, flexible bronchoscopy', EV.gray); S.stopThink=false; paint(); return; }
   if(st==='fona'){ toPlan('D','Stop and think → front-of-neck airway'); return; }
 
-  if(id==='fonanext'){ S.fonaStep++; log('eFONA step '+S.fonaStep+' done'); paint(); return; }
+  if(id==='fonanext'){ S.fonaStep++; log('eFONA step '+S.fonaStep+' done', EV.amber); paint(); return; }
   if(id==='fonaback'){ S.fonaStep=Math.max(0,S.fonaStep-1); paint(); return; }
-  if(id==='fonadone'){ S.phase='secured'; S.securedAt=clk(); log('eFONA complete — tube in, capnography confirmed'); paint(); return; }
+  if(id==='fonadone'){ S.phase='secured'; S.securedAt=clk(); log('eFONA complete — tube in, capnography confirmed', EV.green); paint(); return; }
 
-  if(id==='securedbtn'){ S.phase='secured'; S.securedAt=clk(); log('Airway secured — capnography confirmed'); paint(); return; }
-  if(id==='resumebtn'){ S.phase='ladder'; log('Airway lost again — back to the ladder'); paint(); return; }
+  if(id==='securedbtn'){ doSecured(); return; }
+  if(id==='resumebtn'){ S.phase='ladder'; S.satAnchor=Date.now(); log('Airway lost again — back to the ladder', EV.red); paint(); return; }
 
   if(id==='logtoggle'){ S.showCustom=!S.showCustom; paint(); if(S.showCustom) setTimeout(function(){$('customin').focus();},30); return; }
   if(id==='customlog'){ submitCustom(); return; }

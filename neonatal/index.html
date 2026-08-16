@@ -36,27 +36,125 @@
 .sat .l{font-size:12.5px;color:var(--ink2);line-height:1.35}
 .rev{margin:12px 14px 0;border:2px solid var(--sev-caution);background:var(--note-bg);color:var(--note-tx);
      padding:11px 13px;border-radius:12px;font-size:13px;line-height:1.45}
+button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
+/* SHELL.md layer 5 (2026-08-15 review): while a case runs, the OPERATING CARD
+   (the pathway box + the SpO₂-by-minute row) leads the scroll area; the tele
+   slot compacts beneath it, and the routing sentence + review banner follow as
+   reference — the running screen never requires scrolling past reference to
+   reach the thing being operated. Flex order only, so the DOM order keeps
+   serving the idle screen (routing question and review banner ahead of START). */
+.wrap{display:flex;flex-direction:column}
+body.running #live,body.running #stable{order:1}
+body.running #telebtn,body.running #teledone{order:2}
+body.running #scopebar{order:3}
+body.running #revbanner{order:4}
+body.running #refhead{order:5}
+body.running #accordions{order:6}
+body.running #foot{order:7}
+body.running .shelltele{padding:10px 12px;font-size:14px}
 </style>
 </head>
 <body data-theme="dark">
 <h1 class="sr-only">Neonatal Resuscitation — Live Engine</h1>
+
+<!-- ============ CASE SHELL layer 1 — app bar (SHELL.md) ============
+     One 56px row (60px ≥768px), sticky, never wraps. Left: back + the tool
+     name as the tool-switcher dropdown. Center: the master case-clock pill
+     while a case runs (tap = timeline), tagged NRP per SHELL.md's per-tool
+     table. Right: ⋯ overflow on a phone; TIMELINE / FEEDBACK / RESET inline
+     ≥768px. Mirrors arrest/, the reference implementation. -->
+<div class="shellbar" id="shellbar">
+  <a class="shellback shell-phone" id="backlink" href="../?from=tool" aria-label="Back to the manual">‹</a>
+  <a class="shellback shell-wide" id="backlinkwide" href="../?from=tool">MANUAL ›</a>
+  <button class="shelltool" id="toolbtn" type="button" aria-haspopup="true"><span class="shellsq" style="background:var(--blue)"></span>NEONATAL<span class="shellcaret">▼</span></button>
+  <div class="shellbarmid">
+    <button class="shellpill" id="casepill" type="button" style="display:none" aria-label="Case clock — open the timeline"><span class="dot"></span><span class="shellpilltime" id="pillclock">0:00</span><span class="shellpilltag" id="pilltag">NRP</span></button>
+    <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:700;letter-spacing:.06em">READY</span>
+  </div>
+  <span class="shell-wide" style="gap:6px;align-items:center">
+    <button class="ghost" id="tlbtnwide" type="button">TIMELINE</button>
+    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Neonatal" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+    <button class="ghost shellreset" id="resetwide" type="button">RESET</button>
+  </span>
+  <button class="shellmore shell-phone" id="menubtn" type="button" aria-label="Menu">⋯</button>
+</div>
+
+<!-- tool switcher: the six live engines + manual home. Plain links —
+     cross-tool case state (clock, log) survives navigation per CASE-STATE.md,
+     so switching tools mid-case is safe by design. Neonatal is the current
+     tool here, marked with its own blue square. -->
+<div class="shellmenu left" id="toolmenu" style="display:none">
+  <a class="shellmenurow" href="../arrest/"><span class="shellsq" style="background:var(--red)"></span><span style="flex:1">Arrest</span><span class="shellmenusub">CODE</span></a>
+  <a class="shellmenurow" href="../tca/"><span class="shellsq" style="background:#E08A3C"></span><span style="flex:1">TCA</span><span class="shellmenusub">TCA</span></a>
+  <a class="shellmenurow" href="../airway/"><span class="shellsq" style="background:#2FA372"></span><span style="flex:1">Airway</span><span class="shellmenusub">RSI</span></a>
+  <a class="shellmenurow on" href="../neonatal/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Neonatal</span><span class="shellmenusub">NRP</span></a>
+  <a class="shellmenurow" href="../pph/"><span class="shellsq" style="background:#E75480"></span><span style="flex:1">PPH</span><span class="shellmenusub">PPH</span></a>
+  <a class="shellmenurow" href="../dystocia/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Dystocia</span><span class="shellmenusub">OB</span></a>
+  <div class="shellmenudiv"></div>
+  <a class="shellmenurow" href="../?from=tool"><span class="shellsq" style="background:var(--gray)"></span><span style="flex:1">Manual home</span></a>
+</div>
+
+<!-- ⋯ overflow (phone): timeline, feedback, then reset in red — the same
+     two-tap SURE? reset the wide button runs (SHELL.md layer 9). -->
+<div class="shellmenu right" id="moremenu" style="display:none">
+  <button class="shellmenurow" id="tlbtn" type="button">Case timeline</button>
+  <a class="shellmenurow" id="feedbackmenu" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Neonatal">Feedback</a>
+  <div class="shellmenudiv"></div>
+  <button class="shellmenurow danger" id="resetbtn" type="button">Reset for next case</button>
+</div>
+
+<!-- ============ CASE SHELL layers 2+3 — cadence strip + metronome ============
+     Running only. Timers and doses ride the action buttons on BOTH widths
+     (SHELL.md layer 2, 2026-08-15): the HR CHECK button embeds the countdown
+     of the tool's own cycle (SITE.cycle: 30 s initial steps, 30 s of
+     chest-rising PPV, 60 s compression cycles) as its second mono line — red
+     DUE NOW at zero — and EPI GIVEN carries the computed dose in its label
+     when a weight is set. HR CHECK has a dock slot, so it gets NO duplicate
+     phone chip; on a phone this strip holds only the metronome row. ≥768px
+     the three dock buttons render here, metronome right-aligned. NRP uses a
+     continuous vent cadence and has NO airway toggle (SHELL.md layer 3). -->
+<div class="shellstrip" id="shellstrip" style="display:none">
+  <button class="shelldockbtn scheme-amber shell-wide" id="stripppv" type="button" style="flex:none">PPV ✓</button>
+  <button class="shelldockbtn scheme-purple shell-wide" id="stripepi" type="button" style="flex:none"><span id="stripepilabel">EPI GIVEN</span></button>
+  <button class="shelldockbtn scheme-blue shell-wide" id="striphr" type="button" style="flex:none">HR CHECK<span class="shelldockclock" id="striphrclock">0:30</span></button>
+  <div class="shellmetgroup" id="metgroup">
+    <span class="shellmetdot" id="metdot"></span>
+    <span style="min-width:0"><span class="shellmetmode" id="metmode">VENT · 50</span><br><span class="shellmetstatus" id="metstatus">ventilate</span></span>
+    <span style="flex:1"></span>
+    <button class="shellsmallchip" id="mutechip" type="button">MUTE</button>
+  </div>
+</div>
+
+<!-- ============ CASE SHELL layer 4 — weight strip ============
+     Phone: collapsed 44px row, tap to expand. ≥768px: expanded until DONE ✓,
+     then a slim "✎ tap to change" row. The inputs are the pre-shell ones:
+     the grams-aware weight box (>=300 reads as grams — normW) and gestation
+     in weeks AND days (issue #144), kept together because either number can
+     put a baby in the wrap band (issue #143). -->
+<button class="shellweight" id="wtoggle" type="button">
+  <span class="k">WEIGHT</span>
+  <span class="v unset" id="wlabel">not set</span>
+  <span class="m" id="wmark">▼</span>
+</button>
+<div class="shellweightform" id="wform" style="display:none">
+  <input class="inp" id="wIn" inputmode="decimal" style="width:70px" aria-label="Birth weight in kg or g">
+  <span style="font-size:13px;color:var(--ink2)">kg or g</span>
+  <span class="sec" style="margin-left:6px">GA</span>
+  <input class="inp" id="gIn" inputmode="numeric" style="width:52px" aria-label="Gestational age, completed weeks">
+  <span style="font-size:15px;font-weight:800;color:var(--ink2)">+</span>
+  <input class="inp" id="gdIn" inputmode="numeric" style="width:44px" aria-label="Gestational age, days beyond the completed week">
+  <span style="font-size:13px;color:var(--ink2)">wk+d</span>
+  <button class="ghost" id="wdone" type="button" style="min-height:38px;border-color:var(--green);color:var(--green)">DONE ✓</button>
+  <span id="wnote" style="font-size:13px;font-weight:700;color:var(--accent)">enter weight</span>
+  <span id="werr" style="display:none;flex-basis:100%;font-size:12.5px;font-weight:700;color:var(--red)"></span>
+  <span id="gerr" style="display:none;flex-basis:100%;font-size:12.5px;font-weight:700;color:var(--red)"></span>
+</div>
+
 <div class="wrap">
 
-  <div class="hdr">
-    <div style="flex:1;min-width:0">
-      <div id="plabel" style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--accent)">NEONATAL · NRP</div>
-      <div style="display:flex;align-items:baseline;gap:8px">
-        <span class="mono" id="clock" style="font-size:26px;font-weight:700">0:00</span>
-        <span id="rundot" style="display:none"><span class="dot"></span></span>
-        <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:600">READY</span>
-      </div>
-      <div id="donesum" style="display:none"></div>
-      <div id="caseclock" style="display:none"></div>
-    </div>
-    <a class="ghost" id="backlink" href="../?from=tool" style="display:inline-flex;align-items:center;text-decoration:none">&#8962; MANUAL</a>
-    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Neonatal" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
-    <button class="ghost" id="resetbtn" type="button">RESET</button>
-  </div>
+  <div class="plabel" id="plabel" style="margin-top:10px">NEONATAL · NRP</div>
+  <div id="donesum" style="display:none"></div>
+  <div id="caseclock" style="display:none"></div>
 
   <!-- The routing sentence, compressed to one line so it doesn't stack with the
        review banner below it into a wall of prose ahead of the START button —
@@ -88,27 +186,29 @@
     </div>
   </div>
 
+  <!-- ============ CASE SHELL layer 5 — the tele slot ============
+       Face up from the first screen, idle or running. This tool's line is
+       tele-NICU, not tele-ED (SITE.local.teleNicu) — the wording is the
+       tool's own, the slot behavior is the shell's: one tap logs the request
+       time and collapses to a quiet confirmation row. Idempotent — never a
+       second dialog. Idle: after the START button (prompt → start → tele);
+       running: compacted beneath the operating card (body.running order). -->
+  <button class="shelltele" id="telebtn" type="button">📞 ACTIVATE TELE-NICU<span class="sub" id="telesub">one tap, the earlier the better — logs the request time</span></button>
+  <div class="shellteledone" id="teledone" style="display:none">📞 TELE-NICU ACTIVATED AT <span class="mono" id="teleat">0:00</span> ✓</div>
+
   <div id="live" style="display:none">
-    <!-- weight / gestation drive every dose and every tube size on this screen -->
-    <div class="card" style="display:flex;gap:8px;align-items:center;margin-top:12px;padding:10px 12px;flex-wrap:wrap">
-      <span class="sec">WEIGHT</span>
-      <input class="inp" id="wIn" inputmode="decimal" style="width:70px" aria-label="Birth weight in kg or g">
-      <span style="font-size:13px;color:var(--ink2)">kg or g</span>
-      <span class="sec" style="margin-left:6px">GA</span>
-      <input class="inp" id="gIn" inputmode="numeric" style="width:52px" aria-label="Gestational age, completed weeks">
-      <span style="font-size:15px;font-weight:800;color:var(--ink2)">+</span>
-      <input class="inp" id="gdIn" inputmode="numeric" style="width:44px" aria-label="Gestational age, days beyond the completed week">
-      <span style="font-size:13px;color:var(--ink2)">wk+d</span>
-      <span id="wnote" style="font-size:13px;font-weight:700;color:var(--accent)">enter weight</span>
-      <span id="werr" style="display:none;flex-basis:100%;font-size:12.5px;font-weight:700;color:var(--red)"></span>
-      <span id="gerr" style="display:none;flex-basis:100%;font-size:12.5px;font-weight:700;color:var(--red)"></span>
-    </div>
-
-    <div class="card" id="pacerbox" style="margin-top:10px;padding:10px 12px"></div>
-
+    <!-- weight / gestation moved to the shell's weight strip (layer 4, above
+         the wrap) — they drive every dose and every tube size on this screen
+         and are now reachable before the birth is stamped, same as arrest/.
+         Order inside the running screen (SHELL.md layer 5, 2026-08-15): the
+         OPERATING CARD first — the pathway box the tool is driven by, then
+         the SpO₂-target-for-this-minute row — with the pacer controls and
+         the log row beneath. -->
     <div class="card" id="phasebox" style="margin-top:10px;padding:14px;border-radius:16px"></div>
 
     <div class="sat" id="satbox"></div>
+
+    <div class="card" id="pacerbox" style="margin-top:8px;padding:10px 12px"></div>
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
       <button class="btn" id="logtoggle" type="button" style="min-height:52px;font:700 14px var(--sans)">LOG IT</button>
@@ -132,13 +232,66 @@
 
   <div id="apgarmount"></div>
 
-  <div class="sec" style="margin-top:18px;letter-spacing:.12em">REFERENCE — TAP TO OPEN</div>
+  <div class="sec" id="refhead" style="margin-top:18px;letter-spacing:.12em">REFERENCE — TAP TO OPEN</div>
   <div id="accordions"></div>
 
-  <div style="margin-top:16px;font-size:12px;color:var(--ink2);text-align:center;line-height:1.5">
+  <div id="foot" style="margin-top:16px;font-size:12px;color:var(--ink2);text-align:center;line-height:1.5">
     Cognitive aid — verify against your own equipment and local policy.<br>
     <span id="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment.
   </div>
+</div>
+
+<!-- ============ CASE SHELL layer 7 — the heart-rate picker ============
+     Bottom sheet on a phone, centered modal ≥768px (shared .sheetwrap/.sheet).
+     The three options are the tool's OWN heart-rate bands (SITE.hr) carrying
+     data-hr, so picking drives the SAME band state machine the on-page grid
+     drives — never a second copy of the logic. Labels are filled from config
+     at init. Option colors per SHELL.md: red = worst (<60), slate = middle
+     (60–99), blue = best (≥100). Opening it also starts the metronome's
+     check pause; ✕ closes without logging. -->
+<div id="sheet" class="sheetwrap" style="display:none">
+  <div class="sheet" id="sheetinner">
+    <div class="sheethead"><span class="sec" style="letter-spacing:.12em">AT THE HR CHECK — SAY THE NUMBER OUT LOUD</span><button class="shellx" id="pkclose" type="button" aria-label="Close without logging">✕</button></div>
+    <button class="rcbtn" id="pklow" data-hr="low" type="button" style="background:var(--red);display:block"></button>
+    <button class="rcbtn" id="pkmid" data-hr="mid" type="button" style="background:var(--gray);margin-top:10px;display:block"></button>
+    <button class="rcbtn" id="pkgood" data-hr="good" type="button" style="background:var(--blue);margin-top:10px;display:block"></button>
+    <div class="say" style="border-color:var(--blue)"><b>Apnea or gasping?</b> Start PPV now, whatever the rate is.</div>
+    <button id="pkcancel" type="button" style="width:100%;margin-top:12px;min-height:48px;background:none;border:1px solid var(--line);border-radius:12px;color:var(--ink2);font:700 13px var(--sans);letter-spacing:.06em;cursor:pointer">CANCEL — KEEP WORKING</button>
+  </div>
+</div>
+
+<!-- ============ CASE SHELL layer 6 — pinned action dock (phone, running) ====
+     Three thumb-zone buttons, semantic slot colors identical across every
+     tool: amber = intervention (PPV ✓), purple = drug (EPI GIVEN — logged
+     with the computed dose when a weight is set), blue = assessment
+     (HR CHECK — opens the picker). The LOG ticker rides on top: newest event
+     + LOG ▲ → timeline. ≥768px there is no dock — the same three buttons
+     live in the strip. -->
+<div class="shelldock" id="shelldock" style="display:none">
+  <button class="shellticker" id="ticker" type="button" style="display:none"><span class="tk" id="tickertext"></span><span class="lg">LOG ▲</span></button>
+  <div class="shelldockrow">
+    <button class="shelldockbtn scheme-amber" id="dockppv" type="button">PPV ✓</button>
+    <button class="shelldockbtn scheme-purple" id="dockepi" type="button"><span id="dockepilabel">EPI GIVEN</span></button>
+    <button class="shelldockbtn scheme-blue" id="dockhr" type="button">HR CHECK<span class="shelldockclock" id="dockhrclock">0:30</span></button>
+  </div>
+</div>
+
+<!-- ============ CASE SHELL layer 8 — case timeline ============
+     Every action auto-logs with the case-clock stamp and a category color dot.
+     Bottom sheet on a phone; 320px right panel ≥768px. In-memory view of
+     S.events only — neonatal/ is not a contracted writer of lrh-case-log
+     (CASE-STATE.md), so nothing here persists. Replaces the old EVENT LOG
+     accordion as the one view of the log. -->
+<div class="shelltl" id="shelltl" style="display:none">
+  <div class="shelltlhead"><span class="t">CASE TIMELINE</span><button class="shellx" id="tlclose" type="button" aria-label="Close the timeline">✕</button></div>
+  <div class="shelltlbody" id="tlrows"></div>
+  <div class="shelltlfoot">device only · no identifiers · cleared on reset</div>
+</div>
+
+<!-- ============ CASE SHELL layer 9 — the cleared toast after RESET ============ -->
+<div class="shelltoast" id="shelltoast" style="display:none">
+  <span style="flex:1">Reset — the clock, the Apgar marks, the timers and the log are clean for a new case.</span>
+  <button class="shelltoastok" id="toastok" type="button">OK</button>
 </div>
 
 <script>
@@ -165,9 +318,20 @@
 
    So: the review banner stays on this screen until a clinician signs the
    content off against NRP 9th edition. See SITE.review.
+
+   v0.3.1 (2026-08-15): rebuilt the chrome onto the case shell (SHELL.md) —
+   app bar + tool switcher, NRP case pill, action dock (PPV ✓ / EPI GIVEN /
+   HR CHECK) with the 30-second countdown and the computed epi dose riding
+   the buttons themselves (layer 2, 2026-08-15 revision — no duplicate phone
+   chip), heart-rate picker driving the existing band handlers, VENT
+   metronome row with MUTE (no airway toggle), shell weight strip with the
+   grams-aware input + GA, TELE-NICU slot, operating-card-first ordering
+   while running, timeline sheet/panel replacing the EVENT LOG accordion,
+   reset toast. No clinical value changed; every number still reads from
+   this block, and the review banner behavior is untouched.
    ========================================================================== */
 var SITE = {
-  version:"0.3", lastReviewed:"2026-08-13",
+  version:"0.3.1", lastReviewed:"2026-08-15",
   site:"{{SITE.abbrev}}",
 
   /* The banner is config, not prose, so a site can turn it off in one place once
@@ -217,6 +381,13 @@ var SITE = {
     defaultPpvRate:50,
     cprEventsPerMin:120,
     chimeEverySec:30,
+    /* checkPauseMs is NOT an NRP value — it is the shell metronome's
+       auto-pause while a heart-rate check is being answered (SHELL.md
+       layer 3), the same operational implementation detail as arrest's
+       rcAlertMs: the pacer falls silent for the check and resumes on its
+       own past this, so a slow decision never leaves the room unpaced.
+       The 30-second chime keeps playing — it is the clock, not the pacer. */
+    checkPauseMs:10000,
     note:"Low click = compression. Long tone = squeeze the bag. Double chime every 30 s — call the heart rate out loud."
   },
 
@@ -319,14 +490,32 @@ try{ window.SITE = SITE; }catch(e){}
 var S = { theme:'dark', phase:'idle', birth:null, kg:null, ga:null, gaWk:null, gaD:null,
           step:'initial', ppvOn:false, compressions:false, epiDoses:0,
           lastAssess:null, apgarDone:{}, apgarScores:{}, apgarOpen:null, apgarPick:{}, events:[], open:null, resetArm:false,
-          stableAt:null, showCustom:false };
+          stableAt:null, showCustom:false,
+          /* case shell (SHELL.md) UI state — in-memory only, no new persisted
+             keys. cycleAnchor is the start of the current cycle (the HR CHECK
+             cadence counts down from it); hrOpenAt starts the metronome's
+             check pause; teleAt is the case-clock string on the tele-NICU
+             confirmation row; wOpen/wConfirmed drive the weight strip. */
+          teleAt:null, wOpen:null, wConfirmed:false, pkOpen:false, hrOpenAt:null,
+          cycleAnchor:null, toolMenuOpen:false, moreMenuOpen:false, tlOpen:false, toast:false };
 
 var $=function(i){return document.getElementById(i);};
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function fmt(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
 function since(){ return S.birth ? (Date.now()-S.birth)/1000 : 0; }
 function clk(){ return S.birth ? fmt(since()) : '0:00'; }
-function log(l){ S.events.unshift({t:clk(), label:l}); }
+/* Timeline category colors (SHELL.md layer 8) — the dot next to each event.
+   Semantic, matching the dock slots: amber intervention (PPV), purple drug
+   (epi), blue assessment (HR checks, Apgar); red for phase changes, green for
+   a stable baby, gray for everything operational. Plain hex (not var())
+   because the dot is painted into generated HTML. */
+var EV = { red:'#E5484D', amber:'#F0B429', purple:'#9B7BD4', blue:'#4C8DDA',
+           green:'#3DA35D', gray:'#8FA0B5' };
+/* Every logged event goes to the in-tool case timeline (in-memory S.events,
+   rendered by the shell's timeline sheet/panel). Neonatal/ is not a
+   contracted writer of the shared lrh-case-log (CASE-STATE.md), so the log
+   persists nothing. c is the category color dot (EV.*); gray when unstated. */
+function log(l, c){ S.events.unshift({t:clk(), label:l, c:c||EV.gray}); }
 
 /* ---- Shared case clock (CASE-STATE.md's lrh-case-startms) ------------------
    This tool keeps no other cross-tool state — only theme, same as before. This
@@ -447,6 +636,15 @@ function chime(){ beep(1180, 110, 0.30); setTimeout(function(){ beep(1180, 110, 
 
 function stopPacer(){ if(tick){ clearInterval(tick); tick=null; } tickN=0; }
 
+/* True while the pacer's beats should stay silent: the heart-rate picker is
+   open and still inside the shell's check-pause window (SITE.pacer
+   .checkPauseMs). Past that, the beats resume on their own — a slow decision
+   must not leave the room unpaced. The 30-second chime is exempt: it is
+   measured off the birth clock and marks the reassessment itself. */
+function hrPausing(){
+  return S.pkOpen && S.hrOpenAt && (Date.now()-S.hrOpenAt) < SITE.pacer.checkPauseMs;
+}
+
 function startPacer(){
   stopPacer();
   if(!sound || !AC) return;
@@ -455,13 +653,14 @@ function startPacer(){
     /* 3:1 — three clicks then a breath, four events every two seconds. */
     var everyMs = 60000 / SITE.pacer.cprEventsPerMin;
     tick = setInterval(function(){
+      maybeChime();
+      if(hrPausing()) return; /* silent for the check — the count is untouched */
       if(tickN % 4 === 3) breath(); else click();
       tickN++;
-      maybeChime();
     }, everyMs);
   } else if(S.step==='ppv' || S.step==='assess'){
     var ms = 60000 / ppvRate;
-    tick = setInterval(function(){ breath(); maybeChime(); }, ms);
+    tick = setInterval(function(){ maybeChime(); if(hrPausing()) return; breath(); }, ms);
   } else {
     /* Initial steps: no rate to pace, but the 30-second mark still matters. */
     tick = setInterval(maybeChime, 1000);
@@ -811,15 +1010,8 @@ var ACC=[
       return '<p><b>'+SITE.compressions.perMin+' compressions + '+SITE.compressions.breathsPerMin+' breaths</b> every minute — four events every two seconds.</p>'+
         '<p>Count aloud: “one-and-two-and-three-and-<b>breathe</b>.”</p>'+
         '<p>'+esc(SITE.compressions.technique)+', '+esc(SITE.compressions.site)+' (just below the nipple line), depth '+esc(SITE.compressions.depth)+'.</p>'; } },
-  { id:'log', t:'EVENT LOG', b:function(){
-      if(!S.events.length) return '<p>Nothing logged yet.</p>';
-      var h='';
-      for(var i=0;i<S.events.length;i++){
-        h+='<div style="display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px">'+
-           '<span class="mono" style="font-weight:700;color:var(--accent);flex:none">'+esc(S.events[i].t)+'</span>'+
-           '<span>'+S.events[i].label+'</span></div>';
-      }
-      return h; } },
+  /* The old EVENT LOG accordion is retired — the case shell's timeline
+     (layer 8, #shelltl) is the one view of S.events now. */
   { id:'src', t:'SOURCE &amp; PROVENANCE', b:function(){
       return '<p><b>Primary source.</b> Part 5: Neonatal Resuscitation — 2025 American Heart Association and '+
         'American Academy of Pediatrics Guidelines for Cardiopulmonary Resuscitation and Emergency '+
@@ -871,18 +1063,61 @@ function phiReason(t){
   return null;
 }
 
+/* Repaint an innerHTML target only when its content actually changed — the
+   500 ms paint loop must not reset scroll position or churn the DOM. */
+function setHTML(el, h){ if(el._h!==h){ el._h=h; el.innerHTML=h; } }
+
 /* ===== paint ============================================================= */
 function paint(){
-  $('clock').textContent=clk();
   paintCaseClock();
   paintDoneSum();
   var live = S.phase==='live';
-  $('rundot').style.display = live ? '' : 'none';
-  $('statusword').textContent = S.phase==='idle' ? 'READY' : (S.phase==='stable' ? 'STABLE' : stepWord());
-  $('plabel').textContent = live ? ('NEONATAL · '+stepWord()) : 'NEONATAL · NRP';
-  $('resetbtn').textContent = S.resetArm ? 'SURE?' : 'RESET';
-  $('resetbtn').style.background = S.resetArm ? 'var(--red)' : 'var(--card)';
-  $('resetbtn').style.color = S.resetArm ? '#fff' : 'var(--ink2)';
+
+  /* ---- CASE SHELL chrome (SHELL.md) ---- */
+  var caseOn = S.phase!=='idle';
+  $('statusword').style.display = caseOn ? 'none' : '';
+  $('casepill').style.display = caseOn ? '' : 'none';
+  if(caseOn){
+    $('pillclock').textContent = clk();
+    $('pilltag').textContent = S.phase==='stable' ? 'STABLE' : 'NRP';
+  }
+  $('shellstrip').style.display = live ? 'flex' : 'none';
+  $('shelldock').style.display = live ? 'flex' : 'none';
+  document.body.classList.toggle('dockon', live);
+  /* SHELL.md layer 5 (2026-08-15): once a case runs, the operating card leads
+     the scroll area and the tele slot / routing sentence / review banner
+     reorder beneath it — flex order in this tool's own style block. */
+  document.body.classList.toggle('running', caseOn);
+  $('toolmenu').style.display = S.toolMenuOpen ? '' : 'none';
+  $('moremenu').style.display = S.moreMenuOpen ? '' : 'none';
+  $('shelltoast').style.display = S.toast ? 'flex' : 'none';
+
+  /* Reset — one armed state, two entry points (⋯ menu row on a phone, the
+     inline red button ≥768px). Both are the same two-tap SURE? pattern. */
+  $('resetbtn').textContent = S.resetArm ? 'SURE? — tap again to clear' : 'Reset for next case';
+  $('resetwide').textContent = S.resetArm ? 'SURE?' : 'RESET';
+  $('resetwide').style.background = S.resetArm ? 'var(--red)' : '';
+  $('resetwide').style.color = S.resetArm ? '#fff' : '';
+
+  /* Weight strip (layer 4): collapsed row ↔ the input form. On a phone the
+     default is collapsed; ≥768px it stays open until DONE ✓ so typing is
+     never interrupted. The user's own toggle (S.wOpen) always wins. */
+  var wide = window.matchMedia('(min-width:768px)').matches;
+  $('wlabel').textContent = S.kg!==null ? num(S.kg,2)+' kg' : 'not set';
+  $('wlabel').className = 'v '+(S.kg!==null?'set':'unset');
+  var wOpen = S.wOpen!==null ? S.wOpen : (wide && !S.wConfirmed);
+  $('wform').style.display = wOpen ? 'flex' : 'none';
+  $('wmark').textContent = wOpen ? '▲' : (wide ? '✎ tap to change' : '▼');
+
+  /* Tele-NICU (layer 5.2): idempotent — the button collapses to a quiet
+     confirmation row once tapped, and never asks twice. */
+  $('telebtn').style.display = S.teleAt===null ? '' : 'none';
+  $('teledone').style.display = S.teleAt===null ? 'none' : '';
+  if(S.teleAt!==null) $('teleat').textContent = S.teleAt;
+
+  $('statusword').textContent = 'READY';
+  $('plabel').textContent = live ? ('NEONATAL · '+stepWord())
+                          : S.phase==='stable' ? 'NEONATAL · ROUTINE CARE' : 'NEONATAL · NRP';
 
   $('revbanner').style.display = SITE.review.on ? '' : 'none';
   if(SITE.review.on) $('revbanner').innerHTML = '<b>&#9888; '+esc(SITE.review.text);
@@ -900,19 +1135,86 @@ function paint(){
   $('stable').style.display = S.phase==='stable' ? '' : 'none';
 
   if(live){
-    $('pacerbox').innerHTML = pacerBox();
-    $('phasebox').innerHTML = phaseBox();
+    setHTML($('pacerbox'), pacerBox());
+    setHTML($('phasebox'), phaseBox());
     $('phasebox').style.border = (S.step==='cpr') ? '2px solid var(--red)' : '1px solid var(--line)';
     $('customrow').style.display = S.showCustom ? 'flex' : 'none';
     var st = satNow();
-    $('satbox').innerHTML = st
+    setHTML($('satbox'), st
       ? '<div class="v">'+esc(st.t)+'</div><div class="l"><b>Target preductal SpO₂ right now</b> — '+st.min+
         ' minute'+(st.min===1?'':'s')+' of life, probe on the right hand. Do not chase 100%.</div>'
       : '<div class="v">—</div><div class="l">No published SpO₂ target in the first minute of life. The '+
-        'heart rate is the decision until then.</div>';
+        'heart rate is the decision until then.</div>');
     checkApgar();
+
+    /* ---- shell strip + dock (layers 2/6): the timer, the dose and the
+       action are ONE target on both widths (SHELL.md layer 2, 2026-08-15).
+       The HR CHECK cadence counts down the tool's OWN cycle — 30 s of
+       initial steps, 30 s of chest-rising PPV, a 60-second compression cycle
+       (SITE.cycle) — and escalates to DUE NOW red at zero, embedded in the
+       button itself. During the check (step 'assess') it reads DUE NOW until
+       a band is picked. The EPI slot carries the computed dose in its label
+       when a weight is set — never a stale or default dose. ---- */
+    var dur = S.step==='cpr' ? SITE.cycle.compressionCycleSec
+            : S.step==='initial' ? SITE.cycle.initialStepsSec
+            : S.step==='ppv' ? SITE.cycle.reassessSec : 0;
+    var anchor = S.cycleAnchor || S.birth || Date.now();
+    var remain = dur - (Date.now()-anchor)/1000;
+    var due = remain<=0;
+    var hrTxt = due ? 'DUE NOW' : fmt(remain);
+    $('dockhrclock').textContent = hrTxt;
+    $('dockhrclock').classList.toggle('due', due);
+    $('striphrclock').textContent = hrTxt;
+    $('striphrclock').classList.toggle('due', due);
+    var epiTxt = S.kg!==null ? 'EPI '+num(SITE.epi.ivPerKg*S.kg,3)+' mg' : 'EPI GIVEN';
+    $('dockepilabel').textContent = epiTxt;
+    $('stripepilabel').textContent = epiTxt;
+
+    /* LOG ticker — newest event, one line, tap for the timeline. */
+    var hasEv = S.events.length>0;
+    $('ticker').style.display = hasEv ? 'flex' : 'none';
+    if(hasEv) $('tickertext').textContent = S.events[0].t+' · '+String(S.events[0].label).replace(/<[^>]*>/g,'');
+
+    /* ---- metronome row (layer 3): the beating dot IS the cadence readout.
+       Continuous vent cadence, no airway toggle (SHELL.md — NRP row). Gray +
+       still when sound is off; held mid-beat for the check pause, with its
+       countdown visible in the status line. Under compressions the dot beats
+       at the 3:1 event rate, all numbers from SITE.pacer/SITE.compressions. */
+    var cprNow = (S.step==='cpr');
+    var beatRate = cprNow ? SITE.pacer.cprEventsPerMin : ppvRate;
+    var paused = hrPausing();
+    var dot = $('metdot');
+    dot.classList.toggle('off', !sound);
+    dot.classList.toggle('hold', paused);
+    dot.style.animationDuration = (60/beatRate).toFixed(3)+'s';
+    $('metmode').textContent = cprNow ? (SITE.compressions.ratio+' · '+SITE.pacer.cprEventsPerMin)
+                                      : ('VENT · '+ppvRate);
+    var msEl = $('metstatus');
+    if(!sound){ msEl.textContent='off'; msEl.style.color='var(--ink2)'; }
+    else if(paused){
+      msEl.textContent='paused '+Math.max(0,Math.ceil((SITE.pacer.checkPauseMs-(Date.now()-S.hrOpenAt))/1000))+' s';
+      msEl.style.color='var(--amber)';
+    }
+    else if(cprNow){ msEl.textContent='compress'; msEl.style.color='var(--red)'; }
+    else { msEl.textContent='ventilate'; msEl.style.color='var(--green)'; }
+    $('mutechip').textContent = sound ? 'MUTE' : 'SOUND ON';
   }
-  $('apgarmount').innerHTML = apgarSheet();
+
+  /* Heart-rate picker (layer 7). */
+  $('sheet').style.display = S.pkOpen ? 'flex' : 'none';
+
+  /* Timeline (layer 8). */
+  $('shelltl').style.display = S.tlOpen ? 'flex' : 'none';
+  if(S.tlOpen){
+    var th='';
+    if(!S.events.length) th='<div style="font-size:13.5px;color:var(--ink2);padding:10px 0">Nothing logged yet.</div>';
+    else for(var ti=0;ti<S.events.length;ti++){ var ev=S.events[ti];
+      th+='<div class="shelltlrow"><span class="tt">'+ev.t+'</span><span class="cdot" style="background:'+(ev.c||EV.gray)+
+          '"></span><span class="lbl">'+ev.label+'</span></div>'; }
+    setHTML($('tlrows'), th);
+  }
+
+  setHTML($('apgarmount'), apgarSheet());
   if(S.phase==='stable'){
     $('stableat').textContent = S.stableAt || clk();
     $('stablebody').innerHTML =
@@ -930,7 +1232,7 @@ function paint(){
        '<span style="color:var(--ink2)">'+(open?'−':'+')+'</span></button>'+
        (open?'<div class="accb">'+a.b()+'</div>':'')+'</div>';
   }
-  $('accordions').innerHTML=h;
+  setHTML($('accordions'), h);
   $('verstamp').textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · '+SITE.site+' · NRP';
 }
 
@@ -966,7 +1268,7 @@ function checkApgar(){
     if(m >= x && !S.apgarDone[x]){
       S.apgarDone[x] = true;
       if(S.apgarOpen === null){ S.apgarOpen = x; S.apgarPick = {}; }
-      log('<b>'+x+'-minute mark</b> — Apgar due');
+      log('<b>'+x+'-minute mark</b> — Apgar due', EV.blue);
     }
   });
 }
@@ -1012,9 +1314,12 @@ function apgarSheet(){
   return h;
 }
 
-function setStep(next, words){
+function setStep(next, words, c){
   S.step=next;
-  if(words) log(words);
+  /* Every step change starts a new cycle — the HR CHECK cadence (SHELL.md
+     layer 2) counts down from here, at the length SITE.cycle gives the step. */
+  S.cycleAnchor=Date.now();
+  if(words) log(words, c);
   /* The pattern changes with the phase — 3:1 under compressions, a breath rate
      otherwise — so the pacer is rebuilt on every transition rather than left
      playing the previous phase's rhythm. */
@@ -1022,13 +1327,125 @@ function setStep(next, words){
   paint();
 }
 
+/* ---- the engine's actions, ONE implementation each --------------------------
+   The on-page buttons and the shell's dock/strip/chip all land here (SHELL.md:
+   the shell moves where a target sits, never what it does). */
+
+/* HR CHECK — opens the picker from ANY entry point (the phase card's
+   reassess buttons, the cadence chip, the dock's blue slot, the ≥768px strip
+   button). Runs the SAME step transition the reassess buttons always ran —
+   same log lines, same pacer rebuild — then raises the sheet and starts the
+   metronome's check pause (hrPausing reads hrOpenAt). Cancel (✕) closes
+   without logging; the on-page band grid stays beneath as the fallback. */
+function openHr(){
+  if(S.step==='initial') setStep('assess','Initial steps done — checking the heart rate', EV.blue);
+  else if(S.step==='ppv') setStep('assess', SITE.cycle.reassessSec+' s of chest-rising PPV — reassessing', EV.blue);
+  else if(S.step==='cpr') setStep('assess', SITE.cycle.compressionCycleSec+' s compression cycle — reassessing', EV.blue);
+  S.pkOpen=true; S.hrOpenAt=Date.now();
+  paint();
+}
+
+/* PPV ✓ — the amber intervention slot. The screen already says "Apnea or
+   gasping? Start PPV now, whatever the rate is"; this is that instruction's
+   button. Starting it runs the same setStep transition the mid band runs
+   (minus the heart-rate claim nobody has made); tapped again it just logs. */
+function doPpv(){
+  if(S.step==='cpr'){ log('PPV continued with compressions — '+SITE.compressions.ratio, EV.amber); paint(); return; }
+  if(S.step!=='ppv'){
+    S.ppvOn=true; S.pkOpen=false;
+    setStep('ppv','<b>PPV started</b> — '+SITE.ppv.ratePerMin+'/min, confirm chest rise', EV.amber);
+    return;
+  }
+  log('PPV continued — confirm chest rise', EV.amber); paint();
+}
+
+/* EPI GIVEN — the purple drug slot; same counter the phase card's button
+   always incremented, with the dose computed from the weight when set
+   (rates and doses, never the patient's weight — CASE-STATE.md PHI shape). */
+function doEpi(){
+  S.epiDoses++;
+  var mg = S.kg===null ? null : SITE.epi.ivPerKg*S.kg;
+  log('<b>Epinephrine given</b> — '+(mg===null ? '(dose not computed — no weight)'
+      : num(mg,3)+' mg = '+num(mg/SITE.epi.ivConc,2)+' mL IV/UVC')+' (dose #'+S.epiDoses+')', EV.purple);
+  paint();
+}
+
+/* Two-tap SURE? reset, shared by both entry points (⋯ menu row on a phone,
+   inline red button ≥768px). The menu stays open while armed so the second
+   tap lands on the same control. */
+function armReset(){
+  if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){S.resetArm=false;paint();},2500); return; }
+  stopPacer(); sound=false; lastChime=0; ppvRate=SITE.pacer.defaultPpvRate;
+  /* One case, one reset: sweep the shared lrh- namespace (preserving the
+     lrh-pref- preferences) so a reset here clears the shared case clock and
+     every other tool's case state too — the same sweep arrest/tca run
+     (CASE-STATE.md). Then re-init this tool in memory, with the amber
+     cleared toast (SHELL.md layer 9) up until OK. */
+  CS.sweep();
+  S={ theme:S.theme, phase:'idle', birth:null, kg:null, ga:null, gaWk:null, gaD:null,
+      step:'initial', ppvOn:false, compressions:false, epiDoses:0, lastAssess:null,
+      apgarDone:{}, apgarScores:{}, apgarOpen:null, apgarPick:{}, events:[], open:null,
+      resetArm:false, stableAt:null, showCustom:false,
+      teleAt:null, wOpen:null, wConfirmed:false, pkOpen:false, hrOpenAt:null,
+      cycleAnchor:null, toolMenuOpen:false, moreMenuOpen:false, tlOpen:false, toast:true };
+  $('wIn').value=''; $('gIn').value=''; $('gdIn').value='';
+  $('gerr').style.display='none'; $('werr').style.display='none';
+  $('wnote').textContent='enter weight';
+  paint();
+}
+
 /* ===== events ============================================================ */
 document.addEventListener('click', function(e){
+  /* Tap anywhere else closes an open bar dropdown (never the timeline — that
+     has its own ✕). The reset row keeps working because it lives inside
+     .shellmenu, which is exempt from the close. */
+  if(S.toolMenuOpen||S.moreMenuOpen){
+    var inMenu = e.target.closest && (e.target.closest('.shellmenu')||e.target.closest('#toolbtn')||e.target.closest('#menubtn'));
+    if(!inMenu){ S.toolMenuOpen=false; S.moreMenuOpen=false; paint(); }
+  }
+  /* Scrim tap closes the picker without logging. */
+  if(e.target===$('sheet')){ S.pkOpen=false; paint(); return; }
+
   var t=e.target.closest ? e.target.closest('button') : null;
   if(!t) return;
   var id=t.id, acc=t.getAttribute('data-acc'), hr=t.getAttribute('data-hr');
 
   if(acc){ S.open = (S.open===acc ? null : acc); paint(); return; }
+
+  /* ---- shell bar: tool switcher, ⋯ overflow, pill, timeline, toast ---- */
+  if(id==='toolbtn'){ S.toolMenuOpen=!S.toolMenuOpen; S.moreMenuOpen=false; paint(); return; }
+  if(id==='menubtn'){ S.moreMenuOpen=!S.moreMenuOpen; S.toolMenuOpen=false; paint(); return; }
+  if(id==='tlbtn'||id==='casepill'||id==='ticker'){ S.tlOpen=true; S.moreMenuOpen=false; S.toolMenuOpen=false; paint(); return; }
+  if(id==='tlbtnwide'){ S.tlOpen=!S.tlOpen; paint(); return; }
+  if(id==='tlclose'){ S.tlOpen=false; paint(); return; }
+  if(id==='toastok'){ S.toast=false; paint(); return; }
+  if(id==='resetbtn'||id==='resetwide'){ armReset(); return; }
+
+  /* ---- tele-NICU (layer 5.2): idempotent, logs the request time ---- */
+  if(id==='telebtn'){
+    if(S.teleAt!==null) return;
+    S.teleAt = clk();
+    log('Tele-NICU activated', EV.blue);
+    paint(); return;
+  }
+
+  /* ---- weight strip toggle (layer 4) ---- */
+  if(id==='wtoggle'){
+    var vis = $('wform').style.display!=='none';
+    S.wOpen = !vis; paint();
+    if(S.wOpen) setTimeout(function(){ try{ $('wIn').focus(); }catch(err){} },30);
+    return;
+  }
+  if(id==='wdone'){ S.wConfirmed=true; S.wOpen=null; paint(); return; }
+
+  /* ---- shell dock/strip slots (layers 2/6): one action, several homes ---- */
+  if(id==='dockppv'||id==='stripppv'){ doPpv(); return; }
+  if(id==='dockepi'||id==='stripepi'){ doEpi(); return; }
+  if(id==='dockhr'||id==='striphr'){ openHr(); return; }
+  if(id==='pkclose'||id==='pkcancel'){ S.pkOpen=false; paint(); return; }
+
+  /* ---- metronome MUTE chip (layer 3) — the same toggle as the pacer box ---- */
+  if(id==='mutechip'){ soundOn(!sound); paint(); return; }
 
   var ap=t.getAttribute('data-ap');
   if(ap!==null && ap!==undefined){
@@ -1039,7 +1456,7 @@ document.addEventListener('click', function(e){
     var min=S.apgarOpen, total=0, parts=[];
     SITE.apgar.rows.forEach(function(r,i){ total += S.apgarPick[i]; parts.push(r.k+S.apgarPick[i]); });
     S.apgarScores[min]=total;
-    log('<b>Apgar at '+min+' min = '+total+'/10</b> ('+parts.join(' ')+')');
+    log('<b>Apgar at '+min+' min = '+total+'/10</b> ('+parts.join(' ')+')', EV.blue);
     S.apgarOpen=null; S.apgarPick={};
     paint(); return;
   }
@@ -1055,53 +1472,40 @@ document.addEventListener('click', function(e){
   var rate=t.getAttribute('data-rate');
   if(rate){ ppvRate=parseInt(rate,10); startPacer(); paint(); return; }
 
-  if(id==='resetbtn'){
-    if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){S.resetArm=false;paint();},2500); return; }
-    stopPacer(); sound=false; lastChime=0;
-    /* One case, one reset: sweep the shared lrh- namespace (preserving the
-       lrh-pref- preferences) so a reset here clears the shared case clock and
-       every other tool's case state too — the same sweep arrest/tca run
-       (CASE-STATE.md). Then re-init this tool in memory. */
-    CS.sweep();
-    S={ theme:S.theme, phase:'idle', birth:null, kg:null, ga:null, step:'initial', ppvOn:false,
-        compressions:false, epiDoses:0, lastAssess:null, apgarDone:{}, apgarScores:{}, apgarOpen:null,
-        apgarPick:{}, events:[], open:null, resetArm:false, stableAt:null, showCustom:false,
-        gaWk:null, gaD:null };
-    $('wIn').value=''; $('gIn').value=''; $('gdIn').value='';
-    $('gerr').style.display='none';
-    paint(); return;
-  }
   if(id==='startbtn'){
-    S.phase='live'; S.birth=Date.now(); S.step='initial';
+    S.phase='live'; S.birth=Date.now(); S.step='initial'; S.cycleAnchor=S.birth;
     CS.markCaseStarted();
     /* Sound on by default (issue: /arrest/'s compression tone already starts
        this way — an opt-out MUTE, not an opt-in SOUND ON). This tap is itself
        the user gesture browsers require before audio can start, so there is
        no reason to make someone find and tap a second button afterward. */
     soundOn(true);
-    log('<b>Time of birth</b> — clock started');
+    log('<b>Time of birth</b> — clock started', EV.red);
+    /* Seed the timeline with a pre-case tele-NICU activation (SHELL.md). */
+    if(S.teleAt!==null) log('Tele-NICU already on the line', EV.blue);
     paint(); return;
   }
-  if(id==='toassess'){
-    if(S.step==='initial') setStep('assess','Initial steps done — checking the heart rate');
-    else if(S.step==='ppv') setStep('assess', SITE.cycle.reassessSec+' s of chest-rising PPV — reassessing');
-    else setStep('assess', SITE.cycle.compressionCycleSec+' s compression cycle — reassessing');
-    return;
-  }
-  if(id==='tocpr'){ S.compressions=true; setStep('cpr','Heart rate under '+SITE.hr.low+' — compressions started'); return; }
-  if(id==='epibtn'){ S.epiDoses++; log('<b>Epinephrine given</b> — dose '+S.epiDoses); paint(); return; }
-  if(id==='stablebtn'){ S.phase='stable'; S.stableAt=clk(); stopPacer(); log('Stable — routine care'); paint(); return; }
-  if(id==='resumebtn'){ S.phase='live'; S.step='assess'; log('Deteriorated — back to the pathway'); paint(); return; }
+  /* The phase cards' reassess buttons open the shell's heart-rate picker —
+     the same transition (and log line) they always ran, plus the sheet. */
+  if(id==='toassess'){ openHr(); return; }
+  if(id==='tocpr'){ S.compressions=true; setStep('cpr','Heart rate under '+SITE.hr.low+' — compressions started', EV.red); return; }
+  if(id==='epibtn'){ doEpi(); return; }
+  if(id==='stablebtn'){ S.phase='stable'; S.stableAt=clk(); S.pkOpen=false; stopPacer(); log('Stable — routine care', EV.green); paint(); return; }
+  if(id==='resumebtn'){ S.phase='live'; setStep('assess','Deteriorated — back to the pathway', EV.red); return; }
   if(id==='logtoggle'){ S.showCustom=!S.showCustom; paint(); if(S.showCustom) setTimeout(function(){$('customin').focus();},30); return; }
   if(id==='customlog'){ submitCustom(); return; }
 
+  /* ---- the heart-rate bands — the state machine both the on-page grid and
+     the picker (layer 7) drive; picking a band is the check's result, so it
+     closes the sheet and (via setStep) restarts the cadence. ---- */
   if(hr){
+    S.pkOpen=false;
     if(hr==='good'){
-      log('Heart rate ≥'+SITE.hr.good+' and breathing');
+      log('Heart rate ≥'+SITE.hr.good+' and breathing', EV.green);
       S.phase='stable'; S.stableAt=clk(); stopPacer(); paint(); return;
     }
-    if(hr==='mid'){ S.ppvOn=true; setStep('ppv','Heart rate '+SITE.hr.low+'–'+(SITE.hr.good-1)+' — PPV'); return; }
-    if(hr==='low'){ S.ppvOn=true; S.compressions=true; setStep('cpr','Heart rate under '+SITE.hr.low+' — PPV and compressions'); return; }
+    if(hr==='mid'){ S.ppvOn=true; setStep('ppv','Heart rate '+SITE.hr.low+'–'+(SITE.hr.good-1)+' — PPV', EV.blue); return; }
+    if(hr==='low'){ S.ppvOn=true; S.compressions=true; setStep('cpr','Heart rate under '+SITE.hr.low+' — PPV and compressions', EV.red); return; }
   }
 });
 
@@ -1182,6 +1586,29 @@ function inWrapBand(){ return wrapReason() !== null; }
 $('wIn').addEventListener('input', readWeight);
 $('gIn').addEventListener('input', readWeight);
 $('gdIn').addEventListener('input', readWeight);
+
+/* Picker option labels (layer 7) — built from SITE.hr / SITE.cycle /
+   SITE.compressions so a localized band or cycle moves the sheet with it,
+   never a second copy of a number. The consequence lines are the tool's own
+   band wording. */
+$('pklow').innerHTML = '<span>HR UNDER '+SITE.hr.low+
+  '<div class="rcsub">PPV + compressions '+SITE.compressions.ratio+' — 100% O₂, secure the airway</div></span>';
+$('pkmid').innerHTML = '<span>HR '+SITE.hr.low+'–'+(SITE.hr.good-1)+
+  '<div class="rcsub">Positive pressure ventilation — reassess after '+SITE.cycle.reassessSec+' s of chest-rising PPV</div></span>';
+$('pkgood').innerHTML = '<span>HR ≥'+SITE.hr.good+' AND BREATHING'+
+  '<div class="rcsub">Routine care — skin-to-skin, keep monitoring, check the mother</div></span>';
+
+/* Back link: default to the manual hub, but if we were opened from a specific
+   tool (?from=<slug>), route back there instead — same pattern as /arrest/.
+   Links INTO this tool that pass ?from=home (dystocia's TO NEONATAL, card 03)
+   keep the default. */
+(function(){
+  var m=/[?&]from=([a-z-]+)/.exec(location.search||''); var f=m&&m[1];
+  if(!f||f==='home'||f==='tool') return;
+  var bl=$('backlink'), bw=$('backlinkwide');
+  if(bl) bl.href='../'+f+'/?from=tool';
+  if(bw){ bw.href='../'+f+'/?from=tool'; bw.textContent=f.toUpperCase()+' ›'; }
+})();
 
 document.addEventListener('click', CS.touchActive, true);
 CS.touchActive();
