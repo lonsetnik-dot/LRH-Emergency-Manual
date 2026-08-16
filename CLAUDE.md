@@ -1,7 +1,7 @@
 # CLAUDE.md — operating rules for AI assistants in this repo
 
 This repository is a set of **client-side, bedside emergency-department
-decision-support tools** (starting with Littleton Regional Hospital) built so it
+decision-support tools** (starting with Littleton Regional Healthcare) built so it
 *could* later be forked and customized by any ED. Follow these rules on every
 task. The reasoning behind them is in `PROJECT.md` — read it if a rule seems
 unclear. If a request conflicts with a rule below, flag it before proceeding.

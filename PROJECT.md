@@ -12,7 +12,7 @@ document explains the thinking behind them. When in doubt, this file wins.
 ## 1. Mission
 
 Build a set of fast, trustworthy, bedside decision-support tools for the
-emergency department — starting with Littleton Regional Hospital (LRH) — in a
+emergency department — starting with Littleton Regional Healthcare (LRH) — in a
 way that *could later* be adopted and customized by any ED, without a rewrite.
 
 ## 2. Vision & scope
