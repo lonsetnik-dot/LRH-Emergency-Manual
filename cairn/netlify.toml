@@ -1,0 +1,4 @@
+# cairnready.org — served as its own Netlify site from this folder.
+# Create the site with base directory "cairn"; no build step, publish in place.
+[build]
+  publish = "."
