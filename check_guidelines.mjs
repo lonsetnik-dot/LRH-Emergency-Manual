@@ -100,7 +100,7 @@ function probeState(sourceId, p) {
 }
 
 /* ---- fetch helper -------------------------------------------------------- */
-const UA = 'LRH-Emergency-Manual guideline watcher (+https://lrhemergencymanual.net)';
+const UA = 'CairnReady-Emergency-Manual guideline watcher (+https://cairnready.org)';
 async function get(url, timeoutMs = 20000) {
   const ac = new AbortController();
   const t = setTimeout(() => ac.abort(), timeoutMs);

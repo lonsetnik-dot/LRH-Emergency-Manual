@@ -1,9 +1,17 @@
 # Localizing this manual for your own hospital
 
-This project started as Littleton Regional Hospital's (LRH) emergency manual, but
-it is built to be **forked and adapted by any emergency department** — your copy,
-your hosting, your content, your clinical validation. This guide is the map of
-*what* is site-specific, *where* it lives, and *how* to make it yours.
+This project started as Littleton Regional Hospital's (LRH) emergency manual and
+is now the **CairnReady generic trunk** (cairnready.org) — built to be **forked
+and adapted by any emergency department**: your copy, your hosting, your
+content, your clinical validation. This guide is the map of *what* is
+site-specific, *where* it lives, and *how* to make it yours. The architecture
+of trunk vs. hospital editions is in `SITES.md`.
+
+**Start with `site.config.json`.** Identity (manual title, hospital line,
+domain, transfer-center name/phone, poison line) now lives in one root file,
+substituted into every page at build as `{{SITE.*}}` tokens. Editing that one
+file puts your hospital's name on every page. The rest of this guide covers
+the second layer: the per-tool SITE CONFIG blocks holding clinical values.
 
 > **This is a living target.** Isolating every local value into one obvious place
 > is an explicit goal, and it is **partly done, not finished** — see
@@ -25,7 +33,7 @@ meant to live in clearly-marked blocks you edit, without rewriting any logic.
 Every tool that follows the convention marks its local block like this:
 
 ```js
-/* ===== SITE CONFIG (LRH) — edit these to adapt to another site ===== */
+/* ===== SITE CONFIG (site-specific — edit to localize) ===== */
 ```
 
 Find those blocks (Claude can list them all instantly), change the values, and

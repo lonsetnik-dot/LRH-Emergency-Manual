@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0D1420">
-<title>LRH Shoulder Dystocia — Engine</title>
+<title>{{SITE.abbrev}} Shoulder Dystocia — Engine</title>
 <meta name="description" content="Mobile cognitive aid for shoulder dystocia: head-to-body interval clock, HELPERR maneuvers one at a time with 30-second prompts, no fundal pressure guard. Personal aid, not hospital policy.">
 <style>
 /* @design-system-live */
@@ -54,7 +54,7 @@
       <div id="caseclock" style="display:none"></div>
     </div>
     <a class="ghost" id="backlink" href="../?from=tool" style="display:inline-flex;align-items:center;text-decoration:none">&#8962; MANUAL</a>
-    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Shoulder%20Dystocia" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Shoulder%20Dystocia" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
     <button class="ghost" id="resetbtn" type="button">RESET</button>
   </div>
 
@@ -131,7 +131,7 @@
    sequence people have drilled.
    ========================================================================== */
 var SITE = {
-  version:"0.1", lastReviewed:"2026-08-12", site:"LRH",
+  version:"0.1", lastReviewed:"2026-08-12", site:"{{SITE.abbrev}}",
 
   review:{
     on:true,

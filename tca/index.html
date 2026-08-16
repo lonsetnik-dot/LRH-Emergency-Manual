@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0D1420">
-<title>LRH Traumatic Cardiac Arrest — Cognitive Aid</title>
+<title>{{SITE.abbrev}} Traumatic Cardiac Arrest — Cognitive Aid</title>
 <meta name="description" content="Mobile cognitive aid for traumatic cardiac arrest (TCA): reversible-cause workstreams (hemorrhage, airway, chest decompression, tamponade, obstetric), sequential vs simultaneous team modes, weight-based fluid/TXA/calcium, and an event log. Personal aid, not hospital policy.">
 <style>
 /* @design-system-live */
@@ -61,7 +61,7 @@ a{color:var(--blue);text-decoration:none}
       <div id="caseclock" style="display:none"></div>
     </div>
     <a class="ghost" id="backlink" href="../" data-noprint="1" style="display:inline-flex;align-items:center;text-decoration:none">&#8962; MANUAL</a>
-    <a class="ghost" id="feedbacklink" data-noprint="1" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20TCA" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+    <a class="ghost" id="feedbacklink" data-noprint="1" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20TCA" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
     <button class="ghost" id="resetbtn" type="button" data-noprint="1">RESET</button>
   </div>
 
@@ -235,7 +235,7 @@ a{color:var(--blue);text-decoration:none}
   <div id="accordions"></div>
 
   <div style="margin-top:16px;font-size:12px;color:var(--ink2);text-align:center;line-height:1.55">
-    Adapted for LRH from the Royal Melbourne Hospital Trauma Service <i>Traumatic Cardiac Arrest Guideline</i> (TRM08.12, v3.0, 2023) and ERC/ANZCOR traumatic-arrest guidance. Verify doses and local roles before use.<br>
+    Adapted for {{SITE.abbrev}} from the Royal Melbourne Hospital Trauma Service <i>Traumatic Cardiac Arrest Guideline</i> (TRM08.12, v3.0, 2023) and ERC/ANZCOR traumatic-arrest guidance. Verify doses and local roles before use.<br>
     <span id="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment; thresholds are site-specific — verify locally.
   </div>
 </div>
@@ -263,7 +263,7 @@ var SITE = {
                       conventional CPR is a secondary priority.
      'simultaneous' = full trauma team: workstreams assigned and worked in
                       parallel, CPR concurrent.
-     LRH is a rural critical-access hospital → sequential. */
+     The originating site is a rural critical-access hospital → sequential. */
   mode: "sequential",
   noSignsOfLifeMin: 10,                  /* DNR if no signs of life beyond this */
   cprPauseMaxMin: 2,                     /* pause CPR in progress for at most this */
@@ -293,7 +293,7 @@ var SITE = {
    Read-only in practice: nothing in this file reads window.SITE, it reads
    the local SITE. Two reasons it is worth one line:
    1. The suites assert the UI against THIS config instead of against
-      hardcoded LRH numbers, so a fork that correctly localizes its
+      hardcoded local numbers, so a fork that correctly localizes its
       values keeps a green test run (issue #117). Tests that break on
       correct localization teach an adopting site to ignore failures.
    2. A champion localizing the traumatic cardiac arrest can read the live,
@@ -454,7 +454,7 @@ function doseModel(){
   /* Rounded and capped (weight-routing audit): the raw product rendered float
      artifacts ("21.200000000000003 mL" at 1.06 kg) and no ceiling at all
      (200 kg -> "4000 mL"). Display caps: 1 L/bolus pediatric (peds-tool
-     convention), 2 L/bolus adult. Clinically reviewed and accepted for LRH
+     convention), 2 L/bolus adult. Clinically reviewed and accepted at the originating site
      2026-08-12 (Lon Setnik); re-derive if adopting this file at another site. */
   var mlCap = p ? 1000 : 2000;
   var crystalloid = k!==null ? (Math.round(Math.min(SITE.fluid.crystalloidMlPerKg*k, mlCap))+' mL ('+SITE.fluid.crystalloidMlPerKg+' mL/kg, max '+(mlCap/1000)+' L/bolus)')
@@ -565,7 +565,7 @@ var ACC = [
  {id:'seqsim', title:'SEQUENTIAL vs SIMULTANEOUS — HOW THIS SITE IS SET', body:function(){
    var seq=(S.mode==='sequential');
    return '<p>The reversible causes should ideally be corrected <b>at the same time</b>. Whether you can depends on how many hands you have — so each site is configured for <b>one</b> model at setup, not switched at the bedside.</p>'+
-     '<p><b>This aid is set to '+(seq?'SEQUENTIAL':'SIMULTANEOUS')+'</b> for LRH. To change it for another site, set <code>SITE.mode</code> in the config block.</p>'+
+     '<p><b>This aid is set to '+(seq?'SEQUENTIAL':'SIMULTANEOUS')+'</b> for {{SITE.abbrev}}. To change it for another site, set <code>SITE.mode</code> in the config block.</p>'+
      '<p><b>Simultaneous (full trauma team):</b> assign hemorrhage, airway, breathing, cardiac and obstetric to separate people and work them in parallel. '+
      'These priorities are met quickly and CPR can run concurrently.</p>'+
      '<p><b>Sequential (rural / limited team):</b> one or two clinicians cannot do everything at once, so work the priorities in order — '+
@@ -612,7 +612,7 @@ var ACC = [
      '<p style="margin-bottom:0"><b>Cessation</b> — consider stopping when <b>both</b> are true: no ROSC after all reversible causes have been addressed, <b>and</b> no detectable cardiac activity on eFAST. Then run an immediate hot debrief.</p>';
  }},
  {id:'src', title:'SOURCES', body:function(){
-   return '<p>Adapted for LRH from the <b>Royal Melbourne Hospital Trauma Service — Traumatic Cardiac Arrest Guideline (TRM08.12), v3.0, endorsed by the Advisory Committee on Trauma, 2023</b>, and its companion ED Thoracotomy Guideline (TRM04.02).</p>'+
+   return '<p>Adapted for {{SITE.abbrev}} from the <b>Royal Melbourne Hospital Trauma Service — Traumatic Cardiac Arrest Guideline (TRM08.12), v3.0, endorsed by the Advisory Committee on Trauma, 2023</b>, and its companion ED Thoracotomy Guideline (TRM04.02).</p>'+
      '<p>Consistent with <b>ANZCOR Guideline 11.10 — Management of Cardiac Arrest due to Trauma</b> and the <b>European Resuscitation Council</b> traumatic-cardiac-arrest guidance; TXA per <b>CRASH-2</b>, calcium/coagulation per the <b>European trauma bleeding guideline (Spahn 2019)</b>.</p>'+
      '<p style="margin-bottom:0">The site-specific calls in the original (MEP, OPSTAT, RWH numbers, ROTEM) have been genericized in the SITE CONFIG block. Verify every value, role and phone number against your own department before use.</p>';
  }},
@@ -717,7 +717,7 @@ function paint(){
     $('deathwall').textContent = S.deathWall || wallTime();
   }
 
-  $('verstamp').textContent = 'v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
+  $('verstamp').textContent = 'v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · {{SITE.abbrev}}';
   renderAccordions();
 }
 

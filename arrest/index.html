@@ -6,7 +6,7 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0D1420">
-<title>LRH Arrest — Cardiac Arrest Cognitive Aid</title>
+<title>{{SITE.abbrev}} Arrest — Cardiac Arrest Cognitive Aid</title>
 <meta name="description" content="Mobile cognitive aid for cardiac arrest: code clock, 2-minute cycle, weight-based PALS dosing, rhythm-check branching and an event log. Personal aid, not hospital policy.">
 <style>
 /* @design-system-live */
@@ -37,7 +37,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
       <div id="donesum" style="display:none"></div>
       <div id="caseclock" style="display:none"></div>
     </div>
-    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Arrest" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Arrest" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
     <button class="ghost" id="resetbtn" type="button">RESET</button>
   </div>
 
@@ -366,7 +366,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
    dependency between tools, so if either changes, change both by hand.
 
    NOTE ON ADULT DEFIBRILLATION: the design prototype showed a flat 200 J for
-   adults. LRH runs a ZOLL rectilinear biphasic with a labelled escalating
+   adults. This site runs a ZOLL rectilinear biphasic with a labelled escalating
    sequence, which is what the existing site implements, and the handoff says
    to keep the site's clinical logic where the two differ. So 120 / 150 / 200.
    ========================================================================== */
@@ -391,7 +391,7 @@ var SITE = {
            /* epiEttMaxMg: adult ETT dose is 2–2.5 mg — cap the per-kg math
               there. lidoMaxMg1/2: adult bolus convention (1–1.5 mg/kg, max
               ~100 mg; repeat half).
-              Clinically reviewed and accepted for LRH 2026-08-12 (Lon Setnik):
+              Clinically reviewed and accepted at the originating site 2026-08-12 (Lon Setnik):
               standard ceilings, guarding against typo/unit-error dosing at
               extreme weights. NOTE for a fork: epiEttMaxMg is the one cap here
               that binds inside a real pediatric range (above 25 kg) rather than
@@ -441,7 +441,7 @@ var SITE = {
    Read-only in practice: nothing in this file reads window.SITE, it reads
    the local SITE. Two reasons it is worth one line:
    1. The suites assert the UI against THIS config instead of against
-      hardcoded LRH numbers, so a fork that correctly localizes its
+      hardcoded local numbers, so a fork that correctly localizes its
       values keeps a green test run (issue #117). Tests that break on
       correct localization teach an adopting site to ignore failures.
    2. A champion localizing the arrest engine can read the live,
@@ -451,7 +451,7 @@ try{ window.SITE = SITE; }catch(e){}
 
 /* =============================== LOCALE ====================================
    Spelling and drug nomenclature for the JS-GENERATED content below (dose
-   strings, reference accordions, status labels). US English / LRH is the
+   strings, reference accordions, status labels). US English is the
    default; a fork localizes by editing the values here — one place, and every
    dynamic string re-reads it on the next paint. Static HTML prose in this file
    is maintained separately in the site's dialect (see TERMINOLOGY.md). Give the
@@ -1130,7 +1130,7 @@ function paint(){
   }
 
   $('cyclemin').textContent = fmt(SITE.cpr.cycleSec);
-  $('verstamp').textContent = 'v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
+  $('verstamp').textContent = 'v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · {{SITE.abbrev}}';
   renderAccordions(d);
 }
 

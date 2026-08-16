@@ -1,4 +1,4 @@
-/* LRH Emergency Manual — offline shell (build input, not shipped as-is).
+/* CairnReady Emergency Manual — offline shell (build input, not shipped as-is).
  *
  * build.mjs reads this file, substitutes __CACHE__ and __ASSETS__, and writes
  * dist/sw.js. Do NOT edit dist/sw.js — edit this template.

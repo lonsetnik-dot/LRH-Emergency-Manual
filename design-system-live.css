@@ -1,5 +1,5 @@
 /* ===========================================================================
-   design-system-live.css - shared skeleton for the LRH "live-protocol" family
+   design-system-live.css - shared skeleton for the CairnReady "live-protocol" family
    (arrest/, airway/, tca/ — full-screen cognitive aids driven by a running
    clock, not card-based reference tools). Injected at build time wherever a
    tool's <style> contains the marker  (slash-star) @design-system-live

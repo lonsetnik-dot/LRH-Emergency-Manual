@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0D1420">
-<title>LRH Airway — Failed Intubation Ladder (DAS 2025)</title>
+<title>{{SITE.abbrev}} Airway — Failed Intubation Ladder (DAS 2025)</title>
 <meta name="description" content="Mobile cognitive aid for the unanticipated difficult airway: DAS 2025 Plan A to Plan D with attempt counts, declare-out-loud prompts and scalpel-bougie-tube. Personal aid, not hospital policy.">
 <style>
 /* @design-system-live */
@@ -32,7 +32,7 @@
       </div>
       <div id="caseclock" style="display:none"></div>
     </div>
-    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Airway" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Airway" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
     <button class="ghost" id="resetbtn" type="button">RESET</button>
   </div>
 
@@ -131,7 +131,7 @@ var DAS = {
    Read-only in practice: nothing in this file reads window.DAS, it reads
    the local DAS. Two reasons it is worth one line:
    1. The suites assert the UI against THIS config instead of against
-      hardcoded LRH numbers, so a fork that correctly localizes its
+      hardcoded local numbers, so a fork that correctly localizes its
       values keeps a green test run (issue #117). Tests that break on
       correct localization teach an adopting site to ignore failures.
    2. A champion localizing the DAS 2025 airway ladder can read the live,
@@ -399,7 +399,7 @@ function paint(){
        (open?'<div class="accb">'+a.b()+'</div>':'')+'</div>';
   }
   $('accordions').innerHTML=h;
-  $('verstamp').textContent='v'+DAS.version+' · last reviewed '+DAS.lastReviewed+' · LRH · DAS 2025';
+  $('verstamp').textContent='v'+DAS.version+' · last reviewed '+DAS.lastReviewed+' · {{SITE.abbrev}} · DAS 2025';
 }
 
 function toPlan(p, words){ S.plan=p; if(words) log(words); paint(); }

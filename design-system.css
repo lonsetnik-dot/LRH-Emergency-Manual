@@ -1,5 +1,5 @@
 /* ===========================================================================
-   design-system.css - LRH Emergency Manual shared design language.
+   design-system.css - CairnReady Emergency Manual shared design language.
 
    SINGLE SOURCE OF TRUTH for the tokens, chrome, menu and card-interior
    classes shared by every tool. build.mjs injects this wherever a tool's

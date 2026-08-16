@@ -1,7 +1,9 @@
 # ED Clinical Support — Project Charter
 
-> Working name: **LRH Clinical Support Tools** (may become a general, forkable
-> emergency-department cognitive-aid framework).
+> Name: **CairnReady** (cairnready.org) — the general, forkable
+> emergency-department cognitive-aid framework this charter anticipated.
+> It began as the LRH manual; LRH is now the first hospital edition
+> (see `SITES.md`).
 
 This is the human source of truth for *why* the project is built the way it is.
 The operational rules Claude and contributors follow live in `CLAUDE.md`; this
