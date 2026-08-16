@@ -6,15 +6,15 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#005596">
-<title>LRH Pediatric Emergencies</title>
+<title>{{SITE.abbrev}} Pediatric Emergencies</title>
 <meta name="apple-mobile-web-app-title" content="Peds">
 <meta name="description" content="Beta cognitive aids for pediatric emergencies in the Emergency Department. Practice and feedback only.">
-<link rel="canonical" href="https://lrhemergencymanual.net/peds/">
+<link rel="canonical" href="https://{{SITE.domain}}/peds/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="LRH Emergency Manual">
-<meta property="og:title" content="LRH Pediatric Emergencies (beta)">
+<meta property="og:site_name" content="{{SITE.title}}">
+<meta property="og:title" content="{{SITE.abbrev}} Pediatric Emergencies (beta)">
 <meta property="og:description" content="Cognitive aids for pediatric emergencies in the ED — shared weight-based dosing engine plus 15 topic cards. Beta — practice and feedback only.">
-<meta property="og:url" content="https://lrhemergencymanual.net/peds/">
+<meta property="og:url" content="https://{{SITE.domain}}/peds/">
 <meta name="twitter:card" content="summary">
 <style>
   html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; --sticky-h:94px; }
@@ -91,7 +91,7 @@
   #wtzone { display:inline-flex; align-items:center; gap:6px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:#dbe4ee; }
   #wtzone .sw { width:13px; height:13px; border-radius:50%; border:1.5px solid rgba(255,255,255,0.85); flex:none; background:transparent; }
   #wtbar label { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10px; letter-spacing:0.1em; color:#a9c2dc; }
-  #wtbar input, #wtbar select { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14px; padding:6px 8px; border:1px solid rgba(255,255,255,0.5); background:#16324f; color:#fffefb; min-height:34px; width:72px; }
+  #wtbar input, #wtbar select { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px; padding:6px 8px; border:1px solid rgba(255,255,255,0.5); background:#16324f; color:#fffefb; min-height:44px; width:76px; }
   #wtbar select { width:auto; }
   #wtbar button { min-height:34px; }
   #wtdisplay { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; color:#f7d97a; }
@@ -122,7 +122,7 @@
 </head>
 <body data-theme="dark">
 <div id="betasplash" style="position:fixed; inset:0; z-index:999; background:var(--bg); color:var(--ink); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
-  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:var(--ink2);">LRH · EMERGENCY DEPARTMENT</div>
+  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:var(--ink2);">{{SITE.eyebrow}}</div>
   <div style="font-size:30px; line-height:1.06; letter-spacing:-0.02em; font-weight:700;">Pediatric Emergencies</div>
   <div style="display:inline-block; padding:6px 14px; border:2px solid var(--accent); color:var(--accent); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.16em;">BETA</div>
   <div style="max-width:460px; font-size:17px; line-height:1.4; color:var(--ink);">Not yet ready for clinical use. Shared for feedback and practice only — do not use it to direct the care of a patient.</div>
@@ -136,7 +136,7 @@
   <span class="plabel">PEDS</span>
   <button class="ghost" id="summarybtn" type="button">TIMELINE</button>
   <button class="ghost danger" id="resetbtn" type="button">RESET</button>
-  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Pediatric%20Emergencies" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Pediatric%20Emergencies" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
 </div>
 <script>
 /* ---- Measure the real sticky-header height into --sticky-h, live ----
@@ -270,7 +270,7 @@
 <main>
   <div class="lrh-menuwrap">
     <div class="inner">
-      <div class="lrh-eyebrow lrh-mono">LRH · EMERGENCY DEPARTMENT</div>
+      <div class="lrh-eyebrow lrh-mono">{{SITE.eyebrow}}</div>
       <h1 class="lrh-idx-h1">Pediatric Emergencies</h1>
       <p class="lrh-idx-sub">Enter a weight once above — every card below calculates its doses live from it. Weight and timers live only on this device, clear on RESET FOR NEXT CASE, and auto-clear after an hour of inactivity — still, always tap RESET between patients.</p>
       <button type="button" id="startnewcasebtn" class="lrh-startnew-btn">START NEW CASE</button>
@@ -368,7 +368,7 @@
           <tr><td>Albuterol nebulizer (bronchospasm/wheeze)</td><td>unit-dose neb, may repeat q20min ×3</td><td>— (PowerPlan)</td></tr>
           <tr><td>Racemic epinephrine 2.25% neb (stridor/upper-airway edema)</td><td>0.5 mL in 3 mL NS (0.25 mL if &lt;5 kg)</td><td>— (PowerPlan)</td></tr>
         </table>
-        <div style="padding:8px 0 0; font-size:12.5px; line-height:1.35; color:var(--ink2);">These relieve itch/hives (antihistamine), blunt a biphasic reaction (steroid), or treat bronchospasm/stridor (albuterol, racemic epi) — none replace IM epinephrine for the airway/hemodynamic compromise. Doses per the LRH Pediatric General PowerPlan (Cerner order set) where marked; otherwise institutional pediatric ED pathways.</div>
+        <div style="padding:8px 0 0; font-size:12.5px; line-height:1.35; color:var(--ink2);">These relieve itch/hives (antihistamine), blunt a biphasic reaction (steroid), or treat bronchospasm/stridor (albuterol, racemic epi) — none replace IM epinephrine for the airway/hemodynamic compromise. Doses per the originating hospital's Pediatric General PowerPlan (Cerner order set) where marked; otherwise institutional pediatric ED pathways.</div>
       </details>
     </div>
 
@@ -377,7 +377,7 @@
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> World Allergy Organization Anaphylaxis Guidance 2020 (epinephrine 0.01 mg/kg IM, max 0.5 mg, repeat q5–15min; 20 mL/kg fluid bolus); AAAAI/ACAAI Anaphylaxis: A 2023 Practice Parameter Update (0.3 mg pediatric epinephrine cap — conflicts with WAO's 0.5 mg, noted above); Johns Hopkins All Children's Hospital Anaphylaxis Clinical Pathway 2023 (adjunct dosing); Dribin TE, et al., "Timing of repeat epinephrine to inform paediatric anaphylaxis observation periods," <i>Lancet Child Adolesc Health</i> 2025;9(7):484-496. LRH Pediatric General PowerPlan (Cerner order set) — dexamethasone 0.6 mg/kg (max 10 mg), albuterol nebulizer q20min ×3, racemic epinephrine 2.25% 0.5 mL neb (0.25 mL if &lt;5 kg, dilute in 3 mL NS), and the epinephrine IM 0.01 mg/kg &lt;15 kg / EpiPen Jr 15–29.9 kg / EpiPen ≥30 kg tiering. IV-epinephrine bolus/infusion figures are standard pediatric-resuscitation references, not PowerPlan values — confirm with pharmacy.
+      <b>Sources:</b> World Allergy Organization Anaphylaxis Guidance 2020 (epinephrine 0.01 mg/kg IM, max 0.5 mg, repeat q5–15min; 20 mL/kg fluid bolus); AAAAI/ACAAI Anaphylaxis: A 2023 Practice Parameter Update (0.3 mg pediatric epinephrine cap — conflicts with WAO's 0.5 mg, noted above); Johns Hopkins All Children's Hospital Anaphylaxis Clinical Pathway 2023 (adjunct dosing); Dribin TE, et al., "Timing of repeat epinephrine to inform paediatric anaphylaxis observation periods," <i>Lancet Child Adolesc Health</i> 2025;9(7):484-496. The originating hospital's Pediatric General PowerPlan (Cerner order set) — dexamethasone 0.6 mg/kg (max 10 mg), albuterol nebulizer q20min ×3, racemic epinephrine 2.25% 0.5 mL neb (0.25 mL if &lt;5 kg, dilute in 3 mL NS), and the epinephrine IM 0.01 mg/kg &lt;15 kg / EpiPen Jr 15–29.9 kg / EpiPen ≥30 kg tiering. IV-epinephrine bolus/infusion figures are standard pediatric-resuscitation references, not PowerPlan values — confirm with pharmacy.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -441,7 +441,7 @@
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> Children's Hospital of Philadelphia, <i>Emergency Department Clinical Pathway for Evaluation/Treatment of Children with Asthma</i>, last revised May 2026 — PASS severity triage, weight-tiered albuterol/ipratropium dosing, dexamethasone weight-band dosing, magnesium/terbutaline escalation dosing, and the overall dexamethasone-first pathway structure. LRH Pediatric General PowerPlan (Cerner order set) — albuterol nebulizer/DuoNeb q20min ×3, albuterol HFA 4 puffs, dexamethasone 0.6 mg/kg (max 10 mg) and prednisolone 2 mg/kg (max 60 mg) as the LRH-ordered equivalents of the CHOP weight bands.
+      <b>Sources:</b> Children's Hospital of Philadelphia, <i>Emergency Department Clinical Pathway for Evaluation/Treatment of Children with Asthma</i>, last revised May 2026 — PASS severity triage, weight-tiered albuterol/ipratropium dosing, dexamethasone weight-band dosing, magnesium/terbutaline escalation dosing, and the overall dexamethasone-first pathway structure. The originating hospital's Pediatric General PowerPlan (Cerner order set) — albuterol nebulizer/DuoNeb q20min ×3, albuterol HFA 4 puffs, dexamethasone 0.6 mg/kg (max 10 mg) and prednisolone 2 mg/kg (max 60 mg) as the originating hospital's ordered equivalents of the CHOP weight bands.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -563,7 +563,7 @@
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> StatPearls, <i>Epiglottitis</i> (NBK430960); WikEM, "Epiglottitis" and antibiotic dosing template; EMCrit IBCC, "Epiglottitis" (Farkas); RCEMLearning, croup/epiglottitis/tracheitis comparison. Post-Hib epidemiology per PubMed 23076559 and PMC2870429. No rural-specific stabilize-and-transfer guideline exists for this condition — that section is a synthesis of general principles, not a direct quote from a named protocol. Racemic epinephrine and dexamethasone doses per the LRH Pediatric General PowerPlan (Cerner order set); their use in epiglottitis specifically is temporizing/low-evidence — the do-not-agitate principle overrides both.
+      <b>Sources:</b> StatPearls, <i>Epiglottitis</i> (NBK430960); WikEM, "Epiglottitis" and antibiotic dosing template; EMCrit IBCC, "Epiglottitis" (Farkas); RCEMLearning, croup/epiglottitis/tracheitis comparison. Post-Hib epidemiology per PubMed 23076559 and PMC2870429. No rural-specific stabilize-and-transfer guideline exists for this condition — that section is a synthesis of general principles, not a direct quote from a named protocol. Racemic epinephrine and dexamethasone doses per the originating hospital's Pediatric General PowerPlan (Cerner order set); their use in epiglottitis specifically is temporizing/low-evidence — the do-not-agitate principle overrides both.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -692,7 +692,7 @@
       <details class="t-box-caution">
         <summary class="t-head t-head-caution">SMALL RURAL ED — ICU ADMISSION / TRANSFER</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p07-11" class="t-ck"><span>Most pediatric DKA (especially first presentation, young age, severe acidosis, or altered mental status) warrants ICU-level care — if LRH doesn't have pediatric ICU capability, start the bolus/insulin protocol above and arrange transfer early rather than trying to manage the full multi-hour correction locally.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p07-11" class="t-ck"><span>Most pediatric DKA (especially first presentation, young age, severe acidosis, or altered mental status) warrants ICU-level care — if your site doesn't have pediatric ICU capability, start the bolus/insulin protocol above and arrange transfer early rather than trying to manage the full multi-hour correction locally.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p07-12" class="t-ck"><span>If cerebral edema is suspected, treat first (hypertonic saline or mannitol per your institutional protocol, head of bed elevation) — don't wait for transfer or imaging to act.</span></label></li>
         </ul>
       </details>
@@ -814,7 +814,7 @@
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> Gerson R, et al., "Best Practices for Evaluation and Treatment of Agitated Children and Adolescents (BETA) in the Emergency Department," American Association for Emergency Psychiatry consensus statement, <i>West J Emerg Med</i> 2019; Foster AA, et al., "Standardizing and Improving Care for Pediatric Agitation Management in the Emergency Department," <i>Pediatrics</i> 2023;152(1):e2022059586 — de-escalation framework, medication choices/cautions, and restraint principles. Weight/age-banded dosing cross-checked against Children's Minnesota and Children's Hospital of Richmond institutional pediatric agitation guidelines. LRH Pediatric General PowerPlan (Cerner order set) — lorazepam 0.05 mg/kg PO (max 2 mg; avoid in autism spectrum disorder), olanzapine 2.5 mg (&lt;30 kg)/5 mg (≥30 kg) PO, midazolam 0.3 mg/kg IN, droperidol or haloperidol 0.05 mg/kg IM (max 5 mg; continuous EKG/SpO₂ after), diphenhydramine 1 mg/kg IV (max 50 mg) PRN dystonia. Restraint time limits per 42 CFR §482.13, CMS Hospital Conditions of Participation.
+      <b>Sources:</b> Gerson R, et al., "Best Practices for Evaluation and Treatment of Agitated Children and Adolescents (BETA) in the Emergency Department," American Association for Emergency Psychiatry consensus statement, <i>West J Emerg Med</i> 2019; Foster AA, et al., "Standardizing and Improving Care for Pediatric Agitation Management in the Emergency Department," <i>Pediatrics</i> 2023;152(1):e2022059586 — de-escalation framework, medication choices/cautions, and restraint principles. Weight/age-banded dosing cross-checked against Children's Minnesota and Children's Hospital of Richmond institutional pediatric agitation guidelines. The originating hospital's Pediatric General PowerPlan (Cerner order set) — lorazepam 0.05 mg/kg PO (max 2 mg; avoid in autism spectrum disorder), olanzapine 2.5 mg (&lt;30 kg)/5 mg (≥30 kg) PO, midazolam 0.3 mg/kg IN, droperidol or haloperidol 0.05 mg/kg IM (max 5 mg; continuous EKG/SpO₂ after), diphenhydramine 1 mg/kg IV (max 50 mg) PRN dystonia. Restraint time limits per 42 CFR §482.13, CMS Hospital Conditions of Participation.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -890,7 +890,7 @@
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p10-4" class="t-ck"><span><b>Call the pediatric referral center now if you haven't already</b> — need for intubation vs. bag-mask ventilation (hypercapnia is common and typically resolves with seizure cessation and non-invasive support, so don't rush to intubate on hypercapnia alone).</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p10-5" class="t-ck"><span><b>Consider additional workup:</b> full septic workup, antibiotics/antivirals, brain imaging.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p10-6" class="t-ck"><span>Persistent altered LOC may reflect non-convulsive status epilepticus or a severe underlying brain disorder.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p10-7" class="t-ck"><span><b>Third-line:</b> infusion of midazolam, pentobarbital, propofol, or ketamine — arrange transfer if LRH can't provide continuous EEG monitoring in-house.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p10-7" class="t-ck"><span><b>Third-line:</b> infusion of midazolam, pentobarbital, propofol, or ketamine — arrange transfer if your site can't provide continuous EEG monitoring in-house.</span></label></li>
         </ul>
       </details>
     </div>
@@ -958,13 +958,13 @@
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p11-9" class="t-ck"><span><b>The AAP guideline's own logic:</b> if LP is unsuccessful/traumatic/deferred, treat as if the CSF result were positive (empiric antibiotics + admission) until proven otherwise. The same logic extends to a setting where LP simply isn't feasible.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p11-10" class="t-ck"><span>Draw blood/urine cultures if it doesn't meaningfully delay transfer, give the first empiric antibiotic dose promptly — don't wait for transfer to start therapy — and arrange transfer to a tertiary pediatric center rather than attempting definitive local management for any infant ≤28 days or any ill-appearing infant of any age.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p11-11" class="t-ck"><span>This stabilize-and-transfer approach is a reasonable extrapolation of the AAP guideline's own principle, not a separately published rural-specific guideline — worth review/sign-off from LRH's pediatric/ED medical director before treating it as formal protocol. Consider pediatric tele-EM consultation if available.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p11-11" class="t-ck"><span>This stabilize-and-transfer approach is a reasonable extrapolation of the AAP guideline's own principle, not a separately published rural-specific guideline — worth review/sign-off from your site's pediatric/ED medical director before treating it as formal protocol. Consider pediatric tele-EM consultation if available.</span></label></li>
         </ul>
       </details>
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> Pantell RH, et al., "Evaluation and Management of Well-Appearing Febrile Infants 8 to 60 Days Old," AAP Clinical Practice Guideline, <i>Pediatrics</i> 2021;148(2):e2021052228 — age bands, workup requirements, inflammatory-marker thresholds, and the "treat as CSF-positive if LP unobtainable" principle. Kuppermann N, et al. (PECARN Febrile Infant Rule), 2019, for reference on the 29–60/61–90 day rules outside this guideline's scope. Neonatal antibiotic dosing per standard neonatal formulary references (e.g. UW NICU dosing guide) — gentamicin dosing intentionally not reduced to a single number here; confirm with pharmacy/NICU. LRH ED Infant Care &lt;90 Days PowerPlan (Cerner order set) — ampicillin 100 mg/kg + gentamicin 4 mg/kg IV (0–28 d; + acyclovir 20 mg/kg if HSV risk), ceftriaxone 50 mg/kg IV (non-meningitis) or 100 mg/kg + vancomycin 20 mg/kg (meningitis dosing), PECARN-based 29–60 d low-risk pathway (negative UA, ANC &lt;4000, procalcitonin ≤0.5 ng/mL), acetaminophen IV 12.5 mg/kg (&lt;29 d) / 15 mg/kg (≥29 d), D10W 2 mL/kg for hypoglycemia, NS 10–20 mL/kg boluses.
+      <b>Sources:</b> Pantell RH, et al., "Evaluation and Management of Well-Appearing Febrile Infants 8 to 60 Days Old," AAP Clinical Practice Guideline, <i>Pediatrics</i> 2021;148(2):e2021052228 — age bands, workup requirements, inflammatory-marker thresholds, and the "treat as CSF-positive if LP unobtainable" principle. Kuppermann N, et al. (PECARN Febrile Infant Rule), 2019, for reference on the 29–60/61–90 day rules outside this guideline's scope. Neonatal antibiotic dosing per standard neonatal formulary references (e.g. UW NICU dosing guide) — gentamicin dosing intentionally not reduced to a single number here; confirm with pharmacy/NICU. The originating hospital's ED Infant Care &lt;90 Days PowerPlan (Cerner order set) — ampicillin 100 mg/kg + gentamicin 4 mg/kg IV (0–28 d; + acyclovir 20 mg/kg if HSV risk), ceftriaxone 50 mg/kg IV (non-meningitis) or 100 mg/kg + vancomycin 20 mg/kg (meningitis dosing), PECARN-based 29–60 d low-risk pathway (negative UA, ANC &lt;4000, procalcitonin ≤0.5 ng/mL), acetaminophen IV 12.5 mg/kg (&lt;29 d) / 15 mg/kg (≥29 d), D10W 2 mL/kg for hypoglycemia, NS 10–20 mL/kg boluses.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -1140,7 +1140,7 @@
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> American College of Emergency Physicians, <i>Clinical Policy: Procedural Sedation and Analgesia in the Emergency Department</i>, <i>Ann Emerg Med</i> 2014;63(2):247-258 (current standing ACEP policy — NPO-status finding). Bhatt M, et al., "Unscheduled Procedural Sedation: A Multidisciplinary Consensus Practice Guideline" (11-society consensus incl. Society for Pediatric Sedation), <i>Ann Emerg Med</i> 2019;73(5):e51-e65. Coté CJ, Wilson S; AAP/AAPD, "Guidelines for Monitoring and Management of Pediatric Patients Before, During, and After Sedation," <i>Pediatrics</i> 2019;143(6):e20191000 (2016 update, reaffirmed 2025). StatPearls, <i>Pediatric Procedural Sedation</i> (NBK572100). Sherwin TS, et al., ketamine/midazolam emergence-reaction trial, <i>Ann Emerg Med</i> 2000. LRH Pediatric General PowerPlan (Cerner order set) — ketamine 2 mg/kg IV (max 100 mg) / 4 mg/kg IM (max 200 mg) initial procedural-sedation dosing, ondansetron 0.15 mg/kg IV 20 min pre-ketamine, midazolam 0.3 mg/kg IN (max 10 mg) / 0.5 mg/kg PO (max 20 mg) anxiolysis.
+      <b>Sources:</b> American College of Emergency Physicians, <i>Clinical Policy: Procedural Sedation and Analgesia in the Emergency Department</i>, <i>Ann Emerg Med</i> 2014;63(2):247-258 (current standing ACEP policy — NPO-status finding). Bhatt M, et al., "Unscheduled Procedural Sedation: A Multidisciplinary Consensus Practice Guideline" (11-society consensus incl. Society for Pediatric Sedation), <i>Ann Emerg Med</i> 2019;73(5):e51-e65. Coté CJ, Wilson S; AAP/AAPD, "Guidelines for Monitoring and Management of Pediatric Patients Before, During, and After Sedation," <i>Pediatrics</i> 2019;143(6):e20191000 (2016 update, reaffirmed 2025). StatPearls, <i>Pediatric Procedural Sedation</i> (NBK572100). Sherwin TS, et al., ketamine/midazolam emergence-reaction trial, <i>Ann Emerg Med</i> 2000. The originating hospital's Pediatric General PowerPlan (Cerner order set) — ketamine 2 mg/kg IV (max 100 mg) / 4 mg/kg IM (max 200 mg) initial procedural-sedation dosing, ondansetron 0.15 mg/kg IV 20 min pre-ketamine, midazolam 0.3 mg/kg IN (max 10 mg) / 0.5 mg/kg PO (max 20 mg) anxiolysis.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -1181,7 +1181,7 @@
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> LRH Pediatric General PowerPlan (Cerner order set) — dexamethasone 0.6 mg/kg PO/IV/IM max 10 mg (0.3 mg/kg PO listed as an alternative), racemic epinephrine 2.25% 0.5 mL nebulized (0.25 mL if &lt;5 kg, dilute in 3 mL NS). General croup framework (dex-for-all, racemic epi for stridor at rest, 3–4 h post-epi observation, night-2–3 natural history) per standard pediatric EM references (WikEM/StatPearls croup; Bjornson &amp; Johnson, <i>Lancet</i> croup reviews). Westley score intentionally omitted — severity here is the practical stridor-at-rest split, not a formal score.
+      <b>Sources:</b> The originating hospital's Pediatric General PowerPlan (Cerner order set) — dexamethasone 0.6 mg/kg PO/IV/IM max 10 mg (0.3 mg/kg PO listed as an alternative), racemic epinephrine 2.25% 0.5 mL nebulized (0.25 mL if &lt;5 kg, dilute in 3 mL NS). General croup framework (dex-for-all, racemic epi for stridor at rest, 3–4 h post-epi observation, night-2–3 natural history) per standard pediatric EM references (WikEM/StatPearls croup; Bjornson &amp; Johnson, <i>Lancet</i> croup reviews). Westley score intentionally omitted — severity here is the practical stridor-at-rest split, not a formal score.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -1189,7 +1189,7 @@
   </article>
 </main>
 <script>
-/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
+/* ===== SITE CONFIG (site-specific — edit to localize) ===== */
 var SITE = {
   version: "1.5",
   lastReviewed: "2026-08-13",
@@ -1202,7 +1202,7 @@ var SITE = {
   staleWeightMins: 10
 };
 (function(){
-  var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
+  var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · {{SITE.abbrev}}';
   Array.prototype.forEach.call(document.querySelectorAll('.verstamp'), function(vs){ vs.textContent=stampText; });
 })();
 
@@ -1631,7 +1631,7 @@ var PEDS_WT = (function(){
    of 1:1000 or 1.4 mL of 1:10,000 — same number, tenfold difference in volume).
    TODO(maintainer): data-conc is wired up only where a concentration is already stated
    and cited in that row's own text (see the two epinephrine rows below) — do not add
-   data-conc to any other row without first confirming LRH's actual stocked concentration
+   data-conc to any other row without first confirming the site's actual stocked concentration
    for that drug/route; this calculator will never guess one. */
 var PEDSDOSE = (function(){
   var spans = Array.prototype.slice.call(document.querySelectorAll('.wdose'));
@@ -1859,7 +1859,7 @@ var PEDSDOSE = (function(){
     var ev=CASESTATE.getLog().filter(function(e){ return e.label; })
       .sort(function(a,b){ return (a.tMs||0)-(b.tMs||0); });
     if(!ev.length){ body.innerHTML='<div style="color:#5a6a78; padding:16px 0; text-align:center;">Nothing logged yet.</div>'; return ''; }
-    var rows='', text='LRH Emergency Manual — case timeline, all tools (times only, no identifiers, no weight)\n\n';
+    var rows='', text='{{SITE.title}} — case timeline, all tools (times only, no identifiers, no weight)\n\n';
     ev.forEach(function(e){
       var w=wallFromMs(e.tMs), tag=TOOL_LABEL[e.tool]||String(e.tool||'').toUpperCase();
       rows+='<div style="display:grid; grid-template-columns:52px 62px 1fr; gap:8px; padding:8px 0; border-top:1px solid #edf0f3; align-items:baseline;"><span style="font-family:ui-monospace,Menlo,monospace; font-weight:700;">'+w+'</span><span style="font-family:ui-monospace,Menlo,monospace; color:#5a6a78; font-size:11px; letter-spacing:0.04em;">'+tag+'</span><span>'+e.label+'</span></div>';

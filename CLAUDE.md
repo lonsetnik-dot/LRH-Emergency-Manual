@@ -47,6 +47,12 @@ unclear. If a request conflicts with a rule below, flag it before proceeding.
 4. **Reuse the shared skeleton.** Same `:root` CSS variables (brand colors),
    same header and disclaimer markup, same class names across all tools. Keep
    tools visually and structurally identical to each other.
+   Mobile accessibility is part of the skeleton, not a polish step:
+   `ACCESSIBILITY.md` is the normative standard (zoom never disabled, LAYOUT.md
+   target floors, 4.5:1 token contrast in both themes, 320px reflow, reduced
+   motion, one `h1` + `lang` + unique title per page) and
+   `verify_accessibility.mjs` enforces the machine-checkable half. A new tool
+   or card must pass it before delivery.
 
 5. **Show the logic and cite it.** Every tool displays its criteria/thresholds
    and includes a source for each clinical value (comment or footer). Never a

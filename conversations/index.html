@@ -6,15 +6,15 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#005596">
-<title>LRH Conversations</title>
+<title>{{SITE.abbrev}} Conversations</title>
 <meta name="apple-mobile-web-app-title" content="Conversations">
 <meta name="description" content="Beta cognitive aids for difficult ED conversations — a consultant crucial conversation and a code-status conversation. Practice and feedback only.">
-<link rel="canonical" href="https://lrhemergencymanual.net/conversations/">
+<link rel="canonical" href="https://{{SITE.domain}}/conversations/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="LRH Emergency Manual">
-<meta property="og:title" content="LRH Conversations (beta)">
+<meta property="og:site_name" content="{{SITE.title}}">
+<meta property="og:title" content="{{SITE.abbrev}} Conversations (beta)">
 <meta property="og:description" content="Cognitive aids for difficult ED conversations. Beta — practice and feedback only.">
-<meta property="og:url" content="https://lrhemergencymanual.net/conversations/">
+<meta property="og:url" content="https://{{SITE.domain}}/conversations/">
 <meta name="twitter:card" content="summary">
 <style>
   html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
@@ -54,7 +54,7 @@
 </head>
 <body data-theme="dark">
 <div id="betasplash" style="position:fixed; inset:0; z-index:999; background:var(--bg); color:var(--ink); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
-  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:var(--ink2);">LRH · EMERGENCY DEPARTMENT</div>
+  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:var(--ink2);">{{SITE.abbrev}} · EMERGENCY DEPARTMENT</div>
   <div style="font-size:30px; line-height:1.06; letter-spacing:-0.02em; font-weight:700;">Conversations</div>
   <div style="display:inline-block; padding:6px 14px; border:2px solid var(--accent); color:var(--accent); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.16em;">BETA</div>
   <div style="max-width:460px; font-size:17px; line-height:1.4; color:var(--ink);">Not yet ready for clinical use. Shared for feedback and practice only.</div>
@@ -66,13 +66,13 @@
   <a class="ghost" href="../?from=tool">&#9664; MANUAL</a>
   <button class="ghost" id="backbtn" type="button" style="display:none">&#9664; BACK</button>
   <span class="plabel">CONVERSATIONS</span>
-  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Conversations" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Conversations" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
 </div>
 </div>
 
 <main>
   <div style="padding:16px 14px 6px;">
-    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:var(--ink2); font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
+    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:var(--ink2); font-weight:700;">{{SITE.abbrev}} · EMERGENCY DEPARTMENT</div>
     <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Conversations</h1>
     <p style="margin:0; color:var(--ink2); font-size:14.5px;">Cognitive aids for the hard conversations — the ones where structure buys you calm. Starting frameworks, not scripts to read word for word.</p>
   </div>
@@ -370,10 +370,10 @@
 </main>
 
 <script>
-/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
+/* ===== SITE CONFIG (site-specific — edit to localize) ===== */
 var SITE = { version: "0.1", lastReviewed: "2026-08-12" };
 (function(){
-  document.querySelectorAll('.verstamp').forEach(function(el){ el.textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH'; });
+  document.querySelectorAll('.verstamp').forEach(function(el){ el.textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · {{SITE.abbrev}}'; });
   var s=document.getElementById('betasplash'), b=document.getElementById('betago');
   if(!s||!b) return;
   function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); }

@@ -109,3 +109,8 @@ button{-webkit-appearance:none;appearance:none;touch-action:manipulation}
 /* A link INTO the procedures tool is a link to a procedure, wherever it is
    written. Underlined and offset so it survives the mono/condensed faces. */
 a[href*="procedures/"]{text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1.5px}
+
+/* Visually hidden but screen-reader-announced — the page-heading pattern
+   (ACCESSIBILITY.md §7): every live engine carries an sr-only <h1>. */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}
