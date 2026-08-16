@@ -79,10 +79,17 @@ const openTL = async () => {
 const tlText = async () => { await openTL(); const t = await txt('#shelltl'); await pg.click('#tlclose'); await pg.waitForTimeout(150); return t; };
 /* RESET on a phone lives behind the ⋯ menu (SHELL.md layer 9), two-tap SURE?,
    then the amber toast — dismiss it so it never intercepts the next tap. */
+/* Condition-based, not sleep-based: under full-suite load the fixed sleeps
+   let the SURE? confirm tap slip past the arm window, the reset never fired,
+   and the next #startbtn click timed out on a still-running case. Wait for
+   the armed state before confirming, and for the idle screen (the proof the
+   sweep ran) before returning. */
 const doReset = async () => {
-  await pg.click('#menubtn'); await pg.waitForTimeout(200);
-  await pg.click('#resetbtn'); await pg.waitForTimeout(200);
-  await pg.click('#resetbtn'); await pg.waitForTimeout(350);
+  await pg.click('#menubtn');
+  await pg.click('#resetbtn');
+  await pg.waitForFunction(() => /SURE/.test(document.querySelector('#resetbtn').textContent), null, { timeout: 5000 });
+  await pg.click('#resetbtn');
+  await pg.waitForSelector('#startbtn', { state: 'visible', timeout: 10000 });
   if (await pg.locator('#shelltoast').isVisible().catch(() => false)) { await pg.click('#toastok'); await pg.waitForTimeout(150); }
 };
 const circText = () => pg.evaluate(() => {
@@ -342,9 +349,11 @@ ck('9. and lands on the timeline', /IO placed right humeral head/.test(await tlT
 /* ---- 10. reset: the lrh- sweep + the cleared toast ---- */
 await fillW('44');
 await pg.click('#menubtn'); await pg.waitForTimeout(200);
-await pg.click('#resetbtn'); await pg.waitForTimeout(150);
+await pg.click('#resetbtn');
+await pg.waitForFunction(() => /SURE/.test(document.querySelector('#resetbtn').textContent), null, { timeout: 5000 });
 ck('10. reset arms with SURE?', /SURE\?/.test(await txt('#resetbtn')), true);
-await pg.click('#resetbtn'); await pg.waitForTimeout(400);
+await pg.click('#resetbtn');
+await pg.waitForSelector('#idle', { state: 'visible', timeout: 10000 });
 ck('10. reset returns to idle', await vis('#idle'), true);
 ck('10. the amber cleared toast is up', await vis('#shelltoast'), true);
 ck('10. reset sweeps lrh-case-* (heartbeat aside)', await pg.evaluate(() => {
@@ -387,9 +396,11 @@ ck('11. wide: the timeline is a side panel, not a sheet', await wideP.evaluate((
   return Math.round(r.width) === 320 && r.top === 0;
 }), true);
 await wideP.click('#tlclose'); await wideP.waitForTimeout(200);
-await wideP.click('#resetwide'); await wideP.waitForTimeout(200);
+await wideP.click('#resetwide');
+await wideP.waitForFunction(() => /SURE/.test(document.querySelector('#resetwide').textContent), null, { timeout: 5000 });
 ck('11. wide: inline reset arms with SURE?', await wtxt('#resetwide'), 'SURE?');
-await wideP.click('#resetwide'); await wideP.waitForTimeout(400);
+await wideP.click('#resetwide');
+await wideP.waitForSelector('#idle', { state: 'visible', timeout: 10000 });
 ck('11. wide: and clears to idle with the toast', (await wideP.locator('#idle').isVisible())
    && (await wideP.locator('#shelltoast').isVisible()), true);
 await wideP.close();
