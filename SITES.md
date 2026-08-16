@@ -1,12 +1,13 @@
 # SITES.md — the generic trunk and hospital editions
 
-> How one codebase serves cairnready.org (generic) and any number of
-> hospital-localized editions, starting with LRH and a second pilot hospital.
+> How one codebase serves demo.cairnready.org (the generic edition; linked
+> from the cairnready.org explainer page) and any number of hospital-localized
+> editions, starting with LRH and a second pilot hospital.
 
 ## The model
 
 ```
-cairnready generic trunk  (this branch — deploys to cairnready.org)
+cairnready generic trunk  (main — deploys to demo.cairnready.org)
 ├── site.config.json      generic identity, placeholder phone lines
 ├── <tool>/SITE CONFIG    national-guideline defaults, flagged "localize"
 │

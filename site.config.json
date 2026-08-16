@@ -19,7 +19,7 @@
   "abbrev": "CairnReady",
   "hospital": "CairnReady — Generic ED Edition",
   "eyebrow": "CairnReady &middot; Emergency Department Cognitive Aids",
-  "domain": "cairnready.org",
+  "domain": "demo.cairnready.org",
   "editionNote": "Generic edition — not localized to any hospital. Every threshold, dose, phone number, and cart location must be validated and localized by your site before clinical use.",
   "footerLine": "CairnReady Emergency Manual &mdash; generic edition &middot; personal, unofficial reference &middot; localize before clinical use",
   "transferCenter": "your regional transfer center",

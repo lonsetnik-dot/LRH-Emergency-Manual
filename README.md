@@ -3,7 +3,8 @@
 Static, client-side, offline-capable bedside decision-support tools for
 emergency departments: resuscitation codes, rare procedures, OB/neonatal
 emergencies, trauma, pediatric references, equipment readiness, drills, and
-more. Launching at **cairnready.org**.
+more. **cairnready.org** is the project's explainer page; the generic manual
+itself runs at **demo.cairnready.org** (linked from the explainer).
 
 **This is the generic edition.** It is not localized to any hospital: identity
 strings come from `site.config.json`, clinical values are national-guideline
