@@ -27,7 +27,7 @@ single `SITE CONFIG` block in its tool.
 
 | Field | Question | LRH's answer | Where it lives | Required? |
 |---|---|---|---|---|
-| Hospital name | What is your hospital's full name? | Littleton Regional Hospital | HEART `SITE.hospital`; ⚑ also in prose across most tools | **Yes** |
+| Hospital name | What is your hospital's full name? | Littleton Regional Healthcare | HEART `SITE.hospital`; ⚑ also in prose across most tools | **Yes** |
 | Hospital short name / abbreviation | What short code do staff use? | LRH | HEART `SITE.hospitalShort`; ⚑ repeated across tools | **Yes** |
 | Public web address | What domain will your copy live at? | lrhemergencymanual.net | posters/labels QR targets, footers | **Yes** |
 | Brand / accent color | Your primary UI accent (adult mode) | Dartmouth green `#00693E` (light) / `#2FA372` (dark) | `--accent` design token per tool | Recommended |

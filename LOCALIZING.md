@@ -1,6 +1,6 @@
 # Localizing this manual for your own hospital
 
-This project started as Littleton Regional Hospital's (LRH) emergency manual and
+This project started as Littleton Regional Healthcare's (LRH) emergency manual and
 is now the **CairnReady generic trunk** (cairnready.org) — built to be **forked
 and adapted by any emergency department**: your copy, your hosting, your
 content, your clinical validation. This guide is the map of *what* is
@@ -46,7 +46,7 @@ the tool adapts. You should not have to touch the code around them.
 Here is everything an adopting ED changes, and where it currently lives.
 
 ### 1. Hospital identity — name, abbreviation, domain
-Strings like **"LRH"**, **"Littleton Regional Hospital"**, and the
+Strings like **"LRH"**, **"Littleton Regional Healthcare"**, and the
 `lrhemergencymanual.net` domain.
 *Where:* referenced across many tool files (today this is the **least
 consolidated** value — e.g. "LRH" appears dozens of times in `codes/index.html`).

@@ -18,7 +18,7 @@ See `SITES.md` for the full picture. In one paragraph: this repository is the
 then localizing two layers — `site.config.json` (name, domain, transfer/phone
 lines; substituted into every page at build) and the marked
 `SITE CONFIG` block at the top of each tool (clinical thresholds, assay names,
-cart locations). The first two hospital editions (Littleton Regional Hospital,
+cart locations). The first two hospital editions (Littleton Regional Healthcare,
 plus a second pilot site) are the test cases for that pathway. The original
 LRH-localized manual lives in this repository's history and at
 `lrhemergencymanual.net` until its rebuilt edition ships.
