@@ -44,8 +44,9 @@ independently-copied bridge (the `SS` object in that file):
   entry, and `lrh-case-adultoverride` on the adult-override toggle.
 - **Writes** `lrh-case-log` for every logged event, tagged `tool:'codes',
   card:'01'` (it *is* the Codes arrest card), through the same PHI guard
-  (weight-shaped / 6+-digit labels refused). Its in-tool EVENT LOG accordion is a
-  separate in-memory view of the same events.
+  (weight-shaped / 6+-digit labels refused). Its in-tool case timeline (the
+  shell's sheet/side panel — SHELL.md layer 8, formerly an EVENT LOG
+  accordion) is a separate in-memory view of the same events.
 - **Touches** `lrh-case-lastactive` on load and every click (WS2.5).
 - **RESET** runs the shared `lrh-` prefix sweep (preserving `lrh-pref-`), same as
   every other tool's RESET FOR NEXT CASE (re-inits its state in memory rather

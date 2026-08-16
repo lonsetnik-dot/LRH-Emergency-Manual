@@ -75,7 +75,15 @@ const T = { timeout: 4000 };
 /* Never let a missing field abort the run — an unreachable weight box is
    itself a finding, and the remaining clauses still need to be checked. */
 const fillW = async (t, v) => {
-  try { await pg.fill(t.wIn, String(v), { timeout: 5000 }); return true; }
+  /* Case-shell tools (SHELL.md layer 4) keep the weight inputs behind a
+     collapsed strip on a phone — open it first, the same tap a clinician
+     makes. Tools without the strip are untouched. */
+  try {
+    if (!(await pg.locator(t.wIn).isVisible().catch(() => false)) && await pg.locator('#wtoggle').count()) {
+      await pg.click('#wtoggle', T).catch(() => {}); await pg.waitForTimeout(200);
+    }
+    await pg.fill(t.wIn, String(v), { timeout: 5000 }); return true;
+  }
   catch { ck(`   [${t.id}] weight field ${t.wIn} is reachable`, 'unreachable', 'reachable'); return false; }
 };
 
@@ -187,6 +195,11 @@ for (const t of RESETTABLE) {
   });
   await open(t);
   if (!(await pg.locator('#resetbtn').count())) { ck(`5. [${t.id}] has a RESET`, 'no #resetbtn', 'a RESET'); continue; }
+  /* Case-shell tools put the phone RESET behind the bar's ... menu (SHELL.md
+     layer 9) — open it first; the menu stays open across the two-tap SURE?. */
+  if (!(await pg.locator('#resetbtn').isVisible().catch(() => false)) && await pg.locator('#menubtn').count()) {
+    await pg.click('#menubtn', T).catch(() => {}); await pg.waitForTimeout(200);
+  }
   /* Two confirm idioms in the family: the card tools raise a modal, the live
      engines want a second tap on the same button. Either is fine — the clause
      is about what RESET clears, not how it asks. */

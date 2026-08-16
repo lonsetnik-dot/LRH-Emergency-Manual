@@ -43,34 +43,68 @@
 </style>
 </head>
 <body data-theme="dark">
+
+<!-- ============ CASE SHELL layer 1 — app bar (SHELL.md) ============
+     Same structure and ids as arrest/, the reference implementation. Center:
+     the master case-clock pill while a case runs (tap = timeline), tagged PPH
+     per SHELL.md's per-tool table. Right: ⋯ overflow on a phone; TIMELINE /
+     FEEDBACK / RESET inline ≥768px. The tool square is PPH's own switcher
+     color (#E75480), the same square every other engine's switcher shows. -->
+<div class="shellbar" id="shellbar">
+  <a class="shellback shell-phone" id="backlink" href="../?from=tool" aria-label="Back to the manual">‹</a>
+  <a class="shellback shell-wide" id="backlinkwide" href="../?from=tool">MANUAL ›</a>
+  <button class="shelltool" id="toolbtn" type="button" aria-haspopup="true"><span class="shellsq" style="background:#E75480"></span>PPH<span class="shellcaret">▼</span></button>
+  <div class="shellbarmid">
+    <button class="shellpill" id="casepill" type="button" style="display:none" aria-label="Case clock — open the timeline"><span class="dot"></span><span class="shellpilltime" id="pillclock">0:00</span><span class="shellpilltag" id="pilltag">PPH</span></button>
+    <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:700;letter-spacing:.06em">READY</span>
+  </div>
+  <span class="shell-wide" style="gap:6px;align-items:center">
+    <button class="ghost" id="tlbtnwide" type="button">TIMELINE</button>
+    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20PPH" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+    <button class="ghost shellreset" id="resetwide" type="button">RESET</button>
+  </span>
+  <button class="shellmore shell-phone" id="menubtn" type="button" aria-label="Menu">⋯</button>
+</div>
+
+<!-- tool switcher: the six live engines + manual home, PPH marked current.
+     Plain links — cross-tool case state (clock, log) survives navigation per
+     CASE-STATE.md, so switching tools mid-case is safe by design. -->
+<div class="shellmenu left" id="toolmenu" style="display:none">
+  <a class="shellmenurow" href="../arrest/"><span class="shellsq" style="background:var(--red)"></span><span style="flex:1">Arrest</span><span class="shellmenusub">CODE</span></a>
+  <a class="shellmenurow" href="../tca/"><span class="shellsq" style="background:#E08A3C"></span><span style="flex:1">TCA</span><span class="shellmenusub">TCA</span></a>
+  <a class="shellmenurow" href="../airway/"><span class="shellsq" style="background:#2FA372"></span><span style="flex:1">Airway</span><span class="shellmenusub">RSI</span></a>
+  <a class="shellmenurow" href="../neonatal/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Neonatal</span><span class="shellmenusub">NRP</span></a>
+  <a class="shellmenurow on" href="../pph/"><span class="shellsq" style="background:#E75480"></span><span style="flex:1">PPH</span><span class="shellmenusub">PPH</span></a>
+  <a class="shellmenurow" href="../dystocia/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Dystocia</span><span class="shellmenusub">OB</span></a>
+  <div class="shellmenudiv"></div>
+  <a class="shellmenurow" href="../?from=tool"><span class="shellsq" style="background:var(--gray)"></span><span style="flex:1">Manual home</span></a>
+</div>
+
+<!-- ⋯ overflow (phone): timeline, feedback, then reset in red — the same
+     two-tap SURE? reset the wide button runs (SHELL.md layer 9). -->
+<div class="shellmenu right" id="moremenu" style="display:none">
+  <button class="shellmenurow" id="tlbtn" type="button">Case timeline</button>
+  <a class="shellmenurow" id="feedbackmenu" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20PPH">Feedback</a>
+  <div class="shellmenudiv"></div>
+  <button class="shellmenurow danger" id="resetbtn" type="button">Reset for next case</button>
+</div>
+
+<!-- ============ CASE SHELL layer 2 — actions strip (≥768px, running only) ====
+     PPH has no countdown cadence to chip on a phone (the 5-minute recorder call
+     and the EBL trend prompts fire inside the pathway card, unchanged), so the
+     strip renders only ≥768px, carrying the two dock actions — the same targets
+     as the phone dock, one home per width (SHELL.md layers 2/6). The blue slot
+     embeds the running EBL total so the number rides the chrome as well as the
+     big in-content box. -->
+<div class="shellstrip" id="shellstrip" style="display:none">
+  <button class="shelldockbtn scheme-purple shell-wide" id="stripmeds" type="button" style="flex:none">UTEROTONICS</button>
+  <button class="shelldockbtn scheme-blue shell-wide" id="stripebl" type="button" style="flex:none">EBL +<span class="shelldockclock" id="stripeblclock">0 mL</span></button>
+</div>
+
 <div class="wrap">
 
-  <div class="hdr">
-    <div style="flex:1;min-width:0">
-      <div id="plabel" style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--accent)">PPH · ENGINE</div>
-      <div style="display:flex;align-items:baseline;gap:8px">
-        <span class="mono" id="clock" style="font-size:26px;font-weight:700">0:00</span>
-        <span id="rundot" style="display:none"><span class="dot"></span></span>
-        <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:600">READY</span>
-      </div>
-      <div id="donesum" style="display:none"></div>
-      <div id="caseclock" style="display:none"></div>
-    </div>
-    <a class="ghost" id="backlink" href="../?from=tool" style="display:inline-flex;align-items:center;text-decoration:none">&#8962; MANUAL</a>
-    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20PPH" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
-    <button class="ghost" id="resetbtn" type="button">RESET</button>
-  </div>
-
-  <!-- Compressed to one line so it doesn't stack with the review banner below
-       it into a wall of prose ahead of the START button — the full original
-       wording lives on as the SCOPE accordion entry at the bottom, a genuine
-       footnote rather than a deletion. -->
-  <div class="card" id="scopebar" style="margin-top:12px;padding:9px 12px;border-color:var(--amber);font-size:12.5px;line-height:1.45">
-    <b>Mother after delivery</b> — escalate on the <b>trend</b>, not a single number. Newborn also needs help?
-    <a href="../neonatal/?from=home" style="color:var(--blue)">Neonatal resuscitation</a> — say out loud who is staying with her.
-  </div>
-
-  <div class="rev" id="revbanner"></div>
+  <div class="plabel" id="plabel" style="margin-top:10px">PPH · ENGINE</div>
+  <div id="caseclock" style="display:none"></div>
 
   <div id="idle">
     <button id="startbtn" type="button" style="width:100%;margin-top:14px;min-height:104px;border:none;border-radius:16px;background:var(--red);color:#fff;font:800 21px var(--sans);letter-spacing:.03em;cursor:pointer;box-shadow:0 6px 24px rgba(229,72,77,.25)">
@@ -109,6 +143,30 @@
     </div>
   </div>
 
+  <!-- ============ CASE SHELL layer 5 — operating card first (2026-08-15) ====
+       Everything below this line is reachable but never ahead of the thing
+       being operated: tele compact, then the one-line scope + review banners,
+       then reference. On the idle screen the START button above stays the
+       first thing on screen for the same reason. -->
+
+  <!-- Keeps this tool's OWN tele wording (SHELL.md: existing tele wording wins
+       over the generic TELE-ED label): the pathway card already says "Activate
+       tele-NICU if the newborn needs support", so the face-up shell button says
+       the same thing. Non-clinical — one tap logs the request time and
+       collapses to a quiet confirmation row. Idempotent; never a dialog. -->
+  <button class="shelltele" id="telebtn" type="button">📞 ACTIVATE TELE-NICU<span class="sub" id="telesub">if the newborn needs support — one tap logs the request time</span></button>
+  <div class="shellteledone" id="teledone" style="display:none">📞 TELE-NICU ACTIVATED AT <span class="mono" id="teleat">0:00</span> ✓</div>
+
+  <!-- Compressed to one line; the full original wording lives on as the SCOPE
+       accordion entry at the bottom, a genuine footnote rather than a
+       deletion. -->
+  <div class="card" id="scopebar" style="margin-top:10px;padding:9px 12px;border-color:var(--amber);font-size:12.5px;line-height:1.45">
+    <b>Mother after delivery</b> — escalate on the <b>trend</b>, not a single number. Newborn also needs help?
+    <a href="../neonatal/?from=home" style="color:var(--blue)">Neonatal resuscitation</a> — say out loud who is staying with her.
+  </div>
+
+  <div class="rev" id="revbanner"></div>
+
   <div class="sec" style="margin-top:18px;letter-spacing:.12em">REFERENCE — TAP TO OPEN</div>
   <div id="accordions"></div>
 
@@ -116,6 +174,40 @@
     Cognitive aid — verify against your own formulary and local policy.<br>
     <span id="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment.
   </div>
+</div>
+
+<!-- ============ CASE SHELL layer 6 — pinned action dock (phone, running) ====
+     PPH maps TWO slots, not three (SHELL.md: fewer slots when a tool has no
+     natural third — its escalation prompts fire on the EBL trend by themselves
+     and have no button to press). purple = drug: opens the uterotonics block
+     in the pathway card, where the contraindication guard lives — the slot
+     never logs a drug itself, so the guard cannot be bypassed from the dock.
+     blue = assessment: brings the EBL entry row into reach, and carries the
+     running total so the tool's most important number rides the thumb zone.
+     The LOG ticker rides on top: newest event + LOG ▲ → timeline. ≥768px
+     there is no dock — the same two buttons live in the strip (layer 2). -->
+<div class="shelldock" id="shelldock" style="display:none">
+  <button class="shellticker" id="ticker" type="button" style="display:none"><span class="tk" id="tickertext"></span><span class="lg">LOG ▲</span></button>
+  <div class="shelldockrow">
+    <button class="shelldockbtn scheme-purple" id="dockmeds" type="button">UTEROTONICS</button>
+    <button class="shelldockbtn scheme-blue" id="dockebl" type="button">EBL +<span class="shelldockclock" id="dockeblclock">0 mL</span></button>
+  </div>
+</div>
+
+<!-- ============ CASE SHELL layer 8 — case timeline ============
+     Every action auto-logs with the case-clock stamp and a category color dot.
+     Bottom sheet on a phone; 320px right panel ≥768px. In-memory view of
+     S.events (replaces the old EVENT LOG accordion). -->
+<div class="shelltl" id="shelltl" style="display:none">
+  <div class="shelltlhead"><span class="t">CASE TIMELINE</span><button class="shellx" id="tlclose" type="button" aria-label="Close the timeline">✕</button></div>
+  <div class="shelltlbody" id="tlrows"></div>
+  <div class="shelltlfoot">device only · no identifiers · cleared on reset</div>
+</div>
+
+<!-- ============ CASE SHELL layer 9 — the cleared toast after RESET ============ -->
+<div class="shelltoast" id="shelltoast" style="display:none">
+  <span style="flex:1">Reset — clocks, blood loss, drugs and the log are clean for a new case.</span>
+  <button class="shelltoastok" id="toastok" type="button">OK</button>
 </div>
 
 <script>
@@ -130,9 +222,15 @@
    That card carried no citation, so the primary sources are named in the SOURCE
    accordion and the banner says plainly that the values are inherited rather
    than individually re-derived.
+
+   v0.1.1 (2026-08-15): rebuilt the chrome onto the case shell (SHELL.md) —
+   app bar + tool switcher, case-clock pill tagged PPH, two-slot dock with the
+   running EBL riding the blue slot, face-up tele-NICU button, shell timeline
+   (replacing the EVENT LOG accordion) and the reset toast. No clinical value
+   changed; every number still reads from this block.
    ========================================================================== */
 var SITE = {
-  version:"0.1", lastReviewed:"2026-08-12", site:"LRH",
+  version:"0.1.1", lastReviewed:"2026-08-15", site:"LRH",
 
   review:{
     on:true,
@@ -203,7 +301,10 @@ var SITE = {
 try{ window.SITE = SITE; }catch(e){}
 
 var S = { theme:'dark', phase:'idle', t0:null, ebl:0, given:{}, flags:{}, eblSaid:{},
-          lastCall:0, events:[], open:null, resetArm:false, doneAt:null, showCustom:false };
+          lastCall:0, events:[], open:null, resetArm:false, doneAt:null, showCustom:false,
+          /* case shell (SHELL.md) UI state — in-memory only, no new persisted
+             keys. teleAt is the case-clock string on the confirmation row. */
+          teleAt:null, toolMenuOpen:false, moreMenuOpen:false, tlOpen:false, toast:false };
 
 var $=function(i){return document.getElementById(i);};
 function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -211,7 +312,17 @@ function fmt(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String
 function since(){ return S.t0 ? (Date.now()-S.t0)/1000 : 0; }
 function mins(){ return since()/60; }
 function clk(){ return S.t0 ? fmt(since()) : '0:00'; }
-function log(l){ S.events.unshift({t:clk(), label:l}); }
+/* Timeline category colors (SHELL.md layer 8) — the dot next to each event.
+   Semantic, matching the shell slots: amber escalation, purple drug, blue
+   assessment (EBL); red for phase changes, green for control, gray for
+   everything operational. Plain hex (not var()) because the dot is painted
+   into generated HTML — same map as arrest's/airway's. */
+var EV = { red:'#E5484D', amber:'#F0B429', purple:'#9B7BD4', blue:'#4C8DDA',
+           green:'#3DA35D', teal:'#2FA372', gray:'#8FA0B5' };
+function log(l, c){ S.events.unshift({t:clk(), label:l, c:c||EV.gray}); }
+/* Repaint an innerHTML target only when its content actually changed — the
+   500 ms paint loop must not reset the timeline's scroll position. */
+function setHTML(el, h){ if(el._h!==h){ el._h=h; el.innerHTML=h; } }
 
 /* ---- Verbal time announcements — Web Speech API, synthesised, no audio
    files (rule 1). Speaks elapsed time only, once a minute — this screen has
@@ -242,15 +353,8 @@ var CS = {
   sweep:function(){ try{ for(var i=localStorage.length-1;i>=0;i--){ var k=localStorage.key(i);
     if(k && k.indexOf('lrh-')===0 && k.indexOf('lrh-pref-')!==0) localStorage.removeItem(k); } }catch(e){} }
 };
-/* Heads-up summary — EBL total and which uterotonics are given, so the sticky
-   header answers "what have we done" without scrolling down. */
-function paintDoneSum(){
-  var parts=[], el=$('donesum');
-  if(S.ebl) parts.push('EBL '+S.ebl+' mL');
-  SITE.meds.forEach(function(m){ if(S.given[m.id]) parts.push(m.n+' ✓'); });
-  if(parts.length){ el.style.display=''; el.textContent=parts.join(' · '); }
-  else { el.style.display='none'; }
-}
+/* The old #donesum heads-up summary is retired — the shell's LOG ticker, the
+   dock's embedded EBL readout and the case timeline are that display now. */
 /* Only shown when it says something the clock above does not: that this case
    was already running before this screen was opened. If THIS tool started
    the case, the two numbers would be near-identical and just be a second,
@@ -361,7 +465,7 @@ function checkEbl(){
   SITE.eblMarks.forEach(function(m){
     if(S.ebl >= m.ml && !S.eblSaid[m.ml]){
       S.eblSaid[m.ml]=true;
-      log('<b>EBL '+m.ml+' mL</b> — '+m.say);
+      log('<b>EBL '+m.ml+' mL</b> — '+m.say, EV.amber);
     }
   });
 }
@@ -396,12 +500,8 @@ var ACC=[
       return '<p>'+SITE.meds.map(function(m){
         return '<b>'+esc(m.n)+'</b> — '+esc(m.d)+(m.blockWhy?' <span style="color:var(--red)">'+esc(m.blockWhy)+'</span>':'');
       }).join('<br><br>')+'</p><p>Kit lives in the '+esc(SITE.local.cart)+'.</p>'; } },
-  { id:'log', t:'EVENT LOG', b:function(){
-      if(!S.events.length) return '<p>Nothing logged yet.</p>';
-      return S.events.map(function(e){
-        return '<div style="display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px">'+
-          '<span class="mono" style="font-weight:700;color:var(--accent);flex:none">'+esc(e.t)+'</span><span>'+e.label+'</span></div>';
-      }).join(''); } },
+  /* The old EVENT LOG accordion is retired — the case shell's timeline
+     (layer 8, #shelltl) is the one view of S.events now. */
   { id:'src', t:'SOURCE &amp; PROVENANCE', b:function(){
       return '<p><b>Sequence and contraindications:</b> ACOG Practice Bulletin 183, <i>Postpartum '+
         'Hemorrhage</i> (Obstet Gynecol 2017;130:e168), and the Alliance for Innovation on Maternal Health '+
@@ -425,16 +525,63 @@ function phiReason(t){
 
 /* ===== paint ============================================================= */
 function paint(){
-  $('clock').textContent=clk();
   paintCaseClock();
-  paintDoneSum();
   var live = S.phase==='live';
-  $('rundot').style.display = live ? '' : 'none';
-  $('statusword').textContent = S.phase==='idle' ? 'READY' : (S.phase==='done' ? 'CONTROLLED' : (S.ebl+' mL'));
+
+  /* ---- CASE SHELL chrome (SHELL.md) — same wiring as arrest's ---- */
+  var caseOn = S.phase!=='idle';
+  $('statusword').style.display = caseOn ? 'none' : '';
+  $('statusword').textContent = 'READY';
+  $('casepill').style.display = caseOn ? '' : 'none';
+  if(caseOn){
+    $('pillclock').textContent = clk();
+    $('pilltag').textContent = S.phase==='done' ? 'CONTROLLED' : 'PPH';
+  }
+  /* The strip only exists ≥768px here (no phone cadence chips — see markup);
+     the dock is the phone home for the same two actions. */
+  var wide = window.matchMedia('(min-width:768px)').matches;
+  $('shellstrip').style.display = (live && wide) ? 'flex' : 'none';
+  $('shelldock').style.display = live ? 'flex' : 'none';
+  document.body.classList.toggle('dockon', live);
+  $('toolmenu').style.display = S.toolMenuOpen ? '' : 'none';
+  $('moremenu').style.display = S.moreMenuOpen ? '' : 'none';
+  $('shelltoast').style.display = S.toast ? 'flex' : 'none';
+
+  /* Reset — one armed state, two entry points (⋯ menu row on a phone, the
+     inline red button ≥768px). Both are the same two-tap SURE? pattern. */
+  $('resetbtn').textContent = S.resetArm ? 'SURE? — tap again to clear' : 'Reset for next case';
+  $('resetwide').textContent = S.resetArm ? 'SURE?' : 'RESET';
+  $('resetwide').style.background = S.resetArm ? 'var(--red)' : '';
+  $('resetwide').style.color = S.resetArm ? '#fff' : '';
+
+  /* Tele-NICU (layer 5.2): idempotent — the button collapses to a quiet
+     confirmation row once tapped, and never asks twice. */
+  $('telebtn').style.display = S.teleAt===null ? '' : 'none';
+  $('teledone').style.display = S.teleAt===null ? 'none' : '';
+  if(S.teleAt!==null) $('teleat').textContent = S.teleAt;
+
+  /* The running total rides the blue slot in both its homes (dock + strip),
+     so the tool's most important number is pinned on screen while running. */
+  $('dockeblclock').textContent = S.ebl+' mL';
+  $('stripeblclock').textContent = S.ebl+' mL';
+
+  /* LOG ticker — newest event, one line, tap for the timeline. */
+  var hasEv = S.events.length>0;
+  $('ticker').style.display = hasEv ? 'flex' : 'none';
+  if(hasEv) $('tickertext').textContent = S.events[0].t+' · '+String(S.events[0].label).replace(/<[^>]*>/g,'');
+
+  /* Timeline (layer 8). */
+  $('shelltl').style.display = S.tlOpen ? 'flex' : 'none';
+  if(S.tlOpen){
+    var th='';
+    if(!S.events.length) th='<div style="font-size:13.5px;color:var(--ink2);padding:10px 0">Nothing logged yet.</div>';
+    else for(var ti=0;ti<S.events.length;ti++){ var ev=S.events[ti];
+      th+='<div class="shelltlrow"><span class="tt">'+esc(ev.t)+'</span><span class="cdot" style="background:'+(ev.c||EV.gray)+
+          '"></span><span class="lbl">'+ev.label+'</span></div>'; }
+    setHTML($('tlrows'), th);
+  }
+
   $('plabel').textContent = live ? ('PPH · '+band().label.split(' ·')[0]) : 'PPH · ENGINE';
-  $('resetbtn').textContent = S.resetArm ? 'SURE?' : 'RESET';
-  $('resetbtn').style.background = S.resetArm ? 'var(--red)' : 'var(--card)';
-  $('resetbtn').style.color = S.resetArm ? '#fff' : 'var(--ink2)';
 
   $('revbanner').style.display = SITE.review.on ? '' : 'none';
   if(SITE.review.on) $('revbanner').innerHTML = '<b>&#9888; '+esc(SITE.review.text);
@@ -478,17 +625,80 @@ function paint(){
 }
 
 /* ===== events ============================================================ */
+/* Two-tap SURE? reset, shared by both entry points (⋯ menu row on a phone,
+   inline red button ≥768px). The menu stays open while armed so the second
+   tap lands on the same control. */
+function armReset(){
+  if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){S.resetArm=false;paint();},2500); return; }
+  /* One case, one reset: sweep the shared lrh- namespace (preserving the
+     lrh-pref- preferences) so a reset here clears the shared case clock and
+     every other tool's case state too — the same sweep arrest/tca run
+     (CASE-STATE.md). Then re-init this tool in memory, with the amber
+     cleared toast (SHELL.md layer 9) up until OK. */
+  CS.sweep();
+  S={ theme:S.theme, phase:'idle', t0:null, ebl:0, given:{}, flags:{}, eblSaid:{}, lastCall:0,
+      events:[], open:null, resetArm:false, doneAt:null, showCustom:false,
+      teleAt:null, toolMenuOpen:false, moreMenuOpen:false, tlOpen:false, toast:true };
+  $('customin').value='';
+  paint();
+}
+/* The dock/strip slots move where a target sits, never what it does: the
+   purple slot brings the guarded uterotonic block into view (the GIVEN
+   buttons and their contraindication greying stay the one source of truth),
+   the blue slot brings the EBL entry row into reach. */
+function toMeds(){ try{ var el=document.querySelector('#phasebox .med'); (el||$('phasebox')).scrollIntoView({behavior:'smooth', block:'center'}); }catch(e){} }
+function toEbl(){ try{ $('eblbox').scrollIntoView({behavior:'smooth', block:'center'}); }catch(e){} }
+
+/* Back link: default to the manual hub, but if we were opened from a specific
+   tool (?from=<slug>), route back there instead — same pattern as /arrest/. */
+(function(){
+  var m=/[?&]from=([a-z-]+)/.exec(location.search||''); var f=m&&m[1];
+  if(!f||f==='home'||f==='tool') return;
+  var b=$('backlink'), bw=$('backlinkwide');
+  if(b) b.href='../'+f+'/?from=tool';
+  if(bw){ bw.href='../'+f+'/?from=tool'; bw.textContent=f.toUpperCase()+' ›'; }
+})();
+
 document.addEventListener('click', function(e){
+  /* Tap anywhere else closes an open bar dropdown (never the timeline — that
+     has its own ✕). The reset row keeps working because it lives inside
+     .shellmenu, which is exempt from the close. */
+  if(S.toolMenuOpen||S.moreMenuOpen){
+    var inMenu = e.target.closest && (e.target.closest('.shellmenu')||e.target.closest('#toolbtn')||e.target.closest('#menubtn'));
+    if(!inMenu){ S.toolMenuOpen=false; S.moreMenuOpen=false; paint(); }
+  }
+
   var t=e.target.closest ? e.target.closest('button') : null;
   if(!t) return;
   var id=t.id, acc=t.getAttribute('data-acc');
 
   if(acc){ S.open=(S.open===acc?null:acc); paint(); return; }
 
+  /* ---- shell bar: tool switcher, ⋯ overflow, pill, timeline, toast ---- */
+  if(id==='toolbtn'){ S.toolMenuOpen=!S.toolMenuOpen; S.moreMenuOpen=false; paint(); return; }
+  if(id==='menubtn'){ S.moreMenuOpen=!S.moreMenuOpen; S.toolMenuOpen=false; paint(); return; }
+  if(id==='tlbtn'||id==='casepill'||id==='ticker'){ S.tlOpen=true; S.moreMenuOpen=false; S.toolMenuOpen=false; paint(); return; }
+  if(id==='tlbtnwide'){ S.tlOpen=!S.tlOpen; paint(); return; }
+  if(id==='tlclose'){ S.tlOpen=false; paint(); return; }
+  if(id==='toastok'){ S.toast=false; paint(); return; }
+  if(id==='resetwide'){ armReset(); return; }
+
+  /* ---- tele-NICU (layer 5.2): idempotent, logs the request time ---- */
+  if(id==='telebtn'){
+    if(S.teleAt!==null) return;
+    S.teleAt = clk();
+    log('Tele-NICU activated', EV.blue);
+    paint(); return;
+  }
+
+  /* ---- dock/strip slots (layer 6) — scroll-to, never a second behavior ---- */
+  if(id==='dockmeds'||id==='stripmeds'){ toMeds(); return; }
+  if(id==='dockebl'||id==='stripebl'){ toEbl(); return; }
+
   var add=t.getAttribute('data-ebl');
   if(add){
     S.ebl += parseInt(add,10);
-    log('EBL +'+add+' mL — running total <b>'+S.ebl+' mL</b>');
+    log('EBL +'+add+' mL — running total <b>'+S.ebl+' mL</b>', EV.blue);
     checkEbl(); paint(); return;
   }
   var med=t.getAttribute('data-med');
@@ -496,7 +706,7 @@ document.addEventListener('click', function(e){
     if(S.given[med]) return;
     S.given[med]=clk();
     var m=SITE.meds.filter(function(x){return x.id===med;})[0];
-    log('<b>'+m.n+' given</b> — '+m.d);
+    log('<b>'+m.n+' given</b> — '+m.d, EV.purple);
     paint(); return;
   }
   var fl=t.getAttribute('data-flag');
@@ -507,20 +717,16 @@ document.addEventListener('click', function(e){
     paint(); return;
   }
 
-  if(id==='resetbtn'){
-    if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){S.resetArm=false;paint();},2500); return; }
-    /* One case, one reset: sweep the shared lrh- namespace (preserving the
-       lrh-pref- preferences) so a reset here clears the shared case clock and
-       every other tool's case state too — the same sweep arrest/tca run
-       (CASE-STATE.md). Then re-init this tool in memory. */
-    CS.sweep();
-    S={ theme:S.theme, phase:'idle', t0:null, ebl:0, given:{}, flags:{}, eblSaid:{}, lastCall:0,
-        events:[], open:null, resetArm:false, doneAt:null, showCustom:false };
+  if(id==='resetbtn'){ armReset(); return; }
+  if(id==='startbtn'){
+    S.phase='live'; S.t0=Date.now(); CS.markCaseStarted();
+    log('<b>Postpartum hemorrhage recognized</b> — clock started', EV.red);
+    /* Seed the timeline with a pre-case tele activation (SHELL.md). */
+    if(S.teleAt!==null) log('Tele-NICU already on the line', EV.blue);
     paint(); return;
   }
-  if(id==='startbtn'){ S.phase='live'; S.t0=Date.now(); CS.markCaseStarted(); log('<b>Postpartum hemorrhage recognized</b> — clock started'); paint(); return; }
-  if(id==='stopbtn'){ S.phase='done'; S.doneAt=clk(); log('Bleeding controlled — total EBL '+S.ebl+' mL'); paint(); return; }
-  if(id==='resumebtn'){ S.phase='live'; log('Bleeding again — back to the pathway'); paint(); return; }
+  if(id==='stopbtn'){ S.phase='done'; S.doneAt=clk(); log('Bleeding controlled — total EBL '+S.ebl+' mL', EV.green); paint(); return; }
+  if(id==='resumebtn'){ S.phase='live'; log('Bleeding again — back to the pathway', EV.red); paint(); return; }
   if(id==='logtoggle'){ S.showCustom=!S.showCustom; paint(); if(S.showCustom) setTimeout(function(){$('customin').focus();},30); return; }
   if(id==='customlog'){ submitCustom(); return; }
 });

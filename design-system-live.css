@@ -29,6 +29,7 @@
   --bg:#0D1420; --card:#161F2E; --card2:#1D2A3C; --ink:#EAF0F7; --ink2:#8FA0B5;
   --line:rgba(255,255,255,.10);
   --red:#E5484D; --gray:#5C6B7E; --blue:#4C8DDA; --green:#3DA35D; --amber:#F0B429;
+  --purple:#9B7BD4; /* the shell's drug-action slot (SHELL.md layer 6); promoted from tca's local block */
   --accent:#2FA372; --accentInk:#fff;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Roboto Mono",monospace;
@@ -109,3 +110,136 @@ button{-webkit-appearance:none;appearance:none;touch-action:manipulation}
 /* A link INTO the procedures tool is a link to a procedure, wherever it is
    written. Underlined and offset so it survives the mono/condensed faces. */
 a[href*="procedures/"]{text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1.5px}
+
+/* ===== case shell (SHELL.md) =====================================================
+   The shared interaction chrome for every live tool — one bar, one strip, one dock,
+   one picker, one timeline, reused everywhere so nothing is re-learned mid-crisis.
+   arrest/ is the reference implementation; tools must NOT hand-copy these styles —
+   they arrive through the same @design-system-live injection as everything above.
+   Phone-first; the existing 768px query below swaps dock→strip, sheet→modal,
+   sheet→side-panel. Slot colors are semantic and identical across tools:
+   amber = intervention, purple = drug, blue = assessment. */
+
+/* -- layer 1: app bar -- */
+.shellbar{position:sticky;top:0;z-index:50;display:flex;align-items:center;gap:2px;height:56px;padding:0 6px;background:var(--bg);border-bottom:1px solid var(--line)}
+.shellback{min-height:44px;min-width:44px;display:inline-flex;align-items:center;justify-content:center;padding:0 10px;background:none;border:none;color:var(--ink2);font:700 16px var(--sans);cursor:pointer;border-radius:10px;text-decoration:none;white-space:nowrap;box-sizing:border-box}
+.shelltool{display:inline-flex;align-items:center;gap:7px;min-height:44px;padding:0 10px;background:none;border:none;color:var(--ink);font:800 16px var(--sans);letter-spacing:.03em;cursor:pointer;border-radius:10px;white-space:nowrap}
+.shellsq{width:9px;height:9px;border-radius:3px;display:inline-block;flex:none}
+.shellcaret{font-size:10px;color:var(--ink2)}
+.shellbarmid{flex:1;display:flex;justify-content:center;align-items:center;min-width:0}
+.shellpill{display:inline-flex;align-items:center;gap:8px;min-height:40px;padding:0 12px;background:rgba(229,72,77,.16);border:1px solid var(--red);border-radius:999px;cursor:pointer;white-space:nowrap;flex:none}
+.shellpilltime{color:#fff;font:700 17px var(--mono)}
+.shellpilltag{color:#F0899A;font:700 11px var(--mono);letter-spacing:.06em}
+.shellmore{min-width:44px;min-height:44px;background:none;border:none;color:var(--ink);font-size:22px;cursor:pointer;border-radius:10px}
+.shellbar .ghost{min-height:44px;display:inline-flex;align-items:center}
+.shellreset{border-color:rgba(229,72,77,.55) !important;color:var(--red) !important}
+/* -- bar dropdowns (tool switcher + ⋯ overflow) -- */
+.shellmenu{position:fixed;top:58px;z-index:70;width:250px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.5);padding:6px}
+.shellmenu.left{left:8px}.shellmenu.right{right:8px}
+.shellmenurow{width:100%;display:flex;gap:10px;align-items:center;min-height:46px;padding:0 14px;background:none;border:none;color:var(--ink);font:700 15px var(--sans);cursor:pointer;border-radius:9px;text-align:left;text-decoration:none;box-sizing:border-box}
+.shellmenurow.on{background:var(--card2)}
+.shellmenurow.danger{color:var(--red)}
+.shellmenudiv{height:1px;background:var(--line);margin:6px 10px}
+.shellmenusub{margin-left:auto;font:600 11px var(--mono);color:var(--ink2);letter-spacing:.04em}
+
+/* -- layer 2: cadence + actions strip (running only) -- */
+.shellstrip{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:8px 12px;background:var(--card);border-bottom:1px solid var(--line)}
+.shellchip{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border-radius:999px;background:var(--card2);border:1px solid var(--line);color:var(--ink2);font:700 12.5px var(--sans);letter-spacing:.05em;cursor:pointer;white-space:nowrap}
+.shellchip .mono{font-size:15px;font-weight:700;color:var(--ink)}
+.shellchip.due{background:rgba(229,72,77,.18);border:1.5px solid var(--red);color:#FFD7DD}
+.shellchip.due .mono{color:#FFD7DD}
+
+/* -- layer 3: metronome group (its own row on phone via flex-basis; right-aligned
+   inside the strip ≥768px) -- */
+.shellmetgroup{display:flex;align-items:center;gap:10px;flex-basis:100%;min-width:0}
+.shellmetdot{width:16px;height:16px;border-radius:50%;flex:none;background:var(--green);animation:metbeat .55s infinite}
+.shellmetdot.off{background:var(--gray);animation:none}
+.shellmetdot.hold{animation-play-state:paused}
+@keyframes metbeat{0%{transform:scale(1);opacity:1}30%{transform:scale(1.45);opacity:.75}60%{transform:scale(1);opacity:1}100%{transform:scale(1);opacity:1}}
+@media (prefers-reduced-motion: reduce){.shellmetdot{animation:none}}
+.shellmetmode{color:var(--ink);font:700 12.5px var(--sans);letter-spacing:.05em;white-space:nowrap}
+.shellmetstatus{font-size:11.5px;font-weight:600;white-space:nowrap;color:var(--green)}
+.shellsmallchip{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 12px;border-radius:999px;background:none;border:1px solid var(--line);color:var(--ink2);font:700 11.5px var(--sans);letter-spacing:.05em;cursor:pointer;white-space:nowrap;flex:none}
+.shellsmallchip.on{background:rgba(61,163,93,.15);border-color:var(--green);color:var(--green)}
+
+/* -- layer 4: weight strip -- */
+.shellweight{width:100%;display:flex;align-items:center;gap:10px;min-height:44px;padding:0 16px;background:var(--card);border:none;border-bottom:1px solid var(--line);cursor:pointer;font-family:var(--sans);text-align:left;box-sizing:border-box}
+.shellweight .k{font:800 12px var(--sans);letter-spacing:.08em;color:var(--ink2)}
+.shellweight .v{font:700 15px var(--mono)}
+.shellweight .v.set{color:var(--green)}
+.shellweight .v.unset{color:var(--amber);font-family:var(--sans)}
+.shellweight .m{margin-left:auto;font-size:11px;color:var(--ink2);white-space:nowrap}
+.shellweightform{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px 16px;background:var(--card);border-bottom:1px solid var(--line)}
+
+/* -- layer 5: face-up content pieces -- */
+.shelltele{display:block;width:100%;background:rgba(76,141,218,.12);border:1.5px solid var(--blue);border-radius:14px;padding:15px;color:#8FBBEA;font:700 16px var(--sans);letter-spacing:.04em;cursor:pointer;margin-top:10px;box-sizing:border-box}
+.shelltele .sub{display:block;font:600 12.5px var(--sans);letter-spacing:0;margin-top:5px;color:var(--ink2)}
+.shellteledone{background:rgba(76,141,218,.10);border:1.5px solid var(--line);border-radius:14px;padding:13px 16px;color:#8FBBEA;font:700 14px var(--sans);letter-spacing:.04em;text-align:center;margin-top:10px}
+.shelldose{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
+.shelldose .nm{color:var(--ink);font:700 14px var(--sans)}
+.shelldose .rl{color:var(--ink2);font-size:12px;margin-top:1px}
+.shelldose .vl{margin-left:auto;font:700 16px var(--mono);color:var(--green);white-space:nowrap;text-align:right}
+.shelldose .vl.unset{color:var(--amber);font:700 13px var(--sans)}
+.shellothers{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 16px;background:none;border:1px solid var(--line);border-radius:12px;color:var(--ink2);font:700 13px var(--sans);letter-spacing:.06em;cursor:pointer;width:100%;box-sizing:border-box}
+
+/* -- layer 6: pinned action dock (phone, running only) + slot schemes -- */
+.shelldock{position:fixed;left:0;right:0;bottom:0;z-index:40;background:rgba(13,20,32,.97);border-top:1px solid var(--line);padding:6px 12px calc(12px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:6px}
+.shelldockrow{display:flex;gap:10px}
+.shelldockbtn{flex:1;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-height:54px;border-radius:12px;font:700 15px var(--sans);letter-spacing:.02em;cursor:pointer;white-space:nowrap;padding:6px 12px}
+.shelldockclock{display:block;font:700 13px var(--mono);margin-top:2px}
+.shelldockclock.due{color:#FF8FA0}
+.scheme-amber{background:rgba(240,180,41,.13);border:1.5px solid var(--amber);color:var(--amber)}
+.scheme-purple{background:rgba(155,123,212,.14);border:1.5px solid var(--purple);color:#B9A2E2}
+.scheme-blue{background:rgba(76,141,218,.14);border:1.5px solid var(--blue);color:#8FBBEA}
+.shellticker{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 10px;background:none;border:none;border-radius:8px;color:var(--ink2);font:600 12px var(--mono);cursor:pointer;text-align:left;white-space:nowrap;overflow:hidden;width:100%;box-sizing:border-box}
+.shellticker .tk{overflow:hidden;text-overflow:ellipsis}
+.shellticker .lg{margin-left:auto;color:var(--ink2);font:700 11px var(--sans);flex:none}
+body.dockon .wrap{padding-bottom:160px}
+
+/* -- layer 7: result picker (was arrest's inline sheet; shared now). Bottom
+   sheet on phone, centered modal ≥768px. -- */
+.sheetwrap{position:fixed;inset:0;z-index:60;background:rgba(5,10,18,.72);display:flex;align-items:flex-end;justify-content:center}
+.sheet{width:100%;max-width:680px;background:var(--card);border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));border:1px solid var(--line);box-sizing:border-box}
+.sheethead{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.rcbtn{width:100%;min-height:76px;border:none;border-radius:14px;color:#fff;font:800 19px var(--sans);letter-spacing:.03em;cursor:pointer;text-align:left;padding:0 18px;display:flex;align-items:center;gap:14px;box-sizing:border-box}
+.rcsub{font-size:13px;font-weight:600;opacity:.85;margin-top:3px}
+
+/* -- layer 8: case timeline (bottom sheet phone / 320px right panel ≥768px) -- */
+.shelltl{position:fixed;left:0;right:0;bottom:0;z-index:65;box-sizing:border-box;background:var(--card);border-top:1px solid var(--line);border-radius:18px 18px 0 0;box-shadow:0 -16px 40px rgba(0,0,0,.5);max-height:70vh;display:flex;flex-direction:column}
+.shelltlhead{display:flex;align-items:center;gap:10px;padding:10px 18px;border-bottom:1px solid var(--line)}
+.shelltlhead .t{font:800 13px var(--sans);letter-spacing:.08em;color:var(--ink)}
+.shelltlbody{overflow-y:auto;padding:6px 18px 12px}
+.shelltlrow{display:flex;gap:12px;align-items:baseline;padding:8px 0;border-bottom:1px solid var(--line)}
+.shelltlrow .tt{font:700 14px var(--mono);color:var(--ink);min-width:44px;flex:none}
+.shelltlrow .cdot{width:8px;height:8px;border-radius:50%;flex:none;position:relative;top:-1px}
+.shelltlrow .lbl{font-size:14px;color:var(--ink);line-height:1.4}
+.shelltlfoot{padding:10px 18px calc(10px + env(safe-area-inset-bottom));border-top:1px solid var(--line);font:600 12px var(--mono);color:var(--ink2)}
+.shellx{margin-left:auto;min-width:44px;min-height:44px;background:none;border:none;color:var(--ink2);font-size:17px;cursor:pointer;border-radius:8px}
+
+/* -- layer 9: the cleared toast after RESET -- */
+.shelltoast{position:fixed;top:70px;left:14px;right:14px;z-index:80;background:var(--amber);color:#141E2B;border-radius:12px;padding:12px 16px;display:flex;gap:12px;align-items:center;font-size:14px;line-height:1.4;box-shadow:0 12px 30px rgba(0,0,0,.4);max-width:640px;margin:0 auto}
+.shelltoastok{border:1.5px solid #141E2B;background:none;color:#141E2B;border-radius:7px;padding:7px 12px;font:700 12px var(--sans);cursor:pointer;min-height:38px;flex:none}
+
+/* -- responsive visibility: .shell-phone renders below 768px, .shell-wide at or
+   above it. The dock and the strip's countdown buttons are the SAME actions in
+   two homes (SHELL.md layers 2/6) — a media-query swap, not two behaviors. -- */
+.shell-wide{display:none !important}
+@media (min-width:768px){
+  .shell-wide{display:inline-flex !important}
+  .shell-phone{display:none !important}
+  .shellbar{height:60px;padding:0 12px}
+  .shelldock{display:none !important}
+  body.dockon .wrap{padding-bottom:40px}
+  .shellmetgroup{flex-basis:auto;margin-left:auto}
+  .shelltl{left:auto;top:0;bottom:0;width:320px;max-height:none;border-radius:0;border-top:none;border-left:1px solid var(--line);box-shadow:-16px 0 40px rgba(0,0,0,.5)}
+  .shelltlfoot{padding:10px 18px}
+  .sheetwrap{align-items:center;padding:24px}
+  .sheet{max-width:520px;border-radius:18px;padding:18px}
+}
+
+/* Every shell layer is screen-only chrome (SHELL.md): print keeps the card and
+   reference content, never the bar, strips, dock, sheets or toast. */
+@media print{
+  .shellbar,.shellstrip,.shellweight,.shellweightform,.shelldock,.shellmenu,
+  .shelltl,.shelltoast,.sheetwrap{display:none !important}
+}
