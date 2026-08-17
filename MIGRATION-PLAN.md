@@ -91,6 +91,12 @@ the live cardiac-arrest engine.**
   three-bar stack with one focused sticky bar (back/label · title/breadcrumb ·
   theme toggle · reset), matching `arrest/airway`. Get Lon's sign-off on the look.
 - **Phase 3 — Roll the chrome to the live/complex tools**, one PR each,
+  **[peds/ done]** — see SHELL.md's migration section for the two decisions
+  it settled (card tools appear in the tool switcher; a band color never
+  repaints the bar) and for `design-system-shell.css`, the card-tool copy of
+  the shell that `verify_shell_parity.mjs` keeps byte-identical to the live
+  sheet's. `codes` is the next and highest-care one.
+
   preserving every id + load order in constraint #2: `codes` (highest care — run
   `verify_arrest_screen` + `verify_arrest_merge` + a manual arrest-flow / reset-
   gate / peds-mode check), then `peds`, `ob-neonatal`, `trauma`, `debrief`,
