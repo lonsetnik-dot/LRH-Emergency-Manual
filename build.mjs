@@ -34,9 +34,10 @@ const SW_REGISTER = readFileSync('sw-register.js', 'utf8').trim();
 const OUT = 'dist';
 
 // Not part of the deployed site (dev tooling, docs, build inputs, VCS).
-// cairn/ is the cairnready.org outreach site — its own Netlify site, never
-// part of the manual or its offline precache.
-const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', '.github', 'cairn']);
+// cairn/ is the cairnready.org outreach site and dist-demo/ is its build
+// output (demo-build.mjs) — both their own Netlify site, never part of the
+// manual or its offline precache.
+const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'dist-demo', '.github', 'cairn']);
 const SKIP_ROOT_FILES = new Set([
   'design-system.css', 'design-system-live.css', 'inventory.js', 'equipment-icons.js', 'guidelines.js', 'build.mjs', 'run-tests.sh', 'netlify.toml',
   'package.json', 'package-lock.json', 'shot.mjs', '.gitignore',
