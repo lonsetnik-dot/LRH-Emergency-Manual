@@ -80,6 +80,7 @@ a{color:var(--blue);text-decoration:none}
   <a class="shellmenurow" href="../neonatal/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Neonatal</span><span class="shellmenusub">NRP</span></a>
   <a class="shellmenurow" href="../pph/"><span class="shellsq" style="background:#E75480"></span><span style="flex:1">PPH</span><span class="shellmenusub">PPH</span></a>
   <a class="shellmenurow" href="../dystocia/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Dystocia</span><span class="shellmenusub">OB</span></a>
+    <a class="shellmenurow" href="../peds/?from=tool"><span class="shellsq" style="background:var(--purple)"></span><span style="flex:1">Peds</span><span class="shellmenusub">PEDS</span></a>
   <div class="shellmenudiv"></div>
   <a class="shellmenurow" href="../?from=tool"><span class="shellsq" style="background:var(--gray)"></span><span style="flex:1">Manual home</span></a>
 </div>
@@ -371,7 +372,7 @@ a{color:var(--blue);text-decoration:none}
    clinical value changed; every number still reads from this block.
    ========================================================================== */
 var SITE = {
-  version: "0.2.1", lastReviewed: "2026-08-15",
+  version: "0.2.2", lastReviewed: "2026-08-17",
   /* TEAM MODEL — chosen ONCE per site at localization; NOT a bedside control.
      'sequential'   = rural / limited team: reversible causes in priority order,
                       conventional CPR is a secondary priority.
@@ -434,6 +435,8 @@ var WORK = [
    'Ventilate with BVM + high-flow oxygen; two-person seal',
    'Supraglottic airway — i-gel — or ETT; front-of-neck access if needed',
    'Confirm placement with waveform capnography'
+ ], links:[
+   {label:'Pediatric airway sizes', href:'../peds/?from=tca#p16'}
  ]},
  { id:'B', name:'BREATHING', color:'var(--teal)', aim:'Decompress the chest', tasks:[
    'Bilateral finger thoracostomies — start on the most affected side',

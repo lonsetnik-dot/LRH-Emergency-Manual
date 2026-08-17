@@ -58,6 +58,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
   <a class="shellmenurow" href="../neonatal/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Neonatal</span><span class="shellmenusub">NRP</span></a>
   <a class="shellmenurow" href="../pph/"><span class="shellsq" style="background:#E75480"></span><span style="flex:1">PPH</span><span class="shellmenusub">PPH</span></a>
   <a class="shellmenurow" href="../dystocia/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Dystocia</span><span class="shellmenusub">OB</span></a>
+    <a class="shellmenurow" href="../peds/?from=tool"><span class="shellsq" style="background:var(--purple)"></span><span style="flex:1">Peds</span><span class="shellmenusub">PEDS</span></a>
   <div class="shellmenudiv"></div>
   <a class="shellmenurow" href="../?from=tool"><span class="shellsq" style="background:var(--gray)"></span><span style="flex:1">Manual home</span></a>
 </div>
@@ -99,6 +100,8 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
     go to <a href="../arrest/" style="color:var(--blue)">cardiac arrest</a>. If there is <b>a pulse but no breathing</b> and you can
     ventilate them, that is <a href="../arrest/" style="color:var(--blue)">rescue breathing</a>, not this ladder.
     DAS 2025 is written for anesthesia and gives no arrest algorithm; its wake-the-patient options do not exist here.
+    <b>Pediatric patient?</b> This ladder and its numbers are adult — pull tube/blade/suction sizes from
+    <a href="../peds/?from=airway#p16" style="color:var(--blue)">peds card 16</a> (drawer-color sized to the weight).
   </div>
 
   <!-- ============ CASE SHELL layer 5.2 — ACTIVATE TELE-ED ============
@@ -239,7 +242,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
    none was added — the DESAT action logs the event with no number.
    ========================================================================== */
 var DAS = {
-  version:"0.2.1", lastReviewed:"2026-08-15",
+  version:"0.2.2", lastReviewed:"2026-08-17",
   attempts:{ planA:3, planASenior:1, planB:3, planBviaSAD:1, planC:3 },
   preox:{ eto2:"0.9", headUp:"30°", hfno:"30 L/min" },
   rsi:{ roc:"1.2 mg/kg", sux:"1.5 mg/kg" },

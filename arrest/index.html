@@ -53,6 +53,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
   <a class="shellmenurow" href="../neonatal/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Neonatal</span><span class="shellmenusub">NRP</span></a>
   <a class="shellmenurow" href="../pph/"><span class="shellsq" style="background:#E75480"></span><span style="flex:1">PPH</span><span class="shellmenusub">PPH</span></a>
   <a class="shellmenurow" href="../dystocia/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Dystocia</span><span class="shellmenusub">OB</span></a>
+    <a class="shellmenurow" href="../peds/?from=tool"><span class="shellsq" style="background:var(--purple)"></span><span style="flex:1">Peds</span><span class="shellmenusub">PEDS</span></a>
   <div class="shellmenudiv"></div>
   <a class="shellmenurow" href="../?from=tool"><span class="shellsq" style="background:var(--gray)"></span><span style="flex:1">Manual home</span></a>
 </div>
@@ -150,6 +151,14 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
     <span style="display:inline-block;width:18px;height:18px;flex:none;border-radius:4px;background:var(--accent);border:1px solid var(--line)"></span>
     <span class="mono" style="font-size:12px;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0"><b id="brosechipname">—</b> <span id="brosechiprange" style="color:var(--ink2)"></span><span style="color:var(--ink2)"> &middot; PEDS CART</span></span>
     <span style="margin-left:auto;flex:none;font-size:11px;font-weight:700;color:var(--ink2);white-space:nowrap">CART LABELS ›</span>
+  </a>
+  <!-- Airway-sizes chip: same show condition as the drawer chip above. Deep-links
+       to the peds airway equipment card (peds/#p16) rather than duplicating the
+       size table here — the weight is shared cross-tool (lrh-case-wtkg), so the
+       card opens already showing THIS patient's tube/blade/suction sizes. -->
+  <a id="airchip" class="card" href="../peds/?from=arrest#p16" style="display:none;align-items:center;gap:9px;margin-top:6px;padding:7px 10px;text-decoration:none;color:var(--ink);border-left:8px solid var(--accent)">
+    <span class="mono" style="font-size:12px;letter-spacing:.03em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0"><b>AIRWAY SIZES</b> <span style="color:var(--ink2)">ETT &middot; blade &middot; suction</span></span>
+    <span style="margin-left:auto;flex:none;font-size:11px;font-weight:700;color:var(--ink2);white-space:nowrap">CARD 16 ›</span>
   </a>
   <div id="overridebar" class="card" style="display:none;align-items:center;gap:10px;margin-top:8px;border-color:var(--amber);padding:8px 10px">
     <div style="flex:1;font-size:13px;line-height:1.4"><b>Adult mode — overridden.</b> Pediatric criteria are met but this is being treated as an adult. Doses below are adult.</div>
@@ -521,7 +530,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
    card first, peds mode moved into the weight strip.
    ========================================================================== */
 var SITE = {
-  version: "0.2.2", lastReviewed: "2026-08-15",
+  version: "0.2.3", lastReviewed: "2026-08-17",
   /* compressionsPerCycle/breathsPerCycle: the 30:2 ratio (AHA 2025 BLS, no
      advanced airway). breathGapMs is not itself a cited number — it is how
      far apart the metronome spaces the two breath tones inside that pause,
@@ -1237,6 +1246,7 @@ function paint(){
      Broselow drawer chip remains, and only when the weight maps to a band. */
   var b=band(), showChip = isPeds() && b;
   $('brosechip').style.display = showChip ? 'flex' : 'none';
+  $('airchip').style.display = showChip ? 'flex' : 'none';
   if(showChip){
     $('brosechipname').textContent = b.name.replace(/^Broselow\s+/,'').toUpperCase();
     $('brosechiprange').innerHTML = b.range;

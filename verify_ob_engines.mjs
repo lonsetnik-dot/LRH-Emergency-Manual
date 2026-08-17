@@ -93,8 +93,8 @@ ck('P3. it routes the newborn elsewhere and asks who stays with her',
    /neonatal resuscitation/i.test(pscope) && /who is staying with her/i.test(pscope), true);
 
 /* Case shell chrome (SHELL.md) — the pieces this tool maps. */
-ck('P3s. the tool switcher lists the six engines + manual home',
-   await pg.locator('#toolmenu .shellmenurow').count(), 7);
+ck('P3s. the tool switcher lists the six engines + peds + manual home',
+   await pg.locator('#toolmenu .shellmenurow').count(), 8);
 ck('P3s. PPH is the marked current tool',
    await pg.getAttribute('#toolmenu .shellmenurow.on', 'href'), '../pph/');
 ck('P3s. the tele button keeps this tool\'s own tele-NICU wording',
@@ -213,8 +213,8 @@ ck('D3. it says to work the maneuvers in order', /in order/i.test(dscope), true)
 ck('D3. it hands off to neonatal resuscitation', /neonatal resuscitation/i.test(dscope), true);
 
 /* Case shell chrome (SHELL.md) — the pieces this tool maps. */
-ck('D3s. the tool switcher lists the six engines + manual home',
-   await pg.locator('#toolmenu .shellmenurow').count(), 7);
+ck('D3s. the tool switcher lists the six engines + peds + manual home',
+   await pg.locator('#toolmenu .shellmenurow').count(), 8);
 ck('D3s. Dystocia is the marked current tool',
    await pg.getAttribute('#toolmenu .shellmenurow.on', 'href'), '../dystocia/');
 ck('D3s. the tele button keeps this tool\'s own tele-NICU wording',
