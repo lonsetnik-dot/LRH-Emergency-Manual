@@ -1,5 +1,5 @@
 {
-  "name": "LRH OB Emergencies (beta)",
+  "name": "{{SITE.abbrev}} OB Emergencies (beta)",
   "short_name": "OB Emergencies",
   "description": "Cognitive aids for OB and neonatal emergencies. Beta — practice and feedback only.",
   "start_url": "./",

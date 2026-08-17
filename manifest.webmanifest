@@ -1,6 +1,6 @@
 {
-  "name": "LRH Emergency Manual (beta)",
-  "short_name": "LRH Manual",
+  "name": "{{SITE.title}} (beta)",
+  "short_name": "{{SITE.shortName}}",
   "description": "Bedside cognitive aids for emergency department resuscitation, procedures, and readiness. Beta — practice and feedback only.",
   "start_url": "/?from=home",
   "scope": "/",

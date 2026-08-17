@@ -243,3 +243,8 @@ body.dockon .wrap{padding-bottom:160px}
   .shellbar,.shellstrip,.shellweight,.shellweightform,.shelldock,.shellmenu,
   .shelltl,.shelltoast,.sheetwrap{display:none !important}
 }
+
+/* Visually hidden but screen-reader-announced — the page-heading pattern
+   (ACCESSIBILITY.md §7): every live engine carries an sr-only <h1>. */
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;
+  clip:rect(0 0 0 0);white-space:nowrap;border:0}

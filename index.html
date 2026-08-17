@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0D1420">
-<title>LRH Emergency Manual</title>
+<title>{{SITE.title}}</title>
 <style>
   /* Landing page. The theme tokens, the .hdr chrome bar, .sr-only, .lrh-mono and
      the themed body all come from the shared design-system.css injected at the
@@ -79,22 +79,22 @@ catch(e){ document.body.dataset.theme='dark'; }
 
 <!-- ===== SITE BETA SPLASH — first thing you see; dismiss to reveal the menu ===== -->
 <div id="betasplash" role="dialog" aria-modal="true" aria-label="Beta notice">
-  <div class="eyebrow">Littleton Regional Healthcare &middot; Emergency Department</div>
+  <div class="eyebrow">{{SITE.eyebrow}}</div>
   <div class="title">Emergency Manual</div>
   <div class="beta">BETA</div>
   <div class="lead">Not yet ready for clinical use. Shared for feedback and practice only &mdash; do not use it to direct the care of a patient.</div>
-  <div class="fine">A personal, unofficial reference &mdash; not part of the LRH IT system / EHR, and not a substitute for clinical judgment. Content is unverified; verify every value against local protocols and assays.</div>
+  <div class="fine">A personal, unofficial reference &mdash; not part of any hospital IT system / EHR, and not a substitute for clinical judgment. {{SITE.editionNote}}</div>
   <button type="button" id="betago">I UNDERSTAND &mdash; CONTINUE</button>
 </div>
 
 <div class="hdr">
   <span class="plabel">EMERGENCY MANUAL</span>
-  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Landing%20page" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=Emergency%20Manual%20feedback%20%E2%80%94%20Landing%20page" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
   <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
 </div>
 
 <div class="wrap">
-  <h1 class="sr-only">LRH Emergency Manual</h1>
+  <h1 class="sr-only">{{SITE.title}}</h1>
   <a class="lrh-startnew" href="codes/?from=home&amp;startnewcase=1#top">START NEW CASE</a>
 
   <!-- ===== SEARCH ===== -->
@@ -187,11 +187,11 @@ catch(e){ document.body.dataset.theme='dark'; }
   </div>
 
   <div class="lrh-note">
-    <strong>Personal decision-support aids &mdash; not part of the LRH IT system / EHR.</strong>
+    <strong>Personal decision-support aids &mdash; not part of any hospital IT system / EHR.</strong> {{SITE.editionNote}}
     Beta: content is unverified. These tools do not replace clinical judgment. Verify all values and thresholds against local protocols and assays.
   </div>
 
-  <footer class="lrh-footer">Littleton Regional Healthcare Emergency Manual &mdash; personal, unofficial reference &middot; Beta</footer>
+  <footer class="lrh-footer">{{SITE.footerLine}}</footer>
 </div>
 
 <script>
