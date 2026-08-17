@@ -328,6 +328,38 @@ ok('arrest: chip hidden in adult mode (80 kg)', await pg.evaluate(() =>
 ck('arrest: zero console/page errors', errs.length, 0);
 errs.length = 0; reqs.length = 0;
 
+/* tca: workstream A carries the pediatric-sizes link */
+await pg.goto(BASE + '/tca/', { waitUntil: 'networkidle' });
+await pg.waitForTimeout(200);
+ok('tca: workstream A links to peds card 16', await pg.evaluate(() =>
+  !!document.querySelector('a[href="../peds/?from=tca#p16"]') ||
+  document.body.innerHTML.includes('../peds/?from=tca#p16')));
+ck('tca: zero console/page errors', errs.length, 0);
+errs.length = 0;
+
+/* airway (adult DAS ladder): scope bar carries the pediatric off-ramp */
+await pg.goto(BASE + '/airway/', { waitUntil: 'networkidle' });
+ok('airway: scope bar links pediatric patients to peds card 16', await pg.evaluate(() => {
+  const sb = document.getElementById('scopebar');
+  return !!(sb && sb.querySelector('a[href="../peds/?from=airway#p16"]'));
+}));
+ck('airway: zero console/page errors', errs.length, 0);
+errs.length = 0;
+
+/* trauma: primary-survey A item + burn airway line */
+await pg.goto(BASE + '/trauma/', { waitUntil: 'networkidle' });
+ck('trauma: two airway decision points link to peds card 16',
+  await pg.evaluate(() => document.querySelectorAll('a[href="../peds/?from=trauma#p16"]').length), 2);
+errs.length = 0;
+
+/* codes: RSI equipment item (c06) + respiratory-arrest escalation (c05) */
+await pg.goto(BASE + '/codes/', { waitUntil: 'networkidle' });
+ok('codes c06: RSI equipment item links to peds card 16', await pg.evaluate(() =>
+  !!document.querySelector('#c06 a[href="../peds/?from=codes#p16"]')));
+ok('codes c05: respiratory-arrest escalation links to peds card 16', await pg.evaluate(() =>
+  !!document.querySelector('#c05 a[href="../peds/?from=codes#p16"]')));
+errs.length = 0; reqs.length = 0;
+
 /* peds: every intubation decision point links to card 16 */
 await pg.goto(BASE + '/peds/?from=home', { waitUntil: 'networkidle' });
 for (const card of ['p04', 'p05', 'p06', 'p08', 'p10', 'p14']) {
