@@ -1,0 +1,28 @@
+{
+  "_comment": [
+    "SITE IDENTITY — the one file a hospital edits to put its own name on the manual.",
+    "Every {{SITE.key}} token in any .html file (and .webmanifest) is replaced with",
+    "the value here at build time (build.mjs). The build FAILS if a token has no",
+    "matching key, or if any un-substituted token survives into dist/ — identity can",
+    "never silently half-apply.",
+    "",
+    "This checked-in copy is the GENERIC (CairnReady) edition: no hospital, national-",
+    "default numbers, and an edition note telling readers to localize before clinical",
+    "use. A hospital version (e.g. LRH) is a branch/fork that rewrites these values",
+    "and then works through the per-tool SITE CONFIG blocks — see SITES.md.",
+    "",
+    "Clinical thresholds do NOT live here. They stay in each tool's marked",
+    "SITE CONFIG block, next to the logic that uses them and the citation for them."
+  ],
+  "title": "CairnReady Emergency Manual",
+  "shortName": "CairnReady",
+  "abbrev": "CairnReady",
+  "hospital": "CairnReady — Generic ED Edition",
+  "eyebrow": "CairnReady &middot; Emergency Department Cognitive Aids",
+  "domain": "demo.cairnready.org",
+  "editionNote": "Generic edition — not localized to any hospital. Every threshold, dose, phone number, and cart location must be validated and localized by your site before clinical use.",
+  "footerLine": "CairnReady Emergency Manual &mdash; generic edition &middot; personal, unofficial reference &middot; localize before clinical use",
+  "transferCenter": "your regional transfer center",
+  "transferPhone": "[add your transfer line]",
+  "poisonControl": "1-800-222-1222"
+}

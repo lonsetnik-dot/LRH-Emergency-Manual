@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0D1420">
-<title>LRH Neonatal Resuscitation — NRP Engine</title>
+<title>{{SITE.abbrev}} Neonatal Resuscitation — NRP Engine</title>
 <meta name="description" content="Mobile cognitive aid for newborn resuscitation at delivery: time of birth clock, 30-second reassessment cycles, heart-rate driven pathway, weight-based doses. Personal aid, not hospital policy.">
 <style>
 /* @design-system-live */
@@ -55,6 +55,7 @@ body.running .shelltele{padding:10px 12px;font-size:14px}
 </style>
 </head>
 <body data-theme="dark">
+<h1 class="sr-only">Neonatal Resuscitation — Live Engine</h1>
 
 <!-- ============ CASE SHELL layer 1 — app bar (SHELL.md) ============
      One 56px row (60px ≥768px), sticky, never wraps. Left: back + the tool
@@ -72,7 +73,7 @@ body.running .shelltele{padding:10px 12px;font-size:14px}
   </div>
   <span class="shell-wide" style="gap:6px;align-items:center">
     <button class="ghost" id="tlbtnwide" type="button">TIMELINE</button>
-    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Neonatal" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Neonatal" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
     <button class="ghost shellreset" id="resetwide" type="button">RESET</button>
   </span>
   <button class="shellmore shell-phone" id="menubtn" type="button" aria-label="Menu">⋯</button>
@@ -97,7 +98,7 @@ body.running .shelltele{padding:10px 12px;font-size:14px}
      two-tap SURE? reset the wide button runs (SHELL.md layer 9). -->
 <div class="shellmenu right" id="moremenu" style="display:none">
   <button class="shellmenurow" id="tlbtn" type="button">Case timeline</button>
-  <a class="shellmenurow" id="feedbackmenu" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Neonatal">Feedback</a>
+  <a class="shellmenurow" id="feedbackmenu" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Neonatal">Feedback</a>
   <div class="shellmenudiv"></div>
   <button class="shellmenurow danger" id="resetbtn" type="button">Reset for next case</button>
 </div>
@@ -331,7 +332,7 @@ body.running .shelltele{padding:10px 12px;font-size:14px}
    ========================================================================== */
 var SITE = {
   version:"0.3.1", lastReviewed:"2026-08-15",
-  site:"LRH",
+  site:"{{SITE.abbrev}}",
 
   /* The banner is config, not prose, so a site can turn it off in one place once
      its own review is done, and so the verify suite can assert what the screen
@@ -1034,7 +1035,7 @@ var ACC=[
         'gestation a combination of plastic wrap or bag, hat, thermal mattress and a warmed room is '+
         'recommended to prevent hypothermia; the '+SITE.temp.wrapUnderGrams+' g arm is the companion '+
         'birth-weight criterion NRP pairs with it. <b>This corrects a value authored in this file at '+
-        '34 weeks with no citation</b> (issue #143). Both numbers confirmed for LRH 2026-08-13.<br>'+
+        '34 weeks with no citation</b> (issue #143). Both numbers confirmed 2026-08-13.<br>'+
         '· Heart-rate thresholds are unchanged: PPV for apnea, gasping or a rate under '+SITE.hr.good+
         '; compressions only if the rate stays under '+SITE.hr.low+' after '+SITE.cycle.reassessSec+
         ' s of effective ventilation.</p>'+

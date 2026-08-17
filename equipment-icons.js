@@ -1,5 +1,5 @@
 /* ===========================================================================
-   equipment-icons.js — the LRH Emergency Manual equipment icon set (single
+   equipment-icons.js — the CairnReady Emergency Manual equipment icon set (single
    source).
 
    Injected by build.mjs wherever a tool's <script> contains the marker

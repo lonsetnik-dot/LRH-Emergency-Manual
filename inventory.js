@@ -1,5 +1,5 @@
 /* ===========================================================================
-   inventory.js — LRH Emergency Manual equipment inventory (single source).
+   inventory.js — CairnReady Emergency Manual equipment inventory (single source).
 
    Injected by build.mjs wherever a tool's <script> contains the marker
    (slash-star) @inventory (star-slash), so deployed tools stay fully
@@ -72,7 +72,7 @@ var INV_CATALOG = {
     sizes:["infant / child","small adult · 6.5 mm","adult · 7.5 mm","large adult · 8.5 mm"] },
   "sga-neonatal": { name:"Supraglottic airway — neonatal LMA", cat:"airway", std:["NPRP","NRP"],
     sizes:["LMA 0 · under 2 kg","LMA 0.5 · 2 kg and over"],
-    note:"NRP names a size 1 laryngeal mask; LRH stocks LMA 0 and 0.5 instead and the i-gels start at size 1. Audit what is on the shelf, not what the checklist prints." },
+    note:"NRP names a size 1 laryngeal mask; the pilot site stocks LMA 0 and 0.5 instead and the i-gels start at size 1. Audit what is on the shelf, not what the checklist prints." },
   "sga-igel": { name:"Supraglottic airway — i-gel", cat:"airway", std:["NPRP","ASA-DA"],
     sizes:["1 · 2–5 kg","1.5 · 5–12 kg","2 · 10–25 kg","2.5 · 25–35 kg","3 · 30–60 kg","4 · 50–90 kg","5 · 90+ kg"],
     note:"Weight bands are the manufacturer's — verify against the brand actually stocked." },
@@ -301,7 +301,7 @@ var INV_CATALOG = {
   "kit-pacer-magnet": { name:"Pacemaker Magnet", cat:"kit" },
   "kit-mh": { name:"Malignant Hyperthermia Cart", cat:"kit", std:["MHAUS"] },
   "kit-difficult-airway": { name:"Difficult Airway Trolley / portable unit", cat:"kit", std:["ASA-DA"],
-    note:"ASA's expectation is that the difficult-airway equipment travels together as one portable unit. At LRH it is spread across code cart drawers 1 and 2 — record where it actually is, then decide whether that counts." }
+    note:"ASA's expectation is that the difficult-airway equipment travels together as one portable unit. At the pilot site it is spread across code cart drawers 1 and 2 — record where it actually is, then decide whether that counts." }
 };
 
 /* ===== STANDARDS (universal; versioned by checklist year) =================
@@ -495,7 +495,7 @@ var INV_LOCATIONS = {
   "kit-pacer-magnet":    { loc:"Code Cart · side panel", par:1 }
 };
 
-/* Items asserted ABSENT at LRH, each filed as a GitHub issue. This is the
+/* Items asserted ABSENT at the pilot site, each filed as a GitHub issue. This is the
    only place a gap is claimed in source — everything else with no LOCATIONS
    entry is simply not reviewed yet. */
 var INV_GAP_ISSUES = {

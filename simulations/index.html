@@ -6,15 +6,15 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#005596">
-<title>LRH Simulations</title>
+<title>{{SITE.abbrev}} Simulations</title>
 <meta name="apple-mobile-web-app-title" content="Simulations">
 <meta name="description" content="Low-fidelity in-situ simulation scripts — a pillow as the patient — that walk teams through the manual's major workflows. Practice only.">
-<link rel="canonical" href="https://lrhemergencymanual.net/simulations/">
+<link rel="canonical" href="https://{{SITE.domain}}/simulations/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="LRH Emergency Manual">
-<meta property="og:title" content="LRH Simulations (beta)">
+<meta property="og:site_name" content="{{SITE.title}}">
+<meta property="og:title" content="{{SITE.abbrev}} Simulations (beta)">
 <meta property="og:description" content="Pillow-patient simulation scripts chained across the manual's real workflow cards. Practice and feedback only.">
-<meta property="og:url" content="https://lrhemergencymanual.net/simulations/">
+<meta property="og:url" content="https://{{SITE.domain}}/simulations/">
 <meta name="twitter:card" content="summary">
 <style>
   html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; --sticky-h:54px; }
@@ -35,7 +35,7 @@
   .swtop{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:baseline}
   .swrow .where{display:block;font-size:12.5px;color:var(--ink2)}
   .swctl{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-  .swsel,.swloc{font:inherit;font-size:13px;min-height:36px;background:var(--card2);color:var(--ink);
+  .swsel,.swloc{font:inherit;font-size:16px;min-height:44px;background:var(--card2);color:var(--ink);
     border:1px solid var(--line);border-radius:8px;padding:4px 8px;-webkit-appearance:none;appearance:none}
   .swsel{flex:0 0 auto;max-width:100%}
   .swloc{flex:1 1 190px;min-width:0}
@@ -99,7 +99,7 @@
 </head>
 <body data-theme="dark">
 <div id="betasplash" style="position:fixed; inset:0; z-index:999; background:var(--bg); color:var(--ink); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
-  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:var(--ink2);">LRH · EMERGENCY DEPARTMENT</div>
+  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:var(--ink2);">{{SITE.abbrev}} · EMERGENCY DEPARTMENT</div>
   <div style="font-size:30px; line-height:1.06; letter-spacing:-0.02em; font-weight:700;">Simulations</div>
   <div style="display:inline-block; padding:6px 14px; border:2px solid var(--accent); color:var(--accent); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.16em;">TRAINING ONLY</div>
   <div style="max-width:460px; font-size:17px; line-height:1.4; color:var(--ink);">These are practice scripts — never instructions for the care of a real patient. The patient is a pillow.</div>
@@ -110,13 +110,13 @@
 <div class="hdr">
   <a class="ghost" href="../?from=tool">&#9664; MANUAL</a>
   <span class="plabel">SIMULATIONS</span>
-  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Simulations" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Simulations" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
 </div>
 </div>
 
 <main id="top">
   <div style="padding:16px 14px 6px;">
-    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:var(--ink2); font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
+    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:var(--ink2); font-weight:700;">{{SITE.abbrev}} · EMERGENCY DEPARTMENT</div>
     <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Simulations — the patient is a pillow</h1>
     <p style="margin:0; color:var(--ink2); font-size:14.5px;">Ten-to-fifteen-minute low-fidelity drills that chain the manual's real workflows together — birth into dystocia into a blue baby, asthma into arrest into post-ROSC. One person reads the script; the recorder drives the actual cards. No mannequin required.</p>
   </div>
@@ -516,7 +516,7 @@
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow · any old STEMI teaching EKG (printed) · whiteboard · two chairs for the family conversation · a phone/tablet with the arrest tool open.</li>
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · MEDICATIONS drawer:</b> point — lytic checklist is read from the card, drugs stay shut.</li>
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Defibrillator:</b> pads mimed on the pillow; shocks are called out loud with the tool's timer.</li>
-          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Transfer:</b> the DHMC transfer number visible on the whiteboard (say it, don't dial).</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Transfer:</b> the transfer-center number visible on the whiteboard (say it, don't dial).</li>
         </ul>
       </details>
 
@@ -1011,7 +1011,7 @@
 /* @inventory */
 </script>
 <script>
-/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device =====
+/* ===== SITE CONFIG (site-specific — edit to localize) =====
    SIM_EQUIPMENT is the only site-adjustable part of the equipment walk: which
    inventory rows a case actually needs. The ids come from inventory.js — an
    item id, or `id#size` where the size is the point (a pediatric arrest needs
@@ -1053,7 +1053,7 @@ var SIM_EQUIPMENT = {
         "flex-scope","co2-detector#pediatric / adult","topical-airway"]
 };
 (function(){
-  document.querySelectorAll('.verstamp').forEach(function(el){ el.textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH'; });
+  document.querySelectorAll('.verstamp').forEach(function(el){ el.textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · {{SITE.abbrev}}'; });
   var s=document.getElementById('betasplash'), b=document.getElementById('betago');
   if(!s||!b) return;
   function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); }
