@@ -331,7 +331,7 @@ body.running .shelltele{padding:10px 12px;font-size:14px}
    this block, and the review banner behavior is untouched.
    ========================================================================== */
 var SITE = {
-  version:"0.3.1", lastReviewed:"2026-08-15",
+  version:"0.3.2", lastReviewed:"2026-08-17",
   site:"{{SITE.abbrev}}",
 
   /* The banner is config, not prose, so a site can turn it off in one place once
@@ -463,12 +463,18 @@ var SITE = {
   satTargets:[ {min:1,t:"60–65%"}, {min:2,t:"65–70%"}, {min:3,t:"70–75%"},
                {min:4,t:"75–80%"}, {min:5,t:"80–85%"}, {min:10,t:"85–95%"} ],
 
-  /* Airway sizing by weight. Local stock — an adopting ED edits this block. */
+  /* Airway sizing by weight. Local stock — an adopting ED edits this block.
+     mask/suction columns added with the ETT/blade/LMA rows so the doc
+     controlling the airway reads every size off one ladder. Mask (0 preterm,
+     1 term) and suction catheter sizes per the NRP equipment checklist — the
+     ETT suction catheter tracks the tube (≈2 × ID in Fr); oroSuction is the
+     larger catheter for clearing the mouth and nose before/during PPV. */
   airway:[
-    { maxKg:2,    lma:"LMA 0",   ett:"2.5–3.0", blade:"00–0", note:"under 2 kg" },
-    { maxKg:3,    lma:"LMA 0.5", ett:"3.5",     blade:"0–1",  note:"2 kg and over" },
-    { maxKg:null, lma:"LMA 0.5", ett:"3.5–4.0", blade:"0–1",  note:"3 kg and over" }
+    { maxKg:2,    lma:"LMA 0",   ett:"2.5–3.0", blade:"00–0", mask:"0 (preterm)", suction:"5–6 Fr", note:"under 2 kg" },
+    { maxKg:3,    lma:"LMA 0.5", ett:"3.5",     blade:"0–1",  mask:"0–1",         suction:"6–8 Fr", note:"2 kg and over" },
+    { maxKg:null, lma:"LMA 0.5", ett:"3.5–4.0", blade:"0–1",  mask:"1 (term)",    suction:"8 Fr",   note:"3 kg and over" }
   ],
+  oroSuction:"10–12 Fr (or bulb)",
   ettDepthAddCm:6,
   /* 2025 AHA/AAP: the supraglottic airway is endorsed as an alternative to
      tracheal intubation for the newborn above this gestation who fails
@@ -968,11 +974,14 @@ function figAirway(){
        '<div style="flex:1;min-width:0">'+
        '<div style="font-weight:800;font-size:15px">'+esc(a.lma)+(on?' &nbsp;&#9664; this baby':'')+'</div>'+
        '<div style="font-size:12.5px;color:var(--ink2);margin-top:2px">'+esc(a.note)+
-       ' · ETT '+esc(a.ett)+' · blade '+esc(a.blade)+'</div></div></div>';
+       ' · ETT '+esc(a.ett)+' · blade '+esc(a.blade)+'</div>'+
+       '<div style="font-size:12.5px;color:var(--ink2);margin-top:1px">mask '+esc(a.mask)+
+       ' · ETT suction '+esc(a.suction)+'</div></div></div>';
   });
   return h+'</div><p style="font-size:13px;color:var(--ink2);margin-top:8px">Depth = <b>weight in kg + '+
     SITE.ettDepthAddCm+' cm</b>. Above '+SITE.sgaPrimaryFromWeeks+' weeks the supraglottic airway is a '+
-    '<b>primary</b> device under the 2025 guideline, not only a rescue after failed bag-mask ventilation.</p>';
+    '<b>primary</b> device under the 2025 guideline, not only a rescue after failed bag-mask ventilation. '+
+    'Mouth and nose: <b>'+esc(SITE.oroSuction)+'</b> — the fine catheter in the ladder is for suctioning <i>through the tube</i>.</p>';
 }
 
 /* ===== reference ========================================================= */
@@ -1049,7 +1058,9 @@ var ACC=[
         'card 03 (retired in favor of this engine), which carried no citation of its own. '+
         'Nothing was authored fresh and no number was altered in the move, but the full NRP 9th edition '+
         'textbook was not available when this was built, so those values have not been checked line by line '+
-        'against it. Do that against your own NRP materials.</p>'+
+        'against it. Do that against your own NRP materials. One later addition: the mask and suction-catheter '+
+        'columns of the airway ladder (v0.3.2) were authored against the NRP equipment checklist '+
+        'rather than carried over — same caveat, not yet clinician-verified.</p>'+
         '<p>Apgar timing follows the standard rule: scored at '+SITE.apgar.at.join(' and ')+' minutes, and '+
         'repeated every '+SITE.apgar.repeatEveryMin+' minutes to '+SITE.apgar.repeatUntilMin+
         ' if the '+SITE.apgar.repeatEveryMin+'-minute score is under '+SITE.apgar.repeatIfBelow+'.</p>'; } }

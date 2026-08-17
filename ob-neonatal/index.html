@@ -1826,7 +1826,7 @@ var CASESTATE = (function(){
 <script>
 /* ===== SITE CONFIG (site-specific — edit to localize) ===== */
 var SITE = {
-  version: "1.15", lastReviewed: "2026-08-13",
+  version: "1.16", lastReviewed: "2026-08-17",
   /* DEFERRED CORD CLAMPING (issue #140). Was "30–60 s" here while the live
      engine at /neonatal/ said "at least 60 s" — two screens a clinician can
      open in the same delivery, giving different numbers. The 2025 AHA/AAP
@@ -2573,6 +2573,21 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   /* Equipment + code-dose engine. Weight (birth banner) preferred over gestation
      (PREPARE). Device-local, no identifiers. Sizes: Merck/NRP. */
   var WK='lrh-ob-weight', GK='lrh-ob-ga';
+  /* ---- SITE-EDITABLE sizing ladder (one entry per band: <1 / <2 / <3 / ≥3 kg,
+     or by dates <28 / <34 / <38 / ≥38 wk). An adopting ED edits these to its
+     stock; calc() below only ever indexes into them. Exposed on window so the
+     verify suite and a readiness champion read the in-effect values from the
+     console instead of from source (issue #117 pattern). Mask (0 preterm /
+     1 term) and ETT suction catheter (tracks the tube, ≈2 × ID in Fr) per the
+     NRP equipment checklist — the mouth uses the larger 10–12 Fr or bulb. */
+  var EQ_SIZES = {
+    ETT:    ['2.5','3.0','3.5','3.5–4.0'],
+    blade:  ['00','0','0–1','1'],
+    mask:   ['0 (preterm)','0','0–1','1 (term)'],
+    suction:['5 Fr','6 Fr','6–8 Fr','8 Fr'],
+    depthGA:['~6 cm','~7 cm','~8 cm','~9 cm']
+  };
+  try{ window.EQ_SIZES = EQ_SIZES; }catch(e){}
   function boot(){
     function num(k){ var v=parseFloat(localStorage.getItem(k)||''); return isNaN(v)?null:v; }
     /* Birth weight is charted and SPOKEN in grams; this input is kilograms.
@@ -2624,9 +2639,11 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
       var lmaOK=haveW?w>=2:g>=34;
       return { w:w, g:g, grams:wn.grams||null, haveW:haveW, haveG:haveG, band:band, conflict:conflict, lmaOK:lmaOK,
         err:wn.err||gErr||null,
-        ETT:['2.5','3.0','3.5','3.5–4.0'][band],
-        blade:['00','0','0–1','1'][band],
-        depth: haveW ? ((Math.round((6+w)*10)/10)+' cm') : ['~6 cm','~7 cm','~8 cm','~9 cm'][band],
+        ETT:EQ_SIZES.ETT[band],
+        blade:EQ_SIZES.blade[band],
+        mask:EQ_SIZES.mask[band],
+        suction:EQ_SIZES.suction[band],
+        depth: haveW ? ((Math.round((6+w)*10)/10)+' cm') : EQ_SIZES.depthGA[band],
         LMA: lmaOK ? '0.5' : '0',   /* this site stocks infant LMA 0 and 0.5 (drawer 1) — no size 1 */
         /* UVC: 5 Fr >=1.5 kg, 3.5 Fr <1.5 kg (card 04's own header rule). The
            GA-only path goes by band: <34 wk -> 3.5 Fr — the old strict
@@ -2653,7 +2670,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
       +'<line x1="226" y1="38" x2="250" y2="38" stroke="#5a6a78" stroke-width="2"/>'
       +'<text x="182" y="70" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="9" font-weight="700" fill="#0e7c86">CODE-CART 0.1 mg/mL</text></svg>';
     function html(c, multi){
-      if(!c){ return '<div style="border:2px dashed #b7c7ca; background:#f2f8f9; padding:11px 12px; font-size:13.5px; color:#16324f;">Enter <b>weight</b> (kg — or grams, e.g. 3500) or <b>weeks gestation</b> above for ETT / LMA / UVC / blade sizes and the code-dose epi.</div>'; }
+      if(!c){ return '<div style="border:2px dashed #b7c7ca; background:#f2f8f9; padding:11px 12px; font-size:13.5px; color:#16324f;">Enter <b>weight</b> (kg — or grams, e.g. 3500) or <b>weeks gestation</b> above for ETT / LMA / UVC / blade / mask / suction sizes and the code-dose epi.</div>'; }
       if(c.hardstop){ return '<div style="border:2px solid #9b1c2e; background:#fbeaec; padding:11px 12px; font-size:13.5px; font-weight:700; color:#9b1c2e;">&#9888; '+c.hardstop+'<br><span style="font-weight:400; color:#16324f;">No sizes or doses are calculated from this entry.</span></div>'; }
       var basis=c.haveW
         ? ((c.grams?(c.grams+' g = <b>'+c.w+' kg</b>'):('weight '+c.w+' kg'))+(c.haveG?(' · '+c.g+' wk'):''))
@@ -2675,6 +2692,8 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
           + tile('LMA', c.LMA, c.lmaOK?'≥2 kg / ≥34 wk':'&lt;2 kg / &lt;34 wk')
           + tile('UVC', c.UVC, 'insert 2–4 cm to blood')
           + tile('BLADE', c.blade, 'laryngoscope')
+          + tile('MASK', c.mask, 'rim seals bridge of nose to chin')
+          + tile('ETT SUCTION', c.suction, 'through the tube · mouth: 10–12 Fr or bulb')
         +'</div>'
         +'<div style="padding:0 12px 10px;"><div style="background:#fbeaec; border:2px solid #9b1c2e; padding:9px 11px;">'
           +'<div style="font-family:ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.08em; color:#9b1c2e;">EPINEPHRINE · CODE DOSE</div>'
