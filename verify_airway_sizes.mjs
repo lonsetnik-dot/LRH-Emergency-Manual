@@ -296,7 +296,54 @@ ok('ob-neonatal mutation: localized suction 9 Fr flows to the tile', obMut.inclu
 ck('ob-neonatal: zero console/page errors', errs.length, 0);
 ck('ob-neonatal: zero off-origin requests', reqs.length, 0);
 
-/* ===================== 4 · landing page search surfacing ================== */
+/* ================= 4 · just-in-time links where airways get controlled ==== */
+/* arrest engine: pediatric weight → AIRWAY SIZES chip next to the drawer chip,
+   deep-linking to peds/#p16 (weight is shared, so the card lands pre-filled). */
+await pg.goto(BASE + '/arrest/', { waitUntil: 'networkidle' });
+await pg.evaluate(() => {
+  try { localStorage.clear(); localStorage.setItem('lrh-case-wtkg', '19'); localStorage.setItem('lrh-case-wtsrc', 'measured'); } catch (e) {}
+});
+await pg.reload({ waitUntil: 'networkidle' });
+await pg.waitForTimeout(300);
+const chip = await pg.evaluate(() => {
+  const el = document.getElementById('airchip');
+  return el ? { shown: getComputedStyle(el).display !== 'none', href: el.getAttribute('href'), text: el.innerText } : null;
+});
+ok('arrest: AIRWAY SIZES chip exists', !!chip);
+ok('arrest: chip visible in pediatric mode (19 kg)', chip && chip.shown);
+ok('arrest: chip deep-links to peds card 16', chip && chip.href === '../peds/?from=arrest#p16');
+ok('arrest: chip names ETT/blade/suction', chip && /ETT/.test(chip.text) && /blade/.test(chip.text) && /suction/.test(chip.text));
+if (SHOTDIR && chip && chip.shown) {
+  await pg.evaluate(() => document.getElementById('airchip').scrollIntoView({ block: 'center' }));
+  await pg.waitForTimeout(120);
+  await shot(pg.locator('#brosechip'), 'arrest-drawer-chip-19kg');
+  await shot(pg.locator('#airchip'), 'arrest-airway-sizes-chip-19kg');
+}
+/* adult weight hides it */
+await pg.evaluate(() => { try { localStorage.setItem('lrh-case-wtkg', '80'); } catch (e) {} });
+await pg.reload({ waitUntil: 'networkidle' });
+await pg.waitForTimeout(300);
+ok('arrest: chip hidden in adult mode (80 kg)', await pg.evaluate(() =>
+  getComputedStyle(document.getElementById('airchip')).display === 'none'));
+ck('arrest: zero console/page errors', errs.length, 0);
+errs.length = 0; reqs.length = 0;
+
+/* peds: every intubation decision point links to card 16 */
+await pg.goto(BASE + '/peds/?from=home', { waitUntil: 'networkidle' });
+for (const card of ['p04', 'p05', 'p06', 'p08', 'p10', 'p14']) {
+  ok('peds ' + card + ': links to card 16 at its airway decision point', await pg.evaluate(id =>
+    !!document.querySelector('#' + id + ' a[href="#p16"]'), card));
+}
+/* the arrest deep link must land on the sizes, not the consent splash */
+await pg.goto(BASE + '/peds/?from=arrest#p16', { waitUntil: 'networkidle' });
+await pg.waitForTimeout(600); /* the post-load re-anchor fires ~150 ms after load */
+ok('peds: ?from=arrest#p16 skips the beta splash', await pg.evaluate(() => !document.getElementById('betasplash')));
+ok('peds: deep link lands with card 16 in view', await pg.evaluate(() => {
+  const r = document.getElementById('p16').getBoundingClientRect();
+  return r.top < window.innerHeight && r.bottom > 0;
+}));
+
+/* ===================== 5 · landing page search surfacing ================== */
 await pg.goto(BASE + '/', { waitUntil: 'networkidle' });
 async function search(q) {
   await pg.fill('#q', q);
