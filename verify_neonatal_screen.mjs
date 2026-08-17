@@ -93,8 +93,8 @@ ck('1. dark theme is the default', await pg.evaluate(() => document.body.dataset
 /* ---- 1s. the case shell bar (SHELL.md layer 1) ---- */
 ck('1s. the tool button names the tool', /NEONATAL/.test(await txt('#toolbtn')), true);
 await tap('#toolbtn');
-ck('1s. the switcher lists the six engines + manual home',
-   await pg.locator('#toolmenu .shellmenurow').count(), 7);
+ck('1s. the switcher lists the six engines + peds + manual home',
+   await pg.locator('#toolmenu .shellmenurow').count(), 8);
 ck('1s. neonatal is marked as the current tool',
    /neonatal/i.test(await pg.locator('#toolmenu .shellmenurow.on').getAttribute('href')), true);
 await pg.click('#foot'); await pg.waitForTimeout(200);

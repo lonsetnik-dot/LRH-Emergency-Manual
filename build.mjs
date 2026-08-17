@@ -18,6 +18,13 @@ const CSS = readFileSync('design-system.css', 'utf8').trim();
 const MARKER = '/* @design-system */';
 const CSS_LIVE = readFileSync('design-system-live.css', 'utf8').trim();
 const MARKER_LIVE = '/* @design-system-live */';
+/* The case shell (SHELL.md) for CARD tools — the same bar/weight ribbon/menus
+   the live engines get from design-system-live.css, mirrored for pages that
+   must also carry design-system.css's card vocabulary (the two full sheets
+   cannot coexist; see design-system-shell.css's header).
+   verify_shell_parity.mjs asserts the two copies stay byte-identical. */
+const CSS_SHELL = readFileSync('design-system-shell.css', 'utf8').trim();
+const MARKER_SHELL = '/* @design-system-shell */';
 const INV = readFileSync('inventory.js', 'utf8').trim();
 const MARKER_INV = '/* @inventory */';
 /* The equipment icon set, shared by labels/ (cart drawer labels) and vems/ (the
@@ -74,7 +81,7 @@ function walk(src, dst, atRoot) {
     if (statSync(s).isDirectory()) walk(s, d, false);
     else if (name.endsWith('.html')) {
       const html = readFileSync(s, 'utf8');
-      writeFileSync(d, applySite(injectSW(html.split(MARKER).join(CSS).split(MARKER_LIVE).join(CSS_LIVE).split(MARKER_INV).join(INV).split(MARKER_ICONS).join(ICONS).split(MARKER_GDL).join(GDL)), s));
+      writeFileSync(d, applySite(injectSW(html.split(MARKER).join(CSS).split(MARKER_LIVE).join(CSS_LIVE).split(MARKER_SHELL).join(CSS_SHELL).split(MARKER_INV).join(INV).split(MARKER_ICONS).join(ICONS).split(MARKER_GDL).join(GDL)), s));
     } else if (name.endsWith('.webmanifest')) {
       writeFileSync(d, applySite(readFileSync(s, 'utf8'), s));
     } else copyFileSync(s, d);
@@ -193,7 +200,7 @@ let leftover = 0;
   for (const name of readdirSync(dir)) {
     const p = join(dir, name);
     if (statSync(p).isDirectory()) scan(p);
-    else if (name.endsWith('.html') && (readFileSync(p, 'utf8').includes(MARKER) || readFileSync(p, 'utf8').includes(MARKER_LIVE) || readFileSync(p, 'utf8').includes(MARKER_INV) || readFileSync(p, 'utf8').includes(MARKER_ICONS))) {
+    else if (name.endsWith('.html') && (readFileSync(p, 'utf8').includes(MARKER) || readFileSync(p, 'utf8').includes(MARKER_LIVE) || readFileSync(p, 'utf8').includes(MARKER_INV) || readFileSync(p, 'utf8').includes(MARKER_ICONS) || readFileSync(p, 'utf8').includes(MARKER_SHELL) || readFileSync(p, 'utf8').includes(MARKER_GDL))) {
       console.error('!! un-injected marker left in', p); leftover++;
     }
     else if (/\.(html|webmanifest)$/.test(name) && /\{\{SITE\./.test(readFileSync(p, 'utf8'))) {
