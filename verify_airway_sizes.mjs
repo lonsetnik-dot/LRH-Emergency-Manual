@@ -377,8 +377,7 @@ for (const card of ['p02', 'p03', 'p04', 'p05', 'p06', 'p08', 'p10', 'p14', 'p15
 }
 /* the zone chip in the sticky weight bar links to card 16 whenever a band is
    in effect — the from-anywhere path */
-await pg.fill('#wtkg', '19');
-await pg.dispatchEvent('#wtkg', 'input');
+await setPedsWeight(19);
 await pg.waitForTimeout(100);
 ok('peds: zone chip links to card 16 (from-anywhere path)', await pg.evaluate(() =>
   !!document.querySelector('#wtzone a[href="#p16"]')));
