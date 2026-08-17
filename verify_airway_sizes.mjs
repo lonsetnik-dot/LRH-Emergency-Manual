@@ -318,6 +318,9 @@ if (SHOTDIR && chip && chip.shown) {
   await pg.waitForTimeout(120);
   await shot(pg.locator('#brosechip'), 'arrest-drawer-chip-19kg');
   await shot(pg.locator('#airchip'), 'arrest-airway-sizes-chip-19kg');
+  await pg.evaluate(() => window.scrollTo(0, 0));
+  await pg.waitForTimeout(120);
+  await shot(pg, 'arrest-full-screen-19kg'); /* full viewport: chip in context */
 }
 /* adult weight hides it */
 await pg.evaluate(() => { try { localStorage.setItem('lrh-case-wtkg', '80'); } catch (e) {} });
@@ -362,10 +365,21 @@ errs.length = 0; reqs.length = 0;
 
 /* peds: every intubation decision point links to card 16 */
 await pg.goto(BASE + '/peds/?from=home', { waitUntil: 'networkidle' });
-for (const card of ['p04', 'p05', 'p06', 'p08', 'p10', 'p14']) {
+for (const card of ['p02', 'p03', 'p04', 'p05', 'p06', 'p08', 'p10', 'p14', 'p15']) {
   ok('peds ' + card + ': links to card 16 at its airway decision point', await pg.evaluate(id =>
     !!document.querySelector('#' + id + ' a[href="#p16"]'), card));
 }
+/* the zone chip in the sticky weight bar links to card 16 whenever a band is
+   in effect — the from-anywhere path */
+await pg.fill('#wtkg', '19');
+await pg.dispatchEvent('#wtkg', 'input');
+await pg.waitForTimeout(100);
+ok('peds: zone chip links to card 16 (from-anywhere path)', await pg.evaluate(() =>
+  !!document.querySelector('#wtzone a[href="#p16"]')));
+ok('peds: zone chip advertises AIRWAY SIZES', await pg.evaluate(() =>
+  /AIRWAY SIZES/.test(document.getElementById('wtzone').innerText)));
+if (SHOTDIR) await shot(pg.locator('#wtbar'), 'peds-weight-bar-zone-chip-19kg');
+
 /* the arrest deep link must land on the sizes, not the consent splash */
 await pg.goto(BASE + '/peds/?from=arrest#p16', { waitUntil: 'networkidle' });
 await pg.waitForTimeout(600); /* the post-load re-anchor fires ~150 ms after load */
