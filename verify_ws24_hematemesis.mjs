@@ -12,6 +12,8 @@
  *     BASE=https://lrhemergencymanual.net node verify_ws24_hematemesis.mjs
  */
 let chromium;
+import { readFileSync } from 'node:fs';
+const SITE=JSON.parse(readFileSync(new URL('./site.config.json', import.meta.url),'utf8'));
 try { ({ chromium } = await import('playwright')); }
 catch { ({ chromium } = await import('/home/claude/.npm-global/lib/node_modules/playwright/index.mjs')); }
 
@@ -52,7 +54,8 @@ ck('2. ketamine 0.5 + roc 1.5', has(/Ketamine 0\.5 mg\/kg/i) && has(/rocuronium 
 ck('2. metoclopramide 10 mg', has(/Metoclopramide 10 mg IV/i), true);
 ck('2. aortoenteric fistula warning', has(/aortoenteric fistula/i), true);
 ck('2. endoscopy timing 12 h / 24 h', has(/within 12 hours/i) && has(/within 24 hours/i), true);
-ck('2. DHMC transfer number', has(/\(877\) 999-9870/), true);
+/* Transfer line comes from site.config.json — generic edition prints its placeholder. */
+ck('2. transfer line printed', card.includes(SITE.transferPhone), true);
 
 /* ---- 3. where more than one course is defensible, the card must OFFER BOTH ---- */
 // The project's rule: print them as lettered options with the source on each, rather than quietly
@@ -95,7 +98,7 @@ ck('7. poster has a QR block', await pp.locator('.qr').count(), 1);
 const qrLabel = await pp.locator('.qr svg').first().getAttribute('aria-label');
 ck('7. QR is labelled for card 23', /card 23/i.test(qrLabel || ''), true);
 const qrText = (await pp.locator('.qr .qrtext').innerText()).replace(/\s+/g, ' ');
-ck('7. QR prints its destination', /lrhemergencymanual\.net\/codes\/\?from=home#c23/.test(qrText), true);
+ck('7. QR prints its destination', qrText.includes(SITE.domain + '/codes/?from=home#c23'), true);
 ck('7. poster location matches the card', /ROOM 7 \(RESUS BAY\) CABINET · GI HEMORRHAGE \/ BLAKEMORE KIT/i
   .test((await pp.locator('.loc').innerText()).replace(/\s+/g, ' ')), true);
 

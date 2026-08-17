@@ -33,12 +33,31 @@ const SW_TEMPLATE = readFileSync('sw-template.js', 'utf8');
 const SW_REGISTER = readFileSync('sw-register.js', 'utf8').trim();
 const OUT = 'dist';
 
+/* Site identity (site.config.json) — every {{SITE.key}} token in HTML (and the
+   webmanifest) is replaced here at build time, AFTER the shared-file markers are
+   injected, so tokens inside injected content substitute too. The generic
+   (CairnReady) values are checked in; a hospital version edits that one file.
+   A token with no matching key fails the build loudly — identity must never
+   half-apply. See SITES.md. */
+const SITE = JSON.parse(readFileSync('site.config.json', 'utf8'));
+const TOKEN_RE = /\{\{SITE\.([A-Za-z0-9_]+)\}\}/g;
+function applySite(text, file) {
+  return text.replace(TOKEN_RE, (m, key) => {
+    if (typeof SITE[key] !== 'string') {
+      console.error(`build FAILED: ${file} uses ${m} but site.config.json has no string "${key}"`);
+      process.exit(1);
+    }
+    return SITE[key];
+  });
+}
+
 // Not part of the deployed site (dev tooling, docs, build inputs, VCS).
 const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', '.github']);
 const SKIP_ROOT_FILES = new Set([
   'design-system.css', 'design-system-live.css', 'inventory.js', 'equipment-icons.js', 'guidelines.js', 'build.mjs', 'run-tests.sh', 'netlify.toml',
   'package.json', 'package-lock.json', 'shot.mjs', '.gitignore',
   'sw-template.js', 'sw-register.js',   // build inputs — emitted as dist/sw.js / inlined
+  'site.config.json',                   // build input — substituted into every page
 ]);
 const SKIP_ROOT_EXT = ['.mjs', '.py', '.md'];  // verify scripts, generators, docs
 
@@ -55,7 +74,9 @@ function walk(src, dst, atRoot) {
     if (statSync(s).isDirectory()) walk(s, d, false);
     else if (name.endsWith('.html')) {
       const html = readFileSync(s, 'utf8');
-      writeFileSync(d, injectSW(html.split(MARKER).join(CSS).split(MARKER_LIVE).join(CSS_LIVE).split(MARKER_INV).join(INV).split(MARKER_ICONS).join(ICONS).split(MARKER_GDL).join(GDL)));
+      writeFileSync(d, applySite(injectSW(html.split(MARKER).join(CSS).split(MARKER_LIVE).join(CSS_LIVE).split(MARKER_INV).join(INV).split(MARKER_ICONS).join(ICONS).split(MARKER_GDL).join(GDL)), s));
+    } else if (name.endsWith('.webmanifest')) {
+      writeFileSync(d, applySite(readFileSync(s, 'utf8'), s));
     } else copyFileSync(s, d);
   }
 }
@@ -174,6 +195,9 @@ let leftover = 0;
     if (statSync(p).isDirectory()) scan(p);
     else if (name.endsWith('.html') && (readFileSync(p, 'utf8').includes(MARKER) || readFileSync(p, 'utf8').includes(MARKER_LIVE) || readFileSync(p, 'utf8').includes(MARKER_INV) || readFileSync(p, 'utf8').includes(MARKER_ICONS))) {
       console.error('!! un-injected marker left in', p); leftover++;
+    }
+    else if (/\.(html|webmanifest)$/.test(name) && /\{\{SITE\./.test(readFileSync(p, 'utf8'))) {
+      console.error('!! un-substituted {{SITE.*}} token left in', p); leftover++;
     }
   }
 })(OUT);

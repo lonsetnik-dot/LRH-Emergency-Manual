@@ -1,4 +1,4 @@
-/* LRH OB Emergencies — offline shell. Bump CACHE on every deploy. */
+/* OB Emergencies (this site) — retired offline shell. Bump CACHE on every deploy. */
 var CACHE = 'lrh-ob-2026-08-08a';
 var ASSETS = ['./', 'index.html', 'manifest.webmanifest', 'icon.svg'];
 self.addEventListener('install', function(e){

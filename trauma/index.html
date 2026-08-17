@@ -6,15 +6,15 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#005596">
-<title>LRH Trauma</title>
+<title>{{SITE.abbrev}} Trauma</title>
 <meta name="apple-mobile-web-app-title" content="Trauma">
 <meta name="description" content="Beta cognitive aids for trauma resuscitation in the Emergency Department. Practice and feedback only.">
-<link rel="canonical" href="https://lrhemergencymanual.net/trauma/">
+<link rel="canonical" href="https://{{SITE.domain}}/trauma/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="LRH Emergency Manual">
-<meta property="og:title" content="LRH Trauma (beta)">
+<meta property="og:site_name" content="{{SITE.title}}">
+<meta property="og:title" content="{{SITE.abbrev}} Trauma (beta)">
 <meta property="og:description" content="Cognitive aids for trauma resuscitation in the ED. Beta — practice and feedback only.">
-<meta property="og:url" content="https://lrhemergencymanual.net/trauma/">
+<meta property="og:url" content="https://{{SITE.domain}}/trauma/">
 <meta name="twitter:card" content="summary">
 <style>
   html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; --sticky-h:54px; }
@@ -75,7 +75,7 @@
 </head>
 <body data-theme="dark">
 <div id="betasplash" style="position:fixed; inset:0; z-index:999; background:var(--bg); color:var(--ink); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
-  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:var(--ink2);">LRH · EMERGENCY DEPARTMENT</div>
+  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:var(--ink2);">{{SITE.abbrev}} · EMERGENCY DEPARTMENT</div>
   <div style="font-size:30px; line-height:1.06; letter-spacing:-0.02em; font-weight:700;">Trauma</div>
   <div style="display:inline-block; padding:6px 14px; border:2px solid var(--accent); color:var(--accent); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.16em;">BETA</div>
   <div style="max-width:460px; font-size:17px; line-height:1.4; color:var(--ink);">Not yet ready for clinical use. Shared for feedback and practice only — do not use it to direct the care of a patient.</div>
@@ -88,7 +88,7 @@
   <button class="ghost" id="backbtn" type="button" style="display:none">◀ BACK</button>
   <div class="plabel">TRAUMA</div>
   <button class="ghost danger" id="resetbtn" type="button">RESET</button>
-  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Trauma" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Trauma" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
 </div>
 <script>
 /* ---- Measure the real sticky-header height into --sticky-h, live ----
@@ -221,7 +221,7 @@
       <div class="t-note2">For blunt head trauma with a positive head CT. Not a screening tool for who needs a CT in the first place — for pediatric imaging-decision screening (PECARN), see the imaging references cited on your department's pediatric trauma resources.</div>
     </div>
 
-    <!-- Forking for another site: replace the "LRH" notes throughout this card (mBIG-1 attending routing,
+    <!-- Forking for another site: replace the "Local practice" notes throughout this card (mBIG-1 attending routing,
          mBIG-2/mBIG-3 transfer disposition) with your own facility's arrangement. -->
     <div class="t-localize">
       ⚠ <b>LOCALIZED FOR LRH:</b> mBIG-1 routes to the <b>trauma attending, not neurosurgery</b>; mBIG-2 and mBIG-3 are <b>transferred to DHMC</b>, not admitted locally — both per the workflow agreed with DHMC's trauma medical director (see the "LRH" notes below). The categories and imaging thresholds below are from the published mBIG literature.
@@ -233,7 +233,7 @@
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-1" class="t-ck"><span><b>All of:</b> GCS 13–15 or at neurologic baseline · normal neuro exam · no intoxication · no anticoagulant/antiplatelet use.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-2" class="t-ck"><span><b>CT:</b> subdural (SDH) or intraparenchymal hemorrhage (IPH) ≤4mm · localized subarachnoid hemorrhage (SAH) ≤3 sulci and &lt;1mm · <b>no</b> skull fracture, intraventricular hemorrhage (IVH), or epidural hemorrhage (EDH).</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-3" class="t-ck"><span><b>Management:</b> 6-hour ED observation with neuro checks every 2 hours. No repeat head CT. No neurosurgical consultation. If stable at 6 hours, discharge home from the ED. <b>LRH:</b> notify the trauma attending — <b>not</b> neurosurgery — per the workflow agreed with DHMC's trauma medical director. <b><a class="telcall" data-tc href="tel:+18779999870">DHMC Transfer Center: (877) 999-9870</a>.</b> DHMC's transfer center doesn't always route this correctly; ask for the trauma attending by name/service if you're connected to neurosurgery instead.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-3" class="t-ck"><span><b>Management:</b> 6-hour ED observation with neuro checks every 2 hours. No repeat head CT. No neurosurgical consultation. If stable at 6 hours, discharge home from the ED. <b>LRH:</b> notify the trauma attending — <b>not</b> neurosurgery — per the workflow agreed with DHMC's trauma medical director. <b><a class="telcall" data-tc href="tel:+18779999870">{{SITE.transferCenter}}: {{SITE.transferPhone}}</a>.</b> The transfer center may not route this correctly; ask for the trauma attending by name/service if you're connected to neurosurgery instead.</span></label></li>
         </ul>
       </details>
       <details open class="t-box-caution">
@@ -241,7 +241,7 @@
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-4" class="t-ck"><span><b>All of:</b> GCS 13–15 or at neurologic baseline · normal neuro exam · no anticoagulant/antiplatelet use. <b>May</b> be intoxicated (blood alcohol &gt;80 mg/dL).</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-5" class="t-ck"><span><b>CT:</b> SDH or IPH &gt;4–7.9mm · SAH involving one hemisphere or 1–3mm · non-displaced skull fracture · <b>no</b> IVH, EDH, midline shift, or herniation.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-6" class="t-ck"><span><b>Management (published guideline):</b> admit 24–48 hours to a trauma/monitored service. Neuro checks q2h ×6 hours, then q4h. No routine repeat CT. No neurosurgical consultation required. <b>LRH:</b> transferred to DHMC, not admitted locally — per agreement with DHMC's trauma medical director. <b><a class="telcall" data-tc href="tel:+18779999870">DHMC Transfer Center: (877) 999-9870</a>.</b></span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-6" class="t-ck"><span><b>Management (published guideline):</b> admit 24–48 hours to a trauma/monitored service. Neuro checks q2h ×6 hours, then q4h. No routine repeat CT. No neurosurgical consultation required. <b>LRH:</b> transferred to DHMC, not admitted locally — per agreement with DHMC's trauma medical director. <b><a class="telcall" data-tc href="tel:+18779999870">{{SITE.transferCenter}}: {{SITE.transferPhone}}</a>.</b></span></label></li>
         </ul>
       </details>
       <details open class="t-box-crit">
@@ -249,7 +249,7 @@
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-7" class="t-ck"><span>Abnormal neuro exam (GCS &lt;13, focal findings, abnormal pupils) · intoxication (BAC &gt;80 mg/dL) · <b>any</b> use of anticoagulants or antiplatelet agents.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-8" class="t-ck"><span><b>CT:</b> SDH or IPH ≥8mm · <b>any</b> IVH · bi-hemispheric SAH &gt;3mm · <b>any</b> EDH · multiple concurrent hemorrhages or midline shift · displaced skull fracture.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-9" class="t-ck"><span><b>Management:</b> admit to a monitored setting (ICU/neuro-ICU). Neurosurgical consultation. Repeat head CT per neurosurgical guidance. <b>LRH:</b> transferred to DHMC, same as mBIG-2 — per agreement with DHMC's trauma medical director. <b><a class="telcall" data-tc href="tel:+18779999870">DHMC Transfer Center: (877) 999-9870</a>.</b></span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-9" class="t-ck"><span><b>Management:</b> admit to a monitored setting (ICU/neuro-ICU). Neurosurgical consultation. Repeat head CT per neurosurgical guidance. <b>LRH:</b> transferred to DHMC, same as mBIG-2 — per agreement with DHMC's trauma medical director. <b><a class="telcall" data-tc href="tel:+18779999870">{{SITE.transferCenter}}: {{SITE.transferPhone}}</a>.</b></span></label></li>
         </ul>
       </details>
       <details class="t-box-neutral">
@@ -276,11 +276,11 @@
         <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">02</span>Level 1 Trauma Activation</h2>
         <span class="t-mono-r">HIGHEST-TIER TEAM ACTIVATION CRITERIA</span>
       </div>
-      <div class="t-note2">Who triggers a full trauma team response. Criteria adapted from the CDC/ACS-COT National Guideline for Field Triage — LRH is a <b>Level III trauma center without in-house neurosurgery</b>, so this is the evidence base for its activation tier, not an ACS Level I standard, and anything needing neurosurgical care transfers.</div>
+      <div class="t-note2">Who triggers a full trauma team response. Criteria adapted from the CDC/ACS-COT National Guideline for Field Triage — this card assumes a <b>Level III trauma center without in-house neurosurgery</b>, so this is the evidence base for its activation tier, not an ACS Level I standard, and anything needing neurosurgical care transfers.</div>
     </div>
 
     <div class="t-localize">
-      ⚠ <b>LOCALIZE THIS CARD:</b> a trauma-center <i>level</i> (ACS/state verification of a hospital's resources) and a <i>Level 1 activation</i> (this hospital's per-patient response tier) are different things — LRH is a <b>Level III trauma center</b> with general surgery but <b>no in-house neurosurgery</b>. Confirm locally: who responds to a full activation (ED physician, general surgery, anesthesia, on-call roster), expected response time, and the transfer trigger/receiving center for anything beyond Level III capability (any neurosurgical need). The criteria below are the national evidence base to adapt, not LRH's own protocol.
+      ⚠ <b>LOCALIZE THIS CARD:</b> a trauma-center <i>level</i> (ACS/state verification of a hospital's resources) and a <i>Level 1 activation</i> (this hospital's per-patient response tier) are different things — this card assumes a <b>Level III trauma center</b> with general surgery but <b>no in-house neurosurgery</b>. Confirm locally: who responds to a full activation (ED physician, general surgery, anesthesia, on-call roster), expected response time, and the transfer trigger/receiving center for anything beyond Level III capability (any neurosurgical need). The criteria below are the national evidence base to adapt, not your site's own protocol.
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
@@ -443,7 +443,7 @@
     </div>
 
     <div class="t-localize">
-      ⚠ <b>LOCALIZE THIS CARD:</b> LRH is a <b>Level III trauma center</b> — general surgery is available, but there is <b>no in-house neurosurgery</b>. A penetrating torso/proximal-extremity wound is high-acuity: resuscitate, involve the surgeon early, and start the transfer conversation early for anything beyond local capability (or any neurosurgical need). Confirm your receiving trauma center and the point at which that call goes out — early, in parallel with the workup, not after it.
+      ⚠ <b>LOCALIZE THIS CARD:</b> this card assumes a <b>Level III trauma center</b> — general surgery is available, but there is <b>no in-house neurosurgery</b>. A penetrating torso/proximal-extremity wound is high-acuity: resuscitate, involve the surgeon early, and start the transfer conversation early for anything beyond local capability (or any neurosurgical need). Confirm your receiving trauma center and the point at which that call goes out — early, in parallel with the workup, not after it.
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
@@ -637,7 +637,7 @@
         <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">07</span>Mangled / Amputated Extremity</h2>
         <span class="t-mono-r">SALVAGE, PRESERVATION &amp; TRANSFER</span>
       </div>
-      <div class="t-note2">LRH is not a replant center — the goal here is hemorrhage control, correct part preservation, and getting the patient and part to a replant/hand center fast.</div>
+      <div class="t-note2">This card assumes a hospital that is not a replant center — the goal here is hemorrhage control, correct part preservation, and getting the patient and part to a replant/hand center fast.</div>
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
@@ -705,7 +705,7 @@
     </div>
 
     <div class="t-localize">
-      ⚠ <b>LOCALIZE THIS CARD:</b> LRH is a <b>Level III trauma center without in-house neurosurgery</b> — a positive screen or a confirmed BCVI is a transfer + neurosurgery/vascular/stroke conversation. Confirm local CTA availability and the receiving center's antithrombotic preference. The three criteria sets below are published screening tools to adopt, not an LRH protocol; pick one deliberately.
+      ⚠ <b>LOCALIZE THIS CARD:</b> this card assumes a <b>Level III trauma center without in-house neurosurgery</b> — a positive screen or a confirmed BCVI is a transfer + neurosurgery/vascular/stroke conversation. Confirm local CTA availability and the receiving center's antithrombotic preference. The three criteria sets below are published screening tools to adopt, not a site protocol; pick one deliberately.
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
@@ -794,7 +794,7 @@
         </ul>
       </details>
     </div>
-    <div class="t-sub"><b>Sources:</b> START/SALT triage per CHEMM (chemm.hhs.gov); ACS Committee on Trauma disaster resources. <b>This card needs LRH-specific facts filled in:</b> the actual call-tree names/numbers and the designated zones.</div>
+    <div class="t-sub"><b>Sources:</b> START/SALT triage per CHEMM (chemm.hhs.gov); ACS Committee on Trauma disaster resources. <b>This card needs site-specific facts filled in:</b> the actual call-tree names/numbers and the designated zones.</div>
     <div class="t-foot"><span class="verstamp"></span> &mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.</div>
   </article>
 
@@ -840,14 +840,14 @@
 </main>
 
 <script>
-/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
+/* ===== SITE CONFIG (site-specific — edit these to localize for your site/device) ===== */
 var SITE = {
   version: "0.95",
   lastReviewed: "2026-08-13",
   /* Transfer/consult numbers. One source of truth (CLAUDE.md rule 2) — the
-     BIG card renders every "DHMC Transfer Center" line from here as a tap-to-
+     BIG card renders every transfer-center line from here as a tap-to-
      call tel: link. `tel` is the E.164 dial string; `phone` is what's shown. */
-  transferCenter: { label: "DHMC Transfer Center", phone: "(877) 999-9870", tel: "+18779999870" },
+  transferCenter: { label: "{{SITE.transferCenter}}", phone: "{{SITE.transferPhone}}", tel: "+18779999870" },
   /* SCENE SECURITY for penetrating trauma (issue #111). Who is called and what
      the department can actually do is entirely local — some EDs can lock the
      ambulance bay from the charge desk, some have to ask a security officer who
@@ -859,7 +859,7 @@ var SITE = {
      your operator expects, or null if your site has none. `note` renders a
      caution line under the box, or null for no line.
 
-     LRH values confirmed by Lon 2026-08-13: tell Security, ask them to consider
+     Originating-site values confirmed by Lon 2026-08-13: tell Security, ask them to consider
      a lockdown, no overhead page phrase, and no caution — Security is in house
      overnight. An earlier draft of this block asserted the opposite (that there
      was no overnight ED security officer) and printed it on the card; it was a
@@ -908,7 +908,7 @@ var SITE = {
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
 })();
 (function(){
-  var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
+  var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · {{SITE.abbrev}}';
   var stamps=document.querySelectorAll('.verstamp');
   for(var i=0;i<stamps.length;i++){ stamps[i].textContent=stampText; }
 })();

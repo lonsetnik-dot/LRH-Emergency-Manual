@@ -17,6 +17,9 @@ const pg=await b.newPage({viewport:{width:1200,height:1000},deviceScaleFactor:4}
 await pg.goto(BASE+'/labels/',{waitUntil:'networkidle'});
 await pg.waitForTimeout(600);
 const fs=await import('fs');
+/* The printed QR caption carries the site's own domain (site.config.json) —
+   config-driven, so a hospital edition's suite stays green (CLAUDE.md). */
+const SITE_DOMAIN=JSON.parse(fs.readFileSync(new URL('./site.config.json', import.meta.url),'utf8')).domain;
 let n=0;
 async function grab(path, sel){
   await pg.goto(BASE+path,{waitUntil:'networkidle'});
@@ -24,12 +27,12 @@ async function grab(path, sel){
   const els=await pg.$$(sel);
   // Labels encode the destination in aria-label. Posters print it as text beside the code,
   // so take the expectation from whichever the artifact actually publishes.
-  const printed=await pg.evaluate(()=>{
+  const printed=await pg.evaluate((dom)=>{
     const t=document.querySelector('.qr .qrtext, .qr');
     if(!t) return null;
-    const m=(t.textContent||'').match(/lrhemergencymanual\.net\/[^\s]+/);
+    const m=(t.textContent||'').match(new RegExp(dom.replace(/\./g,'\\.')+'\\/[^\\s]+'));
     return m?('https://'+m[0]):null;
-  });
+  }, SITE_DOMAIN);
   for(const el of els){
     let want=(await el.getAttribute('aria-label')||'').replace(/^QR code to /,'');
     if(!want.startsWith('http')) want=printed;
