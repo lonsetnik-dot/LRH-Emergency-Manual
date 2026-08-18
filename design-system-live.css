@@ -109,7 +109,14 @@ button{-webkit-appearance:none;appearance:none;touch-action:manipulation}
 
 /* A link INTO the procedures tool is a link to a procedure, wherever it is
    written. Underlined and offset so it survives the mono/condensed faces. */
-a[href*="procedures/"]{text-decoration:underline;text-underline-offset:2px;text-decoration-thickness:1.5px}
+/* Prose navigation is UNDERLINED (revised 2026-08-18; see design-system.css
+   for the full reasoning). The live engines carry their prose inside .wrap
+   and the reference accordions, not <article>. */
+.wrap p a, .accb a, .acc a, .sec a, .shelltlbody a,
+article a, .t-sub a, .t-note2 a{
+  text-decoration:underline; text-underline-offset:2px; text-decoration-thickness:1.5px}
+.lrh-row, .shellmenurow, .ghost, .logit, .btn, .shellback, .shelltool,
+.chip, .shellweight, .acch, .shelldockbtn, .shellsmallchip{text-decoration:none}
 
   /* ---- LOG IT pill (issue #71 idiom; DESIGN-SYSTEM.md §7) ------------------
      RECORDS an event with the time it was tapped. Deliberately unmistakable

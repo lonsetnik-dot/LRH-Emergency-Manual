@@ -151,6 +151,20 @@ So they never share a shape:
 | **Log an event** | A round pill reading `LOG IT` (or the action's own name), sitting in the card's action row | `data-logevent` / `data-log` → `CASESTATE.addLog` | Writes a PHI-free, time-stamped row to the shared case log. Stays on the page. |
 | **Go to a procedure** | Underlined text inside the sentence that mentions it | a plain `<a href="../procedures/…">` | Navigates. Never writes anything. |
 
+**Prose navigation is underlined — everywhere** (revised 2026-08-18, clinician
+direction). The earlier rule underlined only links into `procedures/`, leaving
+every cross-tool, in-card and `#cXX` link carried by color alone. That is the
+wrong axis: the question a reader answers mid-code is *does this take me
+somewhere or does it record something*, not *which tool does the destination
+live in*. Color alone also fails WCAG 1.4.1 and is close to invisible on the
+dark ground. So every inline prose link is underlined, and every control —
+tile, chip, button, LOG IT pill — explicitly is not. Those two halves together
+are what make the underline carry information; `verify_design_language.mjs`
+asserts both directions across all 16 pages, identifying controls by *shape*
+(border, fill, or block layout) rather than by an allow-list, so a new chip
+cannot silently acquire an underline and a new prose link cannot silently lose
+one.
+
 Rules that follow:
 
 - **A logging control is never a bare link, and a link is never round.** The
@@ -161,8 +175,14 @@ Rules that follow:
 - **A link into `procedures/` is always underlined** — the shared sheets carry
   `a[href*="procedures/"]{text-decoration:underline}` precisely so the idiom
   survives the mono and condensed faces.
-- One deliberate exception exists and is asserted in the suite, so it cannot
-  spread silently.
+- **One deliberate exception: `a.babyout` in `ob-neonatal/` card 08.** It both
+  records and navigates — one tap stamps the birth time into the case log and
+  then opens the neonatal engine. That is correct here and should not be
+  "fixed": at the moment a baby is delivered in a breech the operator has one
+  free hand and one decision, and splitting it into "log it, now also go there"
+  buys tidiness at the cost of the thing being timed. It is shaped as a filled
+  control, not prose, so it never reads as a sentence link. The suite pins both
+  behaviors so the exception cannot quietly become the rule.
 
 `verify_design_language.mjs` enforces this across the engines — it is the
 reason the idiom stays a convention rather than a preference.

@@ -57,11 +57,18 @@ Flip `reconciled` to true only on a clinician's sign-off — not when the banner
 comes down. `verify_neonatal_screen.mjs` fails if the banner is switched off
 quietly.
 
-## 3. New clinical content from the airway-sizes work (2026-08-17)
+## 3. New clinical content from the airway-sizes work (2026-08-17) — ✅ REVIEWED
 
-Written against the cited sources, **not yet read back by a clinician**, and —
-unlike section 1 — **not banner-flagged**. Worth deciding explicitly whether
-these should carry a DRAFT banner until reviewed.
+**Reviewed and approved by Lon Setnik, MD on 2026-08-18**, who confirmed no
+DRAFT banner is required for these. Kept listed here as the provenance record —
+what was written, from which source, and who signed it off — rather than
+deleted, because "a clinician read this" is exactly the fact this file exists
+to carry.
+
+The second half of the review question stands and is a cart walk, not a
+reading: the per-drawer sizes are this department's stock resolved from the
+formulas, so *does that drawer actually hold that size* is still worth
+confirming on the next equipment walk.
 
 | Where | What was written | Source it was written from |
 |---|---|---|
@@ -112,8 +119,7 @@ Full list and cadences: `/sources/` in the running manual, or `guidelines.js`.
 
 ## Suggested order
 
-1. **Section 3** — smallest, newest, and already in front of patients without a
-   banner.
+1. ~~**Section 3**~~ — done (reviewed and approved 2026-08-18).
 2. **Section 1's drug-dose cards** — c36 toxicology, c34 withdrawal, c31 DKA,
    c30 agitation, c28 sepsis. Wrong numbers here are the ones that hurt.
 3. **Section 2** — `neonatal/`, because a whole tool rides on it.
