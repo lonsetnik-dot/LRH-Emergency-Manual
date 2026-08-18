@@ -137,7 +137,39 @@ failure mode — the number for cross-reference, the word for certainty, the pic
 
 ---
 
-## 7. Audit findings behind this document (2026-08-08)
+## 7. Logging an event vs linking to a procedure (issue #71)
+
+Two things a card asks a clinician to tap look superficially alike and are
+opposites. One **records that something happened to this patient**; the other
+**takes you somewhere else to read**. Confusing them mid-code either loses an
+event from the record or throws the reader out of the card they were working.
+
+So they never share a shape:
+
+| Intent | Shape | Markup | What it does |
+|---|---|---|---|
+| **Log an event** | A round pill reading `LOG IT` (or the action's own name), sitting in the card's action row | `data-logevent` / `data-log` → `CASESTATE.addLog` | Writes a PHI-free, time-stamped row to the shared case log. Stays on the page. |
+| **Go to a procedure** | Underlined text inside the sentence that mentions it | a plain `<a href="../procedures/…">` | Navigates. Never writes anything. |
+
+Rules that follow:
+
+- **A logging control is never a bare link, and a link is never round.** The
+  pill shape means "this is now in the record".
+- **Logging is idempotent-ish and honest:** the log records the time it was
+  tapped, not the time the thing happened, and the PHI guard refuses any label
+  carrying a weight, a record number or a date (`CASE-STATE.md`).
+- **A link into `procedures/` is always underlined** — the shared sheets carry
+  `a[href*="procedures/"]{text-decoration:underline}` precisely so the idiom
+  survives the mono and condensed faces.
+- One deliberate exception exists and is asserted in the suite, so it cannot
+  spread silently.
+
+`verify_design_language.mjs` enforces this across the engines — it is the
+reason the idiom stays a convention rather than a preference.
+
+---
+
+## 8. Audit findings behind this document (2026-08-08)
 
 State at the time of writing, so future work knows what was true.
 
@@ -163,7 +195,7 @@ in headers and result boxes.
 
 ---
 
-## 8. Order of work
+## 9. Order of work
 
 1. Print correctness — one CSS line per tool. Cheapest fix, largest recovery of meaning on paper.
 2. Storage location on every procedure card, linked to its cart section.

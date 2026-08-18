@@ -205,6 +205,7 @@
         <a href="#c08" data-k="bcvi blunt cerebrovascular injury screening denver expanded universal carotid vertebral artery cta neck seatbelt le fort cervical spine fracture stroke horner" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">08</span><span class="t">BCVI Screening</span></a>
         <a href="#c09" data-k="mci mass casualty incident disaster triage start salt surge multiple patients bus crash declare roles zones green yellow red black expectant call tree mutual aid" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">09</span><span class="t">Mass-Casualty Incident — First 15 Minutes</span></a>
         <a href="#c10" data-k="electrical injury lightning electrocution shock high voltage low voltage reverse triage keraunoparalysis rhabdomyolysis myoglobin compartment oral commissure exit wound" class="lrh-row" style="--cc:var(--orange)"><span class="n lrh-mono">10</span><span class="t">Electrical &amp; Lightning Injury</span></a>
+        <a href="#c11" data-k="hazmat hazardous materials decontamination decon contaminated chemical cbrn nerve agent organophosphate sarin atropine pralidoxime chempack cyanide hydroxocobalamin chlorine phosgene mustard vesicant radiation radiological remm ppe papr hot warm cold zone toxidrome" class="lrh-row" style="--cc:var(--orange)"><span class="n lrh-mono">11</span><span class="t">Hazmat / Contaminated Patient</span></a>
         <a href="../codes/?from=home#c12" data-k="mtp massive transfusion protocol blood products prbc plasma platelets cryo hemorrhagic shock trauma" class="lrh-row" style="--cc:var(--red)"><span class="t">Massive Transfusion Protocol</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; CODES</span></a>
         <a href="../codes/?from=home#c18" data-k="fona cricothyroidotomy cico front of neck access surgical airway difficult airway das trauma" class="lrh-row" style="--cc:var(--red)"><span class="t">Front of Neck Access (FONA)</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; CODES</span></a>
       </div>
@@ -837,13 +838,84 @@
     <div class="t-sub"><b>Sources:</b> Wilderness Medical Society lightning injury guidelines (WEM 2014); ACS/ABA burn referral criteria; Zafren et al., electrical injuries review. See also the <a href="#c05">Burn card</a> for fluid math.</div>
     <div class="t-foot"><span class="verstamp"></span> &mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.</div>
   </article>
+
+  <!-- ============ CARD 11 · HAZMAT / CONTAMINATED PATIENT (coverage gap #124) ============
+       Deliberately structured "protect the department, then decontaminate,
+       then treat the toxidrome" — in that order, because a contaminated
+       patient brought straight into a resus room turns one casualty into a
+       closed department. Antidote doses are the published federal/CHEMM
+       figures and carry the DRAFT banner until a clinician signs them off.
+       Site-specific facts (where the decon shower is, who the local hazmat
+       team is) are deliberately NOT invented here — the card asks for them. -->
+  <article id="c11">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">11</span>Hazmat / Contaminated Patient</h2>
+        <span class="t-mono-r">STOP AT THE DOOR &middot; UNDRESS &middot; WASH &middot; ANTIDOTE</span>
+      </div>
+      <div class="t-note2">A chemical, radiological or unknown-exposure patient. The first decision is not clinical &mdash; it is whether this patient comes inside. Removing clothing alone removes most of the contaminant.</div>
+    </div>
+    <div class="t-localize">&#9888; <b>DRAFT &mdash; NOT CLINICALLY REVIEWED:</b> written from the published guidance cited below to fill coverage gap <a href="https://github.com/lonsetnik-dot/LRH-Emergency-Manual/issues/124" style="color:var(--note-tx);">#124</a>. Verify every dose and every local detail (decon location, PPE stock, hazmat team) before this card is trusted.</div>
+    <div class="steps" style="padding:14px 14px 0;">
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">1 &middot; STOP THE PATIENT OUTSIDE &mdash; PROTECT THE DEPARTMENT</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-0-0" class="t-ck t-ck-crit"><span><b>Do not let a contaminated patient into the department.</b> Meet them outside. One contaminated resus room can close the only ED for 50 miles &mdash; and secondary contamination of staff has happened repeatedly in real events.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-0-1" class="t-ck"><span><b>Say it out loud:</b> &ldquo;Possible contaminated patient &mdash; nobody approaches without PPE.&rdquo; Assign one person to hold the entrance.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-0-2" class="t-ck"><span><b>PPE before contact.</b> For ED decontamination of an already-removed-from-scene patient, the usual level is a chemical-resistant suit, double gloves, boots and a powered air-purifying respirator (PAPR). Surgical mask and a gown are <b>not</b> hazmat PPE.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-0-3" class="t-ck"><span>Zones out loud: <b>hot</b> (patient, still contaminated) &rarr; <b>warm</b> (decon line) &rarr; <b>cold</b> (clean department). Nobody and nothing crosses back.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-0-4" class="t-ck"><span><b>Shut off the air handling</b> to the entrance if the agent may be volatile, and call the on-call administrator &mdash; this is a facility event, not just a patient.</span></label></li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">2 &middot; DECONTAMINATE &mdash; UNDRESS FIRST</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-1-0" class="t-ck t-ck-crit"><span><b>Remove all clothing &mdash; this is the single highest-yield step.</b> Cut clothes off rather than pulling them over the face. Bag and seal clothing and belongings; they are evidence as well as waste.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-1-1" class="t-ck"><span><b>Then wash:</b> copious warm water, low pressure, head-to-toe, plus mild soap for oily or adherent agents. Do not scrub the skin raw &mdash; abrasion increases absorption.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-1-2" class="t-ck"><span><b>Eyes and wounds first,</b> then the rest. Irrigate eyes continuously; cover wounds after irrigating so run-off does not re-contaminate them.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-1-3" class="t-ck"><span><b>Exception &mdash; elemental metals</b> (sodium, potassium, lithium, phosphorus) ignite with water. Cover with mineral oil, remove mechanically; do not irrigate.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-1-4" class="t-ck"><span><b>Keep them warm.</b> Cold water plus a wet, undressed patient in a New Hampshire winter produces hypothermia fast, especially in children and older adults &mdash; see <a href="../codes/?from=trauma#c27">hypothermia (codes card 27)</a>.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-1-5" class="t-ck"><span><b>Life threats do not wait for a perfect decon.</b> Open the airway, control catastrophic bleeding and give the antidote in PPE, during or before washing.</span></label></li>
+        </ul>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">3 &middot; TREAT THE TOXIDROME</summary>
+        <div style="padding:4px 12px 6px; font-size:13px; color:var(--ink2);">Identify by the syndrome in front of you, not by waiting for the agent to be named.</div>
+        <ul style="margin:0; padding:0 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-2-0" class="t-ck t-ck-crit"><span><b>Nerve agent / organophosphate</b> &mdash; wet everywhere (SLUDGE), pinpoint pupils, fasciculations, seizure, bradycardia.<br><b>Atropine</b> 2&ndash;6 mg IV/IM, <b>double the dose every 5 min until secretions dry</b> (the endpoint is the chest, not the heart rate; there is no maximum). <b>Pralidoxime</b> 1&ndash;2 g IV over 15&ndash;30 min. <b>Seizure &rarr; midazolam</b> (benzodiazepine, not phenytoin). Autoinjectors (DuoDote) if that is what is stocked.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-2-1" class="t-ck t-ck-crit"><span><b>Cyanide</b> (closed-space fire, industrial) &mdash; profound acidosis with a normal or high venous O&#8322; saturation, arrest without a clear cause.<br><b>Hydroxocobalamin 5 g IV</b> over 15 min. Also on the smoke-inhalation line of <a href="#c05">burns (card 05)</a>.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-2-2" class="t-ck"><span><b>Pulmonary irritant</b> (chlorine, ammonia, phosgene) &mdash; no antidote. Oxygen, bronchodilators, watch for delayed pulmonary edema; phosgene can look well for hours. Observe rather than discharge early.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-2-3" class="t-ck"><span><b>Vesicant</b> (mustard, lewisite) &mdash; pain and blistering may be delayed for hours. Decontaminate immediately anyway; treat as a chemical burn.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-2-4" class="t-ck"><span><b>Radiological</b> &mdash; <b>treat the trauma first; radiation is rarely the immediate threat.</b> Undress and wash, survey with a detector if available, collect nasal swabs and the first urine. Potassium iodide protects the thyroid only against radioiodine and only if given early &mdash; it is not a general radiation antidote.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-2-5" class="t-ck"><span><b>Unknown</b> &mdash; treat the syndrome, call for help early, and resist naming the agent too soon. See also <a href="../codes/?from=trauma#c36">toxicology (codes card 36)</a>.</span></label></li>
+        </ul>
+      </details>
+
+      <details class="t-box-info">
+        <summary class="t-head t-head-info">4 &middot; CALL FOR HELP &amp; SUPPLY</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-3-0" class="t-ck"><span><b>Poison control</b> &mdash; <a href="tel:{{SITE.poisonControl}}" style="font-weight:700;">{{SITE.poisonControl}}</a>. They identify agents and dose antidotes for a living; call early, not after the first hour.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-3-1" class="t-ck"><span><b>Antidote stock beyond a few doses is not on your shelf.</b> A nerve-agent event exhausts local atropine quickly &mdash; CHEMPACK caches are positioned for this and are released through the state health department / emergency management. Ask for them early; they take time to arrive.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-3-2" class="t-ck"><span>Notify the local hazmat/fire team, and the state health department for a suspected deliberate release. A deliberate event is also a crime scene &mdash; keep the sealed clothing bags.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-3-3" class="t-ck"><span><b>Many patients?</b> Run this alongside <a href="#c09">MCI &mdash; First 15 Minutes (card 09)</a>: decon becomes the triage line, and the ambulatory walk-ins arrive before the ambulances.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-3-4" class="t-ck"><span><b>Staff exposure is a patient too</b> &mdash; anyone symptomatic comes out of the line, gets decontaminated and gets a chart. Log the names of everyone who had contact.</span></label></li>
+        </ul>
+      </details>
+    </div>
+    <div class="t-sub"><b>Sources:</b> HHS/ASPR Chemical Hazards Emergency Medical Management (CHEMM, chemm.hhs.gov) &mdash; toxidrome recognition, decontamination sequence, and the nerve-agent antidote figures (atropine titrated to drying secretions; pralidoxime; benzodiazepine for seizures). ATSDR <i>Medical Management Guidelines</i> for the individual agents. Radiation guidance per HHS Radiation Emergency Medical Management (REMM). Hydroxocobalamin dosing consistent with the smoke-inhalation line on card 05. <b>This card needs site-specific facts filled in:</b> where decontamination actually happens at this site, what PPE is stocked and where, which hazmat team responds, and whether any antidote autoinjectors are held in the department.</div>
+    <div class="t-foot"><span class="verstamp"></span> &mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.</div>
+  </article>
+
 </main>
 
 <script>
 /* ===== SITE CONFIG (site-specific — edit these to localize for your site/device) ===== */
 var SITE = {
-  version: "0.96",
-  lastReviewed: "2026-08-17",
+  version: "0.97",
+  lastReviewed: "2026-08-18",
   /* Transfer/consult numbers. One source of truth (CLAUDE.md rule 2) — the
      BIG card renders every transfer-center line from here as a tap-to-
      call tel: link. `tel` is the E.164 dial string; `phone` is what's shown. */
