@@ -89,7 +89,7 @@ catch(e){ document.body.dataset.theme='dark'; }
 
 <div class="hdr">
   <span class="plabel">EMERGENCY MANUAL</span>
-  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=Emergency%20Manual%20feedback%20%E2%80%94%20Landing%20page" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+  <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Landing%20page" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
   <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
 </div>
 
@@ -309,6 +309,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     {t:"Eclampsia / Severe Preeclampsia", c:"OB & Neonatal", k:"eclampsia preeclampsia pregnancy seizure magnesium sulfate severe hypertension labetalol hydralazine postpartum hellp", u:"ob-neonatal/?from=home#c11"},
     {t:"Mass-Casualty Incident (MCI) — First 15 Minutes", c:"Trauma", k:"mci mass casualty disaster triage start salt surge declare roles zones expectant", u:"trauma/?from=home#c09"},
     {t:"Electrical & Lightning Injury", c:"Trauma", k:"electrical injury lightning electrocution high voltage reverse triage rhabdomyolysis compartment", u:"trauma/?from=home#c10"},
+    {t:"Hazmat / Contaminated Patient — decontamination", c:"Trauma", k:"hazmat hazardous material decontamination decon contaminated patient chemical exposure cbrn nerve agent organophosphate sarin atropine pralidoxime duodote chempack cyanide hydroxocobalamin chlorine ammonia phosgene mustard vesicant radiation radiological potassium iodide ppe papr hot warm cold zone toxidrome undress wash", u:"trauma/?from=home#c11"},
     {t:"Equipment Readiness — where is everything", c:"Equipment", k:"equipment inventory where is location cart drawer kit stock supplies nprp readiness par find pigtail burr hole uvc igel chest tube", u:"equipment-readiness/?from=home"},
     /* One entry per section of the readiness tool — each is a destination a
        champion actually goes to, and rule 9 means none of them is findable

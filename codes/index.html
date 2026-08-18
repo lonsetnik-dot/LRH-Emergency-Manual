@@ -203,7 +203,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
   <span class="plabel">CODES &amp; RESUSCITATION</span>
   <button class="ghost" id="summarybtn" type="button">TIMELINE</button>
   <button class="ghost danger" id="resetbtn" type="button" style="display:none">RESET</button>
-  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Codes" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+  <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Codes" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
 </div>
 <script>
 /* ---- WS2.4/F?? — the one destructive control, gated behind a confirm ----
@@ -3943,7 +3943,16 @@ var AUDIENCE = (function(){
       var ts=st[c.key];
       html+='<div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; padding:9px 14px; border-top:1px solid #e7eaef;">'+
         '<div><div style="font-size:13px; font-weight:700; color:#16324f;">'+c.label+'</div>'+
-        '<div style="font-size:12.5px; margin-top:2px;"><a href="tel:'+c.tel+'" style="color:#2f62a8; text-decoration:none; display:inline-flex; align-items:center; min-height:44px;">☎ '+c.phoneDisplay+'</a></div></div>'+
+        /* Only render a tap-to-call link when there is something dialable.
+           c.tel was hardcoded '' on the generic trunk, which produced a
+           styled, 44px, tappable <a href="tel:"> that silently did nothing —
+           the worst failure mode for a phone affordance during a STEMI
+           transfer. Unconfigured now reads as unconfigured. */
+        '<div style="font-size:12.5px; margin-top:2px;">'+
+          (String(c.tel||'').replace(/[^0-9]/g,'').length>=7
+            ? '<a href="tel:'+String(c.tel).replace(/[^0-9+]/g,'')+'" style="color:#2f62a8; text-decoration:none; display:inline-flex; align-items:center; min-height:44px;">&#9742; '+c.phoneDisplay+'</a>'
+            : '<span style="color:#5a6a78; display:inline-flex; align-items:center; min-height:44px;">&#9742; '+c.phoneDisplay+' &mdash; not configured</span>')+
+        '</div></div>'+
         (ts
           ? '<button type="button" data-dest="'+c.key+'" style="min-height:38px; padding:6px 12px; background:#eef3f6; border:1px solid #16324f; color:#16324f; font-family:inherit; font-size:12px; font-weight:700; letter-spacing:0.05em; cursor:pointer;">CALLED '+wall(ts)+'</button>'
           : '<button type="button" data-dest="'+c.key+'" style="min-height:44px; padding:6px 14px; background:#16324f; border:none; color:#fffefb; font-family:inherit; font-size:12px; font-weight:700; letter-spacing:0.05em; cursor:pointer;">CALL — LOG IT</button>')+

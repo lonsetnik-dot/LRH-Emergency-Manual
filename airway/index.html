@@ -41,7 +41,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
   </div>
   <span class="shell-wide" style="gap:6px;align-items:center">
     <button class="ghost" id="tlbtnwide" type="button">TIMELINE</button>
-    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Airway" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+    <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Airway" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
     <button class="ghost shellreset" id="resetwide" type="button">RESET</button>
   </span>
   <button class="shellmore shell-phone" id="menubtn" type="button" aria-label="Menu">⋯</button>
@@ -67,7 +67,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
      two-tap SURE? reset the wide button runs (SHELL.md layer 9). -->
 <div class="shellmenu right" id="moremenu" style="display:none">
   <button class="shellmenurow" id="tlbtn" type="button">Case timeline</button>
-  <a class="shellmenurow" id="feedbackmenu" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Airway">Feedback</a>
+  <a class="shellmenurow" id="feedbackmenu" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Airway">Feedback</a>
   <div class="shellmenudiv"></div>
   <button class="shellmenurow danger" id="resetbtn" type="button">Reset for next case</button>
 </div>

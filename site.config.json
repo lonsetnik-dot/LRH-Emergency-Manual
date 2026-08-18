@@ -22,6 +22,8 @@
   "domain": "demo.cairnready.org",
   "editionNote": "Generic edition — not localized to any hospital. Every threshold, dose, phone number, and cart location must be validated and localized by your site before clinical use.",
   "footerLine": "CairnReady Emergency Manual &mdash; generic edition &middot; personal, unofficial reference &middot; localize before clinical use",
+  "_feedbackEmailNote": "Where the FEEDBACK button in every tool sends mail. This is an IDENTITY string (CLAUDE.md rule 2) and must not be hand-typed per tool: it was previously hardcoded to one person's personal address in all 22 pages, so every adopting ED's feedback would have routed to an individual who does not work there.",
+  "feedbackEmail": "lon.setnik@gmail.com",
   "transferCenter": "your regional transfer center",
   "transferPhone": "[add your transfer line]",
   "poisonControl": "1-800-222-1222"
