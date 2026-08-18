@@ -156,6 +156,45 @@ A VEMS deck is also a paper product, so `verify_vems.mjs` renders the real print
 output to PDF and counts pages. A deck that spills onto an extra sheet, or a run
 sheet that prints along with the participant cards, is invisible on screen and
 expensive at the laminator.
+
+## Shared procedure icons (`design/ICONOGRAPHY.md`)
+
+`procedure-icons.js` is a **second, separate** icon set — and the distinction is
+the point. The equipment glyphs above draw *objects* (the thing in the drawer).
+These draw *procedures*: anatomy plus the one thing you do to it. Same injection
+mechanism, marker `/* @proc-icons */`. Consumers today: `procedures/` (14 cards),
+`codes/` (RSI, FONA) and `ob-neonatal/` (UVC, hysterotomy).
+
+Same rule as the equipment set — **do not paste a procedure glyph inline into a
+tool.** `verify_procedure_icons.mjs` compares the *rendered* markup across pages,
+so an inline copy fails the run even if it looks identical.
+
+The grammar is four rules, in the header of `procedure-icons.js` and in full in
+`design/ICONOGRAPHY.md`:
+
+- **Anatomy in ink, action in red.** `currentColor` for primary anatomy, `--ink2`
+  for landmarks and labels, and exactly **one** `--red` idea per figure — the cut,
+  the tube, the band. Two red ideas means the figure has stopped saying one thing.
+- **Same base, honest difference.** Chest tube / pigtail / thoracotomy share the
+  rib base; CVC / Cordis share the neck base; RSI / SALAD share the face; JADA /
+  hysterotomy share the uterus. The suite asserts the shared prefix survives, so
+  a redrawn base propagates instead of forking.
+- **Two tiers, one drawing.** Glyph `0 0 48 48` (must survive 16px); detail
+  `0 0 160 116` for posters and checklists, with its caption in HTML *below* the
+  SVG — never drawn inside it, where it overruns the grid.
+- Nothing is filled but action tips; dashed means under the skin, a landmark, or
+  the thing that follows.
+
+The anatomical decisions in `design/ICONOGRAPHY.md` were locked in clinical
+review — left chest for thoracotomy, patient's right IJ, "measure depth by CT"
+rather than fixed-pupil side. Do not regress them, and note that the penetrating
+neck graphic was removed deliberately: the glyph exists but is not mapped to any
+card, and should stay unmapped.
+
+Decorative glyphs are `aria-hidden` with no role or label. That is not a detail —
+a labeled decorative SVG shadows the real figure for any selector or screen
+reader looking for the drawing that carries the meaning.
+
 ## Config-driven verification (issue #117)
 
 The `verify_*.mjs` suites are the safety harness that makes it viable for a

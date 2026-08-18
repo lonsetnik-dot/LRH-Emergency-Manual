@@ -27,6 +27,14 @@
      Theme choice persists via the shared lrh-pref-theme key. Only this tool's own
      page layout (main/article/steps/figs/menu/console, print) lives below. */
   /* @design-system */
+  /* ---- PROCEDURE GLYPHS (design/ICONOGRAPHY.md) — anatomy in ink, action in red.
+     Colour comes from the page tokens, so both themes and print work with no
+     per-theme rules: currentColor inherits --ink from the heading. ---- */
+  .proc-glyph { width:34px; height:34px; flex:none; color:var(--ink); vertical-align:-7px; margin-right:9px; }
+  .proc-detail { width:100%; height:auto; display:block; color:var(--ink); }
+  .proc-cap { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10px;
+    letter-spacing:.08em; color:var(--ink2); padding:6px 12px 10px; }
+  @media print { .proc-glyph { color:#141E2B; } }
   /* Procedures-local .t-* variants (teal is this tool's wayfinding color; the
      checkbox tint is color-coded by section severity). Defined AFTER the marker
      so they layer on top of the shared .t-ck / .t-box / .t-head base rules. */
@@ -226,7 +234,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <article id="c06">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">06</span>Central Venous Catheter (CVC) — Triple Lumen Catheter</h2>
+        <h2 style="margin:0; font-size:22px;"><span class="pglyph" data-proc="cvc" aria-hidden="true"></span><span class="t-mono-n">06</span>Central Venous Catheter (CVC) — Triple Lumen Catheter</h2>
         <span class="t-mono-r">ULTRASOUND-GUIDED · FULL STERILE PREP</span>
       </div>
       <div class="t-note2">This card covers the standard <b>triple-lumen catheter</b> — drugs, monitoring, everyday central access. Need large-bore volume for massive transfusion instead? See <a href="#c14">card 14 — Resuscitation Line (Cordis / AVA 3Xi)</a>.</div>
@@ -366,7 +374,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <article id="c01">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">01</span>Chest Tube (Tube Thoracostomy)</h2>
+        <h2 style="margin:0; font-size:22px;"><span class="pglyph" data-proc="chest" aria-hidden="true"></span><span class="t-mono-n">01</span>Chest Tube (Tube Thoracostomy)</h2>
         <span class="t-mono-r">FINGER FIRST · SAFE TRIANGLE</span>
       </div>
     </div>
@@ -454,7 +462,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <article id="c04">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">04</span>Emergency Burr Hole (Craniotomy)</h2>
+        <h2 style="margin:0; font-size:22px;"><span class="pglyph" data-proc="burr" aria-hidden="true"></span><span class="t-mono-n">04</span>Emergency Burr Hole (Craniotomy)</h2>
         <span class="t-mono-r">HERNIATING + NEUROSURGERY FAR AWAY</span>
       </div>
       <div class="t-note2">See <a href="../trauma/?from=home#c06">Isolated Head Trauma</a> for the surrounding triage and herniation-treatment ladder.</div>
@@ -551,7 +559,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <article id="c08">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red); font-size:16px; margin-right:8px;">08</span>Escharotomy</h2>
+        <h2 style="margin:0; font-size:22px;"><span class="pglyph" data-proc="eschar" aria-hidden="true"></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red); font-size:16px; margin-right:8px;">08</span>Escharotomy</h2>
         <span class="t-mono-r">BURNS · PERFUSION OR VENTILATION FAILING</span>
       </div>
       <div class="t-note2">See <a href="../trauma/?from=home#c05">Burn</a> for TBSA estimation, fluid resuscitation, and transfer criteria.</div>
@@ -635,7 +643,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <article id="c05">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">05</span>Lateral Canthotomy &amp; Cantholysis</h2>
+        <h2 style="margin:0; font-size:22px;"><span class="pglyph" data-proc="canth" aria-hidden="true"></span><span class="t-mono-n">05</span>Lateral Canthotomy &amp; Cantholysis</h2>
         <span class="t-mono-r">ORBITAL COMPARTMENT SYNDROME · 60–90 MIN</span>
       </div>
     </div>
@@ -725,7 +733,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <article id="c02">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red); font-size:16px; margin-right:8px;">02</span>Resuscitative Thoracotomy</h2>
+        <h2 style="margin:0; font-size:22px;"><span class="pglyph" data-proc="thora" aria-hidden="true"></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red); font-size:16px; margin-right:8px;">02</span>Resuscitative Thoracotomy</h2>
         <span class="t-mono-r">TAMPONADE ON ULTRASOUND · IN EXTREMIS</span>
       </div>
     </div>
@@ -813,7 +821,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <article id="c07">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">07</span>Transvenous Pacing (TVP)</h2>
+        <h2 style="margin:0; font-size:22px;"><span class="pglyph" data-proc="tvp" aria-hidden="true"></span><span class="t-mono-n">07</span>Transvenous Pacing (TVP)</h2>
         <span class="t-mono-r">AFTER DRUGS + TRANSCUTANEOUS FAIL</span>
       </div>
     </div>
@@ -900,7 +908,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <article id="c09">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">09</span>Pelvic Binder Application</h2>
+        <h2 style="margin:0; font-size:22px;"><span class="pglyph" data-proc="binder" aria-hidden="true"></span><span class="t-mono-n">09</span>Pelvic Binder Application</h2>
         <span class="t-mono-r">UNSTABLE PELVIS · ASSESS ONCE, DON'T RE-SPRING</span>
       </div>
       <div class="t-note2">See <a href="../trauma/?from=home#c03">Blunt Polytrauma</a> for the surrounding resuscitation context.</div>
@@ -998,7 +1006,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <article id="c10">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">10</span>Tourniquet Application</h2>
+        <h2 style="margin:0; font-size:22px;"><span class="pglyph" data-proc="tq" aria-hidden="true"></span><span class="t-mono-n">10</span>Tourniquet Application</h2>
         <span class="t-mono-r">LIFE-THREATENING EXTREMITY HEMORRHAGE</span>
       </div>
       <div class="t-note2">For groin/axilla/neck-base bleeding, see <a href="#c12">Junctional Hemorrhage Control</a> instead — a limb tourniquet doesn't work there.</div>
@@ -1152,7 +1160,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <article id="c12">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">12</span>Junctional Hemorrhage Control</h2>
+        <h2 style="margin:0; font-size:22px;"><span class="pglyph" data-proc="junc" aria-hidden="true"></span><span class="t-mono-n">12</span>Junctional Hemorrhage Control</h2>
         <span class="t-mono-r">GROIN · AXILLA · NECK BASE</span>
       </div>
       <div class="t-note2">Where a standard limb tourniquet doesn't work — for a limb wound, see <a href="#c10">Tourniquet Application</a>.</div>
@@ -1209,7 +1217,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <article id="c13">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red); font-size:16px; margin-right:8px;">13</span>JADA System Insertion</h2>
+        <h2 style="margin:0; font-size:22px;"><span class="pglyph" data-proc="jada" aria-hidden="true"></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red); font-size:16px; margin-right:8px;">13</span>JADA System Insertion</h2>
         <span class="t-mono-r">PPH · VACUUM-INDUCED UTERINE TAMPONADE</span>
       </div>
       <div class="t-note2">Second-line device, after uterotonics — see <a href="../ob-neonatal/?from=home#c06">OB &amp; Neonatal → Postpartum Hemorrhage</a> for the full pathway. Stocked in the PPH drawer (Drawer 4).</div>
@@ -1319,7 +1327,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <article id="c14">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red); font-size:16px; margin-right:8px;">14</span>Resuscitation Line (Cordis / AVA 3Xi)</h2>
+        <h2 style="margin:0; font-size:22px;"><span class="pglyph" data-proc="cordis" aria-hidden="true"></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red); font-size:16px; margin-right:8px;">14</span>Resuscitation Line (Cordis / AVA 3Xi)</h2>
         <span class="t-mono-r">LARGE-BORE ACCESS · MASSIVE TRANSFUSION</span>
       </div>
       <div class="t-note2">Also called: cordis, code line, big line, MTP line. Not the same device as a standard <a href="#c06">triple-lumen CVC (card 06)</a> — see the DECISION section for when to choose this instead.</div>
@@ -1427,7 +1435,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <article id="c15">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">15</span>SALAD &mdash; Suction-Assisted Laryngoscopy</h2>
+        <h2 style="margin:0; font-size:22px;"><span class="pglyph" data-proc="salad" aria-hidden="true"></span><span class="t-mono-n">15</span>SALAD &mdash; Suction-Assisted Laryngoscopy</h2>
         <span class="t-mono-r">CONTAMINATED AIRWAY &middot; DECONTAMINATE THEN INTUBATE</span>
       </div>
     </div>
@@ -1448,7 +1456,7 @@ catch(e){ document.body.dataset.theme='dark'; }
   <article id="c16">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">16</span>Pigtail Chest Tube (Seldinger)</h2>
+        <h2 style="margin:0; font-size:22px;"><span class="pglyph" data-proc="pigtail" aria-hidden="true"></span><span class="t-mono-n">16</span>Pigtail Chest Tube (Seldinger)</h2>
         <span class="t-mono-r">SMALL-BORE THORACOSTOMY &middot; TRIANGLE OF SAFETY</span>
       </div>
     </div>
@@ -1625,5 +1633,21 @@ var SITE = {
   }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
 })();</script>
+<script>
+/* @proc-icons */
+</script>
+<script>
+/* Bind the shared procedure glyphs to their cards. Rendering from the shared
+   module rather than pasting SVG per card is the same rule equipment-icons.js
+   follows: the card, the poster and the label must show the SAME drawing, and
+   that has to be structural rather than remembered. */
+(function(){
+  if (typeof PROC_ICONS !== 'object') return;
+  document.querySelectorAll('.pglyph[data-proc]').forEach(function(el){
+    var k = el.getAttribute('data-proc');
+    el.innerHTML = PROC_ICONS.glyph(k, '');
+  });
+})();
+</script>
 </body>
 </html>

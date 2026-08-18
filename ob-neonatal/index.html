@@ -28,6 +28,12 @@
      guessed header height instead of measuring it). */
   html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; --sticky-h:54px; }
   /* @design-system */
+  /* ---- PROCEDURE GLYPHS (design/ICONOGRAPHY.md) — anatomy in ink, action in red.
+     Cross-linked procedures carry the GLYPH only; the detail figure lives with
+     their home category. Colour comes from the page tokens, so both themes and
+     print work with no per-theme rules. ---- */
+  .proc-glyph { width:30px; height:30px; flex:none; color:var(--ink); vertical-align:-6px; margin-right:8px; }
+  @media print { .proc-glyph { color:#141E2B; } }
   /* ---- Shared design language (tokens, the .hdr chrome bar, the .lrh-* menu
      rows/filter, the themed <body>, and the .t-* card-interior classes) is
      injected from design-system.css at the marker above (build.mjs), edited once
@@ -699,7 +705,7 @@ catch(e){ document.body.dataset.theme='dark'; }
 <article id="c04" data-audience="any" style="background:var(--card); border-top:6px solid var(--teal); padding:0 0 22px;">
   <header style="padding:18px 18px 14px;">
     <div style="display:flex; align-items:center; gap:10px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.08em; color:var(--teal);">
-      <span>04</span>
+      <span class="pglyph" data-proc="uvc" aria-hidden="true"></span><span>04</span>
       <span style="flex:1; text-align:right; color:var(--ink2);">5 Fr ≥1.5 KG · 3.5 Fr <1.5 KG · CIRCULATION DRAWER</span>
     </div>
     <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:var(--ink);">Umbilical vein catheterization</h2>
@@ -1526,7 +1532,7 @@ catch(e){ document.body.dataset.theme='dark'; }
 <article id="c10" data-audience="any" style="background:var(--card); border-top:6px solid var(--sev-crit); padding:0 0 22px;">
   <header style="padding:18px 18px 14px;">
     <div style="display:flex; align-items:center; gap:10px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.08em; color:var(--red);">
-      <span>10</span>
+      <span class="pglyph" data-proc="hyst" aria-hidden="true"></span><span>10</span>
       <span style="flex:1; text-align:right; color:var(--ink2);">CPR NEVER STOPS · EQUIPMENT IN THE NEO CART</span>
     </div>
     <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:var(--ink);">Resuscitative hysterotomy</h2>
@@ -3306,6 +3312,20 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
     } else if(e.key==='Escape'){
       fInput.value=''; applyFilter();
     }
+  });
+})();
+</script>
+<script>
+/* @proc-icons */
+</script>
+<script>
+/* Cross-linked procedure glyphs (design/ICONOGRAPHY.md): the SAME drawing the
+   procedures card and the poster use, rendered from the shared module so it
+   cannot drift. */
+(function(){
+  if (typeof PROC_ICONS !== 'object') return;
+  document.querySelectorAll('.pglyph[data-proc]').forEach(function(el){
+    el.innerHTML = PROC_ICONS.glyph(el.getAttribute('data-proc'), '');
   });
 })();
 </script>

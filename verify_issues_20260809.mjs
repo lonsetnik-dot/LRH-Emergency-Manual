@@ -131,10 +131,14 @@ ck('procedures card 16 exists', await proc.locator('#c16').count(), 1);
   ck('CXR after every insertion', /Post-insertion chest radiograph for every patient/i.test(t), true);
   ck('anterior 2nd space explicitly NOT printed', /deliberately not described here/i.test(t), true);
   ck('figure present', await proc.locator('#c16 svg[aria-label*="triangle of safety"]').count(), 1);
+  /* Target the FIGURE explicitly. This used to read `#c16 svg` first(), which
+     silently meant "the figure" only until a procedure glyph landed in the card
+     header ahead of it (ICONOGRAPHY.md). */
+  const c16fig = proc.locator('#c16 svg[aria-label*="triangle of safety"]').first();
   ck('figure marks the target with a green check', /green check marking the insertion target/i.test(
-    await proc.locator('#c16 svg').first().getAttribute('aria-label') || ''), true);
+    await c16fig.getAttribute('aria-label') || ''), true);
   ck('needle drawn plain black', /plain\s+black needle/i.test(
-    await proc.locator('#c16 svg').first().getAttribute('aria-label') || ''), true);
+    await c16fig.getAttribute('aria-label') || ''), true);
 }
 
 /* ================= #20 epinephrine in mg AND mL ================= */

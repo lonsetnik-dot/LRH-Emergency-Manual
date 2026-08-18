@@ -10,8 +10,14 @@ index.html                          landing page       ->  /
 clinical-pathways/heart/index.html  HEART pathway      ->  /clinical-pathways/heart/
 ob-neonatal/index.html              OB & neonatal      ->  /ob-neonatal/
 code-cart/                          (planned tool)     ->  /code-cart/
+design/                             design references  ->  not published
 netlify.toml                        Netlify config (publishes the repo root)
 ```
+
+`design/` is the exception to the folder-per-tool rule: it holds the design
+system specs and the HTML prototypes they were drawn in. `build.mjs` skips it, so
+none of it reaches `dist/` or the offline cache. See `design/README.md` for what
+has been built from it and what has not.
 
 The landing page is the only top-level `index.html`. Every other tool lives in
 its own folder and keeps the name `index.html` inside that folder, which is what
