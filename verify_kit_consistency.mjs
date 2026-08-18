@@ -85,31 +85,41 @@ const KITS = [
     ],
   },
   {
+    /* The nursing half of the same procedure, and its own physical bag. Asserted
+       separately because a provider who reaches into the insertion kit for a
+       dressing will not find one — the two bags share a shelf, not contents. */
+    name: 'Chest Tube Dressing Kit (nursing)',
+    location: /ROOM 7|Room 7/i,
+    items: ['Large Op-Site 6x8', '4x4 drain sponge', '2x2 gauze',
+            'Xeroform (or petroleum) dressing 5x9', 'Safety pin', '3 inch tape',
+            'Chest tube clamp', 'Chest tube troubleshooting resource'],
+    artifacts: [
+      { file: 'procedures/index.html', role: 'interactive card' },
+      { file: 'inventory.js',          role: 'inventory catalog' },
+    ],
+  },
+  {
     // Rebuilt 2026-08-13 from the kit assembled for providers. The poster is asserted here too:
     // it now carries a second sheet that IS the check card taped beside the bag, so a contents
     // change that missed it would put a wrong list on the wall next to a right list in the app.
     name: 'Chest Tube Kit',
     location: /ROOM 7|TRAUMA CART|OB \/ NEONATAL CART/i,
-    items: ['Needle driver', 'Curved Kelly clamps', 'Curved Mayo scissors', 'Toothed tissue forceps',
-            'Scalpel No. 10 blade', 'Povidone-iodine swabsticks', 'Silk 0 suture on a cutting needle',
-            '10 mL syringe + 18 g draw and 25 g needles'],
-    /* Corrected on the cart walk 2026-08-13: PPE lives in the Trauma Cart PPE
-       drawer and the dressing supplies are their own bag, so neither may be
-       listed as CONTENTS of this one. Listing them here is what sends someone
-       rummaging in a chest-tube bag for a gown while a patient waits, so the
-       absence is asserted rather than left to whoever edits next. The strings
-       may still appear as "not in this bag" prose — see absentFrom. */
-    /* Superseded by the rebuilt bag (2026-08-14) as well as absent from the walked one:
-       the drapes and the Tegaderm are off the shelf now, and the prep is povidone-iodine.
-       Asserting their absence stops the old list creeping back one artifact at a time. */
-    absent: ['Gown, gloves, mask, eye protection', 'Gauze packs + occlusive dressing + tape',
-             'Fenestrated drape', 'Large Tegaderm'],
-    /* The Foley 16 Fr was also removed from this kit (Lon, checked on the branch
-       deploy 2026-08-14) — it sat apart from the peel packs in the build photo
-       and does not belong to this bag. It is NOT asserted here, because `absent`
-       is a whole-file text search and the Foley is a genuine item of the neck
-       tamponade kit, which lives in these same files. Guarding it would fail on
-       the other kit's contents. */
+    items: ['ChloraPrep 10.5 mL swab', 'Povidone-iodine swab', 'Silk 0 sutures',
+            'Scalpel No. 10', 'Blunt needle', '10 mL syringe', '25 gauge 1½ needle',
+            'Long curved blunt scissors', 'Large needle driver', 'Large Kelly clamp',
+            'Medium Kelly clamp', 'Fenestrated drape', 'Half drape'],
+    /* Superseded 2026-08-14 by the department's own typed kit sheet, which ends
+       an argument two Claude sessions had been having about this bag. BOTH preps
+       are in it — the earlier lists carried one or the other. Four items that
+       were on the previous list are asserted ABSENT so they cannot creep back in
+       one file at a time: the Foley, the toothed forceps, the Mayo scissors and
+       the Tegaderm. PPE and the dressing supplies stay absent for the original
+       reason — they are a different drawer and a different bag, and a provider
+       who reaches into this one for a dressing loses the same minute as one
+       missing a clamp. The strings may still appear as "not in this bag" prose;
+       see the per-artifact allowance in the runner below. */
+    absent: ['Gown, gloves, mask, eye protection',
+             'Foley catheter 16 Fr', 'Toothed tissue forceps', 'Curved Mayo scissors', 'Large Tegaderm'],
     artifacts: [
       { file: 'procedures/index.html',          role: 'interactive card' },
       { file: 'labels/index.html',              role: 'kit card + build sheet' },
@@ -226,14 +236,32 @@ for (const kit of KITS) {
 
     const missing = kit.items.filter(i => !txt.includes(i));
     const hasLoc  = kit.location.test(txt);
-    /* Items a kit must NOT claim to contain. Matched only where the artifact
-       presents contents, so the "not in this bag — it is in the Trauma Cart"
-       pointer is allowed to name the thing it is pointing at. */
+
+    /* Items a kit must NOT claim to contain.
+       Scoped to THIS kit's own span of the file, not the whole file. These
+       artifacts describe several kits each, and a string that is wrong for one
+       kit is often correct for another sitting a few hundred characters away —
+       a Foley 16 Fr does not belong in the chest tube bag and is the entire
+       point of the neck tamponade kit. Checking the whole file made asserting
+       that impossible: the assertion that mattered most was the one the check
+       could not express.
+       The span runs from the first of this kit's items to the last, which is
+       where any artifact lists contents contiguously. */
+    const positions = kit.items.map(i => txt.indexOf(i)).filter(at => at >= 0);
+    const from = positions.length ? Math.min(...positions) : 0;
+    const to   = positions.length ? Math.max(...positions) + 80 : txt.length;
+    const span = txt.slice(from, to);
+
     const strayed = (kit.absent || []).filter(i => {
-      const at = txt.indexOf(i);
+      const at = span.indexOf(i);
       if (at < 0) return false;
-      const before = txt.slice(Math.max(0, at - 160), at);
-      return !/not in (this |the )?bag|Also needed|Not in this bag|separate/i.test(before);
+      /* Still allow a declaration of absence to name the thing it is declaring
+         absent: the "not in this bag" pointer in prose, and inventory.js's own
+         `absent:[...]` field, which states the same fact as data. Without the
+         second one, writing the assertion down in the catalog would trip the
+         assertion. */
+      const before = span.slice(Math.max(0, at - 160), at);
+      return !/not in (this |the )?bag|Also needed|Not in this bag|separate|absent:\s*\[/i.test(before);
     });
     const ok = missing.length === 0 && hasLoc && strayed.length === 0;
     if (!ok) fail++;

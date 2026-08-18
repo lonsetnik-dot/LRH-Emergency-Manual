@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#005596">
-<title>Clinical Pathways &middot; LRH Emergency Manual</title>
+<title>Clinical Pathways &middot; {{SITE.title}}</title>
 <style>
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
@@ -26,17 +26,10 @@
 </style>
 </head>
 <body data-theme="dark">
-<script>
-/* Apply a persisted theme before the page paints (shared lrh-pref- namespace;
-   outside any RESET prefix sweep — CASE-STATE.md). Keeps the theme choice in
-   sync with the rest of the manual and avoids a flash. */
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
-catch(e){ document.body.dataset.theme='dark'; }
-</script>
 <div class="hdr">
   <a class="ghost" href="../?from=tool">◀ MANUAL</a>
   <span class="plabel">CLINICAL PATHWAYS</span>
-  <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
+  <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Clinical%20Pathways" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
 </div>
 
 <div class="wrap">
@@ -78,26 +71,11 @@ catch(e){ document.body.dataset.theme='dark'; }
   </div>
 
   <div class="note">
-    <strong>Personal decision-support aids &mdash; not part of the LRH IT system / EHR.</strong>
+    <strong>Personal decision-support aids &mdash; not part of any hospital IT system / EHR.</strong>
     Beta: content is unverified. These tools do not replace clinical judgment. Verify all values and thresholds against local protocols and assays.
   </div>
 
-  <footer>Littleton Regional Hospital Emergency Manual &mdash; personal, unofficial reference &middot; Beta</footer>
+  <footer>{{SITE.title}} &mdash; personal, unofficial reference &middot; Beta</footer>
 </div>
-<script>
-/* Theme toggle — persists via the shared lrh-pref-theme key (read before paint
-   by the inline script after <body>), matching the rest of the manual. */
-(function(){
-  var b=document.getElementById('lrhThemeBtn');
-  if(!b) return;
-  b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
-  b.addEventListener('click', function(){
-    var dark = document.body.dataset.theme!=='light';
-    document.body.dataset.theme = dark ? 'light' : 'dark';
-    b.textContent = dark ? 'DARK' : 'LIGHT';
-    try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
-  });
-})();
-</script>
 </body>
 </html>

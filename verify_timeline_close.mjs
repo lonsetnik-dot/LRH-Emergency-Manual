@@ -65,7 +65,17 @@ const open = async (tool) => {
   await seedLog();
   await pg.reload({ waitUntil: 'networkidle' });
   await pg.waitForTimeout(320);
-  await pg.click('#summarybtn');
+  /* peds wears the case shell now: on a phone TIMELINE lives in the ⋯ menu
+     (#menubtn → #tlbtn), while the wide bar's #summarybtn is hidden. Codes and
+     ob-neonatal still show #summarybtn directly. Open whichever this tool
+     offers, so the suite tests the timeline rather than one tool's chrome. */
+  if (await pg.locator('#summarybtn').isVisible().catch(() => false)) {
+    await pg.click('#summarybtn');
+  } else {
+    await pg.click('#menubtn');
+    await pg.waitForTimeout(150);
+    await pg.click('#tlbtn');
+  }
   await pg.waitForTimeout(260);
 };
 

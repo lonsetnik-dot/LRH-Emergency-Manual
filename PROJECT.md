@@ -1,7 +1,9 @@
 # ED Clinical Support — Project Charter
 
-> Working name: **LRH Clinical Support Tools** (may become a general, forkable
-> emergency-department cognitive-aid framework).
+> Name: **CairnReady** (cairnready.org) — the general, forkable
+> emergency-department cognitive-aid framework this charter anticipated.
+> It began as the LRH manual; LRH is now the first hospital edition
+> (see `SITES.md`).
 
 This is the human source of truth for *why* the project is built the way it is.
 The operational rules Claude and contributors follow live in `CLAUDE.md`; this
@@ -12,7 +14,7 @@ document explains the thinking behind them. When in doubt, this file wins.
 ## 1. Mission
 
 Build a set of fast, trustworthy, bedside decision-support tools for the
-emergency department — starting with Littleton Regional Hospital (LRH) — in a
+emergency department — starting with Littleton Regional Healthcare (LRH) — in a
 way that *could later* be adopted and customized by any ED, without a rewrite.
 
 ## 2. Vision & scope

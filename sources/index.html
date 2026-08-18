@@ -1,0 +1,262 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#005596">
+<title>{{SITE.abbrev}} Guideline Sources</title>
+<meta name="apple-mobile-web-app-title" content="Sources">
+<meta name="description" content="Every upstream guideline the manual is written against, the edition each tool follows, when a human last checked it, and which cards move if it changes.">
+<link rel="canonical" href="https://{{SITE.domain}}/sources/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{SITE.title}}">
+<meta property="og:title" content="Guideline sources &amp; freshness">
+<meta property="og:description" content="Which guideline each tool follows, which edition, when it was last checked, and what moves if it changes.">
+<meta property="og:url" content="https://{{SITE.domain}}/sources/">
+<meta name="twitter:card" content="summary">
+<style>
+  html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; }
+  /* @design-system */
+  /* ---- Shared design language injected above (build.mjs). Only this page's
+     own provenance styles live below. ---- */
+  main { max-width:1100px; margin:0 auto; padding-bottom:56px; }
+  a { color:var(--blue); }
+  a:hover { color:var(--ink); }
+  button { -webkit-appearance:none; appearance:none; border-radius:0; touch-action:manipulation; }
+
+  /* status + impact chips */
+  .st{display:inline-block;font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+    font-size:10.5px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:6px;white-space:nowrap}
+  .st-current{background:rgba(61,163,93,.18);color:var(--green);border:1px solid var(--green)}
+  .st-due{background:var(--note-bg);color:var(--note-tx);border:1px solid var(--note-tx)}
+  .st-overdue{background:rgba(229,72,77,.15);color:var(--red);border:1px solid var(--red)}
+  .st-never{background:var(--card2);color:var(--ink2);border:1px dashed var(--ink2)}
+  .st-unrec{background:rgba(229,72,77,.15);color:var(--red);border:1px solid var(--red)}
+  .st-high{background:var(--card2);color:var(--ink);border:1px solid var(--line)}
+  .st-medium,.st-low{background:var(--card2);color:var(--ink2);border:1px solid var(--line)}
+
+  /* one source */
+  .src{border-top:1px solid var(--line);padding:12px 0}
+  .src:first-of-type{border-top:0}
+  .src h3{margin:0 0 3px;font-size:16.5px;line-height:1.25}
+  .src .body{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;font-weight:700;
+    letter-spacing:.1em;color:var(--teal);display:block;margin-bottom:2px}
+  .src .chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+  .src .meta{font-size:13px;color:var(--ink2);line-height:1.45;margin:4px 0 0}
+  .src .meta b{color:var(--ink)}
+  .src .cite{font-size:12.5px;color:var(--ink2);line-height:1.4;margin:6px 0 0;
+    padding-left:9px;border-left:2px solid var(--line)}
+  .src .deps{margin:6px 0 0;display:flex;flex-wrap:wrap;gap:5px}
+  .src .deps a{display:inline-block;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:12.5px;
+    background:var(--card2);border:1px solid var(--line);border-radius:6px;padding:6px 9px;text-decoration:none}
+  .src .deps a:hover{border-color:var(--accent)}
+  .src .warn{margin:7px 0 0;font-size:13px;line-height:1.45;color:var(--ink);
+    background:rgba(229,72,77,.10);border:1px solid var(--red);border-radius:8px;padding:8px 10px}
+
+  /* summary strip */
+  .tally{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;padding:0 12px 4px}
+  @media (min-width:620px){ .tally{grid-template-columns:repeat(4,1fr)} }
+  .tcard{background:var(--card2);border:1px solid var(--line);border-radius:10px;padding:9px 11px}
+  .tcard .n{font-size:26px;font-weight:800;line-height:1.05}
+  .tcard .l{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:10.5px;
+    letter-spacing:.08em;color:var(--ink2);font-weight:700}
+
+  /* by-tool table */
+  .tool{border-top:1px solid var(--line);padding:9px 0;font-size:14px}
+  .tool:first-of-type{border-top:0}
+  .tool .p{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:13px;font-weight:700;display:inline-block;padding:6px 0;margin:-2px 0}
+  .tool .s{display:block;color:var(--ink2);font-size:13px;line-height:1.45;margin-top:2px}
+  @media print { .hdr,#stickytop,.lrh-filter{display:none} .src,.tool{break-inside:avoid} }
+</style>
+</head>
+<body data-theme="dark">
+<div id="stickytop">
+<div class="hdr">
+  <a class="ghost" href="../?from=tool">&#9664; MANUAL</a>
+  <span class="plabel">SOURCES</span>
+  <button type="button" class="ghost" onclick="window.print()">PRINT</button>
+  <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Guideline%20Sources" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+</div>
+</div>
+
+<main id="top">
+  <div style="padding:16px 14px 6px;">
+    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:var(--ink2); font-weight:700;">{{SITE.abbrev}} &middot; EMERGENCY DEPARTMENT</div>
+    <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Guideline sources</h1>
+    <p style="margin:0; color:var(--ink2); font-size:14.5px;">Every upstream body this manual takes numbers from: <b>which edition each tool is written against</b>, when a human last checked it, and exactly which tools and cards move if it changes.</p>
+  </div>
+
+  <div class="t-localize">
+    &#9888; <b>THIS PAGE IS PROVENANCE, NOT CLINICAL CONTENT.</b> A green chip means somebody confirmed the manual still matches the current edition on that date &mdash; it is not an assurance that the content is correct, and it is never a substitute for reading the guideline. <b>NEVER VERIFIED</b> means exactly that: nobody has checked yet through this process. Nothing on this page is stored or sent anywhere.
+  </div>
+
+  <div class="steps">
+
+    <details open class="t-box-info" id="tally">
+      <summary class="t-head t-head-info">FRESHNESS AT A GLANCE</summary>
+      <div class="t-sub" style="padding-top:12px" id="tally-lead"></div>
+      <div class="tally" id="tally-body"></div>
+    </details>
+
+    <details open class="t-box-neutral" id="bysource">
+      <summary class="t-head t-head-neutral">BY SOURCE &mdash; WORST FIRST</summary>
+      <div class="t-sub" style="padding-top:12px">Sorted by how much attention it needs, then by how much of the manual moves if it changes. Filter by body, tool or topic.</div>
+      <div style="padding:0 12px">
+        <div class="lrh-filter"><span class="ico" aria-hidden="true">&#8981;</span><input type="search" id="q" autocomplete="off" spellcheck="false" placeholder="Filter&hellip; e.g. NRP, airway, ACOG, trauma" aria-label="Filter sources"></div>
+        <div class="lrh-filter-empty" id="q-empty" hidden>No match &mdash; try a body (&ldquo;DAS&rdquo;), a tool (&ldquo;pph&rdquo;) or a topic (&ldquo;stroke&rdquo;).</div>
+      </div>
+      <div id="src-body" style="padding:4px 12px 12px"></div>
+    </details>
+
+    <details class="t-box-neutral" id="bytool">
+      <summary class="t-head t-head-neutral">BY TOOL &mdash; WHAT EACH ONE OWES</summary>
+      <div class="t-sub" style="padding-top:12px">Before changing a clinical value in a tool, this is the list of guidelines that tool answers to. Adding a value from a source not listed here means adding a row to <span class="lrh-mono">guidelines.js</span> first.</div>
+      <div id="tool-body" style="padding:4px 12px 12px"></div>
+    </details>
+
+    <details class="t-box-caution" id="how">
+      <summary class="t-head t-head-caution">HOW THIS IS KEPT UP TO DATE &mdash; AND WHAT IT CANNOT CATCH</summary>
+      <div class="t-sub" style="padding-top:12px">
+        <p style="margin:0 0 9px">A scheduled job (<span class="lrh-mono">check_guidelines.mjs</span>, run monthly by GitHub) checks each body two ways: a PubMed search for newly indexed guidelines, and a fingerprint of the body&rsquo;s own guideline index page. When either moves, it opens a GitHub issue naming the tools and cards affected.</p>
+        <p style="margin:0 0 9px"><b>Neither check is complete, and the design assumes that.</b> A body that swaps a revised PDF in at the same address, or reorganizes its website, can change a guideline without either probe noticing. So every source also carries a <b>review interval</b> &mdash; 180 days for the ones that drive the most numbers, 365 for the rest &mdash; and going past it puts the source on the list whether or not anything was detected. The crawler shortens the time to notice; the calendar is what guarantees the look happens.</p>
+        <p style="margin:0">A quiet month therefore reads as <b>no change detected</b>, never as <i>nothing changed</i>. Process: <span class="lrh-mono">GUIDELINE-WATCH.md</span>.</p>
+      </div>
+    </details>
+
+  </div>
+
+  <div class="t-foot">
+    <span class="verstamp"></span> &mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Editions and review dates are recorded by hand and can lag reality; thresholds are assay- and site-specific &mdash; verify locally against the guideline itself.
+  </div>
+</main>
+
+<script>
+/* @guidelines */
+</script>
+<script>
+/* ===== SITE CONFIG (site-specific — edit to localize) =====
+   The content of this page is guidelines.js — the registry a fork inherits and
+   then re-dates as its own clinicians review each source. Only presentation
+   lives here. There is no localStorage and no state: this page reads. */
+var SITE = {
+  version: "0.1",
+  lastReviewed: "2026-08-13",
+  site: "{{SITE.abbrev}}",
+  /* Windows used for the chips. dueWindow is how many days before the review
+     interval expires a source starts showing DUE SOON, so a review can be
+     scheduled rather than discovered late. */
+  dueWindow: 30
+};
+try{ window.SITE = SITE; }catch(e){}
+
+(function(){
+  "use strict";
+  document.querySelectorAll('.verstamp').forEach(function(el){
+    el.textContent = 'v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · '+SITE.site;
+  });
+
+  function esc(x){ var d=document.createElement('div'); d.textContent=x==null?'':x; return d.innerHTML; }
+
+  /* Today, local, as YYYY-MM-DD. The page states freshness relative to the day
+     it is opened — a printed copy carries the date it was printed. */
+  var today = (function(){
+    var d = new Date();
+    function p(n){ return (n<10?'0':'')+n; }
+    return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());
+  })();
+
+  var STATUS = {
+    never:   { chip:'st-never',   label:'NEVER VERIFIED' },
+    overdue: { chip:'st-overdue', label:'OVERDUE' },
+    due:     { chip:'st-due',     label:'DUE SOON' },
+    current: { chip:'st-current', label:'CURRENT' }
+  };
+
+  var sorted = gdlSort(GDL_SOURCES, today);
+
+  /* ---------- tally ---------- */
+  (function(){
+    var n = { never:0, overdue:0, due:0, current:0 };
+    GDL_SOURCES.forEach(function(s){ n[gdlStatus(s, today)]++; });
+    var unrec = GDL_SOURCES.filter(function(s){ return s.reconciled === false; }).length;
+    document.getElementById('tally-body').innerHTML =
+      [['never','NEVER VERIFIED'],['overdue','OVERDUE'],['due','DUE SOON'],['current','CURRENT']]
+      .map(function(p){
+        return '<div class="tcard"><div class="n">'+n[p[0]]+'</div><div class="l">'+p[1]+'</div></div>';
+      }).join('');
+    document.getElementById('tally-lead').innerHTML =
+      GDL_SOURCES.length+' upstream sources, as of '+esc(today)+'.'
+      + (unrec ? ' <b>'+unrec+'</b> of them '+(unrec===1?'carries':'carry')
+                 +' content knowingly not yet reconciled to the edition named — see the red note below.' : '');
+  })();
+
+  /* ---------- by source ---------- */
+  function renderSource(s){
+    var st = gdlStatus(s, today), meta = STATUS[st];
+    var age = s.lastVerified ? gdlDaysBetween(s.lastVerified, today) : null;
+
+    var chips = '<span class="st '+meta.chip+'">'+meta.label+'</span>'
+      + '<span class="st st-'+s.impact+'">'+s.impact.toUpperCase()+' IMPACT</span>'
+      + (s.reconciled === false ? '<span class="st st-unrec">NOT RECONCILED</span>' : '');
+
+    var verified = s.lastVerified
+      ? '<b>'+esc(s.lastVerified)+'</b> ('+age+' days ago; interval '+s.reviewEvery+' days)'
+      : '<b>never</b> — no check recorded through this process';
+
+    var deps = s.dependents.map(function(d){
+      var href = '../'+d.replace('#', '#');
+      return '<a href="'+esc(href)+'">'+esc(d)+'</a>';
+    }).join('');
+
+    return '<div class="src" data-k="'+esc((s.body+' '+s.title+' '+s.edition+' '+s.dependents.join(' ')+' '+s.citation).toLowerCase())+'">'
+      + '<span class="body">'+esc(s.body)+'</span>'
+      + '<h3>'+esc(s.title)+'</h3>'
+      + '<div class="chips">'+chips+'</div>'
+      + '<p class="meta">Manual is written against: <b>'+esc(s.edition)+'</b><br>'
+      +   'Source last checked: '+verified+'<br>'
+      +   'Dependent content last reviewed: <b>'+esc(s.citedSince)+'</b></p>'
+      + (s.reconciled === false && s.reconcileNote
+          ? '<div class="warn"><b>KNOWN GAP.</b> '+esc(s.reconcileNote)+'</div>' : '')
+      + '<div class="deps">'+deps+'</div>'
+      + '<p class="cite">'+esc(s.citation)+'<br>'
+      +   '<a href="'+esc(s.url)+'" rel="noopener noreferrer" target="_blank">'+esc(s.url)+'</a></p>'
+      + '<p class="meta" style="font-size:12.5px"><b>Publication cadence.</b> '+esc(s.cadence)+'</p>'
+      + '</div>';
+  }
+  document.getElementById('src-body').innerHTML = sorted.map(renderSource).join('');
+
+  /* ---------- filter ---------- */
+  var q = document.getElementById('q'), qEmpty = document.getElementById('q-empty');
+  q.addEventListener('input', function(){
+    var term = q.value.trim().toLowerCase(), hits = 0;
+    document.querySelectorAll('#src-body .src').forEach(function(el){
+      var show = !term || el.getAttribute('data-k').indexOf(term) >= 0;
+      el.hidden = !show; if (show) hits++;
+    });
+    qEmpty.hidden = !(term && !hits);
+  });
+
+  /* ---------- by tool ---------- */
+  (function(){
+    var paths = {};
+    GDL_SOURCES.forEach(function(s){
+      s.dependents.forEach(function(d){
+        var p = d.split('#')[0];
+        (paths[p] = paths[p] || []).push(s);
+      });
+    });
+    document.getElementById('tool-body').innerHTML = Object.keys(paths).sort().map(function(p){
+      var list = gdlSort(paths[p], today).map(function(s){
+        var st = gdlStatus(s, today);
+        return '<span class="st '+STATUS[st].chip+'">'+esc(s.body)+'</span>';
+      }).join(' ');
+      return '<div class="tool"><a class="p" href="../'+esc(p)+'">'+esc(p)+'</a>'
+        + '<span class="s">'+list+'</span></div>';
+    }).join('');
+  })();
+})();
+</script>
+</body>
+</html>

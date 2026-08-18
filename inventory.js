@@ -1,5 +1,5 @@
 /* ===========================================================================
-   inventory.js — LRH Emergency Manual equipment inventory (single source).
+   inventory.js — CairnReady Emergency Manual equipment inventory (single source).
 
    Injected by build.mjs wherever a tool's <script> contains the marker
    (slash-star) @inventory (star-slash), so deployed tools stay fully
@@ -72,7 +72,7 @@ var INV_CATALOG = {
     sizes:["infant / child","small adult · 6.5 mm","adult · 7.5 mm","large adult · 8.5 mm"] },
   "sga-neonatal": { name:"Supraglottic airway — neonatal LMA", cat:"airway", std:["NPRP","NRP"],
     sizes:["LMA 0 · under 2 kg","LMA 0.5 · 2 kg and over"],
-    note:"NRP names a size 1 laryngeal mask; LRH stocks LMA 0 and 0.5 instead and the i-gels start at size 1. Audit what is on the shelf, not what the checklist prints." },
+    note:"NRP names a size 1 laryngeal mask; the pilot site stocks LMA 0 and 0.5 instead and the i-gels start at size 1. Audit what is on the shelf, not what the checklist prints." },
   "sga-igel": { name:"Supraglottic airway — i-gel", cat:"airway", std:["NPRP","ASA-DA"],
     sizes:["1 · 2–5 kg","1.5 · 5–12 kg","2 · 10–25 kg","2.5 · 25–35 kg","3 · 30–60 kg","4 · 50–90 kg","5 · 90+ kg"],
     note:"Weight bands are the manufacturer's — verify against the brand actually stocked." },
@@ -204,38 +204,55 @@ var INV_CATALOG = {
      procedure cards — verify_kit_consistency.mjs asserts that. ----------- */
   "kit-canthotomy": { name:"Canthotomy Kit", cat:"kit", std:["ACS-COT"], contents:[
     "3 mL syringe","Needle to draw","Needle to inject","Mosquito clamp","Toothed forceps","Blunt-tipped iris scissors"] },
-  /* Corrected on the cart walk 2026-08-13 (Lon). Two things that had been listed
-     as bag contents are NOT in the bag: PPE lives in the Trauma Cart PPE drawer
-     (see "ppe-splash" below, which already carries that location), and the
-     dressing supplies are their own separate bag. Listing either one here sends
-     someone rummaging in a chest-tube bag for a gown while a patient is waiting.
-     The drapes are now spelled out as one regular + one fenestrated, which is
-     what the bag actually holds. */
-  /* Rebuilt kit, confirmed by Lon 2026-08-14: the build photographed on the
-     13th is the bag that is going out to providers, and it supersedes the older
-     bag walked the same day. Instruments are peel-packed singly, so each pack is
-     its own line and its own expiry date.
+  /* SUPERSEDED 2026-08-14 — Lon supplied the department's own typed kit sheet,
+     which replaces BOTH earlier reconstructions. Two Claude sessions had rebuilt
+     this bag hours apart from different sources (a cart walk vs. a build photo),
+     disagreed, and were adjudicated by hand; the typed sheet ends that argument
+     and is the source of truth now.
 
-     What the previous bag carried and this one does not: ChloraPrep (the prep is
-     now povidone-iodine swabsticks), the fenestrated and regular 1/2 drapes, and
-     the large Tegaderm. Those come off the shelf now and the cards say so — a
-     drape someone expects in the bag and does not find is the same lost minute
-     as a missing clamp.
+     What the sheet changed, relative to what was here:
+       - BOTH preps are in the bag — a ChloraPrep 10.5 mL swab AND a
+         povidone-iodine swab. The previous list carried one or the other and
+         the two sessions had argued about which; the answer is both. (The typed
+         sheet spells it "Chloropropyl"; Lon confirmed 2026-08-14 that it is
+         ChloraPrep, so the product name is corrected here rather than
+         transcribed. The 10.5 mL applicator size is kept from the sheet.)
+       - Silk 0 is TWO sutures, not one, and the sheet does not specify the
+         needle. "on a cutting needle" is therefore dropped rather than carried
+         forward unverified.
+       - Scissors are LONG CURVED BLUNT, not curved Mayo.
+       - Kelly clamps are one LARGE and one MEDIUM — two different sizes, which
+         "curved Kelly clamps x2" hid.
+       - The needle driver is the LARGE one.
+       - The syringe, the blunt draw needle and the 25 gauge 1½ needle are three
+         separate peel packs, not one combined line.
+       - OUT of the bag: the Foley catheter 16 Fr, the toothed tissue forceps,
+         and the large Tegaderm. All three were on the previous list.
+       - Fenestrated drape and half drape stay in, confirmed directly.
 
-     Still true from the cart walk, because they are facts about where things
-     live rather than about this bag: PPE is in Trauma Cart drawer 5 (see
-     "ppe-splash") and the dressing supplies are their own separate bag.
+     The dressing supplies are a SEPARATE nursing bag and are now itemized as
+     their own kit below rather than described in prose. PPE is not in either
+     bag — it is Trauma Cart drawer 5 (cart walk, 2026-08-13).
 
-     NOT in this kit, checked on the branch deploy 2026-08-14 (Lon): the Foley
-     catheter. It was read off the build photo, where it sat apart from the
-     peel packs, and it does not belong to this bag — the Foley that IS a kit
-     item lives in the neck tamponade kit — which is why its absence here is a
-     comment rather than an `absent` assertion: that check is a whole-file text
-     search and the neck tamponade kit sits in the same files. */
-  "kit-chest-tube": { name:"Chest Tube Kit", cat:"kit", std:["ACS-COT"], contents:[
-    "Needle driver","Curved Kelly clamps","Curved Mayo scissors","Toothed tissue forceps",
-    "Scalpel No. 10 blade","Povidone-iodine swabsticks","Silk 0 suture on a cutting needle",
-    "10 mL syringe + 18 g draw and 25 g needles"] },
+     Lidocaine is still not bagged: only the draw and inject supplies are, and
+     the drug comes from the Omnicell. */
+  "kit-chest-tube": { name:"Chest Tube Kit", cat:"kit", std:["ACS-COT"],
+    contents:[
+    "ChloraPrep 10.5 mL swab","Povidone-iodine swab","Silk 0 sutures",
+    "Scalpel No. 10","Blunt needle","10 mL syringe","25 gauge 1½ needle",
+    "Long curved blunt scissors","Large needle driver","Large Kelly clamp",
+    "Medium Kelly clamp","Fenestrated drape","Half drape"],
+    absent:["Foley catheter 16 Fr","Toothed tissue forceps","Curved Mayo scissors","Large Tegaderm"] },
+  /* The nursing half of the same procedure. Kept as its own kit because it is
+     its own physical bag, carried by different people at a different moment —
+     a provider reaching into the insertion kit for a dressing will not find one.
+     No INV_LOCATIONS entry yet: nobody has recorded where this bag lives, and
+     NOT REVIEWED is the honest state for that (INVENTORY-DESIGN.md). */
+  "kit-chest-tube-dressing": { name:"Chest Tube Dressing Kit (nursing)", cat:"kit", std:["ACS-COT"],
+    contents:[
+    "Large Op-Site 6x8","4x4 drain sponge","2x2 gauze",
+    "Xeroform (or petroleum) dressing 5x9","Safety pin","3 inch tape",
+    "Chest tube clamp","Chest tube troubleshooting resource"] },
   "kit-pigtail": { name:"Pigtail Thoracostomy Kit", cat:"kit", std:["ACS-COT"], contents:[
     "Sterile gown, mask, eye protection, gloves, drapes","Ultrasound with a sterile probe cover and gel",
     "25 G and 21 G needles","Lidocaine 1%","Introducer needle","Marked guidewire","Sequential dilators",
@@ -284,7 +301,7 @@ var INV_CATALOG = {
   "kit-pacer-magnet": { name:"Pacemaker Magnet", cat:"kit" },
   "kit-mh": { name:"Malignant Hyperthermia Cart", cat:"kit", std:["MHAUS"] },
   "kit-difficult-airway": { name:"Difficult Airway Trolley / portable unit", cat:"kit", std:["ASA-DA"],
-    note:"ASA's expectation is that the difficult-airway equipment travels together as one portable unit. At LRH it is spread across code cart drawers 1 and 2 — record where it actually is, then decide whether that counts." }
+    note:"ASA's expectation is that the difficult-airway equipment travels together as one portable unit. At the pilot site it is spread across code cart drawers 1 and 2 — record where it actually is, then decide whether that counts." }
 };
 
 /* ===== STANDARDS (universal; versioned by checklist year) =================
@@ -456,6 +473,10 @@ var INV_LOCATIONS = {
   /* --- kits (locations confirmed from labels/ + procedure cards) --- */
   "kit-canthotomy":      { loc:"Trauma Cart · Drawer 6 · Canthotomy Kit", par:1 },
   "kit-chest-tube":      { loc:"Room 7 · Chest Drainage", par:1 },
+  /* Co-located with the insertion kit, confirmed by Lon 2026-08-14. Same
+     section, two bags: the provider takes one and the nurse takes the other,
+     which is exactly why they are separate kits rather than one long list. */
+  "kit-chest-tube-dressing": { loc:"Room 7 · Chest Drainage", par:1 },
   "kit-pigtail":         { loc:"Room 7 · Chest Drainage (pigtail)", par:2 },
   "kit-thoracotomy":     { loc:"Trauma Cart · Shelf A · Thoracostomy + Rib Spreader", par:1 },
   "kit-burr-hole":       { loc:"Trauma Cart · Shelf A · Burr Hole", par:1 },
@@ -474,7 +495,7 @@ var INV_LOCATIONS = {
   "kit-pacer-magnet":    { loc:"Code Cart · side panel", par:1 }
 };
 
-/* Items asserted ABSENT at LRH, each filed as a GitHub issue. This is the
+/* Items asserted ABSENT at the pilot site, each filed as a GitHub issue. This is the
    only place a gap is claimed in source — everything else with no LOCATIONS
    entry is simply not reviewed yet. */
 var INV_GAP_ISSUES = {

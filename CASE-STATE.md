@@ -25,8 +25,8 @@ Every key here is device-local and PHI-free — see the PHI guard note under
 | `lrh-case-startms` | epoch ms (string) | codes | codes | First action of the case. **Gap:** only codes writes this today (it's a direct rename of codes' pre-existing `codeStartMs`). ob-neonatal and peds don't have an equally unambiguous "the case just began" hook yet — wiring them in is future work, not WS0. |
 | `lrh-case-clocks` | `{ name: epochMs }` | codes, ob, peds | codes, ob, peds | One shared namespace. See **Clock names** below for what's live and who uses each. |
 | `lrh-case-counts` | `{ name: int }` | codes, peds | codes, peds | One shared namespace. See **Count names** below. |
-| `lrh-case-checks` | `{ "<tool>:<data-k>": true }` | codes, ob, peds, trauma | codes, ob, peds, trauma | One map, every tool's checkboxes. The `<tool>:` prefix is applied at the storage layer only (in each tool's `CASESTATE.setChecked`/`isChecked`) — **no card's HTML `data-k` attribute was renamed**, so two tools' own numbering (codes' `"01-1"`, ob's `"02-0-0"`, peds' `"p01-1"`, trauma's `"c01-1"`) can never collide in the shared map even though they collide in principle. As of WS2.1, all four tools' checkboxes are keyed and persisted; every `input[type=checkbox]` in the repo now carries a `data-k`. Trauma's `CASESTATE` module is deliberately partial — checks only, no weight/clocks/log yet (those are WS7 scope, see the note at the end of this file). |
-| `lrh-case-log` | `[{ tMs, tool, card, label, k?, el? }]` | codes, ob, peds | codes, ob, peds | One flat, time-ordered array for the whole case. `tool` is `'codes'`\|`'ob'`\|`'peds'`. `k` and `el` are optional fields OB's log lane uses internally (correlating an entry back to the checkbox that logged it, and a clock-relative display string) — other tools ignore them. **PHI guard:** every tool's `CASESTATE.addLog()` is the *only* function allowed to write this key, and it refuses (drops, with a console warning) any label matching a weight-shaped number (`\d+(\.\d+)?\s*(kg\|lb)`) or a 6+ digit run (MRN/DOB/phone-shaped). As of WS2.3, each tool's "CASE TIMELINE" modal (button renamed from SUMMARY) shows *every* tool's events in one merged, time-ordered list, each row tagged with its source tool — not just its own entries. OB's copy sorts by an HH:MM "wall" string (its own events already worked this way, driven by user-entered birth time); other tools' real `tMs` entries convert to the same HH:MM shape to interleave correctly. **Known precision limit:** the sort key is minute-granularity, so two events logged in different tools within the same minute can display in insertion order rather than true sub-minute order — acceptable given OB's own events never had sub-minute precision to begin with. |
+| `lrh-case-checks` | `{ "<tool>:<data-k>": true }` | codes, ob, peds, trauma, **procedures** | codes, ob, peds, trauma, procedures | One map, every tool's checkboxes. The `<tool>:` prefix is applied at the storage layer only (in each tool's `CASESTATE.setChecked`/`isChecked`) — **no card's HTML `data-k` attribute was renamed**, so two tools' own numbering (codes' `"01-1"`, ob's `"02-0-0"`, peds' `"p01-1"`, trauma's `"c01-1"`) can never collide in the shared map even though they collide in principle. As of WS2.1, all four tools' checkboxes are keyed and persisted; every `input[type=checkbox]` in the repo now carries a `data-k`. Trauma's `CASESTATE` module is deliberately partial — checks only, no weight/clocks/log yet (those are WS7 scope, see the note at the end of this file). |
+| `lrh-case-log` | `[{ tMs, tool, card, label, k?, el? }]` | codes, ob, peds, **trauma**, **procedures** | codes, ob, peds, trauma, procedures | One flat, time-ordered array for the whole case. `tool` is `'codes'`\|`'ob'`\|`'peds'`. `k` and `el` are optional fields OB's log lane uses internally (correlating an entry back to the checkbox that logged it, and a clock-relative display string) — other tools ignore them. **PHI guard:** every tool's `CASESTATE.addLog()` is the *only* function allowed to write this key, and it refuses (drops, with a console warning) any label matching a weight-shaped number (`\d+(\.\d+)?\s*(kg\|lb)`) or a 6+ digit run (MRN/DOB/phone-shaped). As of WS2.3, each tool's "CASE TIMELINE" modal (button renamed from SUMMARY) shows *every* tool's events in one merged, time-ordered list, each row tagged with its source tool — not just its own entries. OB's copy sorts by an HH:MM "wall" string (its own events already worked this way, driven by user-entered birth time); other tools' real `tMs` entries convert to the same HH:MM shape to interleave correctly. **Known precision limit:** the sort key is minute-granularity, so two events logged in different tools within the same minute can display in insertion order rather than true sub-minute order — acceptable given OB's own events never had sub-minute precision to begin with. |
 | `lrh-case-lastactive` | epoch ms (string) | codes, ob, peds, trauma | codes, ob, peds, trauma | As of WS2.5, every tool touches this on load and on every click — not just peds. Drives each tool's inactivity auto-clear guard: past 60 minutes stale AND `CASESTATE.anyClockRunning()` false (checked across *all* tools' `lrh-case-clocks`, not just the current one) triggers the same `lrh-` prefix sweep RESET FOR NEXT CASE uses (WS2.4), with a dismissible banner instead of a silent clear. See the "Inactivity auto-clear" section below. |
 | `lrh-pref-mute` | `'0'` \| `'1'` | codes | codes | A **preference**, not case state — survives RESET. Only codes persists a mute setting today; ob-neonatal's mute is in-memory only (resets on reload) and peds has no mute control. Extending persistence to ob/peds is new functionality, not migration, and was left out of WS0. |
 
@@ -44,8 +44,9 @@ independently-copied bridge (the `SS` object in that file):
   entry, and `lrh-case-adultoverride` on the adult-override toggle.
 - **Writes** `lrh-case-log` for every logged event, tagged `tool:'codes',
   card:'01'` (it *is* the Codes arrest card), through the same PHI guard
-  (weight-shaped / 6+-digit labels refused). Its in-tool EVENT LOG accordion is a
-  separate in-memory view of the same events.
+  (weight-shaped / 6+-digit labels refused). Its in-tool case timeline (the
+  shell's sheet/side panel — SHELL.md layer 8, formerly an EVENT LOG
+  accordion) is a separate in-memory view of the same events.
 - **Touches** `lrh-case-lastactive` on load and every click (WS2.5).
 - **RESET** runs the shared `lrh-` prefix sweep (preserving `lrh-pref-`), same as
   every other tool's RESET FOR NEXT CASE (re-inits its state in memory rather
@@ -308,3 +309,41 @@ the core override-clear already makes safe.
 
 - `lrh-case-startms` only wired into codes.
 - `lrh-pref-mute` only wired into codes.
+
+## trauma/ and procedures/ joined the log (2026-08-18)
+
+Both tools previously consumed this contract without contributing to it, which
+produced two specific holes:
+
+- **`trauma/`** carried a deliberately partial `CASESTATE` (checks +
+  `lastactive` only; the file called clocks and log "WS7 scope"), while its
+  RESET already promised to wipe "every check, clock, weight entry, and log
+  line" — so it *deleted* a log it could not write. It now writes
+  `lrh-case-log` for the times a trauma debrief actually argues about: blood
+  started, TXA given, tourniquet on, binder on, herniation recognized, MCI
+  declared.
+- **`procedures/`** held no state at all. Its 279 checkboxes were DOM-only, so
+  a mid-procedure reload silently emptied the JADA and chest-tube lists, and
+  the two most time-critical procedures in the manual — lateral canthotomy and
+  resuscitative thoracotomy — left no time behind at all. It now carries the
+  same module as every other tool: checks (namespaced `procedures:`), the log,
+  `lastactive`, and the 60-minute inactivity guard.
+
+`tool` values in `lrh-case-log` are therefore now
+`'codes' | 'ob' | 'peds' | 'trauma' | 'procedures'`. Every tool's CASE TIMELINE
+already renders unknown tool tags correctly (it prints the tag as given), so no
+timeline needed changing — verified by opening a procedures-logged event in
+codes' timeline.
+
+**Canonical labels.** The same real-world act must use one label everywhere, or
+the merged timeline shows it twice under two names. Where a label already
+existed, the new buttons reuse it verbatim: `MTP ACTIVATED`, `TOURNIQUET
+APPLIED`, `PELVIC BINDER APPLIED`, `TXA GIVEN`. Adding a logging control for an
+act another tool already logs means reusing its string, not inventing a better
+one.
+
+**PHI, specifically.** One step in trauma card 11 instructs the team to record
+the names of exposed staff. It deliberately has **no** LOG IT button: the guard
+in `addLog` refuses weight-shaped and 6+-digit labels, but it would happily
+persist a typed human name. Any capture for that belongs outside
+`lrh-case-log`.

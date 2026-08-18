@@ -13,6 +13,11 @@
  * that fundal pressure is never offered, that a contraindicated drug cannot be marked given, and
  * that both screens say plainly their doses are inherited rather than re-derived.
  *
+ * Both tools now carry the case shell (SHELL.md): the events read here live in the shell timeline
+ * (#shelltl, opened through the ⋯ menu) instead of the retired EVENT LOG accordion; PPH's running
+ * total rides the pinned dock's blue slot as well as the in-content box; dystocia's case-clock pill
+ * IS the head-to-body interval. The continuous-interval invariant is unchanged and still the point.
+ *
  *     node build.mjs && python3 -m http.server 8123 --directory dist
  *     node verify_ob_engines.mjs
  */
@@ -43,6 +48,13 @@ const tap = async (sel, ms = 250) => { await pg.click(sel); await pg.waitForTime
 const openAcc = async id => { await pg.click('[data-acc="' + id + '"]'); await pg.waitForTimeout(250);
   const t = (await pg.locator('.accb').innerText()).replace(/\s+/g, ' ').trim();
   await pg.click('[data-acc="' + id + '"]'); await pg.waitForTimeout(120); return t; };
+/* The event record lives in the case shell's timeline now (SHELL.md layer 8) —
+   opened the way a clinician on a phone opens it: ⋯ menu → Case timeline. */
+const openTL = async () => {
+  await pg.click('#menubtn'); await pg.waitForTimeout(200);
+  await pg.click('#tlbtn'); await pg.waitForTimeout(250);
+  const t = (await pg.locator('#tlrows').innerText()).replace(/\s+/g, ' ').trim();
+  await pg.click('#tlclose'); await pg.waitForTimeout(120); return t; };
 const load = async path => {
   await pg.goto(BASE + path + '?from=home', { waitUntil: 'networkidle' });
   await pg.evaluate(() => { window.__skew = 0; });
@@ -80,9 +92,19 @@ ck('P3. scope bar says escalate on the trend', /trend/i.test(pscope), true);
 ck('P3. it routes the newborn elsewhere and asks who stays with her',
    /neonatal resuscitation/i.test(pscope) && /who is staying with her/i.test(pscope), true);
 
+/* Case shell chrome (SHELL.md) — the pieces this tool maps. */
+ck('P3s. the tool switcher lists the six engines + peds + manual home',
+   await pg.locator('#toolmenu .shellmenurow').count(), 8);
+ck('P3s. PPH is the marked current tool',
+   await pg.getAttribute('#toolmenu .shellmenurow.on', 'href'), '../pph/');
+ck('P3s. the tele button keeps this tool\'s own tele-NICU wording',
+   /TELE-NICU/i.test(await txt('#telebtn')), true);
+
 /* THE REASON THIS IS AN ENGINE — running blood loss. */
 await tap('#startbtn', 320);
-ck('P4. the clock starts at recognition', /recognized/i.test(await openAcc('log')), true);
+ck('P4. the clock starts at recognition', /recognized/i.test(await openTL()), true);
+ck('P4. the case-clock pill shows, tagged PPH',
+   await pg.locator('#casepill').isVisible() && /PPH/.test(await txt('#pilltag')), true);
 ck('P4. EBL starts at zero', /^0 mL/.test(await txt('#eblbox')), true);
 ck(`P4. one add button per configured step (${P.eblSteps.map(s => s.ml).join('/')})`,
    await pg.locator('[data-ebl]').count(), P.eblSteps.length);
@@ -90,9 +112,14 @@ const firstMark = P.eblMarks[0];
 let acc = 0;
 while (acc < firstMark.ml) { await tap(`[data-ebl="${P.eblSteps[P.eblSteps.length - 1].ml}"]`, 120); acc += P.eblSteps[P.eblSteps.length - 1].ml; }
 ck(`P4. the running total reaches ${acc} mL`, lit(acc + ' mL EBL').test(await txt('#eblbox')), true);
-ck('P4. the total is in the header, where it cannot scroll away', lit(acc + ' mL').test(await txt('#statusword')), true);
+ck('P4. the total rides the pinned dock\'s blue slot, where it cannot scroll away',
+   lit(acc + ' mL').test(await txt('#dockeblclock')), true);
 ck(`P4. crossing ${firstMark.ml} mL fires a trend prompt (SITE.eblMarks)`,
-   lit('EBL ' + firstMark.ml + ' mL').test(await openAcc('log')), true);
+   lit('EBL ' + firstMark.ml + ' mL').test(await openTL()), true);
+/* Tele — non-clinical, logs only, idempotent. */
+await tap('#telebtn');
+ck('P4. tele-NICU collapses to a confirmation row', await pg.locator('#teledone').isVisible(), true);
+ck('P4. and the request time is logged', /Tele-NICU activated/i.test(await openTL()), true);
 
 /* Contraindication guard — the thing a printed card cannot do. */
 const blockedMed = P.meds.filter(m => m.block)[0];
@@ -118,7 +145,13 @@ P.meds.filter(m => m.block).forEach(m =>
 const okMed = P.meds.filter(m => !m.block)[0];
 await tap(`[data-med="${okMed.id}"]`);
 ck(`P5. ${okMed.n} records the time it was given`, /✓ GIVEN \d+:\d\d/.test(await txt('#phasebox')), true);
-ck('P5. and it is logged with its dose', lit(okMed.n + ' given').test(await openAcc('log')), true);
+ck('P5. and it is logged with its dose', lit(okMed.n + ' given').test(await openTL()), true);
+/* The dock's purple slot must NOT be a second GIVEN path — it only brings the
+   guarded block into view. Tapping it logs nothing and gives nothing. */
+const evBefore = await pg.evaluate(() => document.querySelectorAll('#phasebox .med.given').length);
+await tap('#dockmeds');
+ck('P5. the dock\'s UTEROTONICS slot gives no drug (guard not bypassable from the dock)',
+   await pg.evaluate(() => document.querySelectorAll('#phasebox .med.given').length), evBefore);
 
 /* The bands advance with the clock, in order. */
 await skew(16 * 60 * 1000);
@@ -137,8 +170,24 @@ await pg.fill('#customin', 'MRN 4457821'); await tap('#customlog');
 ck('P7. a record number is refused', await pg.locator('#customwarn').isVisible(), true);
 await pg.fill('#customin', 'bimanual compression started'); await tap('#customlog');
 ck('P7. a clinical note is accepted', await pg.locator('#customrow').isVisible(), false);
-ck('P7. localStorage holds only the theme preference',
-   (await pg.evaluate(() => Object.keys(localStorage))).filter(k => k !== 'lrh-pref-theme').join(',') || 'none', 'none');
+/* Since the shared case-clock (CASE-STATE.md's lrh-case-startms) landed, this
+   engine also touches lrh-case-lastactive and — once a clock anywhere in the
+   case has started — lrh-case-startms. Neither carries anything patient-
+   identifying (a timestamp only); everything else must still be just theme. */
+ck('P7. localStorage holds only theme + the shared case-clock keys',
+   (await pg.evaluate(() => Object.keys(localStorage))).filter(k => !['lrh-pref-theme','lrh-case-lastactive','lrh-case-startms'].includes(k)).join(',') || 'none', 'none');
+
+/* Shell reset (SHELL.md layer 9) — the two-tap SURE? in the ⋯ menu runs the
+   manual-wide lrh- sweep and raises the cleared toast. */
+await pg.click('#menubtn'); await pg.waitForTimeout(200);
+await pg.click('#resetbtn'); await pg.waitForTimeout(200);
+ck('P8. reset arms with SURE? on the first tap', /SURE\?/.test(await txt('#resetbtn')), true);
+await pg.click('#resetbtn'); await pg.waitForTimeout(400);
+ck('P8. the case-clock keys are swept',
+   (await pg.evaluate(() => Object.keys(localStorage).filter(k => k.indexOf('lrh-case-') === 0))).join(',') || 'none', 'none');
+ck('P8. the cleared toast shows', await pg.locator('#shelltoast').isVisible(), true);
+await tap('#toastok');
+ck('P8. back to idle for the next case', await pg.locator('#idle').isVisible(), true);
 
 /* ===================== SHOULDER DYSTOCIA ===================== */
 console.log('\n--- /dystocia/ ---');
@@ -163,8 +212,18 @@ ck('D3. scope bar names the head-to-body interval', /head-to-body interval/i.tes
 ck('D3. it says to work the maneuvers in order', /in order/i.test(dscope), true);
 ck('D3. it hands off to neonatal resuscitation', /neonatal resuscitation/i.test(dscope), true);
 
+/* Case shell chrome (SHELL.md) — the pieces this tool maps. */
+ck('D3s. the tool switcher lists the six engines + peds + manual home',
+   await pg.locator('#toolmenu .shellmenurow').count(), 8);
+ck('D3s. Dystocia is the marked current tool',
+   await pg.getAttribute('#toolmenu .shellmenurow.on', 'href'), '../dystocia/');
+ck('D3s. the tele button keeps this tool\'s own tele-NICU wording',
+   /TELE-NICU/i.test(await txt('#telebtn')), true);
+
 /* THE PROHIBITION — pinned, and not localizable away. */
 await tap('#startbtn', 320);
+ck('D4. the case-clock pill shows the interval, tagged DYSTOCIA',
+   await pg.locator('#casepill').isVisible() && /DYSTOCIA/.test(await txt('#pilltag')), true);
 ck('D4. the never-banner is on screen', await pg.locator('#neverbox').isVisible(), true);
 ck('D4. it forbids fundal pressure', /NO FUNDAL PRESSURE/i.test(await txt('#neverbox')), true);
 ck('D4. it forbids pulling', /NO PULLING/i.test(await txt('#neverbox')), true);
@@ -184,18 +243,21 @@ ck('D5. every completed rung is marked done', await pg.locator('.lrow.done').cou
 
 /* THE THING THAT MUST NOT HAPPEN: the clock restarting on round two. The
    head-to-body interval is continuous, and it is the number that ends up in
-   the record. */
+   the record — asserted on both its faces: the big in-content box and the
+   shell's case-clock pill, which is the same clock in the chrome. */
 await skew(90 * 1000);
-const beforeRound2 = await txt('#clock');
+const beforeRound2 = await txt('#hbiclock');
 await tap('#nextrung', 300);
 ck('D6. running the sequence again returns to the first rung',
    lit('RUNG 1 OF ' + D.ladder.length).test(await txt('#phasebox')), true);
 ck('D6. and says which round it is', /ROUND 2/.test(await txt('#plabel')), true);
-const afterRound2 = await txt('#clock');
+const afterRound2 = await txt('#hbiclock');
 const toSec = t => { const [m, s] = t.split(':').map(Number); return m * 60 + s; };
 ck('D6. THE CLOCK DOES NOT RESTART — head-to-body is continuous',
    toSec(afterRound2) >= toSec(beforeRound2), true);
-ck('D6. the restart is logged', /round 2/i.test(await openAcc('log')), true);
+ck('D6. the pill agrees with the in-content interval (one clock, two faces)',
+   Math.abs(toSec(await txt('#pillclock')) - toSec(await txt('#hbiclock'))) <= 1, true);
+ck('D6. the restart is logged', /round 2/i.test(await openTL()), true);
 
 /* Last resort only appears once late. */
 await skew((D.lastResortMin + 1) * 60 * 1000);
@@ -206,10 +268,23 @@ D.lastResort.forEach((x, i) =>
 /* Handoff. */
 await tap('#outbtn', 300);
 ck('D8. delivering shows the head-to-body interval', /\d+:\d\d/.test(await txt('#outat')), true);
+/* Lon, 2026-08-15: once the baby is out the pill RESTARTS as a postpartum
+   count-up (PPH watch / newborn transition), tagged DELIVERED — while the
+   frozen head-to-body interval stays in the record (#outat + the timeline
+   entry), so the one timeline connects the two phases. The new pill clock
+   must be near zero (< the head-to-body interval this run accrued) and tick. */
+const pillAtOut = toSec(await txt('#pillclock'));
+ck('D8. the pill restarts from delivery, tagged DELIVERED',
+   pillAtOut < toSec(await txt('#outat')) && /DELIVERED/.test(await txt('#pilltag')), true);
+await pg.waitForTimeout(1600);
+ck('D8. the postpartum clock ticks (not frozen)',
+   toSec(await txt('#pillclock')) > pillAtOut, true);
+ck('D8. delivery entry carries the interval AND the new clock, one timeline',
+   /head-to-body \d+:\d\d.*postpartum clock started/i.test(await openTL()), true);
 ck('D8. it sends the baby to neonatal resuscitation',
    await pg.getAttribute('#tonrp', 'href'), '../neonatal/?from=home');
 ck('D8. and warns about postpartum hemorrhage next', /PPH engine/.test(await txt('#outbody')), true);
-ck('D8. the maneuver record is in the log', /Announce/i.test(await openAcc('log')), true);
+ck('D8. the maneuver record is in the log', /Announce/i.test(await openTL()), true);
 
 /* ===================== both, wired in ===================== */
 console.log('\n--- discoverable ---');
@@ -223,18 +298,34 @@ for (const [term, want] of [['postpartum hemorrhage', 'pph/'], ['shoulder dystoc
   const hrefs = await home.evaluate(() => [...document.querySelectorAll('#results a')].map(a => a.getAttribute('href')));
   ck(`9. searching "${term}" surfaces ${want}`, hrefs.some(h => h && h.includes(want)), true);
 }
-ck('9. the landing page has a PPH tile', await home.locator('a[href*="pph/"]').count() > 0, true);
-ck('9. and a dystocia tile', await home.locator('a[href*="dystocia/"]').count() > 0, true);
+/* The live engines are reached through search (asserted above) and through
+   the OB & Neonatal tool's own menu (verified in verify_guidelines.mjs-style
+   link checks elsewhere) — NOT as their own top-level category tiles next to
+   Equipment Readiness/Simulations/VEMS. A standalone tile would be exactly
+   the duplicate this whole rebuild exists to remove: one category for OB &
+   Neonatal, not one category plus three more for cards it already contains. */
+ck('9. no standalone landing-page tile for the PPH engine',
+   await home.locator('.lrh-cat[href*="pph/"]').count(), 0);
+ck('9. no standalone landing-page tile for the dystocia engine',
+   await home.locator('.lrh-cat[href*="dystocia/"]').count(), 0);
+ck('9. no standalone landing-page tile for the neonatal engine',
+   await home.locator('.lrh-cat[href^="neonatal/"]').count(), 0);
+ck('9. the OB & Neonatal Emergencies tile is the one entry point',
+   await home.locator('.lrh-cat[href*="ob-neonatal/"]').count(), 1);
 await home.close();
 
-/* The cards they replace must still resolve and must point across. */
-const card = await b.newPage();
-await card.goto(BASE + '/ob-neonatal/?from=home#c06', { waitUntil: 'networkidle' });
-await card.waitForTimeout(300);
-const cardHrefs = await card.evaluate(() => [...document.querySelectorAll('a[href]')].map(a => a.getAttribute('href')));
-ck('9. card 06 links across to the PPH engine', cardHrefs.some(h => /pph\//.test(h)), true);
-ck('9. card 07 links across to the dystocia engine', cardHrefs.some(h => /dystocia\//.test(h)), true);
-await card.close();
+/* Cards 03/06/07 no longer exist on ob-neonatal/ — replaced, not duplicated
+   (issue: two parallel "reference view" copies of the same clinical content
+   is exactly what this rebuild was meant to stop). A deep-link to any of
+   those old anchors must redirect straight to the live engine instead of
+   landing on nothing. */
+for (const [hash, engine] of [['#c03', 'neonatal/'], ['#c06', 'pph/'], ['#c07', 'dystocia/']]) {
+  const card = await b.newPage();
+  await card.goto(BASE + '/ob-neonatal/?from=home' + hash, { waitUntil: 'networkidle' });
+  await card.waitForTimeout(300);
+  ck(`9. a ${hash} deep-link redirects to /${engine}`, new URL(card.url()).pathname, '/' + engine);
+  await card.close();
+}
 
 ck('10. no page or console errors across the whole run', errs.length, 0);
 if (errs.length) errs.slice(0, 6).forEach(e => console.log('    ' + e));

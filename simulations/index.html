@@ -6,15 +6,15 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#005596">
-<title>LRH Simulations</title>
+<title>{{SITE.abbrev}} Simulations</title>
 <meta name="apple-mobile-web-app-title" content="Simulations">
 <meta name="description" content="Low-fidelity in-situ simulation scripts — a pillow as the patient — that walk teams through the manual's major workflows. Practice only.">
-<link rel="canonical" href="https://lrhemergencymanual.net/simulations/">
+<link rel="canonical" href="https://{{SITE.domain}}/simulations/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="LRH Emergency Manual">
-<meta property="og:title" content="LRH Simulations (beta)">
+<meta property="og:site_name" content="{{SITE.title}}">
+<meta property="og:title" content="{{SITE.abbrev}} Simulations (beta)">
 <meta property="og:description" content="Pillow-patient simulation scripts chained across the manual's real workflow cards. Practice and feedback only.">
-<meta property="og:url" content="https://lrhemergencymanual.net/simulations/">
+<meta property="og:url" content="https://{{SITE.domain}}/simulations/">
 <meta name="twitter:card" content="summary">
 <style>
   html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; --sticky-h:54px; }
@@ -35,7 +35,7 @@
   .swtop{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:baseline}
   .swrow .where{display:block;font-size:12.5px;color:var(--ink2)}
   .swctl{display:flex;flex-wrap:wrap;gap:6px;margin-top:6px}
-  .swsel,.swloc{font:inherit;font-size:13px;min-height:36px;background:var(--card2);color:var(--ink);
+  .swsel,.swloc{font:inherit;font-size:16px;min-height:44px;background:var(--card2);color:var(--ink);
     border:1px solid var(--line);border-radius:8px;padding:4px 8px;-webkit-appearance:none;appearance:none}
   .swsel{flex:0 0 auto;max-width:100%}
   .swloc{flex:1 1 190px;min-width:0}
@@ -98,31 +98,25 @@
 </style>
 </head>
 <body data-theme="dark">
-<script>
-/* Apply a persisted theme before the page paints (shared lrh-pref- namespace;
-   outside any RESET prefix sweep — CASE-STATE.md). */
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
-catch(e){ document.body.dataset.theme='dark'; }
-</script>
-<div id="betasplash" style="position:fixed; inset:0; z-index:999; background:linear-gradient(135deg,#005596,#003e6e); color:#fffefb; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
-  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:#a9c2dc;">LRH · EMERGENCY DEPARTMENT</div>
+<div id="betasplash" style="position:fixed; inset:0; z-index:999; background:var(--bg); color:var(--ink); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
+  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:var(--ink2);">{{SITE.abbrev}} · EMERGENCY DEPARTMENT</div>
   <div style="font-size:30px; line-height:1.06; letter-spacing:-0.02em; font-weight:700;">Simulations</div>
-  <div style="display:inline-block; padding:6px 14px; border:2px solid #e0b93c; color:#f7d97a; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.16em;">TRAINING ONLY</div>
-  <div style="max-width:460px; font-size:17px; line-height:1.4; color:#dbe4ee;">These are practice scripts — never instructions for the care of a real patient. The patient is a pillow.</div>
-  <div style="max-width:460px; font-size:14.5px; line-height:1.35; color:#a9c2dc;">Content is unverified and unapproved. Clinical values live on the linked cards — verify them locally before relying on them, even in practice.</div>
-  <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
+  <div style="display:inline-block; padding:6px 14px; border:2px solid var(--accent); color:var(--accent); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.16em;">TRAINING ONLY</div>
+  <div style="max-width:460px; font-size:17px; line-height:1.4; color:var(--ink);">These are practice scripts — never instructions for the care of a real patient. The patient is a pillow.</div>
+  <div style="max-width:460px; font-size:14.5px; line-height:1.35; color:var(--ink2);">Content is unverified and unapproved. Clinical values live on the linked cards — verify them locally before relying on them, even in practice.</div>
+  <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:var(--accent); color:var(--on-sev); border:2px solid var(--accent); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
 </div>
 <div id="stickytop">
 <div class="hdr">
   <a class="ghost" href="../?from=tool">&#9664; MANUAL</a>
   <span class="plabel">SIMULATIONS</span>
-  <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
+  <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Simulations" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
 </div>
 </div>
 
 <main id="top">
   <div style="padding:16px 14px 6px;">
-    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:var(--ink2); font-weight:700;">LRH · EMERGENCY DEPARTMENT</div>
+    <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.14em; color:var(--ink2); font-weight:700;">{{SITE.abbrev}} · EMERGENCY DEPARTMENT</div>
     <h1 style="margin:4px 0 2px; font-size:26px; letter-spacing:-0.01em;">Simulations — the patient is a pillow</h1>
     <p style="margin:0; color:var(--ink2); font-size:14.5px;">Ten-to-fifteen-minute low-fidelity drills that chain the manual's real workflows together — birth into dystocia into a blue baby, asthma into arrest into post-ROSC. One person reads the script; the recorder drives the actual cards. No mannequin required.</p>
   </div>
@@ -232,7 +226,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <summary class="t-head t-head-crit">PHASE 2 · CURVEBALL — THE HEAD IS OUT, NOTHING ELSE</summary>
         <div style="padding:2px 12px 12px;">
           <div class="stem">"The head delivered a minute ago and <b>retracted back against the perineum — turtle sign.</b> The shoulders will not come with normal traction."</div>
-          <a class="golink" href="../ob-neonatal/?from=home#c07">OPEN › OB · SHOULDER DYSTOCIA</a>
+          <a class="golink" href="../dystocia/?from=home">OPEN › SHOULDER DYSTOCIA ENGINE</a>
           <ul style="margin:6px 0 0; padding:0; list-style:none;">
             <li class="t-div" style="padding:8px 0; font-size:14px;">Team says it out loud, calls for help, and works the maneuvers <b>in order on the pillow</b> — legs back (McRoberts), suprapubic pressure (someone actually places hands and says where and which direction).</li>
             <li class="t-div" style="padding:8px 0; font-size:14px;">Facilitator releases the "baby" after two maneuvers done correctly and narrated.</li>
@@ -245,7 +239,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <summary class="t-head t-head-neutral">PHASE 3 · THE BABY IS OUT — AND BLUE</summary>
         <div style="padding:2px 12px 12px;">
           <div class="stem">"Baby's out — <b>floppy, blue, not crying.</b> Cord is cut. What do you do, and where?"</div>
-          <a class="golink" href="../ob-neonatal/?from=home#c03">OPEN › OB · NEONATAL RESUSCITATION</a>
+          <a class="golink" href="../neonatal/?from=home">OPEN › NEONATAL RESUSCITATION ENGINE</a>
           <ul style="margin:6px 0 0; padding:0; list-style:none;">
             <li class="t-div" style="padding:8px 0; font-size:14px;">Towel-roll baby to the warmer. Warm–dry–stimulate, then PPV narrated at the right rate (use the card's metronome). Facilitator gives HR by voice: "HR 50… now 90 with good PPV."</li>
             <li class="t-div" style="padding:8px 0; font-size:14px;">Recorder logs 1- and 5-minute marks from the time-of-birth clock stamped in Phase 1 — that's the payoff of stamping it early.</li>
@@ -305,7 +299,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <summary class="t-head t-head-neutral">PHASE 1 · IT'S NOT STOPPING</summary>
         <div style="padding:2px 12px 12px;">
           <div class="stem">"The nurse calls you back in: <b>'she's soaking through pads.'</b> Fundus feels boggy. Estimated loss so far: 700 mL and climbing."</div>
-          <a class="golink" href="../ob-neonatal/?from=home#c06">OPEN › OB · POSTPARTUM HEMORRHAGE</a>
+          <a class="golink" href="../pph/?from=home">OPEN › POSTPARTUM HEMORRHAGE ENGINE</a>
           <ul style="margin:6px 0 0; padding:0; list-style:none;">
             <li class="t-div" style="padding:8px 0; font-size:14px;">Team works the card in order and <b>says each dose out loud</b>: uterine massage (hands on pillow, narrated), oxytocin, TXA with the time window stated, second IV, call OB.</li>
           </ul>
@@ -522,7 +516,7 @@ catch(e){ document.body.dataset.theme='dark'; }
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Sim props:</b> pillow · any old STEMI teaching EKG (printed) · whiteboard · two chairs for the family conversation · a phone/tablet with the arrest tool open.</li>
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Code Cart · MEDICATIONS drawer:</b> point — lytic checklist is read from the card, drugs stay shut.</li>
           <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Defibrillator:</b> pads mimed on the pillow; shocks are called out loud with the tool's timer.</li>
-          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Transfer:</b> the DHMC transfer number visible on the whiteboard (say it, don't dial).</li>
+          <li class="t-div" style="padding:8px 0; font-size:14px; line-height:1.35;"><b>Transfer:</b> the transfer-center number visible on the whiteboard (say it, don't dial).</li>
         </ul>
       </details>
 
@@ -983,7 +977,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <summary class="t-head t-head-crit">PHASE 4 · CURVEBALL — TWO PATIENTS, ONE DOCTOR</summary>
         <div style="padding:2px 12px 12px;">
           <div class="stem">"Baby is out at 02:32 — <b>floppy and blue.</b> Mom is still intubated on the table. <b>You are the only physician. What happens now?</b>"</div>
-          <a class="golink" href="../ob-neonatal/?from=home#c03">OPEN › OB · NEONATAL RESUSCITATION</a>
+          <a class="golink" href="../neonatal/?from=home">OPEN › NEONATAL RESUSCITATION ENGINE</a>
           <ul style="margin:6px 0 0; padding:0; list-style:none;">
             <li class="t-div" style="padding:8px 0; font-size:14px;">The physician cannot be in two places, so <b>a handover has to be spoken out loud</b>: a named person on mom, a specific number they are watching, and an explicit trigger that brings the doctor back. "Keep an eye on her" does not count.</li>
             <li class="t-div" style="padding:8px 0; font-size:14px;">Time of birth written down. Baby to the warmer. Warm–dry–stimulate, then PPV narrated at the rate off the card — <b>NRP, not the pediatric pathway.</b></li>
@@ -1017,7 +1011,7 @@ catch(e){ document.body.dataset.theme='dark'; }
 /* @inventory */
 </script>
 <script>
-/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device =====
+/* ===== SITE CONFIG (site-specific — edit to localize) =====
    SIM_EQUIPMENT is the only site-adjustable part of the equipment walk: which
    inventory rows a case actually needs. The ids come from inventory.js — an
    item id, or `id#size` where the size is the point (a pediatric arrest needs
@@ -1059,7 +1053,7 @@ var SIM_EQUIPMENT = {
         "flex-scope","co2-detector#pediatric / adult","topical-airway"]
 };
 (function(){
-  document.querySelectorAll('.verstamp').forEach(function(el){ el.textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH'; });
+  document.querySelectorAll('.verstamp').forEach(function(el){ el.textContent='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · {{SITE.abbrev}}'; });
   var s=document.getElementById('betasplash'), b=document.getElementById('betago');
   if(!s||!b) return;
   function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); }
@@ -1067,20 +1061,6 @@ var SIM_EQUIPMENT = {
   b.addEventListener('touchend', go, false);
   /* handlers attach first so a parse failure can never leave the splash stuck */
   try{ if(/(^|[?&])from=(home|tool)(&|$)/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); } }catch(err){}
-})();
-
-/* Theme toggle — persists via the shared lrh-pref-theme key (read before paint
-   by the inline script after <body>), matching the rest of the manual. */
-(function(){
-  var b=document.getElementById('lrhThemeBtn');
-  if(!b) return;
-  b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
-  b.addEventListener('click', function(){
-    var dark = document.body.dataset.theme!=='light';
-    document.body.dataset.theme = dark ? 'light' : 'dark';
-    b.textContent = dark ? 'DARK' : 'LIGHT';
-    try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
-  });
 })();
 
 /* ===== EQUIPMENT WALK — the sims as an orientation tool ======================

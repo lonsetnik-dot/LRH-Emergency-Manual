@@ -6,19 +6,20 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#005596">
-<title>LRH Pediatric Emergencies</title>
+<title>{{SITE.abbrev}} Pediatric Emergencies</title>
 <meta name="apple-mobile-web-app-title" content="Peds">
 <meta name="description" content="Beta cognitive aids for pediatric emergencies in the Emergency Department. Practice and feedback only.">
-<link rel="canonical" href="https://lrhemergencymanual.net/peds/">
+<link rel="canonical" href="https://{{SITE.domain}}/peds/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="LRH Emergency Manual">
-<meta property="og:title" content="LRH Pediatric Emergencies (beta)">
+<meta property="og:site_name" content="{{SITE.title}}">
+<meta property="og:title" content="{{SITE.abbrev}} Pediatric Emergencies (beta)">
 <meta property="og:description" content="Cognitive aids for pediatric emergencies in the ED — shared weight-based dosing engine plus 15 topic cards. Beta — practice and feedback only.">
-<meta property="og:url" content="https://lrhemergencymanual.net/peds/">
+<meta property="og:url" content="https://{{SITE.domain}}/peds/">
 <meta name="twitter:card" content="summary">
 <style>
   html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; --sticky-h:94px; }
   /* @design-system */
+  /* @design-system-shell */
   /* ---- Shared design language (tokens, the .hdr chrome bar, the .lrh-* menu
      rows + filter, the themed <body>, and the .t-* card-interior classes) is
      injected from design-system.css at the marker above (build.mjs), edited once
@@ -40,11 +41,20 @@
      theme), so the bar is allowed to wrap to a second row on narrow screens
      rather than crushing the PEDS label to an ellipsis. #stickytop measures the
      wrapped height into --sticky-h, so scroll offsets stay correct. */
-  .hdr{position:static;flex-wrap:wrap;row-gap:8px;background:var(--peds-accent,#005596);border-bottom:none;transition:background-color .25s ease}
-  .hdr .plabel{color:#fffefb;min-width:max-content}
-  .hdr .ghost{background:rgba(255,255,255,.10);border-color:rgba(255,255,255,.5);color:#fffefb}
-  .hdr .ghost:hover,.hdr .ghost:focus-visible{color:#fffefb;border-color:#fffefb;background:rgba(255,255,255,.20)}
-  .hdr .ghost.danger{color:#fffefb;border-color:rgba(255,255,255,.6)}
+  /* ---- Broselow band wayfinding under the shell (was: the whole header
+     painted in the band color). The shell bar is flat var(--bg) in every
+     tool — repainting the entire bar per patient is exactly the second
+     interface model this port removes. The band still drives the wayfinding,
+     the way arrest/ does it: the tool square in the bar, the weight value and
+     the zone chip take the band color, so the drawer to pull is still visible
+     at a glance without the chrome changing shape. ---- */
+  /* #stickytop owns the sticking. The top safe-area inset is kept from the
+     card-tool .hdr: design-system-live's .shellbar has none, so on a notched
+     phone in standalone mode the engines' bar rides under the status bar —
+     worth upstreaming, but not silently dropping here. */
+  .shellbar{position:static; padding-top:env(safe-area-inset-top,0px)}
+  #toolsq{transition:background-color .25s ease}
+  .shellweight .v.set{color:var(--peds-accent-mid,var(--green))}
   main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
   article { scroll-margin-top:var(--sticky-h,94px); margin-top:12px; }
   section#top { scroll-margin-top:0; }
@@ -87,16 +97,10 @@
     .twoup { display:grid; grid-template-columns:1fr 1fr; gap:0 20px; } .twoup > li { min-width:0; } .twoup li label { min-width:0; } .twoup li label > span { min-width:0; overflow-wrap:break-word; } .cs-unarmed { opacity:.45; pointer-events:none; }
   }
   #stickytop { position:sticky; top:0; z-index:30; }
-  #wtbar { display:flex; align-items:center; gap:10px; flex-wrap:wrap; background:var(--peds-accent-dark,#0c2a44); color:#fffefb; border-bottom:2px solid var(--peds-accent-mid,#2f62a8); padding:9px 14px; transition:background-color 0.25s ease, border-color 0.25s ease; }
-  #wtzone { display:inline-flex; align-items:center; gap:6px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:#dbe4ee; }
-  #wtzone .sw { width:13px; height:13px; border-radius:50%; border:1.5px solid rgba(255,255,255,0.85); flex:none; background:transparent; }
-  #wtbar label { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10px; letter-spacing:0.1em; color:#a9c2dc; }
-  #wtbar input, #wtbar select { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14px; padding:6px 8px; border:1px solid rgba(255,255,255,0.5); background:#16324f; color:#fffefb; min-height:34px; width:72px; }
-  #wtbar select { width:auto; }
-  #wtbar button { min-height:34px; }
-  #wtdisplay { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; color:#f7d97a; }
-  #wtstale { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; color:#f2b84b; }
-  #wtbar.stale { border-bottom-color:#b8862b; }
+  #wtzone { display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:11px; letter-spacing:0.06em; color:var(--ink2); }
+  #wtzone .sw { width:13px; height:13px; border-radius:50%; border:1.5px solid var(--ink2); flex:none; background:transparent; }
+  #wtstale { font-family:var(--mono); font-size:11.5px; color:var(--amber); }
+  #wtbar.stale { border-bottom-color:var(--amber); }
   .wdose { font-weight:700; color:var(--ink); }
   .wdose.unset { color:var(--red); font-weight:400; font-style:italic; }
   .wdose-vol { font-size:1.05em; }
@@ -120,41 +124,67 @@
   }
 </style>
 </head>
-<body>
-<script>
-try{ document.body.dataset.theme = localStorage.getItem('lrh-pref-theme')==='light' ? 'light' : 'dark'; }
-catch(e){ document.body.dataset.theme='dark'; }
-</script>
-<div id="betasplash" style="position:fixed; inset:0; z-index:999; background:linear-gradient(135deg,#005596,#003e6e); color:#fffefb; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
-  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:#a9c2dc;">LRH · EMERGENCY DEPARTMENT</div>
+<body data-theme="dark">
+<div id="betasplash" style="position:fixed; inset:0; z-index:999; background:var(--bg); color:var(--ink); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
+  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:var(--ink2);">{{SITE.eyebrow}}</div>
   <div style="font-size:30px; line-height:1.06; letter-spacing:-0.02em; font-weight:700;">Pediatric Emergencies</div>
-  <div style="display:inline-block; padding:6px 14px; border:2px solid #e0b93c; color:#f7d97a; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.16em;">BETA</div>
-  <div style="max-width:460px; font-size:17px; line-height:1.4; color:#dbe4ee;">Not yet ready for clinical use. Shared for feedback and practice only — do not use it to direct the care of a patient.</div>
-  <div style="max-width:460px; font-size:14.5px; line-height:1.35; color:#a9c2dc;">Content is unverified and unapproved. Every situation requires nuance; use your professional judgment and your department's policies. Weight-based doses are calculated live from the weight you enter — double-check every calculated dose yourself before giving it.</div>
-  <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:#fffefb; color:#16324f; border:2px solid #fffefb; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
+  <div style="display:inline-block; padding:6px 14px; border:2px solid var(--accent); color:var(--accent); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.16em;">BETA</div>
+  <div style="max-width:460px; font-size:17px; line-height:1.4; color:var(--ink);">Not yet ready for clinical use. Shared for feedback and practice only — do not use it to direct the care of a patient.</div>
+  <div style="max-width:460px; font-size:14.5px; line-height:1.35; color:var(--ink2);">Content is unverified and unapproved. Every situation requires nuance; use your professional judgment and your department's policies. Weight-based doses are calculated live from the weight you enter — double-check every calculated dose yourself before giving it.</div>
+  <button type="button" id="betago" style="margin-top:6px; min-height:54px; padding:0 26px; background:var(--accent); color:var(--on-sev); border:2px solid var(--accent); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.12em; cursor:pointer;">I UNDERSTAND — CONTINUE</button>
 </div>
 <div id="stickytop">
-<div class="hdr">
-  <a class="ghost" href="../?from=tool">&#9664; MANUAL</a>
-  <button class="ghost" id="backbtn" type="button" style="display:none">&#9664; BACK</button>
-  <span class="plabel">PEDS</span>
-  <button class="ghost" id="summarybtn" type="button">TIMELINE</button>
-  <button class="ghost danger" id="resetbtn" type="button">RESET</button>
-  <button class="ghost" id="lrhThemeBtn" type="button">LIGHT</button>
+<!-- ============ CASE SHELL layer 1 — app bar (SHELL.md) ============
+     Identical to arrest/, tca/, airway/, neonatal/, pph/, dystocia/: one row,
+     never wraps, back + tool-name dropdown left, ⋯ overflow on a phone and
+     TIMELINE / FEEDBACK / RESET inline ≥768px. peds is a CARD tool, so it
+     takes layers 1, 4, 8 and 9 only — no cadence strip, metronome, dock or
+     picker (SHELL.md: "a layer a tool doesn't need is absent entirely").
+     The bar is position:static here because #stickytop is the sticky element
+     that the --sticky-h ResizeObserver measures for anchor scrolling; one
+     sticky strategy, not two. -->
+<div class="hdr shellbar" id="shellbar">
+  <a class="shellback shell-phone" id="backlink" href="../?from=tool" aria-label="Back to the manual">&#8249;</a>
+  <a class="shellback shell-wide" id="backlinkwide" href="../?from=tool">MANUAL &#8250;</a>
+  <button class="shelltool" id="toolbtn" type="button" aria-haspopup="true"><span class="shellsq" id="toolsq" style="background:var(--purple)"></span>PEDS<span class="shellcaret">&#9660;</span></button>
+  <div class="shellbarmid">
+    <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:700;letter-spacing:.06em">READY</span>
+  </div>
+  <span class="shell-wide" style="gap:6px;align-items:center">
+    <button class="ghost" id="summarybtn" type="button">TIMELINE</button>
+    <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Pediatric%20Emergencies" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+    <button class="ghost shellreset" id="resetwide" type="button">RESET</button>
+  </span>
+  <button class="shellmore shell-phone" id="menubtn" type="button" aria-label="Menu">&#8943;</button>
 </div>
-<script>
-(function(){
-  var b=document.getElementById('lrhThemeBtn');
-  if(!b) return;
-  b.textContent = document.body.dataset.theme==='light' ? 'DARK' : 'LIGHT';
-  b.addEventListener('click', function(){
-    var dark = document.body.dataset.theme!=='light';
-    document.body.dataset.theme = dark ? 'light' : 'dark';
-    b.textContent = dark ? 'DARK' : 'LIGHT';
-    try{ localStorage.setItem('lrh-pref-theme', dark ? 'light' : 'dark'); }catch(e){}
-  });
-})();
-</script>
+
+<!-- Tool switcher — the six live engines + the card tools that share this
+     shell, + manual home. Plain links: cross-tool case state (weight, clock,
+     log) survives navigation per CASE-STATE.md, so switching mid-case is safe
+     by design. -->
+<div class="shellmenu left" id="toolmenu" style="display:none">
+  <a class="shellmenurow on" href="../peds/?from=tool"><span class="shellsq" style="background:var(--purple)"></span><span style="flex:1">Peds</span><span class="shellmenusub">PEDS</span></a>
+  <a class="shellmenurow" href="../arrest/?from=peds"><span class="shellsq" style="background:var(--red)"></span><span style="flex:1">Arrest</span><span class="shellmenusub">CODE</span></a>
+  <a class="shellmenurow" href="../tca/?from=peds"><span class="shellsq" style="background:#E08A3C"></span><span style="flex:1">TCA</span><span class="shellmenusub">TCA</span></a>
+  <a class="shellmenurow" href="../airway/?from=peds"><span class="shellsq" style="background:#2FA372"></span><span style="flex:1">Airway</span><span class="shellmenusub">RSI</span></a>
+  <a class="shellmenurow" href="../neonatal/?from=peds"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Neonatal</span><span class="shellmenusub">NRP</span></a>
+  <a class="shellmenurow" href="../pph/?from=peds"><span class="shellsq" style="background:#E75480"></span><span style="flex:1">PPH</span><span class="shellmenusub">PPH</span></a>
+  <a class="shellmenurow" href="../dystocia/?from=peds"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Dystocia</span><span class="shellmenusub">OB</span></a>
+  <div class="shellmenudiv"></div>
+  <a class="shellmenurow" href="../?from=tool"><span class="shellsq" style="background:var(--gray)"></span><span style="flex:1">Manual home</span></a>
+</div>
+
+<!-- ⋯ overflow (phone): the same three items the wide bar shows inline.
+     RESET keeps peds' existing modal confirm (WS2.4) rather than the engines'
+     two-tap SURE? — its handler is registered first, below, and ends in a
+     full page reload; swapping it would mean rewriting that gate. Both entry
+     points (#resetbtn here, #resetwide above) run that one modal. -->
+<div class="shellmenu right" id="moremenu" style="display:none">
+  <button class="shellmenurow" id="tlbtn" type="button">Case timeline</button>
+  <a class="shellmenurow" id="feedbackmenu" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Pediatric%20Emergencies">Feedback</a>
+  <div class="shellmenudiv"></div>
+  <button class="shellmenurow danger" id="resetbtn" type="button">Reset for next case</button>
+</div>
 <script>
 /* ---- Measure the real sticky-header height into --sticky-h, live ----
    Ported from codes/index.html's identical fix (same review finding: a
@@ -247,15 +277,29 @@ catch(e){ document.body.dataset.theme='dark'; }
   try{ if(/(^|[?&])startnewcase=1(&|$)/.test(location.search)) openModal(); }catch(e){}
 })();
 </script>
-<div id="wtbar">
-  <label for="wtkg">WEIGHT (kg)</label>
-  <input id="wtkg" type="number" inputmode="decimal" step="0.1" min="0" placeholder="kg">
-  <label for="wtage">or AGE</label>
-  <input id="wtage" type="number" inputmode="decimal" step="0.1" min="0" placeholder="age">
-  <select id="wtageunit"><option value="mo">months</option><option value="yr" selected>years</option></select>
-  <button type="button" id="wtestimate">ESTIMATE KG FROM AGE</button>
-  <span id="wtdisplay">WEIGHT NOT SET</span>
-  <span id="wtzone"></span>
+<!-- ============ CASE SHELL layer 4 — weight strip ============
+     Phone: collapsed 44px row, tap to expand. ≥768px: expanded until a weight
+     is confirmed, then a slim "✎ tap to change" row. Unset renders amber, set
+     renders green. THE MODE LIVES HERE, not in a banner: the collapsed row
+     states the weight and the Broselow drawer it maps to (16 kg · WHITE
+     drawer), which is this tool's equivalent of arrest's "19 kg · PALS
+     (pediatric)".
+     The input ids are peds' originals (#wtkg/#wtage/#wtageunit/#wtestimate) —
+     PEDS_WT, PEDSAIR and verify_case_contract.mjs all bind to them, and the
+     shell contract is the chrome and the behavior, not the id spelling. -->
+<button class="shellweight" id="wtoggle" type="button">
+  <span class="k">WEIGHT</span>
+  <span class="v unset" id="wtdisplay">not set</span>
+  <span class="m" id="wmark">&#9660;</span>
+</button>
+<div class="shellweightform" id="wtbar" style="display:none">
+  <input class="inp" id="wtkg" type="number" inputmode="decimal" step="0.1" min="0" placeholder="kg" style="width:64px" aria-label="Weight in kg">
+  <span style="font-size:13px;color:var(--ink2)">kg &nbsp;&middot;&nbsp; or age</span>
+  <input class="inp" id="wtage" type="number" inputmode="decimal" step="0.1" min="0" placeholder="age" style="width:52px;font-size:16px" aria-label="Age">
+  <select class="inp" id="wtageunit" aria-label="Age unit" style="width:auto;font-size:16px;min-height:44px"><option value="mo">mo</option><option value="yr" selected>yr</option></select>
+  <button class="btn" type="button" id="wtestimate" style="font:700 12px var(--sans);padding:9px 12px;border-radius:9px;min-height:38px">ESTIMATE KG</button>
+  <button class="ghost" id="wdone" type="button" style="min-height:38px;border-color:var(--green);color:var(--green)">DONE &#10003;</button>
+  <span id="wtzone" style="flex-basis:100%"></span>
 </div>
 </div>
 <!-- NRP off-ramp (WS: weight-routing audit): NRP is for the NEWLY BORN
@@ -269,7 +313,7 @@ catch(e){ document.body.dataset.theme='dark'; }
      manual-wide (lrh-case-nrpdismiss, shared with arrest/codes) — RESET FOR
      NEXT CASE and the stale-case sweep restore it for the next patient. -->
 <div id="nrpbanner" style="display:none; align-items:center; gap:10px; margin:0; padding:10px 14px; background:#fbeaec; border-bottom:2px solid #9b1c2e; border-left:10px solid #9b1c2e;">
-  <div style="flex:1; font-size:13.5px; line-height:1.45; color:#16324f;"><b style="color:#9b1c2e;">NEWLY BORN (first days of life)?</b> Use <a href="../ob-neonatal/?from=peds#c03" style="color:#9b1c2e; font-weight:800;">NEONATAL RESUSCITATION (NRP) &rarr;</a> — doses differ: epi <b>0.02 mg/kg</b> (NRP) vs 0.01 mg/kg (PALS). Older infant who simply weighs &lt;3 kg? Dismiss and continue with PALS.</div>
+  <div style="flex:1; font-size:13.5px; line-height:1.45; color:#16324f;"><b style="color:#9b1c2e;">NEWLY BORN (first days of life)?</b> Use <a href="../neonatal/?from=peds" style="color:#9b1c2e; font-weight:800;">NEONATAL RESUSCITATION (NRP) &rarr;</a> — doses differ: epi <b>0.02 mg/kg</b> (NRP) vs 0.01 mg/kg (PALS). Older infant who simply weighs &lt;3 kg? Dismiss and continue with PALS.</div>
   <button type="button" id="dismissnrp" style="min-height:44px; padding:8px 14px; background:none; border:1px solid #9b1c2e; color:#9b1c2e; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">DISMISS</button>
 </div>
 <div id="summarymodal" style="display:none; position:fixed; inset:0; z-index:40; background:rgba(15,28,44,0.55); padding:14px; overflow:auto;">
@@ -287,7 +331,7 @@ catch(e){ document.body.dataset.theme='dark'; }
 <main>
   <div class="lrh-menuwrap">
     <div class="inner">
-      <div class="lrh-eyebrow lrh-mono">LRH · EMERGENCY DEPARTMENT</div>
+      <div class="lrh-eyebrow lrh-mono">{{SITE.eyebrow}}</div>
       <h1 class="lrh-idx-h1">Pediatric Emergencies</h1>
       <p class="lrh-idx-sub">Enter a weight once above — every card below calculates its doses live from it. Weight and timers live only on this device, clear on RESET FOR NEXT CASE, and auto-clear after an hour of inactivity — still, always tap RESET between patients.</p>
       <button type="button" id="startnewcasebtn" class="lrh-startnew-btn">START NEW CASE</button>
@@ -317,6 +361,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <a href="#p13" data-k="pediatric death bereavement family termination of resuscitation" class="lrh-row" style="--cc:var(--amber)"><span class="n lrh-mono">13</span><span class="t">Death of a Child in the ED</span></a>
         <a href="#p14" data-k="procedural sedation ketamine propofol etomidate fasting pediatric" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">14</span><span class="t">Procedural Sedation</span></a>
         <a href="#p15" data-k="croup barky cough stridor racemic epinephrine dexamethasone steeple laryngotracheitis" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">15</span><span class="t">Croup</span></a>
+        <a href="#p16" data-k="airway equipment size ett endotracheal tube cuffed uncuffed blade miller macintosh lma igel supraglottic suction catheter depth intubation broselow drawer color" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">16</span><span class="t">Airway Equipment Sizes</span></a>
       </div>
     </div>
   </div>
@@ -372,7 +417,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p02-1" class="t-ck"><span><b>IV fluids:</b> 20 mL/kg crystalloid bolus = <span class="wdose" data-perkg="20" data-max="1000" data-unit="mL" data-decimals="0">enter weight above</span> (max 1 L/dose) — repeat as needed for persistent hypotension.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p02-2" class="t-ck"><span><b>Refractory shock:</b> epinephrine IV bolus 1 mcg/kg slow push = <span class="wdose" data-perkg="1" data-max="50" data-unit="mcg" data-decimals="0">enter weight above</span> (max 50 mcg/dose), then infusion 0.1–1 mcg/kg/min titrated — experienced personnel, continuous monitoring; confirm your pharmacy's concentration/rate before mixing. Tap the IV BOLUS / DRIP buttons above to time-stamp.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p02-3" class="t-ck"><span><b>Angioedema/stridor progressing?</b> Low threshold for early, elective, definitive airway — don't wait for severe stridor.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p02-3" class="t-ck"><span><b>Angioedema/stridor progressing?</b> Low threshold for early, elective, definitive airway — don't wait for severe stridor. <a href="#p16" style="font-weight:700;">→ sizes: card 16</a></span></label></li>
         </ul>
       </details>
       <details open class="t-box-neutral">
@@ -385,7 +430,7 @@ catch(e){ document.body.dataset.theme='dark'; }
           <tr><td>Albuterol nebulizer (bronchospasm/wheeze)</td><td>unit-dose neb, may repeat q20min ×3</td><td>— (PowerPlan)</td></tr>
           <tr><td>Racemic epinephrine 2.25% neb (stridor/upper-airway edema)</td><td>0.5 mL in 3 mL NS (0.25 mL if &lt;5 kg)</td><td>— (PowerPlan)</td></tr>
         </table>
-        <div style="padding:8px 0 0; font-size:12.5px; line-height:1.35; color:var(--ink2);">These relieve itch/hives (antihistamine), blunt a biphasic reaction (steroid), or treat bronchospasm/stridor (albuterol, racemic epi) — none replace IM epinephrine for the airway/hemodynamic compromise. Doses per the LRH Pediatric General PowerPlan (Cerner order set) where marked; otherwise institutional pediatric ED pathways.</div>
+        <div style="padding:8px 0 0; font-size:12.5px; line-height:1.35; color:var(--ink2);">These relieve itch/hives (antihistamine), blunt a biphasic reaction (steroid), or treat bronchospasm/stridor (albuterol, racemic epi) — none replace IM epinephrine for the airway/hemodynamic compromise. Doses per the originating hospital's Pediatric General PowerPlan (Cerner order set) where marked; otherwise institutional pediatric ED pathways.</div>
       </details>
     </div>
 
@@ -394,7 +439,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> World Allergy Organization Anaphylaxis Guidance 2020 (epinephrine 0.01 mg/kg IM, max 0.5 mg, repeat q5–15min; 20 mL/kg fluid bolus); AAAAI/ACAAI Anaphylaxis: A 2023 Practice Parameter Update (0.3 mg pediatric epinephrine cap — conflicts with WAO's 0.5 mg, noted above); Johns Hopkins All Children's Hospital Anaphylaxis Clinical Pathway 2023 (adjunct dosing); Dribin TE, et al., "Timing of repeat epinephrine to inform paediatric anaphylaxis observation periods," <i>Lancet Child Adolesc Health</i> 2025;9(7):484-496. LRH Pediatric General PowerPlan (Cerner order set) — dexamethasone 0.6 mg/kg (max 10 mg), albuterol nebulizer q20min ×3, racemic epinephrine 2.25% 0.5 mL neb (0.25 mL if &lt;5 kg, dilute in 3 mL NS), and the epinephrine IM 0.01 mg/kg &lt;15 kg / EpiPen Jr 15–29.9 kg / EpiPen ≥30 kg tiering. IV-epinephrine bolus/infusion figures are standard pediatric-resuscitation references, not PowerPlan values — confirm with pharmacy.
+      <b>Sources:</b> World Allergy Organization Anaphylaxis Guidance 2020 (epinephrine 0.01 mg/kg IM, max 0.5 mg, repeat q5–15min; 20 mL/kg fluid bolus); AAAAI/ACAAI Anaphylaxis: A 2023 Practice Parameter Update (0.3 mg pediatric epinephrine cap — conflicts with WAO's 0.5 mg, noted above); Johns Hopkins All Children's Hospital Anaphylaxis Clinical Pathway 2023 (adjunct dosing); Dribin TE, et al., "Timing of repeat epinephrine to inform paediatric anaphylaxis observation periods," <i>Lancet Child Adolesc Health</i> 2025;9(7):484-496. The originating hospital's Pediatric General PowerPlan (Cerner order set) — dexamethasone 0.6 mg/kg (max 10 mg), albuterol nebulizer q20min ×3, racemic epinephrine 2.25% 0.5 mL neb (0.25 mL if &lt;5 kg, dilute in 3 mL NS), and the epinephrine IM 0.01 mg/kg &lt;15 kg / EpiPen Jr 15–29.9 kg / EpiPen ≥30 kg tiering. IV-epinephrine bolus/infusion figures are standard pediatric-resuscitation references, not PowerPlan values — confirm with pharmacy.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -422,7 +467,7 @@ catch(e){ document.body.dataset.theme='dark'; }
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p03-1" class="t-ck"><span><b>Mild:</b> ESI 4 — dexamethasone tablet + albuterol MDI 2–4 puffs, MDI spacer teaching, discharge and assess asthma control.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p03-2" class="t-ck"><span><b>Moderate:</b> ESI 3 — dexamethasone tablet + weight-based albuterol nebulizer q20min ×3 PRN. Reassess: allow ≥2h for steroid effect before disposition.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p03-3" class="t-ck"><span><b>Severe:</b> ESI 1–2 — dexamethasone tablet (alt: IM dex/IV methylprednisolone) + combined albuterol/ipratropium nebulizer; if unable to tolerate a mask, MDI with albuterol+ipratropium instead. Consider IV magnesium; consider subQ terbutaline.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p03-4" class="t-ck"><span><b>Critical/impending respiratory failure:</b> to resuscitation room — escalation medications, initiate NIPPV at 10/5 cmH₂O and titrate with RT; if no improvement, prepare for intubation and trigger a Tier 1 PICU alert/transfer.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p03-4" class="t-ck"><span><b>Critical/impending respiratory failure:</b> to resuscitation room — escalation medications, initiate NIPPV at 10/5 cmH₂O and titrate with RT; if no improvement, prepare for intubation and trigger a Tier 1 PICU alert/transfer. <a href="#p16" style="font-weight:700;">→ sizes: card 16</a></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p03-5" class="t-ck"><span>Supplemental O₂ for persistent SpO₂ &lt;90%.</span></label></li>
         </ul>
       </details>
@@ -458,7 +503,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> Children's Hospital of Philadelphia, <i>Emergency Department Clinical Pathway for Evaluation/Treatment of Children with Asthma</i>, last revised May 2026 — PASS severity triage, weight-tiered albuterol/ipratropium dosing, dexamethasone weight-band dosing, magnesium/terbutaline escalation dosing, and the overall dexamethasone-first pathway structure. LRH Pediatric General PowerPlan (Cerner order set) — albuterol nebulizer/DuoNeb q20min ×3, albuterol HFA 4 puffs, dexamethasone 0.6 mg/kg (max 10 mg) and prednisolone 2 mg/kg (max 60 mg) as the LRH-ordered equivalents of the CHOP weight bands.
+      <b>Sources:</b> Children's Hospital of Philadelphia, <i>Emergency Department Clinical Pathway for Evaluation/Treatment of Children with Asthma</i>, last revised May 2026 — PASS severity triage, weight-tiered albuterol/ipratropium dosing, dexamethasone weight-band dosing, magnesium/terbutaline escalation dosing, and the overall dexamethasone-first pathway structure. The originating hospital's Pediatric General PowerPlan (Cerner order set) — albuterol nebulizer/DuoNeb q20min ×3, albuterol HFA 4 puffs, dexamethasone 0.6 mg/kg (max 10 mg) and prednisolone 2 mg/kg (max 60 mg) as the originating hospital's ordered equivalents of the CHOP weight bands.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -498,7 +543,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <details open class="t-box-crit">
         <summary class="t-head t-head-crit">IF BLS MANEUVERS FAIL — PROVIDER ESCALATION</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p04-7" class="t-ck"><span><b>Direct laryngoscopy with Magill forceps or suction</b> to retrieve a visualized object above the cords.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p04-7" class="t-ck"><span><b>Direct laryngoscopy with Magill forceps or suction</b> to retrieve a visualized object above the cords. <a href="#p16" style="font-weight:700;">→ sizes: card 16</a></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p04-8" class="t-ck"><span>If the object is at/below the cords and removal fails → <b>needle cricothyrotomy with transtracheal jet ventilation</b> is the consistent recommendation for young children.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p04-9" class="t-ck"><span><b>The age/size cutoff for surgical vs. needle cricothyrotomy is genuinely unsettled in the literature</b> (sources vary roughly 5–12 years) — the cricothyroid membrane is extremely small in young children, so anatomic size, not a fixed age, is probably the more important variable. Don't rely on a single hard cutoff number.</span></label></li>
         </ul>
@@ -543,7 +588,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p05-2" class="t-ck"><span>Keep the child sitting up with the parent, in whatever position is most comfortable to the child. Blow-by humidified O₂ as tolerated — not a mask forced onto the face.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p05-3" class="t-ck"><span>Call the regional children's hospital/PICU transport team and the receiving ED immediately, in parallel with everything else. Ask whether their airway team should come to you or advise on securing the airway before transport.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p05-4" class="t-ck"><span>Have a pediatric-sized surgical/cricothyrotomy kit opened and a BVM ready at bedside — but do not attempt laryngoscopy/intubation unless the child is in extremis (peri-arrest).</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p05-4" class="t-ck"><span>Have a pediatric-sized surgical/cricothyrotomy kit opened and a BVM ready at bedside — but do not attempt laryngoscopy/intubation unless the child is in extremis (peri-arrest). <a href="#p16" style="font-weight:700;">→ sizes: card 16</a></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p05-5" class="t-ck"><span>Monitor continuously without repeated exams. Do not send the child to CT.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p05-6" class="t-ck"><span><i>No single named guideline exists specifically for a rural ED without in-house ENT/anesthesia</i> — this is a synthesis of the general "disturb the least, prepare for the worst" principle for a facility that would normally secure this airway in an OR with ENT and anesthesia present.</span></label></li>
         </ul>
@@ -580,7 +625,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> StatPearls, <i>Epiglottitis</i> (NBK430960); WikEM, "Epiglottitis" and antibiotic dosing template; EMCrit IBCC, "Epiglottitis" (Farkas); RCEMLearning, croup/epiglottitis/tracheitis comparison. Post-Hib epidemiology per PubMed 23076559 and PMC2870429. No rural-specific stabilize-and-transfer guideline exists for this condition — that section is a synthesis of general principles, not a direct quote from a named protocol. Racemic epinephrine and dexamethasone doses per the LRH Pediatric General PowerPlan (Cerner order set); their use in epiglottitis specifically is temporizing/low-evidence — the do-not-agitate principle overrides both.
+      <b>Sources:</b> StatPearls, <i>Epiglottitis</i> (NBK430960); WikEM, "Epiglottitis" and antibiotic dosing template; EMCrit IBCC, "Epiglottitis" (Farkas); RCEMLearning, croup/epiglottitis/tracheitis comparison. Post-Hib epidemiology per PubMed 23076559 and PMC2870429. No rural-specific stabilize-and-transfer guideline exists for this condition — that section is a synthesis of general principles, not a direct quote from a named protocol. Racemic epinephrine and dexamethasone doses per the originating hospital's Pediatric General PowerPlan (Cerner order set); their use in epiglottitis specifically is temporizing/low-evidence — the do-not-agitate principle overrides both.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -628,7 +673,7 @@ catch(e){ document.body.dataset.theme='dark'; }
         <summary class="t-head t-head-crit">WATCH FOR RESPIRATORY FAILURE</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p06-10" class="t-ck"><span>Young infants (especially &lt;3 months, ex-preemies, or those with underlying cardiopulmonary disease) can progress to <b>apnea</b> with little warning — this can be the presenting/worsening sign rather than a late one.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p06-11" class="t-ck"><span>Have intubation equipment and weight-based airway/med doses ready (see card 01) any time an infant with bronchiolitis is on your radar for concern — apnea can happen abruptly even after a period of apparent stability on oxygen.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p06-11" class="t-ck"><span>Have intubation equipment sized (<a href="#p16" style="font-weight:700;">card 16</a>) and weight-based doses ready (<a href="../arrest/?from=peds" style="font-weight:700;">Arrest tool</a>) any time an infant with bronchiolitis is on your radar for concern — apnea can happen abruptly even after a period of apparent stability on oxygen.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p06-12" class="t-ck"><span>Once intubated for bronchiolitis-associated respiratory failure, call the receiving PICU immediately and arrange transfer.</span></label></li>
         </ul>
       </details>
@@ -709,7 +754,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <details class="t-box-caution">
         <summary class="t-head t-head-caution">SMALL RURAL ED — ICU ADMISSION / TRANSFER</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p07-11" class="t-ck"><span>Most pediatric DKA (especially first presentation, young age, severe acidosis, or altered mental status) warrants ICU-level care — if LRH doesn't have pediatric ICU capability, start the bolus/insulin protocol above and arrange transfer early rather than trying to manage the full multi-hour correction locally.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p07-11" class="t-ck"><span>Most pediatric DKA (especially first presentation, young age, severe acidosis, or altered mental status) warrants ICU-level care — if your site doesn't have pediatric ICU capability, start the bolus/insulin protocol above and arrange transfer early rather than trying to manage the full multi-hour correction locally.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p07-12" class="t-ck"><span>If cerebral edema is suspected, treat first (hypertonic saline or mannitol per your institutional protocol, head of bed elevation) — don't wait for transfer or imaging to act.</span></label></li>
         </ul>
       </details>
@@ -740,7 +785,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <details open class="t-box-neutral">
         <summary class="t-head t-head-neutral">INITIAL STABILIZATION</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p08-1" class="t-ck"><span><b>ABCs first</b> — GCS ≤8 or non-protective airway reflexes → intubate (see card 01/06).</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p08-1" class="t-ck"><span><b>ABCs first</b> — GCS ≤8 or non-protective airway reflexes → intubate (equipment sizes: <a href="#p16" style="font-weight:700;">card 16</a>).</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p08-2" class="t-ck"><span><b>Point-of-care glucose immediately</b>, before or alongside everything else. Treat if &lt;60 mg/dL (&lt;40 mg/dL in neonates); an awake/alert child can take oral glucose instead of IV dextrose.</span></label></li>
         </ul>
       </details>
@@ -831,7 +876,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> Gerson R, et al., "Best Practices for Evaluation and Treatment of Agitated Children and Adolescents (BETA) in the Emergency Department," American Association for Emergency Psychiatry consensus statement, <i>West J Emerg Med</i> 2019; Foster AA, et al., "Standardizing and Improving Care for Pediatric Agitation Management in the Emergency Department," <i>Pediatrics</i> 2023;152(1):e2022059586 — de-escalation framework, medication choices/cautions, and restraint principles. Weight/age-banded dosing cross-checked against Children's Minnesota and Children's Hospital of Richmond institutional pediatric agitation guidelines. LRH Pediatric General PowerPlan (Cerner order set) — lorazepam 0.05 mg/kg PO (max 2 mg; avoid in autism spectrum disorder), olanzapine 2.5 mg (&lt;30 kg)/5 mg (≥30 kg) PO, midazolam 0.3 mg/kg IN, droperidol or haloperidol 0.05 mg/kg IM (max 5 mg; continuous EKG/SpO₂ after), diphenhydramine 1 mg/kg IV (max 50 mg) PRN dystonia. Restraint time limits per 42 CFR §482.13, CMS Hospital Conditions of Participation.
+      <b>Sources:</b> Gerson R, et al., "Best Practices for Evaluation and Treatment of Agitated Children and Adolescents (BETA) in the Emergency Department," American Association for Emergency Psychiatry consensus statement, <i>West J Emerg Med</i> 2019; Foster AA, et al., "Standardizing and Improving Care for Pediatric Agitation Management in the Emergency Department," <i>Pediatrics</i> 2023;152(1):e2022059586 — de-escalation framework, medication choices/cautions, and restraint principles. Weight/age-banded dosing cross-checked against Children's Minnesota and Children's Hospital of Richmond institutional pediatric agitation guidelines. The originating hospital's Pediatric General PowerPlan (Cerner order set) — lorazepam 0.05 mg/kg PO (max 2 mg; avoid in autism spectrum disorder), olanzapine 2.5 mg (&lt;30 kg)/5 mg (≥30 kg) PO, midazolam 0.3 mg/kg IN, droperidol or haloperidol 0.05 mg/kg IM (max 5 mg; continuous EKG/SpO₂ after), diphenhydramine 1 mg/kg IV (max 50 mg) PRN dystonia. Restraint time limits per 42 CFR §482.13, CMS Hospital Conditions of Participation.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -904,10 +949,10 @@ catch(e){ document.body.dataset.theme='dark'; }
       <details open class="t-box-crit">
         <summary class="t-head t-head-crit">PEDIATRIC REFERRAL CENTER DISCUSSION — if still seizing</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p10-4" class="t-ck"><span><b>Call the pediatric referral center now if you haven't already</b> — need for intubation vs. bag-mask ventilation (hypercapnia is common and typically resolves with seizure cessation and non-invasive support, so don't rush to intubate on hypercapnia alone).</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p10-4" class="t-ck"><span><b>Call the pediatric referral center now if you haven't already</b> — need for intubation vs. bag-mask ventilation (hypercapnia is common and typically resolves with seizure cessation and non-invasive support, so don't rush to intubate on hypercapnia alone). <a href="#p16" style="font-weight:700;">→ sizes: card 16</a></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p10-5" class="t-ck"><span><b>Consider additional workup:</b> full septic workup, antibiotics/antivirals, brain imaging.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p10-6" class="t-ck"><span>Persistent altered LOC may reflect non-convulsive status epilepticus or a severe underlying brain disorder.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p10-7" class="t-ck"><span><b>Third-line:</b> infusion of midazolam, pentobarbital, propofol, or ketamine — arrange transfer if LRH can't provide continuous EEG monitoring in-house.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p10-7" class="t-ck"><span><b>Third-line:</b> infusion of midazolam, pentobarbital, propofol, or ketamine — arrange transfer if your site can't provide continuous EEG monitoring in-house.</span></label></li>
         </ul>
       </details>
     </div>
@@ -975,13 +1020,13 @@ catch(e){ document.body.dataset.theme='dark'; }
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p11-9" class="t-ck"><span><b>The AAP guideline's own logic:</b> if LP is unsuccessful/traumatic/deferred, treat as if the CSF result were positive (empiric antibiotics + admission) until proven otherwise. The same logic extends to a setting where LP simply isn't feasible.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p11-10" class="t-ck"><span>Draw blood/urine cultures if it doesn't meaningfully delay transfer, give the first empiric antibiotic dose promptly — don't wait for transfer to start therapy — and arrange transfer to a tertiary pediatric center rather than attempting definitive local management for any infant ≤28 days or any ill-appearing infant of any age.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p11-11" class="t-ck"><span>This stabilize-and-transfer approach is a reasonable extrapolation of the AAP guideline's own principle, not a separately published rural-specific guideline — worth review/sign-off from LRH's pediatric/ED medical director before treating it as formal protocol. Consider pediatric tele-EM consultation if available.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p11-11" class="t-ck"><span>This stabilize-and-transfer approach is a reasonable extrapolation of the AAP guideline's own principle, not a separately published rural-specific guideline — worth review/sign-off from your site's pediatric/ED medical director before treating it as formal protocol. Consider pediatric tele-EM consultation if available.</span></label></li>
         </ul>
       </details>
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> Pantell RH, et al., "Evaluation and Management of Well-Appearing Febrile Infants 8 to 60 Days Old," AAP Clinical Practice Guideline, <i>Pediatrics</i> 2021;148(2):e2021052228 — age bands, workup requirements, inflammatory-marker thresholds, and the "treat as CSF-positive if LP unobtainable" principle. Kuppermann N, et al. (PECARN Febrile Infant Rule), 2019, for reference on the 29–60/61–90 day rules outside this guideline's scope. Neonatal antibiotic dosing per standard neonatal formulary references (e.g. UW NICU dosing guide) — gentamicin dosing intentionally not reduced to a single number here; confirm with pharmacy/NICU. LRH ED Infant Care &lt;90 Days PowerPlan (Cerner order set) — ampicillin 100 mg/kg + gentamicin 4 mg/kg IV (0–28 d; + acyclovir 20 mg/kg if HSV risk), ceftriaxone 50 mg/kg IV (non-meningitis) or 100 mg/kg + vancomycin 20 mg/kg (meningitis dosing), PECARN-based 29–60 d low-risk pathway (negative UA, ANC &lt;4000, procalcitonin ≤0.5 ng/mL), acetaminophen IV 12.5 mg/kg (&lt;29 d) / 15 mg/kg (≥29 d), D10W 2 mL/kg for hypoglycemia, NS 10–20 mL/kg boluses.
+      <b>Sources:</b> Pantell RH, et al., "Evaluation and Management of Well-Appearing Febrile Infants 8 to 60 Days Old," AAP Clinical Practice Guideline, <i>Pediatrics</i> 2021;148(2):e2021052228 — age bands, workup requirements, inflammatory-marker thresholds, and the "treat as CSF-positive if LP unobtainable" principle. Kuppermann N, et al. (PECARN Febrile Infant Rule), 2019, for reference on the 29–60/61–90 day rules outside this guideline's scope. Neonatal antibiotic dosing per standard neonatal formulary references (e.g. UW NICU dosing guide) — gentamicin dosing intentionally not reduced to a single number here; confirm with pharmacy/NICU. The originating hospital's ED Infant Care &lt;90 Days PowerPlan (Cerner order set) — ampicillin 100 mg/kg + gentamicin 4 mg/kg IV (0–28 d; + acyclovir 20 mg/kg if HSV risk), ceftriaxone 50 mg/kg IV (non-meningitis) or 100 mg/kg + vancomycin 20 mg/kg (meningitis dosing), PECARN-based 29–60 d low-risk pathway (negative UA, ANC &lt;4000, procalcitonin ≤0.5 ng/mL), acetaminophen IV 12.5 mg/kg (&lt;29 d) / 15 mg/kg (≥29 d), D10W 2 mL/kg for hypoglycemia, NS 10–20 mL/kg boluses.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -1140,7 +1185,7 @@ catch(e){ document.body.dataset.theme='dark'; }
       <details open class="t-box-crit">
         <summary class="t-head t-head-crit">COMPLICATIONS</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p14-5" class="t-ck"><span><b>Laryngospasm</b> (most associated with ketamine, especially &lt;3 months or active/recent URI): jaw thrust/repositioning, 100% O₂, positive-pressure BVM; if refractory, bilateral pressure at the laryngospasm notch (posterior to the earlobe) is a plausible but not rigorously proven maneuver; escalate to succinylcholine + intubation if ventilation fails.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p14-5" class="t-ck"><span><b>Laryngospasm</b> (most associated with ketamine, especially &lt;3 months or active/recent URI): jaw thrust/repositioning, 100% O₂, positive-pressure BVM; if refractory, bilateral pressure at the laryngospasm notch (posterior to the earlobe) is a plausible but not rigorously proven maneuver; escalate to succinylcholine + intubation if ventilation fails. <a href="#p16" style="font-weight:700;">→ sizes: card 16</a></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p14-6" class="t-ck"><span><b>Apnea/hypoventilation</b> (most common with propofol, fentanyl, or fentanyl+benzodiazepine): airway repositioning, supplemental O₂, BVM support; reversal agents available but rarely needed with careful titration.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p14-7" class="t-ck"><span><b>Ketamine emergence reactions — prophylactic midazolam is NOT recommended.</b> Current evidence shows co-administered midazolam doesn't reduce emergence-reaction incidence and increases respiratory-complication risk when combined with ketamine — reserve benzodiazepines to treat a reaction if one occurs, not to prevent it routinely.</span></label></li>
         </ul>
@@ -1157,7 +1202,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> American College of Emergency Physicians, <i>Clinical Policy: Procedural Sedation and Analgesia in the Emergency Department</i>, <i>Ann Emerg Med</i> 2014;63(2):247-258 (current standing ACEP policy — NPO-status finding). Bhatt M, et al., "Unscheduled Procedural Sedation: A Multidisciplinary Consensus Practice Guideline" (11-society consensus incl. Society for Pediatric Sedation), <i>Ann Emerg Med</i> 2019;73(5):e51-e65. Coté CJ, Wilson S; AAP/AAPD, "Guidelines for Monitoring and Management of Pediatric Patients Before, During, and After Sedation," <i>Pediatrics</i> 2019;143(6):e20191000 (2016 update, reaffirmed 2025). StatPearls, <i>Pediatric Procedural Sedation</i> (NBK572100). Sherwin TS, et al., ketamine/midazolam emergence-reaction trial, <i>Ann Emerg Med</i> 2000. LRH Pediatric General PowerPlan (Cerner order set) — ketamine 2 mg/kg IV (max 100 mg) / 4 mg/kg IM (max 200 mg) initial procedural-sedation dosing, ondansetron 0.15 mg/kg IV 20 min pre-ketamine, midazolam 0.3 mg/kg IN (max 10 mg) / 0.5 mg/kg PO (max 20 mg) anxiolysis.
+      <b>Sources:</b> American College of Emergency Physicians, <i>Clinical Policy: Procedural Sedation and Analgesia in the Emergency Department</i>, <i>Ann Emerg Med</i> 2014;63(2):247-258 (current standing ACEP policy — NPO-status finding). Bhatt M, et al., "Unscheduled Procedural Sedation: A Multidisciplinary Consensus Practice Guideline" (11-society consensus incl. Society for Pediatric Sedation), <i>Ann Emerg Med</i> 2019;73(5):e51-e65. Coté CJ, Wilson S; AAP/AAPD, "Guidelines for Monitoring and Management of Pediatric Patients Before, During, and After Sedation," <i>Pediatrics</i> 2019;143(6):e20191000 (2016 update, reaffirmed 2025). StatPearls, <i>Pediatric Procedural Sedation</i> (NBK572100). Sherwin TS, et al., ketamine/midazolam emergence-reaction trial, <i>Ann Emerg Med</i> 2000. The originating hospital's Pediatric General PowerPlan (Cerner order set) — ketamine 2 mg/kg IV (max 100 mg) / 4 mg/kg IM (max 200 mg) initial procedural-sedation dosing, ondansetron 0.15 mg/kg IV 20 min pre-ketamine, midazolam 0.3 mg/kg IN (max 10 mg) / 0.5 mg/kg PO (max 20 mg) anxiolysis.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -1185,7 +1230,7 @@ catch(e){ document.body.dataset.theme='dark'; }
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p15-1" class="t-ck"><span><b>All croup — dexamethasone 0.6 mg/kg PO/IV/IM, max 10 mg = <span class="wdose" data-perkg="0.6" data-max="10" data-unit="mg" data-decimals="1">enter weight above</span>.</b> One dose. Oral solution first-line if tolerated (PowerPlan also lists 0.3 mg/kg PO as a lower-dose oral option — evidence supports either).</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p15-2" class="t-ck"><span><b>Stridor at rest / moderate-severe — add racemic epinephrine 2.25% nebulized:</b> 0.5 mL in 3 mL NS (0.25 mL if &lt;5 kg). May repeat. Effect wanes in ~2 h — observe 3–4 h after the last neb before discharge.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p15-3" class="t-ck"><span><b>Keep the child calm</b> — on a parent&rsquo;s lap, blow-by if needed. No tongue-blade exams, no IV unless truly needed; agitation worsens obstruction.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p15-4" class="t-ck"><span><b>Escalate if:</b> repeated racemic epi doses needed, hypoxia, worsening fatigue/retractions, toxic appearance, or drooling/tripoding — think epiglottitis/tracheitis instead (<a href="#p05">card 05 comparison table</a>). Discuss transfer.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p15-4" class="t-ck"><span><b>Escalate if:</b> repeated racemic epi doses needed, hypoxia, worsening fatigue/retractions, toxic appearance, or drooling/tripoding — think epiglottitis/tracheitis instead (<a href="#p05">card 05 comparison table</a>). Discuss transfer. <a href="#p16" style="font-weight:700;">→ sizes: card 16</a></span></label></li>
         </ul>
       </details>
       <details class="t-box-neutral">
@@ -1198,7 +1243,50 @@ catch(e){ document.body.dataset.theme='dark'; }
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> LRH Pediatric General PowerPlan (Cerner order set) — dexamethasone 0.6 mg/kg PO/IV/IM max 10 mg (0.3 mg/kg PO listed as an alternative), racemic epinephrine 2.25% 0.5 mL nebulized (0.25 mL if &lt;5 kg, dilute in 3 mL NS). General croup framework (dex-for-all, racemic epi for stridor at rest, 3–4 h post-epi observation, night-2–3 natural history) per standard pediatric EM references (WikEM/StatPearls croup; Bjornson &amp; Johnson, <i>Lancet</i> croup reviews). Westley score intentionally omitted — severity here is the practical stridor-at-rest split, not a formal score.
+      <b>Sources:</b> The originating hospital's Pediatric General PowerPlan (Cerner order set) — dexamethasone 0.6 mg/kg PO/IV/IM max 10 mg (0.3 mg/kg PO listed as an alternative), racemic epinephrine 2.25% 0.5 mL nebulized (0.25 mL if &lt;5 kg, dilute in 3 mL NS). General croup framework (dex-for-all, racemic epi for stridor at rest, 3–4 h post-epi observation, night-2–3 natural history) per standard pediatric EM references (WikEM/StatPearls croup; Bjornson &amp; Johnson, <i>Lancet</i> croup reviews). Westley score intentionally omitted — severity here is the practical stridor-at-rest split, not a formal score.
+    </div>
+    <div class="t-foot">
+      <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
+    </div>
+  </article>
+
+  <!-- ============ CARD 16 · AIRWAY EQUIPMENT SIZES ============ -->
+  <article id="p16" data-audience="peds">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">16</span>Airway Equipment Sizes</h2>
+        <span class="t-mono-r">ETT · BLADE · SUPRAGLOTTIC · SUCTION</span>
+      </div>
+    </div>
+    <div class="steps" style="padding:14px 14px 0;">
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">SIZES FOR THIS PATIENT — FROM THE WEIGHT ABOVE</summary>
+        <div style="padding:4px 12px 12px;">
+          <div id="airsizes"></div>
+        </div>
+      </details>
+
+      <details open class="t-box-neutral">
+        <summary class="t-head t-head-neutral">FULL LADDER — EVERY CART DRAWER</summary>
+        <div style="padding:4px 12px 12px;">
+          <div id="airtable" style="overflow-x:auto;"></div>
+          <p id="airformulas" style="font-size:13px; color:var(--ink2); margin:8px 0 0;"></p>
+        </div>
+      </details>
+
+      <details class="t-box-neutral">
+        <summary class="t-head t-head-neutral">BEFORE AND AFTER THE TUBE</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p16-1" class="t-ck"><span><b>Cuffed tube first-line at every age</b> (AHA PALS 2020) — have the half-size smaller and larger within reach. <span id="aircuffnote"></span></span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p16-2" class="t-ck"><span><b>Confirm placement with waveform capnography</b> plus chest rise and auscultation; reconfirm after every move.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p16-3" class="t-ck"><span><b>Sudden deterioration in a tubed child — run DOPE:</b> Displacement, Obstruction, Pneumothorax, Equipment failure.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p16-4" class="t-ck"><span><b>Newborn (under 3 kg or under 1 month)</b> — this ladder does not go that small: use the <a href="../neonatal/?from=peds">newborn resuscitation tool</a>. <b>Over 36 kg</b> — off the tape: use the <a href="../airway/?from=peds">adult airway tool</a>.</span></label></li>
+        </ul>
+      </details>
+    </div>
+
+    <div class="t-sub">
+      <b>Sources:</b> AHA 2020 Guidelines, Part 4: Pediatric Basic and Advanced Life Support (Topjian et al., <i>Circulation</i> 2020;142:S469&ndash;S523; carried forward in the 2025 update) — cuffed tubes preferred at every age, cuffed size age/4&nbsp;+&nbsp;3.5 (Khine formula), uncuffed age/4&nbsp;+&nbsp;4, depth&nbsp;&asymp;&nbsp;3&nbsp;&times;&nbsp;tube&nbsp;ID, capnography confirmation, DOPE. Suction catheter 2&nbsp;&times;&nbsp;tube&nbsp;ID (Fr) and supraglottic weight ranges per standard airway references (Walls, <i>Manual of Emergency Airway Management</i>; manufacturer sizing). Color zones are the Broselow-Luten system (band boundaries per WikEM, as elsewhere on this page) — wayfinding to the cart drawer only; every displayed size comes from this page's own config, and the drawer's packed contents win over any formula. Verify against the tape at the bedside.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -1206,20 +1294,55 @@ catch(e){ document.body.dataset.theme='dark'; }
   </article>
 </main>
 <script>
-/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
+/* ===== SITE CONFIG (site-specific — edit to localize) ===== */
 var SITE = {
-  version: "1.5",
-  lastReviewed: "2026-08-13",
+  version: "1.6",
+  lastReviewed: "2026-08-17",
   /* WS10.2 — minutes of manual-wide inactivity (lrh-case-lastactive) before the weight
      strip appends an "ENTERED HH:MM · N MIN AGO" line and ambers its border. Purely
      informational — never hides the kg value, its color, or any .wdose span. A
      maintainer-tunable guess, not a clinical cutoff: raise it if state B ends up visible
      most of the time (lost signal value), lower it if consecutive patients still slip
      through unflagged. See CASE-STATE.md (lrh-case-wtms) and CLAUDE.md's WS10 notes. */
-  staleWeightMins: 10
+  staleWeightMins: 10,
+  /* ---- Card 16 · airway equipment sizes (site-specific — edit to localize) ----
+     Cuffed tubes are preferred at every age (AHA PALS 2020, Part 4:
+     Pediatric Basic and Advanced Life Support, Circulation 2020;142:S469–S523;
+     carried forward in the 2025 update). Formulas (same source; Khine for the
+     cuffed formula): cuffed ETT ID = age(yr)/4 + 3.5 · uncuffed alternative =
+     age(yr)/4 + 4 · oral depth at the lip (cm) = ID × 3 · ETT suction
+     catheter (Fr) = ID × 2. The per-band picks in byBand are those formulas
+     resolved to the half-size actually packed in each color drawer of this
+     department's pediatric (Broselow) cart — an adopting ED edits byBand to
+     match its own drawer packing, and every number on card 16 follows.
+     Band KEYS must match the Broselow-Luten band names in the weight engine
+     below (wayfinding contract) — localize the sizes, never the names. */
+  airway: {
+    cuffedIdAddon: 3.5,    /* cuffed ETT ID = age(yr)/4 + this */
+    uncuffedIdAddon: 4,    /* uncuffed alternative ID = age(yr)/4 + this */
+    depthPerId: 3,         /* oral depth at lip (cm) = tube ID × this */
+    suctionPerId: 2,       /* ETT suction catheter (Fr) = tube ID × this */
+    cuffMaxCmH2O: 25,      /* keep cuff pressure under this (cm H2O) */
+    /* sga = supraglottic airway (LMA/i-gel) size by manufacturer weight range. */
+    byBand: {
+      GREY:   { ett: 3.0, blade: "Miller 0–1",    sga: "1",   sgaKg: "under 5 kg" },
+      PINK:   { ett: 3.5, blade: "Miller 1",      sga: "1.5", sgaKg: "5–10 kg" },
+      RED:    { ett: 3.5, blade: "Miller 1",      sga: "1.5", sgaKg: "5–10 kg" },
+      PURPLE: { ett: 4.0, blade: "Miller 1",      sga: "2",   sgaKg: "10–20 kg" },
+      YELLOW: { ett: 4.5, blade: "Miller/Mac 2",  sga: "2",   sgaKg: "10–20 kg" },
+      WHITE:  { ett: 5.0, blade: "Miller/Mac 2",  sga: "2.5", sgaKg: "20–30 kg" },
+      BLUE:   { ett: 5.5, blade: "Miller/Mac 2",  sga: "2.5", sgaKg: "20–30 kg" },
+      ORANGE: { ett: 6.0, blade: "Mac 2–3",       sga: "2.5", sgaKg: "20–30 kg" },
+      GREEN:  { ett: 6.5, blade: "Mac 3",         sga: "3",   sgaKg: "30–50 kg" }
+    }
+  }
 };
+/* Exposed for the verify suite and so a champion can read the in-effect values
+   from the browser console rather than from source (issue #117 pattern —
+   same line arrest/, tca/ and neonatal/ carry). */
+try{ window.SITE = SITE; }catch(e){}
 (function(){
-  var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
+  var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · {{SITE.abbrev}}';
   Array.prototype.forEach.call(document.querySelectorAll('.verstamp'), function(vs){ vs.textContent=stampText; });
 })();
 
@@ -1238,10 +1361,15 @@ var CASESTATE = (function(){
   function rm(k){ try{ localStorage.removeItem(k); }catch(e){} }
 
   function getClocks(){ return rd('lrh-case-clocks', {}); }
-  function setClock(name, ms){ var c=getClocks(); if(ms===null||ms===undefined){ delete c[name]; } else { c[name]=ms; } wr('lrh-case-clocks', c); }
+  function setClock(name, ms){ var c=getClocks(); if(ms===null||ms===undefined){ delete c[name]; } else { c[name]=ms; markCaseStarted(); } wr('lrh-case-clocks', c); }
   function getClock(name){ var c=getClocks(); return (name in c) ? c[name] : null; }
   function clearClocks(names){ var c=getClocks(); names.forEach(function(n){ delete c[n]; }); wr('lrh-case-clocks', c); }
   function anyClockRunning(){ return Object.keys(getClocks()).length>0; }
+
+  function getStartMs(){ var v=rdRaw('lrh-case-startms'); return v===null?null:(+v||null); }
+  /* first action of the case, in ANY tool — set once, never overwritten until RESET */
+  function markCaseStarted(){ if(getStartMs()===null) wrRaw('lrh-case-startms', String(Date.now())); }
+  function clearStartMs(){ rm('lrh-case-startms'); }
 
   function getCounts(){ return rd('lrh-case-counts', {}); }
   function setCount(name, n){ var c=getCounts(); c[name]=n; wr('lrh-case-counts', c); }
@@ -1337,6 +1465,7 @@ var CASESTATE = (function(){
 
   return {
     getClocks:getClocks, setClock:setClock, getClock:getClock, clearClocks:clearClocks, anyClockRunning:anyClockRunning,
+    getStartMs:getStartMs, markCaseStarted:markCaseStarted, clearStartMs:clearStartMs,
     getCounts:getCounts, setCount:setCount, getCount:getCount, clearCounts:clearCounts,
     getWtKg:getWtKg, setWtKg:setWtKg, getWtSrc:getWtSrc, setWtSrc:setWtSrc,
     getWtMs:getWtMs, setWtMs:setWtMs,
@@ -1395,19 +1524,62 @@ var CASESTATE = (function(){
   document.getElementById('staleclearedok').addEventListener('click', function(){ bar.remove(); });
 })();
 
-/* ---- Beta splash: skip if arriving from the site search (?from=home) ---- */
+/* ---- Beta splash: skip if arriving from inside the manual (any ?from=) —
+   the gate was already shown at whichever tool the user entered through, and
+   a mid-code deep link (arrest's AIRWAY SIZES chip → #p16) must land on the
+   sizes, not on a consent screen. ---- */
 (function(){
   function boot(){
     var s=document.getElementById('betasplash'), b=document.getElementById('betago');
     if(!s||!b) return;
     /* Drop straight into the filter box once the splash is gone — but only when
        landing on the plain menu (no #pNN deep link already taking the user to a card). */
-    function focusFilter(){ if(location.hash) return; var f=document.getElementById('menuFilter'); if(f) f.focus(); }
+    function focusFilter(){
+      /* deep link (#pNN): the browser anchored before the splash was removed
+         and before the calculated panels rendered, so later layout shifts
+         leave the card off-screen — re-anchor now AND after full load. */
+      if(location.hash){
+        /* Cards below the anchor keep growing after the splash is removed (the
+           dose spans and the card-16 panels render from JS), so a single
+           scrollIntoView lands short. Re-anchor until the target sits in the
+           same place twice running, bounded so it can never spin — and stop
+           the moment the reader touches the page, because yanking the scroll
+           back under someone who has started reading is worse than landing a
+           few hundred pixels off. */
+        var tries=0, lastTop=null, userMoved=false;
+        var stop=function(){ userMoved=true; };
+        ['wheel','touchstart','keydown','pointerdown'].forEach(function(ev){
+          window.addEventListener(ev, stop, {passive:true, once:true});
+        });
+        var re=function(){
+          if(userMoved) return;
+          var docTop=null;
+          try{
+            var tgt=document.querySelector(location.hash);
+            if(tgt){
+              /* Measure the target's position in the DOCUMENT, not the viewport:
+                 straight after scrollIntoView the viewport-relative top is always
+                 ~0, so comparing that would "settle" on the first retry while the
+                 cards above were still growing. */
+              docTop=Math.round(tgt.getBoundingClientRect().top + (window.pageYOffset||0));
+              tgt.scrollIntoView();
+            }
+          }catch(err){}
+          if(docTop!==null && lastTop!==null && Math.abs(docTop-lastTop)<2) return; /* layout settled */
+          lastTop=docTop;
+          if(++tries<14) setTimeout(re, 150);
+        };
+        re();
+        window.addEventListener('load', function(){ tries=0; lastTop=null; re(); }, false);
+        return;
+      }
+      var f=document.getElementById('menuFilter'); if(f) f.focus();
+    }
     function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); focusFilter(); }
     b.addEventListener('click', go, false);
     b.addEventListener('touchend', go, false);
     /* handlers attach first so a parse failure can never leave the splash stuck */
-    try{ if(/(^|[?&])from=home(&|$)/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); focusFilter(); } }catch(err){}
+    try{ if(/(^|[?&])from=/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); focusFilter(); } }catch(err){}
   }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
 })();
@@ -1461,7 +1633,13 @@ var PEDS_WT = (function(){
       root.style.setProperty('--peds-accent-dark', b.dark);
       root.style.setProperty('--peds-accent', b.dark);
       if(themeMeta) themeMeta.setAttribute('content', b.dark);
-      if(zoneEl) zoneEl.innerHTML = '<span class="sw" style="background:'+b.mid+';"></span>'+b.name+' ZONE · '+b.lo+'–'+b.hi+' kg cart drawer';
+      /* The zone chip doubles as the always-available path to the airway
+         equipment sizes (card 16) — visible from every card, so the doc
+         controlling an airway is one tap from tube/blade/suction wherever
+         they are on the page. */
+      if(zoneEl) zoneEl.innerHTML = '<a href="#p16" style="color:inherit; text-decoration:none; display:inline-flex; align-items:center; gap:6px; min-height:44px;">'+
+        '<span class="sw" style="background:'+b.mid+';"></span>'+b.name+' ZONE · '+b.lo+'–'+b.hi+' kg cart drawer'+
+        ' <b style="text-decoration:underline;">AIRWAY SIZES &rsaquo;</b></a>';
     } else {
       root.style.setProperty('--peds-accent-mid', DEFAULT_MID);
       root.style.setProperty('--peds-accent-dark', DEFAULT_DARK);
@@ -1551,13 +1729,24 @@ var PEDS_WT = (function(){
     if(staleEl) staleEl.textContent='ENTERED '+fmtClockTime(wtMs)+' · '+minsAgo+' MIN AGO';
     if(wtbarEl) wtbarEl.classList.add('stale');
   }
+  /* The collapsed shell row's value (SHELL.md layer 4): unset renders amber via
+     .v.unset, a set weight renders in the band color via .v.set. The row states
+     the DOSING-RELEVANT fact — kg, how it was obtained, and the drawer that kg
+     maps to — the same job arrest's "19 kg · PALS (pediatric)" row does. */
   function paintDisplay(){
     paintZone();
     paintNrp();
     if(!dispEl){ paintStale(); return; }
-    if(wtKg===null || isNaN(wtKg)){ dispEl.textContent='WEIGHT NOT SET'; dispEl.style.color='#f7d97a'; paintStale(); return; }
-    dispEl.textContent = fmt(wtKg)+' kg'+(src==='estimated' ? ' (age-estimate)' : ' (measured)');
-    dispEl.style.color = src==='estimated' ? '#f2b84b' : '#8fd19e';
+    dispEl.style.color='';
+    if(wtKg===null || isNaN(wtKg)){
+      dispEl.textContent='not set';
+      dispEl.className='v unset';
+      paintStale(); return;
+    }
+    var b=bandFor(wtKg);
+    dispEl.textContent = fmt(wtKg)+' kg · '+(src==='estimated' ? 'age-estimate' : 'measured')
+                       + (b ? ' · '+b.name+' drawer' : '');
+    dispEl.className='v set';
     paintStale();
   }
   setInterval(paintStale, 30000);
@@ -1577,7 +1766,7 @@ var PEDS_WT = (function(){
     else { kg = (3*years) + 7; }
     return {kg: Math.round(kg*10)/10};
   }
-  function recompute(){ if(window.PEDSDOSE) window.PEDSDOSE.recompute(wtKg); paintDisplay(); }
+  function recompute(){ if(window.PEDSDOSE) window.PEDSDOSE.recompute(wtKg); if(window.PEDSAIR) window.PEDSAIR.recompute(wtKg); paintDisplay(); }
   if(kgEl){
     if(wtKg!==null) kgEl.value = wtKg;
     kgEl.addEventListener('input', function(){
@@ -1631,7 +1820,10 @@ var PEDS_WT = (function(){
   });
   document.addEventListener('visibilitychange', function(){ if(!document.hidden) resyncFromStorage(); });
   paintDisplay();
-  return { getKg:function(){ return wtKg; }, clear:clearAll, resync:resyncFromStorage };
+  /* bandFor/getBand exported for card 16's equipment panel — one band table,
+     one lookup; card 16 must never fork its own copy of the zone boundaries. */
+  return { getKg:function(){ return wtKg; }, clear:clearAll, resync:resyncFromStorage,
+           bandFor:bandFor, getBand:function(){ return bandFor(wtKg); }, bands:BANDS };
 })();
 
 /* ---- Generic weight-based dose calculator for every <span class="wdose">.
@@ -1642,7 +1834,7 @@ var PEDS_WT = (function(){
    of 1:1000 or 1.4 mL of 1:10,000 — same number, tenfold difference in volume).
    TODO(maintainer): data-conc is wired up only where a concentration is already stated
    and cited in that row's own text (see the two epinephrine rows below) — do not add
-   data-conc to any other row without first confirming LRH's actual stocked concentration
+   data-conc to any other row without first confirming the site's actual stocked concentration
    for that drug/route; this calculator will never guess one. */
 var PEDSDOSE = (function(){
   var spans = Array.prototype.slice.call(document.querySelectorAll('.wdose'));
@@ -1671,6 +1863,90 @@ var PEDSDOSE = (function(){
       el.classList.remove('unset');
     });
   }
+  recompute(PEDS_WT.getKg());
+  return { recompute:recompute };
+})();
+
+/* ---- Card 16: airway equipment size panel -----------------------------------
+   Every size shown comes from SITE.airway (config-driven — issue #117 lesson
+   from the airway/ suite conversion: never print hand-typed numbers next to
+   config-driven behavior). Band lookup comes from PEDS_WT.bandFor — the same
+   table that tints the page and names the drawer, so the panel can never
+   disagree with the chrome. Depth and suction are DERIVED from the band's
+   tube size by the config multipliers, not stored per band — one number to
+   localize, no way for depth and tube to drift apart. */
+var PEDSAIR = (function(){
+  var panel=document.getElementById('airsizes'), tableEl=document.getElementById('airtable'),
+      formEl=document.getElementById('airformulas'), cuffEl=document.getElementById('aircuffnote'),
+      ageEl=document.getElementById('wtage'), unitEl=document.getElementById('wtageunit');
+  if(!panel) return { recompute:function(){} };
+  var A=SITE.airway;
+  function esc(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+  function fmtId(n){ return (Math.round(n*10)/10).toFixed(1); }
+  function depthCm(id){ return Math.round(id*A.depthPerId*10)/10; }
+  function suctionFr(id){ return Math.round(id*A.suctionPerId); }
+  function ageYears(){
+    if(!ageEl || ageEl.value==='') return null;
+    var v=parseFloat(ageEl.value); if(isNaN(v)||v<0) return null;
+    return (unitEl && unitEl.value==='mo') ? v/12 : v;
+  }
+  function tile(label, big, sub){
+    return '<div style="background:var(--card2); border:1px solid var(--line); padding:8px 10px;">'+
+      '<div style="font-family:\'IBM Plex Mono\',ui-monospace,monospace; font-size:10.5px; letter-spacing:0.06em; color:var(--ink2); font-weight:700;">'+label+'</div>'+
+      '<div style="font-size:19px; font-weight:800; line-height:1.15;">'+big+'</div>'+
+      (sub?'<div style="font-size:11.5px; color:var(--ink2); margin-top:1px;">'+sub+'</div>':'')+'</div>';
+  }
+  function recompute(kg){
+    var b = PEDS_WT.bandFor(kg), yrs = ageYears();
+    var h='';
+    if(b){
+      var sz=A.byBand[b.name];
+      h+='<div style="display:flex; align-items:center; gap:10px; padding:10px 12px; margin-top:4px; background:'+b.mid+'; color:#fffefb;">'+
+         '<div style="font-family:\'IBM Plex Mono\',ui-monospace,monospace; font-size:12px; font-weight:800; letter-spacing:0.08em;">PULL THE '+esc(b.name)+' DRAWER</div>'+
+         '<div style="margin-left:auto; font-family:\'IBM Plex Mono\',ui-monospace,monospace; font-size:11px;">'+b.lo+'&ndash;'+b.hi+' kg &middot; '+kg+' kg entered</div></div>';
+      if(sz){
+        h+='<div style="display:grid; grid-template-columns:1fr 1fr; gap:7px; margin-top:8px;">'+
+           tile('ETT &middot; CUFFED', fmtId(sz.ett)+' mm', 'have '+fmtId(sz.ett-0.5)+' and '+fmtId(sz.ett+0.5)+' in reach')+
+           tile('DEPTH AT LIP', depthCm(sz.ett)+' cm', esc(A.depthPerId)+' &times; tube size')+
+           tile('BLADE', esc(sz.blade), 'laryngoscope')+
+           tile('SUPRAGLOTTIC', esc(sz.sga), 'LMA/i-gel &middot; '+esc(sz.sgaKg))+
+           tile('ETT SUCTION', suctionFr(sz.ett)+' Fr', esc(A.suctionPerId)+' &times; tube size')+
+           tile('BACKUP', 'BVM + '+esc(sz.sga), 'sized, connected, tested')+
+           '</div>';
+      }
+      if(yrs!==null && yrs>=1){
+        var f=Math.round((yrs/4+A.cuffedIdAddon)*10)/10;
+        h+='<p style="font-size:12.5px; color:var(--ink2); margin:8px 0 0;">Age cross-check: age/4 + '+A.cuffedIdAddon+' = <b>'+fmtId(f)+' mm</b> cuffed'+
+           (sz && Math.abs(f-sz.ett)>0.5 ? ' — <b>disagrees with the drawer pick by more than a half-size; re-check the weight and the age.</b>' : ' — consistent with the drawer pick.')+'</p>';
+      }
+    } else if(kg!==null && !isNaN(kg) && kg>0){
+      h+='<div style="border:2px solid var(--sev-crit); background:var(--card2); padding:10px 12px; font-size:13.5px; font-weight:700; margin-top:4px;">'+
+         (kg<3 ? 'Under 3 kg — off the bottom of the tape. Newborn sizes live in the <a href="../neonatal/?from=peds">newborn resuscitation tool</a>.'
+               : 'Over 36 kg — off the top of the tape. Use the <a href="../airway/?from=peds">adult airway tool</a>.')+'</div>';
+    } else {
+      h+='<div style="border:2px dashed var(--line); background:var(--card2); padding:10px 12px; font-size:13.5px; margin-top:4px;">Enter a <b>weight</b> (or estimate from age) above — the drawer color and every size fill in from it.</div>';
+    }
+    panel.innerHTML=h;
+    paintTable(b);
+  }
+  function paintTable(active){
+    if(!tableEl) return;
+    var h='<table class="dt" style="min-width:520px;"><thead><tr><th>DRAWER</th><th>kg</th><th>ETT cuffed</th><th>depth</th><th>blade</th><th>SGA</th><th>suction</th></tr></thead><tbody>';
+    PEDS_WT.bands.forEach(function(b){
+      var sz=A.byBand[b.name]; if(!sz) return;
+      h+='<tr'+(active && active.name===b.name?' class="hl"':'')+'>'+
+        '<td><span style="display:inline-block; width:12px; height:12px; background:'+b.mid+'; margin-right:6px; vertical-align:-1px;"></span>'+esc(b.name)+'</td>'+
+        '<td>'+b.lo+'&ndash;'+b.hi+'</td><td>'+fmtId(sz.ett)+'</td><td>'+depthCm(sz.ett)+' cm</td>'+
+        '<td>'+esc(sz.blade)+'</td><td>'+esc(sz.sga)+'</td><td>'+suctionFr(sz.ett)+' Fr</td></tr>';
+    });
+    tableEl.innerHTML=h+'</tbody></table>';
+  }
+  if(formEl) formEl.innerHTML='Formulas behind the ladder (1 y and up): cuffed ETT = age/4 + '+A.cuffedIdAddon+
+    ' &middot; uncuffed = age/4 + '+A.uncuffedIdAddon+' &middot; depth at lip = '+A.depthPerId+' &times; tube size &middot; suction catheter = '+
+    A.suctionPerId+' &times; tube size (Fr). The drawer&rsquo;s packed sizes win over a formula.';
+  if(cuffEl) cuffEl.innerHTML='Keep cuff pressure under '+A.cuffMaxCmH2O+' cm H<sub>2</sub>O.';
+  if(ageEl) ageEl.addEventListener('input', function(){ recompute(PEDS_WT.getKg()); });
+  if(unitEl) unitEl.addEventListener('change', function(){ recompute(PEDS_WT.getKg()); });
   recompute(PEDS_WT.getKg());
   return { recompute:recompute };
 })();
@@ -1870,7 +2146,7 @@ var PEDSDOSE = (function(){
     var ev=CASESTATE.getLog().filter(function(e){ return e.label; })
       .sort(function(a,b){ return (a.tMs||0)-(b.tMs||0); });
     if(!ev.length){ body.innerHTML='<div style="color:#5a6a78; padding:16px 0; text-align:center;">Nothing logged yet.</div>'; return ''; }
-    var rows='', text='LRH Emergency Manual — case timeline, all tools (times only, no identifiers, no weight)\n\n';
+    var rows='', text='{{SITE.title}} — case timeline, all tools (times only, no identifiers, no weight)\n\n';
     ev.forEach(function(e){
       var w=wallFromMs(e.tMs), tag=TOOL_LABEL[e.tool]||String(e.tool||'').toUpperCase();
       rows+='<div style="display:grid; grid-template-columns:52px 62px 1fr; gap:8px; padding:8px 0; border-top:1px solid #edf0f3; align-items:baseline;"><span style="font-family:ui-monospace,Menlo,monospace; font-weight:700;">'+w+'</span><span style="font-family:ui-monospace,Menlo,monospace; color:#5a6a78; font-size:11px; letter-spacing:0.04em;">'+tag+'</span><span>'+e.label+'</span></div>';
@@ -1926,12 +2202,13 @@ var PEDSDOSE = (function(){
    only once there is somewhere to go back to — a within-page card jump or an
    arrival from another tool. ---- */
 (function(){
+  /* Retired by the case-shell port: the shell bar carries a permanent back
+     control (#backlink on a phone, #backlinkwide ≥768px) that also honors
+     ?from=<tool>, so a conditional BACK button that only appeared when
+     history.length>1 is both redundant and a second navigation idiom. The
+     guard below keeps this inert if an older copy of the markup comes back. */
   var b=document.getElementById('backbtn');
   if(!b) return;
-  function maybeShow(){ if(history.length>1) b.style.display='inline-flex'; }
-  window.addEventListener('hashchange', maybeShow, false);
-  maybeShow();
-  b.addEventListener('click', function(){ history.back(); }, false);
 })();
 
 /* ---- Checklist persistence (design-review F01/2.1) — every checkbox in this file now
@@ -2002,6 +2279,87 @@ var PEDSDOSE = (function(){
       fInput.value=''; applyFilter();
     }
   });
+})();
+
+/* ============ CASE SHELL behavior (SHELL.md layers 1, 4, 8, 9) ==============
+   Ported from arrest/ so the chrome behaves identically in both tools: the
+   tool-name dropdown, the ⋯ overflow, the collapsing weight ribbon, and the
+   second (wide-screen) entry points for TIMELINE and RESET.
+
+   Deliberate differences from the engines, both because peds is a CARD tool:
+   - No case-clock pill / status phases. peds has no phase model of its own;
+     the bar's center carries the idle status word only.
+   - RESET keeps peds' existing modal confirm (WS2.4) instead of the engines'
+     two-tap SURE?. That handler is registered before any card script and ends
+     in a full reload; #resetwide is simply routed into the same modal, so
+     there is exactly one reset path, not two.
+   Menu state is in-memory only — no new persisted keys (SHELL.md "state"). */
+(function(){
+  var $=function(id){ return document.getElementById(id); };
+  var toolbtn=$('toolbtn'), toolmenu=$('toolmenu'), menubtn=$('menubtn'), moremenu=$('moremenu');
+  if(!toolbtn||!toolmenu||!menubtn||!moremenu) return;
+  var toolOpen=false, moreOpen=false;
+  function paintMenus(){
+    toolmenu.style.display = toolOpen ? '' : 'none';
+    moremenu.style.display = moreOpen ? '' : 'none';
+  }
+  toolbtn.addEventListener('click', function(e){ e.stopPropagation(); toolOpen=!toolOpen; moreOpen=false; paintMenus(); });
+  menubtn.addEventListener('click', function(e){ e.stopPropagation(); moreOpen=!moreOpen; toolOpen=false; paintMenus(); });
+  /* Tap anywhere else closes an open dropdown. The exemption for the menus
+     themselves is what lets a row be tapped without the menu vanishing. */
+  document.addEventListener('click', function(e){
+    if(!(toolOpen||moreOpen)) return;
+    if(e.target.closest && (e.target.closest('.shellmenu')||e.target.closest('#toolbtn')||e.target.closest('#menubtn'))) return;
+    toolOpen=false; moreOpen=false; paintMenus();
+  });
+  document.addEventListener('keydown', function(e){
+    if(e.key==='Escape' && (toolOpen||moreOpen)){ toolOpen=false; moreOpen=false; paintMenus(); }
+  });
+
+  /* ---- back link: honor ?from=<tool> so BACK returns where you came from,
+     the same rewrite arrest/ does (its own BACK button is retired here). ---- */
+  try{
+    var m=/[?&]from=([a-z-]+)/.exec(location.search||'');
+    if(m && m[1]!=='home' && m[1]!=='tool'){
+      var href='../'+m[1]+'/?from=tool';
+      if($('backlink')) $('backlink').href=href;
+      if($('backlinkwide')){ $('backlinkwide').href=href; $('backlinkwide').textContent=m[1].toUpperCase()+' ›'; }
+    }
+  }catch(err){}
+
+  /* ---- layer 4: the weight ribbon collapse/expand ----
+     Phone default collapsed; ≥768px expanded until confirmed (DONE ✓ or
+     ESTIMATE), then a slim "✎ tap to change" row. A user toggle always wins. */
+  var wtoggle=$('wtoggle'), wform=$('wtbar'), wmark=$('wmark');
+  var wOpen=null, wConfirmed=false;
+  function wide(){ return window.matchMedia('(min-width:768px)').matches; }
+  function hasWeight(){ try{ return PEDS_WT.getKg()!==null; }catch(e){ return false; } }
+  function paintWeightStrip(){
+    if(!wform||!wmark) return;
+    var open = wOpen!==null ? wOpen : (wide() && !wConfirmed && !hasWeight());
+    wform.style.display = open ? 'flex' : 'none';
+    wmark.textContent = open ? '▲' : (wide() ? '✎ tap to change' : '▼');
+  }
+  if(wtoggle) wtoggle.addEventListener('click', function(){
+    wOpen = wform.style.display==='none';
+    paintWeightStrip();
+    if(wOpen) setTimeout(function(){ try{ $('wtkg').focus(); }catch(e){} }, 30);
+  });
+  if($('wdone')) $('wdone').addEventListener('click', function(){ wConfirmed=true; wOpen=null; paintWeightStrip(); });
+  if($('wtestimate')) $('wtestimate').addEventListener('click', function(){ wConfirmed=true; });
+  window.addEventListener('resize', paintWeightStrip);
+  paintWeightStrip();
+  window.PEDSSHELL={ paintWeightStrip:paintWeightStrip };
+
+  /* ---- layers 8 + 9: the wide-screen twins of the menu rows. Both TIMELINE
+     controls open the same modal; both RESET controls run the same modal
+     confirm (a synthetic click on #resetbtn, whose gate is registered first). */
+  var tlbtn=$('tlbtn'), summarybtn=$('summarybtn');
+  if(tlbtn && summarybtn) tlbtn.addEventListener('click', function(){
+    moreOpen=false; paintMenus(); summarybtn.click();
+  });
+  var resetwide=$('resetwide'), resetbtn=$('resetbtn');
+  if(resetwide && resetbtn) resetwide.addEventListener('click', function(){ resetbtn.click(); });
 })();
 </script>
 </body>

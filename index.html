@@ -3,18 +3,13 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="theme-color" content="#005596">
-<title>LRH Emergency Manual</title>
+<meta name="theme-color" content="#0D1420">
+<title>{{SITE.title}}</title>
 <style>
   /* Landing page. The theme tokens, the .hdr chrome bar, .sr-only, .lrh-mono and
      the themed body all come from the shared design-system.css injected at the
      marker below (build.mjs) — edited once for the whole manual. Only this page's
      search box, category grid, note and the beta-splash front door live here. */
-  :root{
-    /* The beta-splash front door stays brand-blue regardless of theme — it's the
-       only remaining consumer of the legacy brand vars. */
-    --brand-primary:#005596; --brand-primary-dark:#003e6e; --brand-secondary:#6cb33f;
-  }
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
   /* @design-system */
@@ -55,20 +50,22 @@
     color:var(--ink);font-size:.8rem;border-radius:12px;padding:12px 15px;margin-top:26px}
   .lrh-footer{text-align:center;color:var(--ink2);font-size:.76rem;margin-top:22px}
 
-  /* ---- Beta splash (site front door; shown every visit, stores nothing) ---- */
+  /* ---- Beta splash (site front door; shown every visit, stores nothing).
+     Uses the same shared tokens as every other screen in the manual — no more
+     fixed brand-blue identity independent of the site's own theme. ---- */
   #betasplash{position:fixed; inset:0; z-index:999; display:flex; flex-direction:column;
     align-items:center; justify-content:center; gap:18px; text-align:center; padding:32px 26px;
-    background:linear-gradient(135deg,var(--brand-primary),var(--brand-primary-dark)); color:#fff}
-  #betasplash .eyebrow{font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:#bcd6ec}
+    background:var(--bg); color:var(--ink)}
+  #betasplash .eyebrow{font-size:.72rem; letter-spacing:.18em; text-transform:uppercase; color:var(--ink2)}
   #betasplash .title{font-size:2rem; font-weight:800; line-height:1.05; letter-spacing:-.01em}
-  #betasplash .beta{display:inline-block; padding:5px 14px; border:2px solid var(--brand-secondary);
-    color:#dff0c9; font-weight:700; letter-spacing:.16em; font-size:.8rem; border-radius:6px}
-  #betasplash .lead{max-width:480px; font-size:1.02rem; line-height:1.45; color:#eaf2f9}
-  #betasplash .fine{max-width:480px; font-size:.86rem; line-height:1.4; color:#bcd6ec}
+  #betasplash .beta{display:inline-block; padding:5px 14px; border:2px solid var(--accent);
+    color:var(--accent); font-weight:700; letter-spacing:.16em; font-size:.8rem; border-radius:6px}
+  #betasplash .lead{max-width:480px; font-size:1.02rem; line-height:1.45; color:var(--ink)}
+  #betasplash .fine{max-width:480px; font-size:.86rem; line-height:1.4; color:var(--ink2)}
   #betasplash button{margin-top:6px; min-height:54px; padding:0 26px; border-radius:10px; cursor:pointer;
-    background:#fff; color:var(--brand-primary-dark); border:2px solid #fff; font-weight:700;
+    background:var(--accent); color:var(--on-sev); border:2px solid var(--accent); font-weight:700;
     letter-spacing:.06em; font-size:.92rem}
-  #betasplash button:hover{background:#eaf2f9}
+  #betasplash button:hover{filter:brightness(1.1)}
 </style>
 </head>
 <body data-theme="dark">
@@ -82,21 +79,22 @@ catch(e){ document.body.dataset.theme='dark'; }
 
 <!-- ===== SITE BETA SPLASH — first thing you see; dismiss to reveal the menu ===== -->
 <div id="betasplash" role="dialog" aria-modal="true" aria-label="Beta notice">
-  <div class="eyebrow">Littleton Regional Hospital &middot; Emergency Department</div>
+  <div class="eyebrow">{{SITE.eyebrow}}</div>
   <div class="title">Emergency Manual</div>
   <div class="beta">BETA</div>
   <div class="lead">Not yet ready for clinical use. Shared for feedback and practice only &mdash; do not use it to direct the care of a patient.</div>
-  <div class="fine">A personal, unofficial reference &mdash; not part of the LRH IT system / EHR, and not a substitute for clinical judgment. Content is unverified; verify every value against local protocols and assays.</div>
+  <div class="fine">A personal, unofficial reference &mdash; not part of any hospital IT system / EHR, and not a substitute for clinical judgment. {{SITE.editionNote}}</div>
   <button type="button" id="betago">I UNDERSTAND &mdash; CONTINUE</button>
 </div>
 
 <div class="hdr">
   <span class="plabel">EMERGENCY MANUAL</span>
+  <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Landing%20page" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
   <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
 </div>
 
 <div class="wrap">
-  <h1 class="sr-only">LRH Emergency Manual</h1>
+  <h1 class="sr-only">{{SITE.title}}</h1>
   <a class="lrh-startnew" href="codes/?from=home&amp;startnewcase=1#top">START NEW CASE</a>
 
   <!-- ===== SEARCH ===== -->
@@ -124,8 +122,8 @@ catch(e){ document.body.dataset.theme='dark'; }
 
     <!-- ===== CATEGORY: OB & Neonatal (live · BLUE) -> /ob-neonatal/ ===== -->
     <a class="lrh-cat" style="--cc:var(--blue)" href="ob-neonatal/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">OB &amp; Neonatal Emergencies</span><span class="spacer"></span><span class="count lrh-mono">10 cards</span></div>
-      <div class="desc">Obstetric and neonatal emergency manual with timers, checklists, and cart-drawer reference.</div>
+      <div class="row"><span class="dot"></span><span class="name">OB &amp; Neonatal Emergencies</span><span class="spacer"></span><span class="count lrh-mono">7 cards</span></div>
+      <div class="desc">Obstetric and neonatal emergency manual with timers, checklists, and cart-drawer reference. Neonatal resuscitation, PPH and shoulder dystocia inside now open as live engines — clock-driven, not static cards.</div>
     </a>
 
     <!-- ===== CATEGORY: Procedures (beta · TEAL) -> /procedures/ ===== -->
@@ -170,29 +168,16 @@ catch(e){ document.body.dataset.theme='dark'; }
       <div class="desc">Pillow-patient drills that chain the manual's real workflows — birth into dystocia into a blue baby, STEMI into VF into the code-status conversation. 10&ndash;15 minutes, no mannequin. Each one doubles as an <b>orientation walk</b>: the new hire finds the equipment, and what they find feeds the readiness audit.</div>
     </a>
 
-
-    <!-- ===== CATEGORY: Neonatal engine (beta · BLUE) -> /neonatal/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--blue)" href="neonatal/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">Neonatal Resuscitation</span><span class="spacer"></span><span class="count lrh-mono">live engine</span></div>
-      <div class="desc">NRP as a driven engine, not a card: one tap stamps the time of birth, the clock runs the 30-second cycles, the heart rate picks the next move, and the SpO&#8322; target shown is the one for the minute you are actually in.</div>
-    </a>
-
-    <!-- ===== CATEGORY: PPH engine (beta · RED) -> /pph/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--red)" href="pph/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">Postpartum Hemorrhage</span><span class="spacer"></span><span class="count lrh-mono">live engine</span></div>
-      <div class="desc">Clock from recognition, a running blood loss you tap up as you go, uterotonics in order with the contraindications greyed out for you, and escalation prompts that fire on the trend rather than a threshold.</div>
-    </a>
-
-    <!-- ===== CATEGORY: Shoulder dystocia engine (beta · GRAY) -> /dystocia/ ===== -->
-    <a class="lrh-cat" style="--cc:var(--gray)" href="dystocia/?from=home">
-      <div class="row"><span class="dot"></span><span class="name">Shoulder Dystocia</span><span class="spacer"></span><span class="count lrh-mono">live engine</span></div>
-      <div class="desc">The head-to-body interval on the clock where everyone can see it, HELPERR one rung at a time with 30-second prompts, and a record of every maneuver and its time that nobody has to reconstruct afterwards.</div>
-    </a>
-
     <!-- ===== CATEGORY: VEMS kit (beta · TEAL) -> /vems/ ===== -->
     <a class="lrh-cat" style="--cc:var(--teal)" href="vems/?from=home">
       <div class="row"><span class="dot"></span><span class="name">VEMS Kit</span><span class="spacer"></span><span class="count lrh-mono">printable deck</span></div>
       <div class="desc">Visually Enhanced Mental Simulation &mdash; a laminatable patient poster, monitor cards and equipment cards drawn with the same glyphs as the cart drawer labels. A table, the deck and fifteen minutes; no mannequin.</div>
+    </a>
+
+    <!-- ===== CATEGORY: Guideline sources (beta · GRAY) -> /sources/ ===== -->
+    <a class="lrh-cat" style="--cc:var(--gray)" href="sources/?from=home">
+      <div class="row"><span class="dot"></span><span class="name">Guideline Sources</span><span class="spacer"></span><span class="count lrh-mono">provenance</span></div>
+      <div class="desc">Which guideline each tool is written against, which edition, when a human last checked it, and exactly which cards move if it changes. A scheduled job watches each body monthly; the review calendar catches what the watching misses.</div>
     </a>
 
     <!-- ===== Add a category/tool: create a lowercase, hyphenated folder with an
@@ -202,11 +187,11 @@ catch(e){ document.body.dataset.theme='dark'; }
   </div>
 
   <div class="lrh-note">
-    <strong>Personal decision-support aids &mdash; not part of the LRH IT system / EHR.</strong>
+    <strong>Personal decision-support aids &mdash; not part of any hospital IT system / EHR.</strong> {{SITE.editionNote}}
     Beta: content is unverified. These tools do not replace clinical judgment. Verify all values and thresholds against local protocols and assays.
   </div>
 
-  <footer class="lrh-footer">Littleton Regional Hospital Emergency Manual &mdash; personal, unofficial reference &middot; Beta</footer>
+  <footer class="lrh-footer">{{SITE.footerLine}}</footer>
 </div>
 
 <script>
@@ -247,11 +232,11 @@ catch(e){ document.body.dataset.theme='dark'; }
     {t:"Chest Pain · HEART Pathway", c:"Clinical Pathways", k:"heart score acs acute coronary syndrome troponin hs-troponin chest pain risk disposition 0/1 hour accelerated", u:"clinical-pathways/heart/"},
     {t:"OB & Neonatal — overview / index", c:"OB & Neonatal", k:"obstetric neonatal childbirth delivery index", u:"ob-neonatal/?from=home"},
     {t:"Imminent normal delivery", c:"OB & Neonatal", k:"labor birth precipitous apgar nuchal cord crowning", u:"ob-neonatal/?from=home#c02"},
-    {t:"Neonatal resuscitation (NRP)", c:"OB & Neonatal", k:"nrp newborn newly born resus ppv chest compressions heart rate metronome apgar birth weight grams neonatal code dose", u:"ob-neonatal/?from=home#c03"},
+    {t:"Neonatal resuscitation (NRP) — live engine", c:"Neonatal", k:"neonatal resuscitation nrp newborn baby blue floppy ppv chest rise heart rate apgar time of birth delivery room warmer mr sopa compressions 3:1 epinephrine uvc preductal sats engine premature preterm plastic bag polyethylene wrap thermal mattress do not dry gestational age weeks days cord milking tele-nicu telenicu tele nicu telemedicine airway sizes ett tube blade mask suction lma", u:"neonatal/?from=home"},
     {t:"Umbilical vein catheterization (UVC)", c:"OB & Neonatal", k:"uvc umbilical vein line venous access emergency", u:"ob-neonatal/?from=home#c04"},
     {t:"ED C-section", c:"OB & Neonatal", k:"cesarean c-section section operative", u:"ob-neonatal/?from=home#c05"},
-    {t:"Postpartum hemorrhage (PPH)", c:"OB & Neonatal", k:"pph bleeding hemorrhage uterotonics oxytocin tranexamic txa uterine massage atony", u:"ob-neonatal/?from=home#c06"},
-    {t:"Shoulder dystocia (HELPERR)", c:"OB & Neonatal", k:"shoulder dystocia helperr mcroberts suprapubic pressure maneuvers", u:"ob-neonatal/?from=home#c07"},
+    {t:"Postpartum hemorrhage (PPH) — live engine", c:"OB & Neonatal", k:"pph postpartum hemorrhage bleeding ebl estimated blood loss uterotonics oxytocin txa misoprostol methylergonovine carboprost bimanual massage bakri jada mtp massive transfusion engine clock tele-nicu telenicu tele nicu telemedicine", u:"pph/?from=home"},
+    {t:"Shoulder dystocia (HELPERR) — live engine", c:"OB & Neonatal", k:"shoulder dystocia helperr mcroberts suprapubic rubin woods corkscrew posterior arm gaskin hands and knees turtle sign head to body interval fundal pressure engine clock tele-nicu telenicu tele nicu telemedicine", u:"dystocia/?from=home"},
     {t:"Breech delivery", c:"OB & Neonatal", k:"breech buttocks footling frank complete", u:"ob-neonatal/?from=home#c08"},
     {t:"Umbilical cord prolapse", c:"OB & Neonatal", k:"cord prolapse presenting", u:"ob-neonatal/?from=home#c09"},
     {t:"OB / neonatal cart — drawer contents", c:"OB & Neonatal", k:"cart drawer equipment supplies where is", u:"ob-neonatal/?from=home#cart"},
@@ -293,6 +278,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     {t:"Death of a Child in the ED", c:"Pediatric Emergencies", k:"pediatric death bereavement family termination of resuscitation", u:"peds/?from=home#p13"},
     {t:"Pediatric Procedural Sedation", c:"Pediatric Emergencies", k:"procedural sedation ketamine propofol etomidate fasting pediatric", u:"peds/?from=home#p14"},
     {t:"Croup", c:"Pediatric Emergencies", k:"croup barky cough stridor racemic epinephrine dexamethasone steeple laryngotracheitis", u:"peds/?from=home#p15"},
+    {t:"Pediatric Airway Equipment Sizes", c:"Pediatric Emergencies", k:"ett size endotracheal tube size blade size cuffed uncuffed miller macintosh laryngoscope lma igel supraglottic suction catheter size depth intubation equipment airway equipment sizes broselow drawer color zone", u:"peds/?from=home#p16"},
     {t:"Codes — overview / index", c:"Codes", k:"codes resuscitation cardiac arrest overview index", u:"codes/?from=home"},
     {t:"Clinical Pathways — overview / index", c:"Clinical Pathways", k:"clinical pathways accelerated diagnostic overview index", u:"clinical-pathways/"},
     {t:"Trauma — overview / index", c:"Trauma", k:"trauma resuscitation index", u:"trauma/?from=home"},
@@ -323,6 +309,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     {t:"Eclampsia / Severe Preeclampsia", c:"OB & Neonatal", k:"eclampsia preeclampsia pregnancy seizure magnesium sulfate severe hypertension labetalol hydralazine postpartum hellp", u:"ob-neonatal/?from=home#c11"},
     {t:"Mass-Casualty Incident (MCI) — First 15 Minutes", c:"Trauma", k:"mci mass casualty disaster triage start salt surge declare roles zones expectant", u:"trauma/?from=home#c09"},
     {t:"Electrical & Lightning Injury", c:"Trauma", k:"electrical injury lightning electrocution high voltage reverse triage rhabdomyolysis compartment", u:"trauma/?from=home#c10"},
+    {t:"Hazmat / Contaminated Patient — decontamination", c:"Trauma", k:"hazmat hazardous material decontamination decon contaminated patient chemical exposure cbrn nerve agent organophosphate sarin atropine pralidoxime duodote chempack cyanide hydroxocobalamin chlorine ammonia phosgene mustard vesicant radiation radiological potassium iodide ppe papr hot warm cold zone toxidrome undress wash", u:"trauma/?from=home#c11"},
     {t:"Equipment Readiness — where is everything", c:"Equipment", k:"equipment inventory where is location cart drawer kit stock supplies nprp readiness par find pigtail burr hole uvc igel chest tube", u:"equipment-readiness/?from=home"},
     /* One entry per section of the readiness tool — each is a destination a
        champion actually goes to, and rule 9 means none of them is findable
@@ -340,6 +327,14 @@ catch(e){ document.body.dataset.theme='dark'; }
     {t:"Equipment — MH cart and dantrolene stock", c:"Equipment", k:"malignant hyperthermia mh cart dantrolene ryanodex sterile water cold saline hotline succinylcholine triggering agent stock", u:"equipment-readiness/?from=home#s-MHAUS"},
     {t:"Equipment — ASRA rescue kit stock", c:"Equipment", k:"asra last lipid emulsion rescue kit stock intralipid twenty percent local anesthetic systemic toxicity tubing syringes checklist stored together", u:"equipment-readiness/?from=home#s-ASRA-LAST"},
     {t:"Equipment — weight-band cart packing check", c:"Equipment", k:"broselow weight band packing grey pink red purple yellow white blue orange green drawer contents weight band cart diff", u:"equipment-readiness/?from=home#walk"},
+    /* Guideline-source entries deliberately carry NO body acronyms (nrp, das,
+       aha, acog…) as keywords, even though the page covers all of them. Search
+       ranks title matches first and leaves everything else in array order, so
+       putting "nrp" here would let a provenance page share a result list with the
+       newborn-resuscitation card at 3 a.m. Provenance vocabulary only. */
+    {t:"Guideline sources — what each tool is written against", c:"Sources", k:"guideline guidelines source sources citation citations reference references evidence provenance bibliography which guideline where did this number come from upstream body society", u:"sources/?from=home"},
+    {t:"Guideline editions — is the manual current?", c:"Sources", k:"edition editions version current up to date outdated stale superseded new guideline published republished last reviewed review date freshness overdue when was this checked", u:"sources/?from=home#bysource"},
+    {t:"Guideline sources by tool — what a tool owes", c:"Sources", k:"which guideline does this tool follow per tool dependencies affected cards what moves if the guideline changes scope of a guideline change", u:"sources/?from=home#bytool"},
     /* Simulations are deliberately NOT in the search index (rule-9 exception,
        Lon 2026-08-12): the bedside search must never surface a training script
        next to a clinical card. The tool is reached via its landing tile only. */
@@ -366,9 +361,6 @@ catch(e){ document.body.dataset.theme='dark'; }
     {t:"System map — what is connected to what", c:"Reference", k:"system map coverage gaps audit which procedures have a poster qr label kit storage location connected infographics consistency", u:"system/"},
     {t:"Cart & cabinet labels — printable", c:"Reference", k:"labels drawer face slim insert door cabinet cart code trauma ob neonatal stock par expiry check card printable laminate wall card 3x8 kit check checked expires next check due sign off infographic qr", u:"labels/"},
     {t:"Posters — printable one-pagers", c:"Posters", k:"posters print printable wall cart infographic letter one page index", u:"posters/?from=home"},
-    {t:"Postpartum hemorrhage — live engine", c:"OB & Neonatal", k:"pph postpartum hemorrhage bleeding ebl estimated blood loss uterotonics oxytocin txa misoprostol methylergonovine carboprost bimanual massage bakri jada mtp massive transfusion engine clock", u:"pph/?from=home"},
-    {t:"Shoulder dystocia — live engine", c:"OB & Neonatal", k:"shoulder dystocia helperr mcroberts suprapubic rubin woods corkscrew posterior arm gaskin hands and knees turtle sign head to body interval fundal pressure engine clock", u:"dystocia/?from=home"},
-    {t:"Neonatal resuscitation — live NRP engine", c:"Neonatal", k:"neonatal resuscitation nrp newborn baby blue floppy ppv chest rise heart rate apgar time of birth delivery room warmer mr sopa compressions 3:1 epinephrine uvc preductal sats engine premature preterm plastic bag polyethylene wrap thermal mattress do not dry gestational age weeks days cord milking", u:"neonatal/?from=home"},
     {t:"VEMS kit — printable simulation card deck", c:"Reference", k:"vems visually enhanced mental simulation tabletop drill card deck laminate patient poster monitor cards equipment cards facilitator run sheet think aloud", u:"vems/?from=home"},
     {t:"VEMS — precipitous birth & the blue baby", c:"Reference", k:"vems deck precipitous birth shoulder dystocia blue baby newborn warmer drill laminated cards ob cart", u:"vems/?from=home#precipitous-birth"},
     {t:"VEMS — postpartum hemorrhage", c:"Reference", k:"vems deck postpartum hemorrhage pph uterotonics jada massive transfusion drill laminated cards ob cart", u:"vems/?from=home#pph"},
