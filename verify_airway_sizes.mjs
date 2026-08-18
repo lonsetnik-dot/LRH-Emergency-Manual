@@ -387,7 +387,15 @@ if (SHOTDIR) await shot(pg.locator('#wtbar'), 'peds-weight-bar-zone-chip-19kg');
 
 /* the arrest deep link must land on the sizes, not the consent splash */
 await pg.goto(BASE + '/peds/?from=arrest#p16', { waitUntil: 'networkidle' });
-await pg.waitForTimeout(600); /* the post-load re-anchor fires ~150 ms after load */
+/* The page re-anchors until the card stops moving (cards below keep growing as
+   their panels render). Poll for the settled state rather than sleeping a fixed
+   interval — a fixed wait passes locally and fails on a slower CI runner. */
+await pg.waitForFunction(() => {
+  const el = document.getElementById('p16');
+  if (!el) return false;
+  const r = el.getBoundingClientRect();
+  return r.top < window.innerHeight && r.bottom > 0;
+}, null, { timeout: 8000 }).catch(() => {});
 ok('peds: ?from=arrest#p16 skips the beta splash', await pg.evaluate(() => !document.getElementById('betasplash')));
 ok('peds: deep link lands with card 16 in view', await pg.evaluate(() => {
   const r = document.getElementById('p16').getBoundingClientRect();
