@@ -144,6 +144,16 @@
      a clinician mid-procedure should not have to hunt a panel.
      .logged is the after state: the wall time it recorded rides ON the
      button, which is the confirmation the person who pressed it needs. */
+  /* Every logging control is a pill, not just the .logit ones. The rule that
+     was here matched [data-log] only — an attribute no tool actually uses —
+     so the 29 real data-logevent controls in the card tools rendered as 12px
+     rectangles and DESIGN-SYSTEM.md §7's "the pill shape means this is now
+     in the record" was true nowhere a clinician logs a drug. */
+  /* article [data-logevent] matches the blanket rounded-cards rule above
+     ([style*="border:2px solid"], 0-1-1) — these buttons carry an inline
+     2px border, so a bare [data-logevent] at 0-1-0 loses to it and the pill
+     came out a 12px rectangle. Same specificity, declared later, wins. */
+  article [data-log],article [data-logevent],[data-log],[data-logevent]{border-radius:999px}
   .logit{display:inline-flex; align-items:center; gap:6px; min-height:36px; margin:6px 0 0;
     padding:6px 12px; border-radius:999px; background:var(--card2); color:var(--ink);
     border:1.5px solid var(--ink2); cursor:pointer; white-space:nowrap;

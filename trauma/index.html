@@ -948,8 +948,25 @@ var SITE = {
   var tc=SITE.transferCenter; if(!tc) return;
   function boot(){
     var els=document.querySelectorAll('a.telcall[data-tc]');
+    /* A tel: href is only built from something actually dialable. On the
+       generic trunk transferPhone is still the placeholder "[add your transfer
+       line]", and the old code happily rendered href="tel:[add your transfer
+       line]" — a 44px call affordance that dials bracket text. An adopting ED
+       that has not filled this in yet must SEE that it is unset, not discover
+       it by tapping during a transfer. Same reason codes/ renders a bare
+       tel: with an empty string: both now degrade to plain text instead. */
+    var digits=String(tc.tel||'').replace(/[^0-9+]/g,'');
+    var dialable=digits.replace(/[^0-9]/g,'').length>=7;
     for(var i=0;i<els.length;i++){
-      els[i].setAttribute('href','tel:'+tc.tel);
+      if(!dialable){
+        els[i].removeAttribute('href');
+        els[i].style.textDecoration='none';
+        els[i].style.color='var(--ink2)';
+        els[i].textContent=tc.label+': '+tc.phone+' — not configured';
+        els[i].setAttribute('aria-label', tc.label+' phone number is not configured for this site');
+        continue;
+      }
+      els[i].setAttribute('href','tel:'+digits);
       els[i].setAttribute('aria-label','Call '+tc.label+' '+tc.phone);
       els[i].textContent=tc.label+': '+tc.phone;
       /* Inside a checklist <label>: an <a> is interactive content, so the spec
