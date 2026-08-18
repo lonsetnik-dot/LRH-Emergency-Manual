@@ -1539,9 +1539,38 @@ var CASESTATE = (function(){
          and before the calculated panels rendered, so later layout shifts
          leave the card off-screen — re-anchor now AND after full load. */
       if(location.hash){
-        var re=function(){ try{ var tgt=document.querySelector(location.hash); if(tgt) tgt.scrollIntoView(); }catch(err){} };
+        /* Cards below the anchor keep growing after the splash is removed (the
+           dose spans and the card-16 panels render from JS), so a single
+           scrollIntoView lands short. Re-anchor until the target sits in the
+           same place twice running, bounded so it can never spin — and stop
+           the moment the reader touches the page, because yanking the scroll
+           back under someone who has started reading is worse than landing a
+           few hundred pixels off. */
+        var tries=0, lastTop=null, userMoved=false;
+        var stop=function(){ userMoved=true; };
+        ['wheel','touchstart','keydown','pointerdown'].forEach(function(ev){
+          window.addEventListener(ev, stop, {passive:true, once:true});
+        });
+        var re=function(){
+          if(userMoved) return;
+          var docTop=null;
+          try{
+            var tgt=document.querySelector(location.hash);
+            if(tgt){
+              /* Measure the target's position in the DOCUMENT, not the viewport:
+                 straight after scrollIntoView the viewport-relative top is always
+                 ~0, so comparing that would "settle" on the first retry while the
+                 cards above were still growing. */
+              docTop=Math.round(tgt.getBoundingClientRect().top + (window.pageYOffset||0));
+              tgt.scrollIntoView();
+            }
+          }catch(err){}
+          if(docTop!==null && lastTop!==null && Math.abs(docTop-lastTop)<2) return; /* layout settled */
+          lastTop=docTop;
+          if(++tries<14) setTimeout(re, 150);
+        };
         re();
-        window.addEventListener('load', function(){ re(); setTimeout(re, 150); }, false);
+        window.addEventListener('load', function(){ tries=0; lastTop=null; re(); }, false);
         return;
       }
       var f=document.getElementById('menuFilter'); if(f) f.focus();
