@@ -136,8 +136,114 @@
   <a class="ghost" href="../?from=tool">◀ MANUAL</a>
   <button class="ghost" id="backbtn" type="button" style="display:none">◀ BACK</button>
   <div class="plabel">PROCEDURES</div>
-  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Procedures" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+  <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Procedures" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
 </div>
+<script>
+/* ===== CASE-STATE (shared contract — see /CASE-STATE.md) ==================
+   procedures/ previously held NO state at all: 279 checkboxes, none of them
+   persisted, and no way to record that a procedure step happened. Two
+   consequences, both real:
+
+   1. A kit check interrupted by a patient was lost entirely — the champion
+      came back to a blank list and started again.
+   2. The two most time-critical procedures in the manual (lateral canthotomy,
+      resuscitative thoracotomy) left no time behind. "When was the pericardium
+      opened?" was answerable only from memory, in exactly the case where
+      memory is worst.
+
+   This is the same module every other tool carries — tools share the CONTRACT,
+   not the code (CLAUDE.md rule 2). Identical key names, identical value
+   shapes, identical PHI guard. Checkbox state is namespaced 'procedures:' at
+   the storage layer, so its card numbering can never collide with codes' or
+   trauma's in the one shared map.
+
+   Persistence here is deliberately bounded by the same manual-wide inactivity
+   guard the other tools use: a kit check resumed within the hour survives, one
+   abandoned yesterday does not, so nobody is ever shown last week's ticks as
+   though they were today's. ===================================================*/
+var CASESTATE = (function(){
+  var TOOL='procedures';
+  function rd(k, fb){ try{ var v=localStorage.getItem(k); return v===null?fb:JSON.parse(v); }catch(e){ return fb; } }
+  function wr(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
+  function rdRaw(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
+  function wrRaw(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+
+  function getClocks(){ return rd('lrh-case-clocks', {}); }
+  function anyClockRunning(){ return Object.keys(getClocks()).length>0; }
+  function touchActive(){ wrRaw('lrh-case-lastactive', String(Date.now())); }
+  function getLastActive(){ var v=rdRaw('lrh-case-lastactive'); return v===null?0:(+v||0); }
+
+  function getChecks(){ return rd('lrh-case-checks', {}); }
+  function setChecked(dataK, on){
+    var c=getChecks(), fullKey=TOOL+':'+dataK;
+    if(on) c[fullKey]=true; else delete c[fullKey];
+    wr('lrh-case-checks', c);
+  }
+  function isChecked(dataK){ return !!getChecks()[TOOL+':'+dataK]; }
+  function clearToolChecks(){
+    var c=getChecks(), changed=false;
+    Object.keys(c).forEach(function(k){ if(k.indexOf(TOOL+':')===0){ delete c[k]; changed=true; } });
+    if(changed) wr('lrh-case-checks', c);
+  }
+
+  /* PHI guard byte-identical to the other tools' copies: a weight-shaped
+     number or a 6+ digit run is REFUSED, not sanitized. addLog is the only
+     function allowed to write lrh-case-log. */
+  function isSafeLabel(s){
+    if(typeof s!=='string' || !s) return false;
+    if(/\d{1,3}(\.\d+)?\s*(kg|kilograms?|lb|lbs|pounds?)\b/i.test(s)) return false;
+    if(/\d{6,}/.test(s)) return false;
+    return true;
+  }
+  function addLog(card, label){
+    if(!isSafeLabel(label)){ try{ console.warn('CASESTATE.addLog: rejected unsafe label', label); }catch(e){} return; }
+    var log=rd('lrh-case-log', []);
+    log.push({ tMs:Date.now(), tool:TOOL, card:card, label:label });
+    if(log.length>400) log=log.slice(-400);
+    wr('lrh-case-log', log);
+  }
+  function getLog(){ return rd('lrh-case-log', []); }
+  function clearToolLog(){
+    var log=getLog().filter(function(e){ return e.tool!==TOOL; });
+    wr('lrh-case-log', log);
+  }
+  return {
+    getChecks:getChecks, setChecked:setChecked, isChecked:isChecked, clearToolChecks:clearToolChecks,
+    getClocks:getClocks, anyClockRunning:anyClockRunning, touchActive:touchActive, getLastActive:getLastActive,
+    addLog:addLog, getLog:getLog, clearToolLog:clearToolLog, isSafeLabel:isSafeLabel
+  };
+})();
+
+/* ---- inactivity auto-clear (WS2.5), same guard as every other tool ------- */
+(function(){
+  var TTL=60*60*1000;
+  try{
+    var last=CASESTATE.getLastActive();
+    if(last && (Date.now()-last)>TTL && !CASESTATE.anyClockRunning()){
+      Object.keys(localStorage).forEach(function(k){
+        if(k.indexOf('lrh-')===0 && k.indexOf('lrh-pref-')!==0) localStorage.removeItem(k);
+      });
+    }
+  }catch(e){}
+  try{ CASESTATE.touchActive(); }catch(e){}
+  document.addEventListener('click', function(){ try{ CASESTATE.touchActive(); }catch(e){} }, true);
+})();
+
+/* ---- checkbox persistence — every input[type=checkbox][data-k] ----------- */
+(function(){
+  function boxes(){ return Array.prototype.slice.call(document.querySelectorAll('input[type=checkbox][data-k]')); }
+  function boot(){
+    boxes().forEach(function(b){
+      var k=b.getAttribute('data-k');
+      try{ if(CASESTATE.isChecked(k)) b.checked=true; }catch(e){}
+      b.addEventListener('change', function(){
+        try{ CASESTATE.setChecked(k, b.checked); }catch(e){}
+      }, false);
+    });
+  }
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', boot, false); else boot();
+})();
+</script>
 <script>
 /* ---- Measure the real sticky-header height into --sticky-h, live ----
    Ported from codes/index.html's identical fix (same review finding: a
@@ -398,11 +504,11 @@
           <li class="t-div" data-role="MD"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-md">MD</span><span><b>Incise 2–4 cm</b> through skin, parallel to and directly over the rib <i>below</i> the target space.</span></label></li>
           <li class="t-div" data-role="MD"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-md">MD</span><span><b>Blunt-dissect with the Kelly over the TOP of that rib</b> — the neurovascular bundle runs under each rib's inferior edge.</span></label></li>
           <li class="t-div" data-role="MD"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-md">MD</span><span><b>Punch through the parietal pleura</b> with the closed clamp — expect a give and a hiss of air or rush of blood — then spread to widen the track.</span></label></li>
-          <li class="t-div" data-role="MD"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-md">MD</span><span><b>Finger thoracostomy:</b> insert a full gloved finger, sweep 360° to confirm you are intrapleural, clear adherent lung. In arrest this <i>is</i> the complete procedure — do it bilaterally in traumatic arrest, and re-finger if tension physiology recurs.</span></label></li>
+          <li class="t-div" data-role="MD"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-md">MD</span><span><b>Finger thoracostomy:</b> insert a full gloved finger, sweep 360° to confirm you are intrapleural, clear adherent lung. In arrest this <i>is</i> the complete procedure — do it bilaterally in traumatic arrest, and re-finger if tension physiology recurs.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="FINGER THORACOSTOMY DONE" data-logcard="01">FINGER THORACOSTOMY DONE &mdash; LOG IT</button></div></span></label></li>
           <li class="t-div" data-role="MD"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-md">MD</span><span><b>Tube:</b> clamp the distal end; guide the tip through the track on curved forceps or your finger — apically for air, posterobasally for blood. Every fenestration must sit inside the pleura.</span></label></li>
           <li class="t-div" data-role="BOTH"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-both">BOTH</span><span><b>Connect to the primed UWSD;</b> confirm fogging, respiratory swing, drainage or bubbling.</span></label></li>
           <li class="t-div" data-role="BOTH"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-both">BOTH</span><span><b>Secure:</b> heavy suture (anchor stitch, wrap and tie to the tube), occlusive dressing; keep the drain ≥45 cm below the chest. CXR to confirm; document the depth marking at skin.</span></label></li><li class="t-div" data-role="RN"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-rn">RN</span><span><b>Document</b> time of incision, tube size, depth at skin, and initial drainage volume. Obtain the confirmatory CXR.</span></label></li><li class="t-div" data-role="RN"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span class="role role-rn">RN</span><span><b>Watch the output and call the numbers out loud</b> — &gt;1500 mL immediately, or &gt;200 mL/hr. Those are the thoracotomy triggers on this card.</span></label></li>
-          <li class="t-div" data-role="BOTH"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck t-ck-crit"><span class="role role-both">BOTH</span><span><b>Massive hemothorax on insertion</b> → activate <a href="../codes/?from=home#c12">MTP (Codes card 12)</a> and prepare for possible transfer/operative management.</span></label></li>
+          <li class="t-div" data-role="BOTH"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck t-ck-crit"><span class="role role-both">BOTH</span><span><b>Massive hemothorax on insertion</b> → activate <a href="../codes/?from=home#c12">MTP (Codes card 12)</a> and prepare for possible transfer/operative management.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="MTP ACTIVATED" data-logcard="01">MTP ACTIVATED &mdash; LOG IT</button></div></span></label></li>
         </ul>
       </details>
     </div>
@@ -495,7 +601,7 @@
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Prepare:</b> intubated, sedated ± paralyzed, head up 30°; shave widely, prep, infiltrate lidocaine + epinephrine; cefazolin 2 g IV.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Incise 4 cm down to bone;</b> insert the self-retaining retractor; scrape the periosteum off.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Drill perpendicular to the skull</b> with firm steady pressure while an assistant irrigates with saline. Clutched bit: stop when it disengages. Non-clutched: through the outer table, then switch to the blunt burr for the inner table.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Drill perpendicular to the skull</b> with firm steady pressure while an assistant irrigates with saline. Clutched bit: stop when it disengages. Non-clutched: through the outer table, then switch to the blunt burr for the inner table.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="BURR HOLE OPENED" data-logcard="04">BURR HOLE OPENED &mdash; LOG IT</button></div></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Let extradural clot extrude on its own</b> — gentle irrigation and suction only; never suction on brain.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Dura intact but subdural on CT:</b> lift the dura with the sharp hook and nick it carefully with the scalpel to release.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>No clot found:</b> repeat at the frontal then parietal sites on the same side; only then consider the contralateral side.</span></label></li>
@@ -576,7 +682,7 @@
         <summary class="t-head t-head-neutral">TECHNIQUE — STEP BY STEP</summary>
         <ul class="twoup" style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Mark the incision lines</b> with the limb in anatomical position.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Incise through the full thickness of eschar DOWN TO SUBCUTANEOUS FAT only</b> — not fascia (that's a fasciotomy) — until the wound edges visibly spring apart.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Incise through the full thickness of eschar DOWN TO SUBCUTANEOUS FAT only</b> — not fascia (that's a fasciotomy) — until the wound edges visibly spring apart.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="ESCHAROTOMY INCISED" data-logcard="08">ESCHAROTOMY INCISED &mdash; LOG IT</button></div></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Extend each incision at least 1 cm into unburned skin</b> at both ends.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Limbs:</b> mid-lateral AND mid-medial longitudinal lines; carry across joints — tension is greatest there — avoiding flexor creases where possible.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Structures to avoid:</b> ulnar nerve at the medial elbow, common peroneal nerve at the fibular neck, posterior tibial bundle behind the medial malleolus; preserve superficial veins where possible.</span></label></li>
@@ -669,8 +775,8 @@
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Prepare:</b> analgesia/sedation as needed; topical anesthetic drops; irrigate the area with saline.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Infiltrate</b> lidocaine + epinephrine at the lateral canthus toward the orbital rim — needle always pointing away from the globe.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Crush:</b> clamp the lateral canthus horizontally out to the rim for ~1 minute to devascularize the incision line.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Canthotomy:</b> cut along the crushed line — 1–2 cm horizontally from the lateral canthal angle to the orbital rim, exposing the canthal tendon.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Cantholysis — the therapeutic step:</b> grasp the lower lid at the lateral lash line with toothed forceps and pull up and out; strum the inferior crus of the tendon with closed scissor tips (a bowstring/&ldquo;guitar string&rdquo; feel between rim and lid); aim the scissors toward the ipsilateral earlobe and cut it.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Canthotomy:</b> cut along the crushed line — 1–2 cm horizontally from the lateral canthal angle to the orbital rim, exposing the canthal tendon.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="LATERAL CANTHOTOMY CUT" data-logcard="05">LATERAL CANTHOTOMY CUT &mdash; LOG IT</button></div></span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Cantholysis — the therapeutic step:</b> grasp the lower lid at the lateral lash line with toothed forceps and pull up and out; strum the inferior crus of the tendon with closed scissor tips (a bowstring/&ldquo;guitar string&rdquo; feel between rim and lid); aim the scissors toward the ipsilateral earlobe and cut it.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="INFERIOR CRUS RELEASED" data-logcard="05">INFERIOR CRUS RELEASED &mdash; LOG IT</button></div></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Endpoint:</b> the tendon's firmness is lost, the lower lid swings freely and is readily evertable, yellow orbital fat is visible, the globe softens and IOP falls. Re-assess the eye: IOP, pupil, acuity.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Still tight?</b> Re-explore and complete the inferior release in stages; avoid the superior crus unless forced (it needs formal oculoplastic repair).</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>After:</b> no eye pad — leave the eye exposed for repeat exams (a trimmed polystyrene cup for transport), antibiotic ointment, serial pupil/IOP checks, CT and urgent ophthalmology consultation.</span></label></li>
@@ -757,10 +863,10 @@
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Extend the left thoracostomy incision</b> with the scalpel along the 5th ICS from sternum to mid-axillary line, then cut through intercostal muscle into pleura along its whole length with heavy scissors.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Clamshell:</b> mirror the incision on the right, then divide the sternum transversely with the Gigli saw or heavy scissors — expect internal mammary bleeding to control later.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Insert the Finochietto</b> (handle toward the axilla so it doesn't block extension), open widely, sweep the left lung out of the way.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Pericardium:</b> tent it with artery forceps and open with a long vertical (cephalad–caudad) incision <i>anterior to the phrenic nerve</i>. Deliver the heart, evacuate clot, inspect every surface for wounds.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Pericardium:</b> tent it with artery forceps and open with a long vertical (cephalad–caudad) incision <i>anterior to the phrenic nerve</i>. Deliver the heart, evacuate clot, inspect every surface for wounds.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="PERICARDIUM OPENED" data-logcard="02">PERICARDIUM OPENED &mdash; LOG IT</button></div></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Control the cardiac wound:</b> finger occlusion first, then staples or 3-0 nylon/prolene suture (never deep bites near coronaries), or a Foley balloon through the defect with gentle traction.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Internal massage</b> two-handed at ~100/min; internal defibrillation for VF starting ~10–20 J.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Aorta:</b> hand along the posterior left chest wall, find the descending aorta above the diaphragm — compress against the spine or cross-clamp at diaphragm level. Lung hemorrhage or air embolism → compress the hilum, hilar twist, or clamp.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Aorta:</b> hand along the posterior left chest wall, find the descending aorta above the diaphragm — compress against the spine or cross-clamp at diaphragm level. Lung hemorrhage or air embolism → compress the hilum, hilar twist, or clamp.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="AORTA CROSS-CLAMPED" data-logcard="02">AORTA CROSS-CLAMPED &mdash; LOG IT</button></div></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck t-ck-crit"><span><b>If ROSC:</b> expect brisk mammary/intercostal bleeding — control it, sedate and ventilate, and move straight toward the OR / transfer.</span></label></li>
         </ul>
       </details>
@@ -1039,7 +1145,7 @@
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span>Once time/safety allow: convert to direct skin application, <b>2–3 inches above the wound</b>, not over a joint.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span>Wrap the band around the limb, thread it through the buckle, remove all slack.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span>Twist the windlass <b>until bleeding stops AND the distal pulse is no longer palpable</b> — not just until bleeding slows.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span>Lock the windlass rod with the clip; secure the windlass strap over the clip. <b>Mark the time of application</b> on the tourniquet strap.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span>Lock the windlass rod with the clip; secure the windlass strap over the clip. <b>Mark the time of application</b> on the tourniquet strap.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="TOURNIQUET APPLIED" data-logcard="10">TOURNIQUET APPLIED &mdash; LOG IT</button></div></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span>If bleeding continues: apply a <b>second tourniquet side-by-side</b> with the first (proximal to it if anatomically possible) until bleeding and the distal pulse are both eliminated.</span></label></li>
         </ul>
       </details>
@@ -1156,7 +1262,7 @@
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span>Direct manual pressure first, anchored against an adjacent bony structure where possible.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span>Pack hemostatic gauze <b>directly into the wound cavity</b> — not just laid over the surface — layer by layer until it's full and no more material can be inserted.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span>Hold firm, continuous, uninterrupted pressure for <b>at least 3 minutes</b> — do not release to peek; disturbing the forming clot restarts hemorrhage. Verify the exact hold time against the specific product's insert — some manufacturer instructions cite 5 minutes.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span>Hold firm, continuous, uninterrupted pressure for <b>at least 3 minutes</b> — do not release to peek; disturbing the forming clot restarts hemorrhage. Verify the exact hold time against the specific product's insert — some manufacturer instructions cite 5 minutes.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="PRESSURE HOLD STARTED" data-logcard="12">PRESSURE HOLD STARTED &mdash; LOG IT</button></div></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span>Still soaked through and clearly bleeding after the full hold → remove and repack fresh, then hold again. If a junctional tourniquet device is available and the site is amenable, apply it without delay.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>iTClamp</b> (if stocked): head/neck wounds with apposable edges only — mechanically everts and seals the wound edges, achieving hemostasis via contained-hematoma back-pressure. Not for groin/axilla/perineum. Keep ≥1 cm from the eye/eyelid; watch for airway compromise from an expanding hematoma if applied to the neck.</span></label></li>
         </ul>
@@ -1221,7 +1327,7 @@
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Pre-insertion:</b> evaluate for lacerations, retained products, or other bleeding sources first — this device does not fix those.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Empty the bladder</b> (straight catheterization or Foley) and connect the canister/tubing to the regulated vacuum source.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck t-ck-crit"><span><b>Remove all air from the Cervical Seal</b> with a sterile syringe before use — air left in the seal is an embolism risk if it bursts. Never inflate the seal with air, CO₂, or any other gas.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Confirm ≥3 cm dilation</b> by visualization, then compress the Intrauterine Loop near its distal tip and insert transvaginally, leading with the loop. Avoid excessive force — smaller uteri carry higher perforation risk.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Confirm ≥3 cm dilation</b> by visualization, then compress the Intrauterine Loop near its distal tip and insert transvaginally, leading with the loop. Avoid excessive force — smaller uteri carry higher perforation risk.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="JADA INSERTED" data-logcard="13">JADA INSERTED &mdash; LOG IT</button></div></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span>Position the Intrauterine Loop in the frontal plane with the Seal Valve at 6 or 12 o'clock; confirm the loop is in the uterus and the Cervical Seal sits at the external os (ultrasound optional).</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span><b>Fill the Cervical Seal</b> with 60 mL sterile fluid; add up to an additional 60 mL as needed for full os coverage.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span>Set the vacuum to <b>80 ± 10 mmHg</b> while occluding the end of the tubing, then connect the tubing to the device.</span></label></li>
@@ -1233,7 +1339,7 @@
         <summary class="t-head t-head-neutral">MONITORING &amp; REMOVAL</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span>Leave in place until bleeding is controlled for <b>at least 1 hour</b> and the uterus is firm with a stable patient.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span>Disconnect the vacuum, then monitor a further <b>≥30 minutes</b> (device stays in place, un-vacuumed) watching for recurrent bleeding — total minimum indwell before removal-eligible is about 1.5 hours.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span>Disconnect the vacuum, then monitor a further <b>≥30 minutes</b> (device stays in place, un-vacuumed) watching for recurrent bleeding — total minimum indwell before removal-eligible is about 1.5 hours.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="JADA VACUUM DISCONNECTED" data-logcard="13">JADA VACUUM DISCONNECTED &mdash; LOG IT</button></div></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck t-ck-crit"><span><b>Maximum indwell time is 24 hours</b> — do not exceed this regardless of clinical picture; reassess sooner if bleeding recurs or the device isn't achieving control.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck t-ck-crit"><span><b>Removal:</b> always disconnect from vacuum tubing FIRST — do not remove while vacuum is applied (uterine inversion risk). Then withdraw all fluid from the Cervical Seal. Steady the fundus with one hand on the abdomen while the other slowly withdraws the device.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" class="t-ck"><span>Consider prophylactic antibiotics for prolonged use, per local practice.</span></label></li>
@@ -1603,6 +1709,63 @@ var SITE = {
     for(var i=0;i<els.length;i++){ els[i].innerHTML=html; }
   }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
-})();</script>
+})();
+/* ---- LOG IT controls (issue #71 idiom, DESIGN-SYSTEM.md §7) ---------------
+   A round pill that RECORDS that something happened, with the time it was
+   tapped. Trauma had none: the times a debrief argues about afterwards —
+   tourniquet on, blood started, TXA in, thoracotomy opened — left no trace.
+
+   Behavior, deliberately:
+   - One tap writes to the shared case log (visible in every tool's CASE
+     TIMELINE and in the debrief), and the button itself then shows the wall
+     time it recorded. The clinician gets the confirmation ON the control they
+     just pressed, not in a panel somewhere else.
+   - Tapping again re-logs rather than un-logging. A second tourniquet, a
+     second unit of blood, a re-application — those are real events, and an
+     "undo" here would quietly delete a time that already happened. The log is
+     a record, not a checklist.
+   - It is a <button>, never a link: a link navigates, a pill records
+     (DESIGN-SYSTEM.md §7). The two never share a shape.
+   - The label is PHI-free by construction and re-checked by the PHI guard in
+     CASESTATE.addLog. */
+(function(){
+  function wall(ms){
+    var d=new Date(ms);
+    return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+  }
+  function stamp(btn, ms){
+    var e=btn.querySelector('.logstamp');
+    if(!e){ e=document.createElement('span'); e.className='logstamp'; btn.appendChild(e); }
+    e.textContent = ' ✓ '+wall(ms);
+    btn.classList.add('logged');
+  }
+  /* Re-stamp on load from the shared log, so a reload (or coming back from
+     another tool) does not make a recorded event look unrecorded. */
+  function restore(){
+    var log=[]; try{ log=CASESTATE.getLog()||[]; }catch(e){}
+    Array.prototype.forEach.call(document.querySelectorAll('[data-logevent]'), function(btn){
+      var lbl=btn.getAttribute('data-logevent'), last=null;
+      for(var i=0;i<log.length;i++){ if(log[i] && log[i].label===lbl) last=log[i].tMs; }
+      if(last) stamp(btn, last);
+    });
+  }
+  document.addEventListener('click', function(ev){
+    var t=ev.target && ev.target.closest ? ev.target.closest('[data-logevent]') : null;
+    if(!t) return;
+    var now=Date.now();
+    try{ CASESTATE.addLog(t.getAttribute('data-logcard')||'', t.getAttribute('data-logevent')); }catch(e){}
+    stamp(t, now);
+  });
+  var rb=document.getElementById('resetbtn');
+  if(rb) rb.addEventListener('click', function(){
+    try{ CASESTATE.clearToolLog(); }catch(e){}
+    Array.prototype.forEach.call(document.querySelectorAll('[data-logevent]'), function(btn){
+      btn.classList.remove('logged');
+      var e=btn.querySelector('.logstamp'); if(e) e.remove();
+    });
+  });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', restore, false); else restore();
+})();
+</script>
 </body>
 </html>

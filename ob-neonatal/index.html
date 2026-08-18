@@ -167,7 +167,7 @@ try{
   <span class="plabel">OB &amp; NEONATAL</span>
   <button class="ghost" id="summarybtn" type="button">TIMELINE</button>
   <button class="ghost danger" id="resetbtn" type="button" style="display:none">RESET</button>
-  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20OB%20%26%20Neonatal" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+  <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20OB%20%26%20Neonatal" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
 </div>
 </div>
 <script>
@@ -457,7 +457,7 @@ try{
       </figure></div>
       <div style="padding:4px 14px 14px;">
         <button type="button" id="clampbtn" data-logevent="CORD CLAMPED" data-logcard="02" style="width:100%; min-height:58px; background:var(--teal); color:var(--on-sev); border:2px solid var(--teal); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">CORD IS CLAMPED</button>
-        <div style="margin-top:12px; padding:10px 12px; background:var(--card2); border-left:4px solid var(--teal); font-size:13.5px; line-height:1.35; color:var(--ink);">Two clamps 2–3 in from the abdomen, cut between. Then let the placenta deliver with gentle pushing — <b>no cord traction</b>. Watch maternal bleeding → <b>card 06</b> if &gt;500 mL or shock.</div>
+        <div style="margin-top:12px; padding:10px 12px; background:var(--card2); border-left:4px solid var(--teal); font-size:13.5px; line-height:1.35; color:var(--ink);">Two clamps 2–3 in from the abdomen, cut between. Then let the placenta deliver with gentle pushing — <b>no cord traction</b>. Watch maternal bleeding → <b><a href="#c06">card 06</a></b> if &gt;500 mL or shock.</div>
       </div>
     </details>
     <details open style="border:2px solid var(--gray); align-self:start;">
@@ -818,7 +818,7 @@ try{
       <div style="padding:11px 14px 13px; background:var(--card2);">
         <a href="../neonatal/?from=obneonatal" class="babyout" data-logevent="BABY OUT" data-logcard="02" style="display:flex; align-items:center; justify-content:center; min-height:56px; background:var(--sev-crit); color:var(--on-sev); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; text-align:center; margin-bottom:9px;">BABY IS OUT — STAMP TIME → NEONATAL RESUS</a>
         <a href="#c02s2" style="display:flex; align-items:center; justify-content:center; min-height:52px; background:var(--teal); color:var(--on-sev); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.1em; text-align:center;">→ 02 · TIME OF BIRTH + THE 4-YES CHECK</a>
-        <div style="margin-top:9px; font-size:13.5px; line-height:1.3; color:var(--ink);">All four yes: skin-to-skin and delayed clamping. Any one no: clamp now, warmer, <b>neonatal resuscitation (card 03)</b>.</div>
+        <div style="margin-top:9px; font-size:13.5px; line-height:1.3; color:var(--ink);">All four yes: skin-to-skin and delayed clamping. Any one no: clamp now, warmer, <b>neonatal resuscitation (<a href="#c03">card 03</a>)</b>.</div>
       </div>
     </details>
   </div>
@@ -955,7 +955,7 @@ try{
       <div style="padding:11px 14px 0; font-size:13.5px; line-height:1.3; color:var(--ink); background:var(--card2);">Nothing here delivers this baby. Everything you are doing is a bridge to the operating field — keep the presenting part elevated the whole way.</div>
       <div style="padding:11px 14px 13px; background:var(--card2);">
         <a href="#c05" style="display:flex; align-items:center; justify-content:center; min-height:52px; background:var(--sev-crit); color:var(--on-sev); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.1em; text-align:center;">→ 05 · ED C-SECTION</a>
-        <div style="margin-top:9px; font-size:13.5px; line-height:1.3; color:var(--ink);">At delivery the baby goes to the <a href="#c02s2" style="color:var(--red); font-weight:700;">4-yes check</a> — or straight to <b>neonatal resuscitation (card 03)</b>.</div>
+        <div style="margin-top:9px; font-size:13.5px; line-height:1.3; color:var(--ink);">At delivery the baby goes to the <a href="#c02s2" style="color:var(--red); font-weight:700;">4-yes check</a> — or straight to <b>neonatal resuscitation (<a href="#c03">card 03</a>)</b>.</div>
       </div>
     </details>
   </div>

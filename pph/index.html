@@ -61,7 +61,7 @@
   </div>
   <span class="shell-wide" style="gap:6px;align-items:center">
     <button class="ghost" id="tlbtnwide" type="button">TIMELINE</button>
-    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20PPH" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+    <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20PPH" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
     <button class="ghost shellreset" id="resetwide" type="button">RESET</button>
   </span>
   <button class="shellmore shell-phone" id="menubtn" type="button" aria-label="Menu">⋯</button>
@@ -86,7 +86,7 @@
      two-tap SURE? reset the wide button runs (SHELL.md layer 9). -->
 <div class="shellmenu right" id="moremenu" style="display:none">
   <button class="shellmenurow" id="tlbtn" type="button">Case timeline</button>
-  <a class="shellmenurow" id="feedbackmenu" href="mailto:lon.setnik@gmail.com?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20PPH">Feedback</a>
+  <a class="shellmenurow" id="feedbackmenu" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20PPH">Feedback</a>
   <div class="shellmenudiv"></div>
   <button class="shellmenurow danger" id="resetbtn" type="button">Reset for next case</button>
 </div>
@@ -237,9 +237,9 @@ var SITE = {
   review:{
     on:true,
     text:"DOSES INHERITED, NOT RE-DERIVED. Every drug and dose on this screen was carried across "+
-         "unchanged from the postpartum haemorrhage card, which carried no citation of its own. The "+
+         "unchanged from the postpartum hemorrhage card, which carried no citation of its own. The "+
          "sequence and the contraindication guards follow ACOG Practice Bulletin 183 and the AIM "+
-         "obstetric haemorrhage bundle (see SOURCE). Check the doses against your own formulary before "+
+         "obstetric hemorrhage bundle (see SOURCE). Check the doses against your own formulary before "+
          "relying on this screen."
   },
 
@@ -258,9 +258,9 @@ var SITE = {
   ],
   /* Trend prompts. Each fires once, on the way up. */
   eblMarks:[
-    { ml:1000, say:"1 litre. Say the number out loud. Are the uterotonics all in, and has anyone called for blood?" },
-    { ml:1500, say:"1.5 litres. This is the point to activate massive transfusion rather than think about it." },
-    { ml:2000, say:"2 litres. If the uterus is atonic and OB is not at the bedside, mechanical control now — balloon or packing." }
+    { ml:1000, say:"1 liter. Say the number out loud. Are the uterotonics all in, and has anyone called for blood?" },
+    { ml:1500, say:"1.5 liters. This is the point to activate massive transfusion rather than think about it." },
+    { ml:2000, say:"2 liters. If the uterus is atonic and OB is not at the bedside, mechanical control now — balloon or packing." }
   ],
 
   /* Time bands, straight off the card's PPH clock figure. */
@@ -285,7 +285,7 @@ var SITE = {
       block:"asthma", blockWhy:"Not in asthma." }
   ],
   /* Asked once, up front, because the answer changes which drugs are offered
-     and nobody should be recalling a contraindication at 1.5 litres. */
+     and nobody should be recalling a contraindication at 1.5 liters. */
   flags:[
     { id:"htn",    label:"HYPERTENSION / PREECLAMPSIA" },
     { id:"asthma", label:"ASTHMA" }
@@ -481,7 +481,7 @@ var ACC=[
         '<b>different person</b>: say out loud who is staying with her.</p>'; } },
   { id:'flags', t:'CONTRAINDICATIONS — ASK ONCE, NOW', b:function(){
       var h='<p>Answered up front so the screen can rule a drug out for you, rather than you '+
-        'recalling it at 1.5 litres.</p><div class="tog">';
+        'recalling it at 1.5 liters.</p><div class="tog">';
       SITE.flags.forEach(function(f){
         h+='<button type="button" data-flag="'+f.id+'" aria-pressed="'+(S.flags[f.id]?'true':'false')+'">'+
            (S.flags[f.id]?'✓ ':'')+esc(f.label)+'</button>';
@@ -507,7 +507,7 @@ var ACC=[
   { id:'src', t:'SOURCE &amp; PROVENANCE', b:function(){
       return '<p><b>Sequence and contraindications:</b> ACOG Practice Bulletin 183, <i>Postpartum '+
         'Hemorrhage</i> (Obstet Gynecol 2017;130:e168), and the Alliance for Innovation on Maternal Health '+
-        '(AIM) obstetric haemorrhage patient safety bundle. TXA timing follows the WOMAN trial '+
+        '(AIM) obstetric hemorrhage patient safety bundle. TXA timing follows the WOMAN trial '+
         '(<i>Lancet</i> 2017;389:2105) — benefit is greatest given early, hence the 3-hour window on '+
         'this screen.</p>'+
         '<p><b>Provenance.</b> Every drug and dose here was carried across <b>unchanged</b> from '+

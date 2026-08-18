@@ -612,6 +612,11 @@ ck('23. the dosing block is retitled as reference while running', await txt('#do
 ck('23. the EPI button reads GIVE NOW before the first dose', await txt('#dockepiclock'), 'GIVE NOW');
 ck(`23. the EPI label carries the config dose (${CFG.epi.adultMg} mg)`, await txt('#dockepilabel'), `EPI ${CFG.epi.adultMg} mg`);
 ck(`23. the SHOCK label carries the config energy (${J[0]} J)`, await txt('#dockshocklabel'), `SHOCK ${J[0]} J`);
+/* The dock renders on the 200ms paint loop, so a click issued the instant
+   after the assertions above can land before the button is stable — this
+   line has timed out three times on a loaded runner while passing in
+   isolation. Wait for the control rather than for a fixed interval. */
+await pg.locator('#dockepi').waitFor({ state: 'visible', timeout: 10000 });
 await pg.click('#dockepi'); await pg.waitForTimeout(300);
 ck('23. the EPI button IS the epi action (logs a dose)', /EPI .*dose #1/.test(await txt('#tickertext')), true);
 {

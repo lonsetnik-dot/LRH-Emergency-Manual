@@ -566,6 +566,132 @@ var GDL_SOURCES = [
     dependents: ["peds/#p16"],
     watch: [] },
 
+  /* ---- Bodies cited by the 2026-08-12 coverage-gap cards and the hazmat card,
+     added 2026-08-18 after an audit found them cited in prose but absent from
+     this registry (golden rule 11). verify_guidelines.mjs stayed green the
+     whole time because it only requires a row for the TOOL, and these cards
+     live in tools already covered — so the guard was vacuous here. These rows
+     carry #cXX dependents for exactly that reason. ---- */
+
+  { id: "ssc-sepsis",
+    body: "Surviving Sepsis Campaign",
+    title: "International Guidelines for Management of Sepsis and Septic Shock",
+    edition: "2021",
+    citation: "Evans L, Rhodes A, Alhazzani W, et al. Surviving Sepsis Campaign: International Guidelines for Management of Sepsis and Septic Shock 2021. Crit Care Med 2021;49(11):e1063-e1143.",
+    url: "https://www.sccm.org/SurvivingSepsisCampaign/Guidelines",
+    cadence: "Major revision roughly every 4 years, with focused updates between; announced at SCCM congress.",
+    reviewEvery: 365,
+    lastVerified: null,
+    citedSince: "2026-08-12",
+    impact: "high",
+    dependents: ["codes/#c28"],
+    watch: [
+      { kind: "pubmed", label: "Surviving Sepsis Campaign guidelines",
+        term: '(guideline[pt] OR "practice guideline"[pt]) AND ("surviving sepsis"[tiab] OR "septic shock"[ti])' }
+    ] },
+
+  { id: "wms",
+    body: "Wilderness Medical Society",
+    title: "Clinical practice guidelines — accidental hypothermia, heat illness, lightning injury",
+    edition: "hypothermia 2019 update; heat illness 2019 update; lightning 2014",
+    citation: "Dow J, et al. WMS Clinical Practice Guidelines for the Out-of-Hospital Evaluation and Treatment of Accidental Hypothermia: 2019 Update. Wilderness Environ Med. Lipman GS, et al. WMS Clinical Practice Guidelines for Heat Illness: 2019 Update. Davis C, et al. WMS Practice Guidelines for the Prevention and Treatment of Lightning Injuries: 2014 Update.",
+    url: "https://wms.org/research/practice-guidelines",
+    cadence: "Per-topic updates on no fixed schedule, published in Wilderness &amp; Environmental Medicine.",
+    reviewEvery: 365,
+    lastVerified: null,
+    citedSince: "2026-08-12",
+    impact: "high",
+    dependents: ["codes/#c27", "codes/#c33", "trauma/#c10"],
+    watch: [
+      { kind: "pubmed", label: "WMS practice guidelines",
+        term: '"wilderness environ med"[jour] AND (guideline[ti] OR guidelines[ti])' }
+    ] },
+
+  { id: "ada-hyperglycemic",
+    body: "ADA / EASD",
+    title: "Hyperglycemic crises in adults with diabetes (DKA and HHS)",
+    edition: "2024 consensus report",
+    citation: "Umpierrez GE, Davis GM, ElSayed NA, et al. Hyperglycemic Crises in Adults With Diabetes: A Consensus Report. Diabetes Care 2024. Supersedes the 2009 ADA consensus statement.",
+    url: "https://diabetesjournals.org/care",
+    cadence: "Consensus reports are infrequent; the annual Standards of Care restate the crisis guidance and publish each January.",
+    reviewEvery: 365,
+    lastVerified: null,
+    citedSince: "2026-08-12",
+    impact: "high",
+    dependents: ["codes/#c31"],
+    watch: [
+      { kind: "pubmed", label: "Hyperglycemic crises guidance",
+        term: '("diabetes care"[jour]) AND ("hyperglycemic crises"[tiab] OR "diabetic ketoacidosis"[ti]) AND (guideline[pt] OR consensus[tiab])' }
+    ] },
+
+  { id: "asam-withdrawal",
+    body: "ASAM",
+    title: "Clinical Practice Guideline on Alcohol Withdrawal Management",
+    edition: "2020",
+    citation: "The ASAM Clinical Practice Guideline on Alcohol Withdrawal Management. J Addict Med 2020;14(3S Suppl 1):1-72.",
+    url: "https://www.asam.org/quality-care/clinical-guidelines",
+    cadence: "Infrequent; ASAM announces new and revised guidelines on its clinical-guidelines page.",
+    reviewEvery: 365,
+    lastVerified: null,
+    citedSince: "2026-08-12",
+    impact: "medium",
+    dependents: ["codes/#c34"],
+    watch: [
+      { kind: "page", label: "ASAM clinical guidelines page",
+        url: "https://www.asam.org/quality-care/clinical-guidelines" }
+    ] },
+
+  { id: "aha-poisoning",
+    body: "AHA",
+    title: "Focused Update on the Management of Patients With Cardiac Arrest or Life-Threatening Toxicity Due to Poisoning",
+    edition: "2023",
+    citation: "Lavonas EJ, Akpunonu PD, Arens AM, et al. 2023 American Heart Association Focused Update on the Management of Patients With Cardiac Arrest or Life-Threatening Toxicity Due to Poisoning. Circulation 2023;148(16):e149-e184.",
+    url: "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001161",
+    cadence: "Folded into the AHA autumn guideline cycle; a focused update can supersede it without a new full edition.",
+    reviewEvery: 180,
+    lastVerified: null,
+    citedSince: "2026-08-12",
+    impact: "high",
+    dependents: ["codes/#c36"],
+    watch: [
+      { kind: "pubmed", label: "Poisoning / tox-induced arrest guidance",
+        term: '(guideline[pt] OR "practice guideline"[pt]) AND (poisoning[ti] OR toxicity[ti]) AND (arrest[tiab] OR resuscitation[tiab])' }
+    ] },
+
+  { id: "chemm-remm",
+    body: "HHS / ASPR",
+    title: "CHEMM and REMM — chemical and radiological emergency medical management",
+    edition: "current (continuously maintained)",
+    citation: "US Department of Health and Human Services, ASPR. Chemical Hazards Emergency Medical Management (chemm.hhs.gov) and Radiation Emergency Medical Management (remm.hhs.gov); ATSDR Medical Management Guidelines for individual agents.",
+    url: "https://chemm.hhs.gov/",
+    cadence: "Maintained continuously with no edition numbers and no change announcements — a revised page can appear at the same URL, so the probe below will miss it. The periodic human re-read is the real control.",
+    reviewEvery: 365,
+    lastVerified: null,
+    citedSince: "2026-08-18",
+    impact: "high",
+    dependents: ["trauma/#c09", "trauma/#c11"],
+    watch: [
+      { kind: "page", label: "CHEMM home",
+        url: "https://chemm.hhs.gov/" }
+    ] },
+
+  { id: "aba-burn",
+    body: "American Burn Association",
+    title: "Burn center referral criteria and Advanced Burn Life Support",
+    edition: "current",
+    citation: "American Burn Association. Burn center referral criteria; Advanced Burn Life Support (ABLS) Provider Manual.",
+    url: "https://ameriburn.org/",
+    cadence: "ABLS manual revised every few years; referral criteria change rarely and are restated in the ACS resources document.",
+    reviewEvery: 365,
+    lastVerified: null,
+    citedSince: "2026-08-12",
+    impact: "medium",
+    dependents: ["trauma/#c05", "trauma/#c10"],
+    watch: [
+      { kind: "page", label: "ABA resources",
+        url: "https://ameriburn.org/" }
+    ] },
+
   { id: "tertiary-refs",
     body: "WikEM / LITFL / EMCrit IBCC / StatPearls",
     title: "Continuously-edited tertiary references",

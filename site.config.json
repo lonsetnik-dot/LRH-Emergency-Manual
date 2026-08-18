@@ -20,6 +20,8 @@
   "domain": "lrhemergencymanual.net",
   "editionNote": "Content is unverified; verify every value against local protocols and assays.",
   "footerLine": "Littleton Regional Healthcare Emergency Manual &mdash; personal, unofficial reference &middot; Beta",
+  "_feedbackEmailNote": "Where the FEEDBACK button in every tool sends mail. Trunk-side this token replaced a hardcoded personal address that would have misrouted every fork's feedback; for LRH specifically it stays Lon's own address, since he is this edition's maintainer.",
+  "feedbackEmail": "lon.setnik@gmail.com",
   "transferCenter": "DHMC Transfer Center",
   "transferPhone": "(877) 999-9870",
   "poisonControl": "1-800-222-1222"
