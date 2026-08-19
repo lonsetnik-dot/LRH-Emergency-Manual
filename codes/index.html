@@ -179,8 +179,21 @@
   .prs-pick .prs-n { font-size:13px; font-weight:700; letter-spacing:0.05em; }
   .prs-pick .prs-s { font-size:11.5px; font-weight:400; line-height:1.3; letter-spacing:0.01em; color:var(--ink2); }
   .prs-row { border:1px solid var(--line); background:var(--card2); padding:10px 12px; margin-top:8px; }
-  .prs-rate { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:27px; font-weight:800; line-height:1.08; color:var(--ink); }
+  /* The chain: ordered dose = dose per minute = pump rate, of the standard bag.
+     Two big figures now instead of one, so 27px would push the pair onto three
+     lines at 320px; 22px keeps "3.7 mcg/min = 13.9 mL/hr" on one line on a phone
+     and still reads across a resus bay. The row flex-wraps rather than shrinking
+     further — a wrapped chain is legible, a 15px one is not. */
+  .prs-chain { display:flex; align-items:baseline; gap:7px; flex-wrap:wrap; margin-top:7px; }
+  .prs-q { white-space:nowrap; }
+  .prs-rate { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:22px; font-weight:800; line-height:1.1; color:var(--ink); }
   .prs-rate.unset { font-size:14px; font-weight:700; color:var(--red); }
+  /* The ordered dose and the bag are context, not the number you act on — they
+     stay quiet so the two computed figures carry the row. */
+  .prs-ordered { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; color:var(--ink2); }
+  .prs-eq { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; color:var(--ink2); }
+  .prs-of { font-size:12.5px; color:var(--ink2); }
+  @media (min-width:600px) { .prs-rate { font-size:26px; } }
   .prs-lbl { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; font-weight:700; color:var(--ink2); }
   table.prs-dt { border-collapse:collapse; width:100%; min-width:560px; font-size:13px; margin:4px 0 2px; }
   table.prs-dt th, table.prs-dt td { border:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top; }
@@ -2779,7 +2792,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
         </ul>
       </details>
     </div>
-    <div style="padding:14px; font-size:12px; line-height:1.5; color:var(--ink2); border-top:1px solid var(--line); margin-top:14px;"><b>Sources:</b> <b>Septic/distributive</b> &mdash; Surviving Sepsis Campaign 2021 (Evans L, et al. <i>Crit Care Med</i> 2021;49:e1063): norepinephrine first-line, MAP target &ge;65, vasopressin added at norepinephrine ~0.25&ndash;0.5 mcg/kg/min, epinephrine third, hydrocortisone for refractory shock, and peripheral initiation while access is arranged (with CENSER, <i>AJRCCM</i> 2019). <b>Cardiogenic</b> &mdash; 2025 ACC/AHA/ACEP/NAEMSP/SCAI acute coronary syndromes guideline; norepinephrine-over-dopamine from the SOAP II cardiogenic subgroup (De Backer D, et al. <i>N Engl J Med</i> 2010;362:779). <b>Post-ROSC</b> &mdash; AHA Guidelines for CPR and ECC, post-cardiac-arrest care (avoidance of hypotension, MAP &ge;65 / SBP &ge;90). <b>Massive PE</b> &mdash; ESC 2019 acute pulmonary embolism guidelines (<i>Eur Heart J</i> 2019;41:543): fluid restriction, early norepinephrine, inotrope for the low-output RV. <b>Bradycardia</b> &mdash; AHA adult bradycardia algorithm: epinephrine 2&ndash;10 mcg/min and dopamine 5&ndash;20 mcg/kg/min, both as bridges to pacing; the epinephrine figure is published <i>not</i> weight-based and is carried that way here. <b>Neurogenic</b> &mdash; MAP 85&ndash;90 for spinal cord perfusion is the widely-taught target from the AANS/CNS acute cervical spine and spinal cord injury guidance; it rests on low-quality evidence and remains a consult conversation. <b>Push-dose regimens, standard bag concentrations, and the phentolamine extravasation dose</b> &mdash; EMCrit / WikEM / LITFL tertiary references; these are the values most likely to differ at your site, and they live in this file's SITE CONFIG block for exactly that reason. Pediatric infusion dosing is <b>not</b> on this card &mdash; see <a href="../peds/?from=codes#p02">Peds card 02</a>.</div>
+    <div style="padding:14px; font-size:12px; line-height:1.5; color:var(--ink2); border-top:1px solid var(--line); margin-top:14px;"><b>Sources:</b> <b>Septic/distributive</b> &mdash; Surviving Sepsis Campaign 2021 (Evans L, et al. <i>Crit Care Med</i> 2021;49:e1063): norepinephrine first-line, MAP target &ge;65, vasopressin added at norepinephrine ~0.25&ndash;0.5 mcg/kg/min, epinephrine third, hydrocortisone for refractory shock, and peripheral initiation while access is arranged (with CENSER, <i>AJRCCM</i> 2019). <b>Cardiogenic</b> &mdash; 2025 ACC/AHA/ACEP/NAEMSP/SCAI acute coronary syndromes guideline; norepinephrine-over-dopamine from the SOAP II cardiogenic subgroup (De Backer D, et al. <i>N Engl J Med</i> 2010;362:779). <b>Post-ROSC</b> &mdash; AHA Guidelines for CPR and ECC, post-cardiac-arrest care (avoidance of hypotension, MAP &ge;65 / SBP &ge;90). <b>Massive PE</b> &mdash; ESC 2019 acute pulmonary embolism guidelines (<i>Eur Heart J</i> 2019;41:543): fluid restriction, early norepinephrine, inotrope for the low-output RV. <b>Bradycardia</b> &mdash; AHA adult bradycardia algorithm: epinephrine 2&ndash;10 mcg/min and dopamine 5&ndash;20 mcg/kg/min, both as bridges to pacing; the epinephrine figure is published <i>not</i> weight-based and is carried that way here. <b>Neurogenic</b> &mdash; MAP 85&ndash;90 for spinal cord perfusion is the widely-taught target from the AANS/CNS acute cervical spine and spinal cord injury guidance; it rests on low-quality evidence and remains a consult conversation. <b>Push-dose regimens, standard bag concentrations, and the phentolamine extravasation dose</b> &mdash; EMCrit / WikEM / LITFL tertiary references; these are the values most likely to differ at your site, and they live in this file's SITE CONFIG block for exactly that reason. <b>Pediatric (under 40 kg).</b> Infusion dosing for children is <b>not</b> on this card &mdash; see <a href="../peds/?from=codes#p02">Peds card 02</a>. Vasopressin is a specific hole rather than a gap in this card: <b>no FDA-approved or society-endorsed weight-based pediatric dose exists for vasopressin in any shock type</b>, so entering a pediatric weight withholds that row's rate instead of showing the adult one &mdash; Weiss SL, Peters MJ, Alhazzani W, et al. <a href="https://journals.lww.com/pccmjournal/fulltext/10.1097/pcc.0000000000002198~surviving-sepsis-campaign-international-guidelines-for-the" target="_blank" rel="noopener">Surviving Sepsis Campaign International Guidelines for the Management of Septic Shock and Sepsis-Associated Organ Dysfunction in Children</a>, <i>Pediatr Crit Care Med</i> 2020;21(2):e52&ndash;e106.</div>
     <div style="padding:0 14px 20px; font-size:12px; color:var(--ink2);">
       <span class="verstamp"></span> &mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
     </div>
@@ -2814,7 +2827,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
 
 /* ===== SITE CONFIG (site-specific — edit to localize) ===== */
 var SITE = {
-  version: "3.5",
+  version: "3.6",
   lastReviewed: "2026-08-19",
   /* WS10.2 — minutes of manual-wide inactivity (lrh-case-lastactive) before the weight
      strip appends an "ENTERED HH:MM · N MIN AGO" line and ambers #wtbar's border.
@@ -2886,6 +2899,17 @@ var SITE = {
      dosing ('kg' = per kilogram per minute, 'fixed' = per minute regardless of
      weight), unit (as a clinician says it), start/low/high, decimals (precision
      of the DOSE figure, not of the rate), note.
+
+     pedsGap (optional) — THE EVIDENCE ITSELF IS MISSING FOR CHILDREN. Not "use
+     caution": there is no dose to compute. An agent carrying this field has its
+     rate WITHHELD below SITE.audience.thresholdKg (the same 40 kg the per-card
+     audience strips use), and prints the note plus its source in place of a
+     number. Vasopressin carries it today: every figure on that row is an adult
+     fixed rate, and rendering it beside a 12 kg child would be the confident
+     wrong number in a large font that this whole card is built to avoid. The
+     field is general on purpose — a site that finds the same hole in another
+     agent adds it there rather than special-casing the renderer.
+     { note, detail, source, url }.
      ======================================================================== */
   pressors: {
     /* Shown under the full table — the arithmetic, spelled out, so a champion can
@@ -2907,7 +2931,17 @@ var SITE = {
       { key:'vaso', label:'Vasopressin', cls:'Vasopressor · V1, non-adrenergic',
         mix:'20 units / 100 mL', concPerMl:0.2, dosing:'fixed', unit:'units/min',
         start:0.03, low:0.03, high:0.04, decimals:3,
-        note:'A fixed rate, not a titration. Added to norepinephrine — not used alone as a first pressor.' },
+        note:'A fixed rate, not a titration. Added to norepinephrine — not used alone as a first pressor.',
+        /* pedsGap — see the block comment above. The rate on this row is an ADULT
+           fixed rate; below SITE.audience.thresholdKg the card withholds it and
+           prints this instead, because printing 9 mL/hr beside a 12 kg child is
+           exactly the confident-wrong-number this card exists to avoid. */
+        pedsGap: {
+          note: 'No FDA-approved or society-endorsed weight-based pediatric dose exists for vasopressin in any shock type.',
+          detail: 'The rate on this row is the ADULT fixed rate and is withheld here. The pediatric Surviving Sepsis Campaign guideline suggests AGAINST vasopressin as a routine addition in pediatric septic shock, and publishes no weight-based dose to give in its place — so this card will not compute one. If it is used, it is an individualized decision made with critical care / pediatric intensive care, not a number read off an aid.',
+          source: 'Weiss SL, Peters MJ, Alhazzani W, et al. Surviving Sepsis Campaign International Guidelines for the Management of Septic Shock and Sepsis-Associated Organ Dysfunction in Children. Pediatr Crit Care Med 2020;21(2):e52–e106.',
+          url: 'https://journals.lww.com/pccmjournal/fulltext/10.1097/pcc.0000000000002198~surviving-sepsis-campaign-international-guidelines-for-the'
+        } },
       { key:'phenyl', label:'Phenylephrine', cls:'Vasopressor · pure α',
         mix:'20 mg / 250 mL', concPerMl:80, dosing:'kg', unit:'mcg/kg/min',
         start:0.5, low:0.5, high:9, decimals:2,
@@ -4171,21 +4205,107 @@ var PRESSORS = (function(){
     if(t.indexOf('.')>-1) t=t.replace(/0+$/,'').replace(/\.$/,'');
     return t;
   }
-  function rateHtml(a, dose){
-    var v=mlPerHr(a, dose);
-    if(v===null) return '<span class="prs-rate unset">ENTER A WEIGHT ABOVE</span>';
-    return '<span class="prs-rate">'+fmtRate(v)+'</span> <span class="prs-lbl">mL/HR</span>';
+  /* ---- the chain, shown in full on every row --------------------------------
+     A clinician checks an infusion in three places, and the card now prints all
+     three rather than only the last one:
+
+         0.05 mcg/kg/min   =   3.7 mcg/min   =   13.9 mL/hr   of 4 mg / 250 mL
+         (what is ordered)     (what is        (what goes      (what makes the
+                                actually        on the pump)    other two true)
+                                going in)
+
+     The middle figure is the one that used to be missing, and it is the one that
+     catches a wrong bag: a clinician who knows roughly what mcg/min this patient
+     should be on can see instantly that 13.9 mL/hr of the hung concentration
+     delivers it — or does not. Printing only mL/hr asks them to trust the
+     concentration in this file, which is precisely the value most likely to be
+     wrong at an adopting site.
+
+     A FIXED-rate agent has no first link: vasopressin is ordered in units/min,
+     not per kilogram, so its chain starts at the per-minute figure. The card
+     never manufactures a per-kg number for one — that is a clinical invariant
+     the verify suite asserts, not a display preference. */
+  function perMinUnit(a){ return String(a.unit||'').replace('/kg',''); }
+  function perMinVal(a, dose){
+    if(a.dosing==='kg'){
+      if(kg===null || isNaN(kg) || kg<=0) return null;
+      return dose*kg;
+    }
+    return dose;
+  }
+  /* The figure and its unit are ONE token — flex-wrap must never leave "2.3" at the
+     end of a line and "mL/hr" at the start of the next, which reads as a bare
+     number beside the wrong unit. */
+  function bigVal(n, unit){
+    return '<span class="prs-q"><span class="prs-rate">'+fmtRate(n)+'</span> <span class="prs-lbl">'+esc(unit)+'</span></span>';
+  }
+  function chainHtml(a, dose){
+    var h='<div class="prs-chain">';
+    /* Link 1 — only for a per-kg agent, and it needs no weight to state. */
+    if(a.dosing==='kg'){
+      h+='<span class="prs-ordered">'+esc(fmtDose(dose,a.decimals))+' '+esc(a.unit)+'</span><span class="prs-eq">=</span>';
+    }
+    if(pedsGapApplies(a)){
+      h+='<span class="prs-rate unset">NO PEDIATRIC DOSE &mdash; SEE BELOW</span>';
+    } else {
+      var pm=perMinVal(a, dose), ml=mlPerHr(a, dose);
+      if(pm===null || ml===null){
+        h+='<span class="prs-rate unset">ENTER A WEIGHT ABOVE</span>';
+      } else {
+        h+=bigVal(pm, perMinUnit(a))+'<span class="prs-eq">=</span>'+bigVal(ml, 'mL/hr');
+      }
+    }
+    h+='<span class="prs-of">of '+esc(a.mix)+'</span></div>';
+    return h;
+  }
+  /* The same chain for the usual range, one line, low–high at each link. */
+  function rangeChain(a){
+    var lo=fmtDose(a.low,a.decimals), hi=fmtDose(a.high,a.decimals);
+    var out='Usual range '+esc(lo)+'&ndash;'+esc(hi)+' '+esc(a.unit);
+    if(pedsGapApplies(a)) return out+' &middot; <b style="color:var(--red);">no pediatric rate computed</b>';
+    var pmLo=perMinVal(a,a.low), pmHi=perMinVal(a,a.high),
+        mlLo=mlPerHr(a,a.low), mlHi=mlPerHr(a,a.high);
+    if(pmLo===null || mlLo===null) return out;
+    if(a.dosing==='kg') out+=' = '+fmtRate(pmLo)+'&ndash;'+fmtRate(pmHi)+' '+esc(perMinUnit(a));
+    return out+' = '+fmtRate(mlLo)+'&ndash;'+fmtRate(mlHi)+' mL/hr';
   }
   function rateText(a, dose){
+    if(pedsGapApplies(a)) return '<b style="color:var(--red);">no peds dose</b>';
     var v=mlPerHr(a, dose);
     return v===null ? '&mdash;' : fmtRate(v)+' mL/hr';
   }
   /* The unit once, at the end — "2.9–292.5 mL/hr" rather than
      "2.9 mL/hr–292.5 mL/hr", which reads as two separate rates. */
   function rangeText(a){
+    if(pedsGapApplies(a)) return '&mdash;';
     var lo=mlPerHr(a, a.low), hi=mlPerHr(a, a.high);
     if(lo===null || hi===null) return '&mdash;';
     return fmtRate(lo)+'&ndash;'+fmtRate(hi)+' mL/hr';
+  }
+  /* ---- pedsGap (see SITE.pressors' block comment) --------------------------
+     An agent whose PEDIATRIC dose has no published basis withholds its rate
+     below the audience threshold instead of printing the adult one. Reads the
+     same SITE.audience.thresholdKg the per-card strips use, so one number moves
+     both and a localized site cannot end up with a card that flags a weight as
+     pediatric in one place and doses it as adult in another. */
+  function pedsThreshold(){
+    return (SITE.audience && typeof SITE.audience.thresholdKg==='number') ? SITE.audience.thresholdKg : null;
+  }
+  function pedsGapApplies(a){
+    if(!a || !a.pedsGap) return false;
+    var t=pedsThreshold();
+    return t!==null && kg!==null && !isNaN(kg) && kg>0 && kg<t;
+  }
+  function pedsGapHtml(a){
+    if(!pedsGapApplies(a)) return '';
+    var g=a.pedsGap, t=pedsThreshold();
+    return '<div style="margin-top:8px; border:2px solid var(--sev-crit); background:var(--card); padding:9px 11px;">'+
+      '<div class="prs-lbl" style="color:var(--red);">NO PEDIATRIC DOSE TO COMPUTE &middot; UNDER '+esc(String(t))+' KG</div>'+
+      '<div style="font-size:13.5px; font-weight:700; line-height:1.4; margin-top:3px; color:var(--ink);">'+esc(g.note)+'</div>'+
+      (g.detail ? '<div style="font-size:12.5px; line-height:1.45; margin-top:5px; color:var(--ink);">'+esc(g.detail)+'</div>' : '')+
+      '<div style="font-size:11.5px; line-height:1.4; margin-top:6px; color:var(--ink2);">'+esc(g.source)+
+      (g.url ? ' &middot; <a href="'+esc(g.url)+'" target="_blank" rel="noopener">read the guideline</a>' : '')+
+      '</div></div>';
   }
 
   /* ---- the indication router ---- */
@@ -4231,13 +4351,10 @@ var PRESSORS = (function(){
          '<div class="prs-lbl">'+(i+1)+' &middot; '+esc(rung.role)+'</div>'+
          '<div class="prs-lbl">'+esc(a.cls)+'</div></div>'+
          '<div style="font-size:17px; font-weight:800; line-height:1.2; margin-top:2px; color:var(--ink);">'+esc(a.label)+'</div>'+
-         '<div style="display:flex; align-items:baseline; gap:8px; flex-wrap:wrap; margin-top:6px;">'+
-         rateHtml(a, a.start)+
-         '<span style="font-size:13px; color:var(--ink2);">= '+esc(fmtDose(a.start,a.decimals))+' '+esc(a.unit)+' &middot; '+esc(a.mix)+'</span></div>'+
-         '<div style="font-size:12.5px; line-height:1.4; color:var(--ink2); margin-top:4px;">Usual range '+
-         esc(fmtDose(a.low,a.decimals))+'&ndash;'+esc(fmtDose(a.high,a.decimals))+' '+esc(a.unit)+
-         ' = '+rangeText(a)+'</div>'+
+         chainHtml(a, a.start)+
+         '<div style="font-size:12.5px; line-height:1.4; color:var(--ink2); margin-top:4px;">'+rangeChain(a)+'</div>'+
          '<div style="font-size:13px; line-height:1.45; margin-top:6px; color:var(--ink);">'+esc(rung.when)+'</div>'+
+         pedsGapHtml(a)+
          '</div>';
     });
     if(ind.links && ind.links.length){
@@ -4273,9 +4390,26 @@ var PRESSORS = (function(){
     pushEl.innerHTML=h;
   }
 
+  /* The table says the same three things as the plan chain, stacked rather than
+     inline so the column stays readable on a phone. */
+  function cellChain(a){
+    if(pedsGapApplies(a)) return '<b style="color:var(--red);">no peds dose</b>';
+    var pm=perMinVal(a,a.start), ml=mlPerHr(a,a.start);
+    if(pm===null || ml===null) return '&mdash;';
+    return '<b>'+fmtRate(pm)+' '+esc(perMinUnit(a))+'</b><br><b>'+fmtRate(ml)+' mL/hr</b>';
+  }
+  function cellRange(a){
+    if(pedsGapApplies(a)) return '<b style="color:var(--red);">no peds dose</b>';
+    var pmLo=perMinVal(a,a.low), pmHi=perMinVal(a,a.high),
+        mlLo=mlPerHr(a,a.low), mlHi=mlPerHr(a,a.high);
+    if(pmLo===null || mlLo===null) return '&mdash;';
+    var out='';
+    if(a.dosing==='kg') out+=fmtRate(pmLo)+'&ndash;'+fmtRate(pmHi)+' '+esc(perMinUnit(a))+'<br>';
+    return out+fmtRate(mlLo)+'&ndash;'+fmtRate(mlHi)+' mL/hr';
+  }
   function paintTable(){
     if(!tableEl) return;
-    var h='<table class="prs-dt"><thead><tr><th>AGENT</th><th>STANDARD BAG</th><th>DOSE</th><th>START</th><th>RANGE</th></tr></thead><tbody>';
+    var h='<table class="prs-dt"><thead><tr><th>AGENT</th><th>STANDARD BAG</th><th>ORDERED AS</th><th>START &mdash; PER MIN &amp; ON THE PUMP</th><th>USUAL RANGE</th></tr></thead><tbody>';
     P.agents.forEach(function(a){
       var used = false;
       if(picked){
@@ -4288,9 +4422,9 @@ var PRESSORS = (function(){
          '<td>'+(used?'&#9656; ':'')+esc(a.label)+'<div style="font-weight:400; font-size:11.5px; color:var(--ink2);">'+esc(a.cls)+'</div></td>'+
          '<td>'+esc(a.mix)+'</td>'+
          '<td>'+esc(fmtDose(a.start,a.decimals))+' '+esc(a.unit)+'</td>'+
-         '<td>'+rateText(a,a.start)+'</td>'+
-         '<td>'+rangeText(a)+'</td></tr>'+
-         '<tr><td colspan="5" style="font-weight:400; font-size:12px; color:var(--ink2);">'+esc(a.note)+'</td></tr>';
+         '<td>'+cellChain(a)+'</td>'+
+         '<td>'+cellRange(a)+'</td></tr>'+
+         '<tr><td colspan="5" style="font-weight:400; font-size:12px; color:var(--ink2);">'+esc(a.note)+pedsGapHtml(a)+'</td></tr>';
     });
     tableEl.innerHTML=h+'</tbody></table>';
   }

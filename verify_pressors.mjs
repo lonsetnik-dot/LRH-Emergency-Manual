@@ -73,7 +73,30 @@ const setWeight = async kg => {
   await pg.waitForTimeout(250);
 };
 const pick = async key => { await pg.click(`#prsPick button[data-ind="${key}"]`); await pg.waitForTimeout(200); };
+/* pick() TOGGLES, which is right for testing the control but silently inverts a
+   loop that assumes it selects. select()/deselect() read the button's own
+   aria-pressed and drive it to the state the test wants. */
+const isPicked = key => pg.evaluate(k =>
+  document.querySelector(`#prsPick button[data-ind="${k}"]`).getAttribute('aria-pressed') === 'true', key);
+const select = async key => { if (!(await isPicked(key))) await pick(key); };
+const deselect = async key => { if (await isPicked(key)) await pick(key); };
+/* Just the chain (ordered = per-min = mL/hr of the bag) for one agent's rung —
+   NOT the whole row, whose prose legitimately mentions other agents' per-kg
+   doses ("when norepinephrine reaches 0.25-0.5 mcg/kg/min"). */
+const chainText = label => pg.evaluate(l => {
+  const row = [...document.querySelectorAll('#prsPlan .prs-row')].find(r => r.textContent.includes(l));
+  const ch = row && row.querySelector('.prs-chain');
+  return ch ? ch.textContent.replace(/\s+/g, ' ') : '';
+}, label);
 const planText = () => pg.textContent('#prsPlan');
+/* One ladder rung's own text, found by the agent label the config gave it. Panel-wide
+   substring checks are too loose once several rows carry similar numbers — a rate
+   "withheld" on one row would still be found on another. */
+const rowText = label => pg.evaluate(l => {
+  const row = [...document.querySelectorAll('#prsPlan .prs-row')]
+    .find(r => r.textContent.includes(l));
+  return row ? row.textContent.replace(/\s+/g, ' ') : '';
+}, label);
 const tableText = () => pg.textContent('#prsTable');
 
 await fresh();
@@ -84,6 +107,20 @@ const agent = k => P.agents.find(a => a.key === k);
 /* The suite's own copy of the arithmetic, written from the documented rule rather than
    from the page's code — if the page and this line ever disagree, one of them is wrong. */
 const expect = (a, dose, kg) => (a.dosing === 'kg' ? dose * kg : dose) * 60 / a.concPerMl;
+/* The middle link of the chain: what is actually going into the patient per minute.
+   For a per-kg agent that is dose x weight; for a fixed-rate agent the ordered dose
+   already IS the per-minute figure and the weight must not enter the arithmetic. */
+const perMin = (a, dose, kg) => (a.dosing === 'kg' ? dose * kg : dose);
+const perMinUnit = a => String(a.unit || '').replace('/kg', '');
+/* The ORDERED dose is displayed at the precision its config row declares, not at
+   the rate formatter's — 0.05 mcg/kg/min must not render as "0.1". Two different
+   rules for two different quantities; the suite mirrors both from the page's
+   documented behavior rather than sharing code with it. */
+const fmtDose = (n, dec) => {
+  let t = Number(n).toFixed(dec === undefined || isNaN(dec) ? 2 : dec);
+  if (t.includes('.')) t = t.replace(/0+$/, '').replace(/\.$/, '');
+  return t;
+};
 /* The page's documented display rule: a tenth of a mL/hr, except that a real nonzero
    rate never renders as "0" — precision is raised until it shows. Written out here from
    the rule rather than shared with the page, so the two can be checked against each other. */
@@ -144,6 +181,54 @@ for (const kg of [50, 70, 120]) {
   console.log(`     (${P.agents.length} agent start rates checked at ${kg} kg)`);
 }
 
+console.log('\n--- 3b. all three links of the chain, on every row ---');
+/* The card prints ordered dose = dose/min = mL/hr of the bag. The middle figure is
+   the one a clinician can sanity-check a wrong concentration against, so it has to
+   be right and it has to be there. Derived from config at three weights. */
+for (const kg of [50, 70, 120]) {
+  await setWeight(kg);
+  for (const ind of P.indications) {
+    await select(ind.key);
+    for (const rung of ind.ladder) {
+      const a = agent(rung.agent);
+      const row = await rowText(a.label);
+      const wantPerMin = fmt(perMin(a, a.start, kg)) + ' ' + perMinUnit(a);
+      const wantRate = fmt(expect(a, a.start, kg)) + ' mL/hr';
+      const wantOrdered = a.dosing === 'kg';
+      if (!row.includes(wantPerMin)) { fail++; console.log(`FAIL 3b. ${ind.key}/${a.key} @${kg}kg per-minute  want=${wantPerMin}`); }
+      else if (!row.includes(wantRate)) { fail++; console.log(`FAIL 3b. ${ind.key}/${a.key} @${kg}kg pump rate  want=${wantRate}`); }
+      else if (!row.includes('of ' + a.mix)) { fail++; console.log(`FAIL 3b. ${ind.key}/${a.key} @${kg}kg names its bag  want=${a.mix}`); }
+      /* The ordered-dose link exists ONLY for a per-kg agent. A fixed-rate agent that
+         grew one would mean the card had invented a per-kg dose for it. */
+      else if (row.includes(a.unit) !== wantOrdered && a.dosing === 'kg') { fail++; console.log(`FAIL 3b. ${ind.key}/${a.key} ordered-dose link`); }
+      else pass++;
+    }
+    await deselect(ind.key);
+  }
+  console.log(`     (every rung of every indication checked at ${kg} kg)`);
+}
+/* A fixed-rate agent must never print a "/kg" dose anywhere on its row. */
+await setWeight(70);
+for (const key of ['septic', 'brady']) {
+  await select(key);
+  for (const rung of P.indications.find(i => i.key === key).ladder) {
+    const a = agent(rung.agent);
+    if (a.dosing === 'kg') continue;
+    ck(`3b. ${a.key}'s chain carries no per-kilogram link`,
+       /\/kg/.test(await chainText(a.label)), false);
+  }
+  await deselect(key);
+}
+
+await select('septic');
+for (const rung of P.indications.find(i => i.key === 'septic').ladder) {
+  const a = agent(rung.agent);
+  if (a.dosing !== 'kg') continue;
+  ck(`3b. ${a.key}'s chain opens with the ordered per-kilogram dose`,
+     (await chainText(a.label)).startsWith(fmtDose(a.start, a.decimals) + ' ' + a.unit), true);
+}
+await deselect('septic');
+
 console.log('\n--- 4. per-kg really is per-kg, and fixed really is fixed ---');
 await setWeight(50); const t50 = await tableText();
 await setWeight(100); const t100 = await tableText();
@@ -192,6 +277,68 @@ ck('5. and the hemorrhagic panel says blood, not pressors, is the treatment',
    /BLOOD, AND CONTROL OF THE BLEEDING/i.test(await planText()), true);
 ck('5. every indication states a target out loud',
    P.indications.filter(i => !i.target).map(i => i.key).join(',') || 'none', 'none');
+
+console.log('\n--- 5b. pedsGap: where the EVIDENCE is missing, no number is printed ---');
+/* Vasopressin's every figure is an adult fixed rate. Below the audience threshold
+   the card must withhold it rather than render it beside a child's weight, and say
+   why, with the source. Driven entirely off config: the agents, the threshold and
+   the wording all come from SITE, so a site that localizes the threshold — or finds
+   the same hole in another agent — still gets a green run. */
+const THRESH = await pg.evaluate(() => window.SITE.audience && window.SITE.audience.thresholdKg);
+const gapAgents = P.agents.filter(a => a.pedsGap);
+ck('5b. at least one agent declares a pedsGap', gapAgents.length >= 1, true);
+ck('5b. vasopressin is one of them', !!agent('vaso').pedsGap, true);
+ck('5b. the threshold the gap keys off is a real number', typeof THRESH, 'number');
+for (const a of gapAgents) {
+  ck(`5b. ${a.key}'s gap declares a note, a source and a URL`,
+     !!(a.pedsGap.note && a.pedsGap.source && a.pedsGap.url), true);
+}
+/* Just below the threshold: withheld, stated, sourced. Derived from config so the
+   case stays on the intended side of a localized threshold (CLAUDE.md #117 rule). */
+await setWeight(THRESH - 0.1);
+await pick('septic');
+const peds = await planText();
+for (const a of gapAgents) {
+  ck(`5b. under ${THRESH} kg — ${a.key}'s note is printed verbatim from config`,
+     peds.includes(a.pedsGap.note), true);
+  ck(`5b. under ${THRESH} kg — ${a.key}'s source is named on screen`,
+     peds.includes(a.pedsGap.source.slice(0, 40)), true);
+  /* Scoped to that agent's own row, and checked against BOTH computed links —
+     the pump rate and the per-minute figure. Asserting on the panel as a whole
+     would pass on a number that merely appears on a different row. */
+  const gapRow = await rowText(a.label);
+  ck(`5b. under ${THRESH} kg — ${a.key}'s pump rate is WITHHELD, not computed`,
+     gapRow.includes(fmt(expect(a, a.start, THRESH - 0.1)) + ' mL/hr'), false);
+  ck(`5b. under ${THRESH} kg — and its per-minute figure is withheld too`,
+     gapRow.includes(fmt(perMin(a, a.start, THRESH - 0.1)) + ' ' + perMinUnit(a)), false);
+  ck(`5b. under ${THRESH} kg — the row says so where the number used to be`,
+     /NO PEDIATRIC DOSE/.test(gapRow), true);
+  ck(`5b. under ${THRESH} kg — the guideline is linked, in a new tab, rel=noopener`,
+     await pg.evaluate(u => {
+       const el = document.querySelector(`#prsPlan a[href="${u}"]`);
+       return !!el && el.target === '_blank' && /noopener/.test(el.rel || '');
+     }, a.pedsGap.url), true);
+}
+ck(`5b. the full table also withholds it under ${THRESH} kg`,
+   /no peds dose/.test(await tableText()), true);
+/* AT the threshold the patient is an adult by this card's own definition, and the
+   adult rate must come back — a gap that never closes is just a broken row. */
+await setWeight(THRESH);
+await pick('septic'); await pick('septic');
+const adult = await planText();
+for (const a of gapAgents) {
+  ck(`5b. at ${THRESH} kg — ${a.key}'s adult rate is shown again`,
+     adult.includes(fmt(expect(a, a.start, THRESH))), true);
+  ck(`5b. at ${THRESH} kg — and the pediatric note is gone`,
+     adult.includes(a.pedsGap.note), false);
+}
+/* The claim is cited in the card's own Sources footer too, not only in the panel a
+   reader may never open — and it is the exact sentence, not a paraphrase. */
+const foot = await pg.textContent('article#c37 > div:last-of-type, article#c37');
+ck('5b. the sources footer carries the same claim',
+   /No FDA-approved or society-endorsed weight-based pediatric dose exists for vasopressin in any shock type/i.test(foot), true);
+ck('5b. and the footer cites the pediatric guideline by name',
+   /Pediatr Crit Care Med 2020;21\(2\):e52/.test(foot.replace(/\s+/g, ' ')), true);
 
 console.log('\n--- 6. the indications the issue named are all present and linked ---');
 for (const [key, href] of [['rosc', '#c22'], ['pe', '#c29'], ['cardiogenic', '#c21'], ['septic', '#c28'],

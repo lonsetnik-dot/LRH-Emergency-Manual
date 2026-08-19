@@ -44,7 +44,7 @@ a coverage gap — and carries the same banner.
 | `trauma/` c09 | MCI — First 15 Minutes | [#93](../../issues/93) | **Also needs the real LRH call tree filled in** |
 | `trauma/` c10 | Electrical & Lightning Injury | [#96](../../issues/96) | Reverse-triage claim; monitoring duration |
 | `ob-neonatal/` c11 | Eclampsia / Severe Preeclampsia | [#84](../../issues/84) | Magnesium load and infusion; BP agent choice; toxicity rescue |
-| `codes/` c37 | Pressors & Inotropes — by Indication | [#179](../../issues/179) | **The bag concentrations first** — every mL/hr on the card is derived from them, so a wrong `concPerMl` is wrong in a large font on every indication. Then the per-indication ladders, the MAP targets (especially neurogenic 85–90), and the push-dose recipes |
+| `codes/` c37 | Pressors & Inotropes — by Indication | [#179](../../issues/179) | **The bag concentrations first** — every mcg/min and mL/hr on the card is derived from them, so a wrong `concPerMl` is wrong in a large font on every indication. Then the per-indication ladders, the MAP targets (especially neurogenic 85–90), and the push-dose recipes. **Also the one claim made about an ABSENCE:** that no FDA-approved or society-endorsed weight-based pediatric vasopressin dose exists, on the strength of which the card withholds that rate under 40 kg (`ssc-peds` in the registry) |
 
 ## 2. A whole tool carrying unreconciled content
 

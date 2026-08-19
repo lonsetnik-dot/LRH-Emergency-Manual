@@ -590,6 +590,33 @@ var GDL_SOURCES = [
         term: '(guideline[pt] OR "practice guideline"[pt]) AND ("surviving sepsis"[tiab] OR "septic shock"[ti])' }
     ] },
 
+  /* Separate row from ssc-sepsis on purpose: the pediatric guideline is its own
+     document on its own revision cycle, and the question this registry answers —
+     "SSC republished, what in this manual moves?" — has a different answer for
+     each. A 2020 pediatric edition sitting beside a 2021 adult one is exactly the
+     fact a single merged row would hide. */
+  { id: "ssc-peds",
+    body: "Surviving Sepsis Campaign (pediatric) / SCCM + ESICM",
+    title: "International Guidelines for the Management of Septic Shock and Sepsis-Associated Organ Dysfunction in Children",
+    edition: "2020",
+    citation: "Weiss SL, Peters MJ, Alhazzani W, et al. Surviving Sepsis Campaign International Guidelines for the Management of Septic Shock and Sepsis-Associated Organ Dysfunction in Children. Pediatr Crit Care Med 2020;21(2):e52-e106.",
+    url: "https://journals.lww.com/pccmjournal/fulltext/10.1097/pcc.0000000000002198~surviving-sepsis-campaign-international-guidelines-for-the",
+    cadence: "First edition 2020; the adult guideline revises roughly every 4 years and the pediatric one has not yet had a second edition, so a revision is a live possibility on any SCCM congress cycle.",
+    reviewEvery: 365,
+    lastVerified: null,
+    citedSince: "2026-08-19",
+    impact: "medium",
+    /* Cited for an ABSENCE, which is the unusual and fragile case: card 37
+       withholds a vasopressin rate under 40 kg on the strength of there being no
+       endorsed weight-based pediatric dose. If a future edition publishes one,
+       the card does not merely become out of date — its stated reason stops being
+       true. Check that specific claim first when this row is reviewed. */
+    dependents: ["codes/#c37"],
+    watch: [
+      { kind: "pubmed", label: "Pediatric surviving sepsis / septic shock guidelines",
+        term: '(guideline[pt] OR "practice guideline"[pt]) AND ("septic shock"[tiab] OR sepsis[tiab]) AND (child[MeSH Terms] OR pediatric[tiab] OR children[ti])' }
+    ] },
+
   { id: "wms",
     body: "Wilderness Medical Society",
     title: "Clinical practice guidelines — accidental hypothermia, heat illness, lightning injury",
