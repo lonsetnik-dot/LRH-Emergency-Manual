@@ -135,7 +135,8 @@ const NO_UPSTREAM_SOURCE = {
   'simulations/':  'training scripts that chain the tools; the tools carry the sources',
   'vems/':         'printable deck rendered from equipment icons + the tools it drills',
   'sources/':      'this page — it reports on the registry, it is not clinical content',
-  'clinical-pathways/': 'container directory; the pathway itself (heart/) carries the source'
+  'clinical-pathways/': 'container directory; the pathway itself (heart/) carries the source',
+  'cairn/':        'explainer/landing page about the project — names no threshold, dose or protocol; the only clinical words on it are in prose telling an adopting ED to validate its own'
 };
 /* dist/ is the build output — the same tools a second time — and node_modules/ is dev tooling. */
 const NOT_A_TOOL = new Set(['dist/', 'node_modules/']);
