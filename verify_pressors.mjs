@@ -370,12 +370,48 @@ const small = await pg.evaluate(() => [...document.querySelectorAll('#prsPick bu
   .filter(el => el.offsetParent !== null && el.getBoundingClientRect().height < 44)
   .map(el => el.getAttribute('data-ind')));
 ck('9. every indication button is at least 44px tall', small.join(' | ') || 'none', 'none');
-ck('9. no page-level horizontal scroll at 390px',
-   await pg.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), true);
+/* Reflow (ACCESSIBILITY.md §4). Asserted as the thing the clinician experiences —
+   "can this page be dragged sideways" — not as documentElement.scrollWidth, which
+   in a headless desktop context reads a few px over innerWidth on pages that
+   demonstrably cannot scroll at all. An earlier version of this check compared
+   those two numbers and reported a 6px overflow that existed identically on main
+   and produced no horizontal scrollbar anywhere: it was measuring an artifact.
+   The second half is the real risk for THIS card — its agent table is wide by
+   nature, and it must scroll inside its own container, never take the page with
+   it (ACCESSIBILITY.md: "wide content scrolls inside its own container"). */
+const cannotScrollX = () => pg.evaluate(() => {
+  window.scrollTo(600, 0); const x = window.scrollX; window.scrollTo(0, 0); return x === 0;
+});
+/* Nothing in card 37 may stick out past the viewport unless an ancestor is an
+   x-scroller — which is exactly how the wide agent table is meant to be contained. */
+const nothingEscapes = () => pg.evaluate(() => {
+  const W = document.documentElement.clientWidth;
+  return [...document.querySelectorAll('article#c37 *')].filter(el => {
+    const r = el.getBoundingClientRect();
+    if (!(r.width > 0 && r.right > W + 1)) return false;
+    for (let p = el.parentElement; p; p = p.parentElement) {
+      const o = getComputedStyle(p).overflowX;
+      if (o === 'auto' || o === 'scroll' || o === 'hidden') return false;
+    }
+    return true;
+  }).map(el => el.tagName + '.' + (el.className || '').toString().slice(0, 20));
+});
+ck('9. the page cannot be scrolled sideways at 390px', await cannotScrollX(), true);
+ck('9. and nothing in card 37 escapes the viewport at 390px',
+   (await nothingEscapes()).slice(0, 3).join(' | ') || 'none', 'none');
 await pg.setViewportSize({ width: 320, height: 720 });
-await pg.waitForTimeout(200);
-ck('9. no page-level horizontal scroll at 320px either',
-   await pg.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth + 1), true);
+await pg.waitForTimeout(250);
+ck('9. the page cannot be scrolled sideways at 320px either', await cannotScrollX(), true);
+ck('9. and nothing in card 37 escapes the viewport at 320px',
+   (await nothingEscapes()).slice(0, 3).join(' | ') || 'none', 'none');
+/* The wide table is the one thing allowed past the edge, and only because it has
+   its own scroller — assert that it really does, so the containment is not an
+   accident of the current column widths. */
+ck('9. the wide agent table scrolls inside its own container',
+   await pg.evaluate(() => {
+     const host = document.getElementById('prsTable');
+     return getComputedStyle(host).overflowX === 'auto' && host.scrollWidth > host.clientWidth;
+   }), true);
 await pg.setViewportSize({ width: 390, height: 844 });
 /* The picked indication is a reading position, not a case fact — it must not create a
    localStorage key, because every persisted key is part of the CASE-STATE.md contract. */

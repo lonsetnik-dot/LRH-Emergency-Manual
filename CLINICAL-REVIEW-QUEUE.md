@@ -33,7 +33,7 @@ a coverage gap — and carries the same banner.
 |---|---|---|---|
 | `codes/` c27 | Accidental Hypothermia | [#88](../../issues/88) | Rewarming ladder; when not to declare death; ECMO transfer trigger |
 | `codes/` c28 | Sepsis / Septic Shock | [#85](../../issues/85) | Bundle timing; peripheral pressor start and concentration |
-| `codes/` c29 | Massive Pulmonary Embolism | [#86](../../issues/86) | Thrombolytic dose and the contraindication list |
+| `codes/` c29 | Massive Pulmonary Embolism | [#86](../../issues/86) | Thrombolytic dose and the contraindication list; the Category D/E framing added 2026-08-19 |
 | `codes/` c30 | Severe Agitation (Adult) | [#89](../../issues/89) | Ketamine / droperidol doses; monitoring after sedation |
 | `codes/` c31 | Adult DKA / HHS | [#90](../../issues/90) | Insulin start, potassium gate, fluid sequencing |
 | `codes/` c32 | Aortic Catastrophe | [#91](../../issues/91) | Anti-impulse targets and agent order |
@@ -60,6 +60,27 @@ textbook.
 Flip `reconciled` to true only on a clinician's sign-off — not when the banner
 comes down. `verify_neonatal_screen.mjs` fails if the banner is switched off
 quietly.
+
+**`clinical-pathways/pe/` — the PE Clinical Categories pathway.** New
+2026-08-19 (issue [#181](../../issues/181)). Its review banner is up. The whole
+tool is a transcription of one document — the 2026 AHA/ACC/ACCP/ACEP/CHEST/
+SCAI/SHM/SIR/SVM/SVN acute PE guideline — so the review is a reading of this
+page against that paper, not a search of the literature. Check first, in this
+order:
+
+1. **Figure 2** — the subcategory boundaries and the three respiratory-modifier
+   thresholds, which are the whole engine.
+2. **Table 7** — the advanced-therapy matrix. `3: Harm` for systemic lysis
+   through C2 and `2b` at C3 are the two cells a clinician is most likely to
+   disagree with from memory of the old submassive/massive language.
+3. **The capability flags** in the SITE CONFIG block — `pertOnSite`,
+   `catheterDirected`, `thrombectomy`, `surgicalEmbolectomy`, `ecmo` are all
+   `false` in the generic trunk. A site that leaves a `false` in place when the
+   service exists gets told to phone out for something it has downstairs.
+4. **The arrest thrombolytic dose**, which is deliberately *not* from this
+   guideline (AHA ECC) and is labeled as such wherever it prints.
+
+`verify_pe_categories.mjs` fails if the banner is switched off quietly.
 
 ## 3. New clinical content from the airway-sizes work (2026-08-17) — ✅ REVIEWED
 

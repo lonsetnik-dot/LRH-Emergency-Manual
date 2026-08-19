@@ -135,7 +135,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     <!-- ===== CATEGORY: Clinical Pathways (live · ACCENT) -> /clinical-pathways/ ===== -->
     <a class="lrh-cat" style="--cc:var(--accent)" href="clinical-pathways/">
       <div class="row"><span class="dot"></span><span class="name">Clinical Pathways</span><span class="spacer"></span><span class="count lrh-mono">3 pathways</span></div>
-      <div class="desc">Accelerated diagnostic and treatment pathways. Includes the Chest Pain / hs-Troponin HEART pathway.</div>
+      <div class="desc">Accelerated diagnostic and treatment pathways. Includes the Chest Pain / hs-Troponin HEART pathway and the PE Clinical Categories calculator.</div>
     </a>
 
     <!-- ===== CATEGORY: Trauma (beta · ORANGE) -> /trauma/ ===== -->
@@ -230,6 +230,9 @@ catch(e){ document.body.dataset.theme='dark'; }
 (function(){
   var SEARCH_INDEX=[
     {t:"Chest Pain · HEART Pathway", c:"Clinical Pathways", k:"heart score acs acute coronary syndrome troponin hs-troponin chest pain risk disposition 0/1 hour accelerated", u:"clinical-pathways/heart/"},
+    {t:"PE Clinical Categories · calculator", c:"Clinical Pathways", k:"pulmonary embolism pe classification pe category pe categories pe clinical categories pe risk pe risk stratification pe severity pe score pe submassive intermediate risk pe aha acc 2026 subclinical incidental normotensive shock spesi pesi hestia bova cpes respiratory modifier subsegmental rv strain right ventricle troponin bnp lactate calculator", u:"clinical-pathways/pe/"},
+    {t:"PE · outpatient vs admit decision", c:"Clinical Pathways", k:"pe outpatient pe disposition low risk pe home discharge hestia spesi pesi send home anticoagulate doac lmwh admit", u:"clinical-pathways/pe/"},
+    {t:"PE · pretest probability, PERC, Wells, YEARS, D-dimer", c:"Clinical Pathways", k:"perc rule out criteria rule out pe wells score years algorithm age adjusted d-dimer ddimer d dimer pretest probability geneva exclude pe imaging ctpa", u:"clinical-pathways/pe/"},
     {t:"OB & Neonatal — overview / index", c:"OB & Neonatal", k:"obstetric neonatal childbirth delivery index", u:"ob-neonatal/?from=home"},
     {t:"Imminent normal delivery", c:"OB & Neonatal", k:"labor birth precipitous apgar nuchal cord crowning", u:"ob-neonatal/?from=home#c02"},
     {t:"Neonatal resuscitation (NRP) — live engine", c:"Neonatal", k:"neonatal resuscitation nrp newborn baby blue floppy ppv chest rise heart rate apgar time of birth delivery room warmer mr sopa compressions 3:1 epinephrine uvc preductal sats engine premature preterm plastic bag polyethylene wrap thermal mattress do not dry gestational age weeks days cord milking tele-nicu telenicu tele nicu telemedicine airway sizes ett tube blade mask suction lma", u:"neonatal/?from=home"},
@@ -298,7 +301,11 @@ catch(e){ document.body.dataset.theme='dark'; }
     {t:"STEMI", c:"Codes", k:"stemi st elevation mi myocardial infarction chest pain heart cognitive aid mimics aspirin heparin enoxaparin atorvastatin tenecteplase tnk weight band pressor norepinephrine dobutamine cardiogenic shock reperfusion arrhythmia aivr transfer dartmouth concord omnicell code", u:"codes/?from=home#c21"},
     {t:"Accidental Hypothermia", c:"Codes", k:"hypothermia cold water drowning rewarming ecmo ecls cold arrest not dead until warm and dead core temperature", u:"codes/?from=home#c27"},
     {t:"Sepsis / Septic Shock", c:"Codes", k:"sepsis septic shock infection lactate cultures antibiotics bundle norepinephrine pressors fluids map source control", u:"codes/?from=home#c28"},
-    {t:"Massive Pulmonary Embolism", c:"Codes", k:"massive pe pulmonary embolism high risk lytics alteplase tpa thrombolysis rv failure obstructive shock", u:"codes/?from=home#c29"},
+    /* Keeps "massive pe", "submassive pe" and "high risk pe" — the crash-patient
+       phrasings. The PE calculator entry above deliberately does NOT carry the
+       substring "massive pe": with both titles missing the term, the array order
+       decides, and a clinician typing "massive pe" wants this card, not a form. */
+    {t:"Massive Pulmonary Embolism", c:"Codes", k:"massive pe submassive pe high risk pe pulmonary embolism category d category e lytics alteplase tpa thrombolysis rv failure obstructive shock pe arrest pea transfer", u:"codes/?from=home#c29"},
     {t:"Pressors & Inotropes — by Indication", c:"Codes", k:"pressor pressors vasopressor vasopressors inotrope inotropes drip infusion rate ml/hr mcg/kg/min weight based dose calculator norepinephrine levophed epinephrine infusion vasopressin phenylephrine dopamine dobutamine milrinone push dose pressor push-dose bridge which pressor for septic shock cardiogenic shock post rosc pulmonary embolism stemi anaphylaxis hemorrhagic neurogenic bradycardia beta blocker calcium channel blocker overdose peri-intubation hypotension map 65 titrate peripheral pressor extravasation phentolamine concentration standard bag mix", u:"codes/?from=home#c37"},
     {t:"Severe Agitation (Adult)", c:"Codes", k:"agitation combative behavioral emergency excited delirium droperidol ketamine olanzapine restraints deescalation violent", u:"codes/?from=home#c30"},
     {t:"Adult DKA / HHS", c:"Codes", k:"dka diabetic ketoacidosis hhs hyperosmolar adult insulin potassium fluids anion gap", u:"codes/?from=home#c31"},

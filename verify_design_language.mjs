@@ -84,7 +84,7 @@ console.log('\n--- 2. prose navigation is underlined, everywhere ---');
    by shape rather than by an allow-list, so a new chip cannot silently
    acquire an underline and a new prose link cannot silently lose one. */
 const PAGES = ['/', '/codes/', '/peds/', '/trauma/', '/procedures/', '/ob-neonatal/',
-               '/clinical-pathways/heart/', '/arrest/', '/tca/', '/airway/', '/neonatal/',
+               '/clinical-pathways/heart/', '/clinical-pathways/pe/', '/arrest/', '/tca/', '/airway/', '/neonatal/',
                '/pph/', '/dystocia/', '/system/', '/sources/', '/equipment-readiness/'];
 let proseTotal = 0;
 for (const p of PAGES) {
@@ -105,6 +105,14 @@ for (const p of PAGES) {
       if (parseFloat(c.borderTopWidth) > 0 || parseFloat(c.borderLeftWidth) > 0) return true;
       if (c.backgroundColor !== 'rgba(0, 0, 0, 0)' && c.backgroundColor !== 'transparent') return true;
       if (/^(block|flex|grid|inline-grid)$/.test(c.display)) return true;
+      /* inline-flex/inline-grid ALONE is not enough — a prose link can use
+         flex purely to align an icon with its text and still be a sentence
+         link. What makes it a control is hitting the site's own 44px
+         deliberate touch-target floor (ACCESSIBILITY.md) on top of that
+         layout — a tap-to-call phone link (codes/'s STEMI transfer-center
+         numbers) is exactly this shape, and was slipping through as "prose"
+         until an LRH-specific merge gave it a real tel: number to render. */
+      if (/^(inline-flex|inline-grid)$/.test(c.display) && a.getBoundingClientRect().height >= 44) return true;
       return /lrh-row|shellmenurow|ghost|logit|btn|chip|shellback|shelltool|lrh-cat/.test(a.className);
     };
     const as = [...document.querySelectorAll('a[href]')].filter(a => a.textContent.trim());
