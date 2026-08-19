@@ -50,6 +50,11 @@
   .key .l { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:6.3pt; letter-spacing:0.08em; color:#5a6a78; margin-top:1pt; }
   .fig { border:1.5pt solid #d7dde3; margin-top:5pt; }
   .figcap { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:7.2pt; letter-spacing:0.08em; color:#c26a1b; padding:3pt 5pt 0; }
+  :root { --ink:#16324f; --ink2:#5a6a78; --red:#9b1c2e; }
+  .proc-detail { width:100%; height:auto; display:block; color:var(--ink); }
+  .proc-cap { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:7pt; letter-spacing:0.06em; color:var(--ink2); padding:3pt 5pt 4pt; }
+  .h1glyph { width:0.28in; height:0.28in; vertical-align:-0.06in; margin-right:5pt; color:var(--ink); }
+  .h1glyph .proc-glyph { width:0.28in; height:0.28in; }
   footer.strip { border-top:1.5pt solid #16324f; margin-top:4pt; padding-top:3pt; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:6.4pt; line-height:1.3; letter-spacing:0.02em; color:#5a6a78; }
   /* Keep this block compact: it is the last thing on the sheet, so any growth here is what
      pushes a poster onto a second page. Re-run the poster page-count check after editing. */
@@ -67,7 +72,7 @@
 
 <div class="sheet">
   <div class="eyebrow">{{SITE.abbrev}} · EMERGENCY DEPARTMENT</div>
-  <h1>Escharotomy</h1>
+  <h1><span class="h1glyph pglyph" data-proc="eschar" aria-hidden="true"></span>Escharotomy</h1>
   <div class="rule"></div>
 
   <p class="indication"><span class="tag">INDICATION</span>Burns only. Limb hypoperfusion or ventilation restriction from inelastic burn eschar — can occur with circumferential <b>and</b> non-circumferential burns. Not for non-burn causes of compartment syndrome (those need a fasciotomy). No single test decides this — it's a serial-examination clinical call. Consult the burns service before cutting whenever time permits.</p>
@@ -85,20 +90,7 @@
       </ul>
       <div class="fig">
         <div class="figcap">FIG 1 · ESCHAROTOMY LINES</div>
-        <svg viewBox="0 0 360 226" style="width:100%; height:auto; display:block;" role="img" aria-label="Escharotomy incision lines on chest and arm">
-          <rect x="0" y="0" width="360" height="226" fill="#fffefb"/>
-          <path d="M 60 30 L 170 30 L 170 190 L 60 190 Z" fill="none" stroke="#5a6a78" stroke-width="2" rx="8"/>
-          <line x1="85" y1="45" x2="85" y2="175" stroke="#9b1c2e" stroke-width="3.5" stroke-dasharray="9 6" stroke-linecap="round"/>
-          <line x1="145" y1="45" x2="145" y2="175" stroke="#9b1c2e" stroke-width="3.5" stroke-dasharray="9 6" stroke-linecap="round"/>
-          <line x1="85" y1="60" x2="145" y2="60" stroke="#9b1c2e" stroke-width="3" stroke-dasharray="7 5" stroke-linecap="round"/>
-          <text x="62" y="201" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#9b1c2e">CHEST: ANT. AXILLARY</text>
-          <text x="62" y="213" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#9b1c2e">LINES</text>
-          <path d="M 235 25 C 225 80 225 150 238 195 M 295 25 C 305 80 305 150 292 195" fill="none" stroke="#5a6a78" stroke-width="2"/>
-          <line x1="232" y1="45" x2="240" y2="180" stroke="#9b1c2e" stroke-width="3.5" stroke-dasharray="9 6" stroke-linecap="round"/>
-          <line x1="298" y1="45" x2="290" y2="180" stroke="#9b1c2e" stroke-width="3.5" stroke-dasharray="9 6" stroke-linecap="round"/>
-          <text x="218" y="195" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#9b1c2e">LIMB: MID-LATERAL +</text>
-          <text x="218" y="207" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#9b1c2e">MID-MEDIAL</text>
-        </svg>
+        <div style="padding:3pt 5pt;"><div class="pdetail" data-proc="eschar" aria-hidden="true"></div><div class="proc-cap" data-proccap="eschar"></div></div>
       </div>
     </div>
     <div>
@@ -140,6 +132,24 @@
 (function(){
   var b=document.getElementById('printbtn');
   if(b) b.addEventListener('click', function(){ window.print(); }, false);
+})();
+/* @proc-icons */
+</script>
+<script>
+(function(){
+  if (typeof PROC_ICONS !== 'object') return;
+  document.querySelectorAll('.pglyph[data-proc]').forEach(function(el){
+    var k = el.getAttribute('data-proc');
+    el.innerHTML = PROC_ICONS.glyph(k, '');
+  });
+  document.querySelectorAll('.pdetail[data-proc]').forEach(function(el){
+    var k = el.getAttribute('data-proc');
+    el.innerHTML = PROC_ICONS.detail(k, '');
+  });
+  document.querySelectorAll('[data-proccap]').forEach(function(el){
+    var k = el.getAttribute('data-proccap');
+    el.textContent = PROC_ICONS.caption(k);
+  });
 })();
 </script>
 </body>

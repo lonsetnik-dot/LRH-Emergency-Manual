@@ -32,6 +32,12 @@ const MARKER_INV = '/* @inventory */';
    same glyph — see issue #131 and the header of equipment-icons.js. */
 const ICONS = readFileSync('equipment-icons.js', 'utf8').trim();
 const MARKER_ICONS = '/* @icons */';
+/* The PROCEDURE icon set — anatomy + one action, a different system from the
+   equipment glyphs above (which draw objects). Shared so a card, a poster and
+   a label show the same drawing of the same procedure; see design/ICONOGRAPHY.md
+   and the header of procedure-icons.js. */
+const PROCICONS = readFileSync('procedure-icons.js', 'utf8').trim();
+const MARKER_PROCICONS = '/* @proc-icons */';
 /* The upstream guideline registry, shared by sources/ (the freshness page) and
    read outside the browser by check_guidelines.mjs — see GUIDELINE-WATCH.md. */
 const GDL = readFileSync('guidelines.js', 'utf8').trim();
@@ -59,9 +65,14 @@ function applySite(text, file) {
 }
 
 // Not part of the deployed site (dev tooling, docs, build inputs, VCS).
-const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', '.github']);
+// design/ holds the design-reference package (prototypes + specs). Its .dc.html
+// files are references to build FROM, not pages to ship — and the offline shell
+// precaches every page it finds, so shipping ~90 kB of prototype would cost
+// every clinician's cache for something no clinician opens. Read them from the
+// repo, not the site.
+const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', '.github', 'design']);
 const SKIP_ROOT_FILES = new Set([
-  'design-system.css', 'design-system-live.css', 'inventory.js', 'equipment-icons.js', 'guidelines.js', 'build.mjs', 'run-tests.sh', 'netlify.toml',
+  'design-system.css', 'design-system-live.css', 'inventory.js', 'equipment-icons.js', 'procedure-icons.js', 'guidelines.js', 'build.mjs', 'run-tests.sh', 'netlify.toml',
   'package.json', 'package-lock.json', 'shot.mjs', '.gitignore',
   'sw-template.js', 'sw-register.js',   // build inputs — emitted as dist/sw.js / inlined
   'site.config.json',                   // build input — substituted into every page
@@ -81,7 +92,7 @@ function walk(src, dst, atRoot) {
     if (statSync(s).isDirectory()) walk(s, d, false);
     else if (name.endsWith('.html')) {
       const html = readFileSync(s, 'utf8');
-      writeFileSync(d, applySite(injectSW(html.split(MARKER).join(CSS).split(MARKER_LIVE).join(CSS_LIVE).split(MARKER_SHELL).join(CSS_SHELL).split(MARKER_INV).join(INV).split(MARKER_ICONS).join(ICONS).split(MARKER_GDL).join(GDL)), s));
+      writeFileSync(d, applySite(injectSW(html.split(MARKER).join(CSS).split(MARKER_LIVE).join(CSS_LIVE).split(MARKER_SHELL).join(CSS_SHELL).split(MARKER_INV).join(INV).split(MARKER_ICONS).join(ICONS).split(MARKER_PROCICONS).join(PROCICONS).split(MARKER_GDL).join(GDL)), s));
     } else if (name.endsWith('.webmanifest')) {
       writeFileSync(d, applySite(readFileSync(s, 'utf8'), s));
     } else copyFileSync(s, d);
@@ -200,7 +211,7 @@ let leftover = 0;
   for (const name of readdirSync(dir)) {
     const p = join(dir, name);
     if (statSync(p).isDirectory()) scan(p);
-    else if (name.endsWith('.html') && (readFileSync(p, 'utf8').includes(MARKER) || readFileSync(p, 'utf8').includes(MARKER_LIVE) || readFileSync(p, 'utf8').includes(MARKER_INV) || readFileSync(p, 'utf8').includes(MARKER_ICONS) || readFileSync(p, 'utf8').includes(MARKER_SHELL) || readFileSync(p, 'utf8').includes(MARKER_GDL))) {
+    else if (name.endsWith('.html') && (readFileSync(p, 'utf8').includes(MARKER) || readFileSync(p, 'utf8').includes(MARKER_LIVE) || readFileSync(p, 'utf8').includes(MARKER_INV) || readFileSync(p, 'utf8').includes(MARKER_ICONS) || readFileSync(p, 'utf8').includes(MARKER_SHELL) || readFileSync(p, 'utf8').includes(MARKER_PROCICONS) || readFileSync(p, 'utf8').includes(MARKER_GDL))) {
       console.error('!! un-injected marker left in', p); leftover++;
     }
     else if (/\.(html|webmanifest)$/.test(name) && /\{\{SITE\./.test(readFileSync(p, 'utf8'))) {

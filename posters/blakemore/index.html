@@ -50,6 +50,9 @@
   .key .l { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:6.3pt; letter-spacing:0.08em; color:#5a6a78; margin-top:1pt; }
   .fig { border:1.5pt solid #d7dde3; margin-top:5pt; }
   .figcap { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:7.2pt; letter-spacing:0.08em; color:#0f7a86; padding:3pt 5pt 0; }
+  :root { --ink:#16324f; --ink2:#5a6a78; --red:#9b1c2e; }
+  .h1glyph { width:0.28in; height:0.28in; vertical-align:-0.06in; margin-right:5pt; color:var(--ink); }
+  .h1glyph .proc-glyph { width:0.28in; height:0.28in; }
   footer.strip { border-top:1.5pt solid #16324f; margin-top:4pt; padding-top:3pt; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:6.4pt; line-height:1.3; letter-spacing:0.02em; color:#5a6a78; }
   /* QR — same spec as every other poster. break-inside:avoid because a QR split across a page
      break is unscannable, and a poster that silently grows to two pages is the failure mode that
@@ -68,7 +71,7 @@
 
 <div class="sheet">
   <div class="eyebrow">{{SITE.abbrev}} · EMERGENCY DEPARTMENT</div>
-  <h1>Blakemore Tube — Balloon Tamponade</h1>
+  <h1><span class="h1glyph pglyph" data-proc="blakemore" aria-hidden="true"></span>Blakemore Tube — Balloon Tamponade</h1>
   <div class="rule"></div>
 
   <p class="indication"><span class="tag">INDICATION</span>Massive, uncontrolled upper-GI hemorrhage from esophageal/gastric varices when endoscopy is <b>unavailable, delayed, or failed</b> — a temporizing bridge to endoscopy or TIPS, not definitive therapy.</p>
@@ -101,32 +104,32 @@
         <div class="figcap">FIG 1 · TUBE IN PLACE — BALLOONS &amp; TRACTION</div>
         <svg viewBox="0 0 380 250" style="width:100%; height:auto; display:block;" role="img" aria-label="Blakemore tube in place with esophageal and gastric balloons and traction weight">
           <rect x="0" y="0" width="380" height="250" fill="#fffefb"/>
-          <!-- mouth mark + tube top -->
-          <text x="10" y="17" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="8.5" font-weight="700" fill="#16324f">50 cm AT LIPS</text>
-          <line x1="90" y1="22" x2="90" y2="200" stroke="#16324f" stroke-width="4" stroke-linecap="round"/>
-          <!-- traction cord + pulley + weight, isolated top-right -->
-          <line x1="90" y1="20" x2="338" y2="20" stroke="#16324f" stroke-width="2"/>
-          <circle cx="338" cy="20" r="8" fill="none" stroke="#16324f" stroke-width="2.5"/>
-          <line x1="338" y1="28" x2="338" y2="48" stroke="#16324f" stroke-width="2"/>
-          <rect x="326" y="48" width="24" height="24" rx="2" fill="none" stroke="#16324f" stroke-width="2.5"/>
-          <text x="296" y="90" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10" font-weight="700" fill="#16324f" text-anchor="middle">&asymp;1 kg</text>
-          <text x="296" y="102" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="7" fill="#5a6a78" text-anchor="middle">1 L IVF · TRACTION</text>
-          <!-- esophageal balloon -->
-          <ellipse cx="90" cy="95" rx="14" ry="32" fill="none" stroke="#9b1c2e" stroke-width="2.5"/>
-          <text x="120" y="82" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9" font-weight="700" fill="#9b1c2e">ESOPHAGEAL</text>
-          <text x="120" y="94" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9" font-weight="700" fill="#9b1c2e">30 &#8594; &#8804;45 mmHg</text>
-          <text x="120" y="106" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="7" fill="#5a6a78">only if bleeding continues</text>
-          <!-- diaphragm -->
-          <path d="M20 146 Q90 134 340 146" fill="none" stroke="#8a6d1f" stroke-width="1.5" stroke-dasharray="4,3"/>
-          <text x="300" y="140" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="7.5" fill="#8a6d1f">DIAPHRAGM</text>
-          <!-- gastric balloon -->
-          <circle cx="90" cy="182" r="22" fill="none" stroke="#0f7a86" stroke-width="2.5"/>
-          <text x="120" y="172" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9" font-weight="700" fill="#0f7a86">GASTRIC</text>
-          <text x="120" y="184" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9" font-weight="700" fill="#0f7a86">250&#8211;300 mL</text>
-          <text x="120" y="196" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="7" fill="#5a6a78">seated at GE junction</text>
-          <line x1="90" y1="204" x2="90" y2="218" stroke="#16324f" stroke-width="4" stroke-linecap="round"/>
-          <text x="10" y="234" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="8" fill="#9b1c2e" font-weight="700">NEVER inflate the gastric balloon unless confirmed past the GEJ —</text>
-          <text x="10" y="246" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="8" fill="#9b1c2e" font-weight="700">inflation in the esophagus is almost always fatal.</text>
+          <!-- mouth mark + tube top (anatomy/device — ink) -->
+          <text x="10" y="17" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="8.5" font-weight="700" fill="var(--ink)">50 cm AT LIPS</text>
+          <line x1="90" y1="22" x2="90" y2="200" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/>
+          <!-- traction cord + pulley + weight (device — ink) -->
+          <line x1="90" y1="20" x2="338" y2="20" stroke="var(--ink)" stroke-width="2"/>
+          <circle cx="338" cy="20" r="8" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+          <line x1="338" y1="28" x2="338" y2="48" stroke="var(--ink)" stroke-width="2"/>
+          <rect x="326" y="48" width="24" height="24" rx="2" fill="none" stroke="var(--ink)" stroke-width="2.5"/>
+          <text x="296" y="90" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10" font-weight="700" fill="var(--ink)" text-anchor="middle">&asymp;1 kg</text>
+          <text x="296" y="102" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="7" fill="var(--ink2)" text-anchor="middle">1 L IVF · TRACTION</text>
+          <!-- esophageal balloon (landmark — ink2) -->
+          <ellipse cx="90" cy="95" rx="14" ry="32" fill="none" stroke="var(--ink2)" stroke-width="2.5"/>
+          <text x="120" y="82" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9" font-weight="700" fill="var(--ink2)">ESOPHAGEAL</text>
+          <text x="120" y="94" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9" font-weight="700" fill="var(--ink2)">30 &#8594; &#8804;45 mmHg</text>
+          <text x="120" y="106" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="7" fill="var(--ink2)">only if bleeding continues</text>
+          <!-- diaphragm (landmark — ink2) -->
+          <path d="M20 146 Q90 134 340 146" fill="none" stroke="var(--ink2)" stroke-width="1.5" stroke-dasharray="4,3"/>
+          <text x="300" y="140" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="7.5" fill="var(--ink2)">DIAPHRAGM</text>
+          <!-- gastric balloon (landmark — ink2) -->
+          <circle cx="90" cy="182" r="22" fill="none" stroke="var(--ink2)" stroke-width="2.5"/>
+          <text x="120" y="172" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9" font-weight="700" fill="var(--ink2)">GASTRIC</text>
+          <text x="120" y="184" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="9" font-weight="700" fill="var(--ink2)">250&#8211;300 mL</text>
+          <text x="120" y="196" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="7" fill="var(--ink2)">seated at GE junction</text>
+          <line x1="90" y1="204" x2="90" y2="218" stroke="var(--ink)" stroke-width="4" stroke-linecap="round"/>
+          <text x="10" y="234" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="8" fill="var(--red)" font-weight="700">NEVER inflate the gastric balloon unless confirmed past the GEJ —</text>
+          <text x="10" y="246" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="8" fill="var(--red)" font-weight="700">inflation in the esophagus is almost always fatal.</text>
         </svg>
       </div>
     </div>
@@ -170,6 +173,16 @@
 (function(){
   var b=document.getElementById('printbtn');
   if(b) b.addEventListener('click', function(){ window.print(); }, false);
+})();
+/* @proc-icons */
+</script>
+<script>
+(function(){
+  if (typeof PROC_ICONS !== 'object') return;
+  document.querySelectorAll('.pglyph[data-proc]').forEach(function(el){
+    var k = el.getAttribute('data-proc');
+    el.innerHTML = PROC_ICONS.glyph(k, '');
+  });
 })();
 </script>
 </body>
