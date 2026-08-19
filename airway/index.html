@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0D1420">
-<title>LRH Airway — Failed Intubation Ladder (DAS 2025)</title>
+<title>{{SITE.abbrev}} Airway — Failed Intubation Ladder (DAS 2025)</title>
 <meta name="description" content="Mobile cognitive aid for the unanticipated difficult airway: DAS 2025 Plan A to Plan D with attempt counts, declare-out-loud prompts and scalpel-bougie-tube. Personal aid, not hospital policy.">
 <style>
 /* @design-system-live */
@@ -23,6 +23,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
 </style>
 </head>
 <body data-theme="dark">
+<h1 class="sr-only">Failed Intubation — DAS 2025 Airway Ladder</h1>
 
 <!-- ============ CASE SHELL layer 1 — app bar (SHELL.md) ============
      One 56px row (60px ≥768px), sticky, never wraps. Left: back + the tool
@@ -40,7 +41,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
   </div>
   <span class="shell-wide" style="gap:6px;align-items:center">
     <button class="ghost" id="tlbtnwide" type="button">TIMELINE</button>
-    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Airway" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+    <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Airway" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
     <button class="ghost shellreset" id="resetwide" type="button">RESET</button>
   </span>
   <button class="shellmore shell-phone" id="menubtn" type="button" aria-label="Menu">⋯</button>
@@ -57,6 +58,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
   <a class="shellmenurow" href="../neonatal/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Neonatal</span><span class="shellmenusub">NRP</span></a>
   <a class="shellmenurow" href="../pph/"><span class="shellsq" style="background:#E75480"></span><span style="flex:1">PPH</span><span class="shellmenusub">PPH</span></a>
   <a class="shellmenurow" href="../dystocia/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Dystocia</span><span class="shellmenusub">OB</span></a>
+    <a class="shellmenurow" href="../peds/?from=tool"><span class="shellsq" style="background:var(--purple)"></span><span style="flex:1">Peds</span><span class="shellmenusub">PEDS</span></a>
   <div class="shellmenudiv"></div>
   <a class="shellmenurow" href="../?from=tool"><span class="shellsq" style="background:var(--gray)"></span><span style="flex:1">Manual home</span></a>
 </div>
@@ -65,7 +67,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
      two-tap SURE? reset the wide button runs (SHELL.md layer 9). -->
 <div class="shellmenu right" id="moremenu" style="display:none">
   <button class="shellmenurow" id="tlbtn" type="button">Case timeline</button>
-  <a class="shellmenurow" id="feedbackmenu" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Airway">Feedback</a>
+  <a class="shellmenurow" id="feedbackmenu" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Airway">Feedback</a>
   <div class="shellmenudiv"></div>
   <button class="shellmenurow danger" id="resetbtn" type="button">Reset for next case</button>
 </div>
@@ -98,6 +100,8 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
     go to <a href="../arrest/" style="color:var(--blue)">cardiac arrest</a>. If there is <b>a pulse but no breathing</b> and you can
     ventilate them, that is <a href="../arrest/" style="color:var(--blue)">rescue breathing</a>, not this ladder.
     DAS 2025 is written for anesthesia and gives no arrest algorithm; its wake-the-patient options do not exist here.
+    <b>Pediatric patient?</b> This ladder and its numbers are adult — pull tube/blade/suction sizes from
+    <a href="../peds/?from=airway#p16" style="color:var(--blue)">peds card 16</a> (drawer-color sized to the weight).
   </div>
 
   <!-- ============ CASE SHELL layer 5.2 — ACTIVATE TELE-ED ============
@@ -238,7 +242,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
    none was added — the DESAT action logs the event with no number.
    ========================================================================== */
 var DAS = {
-  version:"0.2.1", lastReviewed:"2026-08-15",
+  version:"0.2.2", lastReviewed:"2026-08-17",
   attempts:{ planA:3, planASenior:1, planB:3, planBviaSAD:1, planC:3 },
   preox:{ eto2:"0.9", headUp:"30°", hfno:"30 L/min" },
   rsi:{ roc:"1.2 mg/kg", sux:"1.5 mg/kg" },
@@ -259,7 +263,7 @@ var DAS = {
    Read-only in practice: nothing in this file reads window.DAS, it reads
    the local DAS. Two reasons it is worth one line:
    1. The suites assert the UI against THIS config instead of against
-      hardcoded LRH numbers, so a fork that correctly localizes its
+      hardcoded local numbers, so a fork that correctly localizes its
       values keeps a green test run (issue #117). Tests that break on
       correct localization teach an adopting site to ignore failures.
    2. A champion localizing the DAS 2025 airway ladder can read the live,
@@ -612,7 +616,7 @@ function paint(){
        (open?'<div class="accb">'+a.b()+'</div>':'')+'</div>';
   }
   setHTML($('accordions'), h);
-  $('verstamp').textContent='v'+DAS.version+' · last reviewed '+DAS.lastReviewed+' · LRH · DAS 2025';
+  $('verstamp').textContent='v'+DAS.version+' · last reviewed '+DAS.lastReviewed+' · {{SITE.abbrev}} · DAS 2025';
 }
 
 function toPlan(p, words){ S.plan=p; if(words) log(words, EV.red); paint(); }

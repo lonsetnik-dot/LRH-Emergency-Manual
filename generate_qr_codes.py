@@ -2,7 +2,10 @@ import qrcode, io, json
 from pyzbar.pyzbar import decode
 from PIL import Image
 
-BASE='https://lrhemergencymanual.net'
+# The QR pixels bake in the site's domain, so they are regenerated per edition:
+# the domain comes from site.config.json (the same file build.mjs substitutes
+# into every page), never hardcoded here.
+BASE='https://'+json.load(open('site.config.json'))['domain']
 # Destination per label. Only where a real card exists — no invented targets.
 DEST = {
  # --- code cart ---

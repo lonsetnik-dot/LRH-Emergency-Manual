@@ -1,0 +1,28 @@
+{
+  "_comment": [
+    "SITE IDENTITY — LRH edition (Littleton Regional Healthcare).",
+    "Every {{SITE.key}} token in any .html file (and .webmanifest) is replaced with",
+    "the value here at build time (build.mjs). The build FAILS if a token has no",
+    "matching key, or if any un-substituted token survives into dist/ — identity can",
+    "never silently half-apply.",
+    "",
+    "This branch is the LRH hospital edition of the CairnReady generic trunk — see",
+    "SITES.md. Identity lives here; clinical site-specific values stay in each",
+    "tool's marked SITE CONFIG block, next to the logic that uses them and the",
+    "citation for them. QR codes bake the domain below into their pixels —",
+    "regenerate them (generate_qr_codes.py + the embedded matrices) if it changes."
+  ],
+  "title": "LRH Emergency Manual",
+  "shortName": "LRH Manual",
+  "abbrev": "LRH",
+  "hospital": "Littleton Regional Healthcare",
+  "eyebrow": "Littleton Regional Healthcare &middot; Emergency Department",
+  "domain": "lrhemergencymanual.net",
+  "editionNote": "Content is unverified; verify every value against local protocols and assays.",
+  "footerLine": "Littleton Regional Healthcare Emergency Manual &mdash; personal, unofficial reference &middot; Beta",
+  "_feedbackEmailNote": "Where the FEEDBACK button in every tool sends mail. Trunk-side this token replaced a hardcoded personal address that would have misrouted every fork's feedback; for LRH specifically it stays Lon's own address, since he is this edition's maintainer.",
+  "feedbackEmail": "lon.setnik@gmail.com",
+  "transferCenter": "DHMC Transfer Center",
+  "transferPhone": "(877) 999-9870",
+  "poisonControl": "1-800-222-1222"
+}

@@ -6,17 +6,17 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#005596">
-<title>LRH OB Emergencies</title>
+<title>{{SITE.abbrev}} OB Emergencies</title>
 <link rel="manifest" href="manifest.webmanifest">
 <link rel="apple-touch-icon" href="icon.svg">
 <meta name="apple-mobile-web-app-title" content="OB Emergencies">
 <meta name="description" content="Beta cognitive aids for OB and neonatal emergencies in the Emergency Department. Practice and feedback only.">
-<link rel="canonical" href="https://lrhemergencymanual.net/ob-neonatal/">
+<link rel="canonical" href="https://{{SITE.domain}}/ob-neonatal/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="LRH Emergency Manual">
-<meta property="og:title" content="LRH OB Emergencies (beta)">
+<meta property="og:site_name" content="{{SITE.title}}">
+<meta property="og:title" content="{{SITE.abbrev}} OB Emergencies (beta)">
 <meta property="og:description" content="Cognitive aids for OB and neonatal emergencies in the ED. Beta — practice and feedback only.">
-<meta property="og:url" content="https://lrhemergencymanual.net/ob-neonatal/">
+<meta property="og:url" content="https://{{SITE.domain}}/ob-neonatal/">
 <meta name="twitter:card" content="summary">
 <style>
   /* --sticky-h: the real, current height of #stickytop (the .lrh-hdr strip +
@@ -28,6 +28,12 @@
      guessed header height instead of measuring it). */
   html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; --sticky-h:54px; }
   /* @design-system */
+  /* ---- PROCEDURE GLYPHS (design/ICONOGRAPHY.md) — anatomy in ink, action in red.
+     Cross-linked procedures carry the GLYPH only; the detail figure lives with
+     their home category. Colour comes from the page tokens, so both themes and
+     print work with no per-theme rules. ---- */
+  .proc-glyph { width:30px; height:30px; flex:none; color:var(--ink); vertical-align:-6px; margin-right:8px; }
+  @media print { .proc-glyph { color:#141E2B; } }
   /* ---- Shared design language (tokens, the .hdr chrome bar, the .lrh-* menu
      rows/filter, the themed <body>, and the .t-* card-interior classes) is
      injected from design-system.css at the marker above (build.mjs), edited once
@@ -153,7 +159,7 @@ try{
 </script>
 <template id="__bundler_thumbnail" data-bg-color="#16324f"><svg viewBox="0 0 1200 800" xmlns="http://www.w3.org/2000/svg"><rect width="1200" height="800" fill="#16324f"/><rect x="480" y="180" width="240" height="440" rx="28" fill="#fffefb"/><rect x="480" y="180" width="240" height="70" rx="28" fill="#9b1c2e"/><g stroke="#16324f" stroke-width="12" stroke-linecap="round"><path d="M516 320h168M516 380h168M516 440h110"/></g></svg></template>
 <div id="betasplash" style="position:fixed; inset:0; z-index:999; background:var(--bg); color:var(--ink); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
-  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:var(--ink2);">LRH · EMERGENCY DEPARTMENT</div>
+  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:var(--ink2);">{{SITE.abbrev}} · EMERGENCY DEPARTMENT</div>
   <div style="font-size:30px; line-height:1.06; letter-spacing:-0.02em; font-weight:700;">OB &amp; Neonatal Emergencies</div>
   <div style="display:inline-block; padding:6px 14px; border:2px solid var(--accent); color:var(--accent); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.16em;">BETA</div>
   <div style="max-width:460px; font-size:17px; line-height:1.4; color:var(--ink);">Not yet ready for clinical use. Shared for feedback and practice only — do not use it to direct the care of a patient.</div>
@@ -167,7 +173,7 @@ try{
   <span class="plabel">OB &amp; NEONATAL</span>
   <button class="ghost" id="summarybtn" type="button">TIMELINE</button>
   <button class="ghost danger" id="resetbtn" type="button" style="display:none">RESET</button>
-  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20OB%20%26%20Neonatal" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+  <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20OB%20%26%20Neonatal" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
 </div>
 </div>
 <script>
@@ -255,7 +261,7 @@ try{
 <section id="top" style="padding:0 0 18px;">
   <div class="lrh-menuwrap">
     <div class="inner">
-      <div class="lrh-eyebrow lrh-mono">LRH · EMERGENCY DEPARTMENT</div>
+      <div class="lrh-eyebrow lrh-mono">{{SITE.abbrev}} · EMERGENCY DEPARTMENT</div>
       <h1 class="lrh-idx-h1">OB &amp; Neonatal Emergencies</h1>
       <p class="lrh-idx-sub">Name the situation &middot; claim leadership &middot; aim the team. Tap a card.</p>
       <p class="lrh-idx-sub" style="margin-top:6px; font-size:12.5px;">A reference to assist professional decision-making — not a policy or protocol. Every situation requires nuance; use your professional judgment to vary from this source.</p>
@@ -287,14 +293,14 @@ try{
         <div class="lrh-group-hd"><span class="dot" style="background:var(--teal)"></span><span class="label">NEWBORN</span><span class="rule"></span></div>
         <div class="lrh-row-grid">
           <a href="../neonatal/?from=obneonatal" data-k="nrp newborn resus ppv chest compressions heart rate metronome apgar" class="lrh-row" style="--cc:var(--teal)"><span class="n lrh-mono">03</span><span class="t">Neonatal resuscitation — live engine</span></a>
-          <a href="#c04" data-k="uvc umbilical vein line venous access emergency" class="lrh-row" style="--cc:var(--teal)"><span class="n lrh-mono">04</span><span class="t">Umbilical vein catheterization</span></a>
+          <a href="#c04" data-k="uvc umbilical vein line venous access emergency" class="lrh-row" style="--cc:var(--teal)"><span class="pglyph" data-proc="uvc" aria-hidden="true"></span><span class="n lrh-mono">04</span><span class="t">Umbilical vein catheterization</span></a>
         </div>
 
         <div class="lrh-group-hd"><span class="dot" style="background:var(--red)"></span><span class="label">MATERNAL EMERGENCY</span><span class="rule"></span></div>
         <div class="lrh-row-grid">
           <a href="#c05" data-k="cesarean c-section section operative" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">05</span><span class="t">ED C-Section</span></a>
           <a href="../pph/?from=obneonatal" data-k="pph bleeding hemorrhage uterotonics oxytocin tranexamic txa uterine massage atony" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">06</span><span class="t">Postpartum hemorrhage — live engine</span></a>
-          <a href="#c10" data-k="hysterotomy perimortem c-section cesarean maternal arrest fundus umbilicus procedures" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">10</span><span class="t">Resuscitative hysterotomy</span></a>
+          <a href="#c10" data-k="hysterotomy perimortem c-section cesarean maternal arrest fundus umbilicus procedures" class="lrh-row" style="--cc:var(--red)"><span class="pglyph" data-proc="hyst" aria-hidden="true"></span><span class="n lrh-mono">10</span><span class="t">Resuscitative hysterotomy</span></a>
           <a href="#c11" data-k="eclampsia preeclampsia severe hypertension pregnancy seizure magnesium sulfate mag labetalol hydralazine nifedipine postpartum hellp toxemia" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">11</span><span class="t">Eclampsia / severe preeclampsia</span></a>
         </div>
       </div>
@@ -457,7 +463,7 @@ try{
       </figure></div>
       <div style="padding:4px 14px 14px;">
         <button type="button" id="clampbtn" data-logevent="CORD CLAMPED" data-logcard="02" style="width:100%; min-height:58px; background:var(--teal); color:var(--on-sev); border:2px solid var(--teal); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">CORD IS CLAMPED</button>
-        <div style="margin-top:12px; padding:10px 12px; background:var(--card2); border-left:4px solid var(--teal); font-size:13.5px; line-height:1.35; color:var(--ink);">Two clamps 2–3 in from the abdomen, cut between. Then let the placenta deliver with gentle pushing — <b>no cord traction</b>. Watch maternal bleeding → <b>card 06</b> if &gt;500 mL or shock.</div>
+        <div style="margin-top:12px; padding:10px 12px; background:var(--card2); border-left:4px solid var(--teal); font-size:13.5px; line-height:1.35; color:var(--ink);">Two clamps 2–3 in from the abdomen, cut between. Then let the placenta deliver with gentle pushing — <b>no cord traction</b>. Watch maternal bleeding → <b><a href="#c06">card 06</a></b> if &gt;500 mL or shock.</div>
       </div>
     </details>
     <details open style="border:2px solid var(--gray); align-self:start;">
@@ -509,7 +515,7 @@ try{
 <article id="c04" data-audience="any" style="background:var(--card); border-top:6px solid var(--teal); padding:0 0 22px;">
   <header style="padding:18px 18px 14px;">
     <div style="display:flex; align-items:center; gap:10px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.08em; color:var(--teal);">
-      <span>04</span>
+      <span class="pglyph" data-proc="uvc" aria-hidden="true"></span><span>04</span>
       <span style="flex:1; text-align:right; color:var(--ink2);">5 Fr ≥1.5 KG · 3.5 Fr <1.5 KG · CIRCULATION DRAWER</span>
     </div>
     <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:var(--ink);">Umbilical vein catheterization</h2>
@@ -650,7 +656,7 @@ try{
 <article id="c05" data-audience="any" style="background:var(--card); border-top:6px solid var(--sev-crit); padding:0 0 22px;">
   <header style="padding:18px 18px 14px;">
     <div style="display:flex; align-items:center; gap:10px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.08em; color:var(--red);">
-      <span>05</span>
+      <span class="pglyph" data-proc="csection" aria-hidden="true"></span><span>05</span>
       <span style="flex:1; text-align:right; color:var(--ink2);">2 ATTEMPTS MAX · iGEL EARLY</span>
     </div>
     <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:var(--ink);">ED C-Section</h2>
@@ -818,7 +824,7 @@ try{
       <div style="padding:11px 14px 13px; background:var(--card2);">
         <a href="../neonatal/?from=obneonatal" class="babyout" data-logevent="BABY OUT" data-logcard="02" style="display:flex; align-items:center; justify-content:center; min-height:56px; background:var(--sev-crit); color:var(--on-sev); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; text-align:center; margin-bottom:9px;">BABY IS OUT — STAMP TIME → NEONATAL RESUS</a>
         <a href="#c02s2" style="display:flex; align-items:center; justify-content:center; min-height:52px; background:var(--teal); color:var(--on-sev); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.1em; text-align:center;">→ 02 · TIME OF BIRTH + THE 4-YES CHECK</a>
-        <div style="margin-top:9px; font-size:13.5px; line-height:1.3; color:var(--ink);">All four yes: skin-to-skin and delayed clamping. Any one no: clamp now, warmer, <b>neonatal resuscitation (card 03)</b>.</div>
+        <div style="margin-top:9px; font-size:13.5px; line-height:1.3; color:var(--ink);">All four yes: skin-to-skin and delayed clamping. Any one no: clamp now, warmer, <b>neonatal resuscitation (<a href="#c03">card 03</a>)</b>.</div>
       </div>
     </details>
   </div>
@@ -955,7 +961,7 @@ try{
       <div style="padding:11px 14px 0; font-size:13.5px; line-height:1.3; color:var(--ink); background:var(--card2);">Nothing here delivers this baby. Everything you are doing is a bridge to the operating field — keep the presenting part elevated the whole way.</div>
       <div style="padding:11px 14px 13px; background:var(--card2);">
         <a href="#c05" style="display:flex; align-items:center; justify-content:center; min-height:52px; background:var(--sev-crit); color:var(--on-sev); text-decoration:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.1em; text-align:center;">→ 05 · ED C-SECTION</a>
-        <div style="margin-top:9px; font-size:13.5px; line-height:1.3; color:var(--ink);">At delivery the baby goes to the <a href="#c02s2" style="color:var(--red); font-weight:700;">4-yes check</a> — or straight to <b>neonatal resuscitation (card 03)</b>.</div>
+        <div style="margin-top:9px; font-size:13.5px; line-height:1.3; color:var(--ink);">At delivery the baby goes to the <a href="#c02s2" style="color:var(--red); font-weight:700;">4-yes check</a> — or straight to <b>neonatal resuscitation (<a href="#c03">card 03</a>)</b>.</div>
       </div>
     </details>
   </div>
@@ -1026,7 +1032,7 @@ try{
 <article id="c10" data-audience="any" style="background:var(--card); border-top:6px solid var(--sev-crit); padding:0 0 22px;">
   <header style="padding:18px 18px 14px;">
     <div style="display:flex; align-items:center; gap:10px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; letter-spacing:0.08em; color:var(--red);">
-      <span>10</span>
+      <span class="pglyph" data-proc="hyst" aria-hidden="true"></span><span>10</span>
       <span style="flex:1; text-align:right; color:var(--ink2);">CPR NEVER STOPS · EQUIPMENT IN THE NEO CART</span>
     </div>
     <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:var(--ink);">Resuscitative hysterotomy</h2>
@@ -1824,9 +1830,9 @@ var CASESTATE = (function(){
 })();
 </script>
 <script>
-/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
+/* ===== SITE CONFIG (site-specific — edit to localize) ===== */
 var SITE = {
-  version: "1.15", lastReviewed: "2026-08-13",
+  version: "1.16", lastReviewed: "2026-08-17",
   /* DEFERRED CORD CLAMPING (issue #140). Was "30–60 s" here while the live
      engine at /neonatal/ said "at least 60 s" — two screens a clinician can
      open in the same delivery, giving different numbers. The 2025 AHA/AAP
@@ -1840,7 +1846,7 @@ var SITE = {
   cordDeferSec: 60
 };
 (function(){
-  var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
+  var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · {{SITE.abbrev}}';
   Array.prototype.forEach.call(document.querySelectorAll('.verstamp'), function(vs){ vs.textContent=stampText; });
 })();
 </script>
@@ -2320,7 +2326,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   function render(){
     var m=build();
     if(!m.ev.length){ body.innerHTML='<div style="color:#5a6a78; padding:16px 0; text-align:center;">Nothing logged yet — set the time of birth and work the case.</div>'; return ''; }
-    var rows='', text='LRH Emergency Manual — case timeline, all tools (times only, no identifiers)\n';
+    var rows='', text='{{SITE.title}} — case timeline, all tools (times only, no identifiers)\n';
     if(m.birth) text+='Born: '+m.birth+'\n';
     text+='\n';
     m.ev.forEach(function(e){
@@ -2573,6 +2579,21 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   /* Equipment + code-dose engine. Weight (birth banner) preferred over gestation
      (PREPARE). Device-local, no identifiers. Sizes: Merck/NRP. */
   var WK='lrh-ob-weight', GK='lrh-ob-ga';
+  /* ---- SITE-EDITABLE sizing ladder (one entry per band: <1 / <2 / <3 / ≥3 kg,
+     or by dates <28 / <34 / <38 / ≥38 wk). An adopting ED edits these to its
+     stock; calc() below only ever indexes into them. Exposed on window so the
+     verify suite and a readiness champion read the in-effect values from the
+     console instead of from source (issue #117 pattern). Mask (0 preterm /
+     1 term) and ETT suction catheter (tracks the tube, ≈2 × ID in Fr) per the
+     NRP equipment checklist — the mouth uses the larger 10–12 Fr or bulb. */
+  var EQ_SIZES = {
+    ETT:    ['2.5','3.0','3.5','3.5–4.0'],
+    blade:  ['00','0','0–1','1'],
+    mask:   ['0 (preterm)','0','0–1','1 (term)'],
+    suction:['5 Fr','6 Fr','6–8 Fr','8 Fr'],
+    depthGA:['~6 cm','~7 cm','~8 cm','~9 cm']
+  };
+  try{ window.EQ_SIZES = EQ_SIZES; }catch(e){}
   function boot(){
     function num(k){ var v=parseFloat(localStorage.getItem(k)||''); return isNaN(v)?null:v; }
     /* Birth weight is charted and SPOKEN in grams; this input is kilograms.
@@ -2624,10 +2645,12 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
       var lmaOK=haveW?w>=2:g>=34;
       return { w:w, g:g, grams:wn.grams||null, haveW:haveW, haveG:haveG, band:band, conflict:conflict, lmaOK:lmaOK,
         err:wn.err||gErr||null,
-        ETT:['2.5','3.0','3.5','3.5–4.0'][band],
-        blade:['00','0','0–1','1'][band],
-        depth: haveW ? ((Math.round((6+w)*10)/10)+' cm') : ['~6 cm','~7 cm','~8 cm','~9 cm'][band],
-        LMA: lmaOK ? '0.5' : '0',   /* LRH stocks infant LMA 0 and 0.5 (drawer 1) — no size 1 */
+        ETT:EQ_SIZES.ETT[band],
+        blade:EQ_SIZES.blade[band],
+        mask:EQ_SIZES.mask[band],
+        suction:EQ_SIZES.suction[band],
+        depth: haveW ? ((Math.round((6+w)*10)/10)+' cm') : EQ_SIZES.depthGA[band],
+        LMA: lmaOK ? '0.5' : '0',   /* this site stocks infant LMA 0 and 0.5 (drawer 1) — no size 1 */
         /* UVC: 5 Fr >=1.5 kg, 3.5 Fr <1.5 kg (card 04's own header rule). The
            GA-only path goes by band: <34 wk -> 3.5 Fr — the old strict
            refW<1.5 handed exactly the 28–33 wk babies a 5 Fr
@@ -2653,7 +2676,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
       +'<line x1="226" y1="38" x2="250" y2="38" stroke="#5a6a78" stroke-width="2"/>'
       +'<text x="182" y="70" text-anchor="middle" font-family="ui-monospace,Menlo,monospace" font-size="9" font-weight="700" fill="#0e7c86">CODE-CART 0.1 mg/mL</text></svg>';
     function html(c, multi){
-      if(!c){ return '<div style="border:2px dashed #b7c7ca; background:#f2f8f9; padding:11px 12px; font-size:13.5px; color:#16324f;">Enter <b>weight</b> (kg — or grams, e.g. 3500) or <b>weeks gestation</b> above for ETT / LMA / UVC / blade sizes and the code-dose epi.</div>'; }
+      if(!c){ return '<div style="border:2px dashed #b7c7ca; background:#f2f8f9; padding:11px 12px; font-size:13.5px; color:#16324f;">Enter <b>weight</b> (kg — or grams, e.g. 3500) or <b>weeks gestation</b> above for ETT / LMA / UVC / blade / mask / suction sizes and the code-dose epi.</div>'; }
       if(c.hardstop){ return '<div style="border:2px solid #9b1c2e; background:#fbeaec; padding:11px 12px; font-size:13.5px; font-weight:700; color:#9b1c2e;">&#9888; '+c.hardstop+'<br><span style="font-weight:400; color:#16324f;">No sizes or doses are calculated from this entry.</span></div>'; }
       var basis=c.haveW
         ? ((c.grams?(c.grams+' g = <b>'+c.w+' kg</b>'):('weight '+c.w+' kg'))+(c.haveG?(' · '+c.g+' wk'):''))
@@ -2675,6 +2698,8 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
           + tile('LMA', c.LMA, c.lmaOK?'≥2 kg / ≥34 wk':'&lt;2 kg / &lt;34 wk')
           + tile('UVC', c.UVC, 'insert 2–4 cm to blood')
           + tile('BLADE', c.blade, 'laryngoscope')
+          + tile('MASK', c.mask, 'rim seals bridge of nose to chin')
+          + tile('ETT SUCTION', c.suction, 'through the tube · mouth: 10–12 Fr or bulb')
         +'</div>'
         +'<div style="padding:0 12px 10px;"><div style="background:#fbeaec; border:2px solid #9b1c2e; padding:9px 11px;">'
           +'<div style="font-family:ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.08em; color:#9b1c2e;">EPINEPHRINE · CODE DOSE</div>'
@@ -2828,6 +2853,18 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
     else if(h==='#c07'){ location.replace('../dystocia/?from=obneonatal'); }
   }
   window.addEventListener('hashchange', toEngine, false);
+})();
+/* @proc-icons */
+</script>
+<script>
+/* Cross-linked procedure glyphs (design/ICONOGRAPHY.md): the SAME drawing the
+   procedures card and the poster use, rendered from the shared module so it
+   cannot drift. */
+(function(){
+  if (typeof PROC_ICONS !== 'object') return;
+  document.querySelectorAll('.pglyph[data-proc]').forEach(function(el){
+    el.innerHTML = PROC_ICONS.glyph(el.getAttribute('data-proc'), '');
+  });
 })();
 </script>
 </body>

@@ -405,8 +405,8 @@ ck('15. the tool name is AIRWAY', /AIRWAY/.test(await txt('#toolbtn')), true);
 await tap('#toolbtn');
 ck('15. tapping it opens the switcher', await vis('#toolmenu'), true);
 const switcher = await txt('#toolmenu');
-ck('15. the six engines + manual home are listed',
-   ['Arrest','TCA','Airway','Neonatal','PPH','Dystocia','Manual home'].every(n => switcher.includes(n)), true);
+ck('15. the six engines + peds + manual home are listed',
+   ['Arrest','TCA','Airway','Neonatal','PPH','Dystocia','Peds','Manual home'].every(n => switcher.includes(n)), true);
 ck('15. airway is marked as the current tool', await pg.evaluate(() => {
   const on = document.querySelector('#toolmenu .shellmenurow.on');
   return on ? on.textContent.includes('Airway') : false;

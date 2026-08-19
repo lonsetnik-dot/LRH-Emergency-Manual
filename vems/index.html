@@ -4,9 +4,9 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="theme-color" content="#005596">
-<title>LRH VEMS Kit — Visually Enhanced Mental Simulation</title>
+<title>{{SITE.abbrev}} VEMS Kit — Visually Enhanced Mental Simulation</title>
 <meta name="description" content="Printable, laminatable Visually Enhanced Mental Simulation kit: patient poster, monitor cards and equipment cards drawn with the same glyphs as the code cart drawer labels. Training aid only.">
-<link rel="canonical" href="https://lrhemergencymanual.net/vems/">
+<link rel="canonical" href="https://{{SITE.domain}}/vems/">
 <style>
 /* @design-system */
 /* ---- VEMS-specific chrome. Everything above is the shared card-tool skeleton
@@ -152,7 +152,7 @@
   <div class="hdr screenonly">
     <a class="ghost" href="../?from=tool" style="text-decoration:none">&#9664; MANUAL</a>
     <span class="plabel">VEMS KIT</span>
-    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20VEMS%20Kit" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+    <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20VEMS%20Kit" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
   </div>
 
   <div class="t-localize screenonly">
@@ -204,7 +204,7 @@
    ========================================================================== */
 var SITE = {
   version:"0.1", lastReviewed:"2026-08-12",
-  site:"LRH", room:"Resus bay or the education room — a table the whole team can stand around",
+  site:"{{SITE.abbrev}}", room:"Resus bay or the education room — a table the whole team can stand around",
   /* Print geometry. Letter is the US default; a fork on A4 changes this one
      line and the @page rule in the stylesheet. */
   paper:"letter portrait",

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#0D1420">
-<title>LRH Emergency Manual</title>
+<title>{{SITE.title}}</title>
 <style>
   /* Landing page. The theme tokens, the .hdr chrome bar, .sr-only, .lrh-mono and
      the themed body all come from the shared design-system.css injected at the
@@ -79,22 +79,22 @@ catch(e){ document.body.dataset.theme='dark'; }
 
 <!-- ===== SITE BETA SPLASH — first thing you see; dismiss to reveal the menu ===== -->
 <div id="betasplash" role="dialog" aria-modal="true" aria-label="Beta notice">
-  <div class="eyebrow">Littleton Regional Hospital &middot; Emergency Department</div>
+  <div class="eyebrow">{{SITE.eyebrow}}</div>
   <div class="title">Emergency Manual</div>
   <div class="beta">BETA</div>
   <div class="lead">Not yet ready for clinical use. Shared for feedback and practice only &mdash; do not use it to direct the care of a patient.</div>
-  <div class="fine">A personal, unofficial reference &mdash; not part of the LRH IT system / EHR, and not a substitute for clinical judgment. Content is unverified; verify every value against local protocols and assays.</div>
+  <div class="fine">A personal, unofficial reference &mdash; not part of any hospital IT system / EHR, and not a substitute for clinical judgment. {{SITE.editionNote}}</div>
   <button type="button" id="betago">I UNDERSTAND &mdash; CONTINUE</button>
 </div>
 
 <div class="hdr">
   <span class="plabel">EMERGENCY MANUAL</span>
-  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Landing%20page" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+  <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Landing%20page" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
   <button type="button" class="ghost" id="lrhThemeBtn">LIGHT</button>
 </div>
 
 <div class="wrap">
-  <h1 class="sr-only">LRH Emergency Manual</h1>
+  <h1 class="sr-only">{{SITE.title}}</h1>
   <a class="lrh-startnew" href="codes/?from=home&amp;startnewcase=1#top">START NEW CASE</a>
 
   <!-- ===== SEARCH ===== -->
@@ -135,7 +135,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     <!-- ===== CATEGORY: Clinical Pathways (live · ACCENT) -> /clinical-pathways/ ===== -->
     <a class="lrh-cat" style="--cc:var(--accent)" href="clinical-pathways/">
       <div class="row"><span class="dot"></span><span class="name">Clinical Pathways</span><span class="spacer"></span><span class="count lrh-mono">3 pathways</span></div>
-      <div class="desc">Accelerated diagnostic and treatment pathways. Includes the Chest Pain / hs-Troponin HEART pathway.</div>
+      <div class="desc">Accelerated diagnostic and treatment pathways. Includes the Chest Pain / hs-Troponin HEART pathway and the PE Clinical Categories calculator.</div>
     </a>
 
     <!-- ===== CATEGORY: Trauma (beta · ORANGE) -> /trauma/ ===== -->
@@ -187,11 +187,11 @@ catch(e){ document.body.dataset.theme='dark'; }
   </div>
 
   <div class="lrh-note">
-    <strong>Personal decision-support aids &mdash; not part of the LRH IT system / EHR.</strong>
+    <strong>Personal decision-support aids &mdash; not part of any hospital IT system / EHR.</strong> {{SITE.editionNote}}
     Beta: content is unverified. These tools do not replace clinical judgment. Verify all values and thresholds against local protocols and assays.
   </div>
 
-  <footer class="lrh-footer">Littleton Regional Hospital Emergency Manual &mdash; personal, unofficial reference &middot; Beta</footer>
+  <footer class="lrh-footer">{{SITE.footerLine}}</footer>
 </div>
 
 <script>
@@ -230,9 +230,12 @@ catch(e){ document.body.dataset.theme='dark'; }
 (function(){
   var SEARCH_INDEX=[
     {t:"Chest Pain · HEART Pathway", c:"Clinical Pathways", k:"heart score acs acute coronary syndrome troponin hs-troponin chest pain risk disposition 0/1 hour accelerated", u:"clinical-pathways/heart/"},
+    {t:"PE Clinical Categories · calculator", c:"Clinical Pathways", k:"pulmonary embolism pe classification pe category pe categories pe clinical categories pe risk pe risk stratification pe severity pe score pe submassive intermediate risk pe aha acc 2026 subclinical incidental normotensive shock spesi pesi hestia bova cpes respiratory modifier subsegmental rv strain right ventricle troponin bnp lactate calculator", u:"clinical-pathways/pe/"},
+    {t:"PE · outpatient vs admit decision", c:"Clinical Pathways", k:"pe outpatient pe disposition low risk pe home discharge hestia spesi pesi send home anticoagulate doac lmwh admit", u:"clinical-pathways/pe/"},
+    {t:"PE · pretest probability, PERC, Wells, YEARS, D-dimer", c:"Clinical Pathways", k:"perc rule out criteria rule out pe wells score years algorithm age adjusted d-dimer ddimer d dimer pretest probability geneva exclude pe imaging ctpa", u:"clinical-pathways/pe/"},
     {t:"OB & Neonatal — overview / index", c:"OB & Neonatal", k:"obstetric neonatal childbirth delivery index", u:"ob-neonatal/?from=home"},
     {t:"Imminent normal delivery", c:"OB & Neonatal", k:"labor birth precipitous apgar nuchal cord crowning", u:"ob-neonatal/?from=home#c02"},
-    {t:"Neonatal resuscitation (NRP) — live engine", c:"Neonatal", k:"neonatal resuscitation nrp newborn baby blue floppy ppv chest rise heart rate apgar time of birth delivery room warmer mr sopa compressions 3:1 epinephrine uvc preductal sats engine premature preterm plastic bag polyethylene wrap thermal mattress do not dry gestational age weeks days cord milking tele-nicu telenicu tele nicu telemedicine", u:"neonatal/?from=home"},
+    {t:"Neonatal resuscitation (NRP) — live engine", c:"Neonatal", k:"neonatal resuscitation nrp newborn baby blue floppy ppv chest rise heart rate apgar time of birth delivery room warmer mr sopa compressions 3:1 epinephrine uvc preductal sats engine premature preterm plastic bag polyethylene wrap thermal mattress do not dry gestational age weeks days cord milking tele-nicu telenicu tele nicu telemedicine airway sizes ett tube blade mask suction lma", u:"neonatal/?from=home"},
     {t:"Umbilical vein catheterization (UVC)", c:"OB & Neonatal", k:"uvc umbilical vein line venous access emergency", u:"ob-neonatal/?from=home#c04"},
     {t:"ED C-section", c:"OB & Neonatal", k:"cesarean c-section section operative", u:"ob-neonatal/?from=home#c05"},
     {t:"Postpartum hemorrhage (PPH) — live engine", c:"OB & Neonatal", k:"pph postpartum hemorrhage bleeding ebl estimated blood loss uterotonics oxytocin txa misoprostol methylergonovine carboprost bimanual massage bakri jada mtp massive transfusion engine clock tele-nicu telenicu tele nicu telemedicine", u:"pph/?from=home"},
@@ -278,6 +281,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     {t:"Death of a Child in the ED", c:"Pediatric Emergencies", k:"pediatric death bereavement family termination of resuscitation", u:"peds/?from=home#p13"},
     {t:"Pediatric Procedural Sedation", c:"Pediatric Emergencies", k:"procedural sedation ketamine propofol etomidate fasting pediatric", u:"peds/?from=home#p14"},
     {t:"Croup", c:"Pediatric Emergencies", k:"croup barky cough stridor racemic epinephrine dexamethasone steeple laryngotracheitis", u:"peds/?from=home#p15"},
+    {t:"Pediatric Airway Equipment Sizes", c:"Pediatric Emergencies", k:"ett size endotracheal tube size blade size cuffed uncuffed miller macintosh laryngoscope lma igel supraglottic suction catheter size depth intubation equipment airway equipment sizes broselow drawer color zone", u:"peds/?from=home#p16"},
     {t:"Codes — overview / index", c:"Codes", k:"codes resuscitation cardiac arrest overview index", u:"codes/?from=home"},
     {t:"Clinical Pathways — overview / index", c:"Clinical Pathways", k:"clinical pathways accelerated diagnostic overview index", u:"clinical-pathways/"},
     {t:"Trauma — overview / index", c:"Trauma", k:"trauma resuscitation index", u:"trauma/?from=home"},
@@ -297,7 +301,11 @@ catch(e){ document.body.dataset.theme='dark'; }
     {t:"STEMI", c:"Codes", k:"stemi st elevation mi myocardial infarction chest pain heart cognitive aid mimics aspirin heparin enoxaparin atorvastatin tenecteplase tnk weight band pressor norepinephrine dobutamine cardiogenic shock reperfusion arrhythmia aivr transfer dartmouth concord omnicell code", u:"codes/?from=home#c21"},
     {t:"Accidental Hypothermia", c:"Codes", k:"hypothermia cold water drowning rewarming ecmo ecls cold arrest not dead until warm and dead core temperature", u:"codes/?from=home#c27"},
     {t:"Sepsis / Septic Shock", c:"Codes", k:"sepsis septic shock infection lactate cultures antibiotics bundle norepinephrine pressors fluids map source control", u:"codes/?from=home#c28"},
-    {t:"Massive Pulmonary Embolism", c:"Codes", k:"massive pe pulmonary embolism high risk lytics alteplase tpa thrombolysis rv failure obstructive shock", u:"codes/?from=home#c29"},
+    /* Keeps "massive pe", "submassive pe" and "high risk pe" — the crash-patient
+       phrasings. The PE calculator entry above deliberately does NOT carry the
+       substring "massive pe": with both titles missing the term, the array order
+       decides, and a clinician typing "massive pe" wants this card, not a form. */
+    {t:"Massive Pulmonary Embolism", c:"Codes", k:"massive pe submassive pe high risk pe pulmonary embolism category d category e lytics alteplase tpa thrombolysis rv failure obstructive shock pe arrest pea transfer", u:"codes/?from=home#c29"},
     {t:"Severe Agitation (Adult)", c:"Codes", k:"agitation combative behavioral emergency excited delirium droperidol ketamine olanzapine restraints deescalation violent", u:"codes/?from=home#c30"},
     {t:"Adult DKA / HHS", c:"Codes", k:"dka diabetic ketoacidosis hhs hyperosmolar adult insulin potassium fluids anion gap", u:"codes/?from=home#c31"},
     {t:"Aortic Catastrophe (Dissection / AAA)", c:"Codes", k:"aortic dissection ruptured aaa aneurysm tearing chest pain anti-impulse esmolol type a type b vascular", u:"codes/?from=home#c32"},
@@ -308,6 +316,7 @@ catch(e){ document.body.dataset.theme='dark'; }
     {t:"Eclampsia / Severe Preeclampsia", c:"OB & Neonatal", k:"eclampsia preeclampsia pregnancy seizure magnesium sulfate severe hypertension labetalol hydralazine postpartum hellp", u:"ob-neonatal/?from=home#c11"},
     {t:"Mass-Casualty Incident (MCI) — First 15 Minutes", c:"Trauma", k:"mci mass casualty disaster triage start salt surge declare roles zones expectant", u:"trauma/?from=home#c09"},
     {t:"Electrical & Lightning Injury", c:"Trauma", k:"electrical injury lightning electrocution high voltage reverse triage rhabdomyolysis compartment", u:"trauma/?from=home#c10"},
+    {t:"Hazmat / Contaminated Patient — decontamination", c:"Trauma", k:"hazmat hazardous material decontamination decon contaminated patient chemical exposure cbrn nerve agent organophosphate sarin atropine pralidoxime duodote chempack cyanide hydroxocobalamin chlorine ammonia phosgene mustard vesicant radiation radiological potassium iodide ppe papr hot warm cold zone toxidrome undress wash", u:"trauma/?from=home#c11"},
     {t:"Equipment Readiness — where is everything", c:"Equipment", k:"equipment inventory where is location cart drawer kit stock supplies nprp readiness par find pigtail burr hole uvc igel chest tube", u:"equipment-readiness/?from=home"},
     /* One entry per section of the readiness tool — each is a destination a
        champion actually goes to, and rule 9 means none of them is findable

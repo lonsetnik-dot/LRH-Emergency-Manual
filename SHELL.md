@@ -182,7 +182,17 @@ Map the prototype's skin onto the repo's existing tokens
 (`design-system-live.css`): `--bg/--card/--card2/--ink/--ink2/--line`,
 semantic `--red/--amber/--blue/--green/--gray` + each tool's `--accent`.
 Shell-specific additions (tinted action backgrounds, the purple drug slot)
-live in `design-system-live.css` once, not per tool. Fonts stay the repo's
+live in `design-system-live.css` once, not per tool.
+
+**Card tools get the shell from `design-system-shell.css`.** The two full
+sheets cannot be injected into the same page — `design-system-live.css` and
+`design-system.css` set conflicting `body` rules, so a card tool that took
+both would have every card restyled. A card tool therefore carries
+`@design-system` (cards) + `@design-system-shell` (chrome). The shell block
+is mirrored between the live sheet and the shell sheet, and
+`verify_shell_parity.mjs` fails if the two copies drift by a single byte:
+the shell is one design, and a fix applied to the engines must reach the
+card tools in the same commit. Fonts stay the repo's
 system stacks. Touch floor 44px everywhere; dock/action buttons 54px;
 radii per the repo's existing values.
 
@@ -200,3 +210,21 @@ neonatal → pph/dystocia → codes/peds/ob-neonatal (card tools — bar +
 applicable layers) → reference pages (bar only). Each migration maps the
 tool's existing timers/actions into the slots above; **clinical content
 and validated values do not change.**
+
+Done so far: arrest, tca, airway, neonatal, pph, dystocia (engines);
+**peds** (first card tool — layers 1, 4, 8, 9; `verify_peds_shell.mjs`
+asserts it against arrest's live DOM rather than against re-typed numbers,
+so the two cannot drift apart). Still on the old chrome: `codes`,
+`ob-neonatal`, `trauma`, `procedures`, `clinical-pathways`.
+
+Two decisions made during the peds port, worth reusing for the rest:
+
+- **The tool switcher lists card tools too.** It listed only the six
+  engines, so a shell-wearing card tool was reachable from nowhere. Peds is
+  now in every switcher, and the next card tool joins the same list.
+- **A band/severity color never repaints the bar.** peds used to paint its
+  whole header the Broselow band color. Under the shell the bar stays the
+  flat page ground in every tool and the band drives the tool square, the
+  weight value and the zone chip instead — the same way arrest tints
+  `--accent` rather than the chrome. Chrome that changes shape or color per
+  patient is the second interface model this migration exists to remove.

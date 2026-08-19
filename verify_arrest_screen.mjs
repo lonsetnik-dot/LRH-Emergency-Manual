@@ -334,11 +334,23 @@ await pg.click('#startbtn'); await pg.waitForTimeout(350);
 ck('12. the code can be ceased at all', await pg.locator('#ceasebtn').count(), 1);
 await pg.click('#ceasebtn'); await pg.waitForTimeout(220);
 ck('12. ceasing takes a confirm, not one tap', await pg.locator('#ceaseconfirm').isVisible(), true);
+const todBefore = Date.now();
 await pg.click('#ceaseyes'); await pg.waitForTimeout(350);
 ck('12. it reaches the ceased state', await pg.locator('#ceased').isVisible(), true);
 const tod = await txt('#deathwall');
 ck('12. time of death is a wall clock, not elapsed', /^\d{2}:\d{2}$/.test(tod), true);
-ck('12. it agrees with the browser clock', tod, (d => String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0'))(new Date()));
+/* The page stamped the minute it pronounced; this reads it a moment later.
+   Comparing against a single new Date() fails whenever the minute rolls over in
+   between — a 1-in-60 flake that turns CI red for no clinical reason (it did:
+   got=19:53 want=19:54). Accept any minute the pronouncement actually spanned,
+   and no others — a stamp outside that window is still a real failure. */
+const todAfter = Date.now();
+const hhmm = ms => { const d = new Date(ms); return String(d.getHours()).padStart(2, '0') + ':' + String(d.getMinutes()).padStart(2, '0'); };
+const spanned = new Set([hhmm(todBefore), hhmm(todAfter)]);
+for (let t = todBefore; t < todAfter; t += 15000) spanned.add(hhmm(t));
+ck('12. it agrees with the browser clock (within the pronouncement window)',
+   spanned.has(tod) ? 'in [' + [...spanned].join(', ') + ']' : tod + ' NOT in [' + [...spanned].join(', ') + ']',
+   'in [' + [...spanned].join(', ') + ']');
 ck('12. elapsed is still shown beside it', /^\d+:\d\d$/.test(await txt('#deathat')), true);
 ck('12. the time of death is logged', new RegExp('time of death ' + tod).test(await tlText()), true);
 await pg.click('#resumearrest'); await pg.waitForTimeout(300);
@@ -600,6 +612,11 @@ ck('23. the dosing block is retitled as reference while running', await txt('#do
 ck('23. the EPI button reads GIVE NOW before the first dose', await txt('#dockepiclock'), 'GIVE NOW');
 ck(`23. the EPI label carries the config dose (${CFG.epi.adultMg} mg)`, await txt('#dockepilabel'), `EPI ${CFG.epi.adultMg} mg`);
 ck(`23. the SHOCK label carries the config energy (${J[0]} J)`, await txt('#dockshocklabel'), `SHOCK ${J[0]} J`);
+/* The dock renders on the 200ms paint loop, so a click issued the instant
+   after the assertions above can land before the button is stable — this
+   line has timed out three times on a loaded runner while passing in
+   isolation. Wait for the control rather than for a fixed interval. */
+await pg.locator('#dockepi').waitFor({ state: 'visible', timeout: 10000 });
 await pg.click('#dockepi'); await pg.waitForTimeout(300);
 ck('23. the EPI button IS the epi action (logs a dose)', /EPI .*dose #1/.test(await txt('#tickertext')), true);
 {

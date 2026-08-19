@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>LRH Chest Pain / hs-Troponin ADP + HEART Pathway</title>
+<title>{{SITE.abbrev}} Chest Pain / hs-Troponin ADP + HEART Pathway</title>
 <style>
   /* @design-system */
   /* ---- HEART-pathway-specific design tokens. The shared neutrals, the .hdr
@@ -150,19 +150,19 @@
 <div class="hdr">
   <a class="ghost" href="../?from=tool">&#9664; PATHWAYS</a>
   <span class="plabel">CHEST PAIN &middot; HEART</span>
-  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20HEART%20Pathway" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+  <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20HEART%20Pathway" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
 </div>
 
 <div class="wrap">
 
   <h1 class="page-title">Chest Pain &middot; hs-Troponin 0/1-hr ADP + HEART Pathway</h1>
-  <p class="page-sub">Littleton Regional Hospital &mdash; ED accelerated diagnostic pathway for suspected ACS</p>
+  <p class="page-sub">{{SITE.hospital}} &mdash; ED accelerated diagnostic pathway for suspected ACS</p>
 
   <div class="disclaimer">
     <strong>Not a substitute for clinical judgment.</strong>
     <ul>
       <li>This algorithm is <strong>not applicable to patients with ESRD</strong>.</li>
-      <li>Personal decision-support aid &mdash; <strong>not part of the LRH IT system / EHR</strong>. Verify all values independently.</li>
+      <li>Personal decision-support aid &mdash; <strong>not part of any hospital IT system / EHR</strong>. Verify all values independently.</li>
     </ul>
   </div>
   <div class="esrd-warn" id="esrdWarn">&#9888; ESRD selected &mdash; this algorithm is not applicable to ESRD patients. Use clinical judgment.</div>
@@ -292,7 +292,7 @@
       <button class="btn" onclick="window.print()">Print</button>
     </div>
 
-    <p class="sub" style="margin-top:10px"><b>DHMC Transfer Center: (877) 999-9870</b> — for cardiology consultation or transfer.</p>
+    <p class="sub" style="margin-top:10px"><b>Transfer center — {{SITE.transferCenter}}: {{SITE.transferPhone}}</b> — for cardiology consultation or transfer.</p>
 
     <details class="ref">
       <summary>Disposition logic (per posted protocol)</summary>
@@ -312,7 +312,7 @@
   </div>
 
   <footer>
-    LRH Chest Pain hs-Troponin ADP + HEART Pathway &mdash; personal decision-support aid, not part of the LRH IT system.
+    {{SITE.abbrev}} Chest Pain hs-Troponin ADP + HEART Pathway &mdash; personal decision-support aid, not part of any hospital IT system.
     Thresholds are assay-specific; verify against your local hs-cTn assay.
     <div style="margin-top:8px;">
       <strong>Sources:</strong> HEART score derivation and 0/1-hr hs-troponin ADP thresholds per the posted protocol flowchart (cross-checked against WikEM/MDCalc). Outpatient stress-test timing after AMI is ruled out: ACC/AHA and ACEP guidance describes a 72-hour&ndash;1-week window for medium-risk patients discharged with shared decision-making &mdash; strict completion within 72 hours is the older, more commonly cited figure, but is often impractical and has not been consistently shown to improve outcomes in carefully selected patients; the emphasis in more recent guidance is on rapid follow-up (cardiology or PCP) and documented return precautions rather than a fixed hour count.
@@ -325,14 +325,14 @@
 (function(){
   "use strict";
 
-  // ===== SITE CONFIG (LRH) — edit these to adapt this tool to another site =====
+  // ===== SITE CONFIG (site-specific — edit to localize) =====
   // The universal HEART-pathway logic below reads every clinical number from here.
   // A site adopting this tool should only need to change values in this block.
   // NOTE: the on-page reference tables/labels mirror these numbers as plain text —
   // if you change a value here, update the matching text in the page to match.
   var SITE = {
-    hospital: "Littleton Regional Hospital",
-    hospitalShort: "LRH",
+    hospital: "{{SITE.hospital}}",
+    hospitalShort: "{{SITE.abbrev}}",
     units: "ng/L",
     version: "1.8",
     lastReviewed: "2026-08-07",

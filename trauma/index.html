@@ -6,15 +6,15 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#005596">
-<title>LRH Trauma</title>
+<title>{{SITE.abbrev}} Trauma</title>
 <meta name="apple-mobile-web-app-title" content="Trauma">
 <meta name="description" content="Beta cognitive aids for trauma resuscitation in the Emergency Department. Practice and feedback only.">
-<link rel="canonical" href="https://lrhemergencymanual.net/trauma/">
+<link rel="canonical" href="https://{{SITE.domain}}/trauma/">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="LRH Emergency Manual">
-<meta property="og:title" content="LRH Trauma (beta)">
+<meta property="og:site_name" content="{{SITE.title}}">
+<meta property="og:title" content="{{SITE.abbrev}} Trauma (beta)">
 <meta property="og:description" content="Cognitive aids for trauma resuscitation in the ED. Beta — practice and feedback only.">
-<meta property="og:url" content="https://lrhemergencymanual.net/trauma/">
+<meta property="og:url" content="https://{{SITE.domain}}/trauma/">
 <meta name="twitter:card" content="summary">
 <style>
   html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; --sticky-h:54px; }
@@ -75,7 +75,7 @@
 </head>
 <body data-theme="dark">
 <div id="betasplash" style="position:fixed; inset:0; z-index:999; background:var(--bg); color:var(--ink); display:flex; flex-direction:column; align-items:center; justify-content:center; padding:32px 26px; text-align:center; gap:18px;">
-  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:var(--ink2);">LRH · EMERGENCY DEPARTMENT</div>
+  <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; letter-spacing:0.18em; color:var(--ink2);">{{SITE.abbrev}} · EMERGENCY DEPARTMENT</div>
   <div style="font-size:30px; line-height:1.06; letter-spacing:-0.02em; font-weight:700;">Trauma</div>
   <div style="display:inline-block; padding:6px 14px; border:2px solid var(--accent); color:var(--accent); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.16em;">BETA</div>
   <div style="max-width:460px; font-size:17px; line-height:1.4; color:var(--ink);">Not yet ready for clinical use. Shared for feedback and practice only — do not use it to direct the care of a patient.</div>
@@ -88,7 +88,7 @@
   <button class="ghost" id="backbtn" type="button" style="display:none">◀ BACK</button>
   <div class="plabel">TRAUMA</div>
   <button class="ghost danger" id="resetbtn" type="button">RESET</button>
-  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Trauma" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+  <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Trauma" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
 </div>
 <script>
 /* ---- Measure the real sticky-header height into --sticky-h, live ----
@@ -205,6 +205,7 @@
         <a href="#c08" data-k="bcvi blunt cerebrovascular injury screening denver expanded universal carotid vertebral artery cta neck seatbelt le fort cervical spine fracture stroke horner" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">08</span><span class="t">BCVI Screening</span></a>
         <a href="#c09" data-k="mci mass casualty incident disaster triage start salt surge multiple patients bus crash declare roles zones green yellow red black expectant call tree mutual aid" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">09</span><span class="t">Mass-Casualty Incident — First 15 Minutes</span></a>
         <a href="#c10" data-k="electrical injury lightning electrocution shock high voltage low voltage reverse triage keraunoparalysis rhabdomyolysis myoglobin compartment oral commissure exit wound" class="lrh-row" style="--cc:var(--orange)"><span class="n lrh-mono">10</span><span class="t">Electrical &amp; Lightning Injury</span></a>
+        <a href="#c11" data-k="hazmat hazardous materials decontamination decon contaminated chemical cbrn nerve agent organophosphate sarin atropine pralidoxime chempack cyanide hydroxocobalamin chlorine phosgene mustard vesicant radiation radiological remm ppe papr hot warm cold zone toxidrome" class="lrh-row" style="--cc:var(--orange)"><span class="n lrh-mono">11</span><span class="t">Hazmat / Contaminated Patient</span></a>
         <a href="../codes/?from=home#c12" data-k="mtp massive transfusion protocol blood products prbc plasma platelets cryo hemorrhagic shock trauma" class="lrh-row" style="--cc:var(--red)"><span class="t">Massive Transfusion Protocol</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; CODES</span></a>
         <a href="../codes/?from=home#c18" data-k="fona cricothyroidotomy cico front of neck access surgical airway difficult airway das trauma" class="lrh-row" style="--cc:var(--red)"><span class="t">Front of Neck Access (FONA)</span><span class="spacer"></span><span class="tag lrh-mono">&rarr; CODES</span></a>
       </div>
@@ -221,7 +222,7 @@
       <div class="t-note2">For blunt head trauma with a positive head CT. Not a screening tool for who needs a CT in the first place — for pediatric imaging-decision screening (PECARN), see the imaging references cited on your department's pediatric trauma resources.</div>
     </div>
 
-    <!-- Forking for another site: replace the "LRH" notes throughout this card (mBIG-1 attending routing,
+    <!-- Forking for another site: replace the "Local practice" notes throughout this card (mBIG-1 attending routing,
          mBIG-2/mBIG-3 transfer disposition) with your own facility's arrangement. -->
     <div class="t-localize">
       ⚠ <b>LOCALIZED FOR LRH:</b> mBIG-1 routes to the <b>trauma attending, not neurosurgery</b>; mBIG-2 and mBIG-3 are <b>transferred to DHMC</b>, not admitted locally — both per the workflow agreed with DHMC's trauma medical director (see the "LRH" notes below). The categories and imaging thresholds below are from the published mBIG literature.
@@ -233,7 +234,7 @@
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-1" class="t-ck"><span><b>All of:</b> GCS 13–15 or at neurologic baseline · normal neuro exam · no intoxication · no anticoagulant/antiplatelet use.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-2" class="t-ck"><span><b>CT:</b> subdural (SDH) or intraparenchymal hemorrhage (IPH) ≤4mm · localized subarachnoid hemorrhage (SAH) ≤3 sulci and &lt;1mm · <b>no</b> skull fracture, intraventricular hemorrhage (IVH), or epidural hemorrhage (EDH).</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-3" class="t-ck"><span><b>Management:</b> 6-hour ED observation with neuro checks every 2 hours. No repeat head CT. No neurosurgical consultation. If stable at 6 hours, discharge home from the ED. <b>LRH:</b> notify the trauma attending — <b>not</b> neurosurgery — per the workflow agreed with DHMC's trauma medical director. <b><a class="telcall" data-tc href="tel:+18779999870">DHMC Transfer Center: (877) 999-9870</a>.</b> DHMC's transfer center doesn't always route this correctly; ask for the trauma attending by name/service if you're connected to neurosurgery instead.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-3" class="t-ck"><span><b>Management:</b> 6-hour ED observation with neuro checks every 2 hours. No repeat head CT. No neurosurgical consultation. If stable at 6 hours, discharge home from the ED. <b>LRH:</b> notify the trauma attending — <b>not</b> neurosurgery — per the workflow agreed with DHMC's trauma medical director. <b><a class="telcall" data-tc href="tel:+18779999870">{{SITE.transferCenter}}: {{SITE.transferPhone}}</a>.</b> The transfer center may not route this correctly; ask for the trauma attending by name/service if you're connected to neurosurgery instead.</span></label></li>
         </ul>
       </details>
       <details open class="t-box-caution">
@@ -241,7 +242,7 @@
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-4" class="t-ck"><span><b>All of:</b> GCS 13–15 or at neurologic baseline · normal neuro exam · no anticoagulant/antiplatelet use. <b>May</b> be intoxicated (blood alcohol &gt;80 mg/dL).</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-5" class="t-ck"><span><b>CT:</b> SDH or IPH &gt;4–7.9mm · SAH involving one hemisphere or 1–3mm · non-displaced skull fracture · <b>no</b> IVH, EDH, midline shift, or herniation.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-6" class="t-ck"><span><b>Management (published guideline):</b> admit 24–48 hours to a trauma/monitored service. Neuro checks q2h ×6 hours, then q4h. No routine repeat CT. No neurosurgical consultation required. <b>LRH:</b> transferred to DHMC, not admitted locally — per agreement with DHMC's trauma medical director. <b><a class="telcall" data-tc href="tel:+18779999870">DHMC Transfer Center: (877) 999-9870</a>.</b></span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-6" class="t-ck"><span><b>Management (published guideline):</b> admit 24–48 hours to a trauma/monitored service. Neuro checks q2h ×6 hours, then q4h. No routine repeat CT. No neurosurgical consultation required. <b>LRH:</b> transferred to DHMC, not admitted locally — per agreement with DHMC's trauma medical director. <b><a class="telcall" data-tc href="tel:+18779999870">{{SITE.transferCenter}}: {{SITE.transferPhone}}</a>.</b></span></label></li>
         </ul>
       </details>
       <details open class="t-box-crit">
@@ -249,7 +250,7 @@
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-7" class="t-ck"><span>Abnormal neuro exam (GCS &lt;13, focal findings, abnormal pupils) · intoxication (BAC &gt;80 mg/dL) · <b>any</b> use of anticoagulants or antiplatelet agents.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-8" class="t-ck"><span><b>CT:</b> SDH or IPH ≥8mm · <b>any</b> IVH · bi-hemispheric SAH &gt;3mm · <b>any</b> EDH · multiple concurrent hemorrhages or midline shift · displaced skull fracture.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-9" class="t-ck"><span><b>Management:</b> admit to a monitored setting (ICU/neuro-ICU). Neurosurgical consultation. Repeat head CT per neurosurgical guidance. <b>LRH:</b> transferred to DHMC, same as mBIG-2 — per agreement with DHMC's trauma medical director. <b><a class="telcall" data-tc href="tel:+18779999870">DHMC Transfer Center: (877) 999-9870</a>.</b></span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-9" class="t-ck"><span><b>Management:</b> admit to a monitored setting (ICU/neuro-ICU). Neurosurgical consultation. Repeat head CT per neurosurgical guidance. <b>LRH:</b> transferred to DHMC, same as mBIG-2 — per agreement with DHMC's trauma medical director. <b><a class="telcall" data-tc href="tel:+18779999870">{{SITE.transferCenter}}: {{SITE.transferPhone}}</a>.</b></span></label></li>
         </ul>
       </details>
       <details class="t-box-neutral">
@@ -276,11 +277,11 @@
         <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">02</span>Level 1 Trauma Activation</h2>
         <span class="t-mono-r">HIGHEST-TIER TEAM ACTIVATION CRITERIA</span>
       </div>
-      <div class="t-note2">Who triggers a full trauma team response. Criteria adapted from the CDC/ACS-COT National Guideline for Field Triage — LRH is a <b>Level III trauma center without in-house neurosurgery</b>, so this is the evidence base for its activation tier, not an ACS Level I standard, and anything needing neurosurgical care transfers.</div>
+      <div class="t-note2">Who triggers a full trauma team response. Criteria adapted from the CDC/ACS-COT National Guideline for Field Triage — this card assumes a <b>Level III trauma center without in-house neurosurgery</b>, so this is the evidence base for its activation tier, not an ACS Level I standard, and anything needing neurosurgical care transfers.</div>
     </div>
 
     <div class="t-localize">
-      ⚠ <b>LOCALIZE THIS CARD:</b> a trauma-center <i>level</i> (ACS/state verification of a hospital's resources) and a <i>Level 1 activation</i> (this hospital's per-patient response tier) are different things — LRH is a <b>Level III trauma center</b> with general surgery but <b>no in-house neurosurgery</b>. Confirm locally: who responds to a full activation (ED physician, general surgery, anesthesia, on-call roster), expected response time, and the transfer trigger/receiving center for anything beyond Level III capability (any neurosurgical need). The criteria below are the national evidence base to adapt, not LRH's own protocol.
+      ⚠ <b>LOCALIZE THIS CARD:</b> a trauma-center <i>level</i> (ACS/state verification of a hospital's resources) and a <i>Level 1 activation</i> (this hospital's per-patient response tier) are different things — this card assumes a <b>Level III trauma center</b> with general surgery but <b>no in-house neurosurgery</b>. Confirm locally: who responds to a full activation (ED physician, general surgery, anesthesia, on-call roster), expected response time, and the transfer trigger/receiving center for anything beyond Level III capability (any neurosurgical need). The criteria below are the national evidence base to adapt, not your site's own protocol.
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
@@ -331,9 +332,9 @@
         <summary class="t-head t-head-crit">PRIMARY SURVEY · &lt;C&gt;ABCDE</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-14" class="t-ck"><span><b>&lt;C&gt; Catastrophic hemorrhage</b> — control compressible bleeding first: direct pressure, wound packing, <a href="../procedures/?from=home#c10">tourniquet</a>, <a href="../procedures/?from=home#c09">pelvic binder</a>.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-15" class="t-ck"><span><b>A · Airway + C-spine</b> — manual in-line stabilization; jaw thrust, suction, adjuncts; definitive airway if GCS &le;8 or the airway is not protected.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-15" class="t-ck"><span><b>A · Airway + C-spine</b> — manual in-line stabilization; jaw thrust, suction, adjuncts; definitive airway if GCS &le;8 or the airway is not protected. <a href="../peds/?from=trauma#p16" style="font-weight:700;">Pediatric sizes → peds card 16</a></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-16" class="t-ck"><span><b>B · Breathing</b> — expose the chest; rate, SpO2, auscultate both sides; decompress a tension pneumothorax on clinical suspicion (finger thoracostomy); seal an open chest wound.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-17" class="t-ck"><span><b>C · Circulation</b> — two large-bore IV or IO; eFAST + pelvis; hypotension → blood, not crystalloid (<a href="../codes/?from=home#c12">MTP</a>); permissive hypotension <b>unless</b> TBI; <b>TXA</b> 1 g within 3 h of injury.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-17" class="t-ck"><span><b>C · Circulation</b> — two large-bore IV or IO; eFAST + pelvis; hypotension → blood, not crystalloid (<a href="../codes/?from=home#c12">MTP</a>); permissive hypotension <b>unless</b> TBI; <b>TXA</b> 1 g within 3 h of injury.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="BLOOD STARTED" data-logcard="02">BLOOD STARTED &mdash; LOG IT</button><button type="button" class="logit crit" data-logevent="TXA GIVEN" data-logcard="02">TXA GIVEN &mdash; LOG IT</button></div></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-18" class="t-ck"><span><b>D · Disability</b> — <b>GCS</b>, <b>pupils</b> (size + reactivity), <b>lateralizing / focal signs</b>, and a glucose. A falling GCS or a new fixed dilated pupil is herniation until proven otherwise — see <a href="#c06">Isolated Head Trauma</a>.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-19" class="t-ck"><span><b>E · Exposure / Environment</b> — fully undress, log-roll to inspect the back, then cover: warm blankets, warmed fluids, warm room. Hypothermia is one of the lethal triad.</span></label></li>
         </ul>
@@ -410,13 +411,13 @@
         <summary class="t-head t-head-crit">MASSIVE TRANSFUSION &amp; TXA</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c03-5" class="t-ck"><span>Balanced ratio ~1:1:1 PRBC:FFP:platelets (PROPPR trial) — no significant primary-mortality difference vs. 1:1:2, but fewer 24-hour exsanguination deaths (9.2% vs 14.6%) and better hemostasis. See <a href="../codes/?from=home#c12">Massive Transfusion Protocol</a>.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c03-6" class="t-ck"><span><b>TXA:</b> 1 g IV over 10 min, then 1 g over 8 h — only if within <b>3 hours</b> of injury (CRASH-2). After 3 hours, no benefit and possible harm — do not give.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c03-6" class="t-ck"><span><b>TXA:</b> 1 g IV over 10 min, then 1 g over 8 h — only if within <b>3 hours</b> of injury (CRASH-2). After 3 hours, no benefit and possible harm — do not give.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="TXA GIVEN" data-logcard="03">TXA GIVEN &mdash; LOG IT</button></div></span></label></li>
         </ul>
       </details>
       <details class="t-box-caution">
         <summary class="t-head t-head-caution">DON'T-MISS PATTERNS</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c03-7" class="t-ck"><span><b>Unstable pelvis:</b> apply a pelvic binder immediately — see <a href="../procedures/?from=home#c09">Pelvic Binder Application</a>. Not needed in a stable patient without pelvic findings.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c03-7" class="t-ck"><span><b>Unstable pelvis:</b> apply a pelvic binder immediately — see <a href="../procedures/?from=home#c09">Pelvic Binder Application</a>. Not needed in a stable patient without pelvic findings.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="PELVIC BINDER APPLIED" data-logcard="03">PELVIC BINDER APPLIED &mdash; LOG IT</button></div></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c03-8" class="t-ck"><span><b>Blunt aortic injury:</b> CT chest with IV contrast; control HR/BP (beta-blockade) targeting SBP &lt;120 pending repair.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c03-9" class="t-ck"><span><b>Blunt cardiac injury:</b> ECG on every suspected case; normal ECG + normal troponin together rule it out. Abnormal ECG → admit to a monitored bed.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c03-10" class="t-ck"><span><b>Seatbelt sign:</b> raises suspicion for hollow-viscus/mesenteric injury and lumbar (Chance) fracture. A high-quality negative CT plus reassuring exam supports safe discharge; free intraperitoneal fluid on CT is the strongest predictor of injury.</span></label></li>
@@ -443,7 +444,7 @@
     </div>
 
     <div class="t-localize">
-      ⚠ <b>LOCALIZE THIS CARD:</b> LRH is a <b>Level III trauma center</b> — general surgery is available, but there is <b>no in-house neurosurgery</b>. A penetrating torso/proximal-extremity wound is high-acuity: resuscitate, involve the surgeon early, and start the transfer conversation early for anything beyond local capability (or any neurosurgical need). Confirm your receiving trauma center and the point at which that call goes out — early, in parallel with the workup, not after it.
+      ⚠ <b>LOCALIZE THIS CARD:</b> this card assumes a <b>Level III trauma center</b> — general surgery is available, but there is <b>no in-house neurosurgery</b>. A penetrating torso/proximal-extremity wound is high-acuity: resuscitate, involve the surgeon early, and start the transfer conversation early for anything beyond local capability (or any neurosurgical need). Confirm your receiving trauma center and the point at which that call goes out — early, in parallel with the workup, not after it.
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
@@ -545,13 +546,13 @@
         <summary class="t-head t-head-crit">FLUID RESUSCITATION</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c05-6" class="t-ck"><span><b>Start at 2 mL/kg/%TBSA</b> lactated Ringer's (adults ≥20% TBSA) — current ABA guidance, numerically equal to the older "modified Brooke" formula. The classic 4 mL/kg/%TBSA Parkland rate is still widely taught but is the older, superseded starting rate.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c05-7" class="t-ck"><span>First half over the first 8 hours <b>from time of burn, not time of arrival</b>; remainder over the next 16 hours. Titrate to urine output ~0.5 mL/kg/hr — the formula is a starting rate, not a target; titrate to avoid fluid-creep over-resuscitation.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c05-7" class="t-ck"><span>First half over the first 8 hours <b>from time of burn, not time of arrival</b>; remainder over the next 16 hours. Titrate to urine output ~0.5 mL/kg/hr — the formula is a starting rate, not a target; titrate to avoid fluid-creep over-resuscitation.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="TIME OF BURN (ESTIMATED)" data-logcard="05">TIME OF BURN (ESTIMATED) &mdash; LOG IT</button></div></span></label></li>
         </ul>
       </details>
       <details class="t-box-caution">
         <summary class="t-head t-head-caution">AIRWAY &amp; INHALATION INJURY</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c05-8" class="t-ck"><span>Signs: facial burns/soot, singed nasal hair, hoarseness, stridor, carbonaceous sputum, altered mental status. Favor early intubation — resuscitation fluid will worsen airway edema over the next several hours.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c05-8" class="t-ck"><span>Signs: facial burns/soot, singed nasal hair, hoarseness, stridor, carbonaceous sputum, altered mental status. Favor early intubation — resuscitation fluid will worsen airway edema over the next several hours. <a href="../peds/?from=trauma#p16" style="font-weight:700;">Pediatric sizes → peds card 16</a></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c05-9" class="t-ck"><span><b>CO:</b> co-oximetry (not pulse ox) for carboxyhemoglobin; treat with 100% NRB O2. <b>Cyanide:</b> suspect with unexplained instability/AMS/seizure/arrest after smoke inhalation — empiric hydroxycobalamin 5 g IV over 15 min, may repeat once.</span></label></li>
         </ul>
       </details>
@@ -608,7 +609,7 @@
       <details class="t-box-crit">
         <summary class="t-head t-head-crit">HERNIATION — TREATMENT LADDER</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c06-7" class="t-ck"><span><b>Signs:</b> Cushing's triad, pupillary asymmetry, decorticate/decerebrate posturing, acute GCS decline, new focal deficit.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c06-7" class="t-ck"><span><b>Signs:</b> Cushing's triad, pupillary asymmetry, decorticate/decerebrate posturing, acute GCS decline, new focal deficit.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="HERNIATION RECOGNIZED" data-logcard="06">HERNIATION RECOGNIZED &mdash; LOG IT</button></div></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c06-8" class="t-ck"><span>HOB/neck positioning, isotonic or hyperosmotic fluids only → <b>mannitol 0.5–1 g/kg IV bolus</b> over 5–15 min <b>or 3% hypertonic saline</b> (current evidence favors HTS — fewer treatment failures, avoids mannitol's diuresis/renal/rebound risks) → brief hyperventilation (PaCO2 30–35, &lt;2h) as a bridge only, not sustained.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c06-9" class="t-ck"><span>If herniation persists and transfer/neurosurgery will be significantly delayed → <a href="../procedures/?from=home#c04">Emergency Burr Hole</a>. Outcomes are time-critical.</span></label></li>
         </ul>
@@ -637,14 +638,14 @@
         <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">07</span>Mangled / Amputated Extremity</h2>
         <span class="t-mono-r">SALVAGE, PRESERVATION &amp; TRANSFER</span>
       </div>
-      <div class="t-note2">LRH is not a replant center — the goal here is hemorrhage control, correct part preservation, and getting the patient and part to a replant/hand center fast.</div>
+      <div class="t-note2">This card assumes a hospital that is not a replant center — the goal here is hemorrhage control, correct part preservation, and getting the patient and part to a replant/hand center fast.</div>
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
       <details open class="t-box-crit">
         <summary class="t-head t-head-crit">HEMORRHAGE CONTROL</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c07-1" class="t-ck"><span>Tourniquet is first-line for life-threatening extremity hemorrhage or traumatic amputation. Full technique: <a href="../procedures/?from=home#c10">Tourniquet Application</a>.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c07-1" class="t-ck"><span>Tourniquet is first-line for life-threatening extremity hemorrhage or traumatic amputation. Full technique: <a href="../procedures/?from=home#c10">Tourniquet Application</a>.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="TOURNIQUET APPLIED" data-logcard="07">TOURNIQUET APPLIED &mdash; LOG IT</button></div></span></label></li>
         </ul>
       </details>
       <details class="t-box-caution">
@@ -657,7 +658,7 @@
       <details open class="t-box-info">
         <summary class="t-head t-head-info">AMPUTATED PART PRESERVATION</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c07-4" class="t-ck"><span>Wrap in saline-moistened gauze → seal in a watertight bag → place that bag on ice. <b>Never</b> put the part in direct contact with ice — freeze injury makes it nonviable.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c07-4" class="t-ck"><span>Wrap in saline-moistened gauze → seal in a watertight bag → place that bag on ice. <b>Never</b> put the part in direct contact with ice — freeze injury makes it nonviable.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="AMPUTATED PART COOLED" data-logcard="07">AMPUTATED PART COOLED &mdash; LOG IT</button></div></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c07-5" class="t-ck"><span>Warm ischemia: ~6h (muscle-containing) / ~12h (digit-only). Cold-preserved (correctly iced): ~12h major limb / ~24h digit — outlier case reports go longer, don't rely on them.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c07-6" class="t-ck"><span>Call the receiving replant/hand center immediately with mechanism, amputation level, ischemia time, and preservation status so they can pre-triage before the patient arrives.</span></label></li>
         </ul>
@@ -705,7 +706,7 @@
     </div>
 
     <div class="t-localize">
-      ⚠ <b>LOCALIZE THIS CARD:</b> LRH is a <b>Level III trauma center without in-house neurosurgery</b> — a positive screen or a confirmed BCVI is a transfer + neurosurgery/vascular/stroke conversation. Confirm local CTA availability and the receiving center's antithrombotic preference. The three criteria sets below are published screening tools to adopt, not an LRH protocol; pick one deliberately.
+      ⚠ <b>LOCALIZE THIS CARD:</b> this card assumes a <b>Level III trauma center without in-house neurosurgery</b> — a positive screen or a confirmed BCVI is a transfer + neurosurgery/vascular/stroke conversation. Confirm local CTA availability and the receiving center's antithrombotic preference. The three criteria sets below are published screening tools to adopt, not a site protocol; pick one deliberately.
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
@@ -770,7 +771,7 @@
       <details open class="t-box-crit">
         <summary class="t-head t-head-crit">1 &middot; DECLARE &amp; CLAIM ROLES (MINUTES 0&ndash;5)</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c09-0-0" class="t-ck"><span><b>Say it: &ldquo;This is an MCI&rdquo;</b> with the number and type of patients expected. Half-declared events get half a response.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c09-0-0" class="t-ck"><span><b>Say it: &ldquo;This is an MCI&rdquo;</b> with the number and type of patients expected. Half-declared events get half a response.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="MCI DECLARED" data-logcard="09">MCI DECLARED &mdash; LOG IT</button></div></span></label></li>
           <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c09-0-1" class="t-ck"><span>Start the call tree: administrator on call, all-staff callback, EMS/dispatch for the incoming picture, neighboring EDs for mutual aid.</span></label></li>
           <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c09-0-2" class="t-ck"><span>Roles claimed out loud: <b>triage officer at the ambulance door</b> (senior, does not treat), treatment leads per zone, patient-flow/registration lead, one communications voice.</span></label></li>
           <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c09-0-3" class="t-ck"><span>Stop normal flow: hold discharges-in-progress in the lobby, pause non-urgent arrivals to registration, clear imaging.</span></label></li>
@@ -794,7 +795,7 @@
         </ul>
       </details>
     </div>
-    <div class="t-sub"><b>Sources:</b> START/SALT triage per CHEMM (chemm.hhs.gov); ACS Committee on Trauma disaster resources. <b>This card needs LRH-specific facts filled in:</b> the actual call-tree names/numbers and the designated zones.</div>
+    <div class="t-sub"><b>Sources:</b> START/SALT triage per CHEMM (chemm.hhs.gov); ACS Committee on Trauma disaster resources. <b>This card needs site-specific facts filled in:</b> the actual call-tree names/numbers and the designated zones.</div>
     <div class="t-foot"><span class="verstamp"></span> &mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.</div>
   </article>
 
@@ -837,17 +838,88 @@
     <div class="t-sub"><b>Sources:</b> Wilderness Medical Society lightning injury guidelines (WEM 2014); ACS/ABA burn referral criteria; Zafren et al., electrical injuries review. See also the <a href="#c05">Burn card</a> for fluid math.</div>
     <div class="t-foot"><span class="verstamp"></span> &mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.</div>
   </article>
+
+  <!-- ============ CARD 11 · HAZMAT / CONTAMINATED PATIENT (coverage gap #124) ============
+       Deliberately structured "protect the department, then decontaminate,
+       then treat the toxidrome" — in that order, because a contaminated
+       patient brought straight into a resus room turns one casualty into a
+       closed department. Antidote doses are the published federal/CHEMM
+       figures and carry the DRAFT banner until a clinician signs them off.
+       Site-specific facts (where the decon shower is, who the local hazmat
+       team is) are deliberately NOT invented here — the card asks for them. -->
+  <article id="c11">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span class="t-mono-n">11</span>Hazmat / Contaminated Patient</h2>
+        <span class="t-mono-r">STOP AT THE DOOR &middot; UNDRESS &middot; WASH &middot; ANTIDOTE</span>
+      </div>
+      <div class="t-note2">A chemical, radiological or unknown-exposure patient. The first decision is not clinical &mdash; it is whether this patient comes inside. Removing clothing alone removes most of the contaminant.</div>
+    </div>
+    <div class="t-localize">&#9888; <b>DRAFT &mdash; NOT CLINICALLY REVIEWED:</b> written from the published guidance cited below to fill coverage gap <a href="https://github.com/lonsetnik-dot/LRH-Emergency-Manual/issues/124" style="color:var(--note-tx);">#124</a>. Verify every dose and every local detail (decon location, PPE stock, hazmat team) before this card is trusted.</div>
+    <div class="steps" style="padding:14px 14px 0;">
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">1 &middot; STOP THE PATIENT OUTSIDE &mdash; PROTECT THE DEPARTMENT</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-0-0" class="t-ck t-ck-crit"><span><b>Do not let a contaminated patient into the department.</b> Meet them outside. One contaminated resus room can close the only ED for 50 miles &mdash; and secondary contamination of staff has happened repeatedly in real events.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-0-1" class="t-ck"><span><b>Say it out loud:</b> &ldquo;Possible contaminated patient &mdash; nobody approaches without PPE.&rdquo; Assign one person to hold the entrance.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-0-2" class="t-ck"><span><b>PPE before contact.</b> For ED decontamination of an already-removed-from-scene patient, the usual level is a chemical-resistant suit, double gloves, boots and a powered air-purifying respirator (PAPR). Surgical mask and a gown are <b>not</b> hazmat PPE.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-0-3" class="t-ck"><span>Zones out loud: <b>hot</b> (patient, still contaminated) &rarr; <b>warm</b> (decon line) &rarr; <b>cold</b> (clean department). Nobody and nothing crosses back.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-0-4" class="t-ck"><span><b>Shut off the air handling</b> to the entrance if the agent may be volatile, and call the on-call administrator &mdash; this is a facility event, not just a patient.</span></label></li>
+        </ul>
+      </details>
+
+      <details open class="t-box-caution">
+        <summary class="t-head t-head-caution">2 &middot; DECONTAMINATE &mdash; UNDRESS FIRST</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-1-0" class="t-ck t-ck-crit"><span><b>Remove all clothing &mdash; this is the single highest-yield step.</b> Cut clothes off rather than pulling them over the face. Bag and seal clothing and belongings; they are evidence as well as waste.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="CLOTHING REMOVED" data-logcard="11">CLOTHING REMOVED &mdash; LOG IT</button></div></span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-1-1" class="t-ck"><span><b>Then wash:</b> copious warm water, low pressure, head-to-toe, plus mild soap for oily or adherent agents. Do not scrub the skin raw &mdash; abrasion increases absorption.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-1-2" class="t-ck"><span><b>Eyes and wounds first,</b> then the rest. Irrigate eyes continuously; cover wounds after irrigating so run-off does not re-contaminate them.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-1-3" class="t-ck"><span><b>Exception &mdash; elemental metals</b> (sodium, potassium, lithium, phosphorus) ignite with water. Cover with mineral oil, remove mechanically; do not irrigate.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-1-4" class="t-ck"><span><b>Keep them warm.</b> Cold water plus a wet, undressed patient in a New Hampshire winter produces hypothermia fast, especially in children and older adults &mdash; see <a href="../codes/?from=trauma#c27">hypothermia (codes card 27)</a>.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-1-5" class="t-ck"><span><b>Life threats do not wait for a perfect decon.</b> Open the airway, control catastrophic bleeding and give the antidote in PPE, during or before washing.</span></label></li>
+        </ul>
+      </details>
+
+      <details open class="t-box-crit">
+        <summary class="t-head t-head-crit">3 &middot; TREAT THE TOXIDROME</summary>
+        <div style="padding:4px 12px 6px; font-size:13px; color:var(--ink2);">Identify by the syndrome in front of you, not by waiting for the agent to be named.</div>
+        <ul style="margin:0; padding:0 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-2-0" class="t-ck t-ck-crit"><span><b>Nerve agent / organophosphate</b> &mdash; wet everywhere (SLUDGE), pinpoint pupils, fasciculations, seizure, bradycardia.<br><b>Atropine</b> 2&ndash;6 mg IV/IM, <b>double the dose every 5 min until secretions dry</b> (the endpoint is the chest, not the heart rate; there is no maximum). <b>Pralidoxime</b> 1&ndash;2 g IV over 15&ndash;30 min. <b>Seizure &rarr; midazolam</b> (benzodiazepine, not phenytoin). Autoinjectors (DuoDote) if that is what is stocked.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-2-1" class="t-ck t-ck-crit"><span><b>Cyanide</b> (closed-space fire, industrial) &mdash; profound acidosis with a normal or high venous O&#8322; saturation, arrest without a clear cause.<br><b>Hydroxocobalamin 5 g IV</b> over 15 min. Also on the smoke-inhalation line of <a href="#c05">burns (card 05)</a>.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-2-2" class="t-ck"><span><b>Pulmonary irritant</b> (chlorine, ammonia, phosgene) &mdash; no antidote. Oxygen, bronchodilators, watch for delayed pulmonary edema; phosgene can look well for hours. Observe rather than discharge early.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-2-3" class="t-ck"><span><b>Vesicant</b> (mustard, lewisite) &mdash; pain and blistering may be delayed for hours. Decontaminate immediately anyway; treat as a chemical burn.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-2-4" class="t-ck"><span><b>Radiological</b> &mdash; <b>treat the trauma first; radiation is rarely the immediate threat.</b> Undress and wash, survey with a detector if available, collect nasal swabs and the first urine. Potassium iodide protects the thyroid only against radioiodine and only if given early &mdash; it is not a general radiation antidote.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-2-5" class="t-ck"><span><b>Unknown</b> &mdash; treat the syndrome, call for help early, and resist naming the agent too soon. See also <a href="../codes/?from=trauma#c36">toxicology (codes card 36)</a>.</span></label></li>
+        </ul>
+      </details>
+
+      <details class="t-box-info">
+        <summary class="t-head t-head-info">4 &middot; CALL FOR HELP &amp; SUPPLY</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-3-0" class="t-ck"><span><b>Poison control</b> &mdash; <a href="tel:{{SITE.poisonControl}}" style="font-weight:700;">{{SITE.poisonControl}}</a>. They identify agents and dose antidotes for a living; call early, not after the first hour.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-3-1" class="t-ck"><span><b>Antidote stock beyond a few doses is not on your shelf.</b> A nerve-agent event exhausts local atropine quickly &mdash; CHEMPACK caches are positioned for this and are released through the state health department / emergency management. Ask for them early; they take time to arrive.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-3-2" class="t-ck"><span>Notify the local hazmat/fire team, and the state health department for a suspected deliberate release. A deliberate event is also a crime scene &mdash; keep the sealed clothing bags.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-3-3" class="t-ck"><span><b>Many patients?</b> Run this alongside <a href="#c09">MCI &mdash; First 15 Minutes (card 09)</a>: decon becomes the triage line, and the ambulatory walk-ins arrive before the ambulances.</span></label></li>
+          <li class="t-div" style="padding:0;"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c11-3-4" class="t-ck"><span><b>Staff exposure is a patient too</b> &mdash; anyone symptomatic comes out of the line, gets decontaminated and gets a chart. Log the names of everyone who had contact.</span></label></li>
+        </ul>
+      </details>
+    </div>
+    <div class="t-sub"><b>Sources:</b> HHS/ASPR Chemical Hazards Emergency Medical Management (CHEMM, chemm.hhs.gov) &mdash; toxidrome recognition, decontamination sequence, and the nerve-agent antidote figures (atropine titrated to drying secretions; pralidoxime; benzodiazepine for seizures). ATSDR <i>Medical Management Guidelines</i> for the individual agents. Radiation guidance per HHS Radiation Emergency Medical Management (REMM). Hydroxocobalamin dosing consistent with the smoke-inhalation line on card 05. <b>This card needs site-specific facts filled in:</b> where decontamination actually happens at this site, what PPE is stocked and where, which hazmat team responds, and whether any antidote autoinjectors are held in the department.</div>
+    <div class="t-foot"><span class="verstamp"></span> &mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.</div>
+  </article>
+
 </main>
 
 <script>
-/* ===== SITE CONFIG (LRH) — edit these to adapt to another site/device ===== */
+/* ===== SITE CONFIG (site-specific — edit these to localize for your site/device) ===== */
 var SITE = {
-  version: "0.95",
-  lastReviewed: "2026-08-13",
+  version: "0.97",
+  lastReviewed: "2026-08-18",
   /* Transfer/consult numbers. One source of truth (CLAUDE.md rule 2) — the
-     BIG card renders every "DHMC Transfer Center" line from here as a tap-to-
+     BIG card renders every transfer-center line from here as a tap-to-
      call tel: link. `tel` is the E.164 dial string; `phone` is what's shown. */
-  transferCenter: { label: "DHMC Transfer Center", phone: "(877) 999-9870", tel: "+18779999870" },
+  transferCenter: { label: "{{SITE.transferCenter}}", phone: "{{SITE.transferPhone}}", tel: "+18779999870" },
   /* SCENE SECURITY for penetrating trauma (issue #111). Who is called and what
      the department can actually do is entirely local — some EDs can lock the
      ambulance bay from the charge desk, some have to ask a security officer who
@@ -859,7 +931,7 @@ var SITE = {
      your operator expects, or null if your site has none. `note` renders a
      caution line under the box, or null for no line.
 
-     LRH values confirmed by Lon 2026-08-13: tell Security, ask them to consider
+     Originating-site values confirmed by Lon 2026-08-13: tell Security, ask them to consider
      a lockdown, no overhead page phrase, and no caution — Security is in house
      overnight. An earlier draft of this block asserted the opposite (that there
      was no overnight ED security officer) and printed it on the card; it was a
@@ -876,8 +948,25 @@ var SITE = {
   var tc=SITE.transferCenter; if(!tc) return;
   function boot(){
     var els=document.querySelectorAll('a.telcall[data-tc]');
+    /* A tel: href is only built from something actually dialable. On the
+       generic trunk transferPhone is still the placeholder "[add your transfer
+       line]", and the old code happily rendered href="tel:[add your transfer
+       line]" — a 44px call affordance that dials bracket text. An adopting ED
+       that has not filled this in yet must SEE that it is unset, not discover
+       it by tapping during a transfer. Same reason codes/ renders a bare
+       tel: with an empty string: both now degrade to plain text instead. */
+    var digits=String(tc.tel||'').replace(/[^0-9+]/g,'');
+    var dialable=digits.replace(/[^0-9]/g,'').length>=7;
     for(var i=0;i<els.length;i++){
-      els[i].setAttribute('href','tel:'+tc.tel);
+      if(!dialable){
+        els[i].removeAttribute('href');
+        els[i].style.textDecoration='none';
+        els[i].style.color='var(--ink2)';
+        els[i].textContent=tc.label+': '+tc.phone+' — not configured';
+        els[i].setAttribute('aria-label', tc.label+' phone number is not configured for this site');
+        continue;
+      }
+      els[i].setAttribute('href','tel:'+digits);
       els[i].setAttribute('aria-label','Call '+tc.label+' '+tc.phone);
       els[i].textContent=tc.label+': '+tc.phone;
       /* Inside a checklist <label>: an <a> is interactive content, so the spec
@@ -908,7 +997,7 @@ var SITE = {
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
 })();
 (function(){
-  var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · LRH';
+  var stampText='v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · {{SITE.abbrev}}';
   var stamps=document.querySelectorAll('.verstamp');
   for(var i=0;i<stamps.length;i++){ stamps[i].textContent=stampText; }
 })();
@@ -982,9 +1071,40 @@ var CASESTATE = (function(){
     Object.keys(c).forEach(function(k){ if(k.indexOf(TOOL+':')===0){ delete c[k]; changed=true; } });
     if(changed) wr('lrh-case-checks', c);
   }
+
+  /* ---- lrh-case-log (WS7) -------------------------------------------------
+     Trauma's copy of this module was deliberately checks-only until now, so a
+     trauma resuscitation left no times behind: tourniquet on, blood started,
+     TXA given — all of it lived in someone's memory until the chart was
+     written. Those are exactly the times a trauma debrief and the chart argue
+     about afterwards, so trauma now writes the shared log like codes, ob and
+     peds do. Byte-identical PHI guard to their copies (CASE-STATE.md): a
+     weight-shaped number or a 6+ digit run is REFUSED, not sanitized, because
+     a label that needs sanitizing is a label that should never have been
+     written. addLog is the only function allowed to write this key. */
+  function isSafeLabel(s){
+    if(typeof s!=='string' || !s) return false;
+    if(/\d{1,3}(\.\d+)?\s*(kg|kilograms?|lb|lbs|pounds?)\b/i.test(s)) return false;
+    if(/\d{6,}/.test(s)) return false;
+    return true;
+  }
+  function addLog(card, label){
+    if(!isSafeLabel(label)){ try{ console.warn('CASESTATE.addLog: rejected unsafe label', label); }catch(e){} return; }
+    var log=rd('lrh-case-log', []);
+    log.push({ tMs:Date.now(), tool:TOOL, card:card, label:label });
+    if(log.length>400) log=log.slice(-400);
+    wr('lrh-case-log', log);
+  }
+  function getLog(){ return rd('lrh-case-log', []); }
+  function clearToolLog(){
+    var log=getLog().filter(function(e){ return e.tool!==TOOL; });
+    wr('lrh-case-log', log);
+  }
+
   return {
     getChecks:getChecks, setChecked:setChecked, isChecked:isChecked, clearToolChecks:clearToolChecks,
-    getClocks:getClocks, anyClockRunning:anyClockRunning, touchActive:touchActive, getLastActive:getLastActive
+    getClocks:getClocks, anyClockRunning:anyClockRunning, touchActive:touchActive, getLastActive:getLastActive,
+    addLog:addLog, getLog:getLog, clearToolLog:clearToolLog, isSafeLabel:isSafeLabel
   };
 })();
 
@@ -1091,6 +1211,63 @@ var CASESTATE = (function(){
       fInput.value=''; applyFilter();
     }
   });
+})();
+
+/* ---- LOG IT controls (issue #71 idiom, DESIGN-SYSTEM.md §7) ---------------
+   A round pill that RECORDS that something happened, with the time it was
+   tapped. Trauma had none: the times a debrief argues about afterwards —
+   tourniquet on, blood started, TXA in, thoracotomy opened — left no trace.
+
+   Behavior, deliberately:
+   - One tap writes to the shared case log (visible in every tool's CASE
+     TIMELINE and in the debrief), and the button itself then shows the wall
+     time it recorded. The clinician gets the confirmation ON the control they
+     just pressed, not in a panel somewhere else.
+   - Tapping again re-logs rather than un-logging. A second tourniquet, a
+     second unit of blood, a re-application — those are real events, and an
+     "undo" here would quietly delete a time that already happened. The log is
+     a record, not a checklist.
+   - It is a <button>, never a link: a link navigates, a pill records
+     (DESIGN-SYSTEM.md §7). The two never share a shape.
+   - The label is PHI-free by construction and re-checked by the PHI guard in
+     CASESTATE.addLog. */
+(function(){
+  function wall(ms){
+    var d=new Date(ms);
+    return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+  }
+  function stamp(btn, ms){
+    var e=btn.querySelector('.logstamp');
+    if(!e){ e=document.createElement('span'); e.className='logstamp'; btn.appendChild(e); }
+    e.textContent = ' ✓ '+wall(ms);
+    btn.classList.add('logged');
+  }
+  /* Re-stamp on load from the shared log, so a reload (or coming back from
+     another tool) does not make a recorded event look unrecorded. */
+  function restore(){
+    var log=[]; try{ log=CASESTATE.getLog()||[]; }catch(e){}
+    Array.prototype.forEach.call(document.querySelectorAll('[data-logevent]'), function(btn){
+      var lbl=btn.getAttribute('data-logevent'), last=null;
+      for(var i=0;i<log.length;i++){ if(log[i] && log[i].label===lbl) last=log[i].tMs; }
+      if(last) stamp(btn, last);
+    });
+  }
+  document.addEventListener('click', function(ev){
+    var t=ev.target && ev.target.closest ? ev.target.closest('[data-logevent]') : null;
+    if(!t) return;
+    var now=Date.now();
+    try{ CASESTATE.addLog(t.getAttribute('data-logcard')||'', t.getAttribute('data-logevent')); }catch(e){}
+    stamp(t, now);
+  });
+  var rb=document.getElementById('resetbtn');
+  if(rb) rb.addEventListener('click', function(){
+    try{ CASESTATE.clearToolLog(); }catch(e){}
+    Array.prototype.forEach.call(document.querySelectorAll('[data-logevent]'), function(btn){
+      btn.classList.remove('logged');
+      var e=btn.querySelector('.logstamp'); if(e) e.remove();
+    });
+  });
+  if(document.readyState==='loading') document.addEventListener('DOMContentLoaded', restore, false); else restore();
 })();
 </script>
 </body>

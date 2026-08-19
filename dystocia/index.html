@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0D1420">
-<title>LRH Shoulder Dystocia — Engine</title>
+<title>{{SITE.abbrev}} Shoulder Dystocia — Engine</title>
 <meta name="description" content="Mobile cognitive aid for shoulder dystocia: head-to-body interval clock, HELPERR maneuvers one at a time with 30-second prompts, no fundal pressure guard. Personal aid, not hospital policy.">
 <style>
 /* @design-system-live */
@@ -40,6 +40,7 @@
 </style>
 </head>
 <body data-theme="dark">
+<h1 class="sr-only">Shoulder Dystocia — Live Engine</h1>
 
 <!-- ============ CASE SHELL layer 1 — app bar (SHELL.md) ============
      Same structure and ids as arrest/, the reference implementation. Center:
@@ -57,7 +58,7 @@
   </div>
   <span class="shell-wide" style="gap:6px;align-items:center">
     <button class="ghost" id="tlbtnwide" type="button">TIMELINE</button>
-    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Shoulder%20Dystocia" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+    <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Shoulder%20Dystocia" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
     <button class="ghost shellreset" id="resetwide" type="button">RESET</button>
   </span>
   <button class="shellmore shell-phone" id="menubtn" type="button" aria-label="Menu">⋯</button>
@@ -73,6 +74,7 @@
   <a class="shellmenurow" href="../neonatal/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Neonatal</span><span class="shellmenusub">NRP</span></a>
   <a class="shellmenurow" href="../pph/"><span class="shellsq" style="background:#E75480"></span><span style="flex:1">PPH</span><span class="shellmenusub">PPH</span></a>
   <a class="shellmenurow on" href="../dystocia/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Dystocia</span><span class="shellmenusub">OB</span></a>
+    <a class="shellmenurow" href="../peds/?from=tool"><span class="shellsq" style="background:var(--purple)"></span><span style="flex:1">Peds</span><span class="shellmenusub">PEDS</span></a>
   <div class="shellmenudiv"></div>
   <a class="shellmenurow" href="../?from=tool"><span class="shellsq" style="background:var(--gray)"></span><span style="flex:1">Manual home</span></a>
 </div>
@@ -81,7 +83,7 @@
      two-tap SURE? reset the wide button runs (SHELL.md layer 9). -->
 <div class="shellmenu right" id="moremenu" style="display:none">
   <button class="shellmenurow" id="tlbtn" type="button">Case timeline</button>
-  <a class="shellmenurow" id="feedbackmenu" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Shoulder%20Dystocia">Feedback</a>
+  <a class="shellmenurow" id="feedbackmenu" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Shoulder%20Dystocia">Feedback</a>
   <div class="shellmenudiv"></div>
   <button class="shellmenurow danger" id="resetbtn" type="button">Reset for next case</button>
 </div>
@@ -230,7 +232,7 @@
    maneuver or ordering changed; every number still reads from this block.
    ========================================================================== */
 var SITE = {
-  version:"0.1.1", lastReviewed:"2026-08-15", site:"LRH",
+  version:"0.1.1", lastReviewed:"2026-08-15", site:"{{SITE.abbrev}}",
 
   review:{
     on:true,

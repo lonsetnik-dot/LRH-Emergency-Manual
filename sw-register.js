@@ -1,4 +1,4 @@
-/* LRH Emergency Manual — service-worker registration + update prompt.
+/* CairnReady Emergency Manual — service-worker registration + update prompt.
  *
  * Build input (issue #120), not shipped as a file: build.mjs injects this
  * inline into every published page, so the deployed HTML stays self-contained

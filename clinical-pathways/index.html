@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <meta name="theme-color" content="#005596">
-<title>Clinical Pathways &middot; LRH Emergency Manual</title>
+<title>Clinical Pathways &middot; {{SITE.title}}</title>
 <style>
   *{box-sizing:border-box}
   html,body{margin:0;padding:0}
@@ -29,7 +29,7 @@
 <div class="hdr">
   <a class="ghost" href="../?from=tool">◀ MANUAL</a>
   <span class="plabel">CLINICAL PATHWAYS</span>
-  <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Clinical%20Pathways" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+  <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Clinical%20Pathways" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
 </div>
 
 <div class="wrap">
@@ -46,10 +46,18 @@
       <span class="tag">LIVE</span>
     </a>
 
+    <!-- ===== PE clinical categories (live) -> /clinical-pathways/pe/ ===== -->
+    <a class="lrh-row" href="pe/">
+      <span class="n lrh-mono">02</span>
+      <span class="t">Pulmonary Embolism &middot; AHA/ACC Clinical Categories</span>
+      <span class="spacer"></span>
+      <span class="tag">LIVE</span>
+    </a>
+
     <!-- ===== CROSS-LINK: Brain Injury Guidelines — lives in /trauma/, linked here so it
          shows up as a pathway too. Not duplicated; same source, same card. ===== -->
     <a class="lrh-row" href="../trauma/?from=home#c01">
-      <span class="n lrh-mono">02</span>
+      <span class="n lrh-mono">03</span>
       <span class="t">Brain Injury Guidelines (BIG)</span>
       <span class="spacer"></span>
       <span class="tag">OPENS IN TRAUMA</span>
@@ -58,7 +66,7 @@
     <!-- ===== CROSS-LINK: Massive Transfusion Protocol — lives in /codes/ card 12,
          linked here so it shows up as a pathway too. Not duplicated. ===== -->
     <a class="lrh-row" href="../codes/?from=home#c12">
-      <span class="n lrh-mono">03</span>
+      <span class="n lrh-mono">04</span>
       <span class="t">Massive Transfusion Protocol (MTP)</span>
       <span class="spacer"></span>
       <span class="tag">OPENS IN CODES</span>
@@ -71,11 +79,11 @@
   </div>
 
   <div class="note">
-    <strong>Personal decision-support aids &mdash; not part of the LRH IT system / EHR.</strong>
+    <strong>Personal decision-support aids &mdash; not part of any hospital IT system / EHR.</strong>
     Beta: content is unverified. These tools do not replace clinical judgment. Verify all values and thresholds against local protocols and assays.
   </div>
 
-  <footer>Littleton Regional Hospital Emergency Manual &mdash; personal, unofficial reference &middot; Beta</footer>
+  <footer>{{SITE.title}} &mdash; personal, unofficial reference &middot; Beta</footer>
 </div>
 </body>
 </html>

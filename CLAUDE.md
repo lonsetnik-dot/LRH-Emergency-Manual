@@ -1,8 +1,10 @@
 # CLAUDE.md — operating rules for AI assistants in this repo
 
-This repository is a set of **client-side, bedside emergency-department
-decision-support tools** (starting with Littleton Regional Hospital) built so it
-*could* later be forked and customized by any ED. Follow these rules on every
+This repository is **CairnReady** (cairnready.org): a set of **client-side,
+bedside emergency-department decision-support tools**. This branch is the
+**generic trunk** — not localized to any hospital; hospital editions (LRH
+first, then a second pilot site) are branches/forks that localize
+`site.config.json` and the per-tool SITE CONFIG blocks. See `SITES.md`. Follow these rules on every
 task. The reasoning behind them is in `PROJECT.md` — read it if a rule seems
 unclear. If a request conflicts with a rule below, flag it before proceeding.
 
@@ -21,8 +23,15 @@ unclear. If a request conflicts with a rule below, flag it before proceeding.
    — clinical thresholds, assay names, hospital name, colors, phone numbers — in
    a clearly marked block at the top of the file:
    ```js
-   // ===== SITE CONFIG (LRH) — edit these to adapt to another site =====
+   // ===== SITE CONFIG (site-specific — edit to localize) =====
    ```
+   Identity strings (manual title, hospital line, domain, transfer/poison
+   phone lines) do NOT get hand-typed per tool: use `{{SITE.*}}` tokens,
+   substituted from the root `site.config.json` at build (`build.mjs` fails
+   on unknown or leftover tokens). Internal namespaces — `lrh-case-*` /
+   `lrh-pref-*` localStorage keys, `.lrh-*` classes, `--lrh-*` custom
+   properties — are the cross-tool contract (`CASE-STATE.md`) and stay
+   as-is in every edition; never rename them during localization work.
    Keep the *universal* clinical logic (score math, pathway structure) separate
    and generic, reading its numbers from that block. Never scatter local values
    through the logic.
@@ -38,6 +47,12 @@ unclear. If a request conflicts with a rule below, flag it before proceeding.
 4. **Reuse the shared skeleton.** Same `:root` CSS variables (brand colors),
    same header and disclaimer markup, same class names across all tools. Keep
    tools visually and structurally identical to each other.
+   Mobile accessibility is part of the skeleton, not a polish step:
+   `ACCESSIBILITY.md` is the normative standard (zoom never disabled, LAYOUT.md
+   target floors, 4.5:1 token contrast in both themes, 320px reflow, reduced
+   motion, one `h1` + `lang` + unique title per page) and
+   `verify_accessibility.mjs` enforces the machine-checkable half. A new tool
+   or card must pass it before delivery.
 
 5. **Show the logic and cite it.** Every tool displays its criteria/thresholds
    and includes a source for each clinical value (comment or footer). Never a
@@ -172,6 +187,45 @@ A VEMS deck is also a paper product, so `verify_vems.mjs` renders the real print
 output to PDF and counts pages. A deck that spills onto an extra sheet, or a run
 sheet that prints along with the participant cards, is invisible on screen and
 expensive at the laminator.
+
+## Shared procedure icons (`design/ICONOGRAPHY.md`)
+
+`procedure-icons.js` is a **second, separate** icon set — and the distinction is
+the point. The equipment glyphs above draw *objects* (the thing in the drawer).
+These draw *procedures*: anatomy plus the one thing you do to it. Same injection
+mechanism, marker `/* @proc-icons */`. Consumers today: `procedures/` (14 cards),
+`codes/` (RSI, FONA) and `ob-neonatal/` (UVC, hysterotomy).
+
+Same rule as the equipment set — **do not paste a procedure glyph inline into a
+tool.** `verify_procedure_icons.mjs` compares the *rendered* markup across pages,
+so an inline copy fails the run even if it looks identical.
+
+The grammar is four rules, in the header of `procedure-icons.js` and in full in
+`design/ICONOGRAPHY.md`:
+
+- **Anatomy in ink, action in red.** `currentColor` for primary anatomy, `--ink2`
+  for landmarks and labels, and exactly **one** `--red` idea per figure — the cut,
+  the tube, the band. Two red ideas means the figure has stopped saying one thing.
+- **Same base, honest difference.** Chest tube / pigtail / thoracotomy share the
+  rib base; CVC / Cordis share the neck base; RSI / SALAD share the face; JADA /
+  hysterotomy share the uterus. The suite asserts the shared prefix survives, so
+  a redrawn base propagates instead of forking.
+- **Two tiers, one drawing.** Glyph `0 0 48 48` (must survive 16px); detail
+  `0 0 160 116` for posters and checklists, with its caption in HTML *below* the
+  SVG — never drawn inside it, where it overruns the grid.
+- Nothing is filled but action tips; dashed means under the skin, a landmark, or
+  the thing that follows.
+
+The anatomical decisions in `design/ICONOGRAPHY.md` were locked in clinical
+review — left chest for thoracotomy, patient's right IJ, "measure depth by CT"
+rather than fixed-pupil side. Do not regress them. The penetrating neck graphic
+was left un-iconed at that same review, then later requested by a clinician and
+wired to `procedures/#c11` — see `design/ICONOGRAPHY.md` for what it draws.
+
+Decorative glyphs are `aria-hidden` with no role or label. That is not a detail —
+a labeled decorative SVG shadows the real figure for any selector or screen
+reader looking for the drawing that carries the meaning.
+
 ## Config-driven verification (issue #117)
 
 The `verify_*.mjs` suites are the safety harness that makes it viable for a
@@ -253,7 +307,8 @@ whatever's actually pending (e.g. don't say "open a PR" if one's already
 open on this branch):
 
 1. **Commit & push** to the active feature branch (currently
-   `system-audit-fixes`).
+   `claude/cairnready-generic-ed-iv9eba`, the CairnReady generic-trunk
+   rebuild).
 2. **Test on the Netlify branch deploy** — pushing to any connected branch
    automatically builds a live, fully-working deploy at its own URL,
    completely separate from production. Find it on Netlify → Deploys → the

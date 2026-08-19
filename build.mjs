@@ -18,6 +18,13 @@ const CSS = readFileSync('design-system.css', 'utf8').trim();
 const MARKER = '/* @design-system */';
 const CSS_LIVE = readFileSync('design-system-live.css', 'utf8').trim();
 const MARKER_LIVE = '/* @design-system-live */';
+/* The case shell (SHELL.md) for CARD tools — the same bar/weight ribbon/menus
+   the live engines get from design-system-live.css, mirrored for pages that
+   must also carry design-system.css's card vocabulary (the two full sheets
+   cannot coexist; see design-system-shell.css's header).
+   verify_shell_parity.mjs asserts the two copies stay byte-identical. */
+const CSS_SHELL = readFileSync('design-system-shell.css', 'utf8').trim();
+const MARKER_SHELL = '/* @design-system-shell */';
 const INV = readFileSync('inventory.js', 'utf8').trim();
 const MARKER_INV = '/* @inventory */';
 /* The equipment icon set, shared by labels/ (cart drawer labels) and vems/ (the
@@ -25,6 +32,12 @@ const MARKER_INV = '/* @inventory */';
    same glyph — see issue #131 and the header of equipment-icons.js. */
 const ICONS = readFileSync('equipment-icons.js', 'utf8').trim();
 const MARKER_ICONS = '/* @icons */';
+/* The PROCEDURE icon set — anatomy + one action, a different system from the
+   equipment glyphs above (which draw objects). Shared so a card, a poster and
+   a label show the same drawing of the same procedure; see design/ICONOGRAPHY.md
+   and the header of procedure-icons.js. */
+const PROCICONS = readFileSync('procedure-icons.js', 'utf8').trim();
+const MARKER_PROCICONS = '/* @proc-icons */';
 /* The upstream guideline registry, shared by sources/ (the freshness page) and
    read outside the browser by check_guidelines.mjs — see GUIDELINE-WATCH.md. */
 const GDL = readFileSync('guidelines.js', 'utf8').trim();
@@ -33,15 +46,38 @@ const SW_TEMPLATE = readFileSync('sw-template.js', 'utf8');
 const SW_REGISTER = readFileSync('sw-register.js', 'utf8').trim();
 const OUT = 'dist';
 
+/* Site identity (site.config.json) — every {{SITE.key}} token in HTML (and the
+   webmanifest) is replaced here at build time, AFTER the shared-file markers are
+   injected, so tokens inside injected content substitute too. The generic
+   (CairnReady) values are checked in; a hospital version edits that one file.
+   A token with no matching key fails the build loudly — identity must never
+   half-apply. See SITES.md. */
+const SITE = JSON.parse(readFileSync('site.config.json', 'utf8'));
+const TOKEN_RE = /\{\{SITE\.([A-Za-z0-9_]+)\}\}/g;
+function applySite(text, file) {
+  return text.replace(TOKEN_RE, (m, key) => {
+    if (typeof SITE[key] !== 'string') {
+      console.error(`build FAILED: ${file} uses ${m} but site.config.json has no string "${key}"`);
+      process.exit(1);
+    }
+    return SITE[key];
+  });
+}
+
 // Not part of the deployed site (dev tooling, docs, build inputs, VCS).
 // cairn/ is the cairnready.org outreach site and dist-demo/ is its build
 // output (demo-build.mjs) — both their own Netlify site, never part of the
-// manual or its offline precache.
-const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'dist-demo', '.github', 'cairn']);
+// manual or its offline precache. design/ holds the design-reference package
+// (prototypes + specs) — its .dc.html files are references to build FROM, not
+// pages to ship, and the offline shell precaches every page it finds, so
+// shipping ~90 kB of prototype would cost every clinician's cache for
+// something no clinician opens. Read them from the repo, not the site.
+const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'dist-demo', '.github', 'cairn', 'design']);
 const SKIP_ROOT_FILES = new Set([
-  'design-system.css', 'design-system-live.css', 'inventory.js', 'equipment-icons.js', 'guidelines.js', 'build.mjs', 'run-tests.sh', 'netlify.toml',
+  'design-system.css', 'design-system-live.css', 'inventory.js', 'equipment-icons.js', 'procedure-icons.js', 'guidelines.js', 'build.mjs', 'run-tests.sh', 'netlify.toml',
   'package.json', 'package-lock.json', 'shot.mjs', '.gitignore',
   'sw-template.js', 'sw-register.js',   // build inputs — emitted as dist/sw.js / inlined
+  'site.config.json',                   // build input — substituted into every page
 ]);
 const SKIP_ROOT_EXT = ['.mjs', '.py', '.md'];  // verify scripts, generators, docs
 
@@ -58,7 +94,9 @@ function walk(src, dst, atRoot) {
     if (statSync(s).isDirectory()) walk(s, d, false);
     else if (name.endsWith('.html')) {
       const html = readFileSync(s, 'utf8');
-      writeFileSync(d, injectSW(html.split(MARKER).join(CSS).split(MARKER_LIVE).join(CSS_LIVE).split(MARKER_INV).join(INV).split(MARKER_ICONS).join(ICONS).split(MARKER_GDL).join(GDL)));
+      writeFileSync(d, applySite(injectSW(html.split(MARKER).join(CSS).split(MARKER_LIVE).join(CSS_LIVE).split(MARKER_SHELL).join(CSS_SHELL).split(MARKER_INV).join(INV).split(MARKER_ICONS).join(ICONS).split(MARKER_PROCICONS).join(PROCICONS).split(MARKER_GDL).join(GDL)), s));
+    } else if (name.endsWith('.webmanifest')) {
+      writeFileSync(d, applySite(readFileSync(s, 'utf8'), s));
     } else copyFileSync(s, d);
   }
 }
@@ -175,8 +213,11 @@ let leftover = 0;
   for (const name of readdirSync(dir)) {
     const p = join(dir, name);
     if (statSync(p).isDirectory()) scan(p);
-    else if (name.endsWith('.html') && (readFileSync(p, 'utf8').includes(MARKER) || readFileSync(p, 'utf8').includes(MARKER_LIVE) || readFileSync(p, 'utf8').includes(MARKER_INV) || readFileSync(p, 'utf8').includes(MARKER_ICONS))) {
+    else if (name.endsWith('.html') && (readFileSync(p, 'utf8').includes(MARKER) || readFileSync(p, 'utf8').includes(MARKER_LIVE) || readFileSync(p, 'utf8').includes(MARKER_INV) || readFileSync(p, 'utf8').includes(MARKER_ICONS) || readFileSync(p, 'utf8').includes(MARKER_SHELL) || readFileSync(p, 'utf8').includes(MARKER_PROCICONS) || readFileSync(p, 'utf8').includes(MARKER_GDL))) {
       console.error('!! un-injected marker left in', p); leftover++;
+    }
+    else if (/\.(html|webmanifest)$/.test(name) && /\{\{SITE\./.test(readFileSync(p, 'utf8'))) {
+      console.error('!! un-substituted {{SITE.*}} token left in', p); leftover++;
     }
   }
 })(OUT);

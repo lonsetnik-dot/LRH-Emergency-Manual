@@ -169,7 +169,7 @@ var GDL_SOURCES = [
     impact: "high",
     reconciled: false,
     reconcileNote: "neonatal/ carries content brought over unchanged from ob-neonatal/ card 03 and NOT yet reconciled line-by-line with the NRP 9th edition. The tool shows a review banner and verify_neonatal_screen.mjs fails if the banner is switched off quietly. Flip reconciled to true only when a clinician has signed the reconciliation off — not when the banner is removed.",
-    dependents: ["neonatal/", "peds/", "arrest/"],
+    dependents: ["neonatal/", "peds/", "arrest/", "ob-neonatal/"],
     watch: [
       { kind: "page", label: "AAP NRP program page",
         url: "https://www.aap.org/en/learning/neonatal-resuscitation-program/" },
@@ -456,6 +456,25 @@ var GDL_SOURCES = [
         term: '("Circulation"[jour] OR "J Am Coll Cardiol"[jour]) AND (guideline[pt] OR "practice guideline"[pt]) AND ("acute coronary syndrome"[tiab] OR "aortic disease"[tiab] OR "myocardial infarction"[tiab])' }
     ] },
 
+  { id: "aha-acc-pe",
+    body: "AHA / ACC (10-society)",
+    title: "Guideline for the evaluation and management of acute pulmonary embolism in adults",
+    edition: "2026",
+    citation: "2026 AHA/ACC/ACCP/ACEP/CHEST/SCAI/SHM/SIR/SVM/SVN guideline for the evaluation and management of acute pulmonary embolism in adults (Circulation 2026;153:e977–e1051; doi:10.1161/CIR.0000000000001415).",
+    url: "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001415",
+    cadence: "The first de novo joint AHA/ACC guideline dedicated to acute PE, published March 2026. The ACC/AHA Joint Committee revises on a roughly 5–10 year cycle, with focused updates in between when a single trial moves a recommendation.",
+    reviewEvery: 365,
+    lastVerified: null,
+    citedSince: "2026-08-19",
+    impact: "high",
+    dependents: ["clinical-pathways/pe/", "codes/#c29"],
+    watch: [
+      { kind: "page", label: "AHA professional guidelines and statements",
+        url: "https://professional.heart.org/en/guidelines-and-statements" },
+      { kind: "pubmed", label: "AHA/ACC pulmonary embolism guideline",
+        term: '("Circulation"[jour] OR "J Am Coll Cardiol"[jour]) AND (guideline[pt] OR "practice guideline"[pt]) AND "pulmonary embolism"[tiab]' }
+    ] },
+
   { id: "esc-pe",
     body: "ESC",
     title: "Guidelines on the diagnosis and management of acute pulmonary embolism",
@@ -463,11 +482,17 @@ var GDL_SOURCES = [
     citation: "European Society of Cardiology. 2019 Guidelines for the diagnosis and management of acute pulmonary embolism (Eur Heart J 2019;41:543).",
     url: "https://www.escardio.org/Guidelines",
     cadence: "ESC revises on a roughly 5-year cycle and announces the year's guidelines at its annual congress; a 2019 document is a live candidate for replacement.",
+    /* Demoted to a HISTORICAL citation as of 2026-08-19: the manual's PE content is
+       now written against the 2026 AHA/ACC guideline above. The 2019 ESC scheme is
+       still cited — the PE pathway prints it in the "how this maps to the schemes it
+       replaces" table, because clinicians read outside records and old notes written
+       in intermediate-low / intermediate-high language — so it stays a registry row
+       rather than being deleted. What it no longer does is supply any threshold. */
     reviewEvery: 365,
     lastVerified: null,
     citedSince: "2026-08-09",
-    impact: "medium",
-    dependents: ["codes/"],
+    impact: "low",
+    dependents: ["clinical-pathways/pe/"],
     watch: [
       { kind: "page", label: "ESC clinical practice guidelines",
         url: "https://www.escardio.org/Guidelines" },
@@ -551,6 +576,146 @@ var GDL_SOURCES = [
     impact: "medium",
     dependents: ["tca/"],
     watch: [] },
+
+  { id: "walls-airway",
+    body: "Walls (textbook)",
+    title: "The Walls Manual of Emergency Airway Management",
+    edition: "6th edition",
+    citation: "Brown CA III, Sakles JC, Mick NW, Mosier JM, Braude DA (eds). The Walls Manual of Emergency Airway Management, 6th edition. Wolters Kluwer, 2022.",
+    url: "https://shop.lww.com/",
+    cadence: "New edition roughly every 4–5 years, announced by the publisher; no interim updates.",
+    reviewEvery: 365,
+    lastVerified: null,
+    citedSince: "2026-08-17",
+    impact: "medium",
+    dependents: ["peds/#p16"],
+    watch: [] },
+
+  /* ---- Bodies cited by the 2026-08-12 coverage-gap cards and the hazmat card,
+     added 2026-08-18 after an audit found them cited in prose but absent from
+     this registry (golden rule 11). verify_guidelines.mjs stayed green the
+     whole time because it only requires a row for the TOOL, and these cards
+     live in tools already covered — so the guard was vacuous here. These rows
+     carry #cXX dependents for exactly that reason. ---- */
+
+  { id: "ssc-sepsis",
+    body: "Surviving Sepsis Campaign",
+    title: "International Guidelines for Management of Sepsis and Septic Shock",
+    edition: "2021",
+    citation: "Evans L, Rhodes A, Alhazzani W, et al. Surviving Sepsis Campaign: International Guidelines for Management of Sepsis and Septic Shock 2021. Crit Care Med 2021;49(11):e1063-e1143.",
+    url: "https://www.sccm.org/SurvivingSepsisCampaign/Guidelines",
+    cadence: "Major revision roughly every 4 years, with focused updates between; announced at SCCM congress.",
+    reviewEvery: 365,
+    lastVerified: null,
+    citedSince: "2026-08-12",
+    impact: "high",
+    dependents: ["codes/#c28"],
+    watch: [
+      { kind: "pubmed", label: "Surviving Sepsis Campaign guidelines",
+        term: '(guideline[pt] OR "practice guideline"[pt]) AND ("surviving sepsis"[tiab] OR "septic shock"[ti])' }
+    ] },
+
+  { id: "wms",
+    body: "Wilderness Medical Society",
+    title: "Clinical practice guidelines — accidental hypothermia, heat illness, lightning injury",
+    edition: "hypothermia 2019 update; heat illness 2019 update; lightning 2014",
+    citation: "Dow J, et al. WMS Clinical Practice Guidelines for the Out-of-Hospital Evaluation and Treatment of Accidental Hypothermia: 2019 Update. Wilderness Environ Med. Lipman GS, et al. WMS Clinical Practice Guidelines for Heat Illness: 2019 Update. Davis C, et al. WMS Practice Guidelines for the Prevention and Treatment of Lightning Injuries: 2014 Update.",
+    url: "https://wms.org/research/practice-guidelines",
+    cadence: "Per-topic updates on no fixed schedule, published in Wilderness &amp; Environmental Medicine.",
+    reviewEvery: 365,
+    lastVerified: null,
+    citedSince: "2026-08-12",
+    impact: "high",
+    dependents: ["codes/#c27", "codes/#c33", "trauma/#c10"],
+    watch: [
+      { kind: "pubmed", label: "WMS practice guidelines",
+        term: '"wilderness environ med"[jour] AND (guideline[ti] OR guidelines[ti])' }
+    ] },
+
+  { id: "ada-hyperglycemic",
+    body: "ADA / EASD",
+    title: "Hyperglycemic crises in adults with diabetes (DKA and HHS)",
+    edition: "2024 consensus report",
+    citation: "Umpierrez GE, Davis GM, ElSayed NA, et al. Hyperglycemic Crises in Adults With Diabetes: A Consensus Report. Diabetes Care 2024. Supersedes the 2009 ADA consensus statement.",
+    url: "https://diabetesjournals.org/care",
+    cadence: "Consensus reports are infrequent; the annual Standards of Care restate the crisis guidance and publish each January.",
+    reviewEvery: 365,
+    lastVerified: null,
+    citedSince: "2026-08-12",
+    impact: "high",
+    dependents: ["codes/#c31"],
+    watch: [
+      { kind: "pubmed", label: "Hyperglycemic crises guidance",
+        term: '("diabetes care"[jour]) AND ("hyperglycemic crises"[tiab] OR "diabetic ketoacidosis"[ti]) AND (guideline[pt] OR consensus[tiab])' }
+    ] },
+
+  { id: "asam-withdrawal",
+    body: "ASAM",
+    title: "Clinical Practice Guideline on Alcohol Withdrawal Management",
+    edition: "2020",
+    citation: "The ASAM Clinical Practice Guideline on Alcohol Withdrawal Management. J Addict Med 2020;14(3S Suppl 1):1-72.",
+    url: "https://www.asam.org/quality-care/clinical-guidelines",
+    cadence: "Infrequent; ASAM announces new and revised guidelines on its clinical-guidelines page.",
+    reviewEvery: 365,
+    lastVerified: null,
+    citedSince: "2026-08-12",
+    impact: "medium",
+    dependents: ["codes/#c34"],
+    watch: [
+      { kind: "page", label: "ASAM clinical guidelines page",
+        url: "https://www.asam.org/quality-care/clinical-guidelines" }
+    ] },
+
+  { id: "aha-poisoning",
+    body: "AHA",
+    title: "Focused Update on the Management of Patients With Cardiac Arrest or Life-Threatening Toxicity Due to Poisoning",
+    edition: "2023",
+    citation: "Lavonas EJ, Akpunonu PD, Arens AM, et al. 2023 American Heart Association Focused Update on the Management of Patients With Cardiac Arrest or Life-Threatening Toxicity Due to Poisoning. Circulation 2023;148(16):e149-e184.",
+    url: "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001161",
+    cadence: "Folded into the AHA autumn guideline cycle; a focused update can supersede it without a new full edition.",
+    reviewEvery: 180,
+    lastVerified: null,
+    citedSince: "2026-08-12",
+    impact: "high",
+    dependents: ["codes/#c36"],
+    watch: [
+      { kind: "pubmed", label: "Poisoning / tox-induced arrest guidance",
+        term: '(guideline[pt] OR "practice guideline"[pt]) AND (poisoning[ti] OR toxicity[ti]) AND (arrest[tiab] OR resuscitation[tiab])' }
+    ] },
+
+  { id: "chemm-remm",
+    body: "HHS / ASPR",
+    title: "CHEMM and REMM — chemical and radiological emergency medical management",
+    edition: "current (continuously maintained)",
+    citation: "US Department of Health and Human Services, ASPR. Chemical Hazards Emergency Medical Management (chemm.hhs.gov) and Radiation Emergency Medical Management (remm.hhs.gov); ATSDR Medical Management Guidelines for individual agents.",
+    url: "https://chemm.hhs.gov/",
+    cadence: "Maintained continuously with no edition numbers and no change announcements — a revised page can appear at the same URL, so the probe below will miss it. The periodic human re-read is the real control.",
+    reviewEvery: 365,
+    lastVerified: null,
+    citedSince: "2026-08-18",
+    impact: "high",
+    dependents: ["trauma/#c09", "trauma/#c11"],
+    watch: [
+      { kind: "page", label: "CHEMM home",
+        url: "https://chemm.hhs.gov/" }
+    ] },
+
+  { id: "aba-burn",
+    body: "American Burn Association",
+    title: "Burn center referral criteria and Advanced Burn Life Support",
+    edition: "current",
+    citation: "American Burn Association. Burn center referral criteria; Advanced Burn Life Support (ABLS) Provider Manual.",
+    url: "https://ameriburn.org/",
+    cadence: "ABLS manual revised every few years; referral criteria change rarely and are restated in the ACS resources document.",
+    reviewEvery: 365,
+    lastVerified: null,
+    citedSince: "2026-08-12",
+    impact: "medium",
+    dependents: ["trauma/#c05", "trauma/#c10"],
+    watch: [
+      { kind: "page", label: "ABA resources",
+        url: "https://ameriburn.org/" }
+    ] },
 
   { id: "tertiary-refs",
     body: "WikEM / LITFL / EMCrit IBCC / StatPearls",

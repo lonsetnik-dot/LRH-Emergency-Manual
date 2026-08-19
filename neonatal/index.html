@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="theme-color" content="#0D1420">
-<title>LRH Neonatal Resuscitation — NRP Engine</title>
+<title>{{SITE.abbrev}} Neonatal Resuscitation — NRP Engine</title>
 <meta name="description" content="Mobile cognitive aid for newborn resuscitation at delivery: time of birth clock, 30-second reassessment cycles, heart-rate driven pathway, weight-based doses. Personal aid, not hospital policy.">
 <style>
 /* @design-system-live */
@@ -55,6 +55,7 @@ body.running .shelltele{padding:10px 12px;font-size:14px}
 </style>
 </head>
 <body data-theme="dark">
+<h1 class="sr-only">Neonatal Resuscitation — Live Engine</h1>
 
 <!-- ============ CASE SHELL layer 1 — app bar (SHELL.md) ============
      One 56px row (60px ≥768px), sticky, never wraps. Left: back + the tool
@@ -72,7 +73,7 @@ body.running .shelltele{padding:10px 12px;font-size:14px}
   </div>
   <span class="shell-wide" style="gap:6px;align-items:center">
     <button class="ghost" id="tlbtnwide" type="button">TIMELINE</button>
-    <a class="ghost" id="feedbacklink" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Neonatal" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+    <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Neonatal" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
     <button class="ghost shellreset" id="resetwide" type="button">RESET</button>
   </span>
   <button class="shellmore shell-phone" id="menubtn" type="button" aria-label="Menu">⋯</button>
@@ -89,6 +90,7 @@ body.running .shelltele{padding:10px 12px;font-size:14px}
   <a class="shellmenurow on" href="../neonatal/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Neonatal</span><span class="shellmenusub">NRP</span></a>
   <a class="shellmenurow" href="../pph/"><span class="shellsq" style="background:#E75480"></span><span style="flex:1">PPH</span><span class="shellmenusub">PPH</span></a>
   <a class="shellmenurow" href="../dystocia/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Dystocia</span><span class="shellmenusub">OB</span></a>
+    <a class="shellmenurow" href="../peds/?from=tool"><span class="shellsq" style="background:var(--purple)"></span><span style="flex:1">Peds</span><span class="shellmenusub">PEDS</span></a>
   <div class="shellmenudiv"></div>
   <a class="shellmenurow" href="../?from=tool"><span class="shellsq" style="background:var(--gray)"></span><span style="flex:1">Manual home</span></a>
 </div>
@@ -97,7 +99,7 @@ body.running .shelltele{padding:10px 12px;font-size:14px}
      two-tap SURE? reset the wide button runs (SHELL.md layer 9). -->
 <div class="shellmenu right" id="moremenu" style="display:none">
   <button class="shellmenurow" id="tlbtn" type="button">Case timeline</button>
-  <a class="shellmenurow" id="feedbackmenu" href="mailto:lon.setnik@gmail.com?subject=LRH%20Emergency%20Manual%20feedback%20%E2%80%94%20Neonatal">Feedback</a>
+  <a class="shellmenurow" id="feedbackmenu" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Neonatal">Feedback</a>
   <div class="shellmenudiv"></div>
   <button class="shellmenurow danger" id="resetbtn" type="button">Reset for next case</button>
 </div>
@@ -330,8 +332,8 @@ body.running .shelltele{padding:10px 12px;font-size:14px}
    this block, and the review banner behavior is untouched.
    ========================================================================== */
 var SITE = {
-  version:"0.3.1", lastReviewed:"2026-08-15",
-  site:"LRH",
+  version:"0.3.2", lastReviewed:"2026-08-17",
+  site:"{{SITE.abbrev}}",
 
   /* The banner is config, not prose, so a site can turn it off in one place once
      its own review is done, and so the verify suite can assert what the screen
@@ -462,12 +464,18 @@ var SITE = {
   satTargets:[ {min:1,t:"60–65%"}, {min:2,t:"65–70%"}, {min:3,t:"70–75%"},
                {min:4,t:"75–80%"}, {min:5,t:"80–85%"}, {min:10,t:"85–95%"} ],
 
-  /* Airway sizing by weight. Local stock — an adopting ED edits this block. */
+  /* Airway sizing by weight. Local stock — an adopting ED edits this block.
+     mask/suction columns added with the ETT/blade/LMA rows so the doc
+     controlling the airway reads every size off one ladder. Mask (0 preterm,
+     1 term) and suction catheter sizes per the NRP equipment checklist — the
+     ETT suction catheter tracks the tube (≈2 × ID in Fr); oroSuction is the
+     larger catheter for clearing the mouth and nose before/during PPV. */
   airway:[
-    { maxKg:2,    lma:"LMA 0",   ett:"2.5–3.0", blade:"00–0", note:"under 2 kg" },
-    { maxKg:3,    lma:"LMA 0.5", ett:"3.5",     blade:"0–1",  note:"2 kg and over" },
-    { maxKg:null, lma:"LMA 0.5", ett:"3.5–4.0", blade:"0–1",  note:"3 kg and over" }
+    { maxKg:2,    lma:"LMA 0",   ett:"2.5–3.0", blade:"00–0", mask:"0 (preterm)", suction:"5–6 Fr", note:"under 2 kg" },
+    { maxKg:3,    lma:"LMA 0.5", ett:"3.5",     blade:"0–1",  mask:"0–1",         suction:"6–8 Fr", note:"2 kg and over" },
+    { maxKg:null, lma:"LMA 0.5", ett:"3.5–4.0", blade:"0–1",  mask:"1 (term)",    suction:"8 Fr",   note:"3 kg and over" }
   ],
+  oroSuction:"10–12 Fr (or bulb)",
   ettDepthAddCm:6,
   /* 2025 AHA/AAP: the supraglottic airway is endorsed as an alternative to
      tracheal intubation for the newborn above this gestation who fails
@@ -967,11 +975,14 @@ function figAirway(){
        '<div style="flex:1;min-width:0">'+
        '<div style="font-weight:800;font-size:15px">'+esc(a.lma)+(on?' &nbsp;&#9664; this baby':'')+'</div>'+
        '<div style="font-size:12.5px;color:var(--ink2);margin-top:2px">'+esc(a.note)+
-       ' · ETT '+esc(a.ett)+' · blade '+esc(a.blade)+'</div></div></div>';
+       ' · ETT '+esc(a.ett)+' · blade '+esc(a.blade)+'</div>'+
+       '<div style="font-size:12.5px;color:var(--ink2);margin-top:1px">mask '+esc(a.mask)+
+       ' · ETT suction '+esc(a.suction)+'</div></div></div>';
   });
   return h+'</div><p style="font-size:13px;color:var(--ink2);margin-top:8px">Depth = <b>weight in kg + '+
     SITE.ettDepthAddCm+' cm</b>. Above '+SITE.sgaPrimaryFromWeeks+' weeks the supraglottic airway is a '+
-    '<b>primary</b> device under the 2025 guideline, not only a rescue after failed bag-mask ventilation.</p>';
+    '<b>primary</b> device under the 2025 guideline, not only a rescue after failed bag-mask ventilation. '+
+    'Mouth and nose: <b>'+esc(SITE.oroSuction)+'</b> — the fine catheter in the ladder is for suctioning <i>through the tube</i>.</p>';
 }
 
 /* ===== reference ========================================================= */
@@ -1034,7 +1045,7 @@ var ACC=[
         'gestation a combination of plastic wrap or bag, hat, thermal mattress and a warmed room is '+
         'recommended to prevent hypothermia; the '+SITE.temp.wrapUnderGrams+' g arm is the companion '+
         'birth-weight criterion NRP pairs with it. <b>This corrects a value authored in this file at '+
-        '34 weeks with no citation</b> (issue #143). Both numbers confirmed for LRH 2026-08-13.<br>'+
+        '34 weeks with no citation</b> (issue #143). Both numbers confirmed 2026-08-13.<br>'+
         '· Heart-rate thresholds are unchanged: PPV for apnea, gasping or a rate under '+SITE.hr.good+
         '; compressions only if the rate stays under '+SITE.hr.low+' after '+SITE.cycle.reassessSec+
         ' s of effective ventilation.</p>'+
@@ -1048,7 +1059,9 @@ var ACC=[
         'card 03 (retired in favor of this engine), which carried no citation of its own. '+
         'Nothing was authored fresh and no number was altered in the move, but the full NRP 9th edition '+
         'textbook was not available when this was built, so those values have not been checked line by line '+
-        'against it. Do that against your own NRP materials.</p>'+
+        'against it. Do that against your own NRP materials. One later addition: the mask and suction-catheter '+
+        'columns of the airway ladder (v0.3.2) were authored against the NRP equipment checklist '+
+        'rather than carried over — same caveat, not yet clinician-verified.</p>'+
         '<p>Apgar timing follows the standard rule: scored at '+SITE.apgar.at.join(' and ')+' minutes, and '+
         'repeated every '+SITE.apgar.repeatEveryMin+' minutes to '+SITE.apgar.repeatUntilMin+
         ' if the '+SITE.apgar.repeatEveryMin+'-minute score is under '+SITE.apgar.repeatIfBelow+'.</p>'; } }
