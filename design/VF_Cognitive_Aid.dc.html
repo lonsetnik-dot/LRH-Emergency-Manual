@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0D1420;--card:#161F2E;--card2:#1D2A3C;--ink:#EAF0F7;--ink2:#8FA0B5;--line:rgba(255,255,255,.10);--accent:#2FA372;--accentInk:#fff;--red:#E5484D;--gray:#5C6B7E;--blue:#4C8DDA;--green:#3DA35D;--amber:#F0B429}
+body[data-theme="light"]{--bg:#EFF2F5;--card:#FFFFFF;--card2:#F4F6F9;--ink:#141E2B;--ink2:#5A6A7D;--line:rgba(15,35,60,.13);--red:#C63238;--gray:#6B7A8D;--blue:#2F6FB5;--green:#1F7F49;--amber:#B07E13}
+html,body{margin:0;padding:0;background:var(--bg)}
+a{color:var(--blue)}a:hover{color:var(--accent)}
+input{font-family:inherit}
+@keyframes duepulse{0%,100%{opacity:1}50%{opacity:.45}}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+</style>
+</helmet>
+<div style="min-height:100vh;background:var(--bg);color:var(--ink);font-family:'Source Sans 3',system-ui,sans-serif;-webkit-font-smoothing:antialiased">
+<div style="max-width:680px;margin:0 auto;padding:0 14px 40px">
+
+<div style="position:sticky;top:0;z-index:30;background:var(--bg);padding:12px 0 10px;display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)">
+  <div style="flex:1;min-width:0">
+    <div style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--accent)">01 · PULSELESS VF / VT</div>
+    <div style="display:flex;align-items:baseline;gap:8px">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700">{{ codeClock }}</span>
+      <sc-if value="{{ running }}" hint-placeholder-val="{{ false }}"><span style="width:8px;height:8px;border-radius:50%;background:var(--red);animation:blink 1.4s infinite;display:inline-block"></span></sc-if>
+      <span style="font-size:12px;color:var(--ink2);font-weight:600">{{ codeLabel }}</span>
+    </div>
+  </div>
+  <button onClick="{{ toggleTheme }}" style="background:var(--card);border:1px solid var(--line);color:var(--ink2);font:700 11px 'Source Sans 3',sans-serif;letter-spacing:.08em;padding:9px 12px;border-radius:10px;cursor:pointer;min-height:38px">{{ themeLabel }}</button>
+  <button onClick="{{ reset }}" style="{{ resetSty }}">{{ resetLabel }}</button>
+</div>
+
+<div style="display:flex;gap:8px;align-items:center;margin:12px 0 0;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:10px 12px;flex-wrap:wrap">
+  <span style="font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--ink2)">WEIGHT</span>
+  <input value="{{ wIn }}" onChange="{{ onW }}" inputMode="decimal" style="width:64px;background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:9px 10px;font-size:17px;font-weight:700;text-align:center" aria-label="Weight in kg">
+  <span style="font-size:13px;color:var(--ink2)">kg &nbsp;·&nbsp; or age</span>
+  <input value="{{ aIn }}" onChange="{{ onA }}" inputMode="numeric" placeholder="yrs" style="width:52px;background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:9px;padding:9px 10px;font-size:16px;font-weight:700;text-align:center" aria-label="Age in years">
+  <button onClick="{{ estimate }}" style="background:var(--card2);border:1px solid var(--line);color:var(--ink);font:700 12px 'Source Sans 3',sans-serif;padding:9px 12px;border-radius:9px;cursor:pointer">ESTIMATE KG</button>
+  <span style="font-size:13px;font-weight:700;color:var(--accent)">{{ weightNote }}</span>
+</div>
+
+<sc-if value="{{ showPedsBanner }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;gap:10px;align-items:center;margin-top:10px;border:1px solid var(--accent);background:var(--card);border-radius:14px;padding:10px 12px">
+  <span style="width:14px;height:38px;border-radius:6px;background:var(--accent);flex:none"></span>
+  <div style="flex:1;font-size:13.5px;line-height:1.4"><b>Pediatric mode — {{ kgLabel }} ({{ broselowName }}).</b> Doses and defib energy below are weight-based PALS.</div>
+  <button onClick="{{ dismissPeds }}" style="background:none;border:1px solid var(--line);color:var(--ink2);font:700 11px 'Source Sans 3',sans-serif;padding:8px 10px;border-radius:9px;cursor:pointer;white-space:nowrap">DISMISS</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ isIdle }}" hint-placeholder-val="{{ true }}">
+<button onClick="{{ startCode }}" style="width:100%;margin-top:14px;min-height:96px;border:none;border-radius:16px;background:var(--red);color:#fff;font:800 22px 'Source Sans 3',sans-serif;letter-spacing:.04em;cursor:pointer;box-shadow:0 6px 24px rgba(229,72,77,.25)"><span style="display:inline-flex;align-items:center;justify-content:center;gap:12px"><svg width="30" height="30" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 21C7 17 3 13.5 3 9.5 3 7 5 5 7.5 5c1.8 0 3.4 1 4.5 2.6C13.1 6 14.7 5 16.5 5 19 5 21 7 21 9.5c0 4-4 7.5-9 11.5z"></path></svg>START CPR — CODE BLUE</span><div style="font-size:13px;font-weight:600;opacity:.85;margin-top:4px">Starts the code clock and the 2:00 cycle timer</div></button>
+<div style="margin-top:10px;font-size:13px;color:var(--ink2);text-align:center">Call a code · start compressions · attach the defibrillator · enter weight above</div>
+</sc-if>
+
+<sc-if value="{{ isCpr }}" hint-placeholder-val="{{ false }}">
+<div style="{{ cycleCardSty }}">
+  <div style="display:flex;align-items:center;justify-content:space-between">
+    <div style="font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--ink2)">CPR CYCLE — RHYTHM CHECK AT 0:00</div>
+    <div style="text-align:right;font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--ink2)">SHOCKS <span style="font-family:'JetBrains Mono',monospace;font-size:20px;color:var(--red)">{{ shocks }}</span></div>
+  </div>
+  <div style="display:flex;align-items:baseline;gap:14px;margin-top:2px">
+    <span style="{{ cycleNumSty }}">{{ cycleClock }}</span>
+    <span style="font-size:13px;color:var(--ink2);font-weight:600">{{ modeLabel }}</span>
+  </div>
+  <sc-if value="{{ due }}" hint-placeholder-val="{{ false }}">
+    <button onClick="{{ openRc }}" style="width:100%;min-height:64px;border:none;border-radius:12px;background:var(--amber);color:#141E2B;font:800 18px 'Source Sans 3',sans-serif;letter-spacing:.03em;cursor:pointer;animation:duepulse 1.2s infinite;margin-top:10px">RHYTHM CHECK DUE — WHAT DO YOU SEE?</button>
+  </sc-if>
+  <sc-if value="{{ notDue }}" hint-placeholder-val="{{ true }}">
+    <button onClick="{{ shock }}" style="width:100%;min-height:72px;border:none;border-radius:12px;background:var(--red);color:#fff;font:800 20px 'Source Sans 3',sans-serif;letter-spacing:.03em;cursor:pointer;margin-top:10px"><span style="display:inline-flex;align-items:center;justify-content:center;gap:10px"><svg width="24" height="24" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M13 2 4 14h6l-1 8 9-12h-6l1-8z"></path></svg>SHOCK {{ shockJ }} J — LOG IT</span><div style="font-size:12.5px;font-weight:600;opacity:.85;margin-top:3px">{{ shockSub }}</div></button>
+  </sc-if>
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
+    <button onClick="{{ giveEpi }}" style="min-height:64px;border:1px solid var(--line);border-radius:12px;background:var(--card2);color:var(--ink);font:800 16px 'Source Sans 3',sans-serif;cursor:pointer"><span style="display:inline-flex;align-items:center;justify-content:center;gap:8px"><svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 3c3 4.5 6 7.7 6 11a6 6 0 1 1-12 0c0-3.3 3-6.5 6-11z"></path></svg>EPI {{ epiMg }} mg</span><div style="font-size:12px;font-weight:600;color:{{ epiSubColor }};margin-top:2px">{{ epiSub }}</div></button>
+    <button onClick="{{ giveAmio }}" style="min-height:64px;border:1px solid var(--line);border-radius:12px;background:var(--card2);color:var(--ink);font:800 16px 'Source Sans 3',sans-serif;cursor:pointer">AMIO {{ amioMg }} mg<div style="font-size:12px;font-weight:600;color:var(--ink2);margin-top:2px">{{ amioSub }}</div></button>
+    <button onClick="{{ openRc }}" style="min-height:52px;border:1px solid var(--line);border-radius:12px;background:var(--card2);color:var(--ink);font:700 14px 'Source Sans 3',sans-serif;cursor:pointer">RHYTHM CHECK</button>
+    <button onClick="{{ toggleCustom }}" style="min-height:52px;border:1px solid var(--line);border-radius:12px;background:var(--card2);color:var(--ink);font:700 14px 'Source Sans 3',sans-serif;cursor:pointer">+ LOG EVENT</button>
+  </div>
+  <sc-if value="{{ showCustom }}" hint-placeholder-val="{{ false }}">
+    <div style="display:flex;gap:8px;margin-top:8px">
+      <input value="{{ custom }}" onChange="{{ onCustom }}" onKeyDown="{{ customKey }}" placeholder="e.g. IO placed right tibia, calcium given…" style="flex:1;background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:12px;font-size:15px">
+      <button onClick="{{ logCustom }}" style="border:none;border-radius:10px;background:var(--accent);color:var(--accentInk);font:800 14px 'Source Sans 3',sans-serif;padding:0 18px;cursor:pointer">LOG</button>
+    </div>
+  </sc-if>
+  <div style="margin-top:8px;font-size:12.5px;color:var(--ink2)">Anything can be tapped at any time — the algorithm is a guide, not a lock.</div>
+</div>
+
+<sc-if value="{{ showRolesStep }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:10px;background:var(--card);border:1px dashed var(--accent);border-radius:14px;padding:12px">
+  <div style="display:flex;gap:10px;align-items:center">
+    <div style="flex:1"><div style="font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--accent)">GET ORGANIZED — NAME THE ROLES</div>
+    <div style="font-size:12.5px;color:var(--ink2);margin-top:2px">Assign aloud · rotate compressor every 2 min</div></div>
+    <button onClick="{{ rolesAssigned }}" style="min-height:56px;border:none;border-radius:12px;background:var(--accent);color:var(--accentInk);font:800 13px 'Source Sans 3',sans-serif;padding:0 14px;cursor:pointer;white-space:nowrap">ASSIGNED — LOG IT</button>
+  </div>
+  <div style="display:flex;flex-wrap:wrap;gap:6px;margin-top:10px">
+    <span style="background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700">Compressor</span>
+    <span style="background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700">Airway / ventilation</span>
+    <span style="background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700">Meds / IV-IO</span>
+    <span style="background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700">Defibrillator</span>
+    <span style="background:var(--card2);border:1px solid var(--line);border-radius:999px;padding:6px 12px;font-size:13px;font-weight:700">Recorder</span>
+  </div>
+</div>
+</sc-if>
+
+<sc-if value="{{ showAirwayStep }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;gap:10px;align-items:center;margin-top:10px;background:var(--card);border:1px dashed var(--blue);border-radius:14px;padding:12px">
+  <div style="flex:1"><div style="font-size:11px;font-weight:800;letter-spacing:.1em;color:var(--blue)">NEXT STEP</div>
+  <div style="font-size:14.5px;font-weight:700;margin-top:2px">Advanced airway placed?</div>
+  <div style="font-size:12.5px;color:var(--ink2)">Switches pacing to continuous compressions + 1 breath every 6 s</div></div>
+  <button onClick="{{ airwayPlaced }}" style="min-height:56px;border:none;border-radius:12px;background:var(--blue);color:#fff;font:800 14px 'Source Sans 3',sans-serif;padding:0 16px;cursor:pointer;white-space:nowrap">AIRWAY IN — SWITCH</button>
+</div>
+</sc-if>
+
+<button onClick="{{ roscBtn }}" style="width:100%;margin-top:10px;min-height:60px;border:2px solid var(--green);border-radius:14px;background:transparent;color:var(--green);font:800 17px 'Source Sans 3',sans-serif;letter-spacing:.05em;cursor:pointer"><span style="display:inline-flex;align-items:center;justify-content:center;gap:10px"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21C7 17 3 13.5 3 9.5 3 7 5 5 7.5 5c1.8 0 3.4 1 4.5 2.6C13.1 6 14.7 5 16.5 5 19 5 21 7 21 9.5c0 4-4 7.5-9 11.5z"></path><path d="M5 12h4l1.5-3 2 5 1.5-2h5"></path></svg>ROSC — PULSE RETURNED</span></button>
+</sc-if>
+
+<sc-if value="{{ isRosc }}" hint-placeholder-val="{{ false }}">
+<div style="margin-top:14px;background:var(--card);border:2px solid var(--green);border-radius:16px;padding:16px">
+  <div style="font-size:12px;font-weight:800;letter-spacing:.1em;color:var(--green)">ROSC — POST-ARREST CARE</div>
+  <div style="font-size:20px;font-weight:800;margin:4px 0 10px">Pulse returned at {{ roscAt }}</div>
+  <div style="font-size:14.5px;line-height:1.6;color:var(--ink)">
+  · Support airway + oxygenation — target SpO₂ 94–99%, avoid hyperventilation<br>
+  · Blood pressure — treat hypotension (fluids / vasoactives)<br>
+  · 12-lead ECG · glucose · temperature management<br>
+  · Find and treat the cause (H's &amp; T's)</div>
+  <button onClick="{{ reArrest }}" style="width:100%;margin-top:12px;min-height:60px;border:none;border-radius:12px;background:var(--red);color:#fff;font:800 17px 'Source Sans 3',sans-serif;cursor:pointer">RE-ARREST — RESUME CPR</button>
+</div>
+</sc-if>
+
+<div style="margin-top:18px;font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--ink2)">REFERENCE — TAP TO OPEN</div>
+
+<div style="margin-top:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden">
+<button onClick="{{ openDefib }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;background:none;border:none;color:var(--ink);padding:15px 14px;font:800 14px 'Source Sans 3',sans-serif;letter-spacing:.06em;cursor:pointer;min-height:52px">DEFIBRILLATION<span style="color:var(--ink2)">{{ chevDefib }}</span></button>
+<sc-if value="{{ isDefibOpen }}" hint-placeholder-val="{{ false }}">
+<div style="padding:0 14px 14px;font-size:14.5px;line-height:1.6;border-top:1px solid var(--line)">
+  <sc-if value="{{ peds }}" hint-placeholder-val="{{ false }}"><p>1st shock 2 J/kg = <b>{{ e1 }} J</b>. 2nd shock 4 J/kg = <b>{{ e2 }} J</b>. 3rd and subsequent shocks ≥4 J/kg, may increase per clinician judgment — max 10 J/kg (<b>{{ e10 }} J</b>) or the adult max (200 J on LRH's ZOLL), whichever is lower.</p></sc-if>
+  <sc-if value="{{ adult }}" hint-placeholder-val="{{ true }}"><p>Adult: use the device's labeled energy — <b>200 J</b> max on LRH's ZOLL biphasic. If no label is visible, use the maximum available.</p></sc-if>
+  <p><b>Different manufacturer/device on your unit?</b> Use its manufacturer label instead — energies are device-specific.</p>
+  <p style="margin-bottom:0"><b>Resume compressions immediately after each shock</b> — minimize the pause to &lt;10 s.</p>
+</div>
+</sc-if>
+</div>
+
+<div style="margin-top:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden">
+<button onClick="{{ openEpi }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;background:none;border:none;color:var(--ink);padding:15px 14px;font:800 14px 'Source Sans 3',sans-serif;letter-spacing:.06em;cursor:pointer;min-height:52px">EPINEPHRINE<span style="color:var(--ink2)">{{ chevEpi }}</span></button>
+<sc-if value="{{ isEpiOpen }}" hint-placeholder-val="{{ false }}">
+<div style="padding:0 14px 14px;font-size:14.5px;line-height:1.6;border-top:1px solid var(--line)">
+  <sc-if value="{{ peds }}" hint-placeholder-val="{{ false }}"><p>IV/IO (1:10,000 = 0.1 mg/mL): 0.01 mg/kg = <b>{{ epiMl }} mL</b> (<b>{{ epiMg }} mg</b>), max 1 mg, every 3–5 min.</p><p>Via ETT (2nd-line route only): 0.1 mg/kg = <b>{{ epiEttMg }} mg</b>. IV/IO is preferred — if IV access isn't rapidly achieved, proceed to IO without delay.</p></sc-if>
+  <sc-if value="{{ adult }}" hint-placeholder-val="{{ true }}"><p><b>1 mg</b> IV/IO (10 mL of 1:10,000) every 3–5 min.</p></sc-if>
+  <p style="margin-bottom:0">Give as early as possible for non-shockable rhythms — don't delay compressions to get access.</p>
+</div>
+</sc-if>
+</div>
+
+<div style="margin-top:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden">
+<button onClick="{{ openAnti }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;background:none;border:none;color:var(--ink);padding:15px 14px;font:800 14px 'Source Sans 3',sans-serif;letter-spacing:.06em;cursor:pointer;min-height:52px">ANTIARRHYTHMIC<span style="color:var(--ink2)">{{ chevAnti }}</span></button>
+<sc-if value="{{ isAntiOpen }}" hint-placeholder-val="{{ false }}">
+<div style="padding:0 14px 14px;font-size:14.5px;line-height:1.6;border-top:1px solid var(--line)">
+  <sc-if value="{{ peds }}" hint-placeholder-val="{{ false }}"><p><b>Amiodarone</b> (refractory VF/pVT) — 5 mg/kg = <b>{{ amioMg }} mg</b>, max 300 mg/dose, may repeat ×2 — max 3 doses total (≤15 mg/kg).</p><p style="margin-bottom:0"><b>Lidocaine</b> (alternative) — 1 mg/kg = <b>{{ lidoMg }} mg</b>; repeat 0.5 mg/kg = <b>{{ lido2Mg }} mg</b> if needed.</p></sc-if>
+  <sc-if value="{{ adult }}" hint-placeholder-val="{{ true }}"><p><b>Amiodarone</b> (refractory VF/pVT) — <b>300 mg</b> first dose, <b>150 mg</b> second.</p><p style="margin-bottom:0"><b>Lidocaine</b> (alternative) — 1–1.5 mg/kg first dose, then 0.5–0.75 mg/kg.</p></sc-if>
+</div>
+</sc-if>
+</div>
+
+<div style="margin-top:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden">
+<button onClick="{{ openCpr }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;background:none;border:none;color:var(--ink);padding:15px 14px;font:800 14px 'Source Sans 3',sans-serif;letter-spacing:.06em;cursor:pointer;min-height:52px">HIGH-QUALITY CPR TARGETS<span style="color:var(--ink2)">{{ chevCpr }}</span></button>
+<sc-if value="{{ isCprOpen }}" hint-placeholder-val="{{ false }}">
+<div style="padding:0 14px 14px;font-size:14.5px;line-height:1.6;border-top:1px solid var(--line)">
+  <p><b>Rate 100–120/min</b>, all ages. <b>Depth</b> ≥⅓ AP chest diameter — ~4 cm infants, ~5 cm children; post-puberty use adult depth (≥5 cm, ≤6 cm).</p>
+  <p>Full recoil between compressions · rotate compressor every 2 min · minimize pauses to &lt;10 s.</p>
+  <p style="margin-bottom:0"><b>No advanced airway:</b> 30:2. <b>Advanced airway:</b> continuous compressions + 1 breath every 6 s.</p>
+</div>
+</sc-if>
+</div>
+
+<div style="margin-top:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden">
+<button onClick="{{ openMet }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;background:none;border:none;color:var(--ink);padding:15px 14px;font:800 14px 'Source Sans 3',sans-serif;letter-spacing:.06em;cursor:pointer;min-height:52px">COMPRESSION METRONOME<span style="color:var(--ink2)">{{ chevMet }}</span></button>
+<sc-if value="{{ isMetOpen }}" hint-placeholder-val="{{ false }}">
+<div style="padding:0 14px 14px;font-size:14.5px;line-height:1.6;border-top:1px solid var(--line)">
+  <button onClick="{{ toggleMet }}" style="{{ metBtnSty }}">{{ metLabel }}</button>
+  <p style="margin-bottom:0;color:var(--ink2);font-size:13px">Paces rate only ({{ bpm }}/min). It does not model the two-rescuer ratio or age-based depth — see HIGH-QUALITY CPR TARGETS for exact pediatric numbers.</p>
+</div>
+</sc-if>
+</div>
+
+<div style="margin-top:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden">
+<button onClick="{{ openLog }}" style="width:100%;display:flex;justify-content:space-between;align-items:center;background:none;border:none;color:var(--ink);padding:15px 14px;font:800 14px 'Source Sans 3',sans-serif;letter-spacing:.06em;cursor:pointer;min-height:52px">EVENT LOG <span style="font-weight:600;color:var(--ink2);letter-spacing:0">&nbsp;{{ logCount }}</span><span style="flex:1"></span><span style="color:var(--ink2)">{{ chevLog }}</span></button>
+<sc-if value="{{ isLogOpen }}" hint-placeholder-val="{{ false }}">
+<div style="padding:4px 14px 14px;border-top:1px solid var(--line)">
+  <sc-if value="{{ noEvents }}" hint-placeholder-val="{{ true }}"><div style="font-size:13.5px;color:var(--ink2);padding:8px 0">Nothing logged yet.</div></sc-if>
+  <sc-for list="{{ events }}" as="ev" hint-placeholder-count="0">
+    <div style="display:flex;gap:12px;padding:9px 0;border-bottom:1px solid var(--line);font-size:14px">
+      <span style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent);flex:none">{{ ev.t }}</span>
+      <span style="line-height:1.4">{{ ev.label }}</span>
+    </div>
+  </sc-for>
+</div>
+</sc-if>
+</div>
+
+<div style="margin-top:16px;font-size:12px;color:var(--ink2);text-align:center;line-height:1.5">Cognitive aid — verify doses against your device labels and local policy.<br>Rhythm check due every {{ cycleMin }} · Epi every 3–5 min.</div>
+</div>
+
+<sc-if value="{{ rc }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:60;background:rgba(5,10,18,.72);display:flex;align-items:flex-end;justify-content:center" onClick="{{ closeRc }}">
+  <div style="width:100%;max-width:680px;background:var(--card);border-radius:20px 20px 0 0;padding:18px 16px calc(18px + env(safe-area-inset-bottom));border:1px solid var(--line)" onClick="{{ stop }}">
+    <div style="font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--ink2);margin-bottom:12px">AT THE RHYTHM CHECK — WHAT DO YOU SEE?</div>
+    <sc-if value="{{ rcMain }}" hint-placeholder-val="{{ true }}">
+      <button onClick="{{ rcShockable }}" style="width:100%;min-height:76px;border:none;border-radius:14px;background:var(--red);color:#fff;font:800 19px 'Source Sans 3',sans-serif;letter-spacing:.03em;cursor:pointer;text-align:left;padding:0 18px;display:flex;align-items:center;gap:14px"><svg width="54" height="26" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="flex:none;opacity:.9"><path d="M1 13l3-6 3 11 3-14 3 12 3-9 3 10 3-13 3 11 3-8 3 9 3-11 3 10 3-7 3 8 3-6 3 5 3-4"></path></svg><span>SHOCKABLE — VF / pVT<div style="font-size:13px;font-weight:600;opacity:.85;margin-top:3px">Charge {{ shockJ }} J → shock → resume compressions immediately</div></span></button>
+      <button onClick="{{ rcNonShockable }}" style="width:100%;min-height:76px;border:none;border-radius:14px;background:var(--gray);color:#fff;font:800 19px 'Source Sans 3',sans-serif;letter-spacing:.03em;cursor:pointer;text-align:left;padding:0 18px;margin-top:10px;display:flex;align-items:center;gap:14px"><svg width="54" height="26" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="flex:none;opacity:.9"><path d="M1 13h16l2-4 2 4h32"></path></svg><span>NON-SHOCKABLE — PEA / ASYSTOLE<div style="font-size:13px;font-weight:600;opacity:.85;margin-top:3px">Resume CPR — epinephrine as early as possible</div></span></button>
+      <button onClick="{{ rcOrganized }}" style="width:100%;min-height:76px;border:none;border-radius:14px;background:var(--blue);color:#fff;font:800 19px 'Source Sans 3',sans-serif;letter-spacing:.03em;cursor:pointer;text-align:left;padding:0 18px;margin-top:10px;display:flex;align-items:center;gap:14px"><svg width="54" height="26" viewBox="0 0 54 26" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true" style="flex:none;opacity:.9"><path d="M1 15h6l2-4 2 4 2-12 2 16 2-8h10l2-4 2 4 2-12 2 16 2-8h10"></path></svg><span>ORGANIZED RHYTHM<div style="font-size:13px;font-weight:600;opacity:.85;margin-top:3px">Check for a pulse — next screen</div></span></button>
+    </sc-if>
+    <sc-if value="{{ rcOrg }}" hint-placeholder-val="{{ false }}">
+      <button onClick="{{ rcRosc }}" style="width:100%;min-height:76px;border:none;border-radius:14px;background:var(--green);color:#fff;font:800 19px 'Source Sans 3',sans-serif;cursor:pointer;text-align:left;padding:0 18px">PULSE PRESENT — ROSC<div style="font-size:13px;font-weight:600;opacity:.85;margin-top:3px">Move to post-arrest care</div></button>
+      <button onClick="{{ rcPea }}" style="width:100%;min-height:76px;border:none;border-radius:14px;background:var(--gray);color:#fff;font:800 19px 'Source Sans 3',sans-serif;cursor:pointer;text-align:left;padding:0 18px;margin-top:10px">NO PULSE — PEA<div style="font-size:13px;font-weight:600;opacity:.85;margin-top:3px">Resume CPR immediately</div></button>
+    </sc-if>
+    <button onClick="{{ closeRc }}" style="width:100%;margin-top:12px;min-height:48px;background:none;border:1px solid var(--line);border-radius:12px;color:var(--ink2);font:700 13px 'Source Sans 3',sans-serif;letter-spacing:.06em;cursor:pointer">CANCEL — BACK TO CPR</button>
+  </div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:430,&quot;height&quot;:932},&quot;cycleSeconds&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:120,&quot;tsType&quot;:&quot;number&quot;,&quot;min&quot;:60,&quot;max&quot;:300,&quot;unit&quot;:&quot;s&quot;,&quot;section&quot;:&quot;Timing&quot;},&quot;epiIntervalSec&quot;:{&quot;editor&quot;:&quot;int&quot;,&quot;default&quot;:180,&quot;tsType&quot;:&quot;number&quot;,&quot;min&quot;:120,&quot;max&quot;:300,&quot;unit&quot;:&quot;s&quot;,&quot;section&quot;:&quot;Timing&quot;},&quot;metronomeBpm&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:110,&quot;tsType&quot;:&quot;number&quot;,&quot;min&quot;:100,&quot;max&quot;:120,&quot;section&quot;:&quot;Timing&quot;}}">
+class Component extends DCLogic {
+  state = { theme:'dark', wIn:'40', aIn:'', weightKg:40, pedsDismissed:false,
+    phase:'idle', codeStart:null, cycleStart:null, now:Date.now(),
+    shocks:0, epiN:0, lastEpiAt:null, amioN:0, airway:false,
+    rc:false, rcOrg:false, events:[], open:null, custom:'', showCustom:false, roles:false,
+    met:false, resetArm:false, roscAt:null };
+
+  componentDidMount(){ this._t=setInterval(()=>this.setState({now:Date.now()}),400); this.applyTheme(); }
+  componentWillUnmount(){ clearInterval(this._t); this.stopMet(); }
+  componentDidUpdate(){ this.applyTheme(); }
+
+  cycleLen(){ return this.props.cycleSeconds ?? 120; }
+  epiInt(){ return this.props.epiIntervalSec ?? 180; }
+  bpm(){ return this.props.metronomeBpm ?? 110; }
+
+  kg(){ const k=parseFloat(this.state.weightKg); return (k>0&&k<300)?k:null; }
+  peds(){ const k=this.kg(); return !!k && k<50; }
+  broselow(){ const k=this.kg(); if(!k) return null;
+    const bands=[[5,'#8E8E93','Grey'],[7,'#E75480','Pink'],[9,'#D22B2B','Red'],[11,'#7D3C98','Purple'],[14,'#D4AC0D','Yellow'],[18,'#B9BEC4','White'],[23,'#2E86C1','Blue'],[29,'#E67E22','Orange'],[36,'#229954','Green']];
+    for(const [max,c,name] of bands){ if(k<=max) return {c,name:'Broselow '+name}; } return null; }
+  accent(){ const b=this.peds()?this.broselow():null;
+    if(b) return {c:b.c, ink: (b.name.includes('Yellow')||b.name.includes('White'))?'#141E2B':'#fff'};
+    return {c:this.state.theme==='dark'?'#2FA372':'#00693E', ink:'#fff'}; }
+  applyTheme(){ document.body.dataset.theme=this.state.theme;
+    const a=this.accent(); document.body.style.setProperty('--accent',a.c); document.body.style.setProperty('--accentInk',a.ink); }
+
+  fmt(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+  clock(){ return this.state.codeStart?this.fmt((this.state.now-this.state.codeStart)/1000):'0:00'; }
+  log(label){ this.setState(st=>({events:[{t:st.codeStart?this.fmt((Date.now()-st.codeStart)/1000):'0:00',label},...st.events]})); }
+
+  ensureStarted(){ if(!this.state.codeStart){ const n=Date.now(); this.setState({codeStart:n,cycleStart:n,phase:'cpr'}); } }
+
+  // metronome
+  toggleMet(){ this.state.met?this.stopMet():this.startMet(); }
+  startMet(){ try{ this._ac=this._ac||new (window.AudioContext||window.webkitAudioContext)(); this._ac.resume();
+    this._mi=setInterval(()=>{ const o=this._ac.createOscillator(),g=this._ac.createGain(); o.frequency.value=880; g.gain.value=.15;
+      o.connect(g); g.connect(this._ac.destination); o.start(); g.gain.exponentialRampToValueAtTime(.001,this._ac.currentTime+.06); o.stop(this._ac.currentTime+.07); },60000/this.bpm());
+    this.setState({met:true}); }catch(e){} }
+  stopMet(){ clearInterval(this._mi); if(this.state.met) this.setState({met:false}); }
+
+  doses(){ const k=this.kg(), p=this.peds();
+    if(p&&k){ const r=(x,d=1)=>Math.round(x*Math.pow(10,d))/Math.pow(10,d);
+      return { e1:Math.round(Math.min(2*k,200)), e2:Math.round(Math.min(4*k,200)), e10:Math.round(Math.min(10*k,200)),
+        epiMg:r(Math.min(.01*k,1),2), epiMl:r(Math.min(.1*k,10),1), epiEttMg:r(Math.min(.1*k,2.5),2),
+        amioMg:Math.round(Math.min(5*k,300)), lidoMg:r(Math.min(1*k,100)), lido2Mg:r(Math.min(.5*k,50)) }; }
+    return { e1:200,e2:200,e10:200, epiMg:1, epiMl:10, epiEttMg:2.5, amioMg:this.state.amioN>=1?150:300, lidoMg:100, lido2Mg:50 }; }
+
+  renderVals(){
+    const st=this.state, d=this.doses(), p=this.peds(), running=st.phase==='cpr';
+    const cycRemain=st.cycleStart?this.cycleLen()-(st.now-st.cycleStart)/1000:this.cycleLen();
+    const due=running&&cycRemain<=0;
+    const sinceEpi=st.lastEpiAt?(st.now-st.lastEpiAt)/1000:null;
+    const epiDueIn=sinceEpi!=null?this.epiInt()-sinceEpi:null;
+    const shockJ=st.shocks===0?d.e1:d.e2;
+    const acc=this.accent(), b=this.broselow();
+    const set=(o)=>()=>this.setState(o);
+    const openSec=(id)=>()=>this.setState(s=>({open:s.open===id?null:id}));
+    const chev=(id)=>st.open===id?'−':'+';
+    return {
+      themeLabel: st.theme==='dark'?'LIGHT':'DARK',
+      toggleTheme: ()=>this.setState(s=>({theme:s.theme==='dark'?'light':'dark'})),
+      codeClock:this.clock(), running,
+      codeLabel: st.phase==='idle'?'READY':(st.phase==='rosc'?'ROSC':'CODE RUNNING'),
+      resetLabel: st.resetArm?'SURE?':'RESET',
+      resetSty: {background:st.resetArm?'var(--red)':'var(--card)',border:'1px solid '+(st.resetArm?'var(--red)':'var(--line)'),color:st.resetArm?'#fff':'var(--ink2)',font:"700 11px 'Source Sans 3',sans-serif",letterSpacing:'.08em',padding:'9px 12px',borderRadius:'10px',cursor:'pointer',minHeight:'38px'},
+      reset: ()=>{ if(!st.resetArm){ this.setState({resetArm:true}); clearTimeout(this._ra); this._ra=setTimeout(()=>this.setState({resetArm:false}),2500); return; }
+        clearTimeout(this._ra); this.stopMet();
+        this.setState({phase:'idle',codeStart:null,cycleStart:null,shocks:0,epiN:0,lastEpiAt:null,amioN:0,airway:false,rc:false,rcOrg:false,events:[],custom:'',showCustom:false,roles:false,resetArm:false,roscAt:null,pedsDismissed:false}); },
+      wIn:st.wIn, aIn:st.aIn,
+      onW:(e)=>{ const v=e.target.value; this.setState({wIn:v,weightKg:parseFloat(v)||null}); },
+      onA:(e)=>this.setState({aIn:e.target.value}),
+      estimate:()=>{ const a=parseFloat(st.aIn); if(!(a>=0))return; const kg=a<1?4+Math.round(a*12)*0.5:Math.min(2*a+8,70); this.setState({weightKg:kg,wIn:String(kg)}); this.log('Weight estimated from age — '+kg+' kg'); },
+      weightNote: this.kg()?(this.kg()+' kg '+(p?'· pediatric':'· adult')):'enter weight',
+      kgLabel:(this.kg()||'—')+' kg (<50 kg)', broselowName:b?b.name:'PALS dosing',
+      showPedsBanner:p&&!st.pedsDismissed, dismissPeds:set({pedsDismissed:true}),
+      isIdle:st.phase==='idle', isCpr:running, isRosc:st.phase==='rosc',
+      startCode:()=>{ const n=Date.now(); this.setState({phase:'cpr',codeStart:n,cycleStart:n}); this.log('Code blue called — CPR started, defibrillator attached'); },
+      cycleCardSty:{marginTop:'14px',background:'var(--card)',border:due?'2px solid var(--amber)':'1px solid var(--line)',borderRadius:'16px',padding:'14px'},
+      cycleClock:this.fmt(cycRemain),
+      cycleNumSty:{fontFamily:"'JetBrains Mono',monospace",fontSize:'54px',fontWeight:700,lineHeight:1,color:due?'var(--amber)':'var(--ink)'},
+      modeLabel: st.airway?('continuous · breath q6s · '+this.bpm()+'/min'):('30:2 · '+this.bpm()+'/min'),
+      shocks:st.shocks, due, notDue:!due, shockJ,
+      shockSub:(st.shocks===0?'1st shock':'shock #'+(st.shocks+1))+' — resume compressions immediately, pause <10 s',
+      shock:()=>{ this.ensureStarted(); this.setState(s=>({shocks:s.shocks+1,cycleStart:Date.now(),rc:false,rcOrg:false})); this.log('SHOCK '+shockJ+' J delivered (#'+(st.shocks+1)+') — compressions resumed'); },
+      epiMg:d.epiMg,
+      epiSub: st.epiN===0?'IV/IO — give now if non-shockable':(epiDueIn>0?('next due in '+this.fmt(epiDueIn)):'DUE NOW — dose #'+(st.epiN+1)),
+      epiSubColor: st.epiN>0&&epiDueIn<=0?'var(--amber)':'var(--ink2)',
+      giveEpi:()=>{ this.ensureStarted(); this.setState(s=>({epiN:s.epiN+1,lastEpiAt:Date.now()})); this.log('EPI '+d.epiMg+' mg IV/IO (dose #'+(st.epiN+1)+')'); },
+      amioMg:d.amioMg,
+      amioSub: st.amioN>=3?'max 3 doses reached':'dose '+(st.amioN+1)+' of 3',
+      giveAmio:()=>{ this.ensureStarted(); this.setState(s=>({amioN:s.amioN+1})); this.log('AMIODARONE '+d.amioMg+' mg IV/IO (dose #'+(st.amioN+1)+(st.amioN>=3?' — beyond max 3':'')+')'); },
+      showRolesStep: running&&!st.roles,
+      rolesAssigned:()=>{ this.setState({roles:true}); this.log('Roles assigned — compressor, airway, meds, defib, recorder'); },
+      showAirwayStep: running&&!st.airway&&st.roles,
+      airwayPlaced:()=>{ this.setState({airway:true}); this.log('Advanced airway placed — continuous compressions + breath q6s'); },
+      showCustom:st.showCustom, toggleCustom:()=>this.setState(s=>({showCustom:!s.showCustom})),
+      custom:st.custom, onCustom:(e)=>this.setState({custom:e.target.value}),
+      customKey:(e)=>{ if(e.key==='Enter') this.logCustomEv(); },
+      logCustom:()=>this.logCustomEv(),
+      roscBtn:()=>{ this.setState({phase:'rosc',rc:false,rcOrg:false,roscAt:this.clock()}); this.stopMet(); this.log('ROSC — pulse returned'); },
+      roscAt:st.roscAt||this.clock(),
+      reArrest:()=>{ const n=Date.now(); this.setState({phase:'cpr',cycleStart:n,codeStart:st.codeStart||n}); this.log('RE-ARREST — CPR resumed'); },
+      rc:st.rc, rcMain:!st.rcOrg, rcOrg:st.rcOrg,
+      openRc:()=>this.setState({rc:true,rcOrg:false}),
+      closeRc:set({rc:false,rcOrg:false}), stop:(e)=>e.stopPropagation(),
+      rcShockable:()=>{ this.setState({rc:false}); this.log('Rhythm check: SHOCKABLE (VF/pVT) — charging '+shockJ+' J'); },
+      rcNonShockable:()=>{ this.setState({rc:false,cycleStart:Date.now()}); this.log('Rhythm check: Non-shockable (PEA/asystole) — CPR resumed, epi ASAP'); },
+      rcOrganized:()=>this.setState({rcOrg:true}),
+      rcRosc:()=>{ this.setState({phase:'rosc',rc:false,rcOrg:false,roscAt:this.clock()}); this.stopMet(); this.log('Rhythm check: organized rhythm WITH pulse — ROSC'); },
+      rcPea:()=>{ this.setState({rc:false,rcOrg:false,cycleStart:Date.now()}); this.log('Rhythm check: organized rhythm, NO pulse — PEA, CPR resumed'); },
+      peds:p, adult:!p,
+      e1:d.e1, e2:d.e2, e10:d.e10, epiMl:d.epiMl, epiEttMg:d.epiEttMg, lidoMg:d.lidoMg, lido2Mg:d.lido2Mg,
+      openDefib:openSec('defib'), isDefibOpen:st.open==='defib', chevDefib:chev('defib'),
+      openEpi:openSec('epi'), isEpiOpen:st.open==='epi', chevEpi:chev('epi'),
+      openAnti:openSec('anti'), isAntiOpen:st.open==='anti', chevAnti:chev('anti'),
+      openCpr:openSec('cpr'), isCprOpen:st.open==='cpr', chevCpr:chev('cpr'),
+      openMet:openSec('met'), isMetOpen:st.open==='met', chevMet:chev('met'),
+      openLog:openSec('log'), isLogOpen:st.open==='log', chevLog:chev('log'),
+      logCount:st.events.length?('· '+st.events.length):'',
+      events:st.events, noEvents:st.events.length===0,
+      toggleMet:()=>this.toggleMet(), bpm:this.bpm(),
+      metLabel: st.met?'■ STOP METRONOME':'▶ START METRONOME — '+this.bpm()+'/min',
+      metBtnSty:{width:'100%',minHeight:'56px',border:'none',borderRadius:'12px',background:st.met?'var(--gray)':'var(--accent)',color:'var(--accentInk)',font:"800 15px 'Source Sans 3',sans-serif",cursor:'pointer',margin:'10px 0'},
+      cycleMin:this.fmt(this.cycleLen())
+    };
+  }
+  logCustomEv(){ const t=this.state.custom.trim(); if(!t) return; this.ensureStarted(); this.log(t); this.setState({custom:'',showCustom:false}); }
+}
+</script>
+</body>
+</html>
