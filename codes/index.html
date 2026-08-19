@@ -138,6 +138,12 @@
   .audiencestrip.quiet:hover, .audiencestrip.quiet:focus-visible { background:var(--card); }
   .audiencestrip.warn { background:var(--card2); color:var(--red); border-bottom:2px solid var(--sev-crit); }
   .audiencestrip.warn:hover, .audiencestrip.warn:focus-visible { background:var(--card); }
+  /* A strip with nowhere to go must not look tappable. The weight-routing audit named the
+     pointer cursor specifically: it kept implying a route worked after the route was gone
+     (issue #173 — 26 adult cards have no pediatric card to offer). */
+  .audiencestrip.inert { cursor:default; }
+  .audiencestrip.inert:hover, .audiencestrip.inert:focus-visible { background:var(--card2); }
+  /* .reviewedbar (the clinical sign-off bar) lives in design-system.css — two tools use it. */
   @media print { .audiencestrip { display:none; } }
   /* .unset renders as a tappable chip, not italic red prose (design-review item 17) —
      tapping it focuses+highlights the weight field instead of making the reader hunt for a
@@ -222,6 +228,18 @@
 </style>
 </head>
 <body data-theme="dark">
+<script>
+/* MOVED CARDS (issues #176, #178) — sepsis (28) and adult DKA/HHS (31) now live in
+   /clinical-pathways/. Their content is gone from this page, so a fresh load, deep link,
+   printed QR code or old bookmark arriving on one of these hashes is sent to the pathway
+   rather than landing on a blank scroll target. Same idiom, and same two halves, as
+   ob-neonatal's retired cards 03/06/07: this block catches a hash present at load, the
+   listener at the bottom of the file catches one that changes in-session.
+   from=codes so the pathway's back link knows where the reader came from. */
+var MOVED_CARDS = { '#c28':'../clinical-pathways/sepsis/?from=codes',
+                    '#c31':'../clinical-pathways/dka/?from=codes' };
+try{ if(MOVED_CARDS[location.hash||'']) location.replace(MOVED_CARDS[location.hash]); }catch(e){}
+</script>
 <script>
 /* WS-arrest-handoff: card 01 (VF/VT) and card 02 (PEA/Asystole) now open the
    redesigned standalone /arrest/ engine — the one source of truth for the whole
@@ -424,10 +442,10 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
         <a href="#c25" data-k="epistaxis nosebleed nose bleed anterior posterior kiesselbach little area silver nitrate cautery packing merocel rapid rhino rhino rocket foley balloon topical txa tranexamic oxymetazoline afrin nasal ent" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">25</span><span class="t">Epistaxis</span></a>
         <a href="#c26" data-k="pacemaker icd aicd defibrillator magnet electrical storm vt storm inappropriate shock failure to capture undersensing oversensing pacemaker mediated tachycardia pmt runaway twiddler device interrogation esmolol procainamide stellate ganglion" class="lrh-row" style="--cc:var(--gray)"><span class="n lrh-mono">26</span><span class="t">Pacemaker / ICD Emergencies</span></a>
         <a href="#c27" data-k="hypothermia cold water drowning frozen rewarming ecmo ecls afterdrop cold arrest not dead until warm and dead wilderness osborn wave core temperature bair hugger" class="lrh-row" style="--cc:var(--teal)"><span class="n lrh-mono">27</span><span class="t">Accidental Hypothermia</span></a>
-        <a href="#c28" data-k="sepsis septic shock infection lactate cultures antibiotics hour-1 bundle norepinephrine pressors 30 ml/kg fluids map 65 source control surviving sepsis" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">28</span><span class="t">Sepsis / Septic Shock</span></a>
+        <a href="../clinical-pathways/sepsis/" data-k="sepsis septic shock infection lactate cultures antibiotics hour-1 bundle norepinephrine pressors 30 ml/kg fluids map 65 source control surviving sepsis" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">28</span><span class="t">Sepsis / Septic Shock</span><span class="spacer"></span><span class="tag">OPENS IN PATHWAYS</span></a>
         <a href="#c29" data-k="massive pe pulmonary embolism high risk submassive lytics alteplase tpa thrombolysis rv failure mcconnell echo heparin obstructive shock pea" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">29</span><span class="t">Massive Pulmonary Embolism</span></a>
         <a href="#c30" data-k="agitation agitated combative behavioral emergency excited delirium droperidol ketamine midazolam olanzapine restraint deescalation violent patient sedation" class="lrh-row" style="--cc:var(--amber)"><span class="n lrh-mono">30</span><span class="t">Severe Agitation (Adult)</span></a>
-        <a href="#c31" data-k="dka diabetic ketoacidosis hhs hyperosmolar adult insulin potassium rules fluids anion gap cerebral edema glucose ketones" class="lrh-row" style="--cc:var(--blue)"><span class="n lrh-mono">31</span><span class="t">Adult DKA / HHS</span></a>
+        <a href="../clinical-pathways/dka/" data-k="dka diabetic ketoacidosis hhs hyperosmolar adult insulin potassium rules fluids anion gap cerebral edema glucose ketones" class="lrh-row" style="--cc:var(--blue)"><span class="n lrh-mono">31</span><span class="t">Adult DKA / HHS</span><span class="spacer"></span><span class="tag">OPENS IN PATHWAYS</span></a>
         <a href="#c32" data-k="aortic dissection ruptured aaa aneurysm type a type b tearing chest pain anti-impulse esmolol nicardipine pulse deficit permissive hypotension vascular transfer" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">32</span><span class="t">Aortic Catastrophe</span></a>
         <a href="#c33" data-k="heat stroke hyperthermia exertional classic cold water immersion ice cooling taco tarp evaporative rhabdomyolysis core temperature" class="lrh-row" style="--cc:var(--teal)"><span class="n lrh-mono">33</span><span class="t">Heat Stroke</span></a>
         <a href="#c34" data-k="alcohol withdrawal dts delirium tremens ciwa diazepam lorazepam phenobarbital front load seizure thiamine etoh" class="lrh-row" style="--cc:var(--amber)"><span class="n lrh-mono">34</span><span class="t">Severe Alcohol Withdrawal / DTs</span></a>
@@ -2349,49 +2367,11 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
     </div>
   </article>
 
-  <!-- ============ CARD 28 &middot; SEPSIS / SEPTIC SHOCK (coverage gap #85) ============ -->
-  <article id="c28" data-audience="adult">
-    <div style="padding:0 14px;">
-      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red); font-size:16px; margin-right:8px;">28</span>Sepsis / Septic Shock</h2>
-        <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2); text-align:right;">CULTURES &rarr; ABX &lt; 1 H &middot; NOREPI EARLY</span>
-      </div>
-    </div>
-    <div style="margin:14px 14px 0; border:2px solid var(--sev-caution); background:var(--note-bg); color:var(--note-tx); padding:11px 14px; font-size:13px; line-height:1.4;">&#9888; <b>DRAFT &mdash; NOT CLINICALLY REVIEWED:</b> written from the published guidelines cited below to fill coverage gap <a href="https://github.com/lonsetnik-dot/LRH-Emergency-Manual/issues/85" style="color:var(--note-tx);">#85</a>. Verify every dose and threshold against local protocol and pharmacy before this card is trusted.</div>
-    <div class="steps" style="padding:14px 14px 0;">
-      <details open style="border:2px solid var(--sev-crit);">
-        <summary style="background:var(--sev-crit); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">1 &middot; RECOGNIZE &amp; THE FIRST HOUR</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="28-1" class="t-ck"><span>Suspected infection + hypotension, lactate &ge; 4, or looks-sick-with-a-source &rarr; run this card now; the hour-1 bundle is a stopwatch, not a suggestion.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="28-2" class="t-ck"><span><b>Two sets of blood cultures, then broad-spectrum antibiotics within 60 minutes</b> of recognition &mdash; do not let the second culture delay the drug.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="28-3" class="t-ck"><span>Lactate now, repeat in 2&ndash;4 h to trend clearance.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="28-4" class="t-ck"><span><b>30 mL/kg balanced crystalloid</b> (LR) begun within the first hour for hypotension or lactate &ge; 4 &mdash; with judgment in dialysis/heart-failure patients: smaller boluses, reassess each time.</span></label></li>
-        </ul>
-      </details>
-      <details open style="border:2px solid var(--blue);">
-        <summary style="background:var(--blue); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">2 &middot; PRESSORS &mdash; DO NOT DROWN THEM INSTEAD</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="28-5" class="t-ck"><span><b>Norepinephrine is first-line.</b> Target MAP &ge; 65. Starting it through a good proximal peripheral IV is acceptable while access is arranged &mdash; hypotension is more dangerous than a peripheral pressor. <b>Starting rate in mL/hr: <a href="#c37">card 37, SEPTIC</a>.</b></span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="28-6" class="t-ck"><span>Still hypotensive on norepinephrine ~0.25&ndash;0.5 mcg/kg/min &rarr; add vasopressin 0.03 u/min — a fixed rate, not a titration (<a href="#c37">card 37</a> for the mL/hr).</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="28-7" class="t-ck"><span>Refractory shock &rarr; hydrocortisone 200 mg/day (50 mg IV q6h).</span></label></li>
-        </ul>
-      </details>
-      <details open style="border:2px solid var(--gray);">
-        <summary style="background:var(--gray); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">3 &middot; SOURCE &amp; REASSESS</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="28-8" class="t-ck"><span><b>Find and control the source</b> &mdash; image early; a drainable abscess, obstructed kidney, or dead gut will not respond to antibiotics alone.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="28-9" class="t-ck"><span>Reassess perfusion after every bolus (mentation, urine, cap refill, lactate) &mdash; fluid that is not improving perfusion is just edema.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="28-10" class="t-ck"><span>Document time zero, antibiotic time, and fluid totals &mdash; the bundle clock is also the chart reviewers&rsquo; clock.</span></label></li>
-        </ul>
-      </details>
-    </div>
-    <div style="padding:14px; font-size:12px; line-height:1.5; color:var(--ink2); border-top:1px solid var(--line); margin-top:14px;"><b>Sources:</b> Surviving Sepsis Campaign guidelines 2021 (Crit Care Med 2021;49:e1063). Peripheral-pressor practice per SSC 2021 and CENSER trial (AJRCCM 2019).</div>
-    <div style="padding:0 14px 20px; font-size:12px; color:var(--ink2);">
-      <span class="verstamp"></span> &mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
-    </div>
-  </article>
-
-  <!-- ============ CARD 29 &middot; MASSIVE PULMONARY EMBOLISM (coverage gap #86) ============ -->
+  <!-- CARD 28 · SEPSIS / SEPTIC SHOCK — MOVED to /clinical-pathways/sepsis/ (issue #178).
+       Not a code card: sepsis is run off the department's own bundle and order set over hours,
+       not off a checklist someone grabs while a patient is arresting. The menu row above now
+       opens the pathway, and #c28 hash-redirects there (see MOVED_CARDS below) so printed QR
+       codes and old links still land somewhere real. -->
   <article id="c29" data-audience="adult">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
@@ -2444,7 +2424,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
         <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2); text-align:right;">TALK FIRST &middot; DROPERIDOL/KETAMINE &middot; MONITOR AFTER</span>
       </div>
     </div>
-    <div style="margin:14px 14px 0; border:2px solid var(--sev-caution); background:var(--note-bg); color:var(--note-tx); padding:11px 14px; font-size:13px; line-height:1.4;">&#9888; <b>DRAFT &mdash; NOT CLINICALLY REVIEWED:</b> written from the published guidelines cited below to fill coverage gap <a href="https://github.com/lonsetnik-dot/LRH-Emergency-Manual/issues/89" style="color:var(--note-tx);">#89</a>. Verify every dose and threshold against local protocol and pharmacy before this card is trusted.</div>
+    <div class="reviewedbar"><b>CLINICALLY REVIEWED 2026-08-18 &mdash; Lon Setnik.</b> Approved, with restraint documentation broken out as its own step per <a href="https://github.com/lonsetnik-dot/LRH-Emergency-Manual/issues/177">#177</a>. Written from the ACEP policies cited below; confirm doses against local protocol and pharmacy.</div>
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid var(--gray);">
         <summary style="background:var(--gray); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">1 &middot; SAFETY &amp; DE-ESCALATION FIRST</summary>
@@ -2466,7 +2446,8 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
         <summary style="background:var(--sev-crit); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">3 &middot; AFTER THE MEDS &mdash; THE DANGEROUS PART</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="30-7" class="t-ck"><span>Continuous SpO2 + EtCO2 if available after ketamine or stacked sedatives; the deaths happen quietly, after the struggle.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="30-8" class="t-ck"><span>Physical restraints: document indication, q15-min checks, circulation/position, and release at the earliest safe moment &mdash; face-up, never prone.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="30-8" class="t-ck"><span><b>Physical restraints &mdash; the patient:</b> <b>face-up, never prone.</b> Check circulation and position, and release at the earliest safe moment; restraint is a bridge to the medication working, not a treatment.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="30-10" class="t-ck"><span><b>Restraint documentation &mdash; its own job, do not fold it into the note later:</b> the indication and what was tried first, the order and who gave it, time applied and time released, the q15-min check record, and the reassessment interval. This is the part that is missed when the patient calms down and the room empties.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="30-9" class="t-ck"><span>Debrief the team after &mdash; these cases injure staff and patients at the highest rate in the department.</span></label></li>
         </ul>
       </details>
@@ -2477,48 +2458,8 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
     </div>
   </article>
 
-  <!-- ============ CARD 31 &middot; ADULT DKA / HHS (coverage gap #90) ============ -->
-  <article id="c31" data-audience="adult">
-    <div style="padding:0 14px;">
-      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--blue); font-size:16px; margin-right:8px;">31</span>Adult DKA / HHS</h2>
-        <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2); text-align:right;">FLUIDS &middot; POTASSIUM RULES &middot; THEN INSULIN</span>
-      </div>
-    </div>
-    <div style="margin:14px 14px 0; border:2px solid var(--sev-caution); background:var(--note-bg); color:var(--note-tx); padding:11px 14px; font-size:13px; line-height:1.4;">&#9888; <b>DRAFT &mdash; NOT CLINICALLY REVIEWED:</b> written from the published guidelines cited below to fill coverage gap <a href="https://github.com/lonsetnik-dot/LRH-Emergency-Manual/issues/90" style="color:var(--note-tx);">#90</a>. Verify every dose and threshold against local protocol and pharmacy before this card is trusted.</div>
-    <div class="steps" style="padding:14px 14px 0;">
-      <details open style="border:2px solid var(--gray);">
-        <summary style="background:var(--gray); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">1 &middot; CONFIRM &amp; START FLUIDS</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="31-1" class="t-ck"><span>DKA: glucose &gt; 250 + pH &lt; 7.3 / HCO3 &lt; 18 + ketones. HHS: glucose often &gt; 600, minimal ketosis, osm &gt; 320, worse dehydration &mdash; same skeleton, gentler pace.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="31-2" class="t-ck"><span><b>1 L balanced crystalloid (LR) in the first hour</b>, then 250&ndash;500 mL/h titrated to perfusion; corrected Na guides later tonicity.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="31-3" class="t-ck"><span>Hunt the trigger while fluids run: infection, ischemia, missed insulin, new pump failure.</span></label></li>
-        </ul>
-      </details>
-      <details open style="border:2px solid var(--sev-crit);">
-        <summary style="background:var(--sev-crit); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">2 &middot; POTASSIUM RULES &mdash; THE CARD&rsquo;S REASON TO EXIST</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="31-4" class="t-ck"><span><b>K &lt; 3.3: HOLD insulin.</b> Replace potassium first (20&ndash;40 mEq/h with monitoring) &mdash; insulin now can arrest them.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="31-5" class="t-ck"><span>K 3.3&ndash;5.2: add 20&ndash;30 mEq K to each liter and start insulin.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="31-6" class="t-ck"><span>K &gt; 5.2: no potassium yet; start insulin; recheck K every 2 h &mdash; it will fall fast.</span></label></li>
-        </ul>
-      </details>
-      <details open style="border:2px solid var(--blue);">
-        <summary style="background:var(--blue); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">3 &middot; INSULIN &amp; THE FINISH LINE</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="31-7" class="t-ck"><span><b>Regular insulin 0.1 u/kg/h IV infusion</b> (bolus optional and skippable). Target glucose fall 50&ndash;75 mg/dL/h.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="31-8" class="t-ck"><span>Glucose &lt; 250 &rarr; <b>add D5 to the fluids, do not stop the insulin</b> &mdash; the drip treats the ketoacid, the dextrose treats the number. Stop only when the gap is closed and the patient is eating (overlap SQ long-acting by 2 h).</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="31-9" class="t-ck"><span>HHS: slower correction, bigger fluid debt, higher thrombosis risk. Young DKA + headache/AMS during treatment = cerebral edema until proven otherwise.</span></label></li>
-        </ul>
-      </details>
-    </div>
-    <div style="padding:14px; font-size:12px; line-height:1.5; color:var(--ink2); border-top:1px solid var(--line); margin-top:14px;"><b>Sources:</b> ADA consensus statement on hyperglycemic crises (Diabetes Care 2009;32:1335; 2024 update); SQuID protocol context (Ann Emerg Med 2023) for mild DKA.</div>
-    <div style="padding:0 14px 20px; font-size:12px; color:var(--ink2);">
-      <span class="verstamp"></span> &mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
-    </div>
-  </article>
-
-  <!-- ============ CARD 32 &middot; AORTIC CATASTROPHE (coverage gap #91) ============ -->
+  <!-- CARD 31 · ADULT DKA / HHS — MOVED to /clinical-pathways/dka/ (issue #176). Same reasoning
+       as card 28 above; #c31 hash-redirects there. -->
   <article id="c32" data-audience="adult">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
@@ -2606,10 +2547,10 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
         <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--amber); font-size:16px; margin-right:8px;">34</span>Severe Alcohol Withdrawal / DTs</h2>
-        <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2); text-align:right;">FRONT-LOAD BENZOS &middot; PHENOBARB IS THE NET</span>
+        <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2); text-align:right;">PICK ONE LADDER &middot; FRONT-LOAD IT</span>
       </div>
     </div>
-    <div style="margin:14px 14px 0; border:2px solid var(--sev-caution); background:var(--note-bg); color:var(--note-tx); padding:11px 14px; font-size:13px; line-height:1.4;">&#9888; <b>DRAFT &mdash; NOT CLINICALLY REVIEWED:</b> written from the published guidelines cited below to fill coverage gap <a href="https://github.com/lonsetnik-dot/LRH-Emergency-Manual/issues/94" style="color:var(--note-tx);">#94</a>. Verify every dose and threshold against local protocol and pharmacy before this card is trusted.</div>
+    <div class="reviewedbar"><b>CLINICALLY REVIEWED 2026-08-18 &mdash; Lon Setnik.</b> Rebuilt with two pathways &mdash; benzodiazepine-first and phenobarbital-first &mdash; per <a href="https://github.com/lonsetnik-dot/LRH-Emergency-Manual/issues/175">#175</a>. <b>The phenobarbital-first pathway needs your department's sign-off before use</b>; see the note on it. Confirm every dose against local protocol and pharmacy.</div>
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid var(--gray);">
         <summary style="background:var(--gray); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">1 &middot; RECOGNIZE &amp; RISK-STRATIFY</summary>
@@ -2619,24 +2560,20 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="34-3" class="t-ck"><span><b>Thiamine 500 mg IV</b> before or with any glucose; check glucose, magnesium, phosphate.</span></label></li>
         </ul>
       </details>
-      <details open style="border:2px solid var(--sev-caution);">
-        <summary style="background:var(--sev-caution); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">2 &middot; BENZODIAZEPINE ESCALATION</summary>
+      <!-- Pathways 2 and 3 are RENDERED from SITE.withdrawal (issue #175) — see the config
+           block for why there are two and why neither is hidden. Do not hand-write the rungs
+           here; an adopting ED changes its regimen in one place. -->
+      <div style="grid-column:1 / -1; margin:0 0 8px; padding:10px 12px; border:2px solid var(--sev-crit); background:var(--note-bg); color:var(--note-tx); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.04em; line-height:1.45;" id="wdpick"></div>
+      <div id="wdpathways" style="display:contents;"></div>
+      <details open style="border:2px solid var(--gray);">
+        <summary style="background:var(--gray); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">4 &middot; REFRACTORY ON EITHER PATHWAY &rarr; AIRWAY</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="34-4" class="t-ck"><span><b>Diazepam 10&ndash;20 mg IV q10&ndash;15 min</b>, escalating until calm-but-arousable (or lorazepam 2&ndash;4 mg q15 if liver failure). Front-loading beats drip-feeding.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="34-5" class="t-ck"><span>Withdrawal seizure: benzodiazepines, not anti-epileptics &mdash; a second seizure means you are behind; escalate.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="34-6" class="t-ck"><span>Track cumulative dose out loud &mdash; "he has had 80 of diazepam" changes the plan.</span></label></li>
-        </ul>
-      </details>
-      <details open style="border:2px solid var(--sev-crit);">
-        <summary style="background:var(--sev-crit); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">3 &middot; REFRACTORY &rarr; PHENOBARBITAL &rarr; AIRWAY</summary>
-        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="34-7" class="t-ck"><span><b>Phenobarbital 130&ndash;260 mg IV aliquots q15&ndash;30 min</b> (or a 10 mg/kg IBW load over 30 min) layered onto benzos when they are not holding.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="34-8" class="t-ck"><span>Still storming &rarr; this is an ICU/intubation case: propofol sedation post-tube treats the withdrawal too.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="34-8" class="t-ck"><span>Still storming after a full ladder &rarr; this is an <b>ICU/intubation case</b>: propofol sedation post-tube treats the withdrawal too.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="34-9" class="t-ck"><span>Watch the airway as agents stack &mdash; the patient who finally goes quiet may be obtunded, not better.</span></label></li>
         </ul>
       </details>
     </div>
-    <div style="padding:14px; font-size:12px; line-height:1.5; color:var(--ink2); border-top:1px solid var(--line); margin-top:14px;"><b>Sources:</b> ASAM clinical practice guideline on alcohol withdrawal management 2020; phenobarbital-adjunct evidence per Rosenson et al. (J Emerg Med 2013;44:592).</div>
+    <div style="padding:14px; font-size:12px; line-height:1.5; color:var(--ink2); border-top:1px solid var(--line); margin-top:14px;"><b>Sources:</b> ASAM clinical practice guideline on alcohol withdrawal management 2020 &mdash; the benzodiazepine-first ladder, the front-loading principle, and the treat-the-seizure-with-benzodiazepines rule. Phenobarbital as an adjunct layered onto benzodiazepines: Rosenson et al. (J Emerg Med 2013;44:592). <b>Phenobarbital as the FIRST agent is a departmental protocol choice, not a recommendation of either source above</b> &mdash; ASAM 2020 describes phenobarbital chiefly as an adjunct or alternative, so that pathway is offered here for departments whose own protocol is phenobarbital-primary and is flagged for local sign-off rather than presented as guideline-backed. Both ladders' doses are rendered from this file's <code>SITE.withdrawal</code> config block.</div>
     <div style="padding:0 14px 20px; font-size:12px; color:var(--ink2);">
       <span class="verstamp"></span> &mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
     </div>
@@ -2691,7 +2628,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
         <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2); text-align:right;">OPIOID &middot; WIDE QRS &middot; BB/CCB &middot; TOX ARREST</span>
       </div>
     </div>
-    <div style="margin:14px 14px 0; border:2px solid var(--sev-caution); background:var(--note-bg); color:var(--note-tx); padding:11px 14px; font-size:13px; line-height:1.4;">&#9888; <b>DRAFT &mdash; NOT CLINICALLY REVIEWED:</b> written from the published guidelines cited below to fill coverage gap <a href="https://github.com/lonsetnik-dot/LRH-Emergency-Manual/issues/87" style="color:var(--note-tx);">#87</a>. Verify every dose and threshold against local protocol and pharmacy before this card is trusted.</div>
+    <div class="reviewedbar"><b>CLINICALLY REVIEWED 2026-08-18 &mdash; Lon Setnik.</b> Approved, with the pediatric-banner fix from <a href="https://github.com/lonsetnik-dot/LRH-Emergency-Manual/issues/173">#173</a> applied. Written from the AHA 2023 poisoning focused update cited below; confirm doses against local protocol and pharmacy.</div>
     <div class="steps" style="padding:14px 14px 0;">
       <details open style="border:2px solid var(--sev-crit);">
         <summary style="background:var(--sev-crit); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">1 &middot; OPIOID OVERDOSE</summary>
@@ -2883,7 +2820,16 @@ var SITE = {
      trigger used in /arrest/: that one picks an algorithm, this one flags a probably-
      pediatric weight on adult dosing cards, where 50 would red-flag many small adults
      (alarm fatigue). Chosen by Lon 2026-08-12 (weight-routing audit). */
-  audience: { thresholdKg: 40 },
+  /* adultAgeYrs (issue #173): the age above which an entered age settles the question on
+     its own. Asked for as "age > 12 or weight > 40 and it just goes away" — implemented as
+     the CONSERVATIVE half of that, because the two inputs do not deserve equal authority
+     here. A sub-threshold WEIGHT always keeps the red state, whatever the age says: a 35 kg
+     14-year-old still gets weight-based naloxone, bicarbonate and lipid, so an age that
+     silenced a 35 kg weight would silence the exact case the strip exists for. Age settles
+     it when there is no weight to contradict, or when the weight already agrees. The
+     unconditional "this is an adult" answer is the override below, which is explicit,
+     visible and reversible rather than inferred. */
+  audience: { thresholdKg: 40, adultAgeYrs: 12 },
   /* NRP off-ramp trigger (weight-routing audit): weight below the Broselow-Luten floor
      (3 kg) or age under 1 month prompts the dismissible "newly born? -> NRP" banner under
      the weight bar. A question, not a reroute — NRP applies to the newly born, not to a
@@ -3007,7 +2953,9 @@ var SITE = {
           { agent:'vaso',   role:'ADD SECOND', when:'When norepinephrine reaches roughly 0.25–0.5 mcg/kg/min. A fixed rate — hang it, do not titrate it.' },
           { agent:'epi',    role:'ADD THIRD',  when:'Still under target on both of the above. Consider hydrocortisone 50 mg IV q6h for refractory shock.' }
         ],
-        links:[{href:'#c28', label:'Card 28 — Sepsis / Septic Shock'}] },
+        /* Sepsis moved out of Codes (#178) — link the pathway directly rather than
+           relying on the #c28 hash redirect, so this is one navigation, not two. */
+        links:[{href:'../clinical-pathways/sepsis/?from=codes', label:'Sepsis / Septic Shock pathway'}] },
 
       { key:'cardiogenic', label:'Cardiogenic shock / STEMI', sub:'Cold, wet, the pump has failed',
         target:'MAP ≥ 65 mmHg — and reperfusion is the actual treatment',
@@ -3131,6 +3079,53 @@ var SITE = {
        EM starting doses (fentanyl 0.5-2 mcg/kg; propofol infusion 5-50
        mcg/kg/min, started here at 20).
      ==================================================================== */
+  /* ===== Card 34 — severe alcohol withdrawal: TWO PATHWAYS (issue #175) =====
+     The card used to publish one ladder — benzodiazepines, with phenobarbital as the
+     rescue underneath. Clinical review (Lon Setnik, 2026-08-18) asked for two, because
+     a phenobarbital-primary protocol is a real and increasingly common departmental
+     choice, not a fallback, and a card that only knows the benzodiazepine ladder quietly
+     tells a phenobarbital-first department it is doing it wrong.
+
+     BOTH PATHWAYS ARE ALWAYS ON SCREEN, one collapsed. Deliberately not a toggle that
+     hides one: hidden checklist rows keep their state in lrh-case-checks and would count
+     toward a progress figure nobody can see, and a clinician handed a card mid-storm
+     should be able to see that the other approach exists.
+
+     THE ONE THING THAT IS NOT A LOCAL CHOICE, and is written out in the suite rather than
+     configured: you run ONE ladder. Escalating benzodiazepines stacked on a full
+     phenobarbital load is the combination that stops the breathing, and it is what the
+     "pick one" strip and the crossover rung exist to prevent.
+
+     Doses are here, not in the markup, for the same reason as rsiDrugs above: an adopting
+     ED changes its regimen in one block. Sources are per pathway — note that `note` on the
+     phenobarbital pathway says out loud that phenobarbital-FIRST is a protocol choice
+     rather than an ASAM mandate. */
+  withdrawal: {
+    pick: 'Pick ONE ladder and stay on it. Running both at once is what stops the breathing.',
+    pathways: [
+      { id:'bzd', label:'BENZODIAZEPINE FIRST', open:true,
+        tagline:'The ASAM-default ladder — front-load, do not drip-feed.',
+        when:'First withdrawal, no history of benzodiazepine-refractory withdrawal, or a department whose protocol is benzodiazepine-primary.',
+        rungs:[
+          'Diazepam <b>10&ndash;20 mg IV q10&ndash;15 min</b>, escalating each dose until calm-but-arousable. Lorazepam <b>2&ndash;4 mg IV q15 min</b> instead if there is significant liver disease.',
+          'Front-loading beats drip-feeding &mdash; diazepam&rsquo;s active metabolites self-taper, which is the point of choosing it.',
+          'Withdrawal seizure: <b>benzodiazepines, not anti-epileptics.</b> A second seizure means you are behind &mdash; escalate, do not repeat the same dose.',
+          'Say the cumulative dose out loud &mdash; &ldquo;he has had 80 of diazepam&rdquo; changes the plan and is the number the next clinician needs.',
+          '<b>Crossover:</b> escalating doses not holding (roughly three escalations, or past your protocol&rsquo;s diazepam-equivalent ceiling) &rarr; add phenobarbital as below and stop climbing the benzodiazepine ladder.'
+        ] },
+      { id:'phenobarb', label:'PHENOBARBITAL FIRST', open:false,
+        tagline:'Load once, let the half-life do the tapering.',
+        when:'Known benzodiazepine-refractory withdrawal, prior DTs, very high tolerance, or a department whose protocol is phenobarbital-primary.',
+        rungs:[
+          'Phenobarbital <b>10 mg/kg ideal body weight IV over 30 min</b> as a single load, or <b>130&ndash;260 mg IV aliquots q15&ndash;30 min</b> titrated to calm-but-arousable.',
+          'The long half-life is the reason to choose it: one load self-tapers over days, so there is no re-dosing spiral and no gap when the last benzodiazepine wears off.',
+          '<b>Do not then run the full benzodiazepine escalation on top.</b> Small doses for breakthrough are one thing; two full ladders is the combination that obtunds.',
+          'Airway equipment and suction at the bedside <b>before</b> the load goes in, and watch the respiratory rate through it &mdash; this is a barbiturate.',
+          'Withdrawal seizure on this pathway: give a benzodiazepine for the seizure itself, then continue phenobarbital &mdash; the seizure is treated, the withdrawal is still being loaded for.'
+        ],
+        note:'Phenobarbital-FIRST is a departmental protocol choice, not an ASAM recommendation &mdash; ASAM 2020 describes phenobarbital chiefly as an adjunct/alternative. Confirm this pathway is your department&rsquo;s before using it, and see the sources below.' }
+    ]
+  },
   rsiDrugs: {
     induction: { logPrefix:'INDUCTION', drugs:[
       { label:'Etomidate',       perKg:0.3, max:40,  round:10, unit:'mg', decimals:0, note:'0.3 mg/kg · hemodynamically the quietest' },
@@ -3741,7 +3736,10 @@ var CODES_WT = (function(){
         /* The override lives in /arrest/'s UI, so clearing it from here used to be
            INVISIBLE (the repaint hooks it called were never defined in this file —
            weight-routing audit). Say what happened instead. */
-        showWtNotice('ADULT OVERRIDE (ARREST TOOL) CLEARED — WEIGHT/AGE CHANGED');
+        /* No longer "(ARREST TOOL)" — since issue #173 this tool's own audience strip
+           sets the same key, so naming one owner would be wrong half the time. */
+        showWtNotice('ADULT OVERRIDE CLEARED — WEIGHT/AGE CHANGED');
+        if(window.AUDIENCE) window.AUDIENCE.paint();
       }
     }, 800);
   }
@@ -3890,7 +3888,11 @@ var CODES_WT = (function(){
      estimate (34 kg) from identical-looking UI. Persist the unit with the value
      and restore the number in the unit it was entered in. */
   function saveAgeUnit(){ try{ if(unitEl) localStorage.setItem('lrh-case-ageunit', unitEl.value); }catch(e){} }
-  function onAgeInputChanged(){ ageYrs=ageInYears(); saveAge(); saveAgeUnit(); paintNrp(); scheduleOverrideCommitCheck(); }
+  /* The audience strip reads age as well as weight since issue #173, so an age typed on
+     its own has to repaint it — otherwise entering "14 y" and no weight leaves every adult
+     card still asking the question the clinician just answered. */
+  function onAgeInputChanged(){ ageYrs=ageInYears(); saveAge(); saveAgeUnit(); paintNrp(); scheduleOverrideCommitCheck();
+    if(window.AUDIENCE) window.AUDIENCE.paint(); }
   if(ageEl){
     var savedUnit=null; try{ savedUnit=localStorage.getItem('lrh-case-ageunit'); }catch(e){}
     if(unitEl && (savedUnit==='mo'||savedUnit==='yr')) unitEl.value=savedUnit;
@@ -3999,7 +4001,20 @@ var CODES_WT = (function(){
   });
   document.addEventListener('visibilitychange', function(){ if(!document.hidden) resyncFromStorage(); });
 
-  return { getKg:function(){ return wtKg; }, getAgeYrs:function(){ return ageYrs; }, resync:resyncFromStorage };
+  /* acknowledgeCurrent(): "the clinician has now SEEN these numbers and answered for them."
+     Needed because WS10.4's debounce clears the adult override whenever weight or age
+     changed, and the audience strip's STAY — ADULT PATIENT sets that override within the
+     same 800 ms window — typing 30 kg and immediately answering the interstitial had the
+     pending timer revoke the answer half a second later, with nothing on screen to say so.
+     Marking the current values as committed makes the answer apply TO them; a genuinely
+     new weight typed afterwards still clears it, which is the whole point of WS10.4.
+     Kept here rather than in AUDIENCE because these two vars belong to CODES_WT. */
+  function acknowledgeCurrent(){
+    if(_overrideCommitTimer){ clearTimeout(_overrideCommitTimer); _overrideCommitTimer=null; }
+    _lastCommittedWtKg=wtKg; _lastCommittedAgeYrs=ageYrs;
+  }
+  return { getKg:function(){ return wtKg; }, getAgeYrs:function(){ return ageYrs; },
+           acknowledgeCurrent:acknowledgeCurrent, resync:resyncFromStorage };
 })();
 
 /* ---- CASE SHELL layer 4 — the weight ribbon's collapse/expand -------------
@@ -4073,6 +4088,37 @@ try{ window.CODESSHELL = CODESSHELL; }catch(e){}
    intended purpose. Another site adopting this file should still re-derive
    them against its own formulary — hence the "verify locally" note that
    remains on the card text. ---- */
+/* ---- Card 34: the two alcohol-withdrawal pathways, rendered from SITE.withdrawal (#175) ----
+   Both ladders are always in the DOM — see the config block for why hiding one would be
+   worse than showing both. The only interactive part is the <details> each pathway sits in,
+   so there is no new persisted state and nothing for RESET to have to know about; the rungs'
+   checkboxes join lrh-case-checks through the same data-k contract as every other card. */
+(function(){
+  var host=document.getElementById('wdpathways'), pickEl=document.getElementById('wdpick');
+  if(!host || typeof SITE!=='object' || !SITE.withdrawal) return;
+  var cfg=SITE.withdrawal;
+  if(pickEl) pickEl.textContent = cfg.pick || '';
+  var esc=function(s){ return String(s); };   /* config is authored HTML, same as the cards */
+  var html='';
+  (cfg.pathways||[]).forEach(function(p, pi){
+    var color = pi===0 ? 'var(--sev-caution)' : 'var(--blue)';
+    html += '<details'+(p.open?' open':'')+' data-wdpath="'+p.id+'" style="border:2px solid '+color+';">'
+      + '<summary style="background:'+color+'; color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">'
+      + (pi+2)+' &middot; '+esc(p.label)+'</summary>'
+      + '<div style="padding:8px 12px 0; font-size:13px; line-height:1.45; color:var(--ink2);">'
+      + '<b style="color:var(--ink);">'+esc(p.tagline)+'</b><br><b>Choose this when:</b> '+esc(p.when)+'</div>'
+      + '<ul style="margin:0; padding:4px 12px 12px; list-style:none;">';
+    (p.rungs||[]).forEach(function(r, ri){
+      html += '<li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;">'
+        + '<input type="checkbox" data-k="34-'+p.id+'-'+(ri+1)+'" class="t-ck"><span>'+esc(r)+'</span></label></li>';
+    });
+    html += '</ul>';
+    if(p.note) html += '<div style="margin:0 12px 12px; padding:9px 11px; border:1px solid var(--line); background:var(--note-bg); color:var(--note-tx); font-size:12px; line-height:1.45;">'+esc(p.note)+'</div>';
+    html += '</details>';
+  });
+  host.innerHTML=html;
+})();
+
 /* ---- Card 06 drug pickers — built from SITE.rsiDrugs, deliberately BEFORE CODESDOSE ----
    The shared dose engine below collects its .wdose spans once, at start-up, so a picker
    rendered after it would be a dead screen: doses that never compute and never repaint when
@@ -4478,19 +4524,37 @@ try{ window.PRESSORS = PRESSORS; }catch(e){}
 /* ---- Audience strip (design-review F31) — derived from the shared weight, never chosen.
    Reads data-audience ("adult" | "peds" | "any") and optional data-peds-alt (e.g. "peds#p16")
    off each card's article element. Renders one strip as the first child of every "adult" article:
-     - no weight set:            quiet "ADULT DOSES · TAP FOR PEDIATRIC"
+     - nothing entered:          quiet "ADULT DOSES · TAP FOR PEDIATRIC"
      - weight set, < threshold:  red warning naming the weight (+ the suggested card, if any)
      - weight set, >= threshold: quiet "<kg> · ADULT DOSES" confirmation
    "peds" and "any" cards render nothing — this is a safety net for a weight ending up on the
-   wrong card, not a general audience label. Tapping the red state opens a two-action
-   interstitial: go to the named pediatric card, or "stay — adult patient" (clears the weight).
+   wrong card, not a general audience label.
    thresholdKg is set (40 kg — see SITE.audience for the reasoning), so all three states are
    live. Strips stay tappable in every state, and a strip whose route leaves this tool (the
    merged arrest card) says so in its label. c03's former alt "peds#p16" (a planned Peds
    Bradycardia card that was never built) now routes to the arrest tool, which carries the
-   PALS bradycardia cards (weight-routing audit, Lon 2026-08-12). */
+   PALS bradycardia cards (weight-routing audit, Lon 2026-08-12).
+
+   TWO CHANGES FROM ISSUE #173, both found on the toxicology card and both true of most of
+   this tool:
+
+   1. A CARD WITH NO PEDIATRIC VERSION MUST NOT OFFER ONE. 26 of the 33 adult cards carry no
+      data-peds-alt, and every one of them was printing "TAP FOR PEDIATRIC" over a tap that
+      landed on the Pediatrics home page — a routing promise the manual cannot keep, at the
+      top of a card someone opened because a patient was crashing. Those cards now say
+      "ADULT DOSING" and stay quiet; the red under-threshold state still fires, because that
+      is the safety net and it is not what was wrong.
+
+   2. "STAY — ADULT PATIENT" MUST NOT DELETE THE WEIGHT. It used to clear it, which on a
+      dosing card is destructive in the one direction that matters: the tox card computes
+      high-dose insulin and lipid emulsion from that weight, so answering an interstitial
+      question silently emptied the field the next dose depends on. It now sets the existing
+      lrh-case-adultoverride key (CASE-STATE.md) — the same explicit, visible, reversible
+      "no, this is an adult" idiom the merged arrest card already uses — and the weight
+      stays where the clinician put it. The strip then says so and offers UNDO. */
 var AUDIENCE = (function(){
   var THRESH = (SITE.audience && typeof SITE.audience.thresholdKg==='number') ? SITE.audience.thresholdKg : null;
+  var ADULT_AGE = (SITE.audience && typeof SITE.audience.adultAgeYrs==='number') ? SITE.audience.adultAgeYrs : null;
   var cards = Array.prototype.slice.call(document.querySelectorAll('article[data-audience="adult"]'));
   if(!cards.length) return { paint:function(){} };
   var strips = cards.map(function(article){
@@ -4538,17 +4602,15 @@ var AUDIENCE = (function(){
     });
     modal.querySelector('#audiencemodalstay').addEventListener('click', function(){
       closeModal();
-      /* CODES_WT owns wtKg/src and has no public "clear" beyond its own input listener —
-         clearing the field and dispatching a real input event runs that listener, which
-         nulls wtKg/src, persists via CASESTATE, and repaints (weight bar, doses, this strip)
-         through the normal path rather than duplicating that logic here. */
-      var el=document.getElementById('wtkg');
-      var ageEl=document.getElementById('wtage'); if(ageEl) ageEl.value='';
-      if(el){
-        el.value='';
-        var ev; try{ ev=new Event('input',{bubbles:true}); }catch(e){ ev=document.createEvent('Event'); ev.initEvent('input', true, true); }
-        el.dispatchEvent(ev);
-      }
+      /* Records the answer; does NOT delete the weight (issue #173). The old behavior
+         cleared #wtkg, which on a dosing card throws away the number the next dose is
+         computed from — on this very card, high-dose insulin and lipid emulsion. The
+         override is the honest form of the same answer: it says "an adult" without
+         claiming the patient has no weight, and CASESTATE clears it by itself the moment
+         a different weight is committed, so it cannot outlive the case it was set for. */
+      try{ if(window.CODES_WT && CODES_WT.acknowledgeCurrent) CODES_WT.acknowledgeCurrent(); }catch(e){}
+      try{ CASESTATE.setAdultOverride(true); }catch(e){}
+      paint();
     });
   }
   function openModal(alt, kg){
@@ -4575,26 +4637,47 @@ var AUDIENCE = (function(){
   function paint(){
     var kg = window.CODES_WT ? window.CODES_WT.getKg() : null;
     var set = kg!==null && kg!==undefined && !isNaN(kg) && kg>0;
+    var age = null; try{ age = window.CODES_WT ? window.CODES_WT.getAgeYrs() : null; }catch(e){}
+    var ageAdult = ADULT_AGE!==null && age!==null && age!==undefined && !isNaN(age) && age>ADULT_AGE;
+    var overridden = false; try{ overridden = CASESTATE.getAdultOverride(); }catch(e){}
+    var kgTxt = set ? (Math.round(kg*10)/10)+' kg' : '';
     strips.forEach(function(s){
       s.el.onclick = null;
-      if(!set){
+      /* A card with a real pediatric destination keeps offering it in the quiet states —
+         that is the weight-routing-audit decision, and it is only defensible where the tap
+         lands somewhere. A card with no alt says what it is and stops there (#173). */
+      var offer = s.alt ? ' · TAP FOR '+altLabel(s.alt) : '';
+      var route = s.alt ? function(){ location.href = altHref(s.alt); } : null;
+
+      /* The clinician answered the question outright. Say so, and make it undoable —
+         an override nobody can see is a setting, not an answer. */
+      if(overridden){
         s.el.className = 'audiencestrip quiet';
-        s.el.textContent = 'ADULT DOSES · TAP FOR '+altLabel(s.alt);
-        s.el.onclick = function(){ location.href = altHref(s.alt || 'peds'); };
+        s.el.textContent = (set ? kgTxt+' · ' : '')+'ADULT DOSING — MARKED ADULT · TAP TO UNDO';
+        s.el.onclick = function(){ try{ CASESTATE.setAdultOverride(false); }catch(e){} paint(); };
+        return;
+      }
+      if(!set){
+        /* Age alone settles it only when there is no weight to disagree with. */
+        s.el.className = 'audiencestrip quiet' + (route ? '' : ' inert');
+        s.el.textContent = ageAdult ? (age+' y · ADULT DOSING') : ('ADULT DOSING'+offer);
+        s.el.onclick = route;
         return;
       }
       if(kg>=THRESH){
-        /* Confirmation state stays TAPPABLE (weight-routing audit): entering a
-           weight used to remove the pediatric route exactly when a borderline
-           weight made it most useful, while the pointer cursor kept implying
-           it worked. */
-        s.el.className = 'audiencestrip quiet';
-        s.el.textContent = (Math.round(kg*10)/10)+' kg · ADULT DOSES · TAP FOR '+altLabel(s.alt);
-        s.el.onclick = function(){ location.href = altHref(s.alt || 'peds'); };
+        /* Confirmation state stays TAPPABLE where there is an alt (weight-routing audit):
+           entering a weight used to remove the pediatric route exactly when a borderline
+           weight made it most useful, while the pointer cursor kept implying it worked. */
+        s.el.className = 'audiencestrip quiet' + (route ? '' : ' inert');
+        s.el.textContent = kgTxt+' · ADULT DOSING'+offer;
+        s.el.onclick = route;
         return;
       }
+      /* Below the threshold the strip stays loud even if the age says adolescent: the doses
+         this card hands out are weight-based, and a 35 kg patient is a 35 kg patient. */
       s.el.className = 'audiencestrip warn';
-      s.el.textContent = '⚠ '+(Math.round(kg*10)/10)+' kg PATIENT · THIS CARD IS ADULT DOSES → '+altLabel(s.alt);
+      s.el.textContent = '⚠ '+kgTxt+' PATIENT · THIS CARD IS ADULT DOSES'
+        + (s.alt ? ' → '+altLabel(s.alt) : ' · NO PEDIATRIC VERSION — TAP');
       s.el.onclick = function(){ openModal(s.alt, kg); };
     });
   }
@@ -5484,6 +5567,15 @@ var AUDIENCE = (function(){
   document.querySelectorAll('.pglyph[data-proc]').forEach(function(el){
     el.innerHTML = PROC_ICONS.glyph(el.getAttribute('data-proc'), '');
   });
+})();
+
+/* In-session half of the moved-card redirect at the top of this file — covers a hash that
+   changes while the page is already open (an internal link someone forgot to update, or a
+   hand-typed URL), not just a fresh load. */
+(function(){
+  window.addEventListener('hashchange', function(){
+    try{ if(MOVED_CARDS[location.hash||'']) location.replace(MOVED_CARDS[location.hash]); }catch(e){}
+  }, false);
 })();
 </script>
 </body>

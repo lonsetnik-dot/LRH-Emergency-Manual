@@ -300,10 +300,21 @@ Four rules when touching it:
   change detected" rather than "nothing changed". Do not tighten that wording,
   and do not drop a `reviewEvery` because a probe looks reliable.
 
-Known open item carried in the registry itself: `nrp` has `reconciled:false` —
-`neonatal/` still carries content not reconciled line-by-line with NRP 9th
-edition. Flip it to true only on a clinician's sign-off, not when the review
-banner comes down.
+That open item is now closed, and how it closed is the worked example: `nrp` carried
+`reconciled:false` because `neonatal/` had content inherited from an uncited card and
+never checked line-by-line. On 2026-08-18 a clinician reviewed it, so the flag went true,
+`SITE.review.on` in `neonatal/index.html` went false, and both changes cite the same
+sign-off. Flip a `reconciled` flag on a clinician's sign-off, never because a banner came
+down or a review "looks done" — and set it back to false whenever the content it covers
+moves again.
+
+`verify_neonatal_screen.mjs` shows the shape a banner guard should take once its banner is
+allowed to come down. It used to assert "the review banner is visible", which stops being
+a useful test the moment the review it was waiting for happens — and would have pushed the
+next editor to delete the check. It now asserts the banner matches `SITE.review.on` **and**
+that switching it off is accompanied by a name and a date in `SITE.review.signedOff`. The
+thing being guarded was never "the banner exists"; it was "nobody makes this look reviewed
+without saying who reviewed it."
 
 ## Deploy & test workflow
 
@@ -365,10 +376,10 @@ test it" is not sufficient close-out for a deliverable.
   stamped on one tap, 30-second cycles off that clock, heart-rate driven
   pathway, Apgar marks that fire on their own, and the SpO₂ target for the
   minute the baby is actually in. A live-protocol peer of `arrest/`, `airway/`
-  and `tca/`, not a card. **Its content was carried over unchanged from card 03
-  and has not been reconciled with NRP 9th edition — the review banner stays up
-  until a clinician signs it off, and `verify_neonatal_screen.mjs` fails if
-  anyone switches it off quietly.**
+  and `tca/`, not a card. Clinically reviewed and signed off 2026-08-18 — the
+  review banner is down and `guidelines.js` `nrp` is `reconciled: true`. The
+  sign-off is recorded in `SITE.review.signedOff`, and the suite requires it:
+  the banner may only be off while a name and a date are named there.
 - `pph/` — the postpartum hemorrhage **engine** (issue #135): clock from
   recognition, running blood loss as first-class state, escalation prompts that
   fire on the trend, and uterotonics greyed out by a contraindication asked once
@@ -382,7 +393,13 @@ test it" is not sufficient close-out for a deliverable.
 - `procedures/` — Rare, high-stakes procedure checklists (chest tube,
   thoracotomy, burr hole, canthotomy, CVC, TVP, tourniquet, JADA, etc.).
 - `trauma/` — Trauma activation and resuscitation pathways.
-- `clinical-pathways/` — Diagnostic pathways (e.g. Chest Pain / HEART).
+- `clinical-pathways/` — Diagnostic and workup pathways: Chest Pain / HEART,
+  the PE clinical categories, plus `sepsis/` and `dka/`, which moved out of
+  `codes/` in the 2026-08 clinical review (issues #178, #176). The dividing line
+  the review drew: `codes/` is for what you grab while a patient is crashing;
+  a workup that unfolds over hours off a departmental order set belongs here.
+  Their old anchors (`codes/#c28`, `#c31`) hash-redirect so printed QR codes and
+  old links still resolve.
 - `posters/` — Printable one-page posters generated from procedure content.
 - `debrief/` — redirect stub only; the debrief card lives in `conversations/`
   (card 04). Kept so old links and printed QR codes still resolve.
