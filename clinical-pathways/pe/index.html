@@ -422,6 +422,15 @@
     lastReviewed: "2026-08-19",
     guidelineEdition: "2026 AHA/ACC/ACCP/ACEP/CHEST/SCAI/SHM/SIR/SVM/SVN",
 
+    // LRH determination, 2026-08-19: a critical-access ED with no PE response
+    // team and none of the four advanced therapies in the building. Every flag
+    // below is FALSE because that is the answer here, not because it is the
+    // default — which is why it is written down. The consequence on screen is
+    // deliberate: for Categories C–E the page names the DHMC Transfer Center
+    // call as this department's substitute for a PERT, and says plainly that
+    // systemic lysis is the only reperfusion that can be started here.
+    // A site that leaves a false in place when the service exists gets told to
+    // phone out for something it has downstairs.
     capability: {
       pertOnSite: false,        // is there a PE response team to activate here?
       catheterDirected: false,  // CDL available on site
