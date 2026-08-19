@@ -39,7 +39,7 @@ const ck = (name, got, want) => {
 /* Representative page set: every tool family + the landing page. */
 const PAGES = ['/', '/codes/', '/peds/', '/arrest/', '/airway/', '/tca/', '/trauma/',
   '/neonatal/', '/pph/', '/dystocia/', '/procedures/', '/ob-neonatal/',
-  '/clinical-pathways/heart/', '/equipment-readiness/', '/simulations/', '/sources/'];
+  '/clinical-pathways/heart/', '/clinical-pathways/pe/', '/equipment-readiness/', '/simulations/', '/sources/'];
 
 /* ---- static checks over every built page (1, 6) --------------------------- */
 const DIST = 'dist';

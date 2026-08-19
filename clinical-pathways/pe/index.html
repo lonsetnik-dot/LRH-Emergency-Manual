@@ -1,0 +1,864 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{{SITE.abbrev}} Pulmonary Embolism &middot; AHA/ACC Clinical Categories</title>
+<style>
+  /* @design-system */
+  /* ---- PE-pathway-specific design tokens. The shared neutrals, the .hdr chrome
+     bar and the themed <body> come from design-system.css injected at the marker
+     above (build.mjs). Only the interactive brand accent and the five CATEGORY
+     colors are unique to this pathway. The category ramp is A (least severe) →
+     E (most severe); a fork re-skins it in this one block. ---- */
+  :root{
+    --brand-primary:#4C8DDA; --brand-primary-dark:#7FB0E6; --brand-secondary:#6cb33f;
+    --section:#3DA35D; /* Clinical Pathways = green */
+    /* AHA/ACC PE Clinical Category ramp — lowest risk (A) to highest risk (E) */
+    --cA:#5dd48a;  --cA-bg:rgba(61,163,93,.16);   --cA-br:rgba(61,163,93,.5);
+    --cB:#6db3f2;  --cB-bg:rgba(76,141,218,.15);  --cB-br:rgba(76,141,218,.5);
+    --cC:#f0b429;  --cC-bg:rgba(240,180,41,.15);  --cC-br:rgba(240,180,41,.5);
+    --cD:#f58f4b;  --cD-bg:rgba(230,126,34,.17);  --cD-br:rgba(230,126,34,.55);
+    --cE:#ff6b6b;  --cE-bg:rgba(229,72,77,.15);   --cE-br:rgba(229,72,77,.5);
+    --sel-bg:rgba(76,141,218,.14);
+    --note-br:rgba(240,180,41,.40);
+  }
+  body[data-theme="light"]{
+    --brand-primary:#005596; --brand-primary-dark:#003e6e; --brand-secondary:#6cb33f;
+    --section:#2f7a3f;
+    --cA:#2e7d32; --cA-bg:#e8f5e9; --cA-br:#b6dab9;
+    --cB:#1565c0; --cB-bg:#e7f0fb; --cB-br:#b3ceee;
+    --cC:#b26a00; --cC-bg:#fff5e0; --cC-br:#f2d999;
+    --cD:#b0480c; --cD-bg:#fdefe4; --cD-br:#f0c39b;
+    --cE:#c62828; --cE-bg:#fdecea; --cE-br:#f4b8b0;
+    --sel-bg:#f1f7fc;
+    --note-br:#f2d999;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg); color:var(--ink); line-height:1.45; font-size:16px}
+  .wrap{max-width:900px; margin:0 auto; padding:0 16px 64px}
+
+  .page-title{font-size:1.25rem; line-height:1.2; margin:18px 2px 3px; color:var(--ink)}
+  .page-sub{margin:0 2px 4px; color:var(--ink2); font-size:.84rem}
+
+  .disclaimer{background:var(--note-bg); border:1px solid var(--note-br); color:var(--note-tx); font-size:.82rem;
+    border-radius:8px; padding:11px 14px; margin:18px 0 10px}
+  .disclaimer ul{margin:6px 0 0; padding-left:18px}
+  .disclaimer li{margin:2px 0}
+  .disclaimer strong{color:var(--note-tx)}
+
+  .card{background:var(--card); border:1px solid var(--line); border-radius:12px;
+    padding:18px 18px 20px; margin-bottom:18px; box-shadow:0 1px 2px rgba(16,42,67,.04)}
+  .card h2{font-size:1.02rem; margin:0 0 4px; color:var(--brand-primary-dark); display:flex; align-items:center; gap:8px}
+  .card h2 .num{background:var(--brand-primary); color:#fff; width:24px;height:24px;border-radius:50%;
+    font-size:.8rem; display:inline-flex; align-items:center; justify-content:center; flex:0 0 auto}
+  .card .sub{color:var(--ink2); font-size:.83rem; margin:0 0 14px}
+
+  .q{margin-bottom:15px}
+  .q:last-child{margin-bottom:0}
+  .q .label{font-weight:600; font-size:.92rem; margin-bottom:7px; display:block}
+  .q .hint{font-weight:400; color:var(--ink2); font-size:.8rem}
+  .opts{display:grid; gap:8px}
+  .opts.two{grid-template-columns:1fr 1fr}
+  @media(min-width:560px){.opts.three{grid-template-columns:1fr 1fr 1fr}}
+  label.opt{display:flex; align-items:flex-start; gap:9px; border:1.5px solid var(--line); border-radius:9px;
+    padding:9px 11px; cursor:pointer; font-size:.87rem; background:var(--card); transition:.12s; min-height:44px}
+  label.opt:hover{border-color:var(--brand-secondary)}
+  label.opt input{margin-top:2px; accent-color:var(--brand-primary); flex:0 0 auto}
+  label.opt.sel{border-color:var(--brand-primary); background:var(--sel-bg); box-shadow:inset 0 0 0 1px var(--brand-primary)}
+  label.opt .pts{margin-left:auto; font-weight:700; color:var(--brand-primary); font-size:.8rem; padding-left:6px}
+  .q.muted{opacity:.45}
+  .q.muted label.opt{cursor:default}
+
+  .scorebar{display:flex; align-items:center; justify-content:space-between; gap:12px; flex-wrap:wrap;
+    background:var(--card2); border:1px solid var(--line); border-radius:9px; padding:11px 15px; margin-top:4px}
+  .scorebar .big{font-size:1.7rem; font-weight:800; color:var(--brand-primary-dark)}
+  .scorebar .risk{font-weight:700; font-size:.9rem; padding:4px 12px; border-radius:20px}
+
+  .resultcard{margin-top:16px; border-radius:10px; padding:13px 15px; font-size:.9rem; border:1.5px solid}
+  .resultcard .tag{font-weight:800; font-size:.95rem; letter-spacing:.3px; display:block; margin-bottom:2px}
+  .resultcard.pending{background:var(--card2);border-color:var(--line);color:var(--ink2)}
+
+  .final{border-radius:12px; padding:18px; border:2px solid; margin-top:2px}
+  .final .head{font-size:.76rem; text-transform:uppercase; letter-spacing:.6px; font-weight:700; opacity:.85}
+  .final .catcode{font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+    font-size:2.2rem; font-weight:800; line-height:1.05; margin:2px 0 1px; letter-spacing:.02em}
+  .final .verdict{font-size:1.05rem; font-weight:700; margin:0 0 8px}
+  .final .detail{font-size:.9rem}
+  .final ul{margin:8px 0 0; padding-left:19px}
+  .final li{margin:4px 0}
+  .final.pending{background:var(--card2); border-color:var(--line); color:var(--ink2)}
+  .corpill{display:inline-block; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+    font-size:.68rem; font-weight:700; letter-spacing:.04em; border:1px solid currentColor;
+    border-radius:20px; padding:1px 7px; margin-left:5px; opacity:.85; white-space:nowrap}
+
+  .advtable{width:100%; border-collapse:collapse; margin-top:10px; font-size:.8rem}
+  .advtable th,.advtable td{border:1px solid var(--line); padding:6px 8px; text-align:left}
+  .advtable th{background:var(--card2); font-weight:700}
+  .advtable td.v{font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; white-space:nowrap}
+
+  .btnrow{display:flex; gap:10px; margin-top:14px; flex-wrap:wrap}
+  button.btn{background:var(--card); border:1.5px solid var(--brand-primary); color:var(--brand-primary);
+    font-weight:600; font-size:.85rem; padding:9px 18px; border-radius:8px; cursor:pointer; min-height:44px}
+  button.btn:hover{background:var(--sel-bg)}
+
+  details.ref{margin-top:10px; font-size:.85rem}
+  details.ref summary{cursor:pointer; font-weight:600; color:var(--brand-primary); padding:9px 0; min-height:44px}
+  details.ref table{width:100%; border-collapse:collapse; margin-top:6px; font-size:.8rem}
+  details.ref th,details.ref td{border:1px solid var(--line); padding:6px 9px; text-align:left; vertical-align:top}
+  details.ref th{background:var(--card2)}
+  details.ref ul{margin:6px 0 0; padding-left:20px}
+  details.ref li{margin:3px 0}
+  .tblwrap{overflow-x:auto}
+
+  footer{text-align:center; color:var(--ink2); font-size:.76rem; margin-top:26px}
+  @media print{
+    *{ -webkit-print-color-adjust:exact; print-color-adjust:exact; }
+    body[data-theme]{
+      --bg:#fff; --card:#fff; --card2:#f5f8fb; --ink:#1f2933; --ink2:#5b6672; --line:#e2e7ec;
+      --brand-primary:#005596; --brand-primary-dark:#003e6e; --section:#2f7a3f;
+      --cA:#2e7d32; --cA-bg:#e8f5e9; --cA-br:#b6dab9; --cB:#1565c0; --cB-bg:#e7f0fb; --cB-br:#b3ceee;
+      --cC:#b26a00; --cC-bg:#fff5e0; --cC-br:#f2d999; --cD:#b0480c; --cD-bg:#fdefe4; --cD-br:#f0c39b;
+      --cE:#c62828; --cE-bg:#fdecea; --cE-br:#f4b8b0;
+      --sel-bg:#f1f7fc; --note-bg:#fff8e1; --note-br:#f2d999; --note-tx:#6d4c00;
+    }
+    body{background:#fff}
+    .btnrow,.hdr{display:none}
+    .card{break-inside:avoid; box-shadow:none}
+    details.ref{display:block}
+    details.ref>*{display:block}
+  }
+</style>
+</head>
+<body data-theme="dark">
+<div class="hdr">
+  <a class="ghost" href="../?from=tool">&#9664; PATHWAYS</a>
+  <span class="plabel">PE &middot; CLINICAL CATEGORIES</span>
+  <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20PE%20Pathway" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+</div>
+
+<div class="wrap">
+
+  <h1 class="page-title">Pulmonary Embolism &middot; AHA/ACC Acute PE Clinical Categories</h1>
+  <p class="page-sub">{{SITE.hospital}} &mdash; category, disposition and advanced-therapy framing for confirmed or strongly suspected acute PE in adults</p>
+
+  <!-- Review banner. Stays up until a clinician has read this pathway back against
+       the guideline and signed it off, in the same commit that names them.
+       verify_pe_categories.mjs fails if it is removed. -->
+  <div class="disclaimer" id="reviewBanner" style="border-width:2px">
+    &#9888; <strong>DRAFT &mdash; NOT CLINICALLY REVIEWED.</strong>
+    Written from the 2026 AHA/ACC guideline cited below to fill coverage gap
+    <a href="https://github.com/lonsetnik-dot/LRH-Emergency-Manual/issues/86" style="color:inherit">#86</a>
+    (<a href="https://github.com/lonsetnik-dot/LRH-Emergency-Manual/issues/181" style="color:inherit">#181</a>).
+    The categories and the Class-of-Recommendation values are transcribed from the published guideline;
+    no clinician has yet read this pathway back against it. Verify every threshold and every dose
+    against local protocol and pharmacy before this page is trusted.
+  </div>
+
+  <div class="disclaimer">
+    <strong>Not a substitute for clinical judgment.</strong>
+    <ul>
+      <li>This tool categorizes a <strong>diagnosed or strongly suspected</strong> acute PE in an <strong>adult (&ge; 18 y)</strong>. It is not a diagnostic rule-out &mdash; for that, see the pretest-probability and D-dimer reference at the bottom of the page.</li>
+      <li>The category is a <strong>snapshot</strong>. Patients move between categories; recategorize whenever the patient changes.</li>
+      <li>Personal decision-support aid &mdash; <strong>not part of any hospital IT system / EHR</strong>. Verify all values independently.</li>
+    </ul>
+  </div>
+
+  <!-- ============ SECTION 1: HEMODYNAMICS ============ -->
+  <div class="card">
+    <h2><span class="num">1</span> Hemodynamics &amp; perfusion</h2>
+    <p class="sub">Asked first because it outranks everything else: the category is assigned from the <em>most severe</em> indicator, and hypotension or hypoperfusion puts the patient in D or E no matter how benign the severity score looks.</p>
+
+    <div class="q">
+      <span class="label">Worst hemodynamic state so far this encounter</span>
+      <div class="opts" data-group="hemo">
+        <label class="opt"><input type="radio" name="hemo" value="none"><span><b>None of the below</b> &mdash; normotensive and well perfused</span></label>
+        <label class="opt"><input type="radio" name="hemo" value="transient"><span><b>Transient hypotension</b> <span class="hint" id="hintTransient"></span></span></label>
+        <label class="opt"><input type="radio" name="hemo" value="normoshock"><span><b>Normotensive shock</b> <span class="hint" id="hintNormoshock"></span></span></label>
+        <label class="opt"><input type="radio" name="hemo" value="shock"><span><b>Recurrent or persistent hypotension with cardiogenic shock</b> <span class="hint">&mdash; SCAI SHOCK stage C</span></span></label>
+        <label class="opt"><input type="radio" name="hemo" value="refractory"><span><b>Refractory cardiogenic shock, or cardiac arrest</b> <span class="hint" id="hintRefractory"></span></span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SECTION 2: PRESENTATION ============ -->
+  <div class="card">
+    <h2><span class="num">2</span> Presentation</h2>
+    <p class="sub">Category A is reserved for the PE nobody was looking for &mdash; found on a scan done for another reason, in a patient with no symptoms of PE.</p>
+
+    <div class="q">
+      <span class="label">Symptoms attributable to the PE?</span>
+      <div class="opts two" data-group="dx">
+        <label class="opt"><input type="radio" name="dx" value="symptomatic"><span><b>Symptomatic</b> <span class="hint">&mdash; dyspnea, pleuritic pain, syncope, tachycardia&hellip;</span></span></label>
+        <label class="opt"><input type="radio" name="dx" value="incidental"><span><b>Incidental &amp; asymptomatic</b> <span class="hint">&mdash; found on imaging done for another indication</span></span></label>
+      </div>
+    </div>
+
+    <div class="q">
+      <span class="label">Most proximal clot on imaging <span class="hint">&mdash; splits B1 from B2</span></span>
+      <div class="opts two" data-group="loc">
+        <label class="opt"><input type="radio" name="loc" value="subseg"><span><b>Subsegmental only</b> <span class="hint">(single or multiple)</span></span></label>
+        <label class="opt"><input type="radio" name="loc" value="nonsubseg"><span><b>Non-subsegmental</b> <span class="hint">(segmental or more proximal)</span></span></label>
+      </div>
+    </div>
+
+    <div class="q" style="margin-bottom:0">
+      <span class="label">Is the PE confirmed on imaging?</span>
+      <div class="opts two" data-group="confirmed">
+        <label class="opt"><input type="radio" name="confirmed" value="yes"><span>Confirmed</span></label>
+        <label class="opt"><input type="radio" name="confirmed" value="no"><span>Strongly suspected &mdash; imaging delayed or not accessible</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SECTION 3: CLINICAL SEVERITY SCORE ============ -->
+  <div class="card">
+    <h2><span class="num">3</span> Clinical severity score</h2>
+    <p class="sub">The B / C dividing line. Tick the sPESI components and the answer fills itself in, or set it directly from whichever validated score your team used.</p>
+
+    <div class="q">
+      <span class="label">sPESI <span class="hint">&mdash; 1 point each; any point makes the score elevated</span></span>
+      <div class="opts" data-group="spesi">
+        <label class="opt"><input type="checkbox" name="spesi" value="age"><span id="spAge">Age</span><span class="pts">+1</span></label>
+        <label class="opt"><input type="checkbox" name="spesi" value="cancer"><span>History of cancer</span><span class="pts">+1</span></label>
+        <label class="opt"><input type="checkbox" name="spesi" value="cardiopulm"><span>Chronic cardiopulmonary disease</span><span class="pts">+1</span></label>
+        <label class="opt"><input type="checkbox" name="spesi" value="sbp"><span id="spSbp">Systolic BP</span><span class="pts">+1</span></label>
+        <label class="opt"><input type="checkbox" name="spesi" value="hr"><span id="spHr">Heart rate</span><span class="pts">+1</span></label>
+        <label class="opt"><input type="checkbox" name="spesi" value="spo2"><span id="spSpo2">Arterial oxygen saturation</span><span class="pts">+1</span></label>
+      </div>
+      <div class="scorebar" style="margin-top:9px">
+        <div><span class="big" id="spesiScore">&ndash;</span> <span style="color:var(--ink2);font-size:.85rem">/ 6 sPESI points</span></div>
+        <div class="risk" id="spesiRisk" style="background:var(--card2);color:var(--ink2)">Not started</div>
+      </div>
+    </div>
+
+    <div class="q" style="margin-bottom:0">
+      <span class="label">Severity score used for the category <span class="hint" id="sevHint">&mdash; auto-fills from sPESI; you can also tap it</span></span>
+      <div class="opts two" data-group="sev">
+        <label class="opt" id="sevOptLow"><input type="radio" name="sev" value="low"><span><b>Low</b> <span class="hint" id="hintSevLow"></span></span></label>
+        <label class="opt" id="sevOptHigh"><input type="radio" name="sev" value="high"><span><b>Elevated</b> <span class="hint" id="hintSevHigh"></span></span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SECTION 4: RV & BIOMARKERS ============ -->
+  <div class="card">
+    <h2><span class="num">4</span> Right ventricle &amp; cardiac biomarkers</h2>
+    <p class="sub">The C1 / C2 / C3 split, and the only reason a normotensive patient gets called high-acuity. Echocardiography is preferred over CT for this in Categories C&ndash;D <span class="corpill" style="color:var(--brand-primary-dark)">COR 2a</span>.</p>
+
+    <div class="q">
+      <span class="label">RV size and function <span class="hint">&mdash; echo or CT</span></span>
+      <div class="opts three" data-group="rv">
+        <label class="opt"><input type="radio" name="rv" value="normal"><span>Normal RV</span></label>
+        <label class="opt"><input type="radio" name="rv" value="abnormal"><span>Abnormal RV</span></label>
+        <label class="opt"><input type="radio" name="rv" value="unknown"><span>Not yet assessed</span></label>
+      </div>
+    </div>
+    <div class="q" style="margin-bottom:0">
+      <span class="label">Cardiac biomarkers <span class="hint">&mdash; troponin I/T and/or BNP</span></span>
+      <div class="opts three" data-group="bio">
+        <label class="opt"><input type="radio" name="bio" value="normal"><span>All normal</span></label>
+        <label class="opt"><input type="radio" name="bio" value="abnormal"><span>&ge; 1 abnormal</span></label>
+        <label class="opt"><input type="radio" name="bio" value="unknown"><span>Not yet measured</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SECTION 5: RESPIRATORY MODIFIER ============ -->
+  <div class="card">
+    <h2><span class="num">5</span> Respiratory modifier (R)</h2>
+    <p class="sub">An <b>R</b> is appended (C3R, D2R) when respiratory compromise is prominent. The bar rises with the category &mdash; what earns an R in Category C is expected background in Category E &mdash; so the threshold applied below is the one for the category you land in.</p>
+
+    <div class="q" style="margin-bottom:0">
+      <span class="label">Worst respiratory support requirement</span>
+      <div class="opts" data-group="resp">
+        <label class="opt"><input type="radio" name="resp" value="0"><span>None of the below &mdash; room air, no tachypnea</span></label>
+        <label class="opt"><input type="radio" name="resp" value="1"><span id="respL1">Hypoxemia, tachypnea, or any supplemental oxygen</span></label>
+        <label class="opt"><input type="radio" name="resp" value="2"><span id="respL2">High-flow oxygen or a nonrebreather</span></label>
+        <label class="opt"><input type="radio" name="resp" value="3"><span>Hypoxemic respiratory failure or ventilatory failure &mdash; noninvasive or invasive positive-pressure ventilation</span></label>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SECTION 6: CATEGORY & MANAGEMENT ============ -->
+  <div class="card">
+    <h2><span class="num">6</span> Category &amp; management</h2>
+    <div class="final pending" id="finalBox">
+      <div class="head">AHA/ACC Acute PE Clinical Category</div>
+      <div class="verdict">Complete the sections above</div>
+      <div class="detail">Answer section 1 (hemodynamics) and section 2 (presentation) at minimum.</div>
+    </div>
+
+    <div id="advWrap" style="display:none">
+      <h3 style="font-size:.86rem; margin:18px 0 0; color:var(--ink2); letter-spacing:.04em; text-transform:uppercase">Advanced therapy for this category</h3>
+      <div class="tblwrap">
+        <table class="advtable">
+          <tr><th>Systemic lysis</th><th>Catheter-directed lysis</th><th>Mechanical thrombectomy</th><th>Surgical embolectomy</th></tr>
+          <tr><td class="v" id="advLysis">&ndash;</td><td class="v" id="advCdl">&ndash;</td><td class="v" id="advMt">&ndash;</td><td class="v" id="advSurg">&ndash;</td></tr>
+        </table>
+      </div>
+      <p class="sub" id="advNote" style="margin:8px 0 0"></p>
+    </div>
+
+    <div class="btnrow">
+      <button class="btn" onclick="resetAll()">Reset</button>
+      <button class="btn" onclick="window.print()">Print</button>
+    </div>
+
+    <p class="sub" style="margin-top:10px"><b>Transfer center &mdash; {{SITE.transferCenter}}: {{SITE.transferPhone}}</b> &mdash; for PERT consultation, advanced therapy, or transfer.</p>
+
+    <details class="ref">
+      <summary>The whole category scheme on one screen</summary>
+      <div class="tblwrap">
+      <table>
+        <tr><th>Category</th><th>Subcategory</th><th>Definition</th></tr>
+        <tr><td rowspan="1"><b>A</b> &mdash; Subclinical</td><td>A</td><td>Incidental and asymptomatic PE</td></tr>
+        <tr><td rowspan="2"><b>B</b> &mdash; Symptomatic, low clinical severity score*</td><td>B1</td><td>Subsegmental (single or multiple)</td></tr>
+        <tr><td>B2</td><td>Non-subsegmental</td></tr>
+        <tr><td rowspan="3"><b>C</b> &mdash; Symptomatic, elevated clinical severity score&dagger;</td><td>C1</td><td>Normal RV <u>and</u> normal biomarkers</td></tr>
+        <tr><td>C2</td><td>Abnormal RV <u>or</u> &ge; 1 abnormal biomarker</td></tr>
+        <tr><td>C3</td><td>Abnormal RV <u>and</u> &ge; 1 abnormal biomarker</td></tr>
+        <tr><td rowspan="2"><b>D</b> &mdash; Incipient cardiopulmonary failure</td><td>D1</td><td>Transient hypotension&Dagger;</td></tr>
+        <tr><td>D2</td><td>Normotensive shock&sect;</td></tr>
+        <tr><td rowspan="2"><b>E</b> &mdash; Cardiopulmonary failure</td><td>E1</td><td>Recurrent or persistent hypotension with cardiogenic shock (SCAI SHOCK C)</td></tr>
+        <tr><td>E2</td><td>Refractory cardiogenic shock (SCAI D&ndash;E), or cardiac arrest without ROSC after 30 min of resuscitation</td></tr>
+        <tr><td colspan="2"><b>R</b> &mdash; respiratory modifier</td><td id="refR">&mdash;</td></tr>
+      </table>
+      </div>
+      <ul id="refFootnotes"></ul>
+      <p style="color:var(--ink2);margin:8px 0 0">Category and subcategory are assigned from the <b>most severe</b> clinical, laboratory or imaging indicator, and are re-assigned as the patient is reassessed over time.</p>
+    </details>
+
+    <details class="ref">
+      <summary>How this maps to the schemes it replaces</summary>
+      <div class="tblwrap">
+      <table>
+        <tr><th>2011 AHA statement</th><th>2019 ESC scheme</th><th>2026 AHA/ACC categories</th></tr>
+        <tr><td>Low risk</td><td>Low risk</td><td>A, B</td></tr>
+        <tr><td rowspan="2">Submassive</td><td>Intermediate-low risk</td><td>C1, C2</td></tr>
+        <tr><td>Intermediate-high risk</td><td>C3</td></tr>
+        <tr><td>&mdash; <span style="color:var(--ink2)">(no equivalent)</span></td><td>&mdash; <span style="color:var(--ink2)">(no equivalent)</span></td><td>D1, D2</td></tr>
+        <tr><td>Massive</td><td>High risk</td><td>E1, E2</td></tr>
+      </table>
+      </div>
+      <p style="color:var(--ink2);margin:8px 0 0">The mapping is approximate and is here for translating an old note or an outside record. The genuinely new ground is <b>Category D</b> &mdash; the pre-failure patient who is still normotensive, or transiently hypotensive, and whom the older schemes filed alongside stable submassive PE.</p>
+    </details>
+
+    <details class="ref">
+      <summary>Risk scores this scheme accepts</summary>
+      <div class="tblwrap">
+      <table>
+        <tr><th>Score</th><th>Components</th><th>Bands</th></tr>
+        <tr><td><b>PESI</b></td><td>Age in years, plus: male 10 &middot; cancer 30 &middot; heart failure 10 &middot; chronic lung disease 10 &middot; HR &ge; 110 20 &middot; SBP &lt; 100 30 &middot; RR &ge; 30 20 &middot; temp &lt; 36 &deg;C 20 &middot; altered mental status 60 &middot; SpO&#8322; &lt; 90% 20</td><td>I &le; 65 &middot; II 66&ndash;85 &middot; III 86&ndash;105 &middot; IV 106&ndash;125 &middot; V &ge; 126</td></tr>
+        <tr><td><b>sPESI</b></td><td>1 point each: age &gt; 80 &middot; cancer &middot; chronic cardiopulmonary disease &middot; SBP &lt; 100 &middot; HR &ge; 110 &middot; SaO&#8322; &lt; 90%</td><td>0 = low &middot; &ge; 1 = high 30-day mortality risk</td></tr>
+        <tr><td><b>Bova</b></td><td>SBP 90&ndash;100 (2) &middot; troponin elevation (2) &middot; RV dysfunction (2) &middot; HR &ge; 110 (1)</td><td>I 0&ndash;2 &middot; II 3&ndash;4 &middot; III &gt; 4</td></tr>
+        <tr><td><b>Hestia</b></td><td>11 yes/no items: hemodynamically unstable &middot; lysis or embolectomy needed &middot; active bleeding or high bleeding risk &middot; &gt; 24 h oxygen to hold SpO&#8322; &gt; 90% &middot; PE while already anticoagulated &middot; severe pain needing IV analgesia &gt; 24 h &middot; medical or social reason to stay &gt; 24 h &middot; CrCl &lt; 30 mL/min &middot; severe liver impairment &middot; pregnant &middot; documented history of HIT</td><td>All &ldquo;no&rdquo; = negative, consider outpatient &middot; any &ldquo;yes&rdquo; = positive, consider hospitalization</td></tr>
+        <tr><td><b>CPES</b></td><td>1 point each: elevated troponin &middot; elevated BNP &middot; moderately/severely reduced RV function &middot; saddle PE &middot; concomitant DVT &middot; HR &ge; 100</td><td>0&ndash;5 lower risk of normotensive shock &middot; 6 higher risk</td></tr>
+      </table>
+      </div>
+      <p style="color:var(--ink2);margin:8px 0 0">Risk scores are far better at identifying the <b>low-risk</b> patient than the high-risk one. Hestia, PESI and sPESI are the three the guideline names as decision tools for outpatient treatment.</p>
+    </details>
+
+    <details class="ref">
+      <summary>Before the diagnosis: pretest probability and D-dimer</summary>
+      <p>This page starts once PE is on the board. Getting there:</p>
+      <ul>
+        <li><b>PERC</b> &mdash; apply only when gestalt pretest probability is &lt; 15% (eg, Wells &lt; 2). All 8 met &rarr; no further testing. Age &lt; 50 &middot; HR &lt; 100 &middot; SpO&#8322; &ge; 95% &middot; no hemoptysis &middot; no estrogen &middot; no prior DVT/PE &middot; no unilateral leg swelling &middot; no surgery/trauma needing hospitalization in the prior 4 weeks.</li>
+        <li><b>Wells</b> &mdash; DVT signs 3 &middot; PE more likely than the alternative 3 &middot; HR &gt; 100 1.5 &middot; immobilization &ge; 3 d or surgery within 4 wk 1.5 &middot; prior DVT/PE 1.5 &middot; hemoptysis 1 &middot; cancer 1. Standard: low &lt; 2, moderate 2&ndash;6, high &gt; 6. Modified: PE likely &gt; 4.</li>
+        <li><b>Age-adjusted D-dimer</b> &mdash; in low or intermediate probability (&lt; 50%), a value below <b>age &times; 10 &micro;g/L</b> (FEU assays) excludes PE and the need for imaging <span class="corpill" style="color:var(--brand-primary-dark)">COR 2a</span>. Confirm your lab reports FEU, not D-dimer units.</li>
+        <li><b>YEARS</b> &mdash; three items: clinical signs of DVT, hemoptysis, PE the most likely diagnosis. None present &rarr; D-dimer threshold 1000 &micro;g/L; any present &rarr; 500 &micro;g/L <span class="corpill" style="color:var(--brand-primary-dark)">COR 2a</span>. In pregnancy, the pregnancy-adapted YEARS criteria may be reasonable <span class="corpill" style="color:var(--brand-primary-dark)">COR 2b</span>.</li>
+      </ul>
+    </details>
+
+    <details class="ref">
+      <summary>Cautions that apply to every Category C&ndash;E patient</summary>
+      <ul>
+        <li><b>Do not deeply sedate and intubate unless clinically indicated</b> <span class="corpill" style="color:var(--cE)">COR 3: Harm</span> &mdash; induction and positive pressure remove the compensation the failing RV is running on. Case series report a disproportionate rate of sedation-associated arrest in acute PE.</li>
+        <li>If sedation for intubation is unavoidable, <b>have vasopressors, inotropes and/or VA-ECMO available first</b> <span class="corpill" style="color:var(--brand-primary-dark)">COR 1</span>.</li>
+        <li>For moderate&ndash;severe hypoxia, <b>heated high-flow nasal cannula rather than standard nasal cannula</b> <span class="corpill" style="color:var(--brand-primary-dark)">COR 2a</span>.</li>
+        <li>Volume: in Category D, cautious expansion only where preload genuinely looks reduced <span class="corpill" style="color:var(--brand-primary-dark)">COR 2b</span>. The overloaded RV does not want the fluid.</li>
+        <li>Inhaled pulmonary vasodilators may be considered in C2&ndash;E to reduce RV afterload <span class="corpill" style="color:var(--brand-primary-dark)">COR 2b</span>.</li>
+        <li>Anyone receiving thrombolysis, systemic or catheter-directed, belongs in <b>an ICU or intermediate-care bed</b> <span class="corpill" style="color:var(--brand-primary-dark)">COR 1</span>.</li>
+      </ul>
+    </details>
+  </div>
+
+  <footer>
+    {{SITE.abbrev}} Pulmonary Embolism &mdash; AHA/ACC Acute PE Clinical Categories &mdash; personal decision-support aid, not part of any hospital IT system.
+    <div style="margin-top:8px;">
+      <strong>Sources:</strong> Categories, subcategories, respiratory modifier, the Class-of-Recommendation values shown on this page, Table 6 (risk scores) and Table 7 (advanced therapy) are from the 2026 AHA/ACC/ACCP/ACEP/CHEST/SCAI/SHM/SIR/SVM/SVN guideline for the evaluation and management of acute pulmonary embolism in adults (Circulation 2026;153:e977&ndash;e1051; doi:10.1161/CIR.0000000000001415), Figures 2 and 3 and Tables 3, 5, 6 and 7. The 2011 AHA scientific statement (Circulation 2011;123:1788) and the 2019 ESC acute PE guideline (Eur Heart J 2019;41:543) appear only in the mapping table, as the schemes this one replaces. Thrombolytic dosing shown for cardiac arrest is not from this guideline &mdash; it follows AHA ECC guidance for PE-associated arrest and must be confirmed against local pharmacy protocol.
+    </div>
+    <div id="verStamp" style="margin-top:6px;font-weight:600"></div>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+
+  // ===== SITE CONFIG (site-specific — edit to localize) =====
+  // Every number and every capability claim this pathway prints comes from here.
+  // Two different kinds of value live in this block, and they localize differently:
+  //
+  //   * capability — genuinely local. Whether a PERT exists, whether catheter-
+  //     directed lysis / thrombectomy / surgical embolectomy / ECMO can happen in
+  //     this building at 3 a.m. A community ED that cannot do any of them still
+  //     needs the category, because the category is what the transfer call is
+  //     about. Set these honestly; the recommendations rewrite themselves around
+  //     them.
+  //   * thresholds — national, from the 2026 guideline, and a fork should NOT be
+  //     moving them casually. They are here so a suite can assert the screen
+  //     against the config instead of against re-typed numbers, and so a site
+  //     whose lab genuinely differs (the guideline says the lactate threshold
+  //     "should be based on the local assay utilized") has one place to change.
+  var SITE = {
+    hospital: "{{SITE.hospital}}",
+    hospitalShort: "{{SITE.abbrev}}",
+    transferCenter: "{{SITE.transferCenter}}",
+    transferPhone: "{{SITE.transferPhone}}",
+    version: "1.0",
+    lastReviewed: "2026-08-19",
+    guidelineEdition: "2026 AHA/ACC/ACCP/ACEP/CHEST/SCAI/SHM/SIR/SVM/SVN",
+
+    capability: {
+      pertOnSite: false,        // is there a PE response team to activate here?
+      catheterDirected: false,  // CDL available on site
+      thrombectomy: false,      // mechanical thrombectomy available on site
+      surgicalEmbolectomy: false,
+      ecmo: false
+    },
+
+    // Clinical severity score bands (guideline Figure 2 footnotes * and †)
+    score: { pesiLow: 85, spesiHigh: 1, bovaLow: 4, hestiaHigh: 1 },
+
+    // sPESI components (guideline Table 6) — 1 point each
+    spesi: { ageOver: 80, sbpUnder: 100, hrAtLeast: 110, spo2Under: 90 },
+
+    // Respiratory modifier thresholds, by the tier the patient lands in (Figure 2)
+    resp: { spo2Under: 93, rrAtLeast: 30, ncOverLpm: 6 },
+
+    // Hypotension / hypoperfusion (Figure 2 footnotes ‡ and §, and Section 3.2.2)
+    shock: {
+      sbpUnder: 90, sbpDropOver: 40, transientUnderMin: 15,
+      lactateOver: 2, uopUnderMlKgHr: 0.5, cardiacIndexUnder: 2.2,
+      mapUnder: 60, mapEscalate: 80,
+      arrestNoRoscMin: 30
+    },
+
+    // Anticoagulation. LMWH over UFH for Categories C1–E1 is a COR 1 invariant,
+    // not a local preference — what IS local is which agent and which order set.
+    anticoag: {
+      oral: "a DOAC",
+      parenteral: "LMWH",
+      parenteralRefractory: "LMWH or UFH"
+    },
+
+    // Thrombolysis. The full systemic dose is the guideline's; the arrest bolus is
+    // AHA ECC guidance for PE-associated arrest, NOT from the 2026 PE guideline —
+    // it is stamped as such wherever it prints.
+    lysis: {
+      agent: "alteplase",
+      fullDose: "100 mg IV over 2 h",
+      reducedNote: "a lower systemic dose may be considered to reduce bleeding (COR 2b)",
+      arrestDose: "50 mg IV bolus during CPR, may repeat once at 15 min",
+      arrestCprMin: "30–60"
+    }
+  };
+  try{ window.SITE = SITE; }catch(e){}
+  // ============================================================================
+
+  var $=function(id){return document.getElementById(id);};
+  function sel(name){ var el=document.querySelector('input[name="'+name+'"]:checked'); return el?el.value:null; }
+
+  /* ---------- category engine ------------------------------------------------
+     Universal and deliberately hard-coded, because these are the invariants a
+     fork must not be able to localize away: the ramp runs A → E, hemodynamics
+     outrank the severity score, C splits on RV *and* biomarker, and the R
+     modifier's bar rises with the tier. Only the numbers printed alongside come
+     from SITE. */
+
+  var TIER_RESP_FLOOR = { A:null, B:null, C:1, D:2, E:3 };
+
+  function categorize(){
+    var hemo=sel('hemo'), dx=sel('dx'), loc=sel('loc'), sev=sel('sev'),
+        rv=sel('rv'), bio=sel('bio'), resp=sel('resp');
+
+    var out = { tier:null, sub:null, provisional:null, needs:[] };
+
+    // 1. Hemodynamics outrank everything — the category is the most severe indicator.
+    if(hemo==='refractory'){ out.tier='E'; out.sub='E2'; }
+    else if(hemo==='shock'){ out.tier='E'; out.sub='E1'; }
+    else if(hemo==='normoshock'){ out.tier='D'; out.sub='D2'; }
+    else if(hemo==='transient'){ out.tier='D'; out.sub='D1'; }
+    else if(hemo==='none'){
+      if(dx==='incidental'){ out.tier='A'; out.sub='A'; }
+      else if(dx==='symptomatic'){
+        if(sev==='low'){
+          out.tier='B';
+          if(loc==='subseg') out.sub='B1';
+          else if(loc==='nonsubseg') out.sub='B2';
+          else { out.sub=null; out.needs.push('the most proximal clot location (section 2) to split B1 from B2'); }
+        } else if(sev==='high'){
+          out.tier='C';
+          var rvAb = rv==='abnormal', rvNl = rv==='normal',
+              bioAb = bio==='abnormal', bioNl = bio==='normal';
+          if(rvNl && bioNl) out.sub='C1';
+          else if(rvAb && bioAb) out.sub='C3';
+          else if((rvAb && bioNl) || (rvNl && bioAb)) out.sub='C2';
+          else if(rvAb || bioAb){
+            // one abnormal, the other not yet known — C2 is the floor, C3 if the
+            // outstanding one comes back abnormal. Say both, don't pick one.
+            out.sub=null; out.provisional='C2';
+            out.needs.push((rvAb?'cardiac biomarkers':'RV imaging')+' — C2 at minimum, C3 if it is abnormal');
+          } else {
+            out.sub=null;
+            out.needs.push('RV imaging and at least one cardiac biomarker to assign C1, C2 or C3');
+          }
+        } else { out.needs.push('the clinical severity score (section 3)'); }
+      } else { out.needs.push('whether the PE is symptomatic or incidental (section 2)'); }
+    } else { out.needs.push('the hemodynamic state (section 1)'); }
+
+    // 2. Respiratory modifier — only C, D and E carry one, each with its own bar.
+    var floor = out.tier ? TIER_RESP_FLOOR[out.tier] : null;
+    out.resp = resp===null ? null : Number(resp);
+    out.rMod = (floor!==null && out.resp!==null && out.resp>=floor);
+    out.code = out.sub ? (out.sub + (out.rMod?'R':'')) : null;
+
+    // The subcategory that guidance is drawn from. When the subcategory is not
+    // pinned down yet, fall back to the one whose guidance is common to the whole
+    // tier — so a Category C patient still gets the workup that would resolve the
+    // subcategory, instead of a blank screen.
+    out.basis = out.sub || out.provisional ||
+      (out.tier==='B' ? 'B2' : out.tier==='C' ? 'C1' : null);
+    return out;
+  }
+
+  /* ---------- what to do, by category ---------------------------------------
+     Every line is a recommendation from the 2026 guideline (Figures 3, Table 7,
+     and the recommendation blocks in sections 3.2, 4.1, 4.2 and 4.4), with its
+     Class of Recommendation shown. Local capability rewrites the sentence, never
+     the recommendation. */
+
+  function cor(c){
+    var color = /Harm|No Benefit/.test(c) ? 'var(--cE)' : 'var(--brand-primary-dark)';
+    return '<span class="corpill" style="color:'+color+'">COR '+c+'</span>';
+  }
+
+  var TIER_NAME = { A:'Subclinical', B:'Symptomatic, low clinical severity score',
+    C:'Symptomatic, elevated clinical severity score', D:'Incipient cardiopulmonary failure',
+    E:'Cardiopulmonary failure' };
+
+  var VERDICT = {
+    A:  'Anticoagulate and discharge — hospitalization is not required',
+    B1: 'Anticoagulate; assess for outpatient treatment',
+    B2: 'Anticoagulate; assess for outpatient treatment',
+    C1: 'Admit; parenteral anticoagulation, full risk workup, PERT',
+    C2: 'Admit; parenteral anticoagulation, full risk workup, PERT',
+    C3: 'Admit to monitored care; PERT now — this is the patient who deteriorates',
+    D1: 'Pre-failure — PERT now, advanced therapy on the table',
+    D2: 'Normotensive shock — pressors, PERT now, advanced therapy on the table',
+    E1: 'High-risk PE — reperfuse; stabilize before any transfer',
+    E2: 'Refractory — reperfuse, consider VA-ECMO; do not transfer'
+  };
+
+  function ANTICOAG(sub){
+    if(sub==='A'||sub==='B1'||sub==='B2')
+      return 'Start '+SITE.anticoag.oral+' — DOACs are recommended over a vitamin K antagonist unless contraindicated '+cor('1')+'.';
+    if(sub==='E2')
+      return 'Start '+SITE.anticoag.parenteralRefractory+' '+cor('1')+'. On VA-ECMO, continue parenteral systemic anticoagulation in the absence of bleeding '+cor('1')+'.';
+    return 'Start '+SITE.anticoag.parenteral+' — recommended over UFH in Categories C1–E1 to reduce recurrent VTE and major bleeding '+cor('1')+'.';
+  }
+
+  function steps(sub, tier){
+    var L = [];
+    L.push(ANTICOAG(sub));
+
+    if(tier==='A'){
+      L.push('Asymptomatic, incidentally found PE can be discharged home from the ED — hospitalization is not required.');
+      L.push('No thrombolysis, catheter-directed lysis, thrombectomy or embolectomy. '+cor('3: Harm')+' for systemic lysis in Categories A–C2.');
+    }
+    if(tier==='B'){
+      L.push('Assess short-term risk with Hestia, PESI and/or sPESI '+cor('1')+'.');
+      L.push('Use a decision tool to identify suitability for outpatient treatment '+cor('2a')+'. Outpatient treatment is a reasonable option when the 90-day adverse-outcome risk is low and it aligns with the patient’s goals '+cor('2a')+' — but only with <b>immediate access to the anticoagulant</b> and <b>rapid, reliable, expert follow-up</b> already arranged.');
+      if(sub==='B1') L.push('Subsegmental clot: triage and the decision to anticoagulate at all may differ here, and turn partly on whether there is a concomitant DVT — look for one.');
+      L.push('No thrombolysis, catheter-directed lysis, thrombectomy or embolectomy.');
+    }
+    if(tier==='C'){
+      L.push('Measure at least one cardiac biomarker — troponin I/T or BNP '+cor('1')+' — and a lactate, venous or arterial '+cor('1')+'.');
+      L.push('Image the RV for risk stratification '+cor('1')+'; echocardiography is preferred over CT for this '+cor('2a')+'.');
+      L.push('Apply a validated PE-specific risk score to identify the higher-risk patient '+cor('2a')+'.');
+      L.push('Hospitalize.');
+      if(sub==='C3'){
+        L.push('Watch the MAP: below '+SITE.shock.mapEscalate+' mm Hg identifies the Category C3 patient who may need escalation of therapy '+cor('2a')+'.');
+      }
+    }
+    if(tier==='D'){
+      L.push('Measure a lactate '+cor('1')+' and image the RV '+cor('1')+'.');
+      if(sub==='D1') L.push('Actively evaluate for normotensive shock — a hypoperfusion marker without sustained hypotension moves this patient to D2 and predicts deterioration and in-hospital death '+cor('2a')+'.');
+      if(sub==='D2') L.push('Vasopressors and/or inotropes to restore cardiac output and systemic perfusion '+cor('1')+'.');
+      L.push('Volume: only where preload genuinely looks reduced, and cautiously — 500–1000 mL is what the guideline calls a trial '+cor('2b')+'. The overloaded RV does not want more.');
+    }
+    if(tier==='E'){
+      L.push('Measure a lactate '+cor('1')+'.');
+      L.push('Vasopressors and/or inotropes '+cor('1')+'.');
+      if(sub==='E1') L.push('Image the RV '+cor('1')+'.');
+      if(sub==='E2') L.push('VA-ECMO is reasonable in refractory cardiogenic shock from PE, provided the resources are available '+cor('2a')+'.');
+    }
+
+    // PERT — recommended for every C–E patient, phrased around what exists here.
+    if(tier==='C'||tier==='D'||tier==='E'){
+      L.push(SITE.capability.pertOnSite
+        ? 'Activate the PE response team — multidisciplinary PERT assessment is recommended for Categories C–E '+cor('1')+'.'
+        : 'Multidisciplinary PERT assessment is recommended for Categories C–E '+cor('1')+'. There is no PERT on site: the equivalent here is the call to <b>'+SITE.transferCenter+' — '+SITE.transferPhone+'</b>, made early rather than after deterioration.');
+    }
+
+    // Transfer — the community-ED question, and the one place the guideline says
+    // "do not". Keep both directions visible.
+    if(sub==='C3'||tier==='D'){
+      L.push('Transfer to a center that can provide advanced therapy may be considered for the hemodynamically stable patient with high-risk features '+cor('2b')+'.');
+    }
+    if(tier==='E'){
+      L.push('<b>Do not transfer before stabilizing</b> '+cor('3: Harm')+'. Unstable acute PE is stabilized where it is, then moved.');
+    }
+    if(tier==='C'||tier==='D'||tier==='E'){
+      L.push('Anyone who receives thrombolysis, systemic or catheter-directed, goes to an ICU or intermediate-care bed '+cor('1')+'.');
+      L.push('Avoid deep sedation and mechanical ventilation unless clinically indicated '+cor('3: Harm')+'; if intubation is unavoidable, have vasopressors, inotropes and/or VA-ECMO ready first '+cor('1')+'.');
+    }
+    return L;
+  }
+
+  /* Table 7 — advanced therapy recommendations by category. Verbatim from the
+     guideline; the parenthetical is the guideline's own qualifier. */
+  var ADV = {
+    A:  { lysis:'3: Harm',  cdl:'3: No Benefit', mt:'3: No Benefit', surg:'3: No Benefit' },
+    B1: { lysis:'3: Harm',  cdl:'3: No Benefit', mt:'3: No Benefit', surg:'3: No Benefit' },
+    B2: { lysis:'3: Harm',  cdl:'3: No Benefit', mt:'3: No Benefit', surg:'3: No Benefit' },
+    C1: { lysis:'3: Harm',  cdl:'3: No Benefit', mt:'3: No Benefit', surg:'3: No Benefit' },
+    C2: { lysis:'3: Harm',  cdl:'2b (unclear)',  mt:'2b (unclear)',  surg:'3: No Benefit' },
+    C3: { lysis:'2b (unclear)', cdl:'2b (unclear)', mt:'2b (unclear)', surg:'3: No Benefit' },
+    D1: { lysis:'2b (may be considered)', cdl:'2b (may be considered)', mt:'2b (may be considered)', surg:'2b (unclear)' },
+    D2: { lysis:'2b (may be considered)', cdl:'2b (may be considered)', mt:'2b (may be considered)', surg:'2b (unclear)' },
+    E1: { lysis:'2a', cdl:'2a', mt:'2a', surg:'2a' },
+    E2: { lysis:'2a', cdl:'N/A', mt:'N/A', surg:'3: No Benefit' }
+  };
+
+  function advNote(sub){
+    var a = ADV[sub];
+    if(!a) return '';
+    var n = [];
+    if(/^2a|^2b/.test(a.lysis)){
+      n.push('Systemic lysis here is '+SITE.lysis.agent+' '+SITE.lysis.fullDose+'; '+SITE.lysis.reducedNote+'. Acceptable bleeding risk is a precondition in every one of these recommendations.');
+    }
+    if(sub==='E2'){
+      n.push('In cardiac arrest the dose used is '+SITE.lysis.agent+' '+SITE.lysis.arrestDose+', with CPR continued '+SITE.lysis.arrestCprMin+' min after it is given — that regimen is AHA ECC guidance for PE-associated arrest, <b>not</b> from the 2026 PE guideline, and must be confirmed against local pharmacy protocol.');
+    }
+    var onSite = [];
+    if(SITE.capability.catheterDirected) onSite.push('catheter-directed lysis');
+    if(SITE.capability.thrombectomy) onSite.push('mechanical thrombectomy');
+    if(SITE.capability.surgicalEmbolectomy) onSite.push('surgical embolectomy');
+    if(SITE.capability.ecmo) onSite.push('VA-ECMO');
+    if(/2a|2b/.test(a.cdl+a.mt+a.surg)){
+      n.push(onSite.length
+        ? 'Available on site: '+onSite.join(', ')+'. Everything else on this row means a transfer call.'
+        : 'None of the catheter, surgical or ECMO options are available on site — each of them means a transfer call, and systemic lysis is the only reperfusion this department can start itself.');
+    }
+    return n.join(' ');
+  }
+
+  /* ---------- rendering ------------------------------------------------------ */
+
+  function tierColor(t){ return 'var(--c'+t+')'; }
+
+  function render(){
+    var c = categorize();
+    var box = $('finalBox'), adv = $('advWrap');
+
+    if(!c.tier){
+      box.className='final pending'; box.style.cssText='';
+      box.innerHTML='<div class="head">AHA/ACC Acute PE Clinical Category</div>'+
+        '<div class="verdict">Complete the sections above</div>'+
+        '<div class="detail">Still needed: '+(c.needs[0]||'the hemodynamic state (section 1)')+'.</div>';
+      adv.style.display='none';
+      return;
+    }
+
+    var t=c.tier, shown = c.code || (c.provisional ? c.provisional+'?' : t);
+    box.className='final';
+    box.style.borderColor='var(--c'+t+'-br)';
+    box.style.background='var(--c'+t+'-bg)';
+    box.style.color=tierColor(t);
+
+    var head = 'Category '+t+' &mdash; '+TIER_NAME[t];
+    var verdict = c.sub ? VERDICT[c.sub] : 'Category '+t+' &mdash; subcategory not yet determined';
+    var body = '';
+
+    if(!c.sub){
+      body += '<div class="detail" style="margin-bottom:8px"><b>Outstanding:</b> '+c.needs.join('; ')+'.'+
+        (c.provisional ? ' Treat as <b>'+c.provisional+'</b> until it comes back.' : '')+'</div>';
+    }
+    if(c.rMod){
+      body += '<div class="detail" style="margin-bottom:8px"><b>R modifier applied:</b> respiratory compromise meets the Category '+t+' bar ('+respBarText(t)+').</div>';
+    } else if(c.resp!==null && TIER_RESP_FLOOR[t]!==null && c.resp>0){
+      body += '<div class="detail" style="margin-bottom:8px">No R modifier: the Category '+t+' bar is '+respBarText(t)+', which this patient is below.</div>';
+    }
+
+    if(c.basis){
+      body += '<ul>'+steps(c.basis, t).map(function(s){return '<li>'+s+'</li>';}).join('')+'</ul>';
+    }
+    if(sel('confirmed')==='no' && (t==='C'||t==='D'||t==='E')){
+      body += '<div class="detail" style="margin-top:10px"><b>Imaging not back yet:</b> in suspected acute PE at Category C2 or higher with a low bleeding risk, giving therapeutic anticoagulation before the scan may be beneficial '+cor('2a')+'. Do not wait on the CT to start it.</div>';
+    }
+
+    box.innerHTML='<div class="head">'+head+'</div>'+
+      '<div class="catcode">'+shown+'</div>'+
+      '<div class="verdict">'+verdict+'</div>'+ body;
+
+    // The advanced-therapy row is only shown for a subcategory that is actually
+    // pinned down. C1 and C3 sit at opposite ends of Table 7 — printing one of
+    // them for a patient whose RV and biomarkers are still outstanding would be
+    // the single most misleading thing this page could do.
+    var advSub = c.sub || c.provisional;
+    if(advSub && ADV[advSub]){
+      var a=ADV[advSub];
+      $('advLysis').textContent=a.lysis; $('advCdl').textContent=a.cdl;
+      $('advMt').textContent=a.mt; $('advSurg').textContent=a.surg;
+      $('advNote').innerHTML=(c.provisional
+        ? '<b>Provisional &mdash; this row is the '+c.provisional+' row.</b> '+c.needs.join('; ')+'. '
+        : '') + advNote(advSub);
+      adv.style.display='';
+    } else { adv.style.display='none'; }
+  }
+
+  function respBarText(t){
+    if(t==='C') return 'SpO₂ < '+SITE.resp.spo2Under+'%, RR ≥ '+SITE.resp.rrAtLeast+', or any supplemental oxygen';
+    if(t==='D') return '> '+SITE.resp.ncOverLpm+' L nasal cannula, or a nonrebreather';
+    if(t==='E') return 'hypoxemic or ventilatory failure needing noninvasive or invasive positive-pressure ventilation';
+    return 'not applicable to this category';
+  }
+
+  /* ---------- sPESI -> severity score auto-fill ------------------------------
+     Same idiom as the HEART pathway's troponin sub-score: if the clinician has
+     touched the sPESI row, it is authoritative and the severity radio follows it;
+     otherwise the radio stays free so a PESI, Bova or Hestia result can be entered
+     directly. */
+  var spesiTouched = false;   // the sPESI row has been used at all
+  var sevManual    = false;   // ...and then deliberately overridden on the severity row
+
+  function spesiCount(){
+    return document.querySelectorAll('input[name="spesi"]:checked').length;
+  }
+
+  function syncSpesi(){
+    var n = spesiCount();
+    $('spesiScore').textContent = spesiTouched ? n : '–';
+    var riskEl=$('spesiRisk');
+    if(!spesiTouched){ riskEl.textContent='Not started'; riskEl.style.background='var(--card2)'; riskEl.style.color='var(--ink2)'; }
+    else if(n>=SITE.score.spesiHigh){ riskEl.textContent='Elevated (≥ '+SITE.score.spesiHigh+')'; riskEl.style.background='var(--cC-bg)'; riskEl.style.color='var(--cC)'; }
+    else { riskEl.textContent='Low (0)'; riskEl.style.background='var(--cA-bg)'; riskEl.style.color='var(--cA)'; }
+
+    var auto = spesiTouched && !sevManual;
+    var want = auto ? (n>=SITE.score.spesiHigh ? 'high' : 'low') : null;
+    ['low','high'].forEach(function(v){
+      var opt=$('sevOpt'+v.charAt(0).toUpperCase()+v.slice(1)), inp=opt.querySelector('input');
+      if(want!==null){ var on=(v===want); inp.checked=on; inp.setAttribute('data-auto', on?'1':''); opt.classList.toggle('sel',on); }
+      else { if(inp.getAttribute('data-auto')==='1'){ inp.checked=false; inp.setAttribute('data-auto',''); }
+             opt.classList.toggle('sel', inp.checked); }
+    });
+    $('sevHint').innerHTML = auto
+      ? '&mdash; auto-set from sPESI ' + n + '; tap to override with a PESI, Bova or Hestia result'
+      : (sevManual
+          ? '&mdash; set by hand' + (spesiTouched ? ' &mdash; the sPESI ' + n + ' above is not driving it' : '') + '; tick or untick an sPESI box to hand it back'
+          : '&mdash; auto-fills from sPESI; you can also tap it');
+  }
+
+  /* Fade the questions the current answers make irrelevant, so the form does not
+     invite an answer the engine will ignore. Nothing is disabled — a clinician
+     changing their mind about section 1 must not find section 3 locked. */
+  function syncRelevance(){
+    var hemo=sel('hemo'), dx=sel('dx'), sev=sel('sev');
+    var hemoStable = (hemo==='none');
+    var qs = document.querySelectorAll('.q');
+    qs.forEach(function(q){
+      var g = q.querySelector('.opts[data-group]');
+      if(!g) return;
+      var name = g.getAttribute('data-group');
+      var irrelevant = false;
+      if(name==='loc') irrelevant = !(hemoStable && dx==='symptomatic' && sev==='low');
+      if(name==='spesi'||name==='sev') irrelevant = !(hemoStable && dx==='symptomatic');
+      if(name==='rv'||name==='bio') irrelevant = !(hemoStable && dx==='symptomatic' && sev==='high');
+      q.classList.toggle('muted', irrelevant);
+    });
+  }
+
+  /* ---------- static text driven from SITE ---------------------------------- */
+  function paintConfigText(){
+    var S=SITE.shock;
+    $('hintTransient').innerHTML='&mdash; SBP &lt; '+S.sbpUnder+' mm Hg or a drop &gt; '+S.sbpDropOver+
+      ' mm Hg, lasting &lt; '+S.transientUnderMin+' min or responding to IV fluids, with no marker of hypoperfusion';
+    $('hintNormoshock').innerHTML='&mdash; any of: lactate &gt; '+S.lactateOver+' mmol/L, acute kidney injury, urine output &lt; '+
+      S.uopUnderMlKgHr+' mL/kg/h, mental status change, cardiac index &lt; '+S.cardiacIndexUnder+' L/min/m&sup2;, MAP &lt; '+
+      S.mapUnder+' mm Hg, or a rising shock score/stage (SCAI, CPES)';
+    $('hintRefractory').innerHTML='&mdash; SCAI SHOCK D&ndash;E, or arrest without ROSC after '+S.arrestNoRoscMin+' min of resuscitation';
+
+    var P=SITE.spesi;
+    $('spAge').innerHTML='Age &gt; '+P.ageOver+' y';
+    $('spSbp').innerHTML='Systolic BP &lt; '+P.sbpUnder+' mm Hg';
+    $('spHr').innerHTML='Heart rate &ge; '+P.hrAtLeast+' bpm';
+    $('spSpo2').innerHTML='Arterial oxygen saturation &lt; '+P.spo2Under+'%';
+
+    var C=SITE.score;
+    $('hintSevLow').innerHTML='&mdash; PESI &le; '+C.pesiLow+', or sPESI 0, or Bova &le; '+C.bovaLow+', or Hestia 0';
+    $('hintSevHigh').innerHTML='&mdash; PESI &gt; '+C.pesiLow+', or sPESI &ge; '+C.spesiHigh+', or Bova &gt; '+C.bovaLow+', or Hestia &ge; '+C.hestiaHigh;
+
+    var R=SITE.resp;
+    $('respL1').innerHTML='SpO&#8322; &lt; '+R.spo2Under+'%, RR &ge; '+R.rrAtLeast+', or any supplemental oxygen';
+    $('respL2').innerHTML='&gt; '+R.ncOverLpm+' L nasal cannula, or a nonrebreather';
+
+    $('refR').innerHTML='Added to the subcategory (eg, C3R, D2R) when respiratory compromise is prominent. Category C: '+
+      respBarText('C')+'. Category D: '+respBarText('D')+'. Category E: '+respBarText('E')+'. Categories A and B carry no R.';
+    $('refFootnotes').innerHTML=
+      '<li>* Low clinical severity score: PESI &le; '+C.pesiLow+' or sPESI = 0 or Bova &le; '+C.bovaLow+'.</li>'+
+      '<li>&dagger; Elevated clinical severity score: PESI &gt; '+C.pesiLow+' or sPESI &ge; '+C.spesiHigh+' or Bova &gt; '+C.bovaLow+'.</li>'+
+      '<li>&Dagger; Transient hypotension: SBP &lt; '+S.sbpUnder+' mm Hg or a decrease &gt; '+S.sbpDropOver+
+        ' mm Hg lasting &lt; '+S.transientUnderMin+' min or responding to IV fluids.</li>'+
+      '<li>&sect; Normotensive shock &mdash; any of: lactate &gt; '+S.lactateOver+' mmol/L, acute kidney injury, urine output &lt; '+
+        S.uopUnderMlKgHr+' mL/kg/h, mental status change, cardiac index &lt; '+S.cardiacIndexUnder+
+        ' L/min/m&sup2;, MAP &lt; '+S.mapUnder+' mm Hg, increased shock score/stage (SCAI stage, CPES score).</li>';
+  }
+
+  function recalc(){ syncSpesi(); syncRelevance(); render(); }
+
+  document.querySelectorAll('.opts[data-group]').forEach(function(grp){
+    grp.addEventListener('change',function(e){
+      var g = grp.getAttribute('data-group');
+      // Touching sPESI hands control back to it; tapping the severity row takes
+      // control away. Either way the sPESI count stays on screen — a clinician who
+      // overrides with a PESI still wants to see what the sPESI said.
+      if(g==='spesi'){ spesiTouched = true; sevManual = false; }
+      if(g==='sev' && e.target.getAttribute('data-auto')!=='1'){ sevManual = true; }
+      grp.querySelectorAll('label.opt').forEach(function(l){ l.classList.toggle('sel', l.querySelector('input').checked); });
+      recalc();
+    });
+  });
+
+  window.resetAll=function(){
+    document.querySelectorAll('input[type=radio],input[type=checkbox]').forEach(function(r){
+      r.checked=false; r.setAttribute('data-auto','');
+    });
+    document.querySelectorAll('label.opt').forEach(function(l){l.classList.remove('sel');});
+    spesiTouched=false; sevManual=false;
+    recalc();
+  };
+
+  var vs=$('verStamp');
+  if(vs){ vs.innerHTML='v'+SITE.version+' &middot; last reviewed '+SITE.lastReviewed+' &middot; written against the '+
+    SITE.guidelineEdition+' guideline &middot; '+SITE.hospitalShort; }
+
+  paintConfigText();
+  recalc();
+})();
+</script>
+</body>
+</html>
