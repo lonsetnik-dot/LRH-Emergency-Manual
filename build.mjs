@@ -65,12 +65,14 @@ function applySite(text, file) {
 }
 
 // Not part of the deployed site (dev tooling, docs, build inputs, VCS).
-// design/ holds the design-reference package (prototypes + specs). Its .dc.html
-// files are references to build FROM, not pages to ship — and the offline shell
-// precaches every page it finds, so shipping ~90 kB of prototype would cost
-// every clinician's cache for something no clinician opens. Read them from the
-// repo, not the site.
-const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', '.github', 'design']);
+// cairn/ is the cairnready.org outreach site and dist-demo/ is its build
+// output (demo-build.mjs) — both their own Netlify site, never part of the
+// manual or its offline precache. design/ holds the design-reference package
+// (prototypes + specs) — its .dc.html files are references to build FROM, not
+// pages to ship, and the offline shell precaches every page it finds, so
+// shipping ~90 kB of prototype would cost every clinician's cache for
+// something no clinician opens. Read them from the repo, not the site.
+const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'dist-demo', '.github', 'cairn', 'design']);
 const SKIP_ROOT_FILES = new Set([
   'design-system.css', 'design-system-live.css', 'inventory.js', 'equipment-icons.js', 'procedure-icons.js', 'guidelines.js', 'build.mjs', 'run-tests.sh', 'netlify.toml',
   'package.json', 'package-lock.json', 'shot.mjs', '.gitignore',
