@@ -346,6 +346,59 @@ console.log('\n--- 2h. scope, citation and the PHI guard ---');
     await pg.locator('input[type=text],input[type=email],textarea').count(), 0);
 }
 
+console.log('\n--- 2i. receiving hospitals ---');
+{
+  await pg.goto(BASE + TOOL + '?from=home', { waitUntil: 'networkidle' });
+  await pg.waitForTimeout(300);
+
+  /* Config-driven: the rows are the configured destinations, in the configured order. */
+  const want = SITE.transferDestinations || [];
+  ck('2i. the tool configures its receiving hospitals', want.length > 0, true);
+  const rowLabels = await pg.locator('#xferBox > div:not(:first-child) > div:first-child').allInnerTexts();
+  ck('2i. every configured destination is on screen, in config order',
+    rowLabels.map(norm).join(' | '), want.map(d => d.label).join(' | '));
+
+  /* Alphabetical by hospital, and the screen says the order is not a ranking.
+     Both halves matter: a list read top-down under pressure is taken as a
+     preference order unless it says otherwise. */
+  const sorted = [...rowLabels.map(norm)].sort((a, b) => a.localeCompare(b, 'en'));
+  ck('2i. the destinations are in alphabetical order',
+    rowLabels.map(norm).join(' | '), sorted.join(' | '));
+  has('2i. and the page says that order is not a preference ranking',
+    norm(await pg.locator('#xferBox').locator('xpath=following-sibling::p[1]').innerText()),
+    'not in order of preference');
+
+  /* The invariant that matters most on a phone affordance: a number nobody has
+     filled in must NOT render as a tappable link. A 44px call target that dials
+     nothing is worse than no target at all. */
+  for (const d of want) {
+    const dialable = String(d.tel || '').replace(/[^0-9]/g, '').length >= 7;
+    const link = pg.locator(`#xferBox a[href="tel:${String(d.tel).replace(/[^0-9+]/g, '')}"]`);
+    ck(`2i. ${d.key}: ${dialable ? 'dialable, so it is a tel: link' : 'undialable, so it is NOT a link'}`,
+      (await link.count()) > 0, dialable);
+    if (!dialable) {
+      has(`2i. ${d.key}: and it is marked unconfigured rather than looking ready`,
+        norm(await pg.locator('#xferBox').innerText()), 'not configured');
+    }
+  }
+  const anyDead = await pg.locator('#xferBox a[href="tel:"], #xferBox a[href="tel:+"]').count();
+  ck('2i. no dead tel: link anywhere in the block', anyDead, 0);
+
+  /* Cross-tool: PE and STEMI route to the same hospitals in the same order. The
+     strings come from one place (site.config.json), so this is really asserting
+     that neither tool has quietly grown a hand-typed copy — the same reason
+     verify_vems.mjs compares rendered glyphs rather than trusting a shared file. */
+  const peSet = rowLabels.map(norm);
+  const pg2 = await b.newPage({ viewport: { width: 390, height: 844 } });
+  await pg2.goto(BASE + '/codes/?from=home#c21', { waitUntil: 'networkidle' });
+  await pg2.waitForTimeout(500);
+  const stemiSet = (await pg2.locator('#stemiXferBox > div:not(:first-child) > div:first-child > div:first-child')
+    .allInnerTexts()).map(norm);
+  await pg2.close();
+  ck('2i. STEMI offers the same hospitals, in the same order, as PE',
+    stemiSet.join(' | '), peSet.join(' | '));
+}
+
 /* ==========================================================================
    3. THE FORM ITSELF — the sPESI hand-off, and reset
    ========================================================================== */
@@ -420,7 +473,12 @@ const FORK = 'dist/clinical-pathways/pe/__fork.html';
     .replace('arrestNoRoscMin: 30', 'arrestNoRoscMin: 20')
     .replace('catheterDirected: false', 'catheterDirected: true')
     .replace('pertOnSite: false', 'pertOnSite: true')
-    .replace('version: "1.0"', 'version: "1.0-fork"');
+    .replace('version: "1.0"', 'version: "1.0-fork"')
+    /* ...and a site that HAS filled in the destination this edition leaves blank.
+       Both directions of the phone affordance have to be proven, not just the
+       unconfigured one: the same code must produce a real tel: link here. */
+    .replace("tel:'',       phone:'[add the HCA New Hampshire transfer line]'",
+             "tel:'+15555550123',       phone:'555-555-0123'");
   ck('5. the fork rewrite actually changed the config', forked === orig ? 'unchanged' : 'changed', 'changed');
   writeFileSync(FORK, forked);
 
@@ -440,6 +498,16 @@ const FORK = 'dist/clinical-pathways/pe/__fork.html';
   await scenario({ hemo: 'shock' });
   has('5. a site WITH a PERT is told to activate it', await final(), 'Activate the PE response team');
   has('5. a site WITH catheter lysis is told what it has', await txt('#advNote'), 'Available on site: catheter-directed lysis');
+
+  /* The destination this edition leaves blank is a live tap-to-call link on a site
+     that filled it in — same code, opposite rendering, driven only by config. */
+  await pg.goto(BASE + '/clinical-pathways/pe/__fork.html?from=home', { waitUntil: 'networkidle' });
+  await pg.waitForTimeout(300);
+  ck('5. a filled-in destination renders as a real tel: link',
+    await pg.locator('#xferBox a[href="tel:+15555550123"]').count(), 1);
+  ck('5. and the fork shows nothing as unconfigured',
+    norm(await pg.locator('#xferBox').innerText()).includes('not configured') ? 'still unconfigured' : 'all configured',
+    'all configured');
 
   /* And the invariants are still invariant on the fork. */
   await scenario({ hemo: 'none', sev: 'high', rv: 'abnormal', bio: 'abnormal' });
