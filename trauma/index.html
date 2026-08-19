@@ -225,7 +225,7 @@
     <!-- Forking for another site: replace the "Local practice" notes throughout this card (mBIG-1 attending routing,
          mBIG-2/mBIG-3 transfer disposition) with your own facility's arrangement. -->
     <div class="t-localize">
-      ⚠ <b>LOCALIZED FOR LRH:</b> mBIG-1 routes to the <b>trauma attending, not neurosurgery</b>; mBIG-2 and mBIG-3 are <b>transferred to DHMC</b>, not admitted locally — both per the workflow agreed with DHMC's trauma medical director (see the "LRH" notes below). The categories and imaging thresholds below are from the published mBIG literature.
+      ⚠ <b>LOCAL ROUTING — LOCALIZE:</b> mBIG-1 routes to the <b>trauma attending, not neurosurgery</b>; mBIG-2 and mBIG-3 are <b>transferred to the receiving trauma center</b>, not admitted locally — both per a workflow agreed with the receiving center's trauma medical director (see the "Local practice" notes below). The categories and imaging thresholds below are from the published mBIG literature.
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
@@ -234,7 +234,7 @@
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-1" class="t-ck"><span><b>All of:</b> GCS 13–15 or at neurologic baseline · normal neuro exam · no intoxication · no anticoagulant/antiplatelet use.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-2" class="t-ck"><span><b>CT:</b> subdural (SDH) or intraparenchymal hemorrhage (IPH) ≤4mm · localized subarachnoid hemorrhage (SAH) ≤3 sulci and &lt;1mm · <b>no</b> skull fracture, intraventricular hemorrhage (IVH), or epidural hemorrhage (EDH).</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-3" class="t-ck"><span><b>Management:</b> 6-hour ED observation with neuro checks every 2 hours. No repeat head CT. No neurosurgical consultation. If stable at 6 hours, discharge home from the ED. <b>LRH:</b> notify the trauma attending — <b>not</b> neurosurgery — per the workflow agreed with DHMC's trauma medical director. <b><a class="telcall" data-tc href="tel:+18779999870">{{SITE.transferCenter}}: {{SITE.transferPhone}}</a>.</b> The transfer center may not route this correctly; ask for the trauma attending by name/service if you're connected to neurosurgery instead.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-3" class="t-ck"><span><b>Management:</b> 6-hour ED observation with neuro checks every 2 hours. No repeat head CT. No neurosurgical consultation. If stable at 6 hours, discharge home from the ED. <b>Local practice:</b> notify the trauma attending — <b>not</b> neurosurgery — per the workflow agreed with the receiving center's trauma medical director. <b><a class="telcall" data-tc href="tel:{{SITE.transferPhone}}">{{SITE.transferCenter}}: {{SITE.transferPhone}}</a>.</b> The transfer center may not route this correctly; ask for the trauma attending by name/service if you're connected to neurosurgery instead.</span></label></li>
         </ul>
       </details>
       <details open class="t-box-caution">
@@ -242,7 +242,7 @@
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-4" class="t-ck"><span><b>All of:</b> GCS 13–15 or at neurologic baseline · normal neuro exam · no anticoagulant/antiplatelet use. <b>May</b> be intoxicated (blood alcohol &gt;80 mg/dL).</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-5" class="t-ck"><span><b>CT:</b> SDH or IPH &gt;4–7.9mm · SAH involving one hemisphere or 1–3mm · non-displaced skull fracture · <b>no</b> IVH, EDH, midline shift, or herniation.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-6" class="t-ck"><span><b>Management (published guideline):</b> admit 24–48 hours to a trauma/monitored service. Neuro checks q2h ×6 hours, then q4h. No routine repeat CT. No neurosurgical consultation required. <b>LRH:</b> transferred to DHMC, not admitted locally — per agreement with DHMC's trauma medical director. <b><a class="telcall" data-tc href="tel:+18779999870">{{SITE.transferCenter}}: {{SITE.transferPhone}}</a>.</b></span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-6" class="t-ck"><span><b>Management (published guideline):</b> admit 24–48 hours to a trauma/monitored service. Neuro checks q2h ×6 hours, then q4h. No routine repeat CT. No neurosurgical consultation required. <b>Local practice:</b> transferred to the receiving trauma center, not admitted locally — per agreement with the receiving center's trauma medical director. <b><a class="telcall" data-tc href="tel:{{SITE.transferPhone}}">{{SITE.transferCenter}}: {{SITE.transferPhone}}</a>.</b></span></label></li>
         </ul>
       </details>
       <details open class="t-box-crit">
@@ -250,7 +250,7 @@
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-7" class="t-ck"><span>Abnormal neuro exam (GCS &lt;13, focal findings, abnormal pupils) · intoxication (BAC &gt;80 mg/dL) · <b>any</b> use of anticoagulants or antiplatelet agents.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-8" class="t-ck"><span><b>CT:</b> SDH or IPH ≥8mm · <b>any</b> IVH · bi-hemispheric SAH &gt;3mm · <b>any</b> EDH · multiple concurrent hemorrhages or midline shift · displaced skull fracture.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-9" class="t-ck"><span><b>Management:</b> admit to a monitored setting (ICU/neuro-ICU). Neurosurgical consultation. Repeat head CT per neurosurgical guidance. <b>LRH:</b> transferred to DHMC, same as mBIG-2 — per agreement with DHMC's trauma medical director. <b><a class="telcall" data-tc href="tel:+18779999870">{{SITE.transferCenter}}: {{SITE.transferPhone}}</a>.</b></span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c01-9" class="t-ck"><span><b>Management:</b> admit to a monitored setting (ICU/neuro-ICU). Neurosurgical consultation. Repeat head CT per neurosurgical guidance. <b>Local practice:</b> transferred to the receiving trauma center, same as mBIG-2 — per agreement with the receiving center's trauma medical director. <b><a class="telcall" data-tc href="tel:{{SITE.transferPhone}}">{{SITE.transferCenter}}: {{SITE.transferPhone}}</a>.</b></span></label></li>
         </ul>
       </details>
       <details class="t-box-neutral">
@@ -263,7 +263,7 @@
     </div>
 
     <div class="t-sub">
-      <b>Sources:</b> Joseph JM, et al. "Modified Brain Injury Guidelines: A Prospective Study of Safety, Efficacy, and Resource Utilization." <i>J Emerg Med.</i> 2022;63(4):490–498 (mBIG-1/2/3 criteria and management, cross-verified via EMOttawa Blog clinical summary and WikEM). Original concept: Joseph B, et al. "The Brain Injury Guidelines (BIG) project: defining the management of traumatic brain injury by acute care surgeons." <i>J Trauma Acute Care Surg.</i> 2014;76(4):965–969. The "LRH" call-routing and transfer notes above are local practice, agreed directly with DHMC's trauma medical director — not part of the published mBIG literature. This card is also linked from Clinical Pathways.
+      <b>Sources:</b> Joseph JM, et al. "Modified Brain Injury Guidelines: A Prospective Study of Safety, Efficacy, and Resource Utilization." <i>J Emerg Med.</i> 2022;63(4):490–498 (mBIG-1/2/3 criteria and management, cross-verified via EMOttawa Blog clinical summary and WikEM). Original concept: Joseph B, et al. "The Brain Injury Guidelines (BIG) project: defining the management of traumatic brain injury by acute care surgeons." <i>J Trauma Acute Care Surg.</i> 2014;76(4):965–969. The "Local practice" call-routing and transfer notes above are local practice, agreed directly with the receiving center's trauma medical director — not part of the published mBIG literature. This card is also linked from Clinical Pathways.
     </div>
     <div class="t-foot">
       <span class="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
@@ -919,7 +919,7 @@ var SITE = {
   /* Transfer/consult numbers. One source of truth (CLAUDE.md rule 2) — the
      BIG card renders every transfer-center line from here as a tap-to-
      call tel: link. `tel` is the E.164 dial string; `phone` is what's shown. */
-  transferCenter: { label: "{{SITE.transferCenter}}", phone: "{{SITE.transferPhone}}", tel: "+18779999870" },
+  transferCenter: { label: "{{SITE.transferCenter}}", phone: "{{SITE.transferPhone}}", tel: "{{SITE.transferPhone}}" },
   /* SCENE SECURITY for penetrating trauma (issue #111). Who is called and what
      the department can actually do is entirely local — some EDs can lock the
      ambulance bay from the charge desk, some have to ask a security officer who
