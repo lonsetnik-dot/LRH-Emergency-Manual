@@ -387,7 +387,7 @@
           <rect x="64" y="44" width="52" height="28" rx="14" fill="#2f74ad"></rect>
           <rect x="76" y="18" width="28" height="22" rx="11" fill="#5f93c0"></rect>
         </svg>
-        <p style="font-size: 14.5px; line-height: 1.55; color: oklch(0.45 0.02 160); max-width: 300px; text-align: center; margin: 0; font-style: italic">A cairn is a stack of stones left on the trail by those who walked it before you — so you can find the way in bad weather. That's the idea.</p>
+        <p style="font-size: 14.5px; line-height: 1.55; color: oklch(0.45 0.02 160); max-width: 300px; text-align: center; margin: 0; font-style: italic">A cairn is a stack of stones left on the trail by those who walked it before you — so you can find the way in bad weather. Add a stone if you can. It's part of the environment now, helping the next traveler the way it helped you.</p>
       </div>
     </div>
   </header>
@@ -396,43 +396,50 @@
     <div style="max-width: 1100px; margin: 0 auto">
       <div style="display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 8px">
         <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 34px; color: #fff; margin: 0">The manual, live</h2>
-        <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: oklch(0.78 0.07 250)">Interactive preview</span>
+        <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: oklch(0.78 0.07 250)">Sample content</span>
       </div>
-      <p style="color: oklch(0.82 0.01 160); font-size: 16px; max-width: 640px; margin: 0 0 32px; line-height: 1.6">This is the reference implementation an adopting ED starts from. Tap a section to see the kind of cognitive aid inside — each one is a live, checkable tool at the bedside, not a PDF.</p>
+      <p style="color: oklch(0.82 0.01 160); font-size: 16px; max-width: 640px; margin: 0 0 32px; line-height: 1.6">This is the reference implementation an adopting ED starts from — a sample below, the real thing one click away. Each tool is live and checkable at the bedside, not a PDF.</p>
       <div style="background: #f6f7f6; border-radius: 14px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,0.35)">
-        <div style="display: flex; align-items: center; gap: 8px; padding: 12px 18px; background: oklch(0.93 0.01 160); border-bottom: 1px solid oklch(0.87 0.01 160)">
+        <a href="https://demo.cairnready.org/codes/" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; gap: 8px; padding: 12px 18px; background: oklch(0.93 0.01 160); border-bottom: 1px solid oklch(0.87 0.01 160); text-decoration: none">
           <span style="width: 11px; height: 11px; border-radius: 50%; background: oklch(0.75 0.03 160)"></span>
           <span style="width: 11px; height: 11px; border-radius: 50%; background: oklch(0.75 0.03 160)"></span>
           <span style="width: 11px; height: 11px; border-radius: 50%; background: oklch(0.75 0.03 160)"></span>
-          <span style="flex: 1; text-align: center; font-size: 13px; color: oklch(0.5 0.02 160); font-family: monospace">demo.cairnready.org</span>
-        </div>
+          <span style="flex: 1; text-align: center; font-size: 13px; color: oklch(0.5 0.02 160); font-family: monospace">demo.cairnready.org/codes ↗</span>
+        </a>
         <div class="cn-demo" style="display: grid; grid-template-columns: 300px 1fr; min-height: 420px">
           <div class="cn-tabs" style="border-right: 1px solid oklch(0.88 0.01 160); padding: 18px 14px; display: flex; flex-direction: column; gap: 6px; background: #fdfdfc">
-            <sc-for list="{{ categories }}" as="cat" hint-placeholder-count="6">
-              <button sc-camel-on-click="{{ cat.pick }}" style="{{ cat.tabStyle }}">
-                <span style="font-weight: 700; font-size: 15px">{{ cat.name }}</span>
-                <span style="font-size: 12.5px; opacity: 0.75">{{ cat.count }}</span>
-              </button>
-            </sc-for>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 14px; border-radius: 8px; border-left: 3px solid #005596; background: oklch(0.95 0.015 250)">
+              <span style="font-weight: 700; font-size: 15px; color: oklch(0.25 0.02 160)">Codes</span>
+              <span style="font-size: 12.5px; color: oklch(0.45 0.02 160)">36 cards</span>
+            </div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 14px; color: oklch(0.5 0.02 160)"><span style="font-size: 14.5px">Pediatric emergencies</span><span style="font-size: 12px; opacity: 0.75">14 cards</span></div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 14px; color: oklch(0.5 0.02 160)"><span style="font-size: 14.5px">OB &amp; neonatal</span><span style="font-size: 12px; opacity: 0.75">7 tools</span></div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 14px; color: oklch(0.5 0.02 160)"><span style="font-size: 14.5px">Procedures</span><span style="font-size: 12px; opacity: 0.75">15 cards</span></div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 14px; color: oklch(0.5 0.02 160)"><span style="font-size: 14.5px">Equipment readiness</span><span style="font-size: 12px; opacity: 0.75">7 standards</span></div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 14px; color: oklch(0.5 0.02 160)"><span style="font-size: 14.5px">Simulations</span><span style="font-size: 12px; opacity: 0.75">9 sims</span></div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 14px; color: oklch(0.5 0.02 160)"><span style="font-size: 14.5px">Kit labels &amp; posters</span><span style="font-size: 12px; opacity: 0.75">printable</span></div>
+            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 14px; color: oklch(0.5 0.02 160)"><span style="font-size: 14.5px">Guideline sources</span><span style="font-size: 12px; opacity: 0.75">provenance</span></div>
           </div>
           <div class="cn-pane" style="padding: 28px 32px">
-            <div style="font-size: 12.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #005596; margin-bottom: 6px">{{ selected.kicker }}</div>
-            <h3 style="font-family: Bitter, serif; font-size: 24px; font-weight: 700; margin: 0 0 10px">{{ selected.title }}</h3>
-            <p style="font-size: 15.5px; line-height: 1.6; color: oklch(0.4 0.02 160); margin: 0 0 22px; max-width: 520px">{{ selected.desc }}</p>
+            <div style="font-size: 12.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #005596; margin-bottom: 6px">Resuscitation reference</div>
+            <h3 style="font-family: Bitter, serif; font-size: 24px; font-weight: 700; margin: 0 0 10px">Cardiac arrest — VF / pVT</h3>
+            <p style="font-size: 15.5px; line-height: 1.6; color: oklch(0.4 0.02 160); margin: 0 0 22px; max-width: 520px">Code and resuscitation cards, including the code-cart drawer contents, checkable one-handed mid-resuscitation.</p>
             <div style="border: 1px solid oklch(0.87 0.01 160); border-radius: 10px; background: #fff; max-width: 520px; overflow: hidden">
-              <div style="padding: 10px 16px; background: oklch(0.95 0.015 250); font-size: 13px; font-weight: 700; color: oklch(0.36 0.08 250); border-bottom: 1px solid oklch(0.88 0.01 160)">{{ selected.sampleTitle }}</div>
+              <div style="padding: 10px 16px; background: oklch(0.95 0.015 250); font-size: 13px; font-weight: 700; color: oklch(0.36 0.08 250); border-bottom: 1px solid oklch(0.88 0.01 160)">SHOCKABLE RHYTHM — first cycle</div>
               <div style="display: flex; flex-direction: column">
-                <sc-for list="{{ selected.sample }}" as="row" hint-placeholder-count="4">
-                  <label style="display: flex; gap: 12px; align-items: flex-start; padding: 11px 16px; border-bottom: 1px solid oklch(0.94 0.005 160); cursor: pointer; font-size: 15px; line-height: 1.45">
-                    <input type="checkbox" style="margin-top: 3px; accent-color: #005596">
-                    <span>{{ row }}</span>
-                  </label>
-                </sc-for>
+                <div style="display: flex; gap: 12px; align-items: flex-start; padding: 11px 16px; border-bottom: 1px solid oklch(0.94 0.005 160); font-size: 15px; line-height: 1.45"><span style="color: #005596; flex: none">—</span><span>Defibrillate — follow your local energy setting</span></div>
+                <div style="display: flex; gap: 12px; align-items: flex-start; padding: 11px 16px; border-bottom: 1px solid oklch(0.94 0.005 160); font-size: 15px; line-height: 1.45"><span style="color: #005596; flex: none">—</span><span>Resume compressions immediately, 2-minute cycle</span></div>
+                <div style="display: flex; gap: 12px; align-items: flex-start; padding: 11px 16px; border-bottom: 1px solid oklch(0.94 0.005 160); font-size: 15px; line-height: 1.45"><span style="color: #005596; flex: none">—</span><span>Epinephrine 1 mg IV/IO, repeat every 3–5 min</span></div>
+                <div style="display: flex; gap: 12px; align-items: flex-start; padding: 11px 16px; border-bottom: 1px solid oklch(0.94 0.005 160); font-size: 15px; line-height: 1.45"><span style="color: #005596; flex: none">—</span><span>Amiodarone after 3rd shock (local dosing)</span></div>
+                <div style="display: flex; gap: 12px; align-items: flex-start; padding: 11px 16px; font-size: 15px; line-height: 1.45"><span style="color: #005596; flex: none">—</span><span>Address reversible causes: H's and T's</span></div>
               </div>
             </div>
             <p style="font-size: 13px; color: oklch(0.55 0.02 160); margin: 18px 0 0; font-style: italic">Illustrative sample — every value is localized and validated by the adopting site before use.</p>
           </div>
         </div>
+      </div>
+      <div style="text-align: center; margin-top: 28px">
+        <a href="https://demo.cairnready.org/" target="_blank" rel="noopener noreferrer" style="display: inline-block; background: #005596; color: #fff; padding: 13px 26px; border-radius: 8px; font-weight: 700; font-size: 15.5px; text-decoration: none">Open the live demo — all 8 categories ↗</a>
       </div>
     </div>
   </section>
@@ -440,55 +447,49 @@
   <section id="walk" style="padding: 88px 32px; background: #fff; border-top: 1px solid oklch(0.92 0.005 160); border-bottom: 1px solid oklch(0.92 0.005 160)">
     <div style="max-width: 1100px; margin: 0 auto">
       <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 34px; margin: 0 0 12px">Walk a case</h2>
-      <p style="font-size: 17px; color: oklch(0.42 0.02 160); max-width: 640px; margin: 0 0 8px; line-height: 1.6">A precipitous birth becomes a shoulder dystocia becomes a blue baby — three tools handing off to each other. You are the recorder. Tap through it.</p>
-      <p style="font-size: 14px; color: oklch(0.52 0.02 160); max-width: 640px; margin: 0 0 36px; line-height: 1.6">Scripted walkthrough of the real engines &middot; the demo clock runs 4&times; real time &middot; not clinical guidance.</p>
+      <p style="font-size: 17px; color: oklch(0.42 0.02 160); max-width: 640px; margin: 0 0 8px; line-height: 1.6">A precipitous birth becomes a shoulder dystocia becomes a blue baby — three tools handing off to each other. Here's what that handoff looks like.</p>
+      <p style="font-size: 14px; color: oklch(0.52 0.02 160); max-width: 640px; margin: 0 0 36px; line-height: 1.6">Illustrative record of the real engines &middot; try the timed, tap-through versions yourself below &middot; not clinical guidance.</p>
       <div style="max-width: 460px; margin: 0 auto; background: #0e1e30; border-radius: 20px; padding: 16px; box-shadow: 0 24px 60px rgba(3,20,38,0.45)">
-        <div style="display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 2px 4px 12px; flex-wrap: wrap">
-          <span style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; color: #5f93c0">{{ walk.kicker }}</span>
-          <sc-if value="{{ walk.showClock }}" hint-placeholder-val="{{ true }}">
-            <span style="font-family: ui-monospace, Menlo, monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.06em; color: #f0c96c">{{ walk.clock }}</span>
-          </sc-if>
-        </div>
-        <sc-if value="{{ walk.running }}" hint-placeholder-val="{{ true }}">
-          <div style="border-left: 3px solid #5f93c0; background: rgba(95,147,192,0.12); padding: 12px 14px; border-radius: 0 10px 10px 0; margin-bottom: 12px">
-            <p style="margin: 0; font-size: 15.5px; line-height: 1.55; color: #e8eef5; font-style: italic">{{ walk.stem }}</p>
-          </div>
-          <sc-if value="{{ walk.showSpo2 }}" hint-placeholder-val="{{ false }}">
-            <p style="margin: 0 0 12px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; color: #93c0a4; letter-spacing: 0.05em">{{ walk.spo2 }}</p>
-          </sc-if>
-          <div style="display: flex; flex-direction: column; gap: 10px; margin-bottom: 14px">
-            <sc-for list="{{ walk.actions }}" as="act" hint-placeholder-count="1">
-              <button sc-camel-on-click="{{ act.go }}" style="width: 100%; min-height: 54px; background: #005596; color: #fff; border: none; border-radius: 10px; padding: 12px 16px; text-align: left; cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif" style-hover="background: #0a66ad">
-                <span style="display: block; font-size: 15.5px; font-weight: 700; letter-spacing: 0.02em">{{ act.l }}</span>
-                <sc-if value="{{ act.hasSub }}" hint-placeholder-val="{{ true }}">
-                  <span style="display: block; font-size: 12.5px; opacity: 0.8; margin-top: 3px">{{ act.s }}</span>
-                </sc-if>
-              </button>
-            </sc-for>
-          </div>
-        </sc-if>
-        <sc-if value="{{ walk.done }}" hint-placeholder-val="{{ false }}">
-          <div style="border-left: 3px solid #93c0a4; background: rgba(147,192,164,0.1); padding: 12px 14px; border-radius: 0 10px 10px 0; margin-bottom: 12px">
-            <p style="margin: 0 0 8px; font-size: 15px; line-height: 1.55; color: #e8eef5"><b>That record below?</b> Nobody wrote it. The delivery card stamped the clock, the dystocia engine held the interval, the neonatal engine ran the cycles — while your hands were busy.</p>
-            <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #93a4b5">On the floor, teams drill exactly this chain with a pillow and fifteen minutes — it doubles as an equipment walk for new staff.</p>
-          </div>
-        </sc-if>
-        <sc-if value="{{ walk.hasEvents }}" hint-placeholder-val="{{ true }}">
-          <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(95,147,192,0.25); border-radius: 10px; padding: 10px 12px; margin-bottom: 12px">
-            <div style="font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; color: #93a4b5; margin-bottom: 6px">CASE RECORD — KEPT FOR YOU</div>
-            <div style="max-height: 170px; overflow-y: auto; display: flex; flex-direction: column; gap: 4px">
-              <sc-for list="{{ walk.events }}" as="ev" hint-placeholder-count="3">
-                <div style="display: flex; gap: 10px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; line-height: 1.5">
-                  <span style="color: #5f93c0; flex: none">{{ ev.t }}</span>
-                  <span style="color: #c6d3de">{{ ev.label }}</span>
-                </div>
-              </sc-for>
+        <div style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; color: #5f93c0; padding: 2px 4px 14px">SIM 1 &middot; PRECIPITOUS BIRTH</div>
+        <div style="display: flex; flex-direction: column; gap: 0; margin-bottom: 14px">
+          <div style="display: flex; gap: 12px; padding-bottom: 16px">
+            <div style="flex: none; display: flex; flex-direction: column; align-items: center; width: 10px">
+              <span style="width: 9px; height: 9px; border-radius: 50%; background: #5f93c0; flex: none"></span>
+              <span style="width: 1.5px; flex: 1; background: rgba(95,147,192,0.3); margin-top: 4px"></span>
             </div>
+            <div><div style="font-family: ui-monospace, Menlo, monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: #93a4b5; margin-bottom: 3px">OB &middot; IMMINENT DELIVERY</div><p style="margin: 0; font-size: 14.5px; line-height: 1.5; color: #e8eef5">Head delivers, then stops — turtle sign. Gentle traction fails. <b>Shoulder dystocia declared</b> — the head-to-body clock starts, and it will not restart.</p></div>
           </div>
-        </sc-if>
-        <sc-if value="{{ walk.done }}" hint-placeholder-val="{{ false }}">
-          <button sc-camel-on-click="{{ walk.reset }}" style="width: 100%; min-height: 48px; background: none; color: #5f93c0; border: 1.5px solid #2f74ad; border-radius: 10px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 15px; font-weight: 700; cursor: pointer">RUN IT AGAIN</button>
-        </sc-if>
+          <div style="display: flex; gap: 12px; padding-bottom: 16px">
+            <div style="flex: none; display: flex; flex-direction: column; align-items: center; width: 10px">
+              <span style="width: 9px; height: 9px; border-radius: 50%; background: #5f93c0; flex: none"></span>
+              <span style="width: 1.5px; flex: 1; background: rgba(95,147,192,0.3); margin-top: 4px"></span>
+            </div>
+            <div><div style="font-family: ui-monospace, Menlo, monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: #93a4b5; margin-bottom: 3px">DYSTOCIA ENGINE &middot; HELPERR</div><p style="margin: 0; font-size: 14.5px; line-height: 1.5; color: #e8eef5">One rung at a time — help called, McRoberts, suprapubic pressure — each logged against the running interval. <b>Baby out at 1:38.</b> One tap stamps time of birth; every clock downstream runs off it.</p></div>
+          </div>
+          <div style="display: flex; gap: 12px">
+            <div style="flex: none; display: flex; flex-direction: column; align-items: center; width: 10px">
+              <span style="width: 9px; height: 9px; border-radius: 50%; background: #93c0a4; flex: none"></span>
+            </div>
+            <div><div style="font-family: ui-monospace, Menlo, monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: #93a4b5; margin-bottom: 3px">NEONATAL ENGINE &middot; NRP</div><p style="margin: 0; font-size: 14.5px; line-height: 1.5; color: #e8eef5">Floppy, blue, not crying. Warm &middot; dry &middot; stimulate, then PPV in 30-second cycles off the birth clock. HR climbs 50 &rarr; 90 &rarr; 120 &mdash; <b>HR 140, crying, at 9:55.</b> Apgar marks fired on their own.</p></div>
+          </div>
+        </div>
+        <div style="border-left: 3px solid #93c0a4; background: rgba(147,192,164,0.1); padding: 12px 14px; border-radius: 0 10px 10px 0; margin-bottom: 12px">
+          <p style="margin: 0 0 8px; font-size: 15px; line-height: 1.55; color: #e8eef5"><b>That record below? Nobody wrote it.</b> The delivery card stamped the clock, the dystocia engine held the interval, the neonatal engine ran the cycles — while the team's hands were busy.</p>
+          <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #93a4b5">On the floor, teams drill exactly this chain with a pillow and fifteen minutes — it doubles as an equipment walk for new staff.</p>
+        </div>
+        <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(95,147,192,0.25); border-radius: 10px; padding: 10px 12px; margin-bottom: 16px">
+          <div style="font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; color: #93a4b5; margin-bottom: 6px">CASE RECORD — KEPT FOR THE TEAM</div>
+          <div style="display: flex; flex-direction: column; gap: 4px">
+            <div style="display: flex; gap: 10px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; line-height: 1.5"><span style="color: #5f93c0; flex: none">0:00</span><span style="color: #c6d3de">Case started — delivery card open</span></div>
+            <div style="display: flex; gap: 10px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; line-height: 1.5"><span style="color: #5f93c0; flex: none">1:04</span><span style="color: #c6d3de">Shoulder dystocia declared — HELPERR open</span></div>
+            <div style="display: flex; gap: 10px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; line-height: 1.5"><span style="color: #5f93c0; flex: none">1:38</span><span style="color: #c6d3de">Born — head-to-body interval 1:38 total</span></div>
+            <div style="display: flex; gap: 10px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; line-height: 1.5"><span style="color: #5f93c0; flex: none">9:55</span><span style="color: #c6d3de">HR 140, crying — case ends</span></div>
+          </div>
+        </div>
+        <div style="display: flex; flex-direction: column; gap: 10px">
+          <a href="https://demo.cairnready.org/dystocia/" target="_blank" rel="noopener noreferrer" style="display: block; text-align: center; min-height: 48px; line-height: 48px; background: #005596; color: #fff; border-radius: 10px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 15px; font-weight: 700; text-decoration: none">Try the dystocia engine ↗</a>
+          <a href="https://demo.cairnready.org/neonatal/" target="_blank" rel="noopener noreferrer" style="display: block; text-align: center; min-height: 48px; line-height: 48px; background: none; color: #5f93c0; border: 1.5px solid #2f74ad; border-radius: 10px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 15px; font-weight: 700; text-decoration: none">Try the neonatal engine ↗</a>
+        </div>
       </div>
     </div>
   </section>
@@ -653,87 +654,9 @@
 </x-dc>
 <script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1280}}">
 class Component extends DCLogic {
-  state = { cat: 0, faq: -1, sent: false, ws: 0, wev: [], wt0: null, whb: null, wtob: null, wnow: 0 };
+  state = { faq: -1, sent: false };
 
-  // ---- Walk-a-case: a scripted pass through the SIM 1 chain. The clocks are
-  // real (at 4x) because the clocks ARE the point: one tap stamps time of
-  // birth, the head-to-body interval never restarts, NRP runs 30-second
-  // cycles off the birth clock. Content mirrors the real engines but is a
-  // demo, and the page says so.
-  _wtick() {
-    if (!this._wtimer) this._wtimer = setInterval(() => this.setState({ wnow: Date.now() }), 300);
-  }
-  _wstop() { if (this._wtimer) { clearInterval(this._wtimer); this._wtimer = null; } }
-  _walk() {
-    const W = this.state, SPEED = 4;
-    const now = W.wnow || Date.now();
-    const cms = (ts) => (now - ts) * SPEED;
-    const fmt = (ms) => { const s = Math.max(0, Math.floor(ms / 1000)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); };
-    const caseT = () => (W.wt0 ? fmt(cms(W.wt0)) : "0:00");
-    const hbT = () => (W.whb ? fmt(cms(W.whb)) : "0:00");
-    const tolMs = () => (W.wtob ? cms(W.wtob) : 0);
-    const adv = (patch, label) => () => {
-      const wev = label ? [...this.state.wev, { t: caseT(), label }] : this.state.wev;
-      this.setState({ ...patch, wev, ws: this.state.ws + 1 });
-    };
-    const STEPS = [
-      { k: "SIM 1 \u00b7 PRECIPITOUS BIRTH", stem: "03:12. Triage calls back: G3P2 at term \u2014 \u2018the baby is coming NOW.\u2019 It\u2019s you, two nurses, and a tech.",
-        a: [{ l: "START THE CASE", s: "you are the recorder \u2014 the manual is yours", f: () => { this._wtick(); const t0 = Date.now(); this.setState({ wt0: t0, wnow: t0, wev: [{ t: "0:00", label: "Case started \u2014 delivery card open" }], ws: 1 }); } }] },
-      { k: "OB \u00b7 IMMINENT DELIVERY", stem: "She\u2019s pushing \u2014 hair visible at the introitus. She screams: \u2018it\u2019s coming NOW.\u2019",
-        a: [{ l: "ASSIGN ROLES \u2014 WHO CATCHES, WHO RECORDS", s: "warmer on; OB and nursery called", f: null, log: "Roles assigned \u2014 warmer on, OB called" }] },
-      { k: "OB \u00b7 IMMINENT DELIVERY", stem: "Two contractions later the head delivers \u2014 and stops.",
-        a: [{ l: "HEAD IS OUT \u2014 SUPPORT, DON\u2019T PULL", f: () => { this.setState({ whb: Date.now() }); this._wadv("Head delivered \u2014 watching"); } }] },
-      { k: "OB \u00b7 IMMINENT DELIVERY", clock: "hb", stem: "The head retracts tight against the perineum \u2014 turtle sign. Gentle traction. The shoulders do not come.",
-        a: [{ l: "SAY IT OUT LOUD: \u2018SHOULDER DYSTOCIA\u2019", s: "naming it opens the engine and starts the response", f: null, log: "Shoulder dystocia declared \u2014 HELPERR open" }] },
-      { k: "DYSTOCIA ENGINE \u00b7 HELPERR", clock: "hb", stem: "The head-to-body clock is running \u2014 and it will not restart. One rung at a time.",
-        a: [{ l: "H \u00b7 CALL FOR HELP", s: "extra hands; the time is noted for you", f: null, log: "Help called" }] },
-      { k: "DYSTOCIA ENGINE \u00b7 HELPERR", clock: "hb", stem: "Hands arrive. Change the geometry \u2014 never pull harder.",
-        a: [{ l: "L \u00b7 LEGS \u2014 McROBERTS", s: "knees to chest, bed flat", f: () => this._wadv("McRoberts \u2014 interval " + hbT()) }] },
-      { k: "DYSTOCIA ENGINE \u00b7 HELPERR", clock: "hb", stem: "No release.",
-        a: [{ l: "P \u00b7 SUPRAPUBIC PRESSURE", s: "down and lateral, above the pubic bone", f: () => this._wadv("Suprapubic pressure \u2014 interval " + hbT()) }] },
-      { k: "DYSTOCIA ENGINE \u00b7 HELPERR", clock: "hb", stem: "The anterior shoulder gives \u2014 the body delivers in one motion.",
-        a: [{ l: "BABY OUT \u2014 STAMP TIME OF BIRTH", s: "one tap; every clock downstream runs off this", f: () => { this.setState({ wtob: Date.now() }); this._wadv("Born \u2014 head-to-body interval " + hbT() + " total"); } }] },
-      { k: "NEONATAL ENGINE \u00b7 NRP", clock: "tol", stem: "Floppy. Blue. Not crying. Cord clamped and cut \u2014 to the warmer.",
-        a: [{ l: "WARM \u00b7 DRY \u00b7 STIMULATE", s: "30-second cycles run off the birth clock", f: null, log: "At the warmer \u2014 warm, dry, stimulate" }] },
-      { k: "NEONATAL ENGINE \u00b7 NRP", clock: "tol", stem: "Cycle check. Facilitator: \u2018Heart rate 50. Apneic.\u2019",
-        a: [{ l: "START PPV \u2014 40\u201360 BREATHS/MIN", s: "metronome on; watch for chest rise", f: null, log: "PPV started \u2014 HR 50" }] },
-      { k: "NEONATAL ENGINE \u00b7 NRP", clock: "tol", spo2: true, stem: "Chest rising. \u2018HR 90\u2026 now 120.\u2019 Keep going \u2014 the SpO\u2082 target moves with the minute of life.",
-        a: [{ l: "CONTINUE PPV \u2014 REASSESS NEXT CYCLE", f: null, log: "HR 120 \u2014 PPV continues" }] },
-      { k: "NEONATAL ENGINE \u00b7 NRP", clock: "tol", stem: "\u2018HR 140 \u2014 crying.\u2019 Trunk pink. The 1- and 5-minute Apgar prompts fired on their own, off the clock you stamped.",
-        a: [{ l: "END THE CASE", s: "see what the tools recorded", f: () => { this._wadv("HR 140, crying \u2014 case ends"); this._wstop(); } }] },
-      { k: "CASE COMPLETE", done: true, a: [] }
-    ];
-    const step = STEPS[Math.min(W.ws, STEPS.length - 1)];
-    let clock = "";
-    if (step.clock === "hb" && W.whb) clock = "HEAD\u2192BODY " + hbT();
-    if (step.clock === "tol" && W.wtob) clock = "TIME OF LIFE " + fmt(tolMs()) + " \u00b7 CYCLE " + (1 + Math.floor(tolMs() / 30000));
-    const min = Math.min(10, 1 + Math.floor(tolMs() / 60000));
-    const tgt = ["60\u201365%", "65\u201370%", "70\u201375%", "75\u201380%", "80\u201385%"][min - 1] || "85\u201395%";
-    return {
-      kicker: step.k, stem: step.stem || "", running: !step.done, done: !!step.done,
-      showClock: !!clock, clock,
-      showSpo2: !!step.spo2, spo2: "MIN " + min + " OF LIFE \u00b7 TARGET SpO\u2082 " + tgt,
-      actions: step.a.map((a) => ({ l: a.l, s: a.s || "", hasSub: !!a.s, go: a.f || adv({}, a.log) })),
-      events: W.wev, hasEvents: W.wev.length > 0,
-      reset: () => { this._wstop(); this.setState({ ws: 0, wev: [], wt0: null, whb: null, wtob: null, wnow: 0 }); }
-    };
-  }
-  _wadv(label) {
-    const W = this.state, SPEED = 4;
-    const t = W.wt0 ? (() => { const s = Math.max(0, Math.floor(((Date.now()) - W.wt0) * SPEED / 1000)); return Math.floor(s / 60) + ":" + String(s % 60).padStart(2, "0"); })() : "0:00";
-    this.setState({ wev: [...W.wev, { t, label }], ws: W.ws + 1 });
-  }
   renderVals() {
-    const CATS = [
-      { name: "Codes", count: "36 cards", kicker: "Resuscitation reference", title: "Cardiac arrest — VF / pVT", desc: "Code and resuscitation cards, including the code-cart drawer contents, checkable one-handed mid-resuscitation.", sampleTitle: "SHOCKABLE RHYTHM — first cycle", sample: ["Defibrillate — follow your local energy setting", "Resume compressions immediately, 2-minute cycle", "Epinephrine 1 mg IV/IO, repeat every 3–5 min", "Amiodarone after 3rd shock (local dosing)", "Address reversible causes: H's and T's"] },
-      { name: "Pediatric emergencies", count: "14 cards", kicker: "Weight-based dosing engine", title: "Pediatric status epilepticus", desc: "One shared weight/age engine drives dosing across every pediatric card — enter the weight once.", sampleTitle: "BENZODIAZEPINE — first line (per local formulary)", sample: ["Confirm weight or estimate by age/length", "Midazolam IM/IN per weight band", "Reassess at 5 min — second dose if seizing", "Prepare second-line agent while waiting", "Check glucose"] },
-      { name: "OB & neonatal", count: "7 tools", kicker: "Clock-driven engines", title: "Postpartum hemorrhage", desc: "Live engines with timers and stage tracking — the tool advances with the clock, not a static card.", sampleTitle: "PPH — first 10 minutes", sample: ["Call for help; start the clock", "Uterine massage; empty the bladder", "First-line uterotonic per local protocol", "Quantify blood loss — weigh, don't estimate", "Two large-bore IVs; send type & crossmatch"] },
-      { name: "Procedures", count: "15 cards", kicker: "Rare, high-stakes", title: "Finger thoracostomy / chest tube", desc: "The procedures you may do once in years — with equipment lists, anatomy figures, and where the kit lives.", sampleTitle: "BEFORE YOU CUT", sample: ["Confirm side — mark it, say it aloud", "Kit location: your cart map fills this in", "5th intercostal space, anterior axillary line", "Track over the rib, not under it", "Confirm placement; secure and dress"] },
-      { name: "Equipment readiness", count: "7 standards", kicker: "Searchable audit", title: "Where every kit and size lives", desc: "Every item searchable and scored against seven national equipment standards. Walk the carts, record gaps, export findings.", sampleTitle: "AUDIT WALK — sample items", sample: ["Pediatric intraosseous needles — location & count", "Surgical airway kit — sealed, in date", "Neonatal T-piece resuscitator — checked", "Difficult-airway cart drawer 2 — restocked", "Gap found? Record it — it feeds the fix list"] },
-      { name: "Simulations", count: "9 sims", kicker: "No mannequin needed", title: "Pillow-patient drills", desc: "10–15 minute drills that chain real workflows — birth into dystocia into a blue baby. Each doubles as an orientation walk.", sampleTitle: "SIM: STEMI → VF → the conversation", sample: ["Brief the team: roles, no-fault, 15 minutes", "Run the STEMI card until the rhythm changes", "Arrest: find the real cart, name the drawers", "ROSC — now the code-status conversation card", "Debrief: what couldn't we find?"] },
-      { name: "Kit labels & posters", count: "printable", kicker: "The physical half", title: "Drawer faces, stock strips, wall posters", desc: "Print-ready kit indicators: color finds the drawer, a word and pictogram name it, a QR links back to the live card.", sampleTitle: "ONE DRAWER, FOUR ARTIFACTS", sample: ["Drawer face: color + number + one word, readable at 3 m", "Stock strip: expiry, initials, restock route", "Wall poster: the procedure, hands-busy distance", "Phone card: full checklist, links back to the drawer"] },
-      { name: "Guideline sources", count: "provenance", kicker: "Trust, maintained", title: "Every tool shows its work", desc: "Which guideline each tool is written against, which edition, when a human last checked it — and which cards move if it changes.", sampleTitle: "PROVENANCE RECORD — sample", sample: ["Source guideline and edition, cited on the card", "Last human review date, per tool", "Monthly automated watch on each guideline body", "Your fork re-stamps with your reviewer, your date"] }
-    ];
     const FAQS = [
       { q: "Is this ready for clinical use out of the box?", a: "No — and it never will be, by design. Cairn is a reference implementation. Your branch becomes clinically usable only after your team validates every dose, threshold, and protocol against your own assays, formulary, and medical direction, and re-stamps each tool with your review date." },
       { q: "Do I need to be a developer?", a: "No. It's plain static files with no build step. Site-specific values live in clearly marked config blocks, and the mechanical steps — forking, hosting, swapping values — are exactly the kind an AI assistant can do for you. The localization worksheet walks you through the rest." },
@@ -742,10 +665,7 @@ class Component extends DCLogic {
       { q: "Can we adopt only part of it?", a: "Yes — that's the expected path. Take the pediatric dosing engine and the equipment audit; skip the rest. Every tool is a self-contained file in its own folder, so keeping a subset is deleting folders, not surgery." },
       { q: "How does content stay current?", a: "Each tool records which guideline it's written against and when a human last reviewed it. An automated job watches each guideline body monthly, and a review calendar catches what the watching misses. Your branch inherits the mechanism and applies it with your reviewers." }
     ];
-    const base = "display: flex; justify-content: space-between; align-items: baseline; gap: 10px; width: 100%; text-align: left; border: none; border-radius: 8px; padding: 11px 14px; cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif;";
     return {
-      categories: CATS.map((c, i) => ({ ...c, pick: () => this.setState({ cat: i }), tabStyle: i === this.state.cat ? base + "background: #005596; color: #fff" : base + "background: none; color: oklch(0.3 0.02 160)" })),
-      selected: CATS[this.state.cat],
       features: [
         { name: "Interactive emergency manual", desc: "Live, checkable cognitive aids for codes, pediatric, OB and neonatal emergencies, trauma, and rare procedures — timers and dosing engines, not PDFs." },
         { name: "Team cognitive aids", desc: "Aids for the whole team, including the hard conversations: consultant calls, code status, breaking bad news, and the post-event debrief." },
@@ -769,8 +689,7 @@ class Component extends DCLogic {
         fd.set("form-name", "join");
         fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams(fd).toString() }).catch(() => {});
         this.setState({ sent: true });
-      },
-      walk: this._walk()
+      }
     };
   }
 }
