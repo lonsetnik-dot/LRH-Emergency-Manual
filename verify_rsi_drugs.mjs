@@ -56,7 +56,17 @@ const fresh = async () => {
   await pg.evaluate(() => { try { localStorage.clear(); } catch (e) {} });
   await reload();
 };
+/* The weight form is the shared case-shell ribbon (SHELL.md layer 4) — collapsed
+   on a phone until tapped, so filling #wtkg blind would time out on a hidden
+   input. Open it the way a clinician does, then fill. */
+const openWeightForm = async () => {
+  if (!(await pg.locator('#wtkg').isVisible().catch(() => false))) {
+    await pg.click('#wtoggle').catch(() => {});
+    await pg.waitForTimeout(200);
+  }
+};
 const setWeight = async kg => {
+  await openWeightForm();
   await pg.fill('#wtkg', String(kg));
   await pg.dispatchEvent('#wtkg', 'input');
   await pg.waitForTimeout(250);

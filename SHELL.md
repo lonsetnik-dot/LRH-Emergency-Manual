@@ -74,6 +74,16 @@ A layer a tool doesn't need is absent entirely, never left empty.
   then collapses to a slim row `WEIGHT 16 kg ✎ tap to change`.
 - Every dose recomputes live from this value; unset weight renders
   `set weight` in place of a number — never a stale or default dose.
+- **One control, everywhere.** Every tool that carries the shared case
+  weight (`lrh-case-wtkg`) presents THIS strip and no other: `arrest/`,
+  `tca/`, `neonatal/`, `peds/` and `codes/`. `codes/` was the last holdout
+  — it kept a bespoke always-expanded bar with a gold WEIGHT chip until
+  2026-08-19, which meant one patient's weight had two interfaces and a
+  clinician moving between `/arrest/` and `/codes/` mid-code had to operate
+  both. `verify_shell_parity.mjs` now asserts the markup, so a sixth
+  interface cannot appear by accident. (`ob-neonatal/`'s in-card weight
+  fields are deliberately NOT this control: they hold the NEONATE's weight
+  under `lrh-ob-weight` — a different patient, see CASE-STATE.md.)
 - **Mode lives here, not in a banner** (2026-08-15 review): a mode that
   changes dosing (pediatric vs adult) is stated in the strip's own row
   (`16 kg · PALS (pediatric)`), and leaving it is an explicitly labeled

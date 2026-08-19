@@ -1,23 +1,42 @@
-# SITES.md — the generic trunk and hospital editions
+# SITES.md — the reference edition and hospital editions
 
-> How one codebase serves demo.cairnready.org (the generic edition; linked
-> from the cairnready.org explainer page) and any number of hospital-localized
-> editions, starting with LRH and a second pilot hospital.
+> How one codebase serves lrhemergencymanual.net (the reference
+> implementation), demo.cairnready.org (the same content as a showroom copy),
+> cairnready.org (the explainer), and any number of hospital-localized
+> editions.
 
 ## The model
 
 ```
-cairnready generic trunk  (main — deploys to demo.cairnready.org)
-├── site.config.json      generic identity, placeholder phone lines
-├── <tool>/SITE CONFIG    national-guideline defaults, flagged "localize"
+main  —  the LRH reference implementation
+├── site.config.json      LRH identity, real phone lines
+├── <tool>/SITE CONFIG    LRH's validated clinical values
 │
-├─ hospital edition: LRH          (branch/fork — deploys to its own domain)
-│    site.config.json rewritten   + per-tool SITE CONFIG values validated
-└─ hospital edition: <site #2>    (same pathway — the proof it generalizes)
+├─ build.mjs      → dist/       → lrhemergencymanual.net   (production)
+├─ demo-build.mjs → dist-demo/  → demo.cairnready.org      (DEMO ribbon + noindex)
+├─ cairn/         → published in place → cairnready.org    (explainer)
+│
+└─ hospital edition: <site #2>   (branch or fork — deploys to its own domain)
+     site.config.json rewritten  + per-tool SITE CONFIG values validated
 ```
 
-A **hospital edition** is a branch or fork of the trunk that changes only the
-two localization layers below. It never rewrites logic, layout, or the verify
+**There is no separate generic branch, and `main` is not generic.** That is a
+deliberate change from the original model (a CairnReady generic trunk on
+`main`, LRH on a branch), retired when the demo became a *build* of the real
+thing rather than a fork of it. `demo-build.mjs` says so in its header: the
+demo serves "the same tool content as build.mjs's dist/ — the real reference
+implementation, nothing generic or fake", differing only by a DEMO ribbon,
+`noindex`, and no offline shell. A prospective site is shown a manual that a
+real ED actually uses at the bedside, which is the whole argument.
+
+> **Do not "restore" a generic identity to `main`.** It would swap the
+> hospital's live manual for a demo edition and pull the ground out from under
+> `demo-build.mjs` at the same time. If a generic edition is ever wanted again,
+> it is a new branch off `main` with `site.config.json` rewritten — the same
+> pathway as any other edition below.
+
+A **hospital edition** is a branch or fork that changes only the two
+localization layers below. It never rewrites logic, layout, or the verify
 suites — that is the whole point of the separation, and the config-driven
 verify suites (CLAUDE.md, issue #117) are written to stay green across
 localized values.
@@ -44,13 +63,14 @@ block at the top of its own file:
 ```
 
 These stay per-tool deliberately: a threshold belongs next to the logic that
-uses it and the citation for it. In the generic trunk these hold
-national-guideline defaults or clearly flagged placeholders. **Every one of
-them requires local clinical validation before a hospital edition goes
-live** — see `LOCALIZING.md` and `LOCALIZATION-WORKSHEET.md` for the walk-
-through, and `inventory.js` for the third localized surface (the `LOCATIONS`
-block — the only part of the inventory a hospital rewrites; the trunk ships
-the original pilot site's layout as a worked example).
+uses it and the citation for it. On `main` they hold LRH's validated values,
+or national-guideline defaults where LRH has not diverged, or clearly flagged
+placeholders where nobody has decided yet. **Every one of them requires local
+clinical validation before another hospital's edition goes live** — see
+`LOCALIZING.md` and `LOCALIZATION-WORKSHEET.md` for the walk-through, and
+`inventory.js` for the third localized surface (the `LOCATIONS` block — the
+only part of the inventory a hospital rewrites; `main` ships LRH's layout as
+a worked example).
 
 ## What is deliberately NOT localized
 
