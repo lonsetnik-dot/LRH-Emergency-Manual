@@ -307,7 +307,8 @@
       <button class="btn" onclick="window.print()">Print</button>
     </div>
 
-    <p class="sub" style="margin-top:10px"><b>Transfer center &mdash; {{SITE.transferCenter}}: {{SITE.transferPhone}}</b> &mdash; for PERT consultation, advanced therapy, or transfer.</p>
+    <div id="xferBox" style="margin-top:14px; border:1.5px solid var(--line); border-radius:10px; overflow:hidden; background:var(--card2)"></div>
+    <p class="sub" style="margin:8px 0 0">Listed alphabetically, not in order of preference. Which one to call is a clinical decision &mdash; capability, bed state, weather and the patient&rsquo;s own cardiology all bear on it.</p>
 
     <details class="ref">
       <summary>The whole category scheme on one screen</summary>
@@ -418,6 +419,26 @@
     hospitalShort: "{{SITE.abbrev}}",
     transferCenter: "{{SITE.transferCenter}}",
     transferPhone: "{{SITE.transferPhone}}",
+
+    // Receiving hospitals this department can send a PE to. The label/phone/tel
+    // strings are site-identity tokens from the root site.config.json (CLAUDE.md
+    // rule 2) — the same three hospitals therefore read identically here and on
+    // the STEMI card, which offers this same set. What THIS block decides is the
+    // clinical routing question: which destinations a PE can go to.
+    //
+    // Order is ALPHABETICAL by hospital and is not a preference ranking; the
+    // screen says so, because a list read top-down under pressure is otherwise
+    // taken as one. Keep it matching the STEMI card's order.
+    //
+    // A destination whose `tel` is empty renders as plain text marked "not
+    // configured" rather than a tappable link. That is deliberate: a 44px call
+    // affordance that dials nothing is the worst possible failure here, and an
+    // adopting ED must SEE an unset number rather than discover it mid-transfer.
+    transferDestinations: [
+      { key:'cmc',       label:'{{SITE.transferCmcLabel}}',       tel:'{{SITE.transferCmcTel}}',       phone:'{{SITE.transferCmcPhone}}' },
+      { key:'concord',   label:'{{SITE.transferConcordLabel}}',   tel:'{{SITE.transferConcordTel}}',   phone:'{{SITE.transferConcordPhone}}' },
+      { key:'dartmouth', label:'{{SITE.transferDartmouthLabel}}', tel:'{{SITE.transferDartmouthTel}}', phone:'{{SITE.transferDartmouthPhone}}' }
+    ],
     version: "1.0",
     lastReviewed: "2026-08-19",
     guidelineEdition: "2026 AHA/ACC/ACCP/ACEP/CHEST/SCAI/SHM/SIR/SVM/SVN",
@@ -620,7 +641,7 @@
     if(tier==='C'||tier==='D'||tier==='E'){
       L.push(SITE.capability.pertOnSite
         ? 'Activate the PE response team — multidisciplinary PERT assessment is recommended for Categories C–E '+cor('1')+'.'
-        : 'Multidisciplinary PERT assessment is recommended for Categories C–E '+cor('1')+'. There is no PERT on site: the equivalent here is the call to <b>'+SITE.transferCenter+' — '+SITE.transferPhone+'</b>, made early rather than after deterioration.');
+        : 'Multidisciplinary PERT assessment is recommended for Categories C–E '+cor('1')+'. There is no PERT on site: the equivalent here is the transfer-center call, made early rather than after deterioration — the receiving hospitals are listed below.');
     }
 
     // Transfer — the community-ED question, and the one place the guideline says
@@ -837,6 +858,29 @@
         ' L/min/m&sup2;, MAP &lt; '+S.mapUnder+' mm Hg, increased shock score/stage (SCAI stage, CPES score).</li>';
   }
 
+  /* Receiving hospitals, rendered once. Deliberately NOT a tap-to-log widget like
+     the STEMI card's: this pathway holds no state at all (no localStorage, nothing
+     to clear), and verify_pe_categories.mjs asserts that. A call log here would be
+     the first thing to break it, for a tool that is a classifier rather than a
+     running case record. */
+  function renderTransfers(){
+    var box=$('xferBox'); if(!box) return;
+    var rows=(SITE.transferDestinations||[]).map(function(d){
+      var dialable=String(d.tel||'').replace(/[^0-9]/g,'').length>=7;
+      return '<div style="display:flex; align-items:center; justify-content:space-between; gap:10px; flex-wrap:wrap; padding:9px 14px; border-top:1px solid var(--line)">'+
+        '<div style="font-size:.86rem; font-weight:700; color:var(--ink)">'+d.label+'</div>'+
+        (dialable
+          /* text-decoration:none is required, not cosmetic: at 44px and inline-flex
+             this is a CONTROL, and the manual's design language underlines prose
+             links only (verify_design_language.mjs asserts both directions). Same
+             treatment as the STEMI card's transfer numbers. */
+          ? '<a href="tel:'+String(d.tel).replace(/[^0-9+]/g,'')+'" style="font-size:.86rem; color:var(--brand-primary-dark); text-decoration:none; display:inline-flex; align-items:center; min-height:44px">&#9742;&nbsp;'+d.phone+'</a>'
+          : '<span style="font-size:.86rem; color:var(--ink2); display:inline-flex; align-items:center; min-height:44px">&#9742;&nbsp;'+d.phone+' &mdash; not configured</span>')+
+      '</div>';
+    }).join('');
+    box.innerHTML='<div style="padding:9px 14px; font-family:\'IBM Plex Mono\',\'SF Mono\',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:.08em; color:var(--ink2)">TRANSFER CENTERS &mdash; PERT CONSULT, ADVANCED THERAPY, OR TRANSFER</div>'+rows;
+  }
+
   function recalc(){ syncSpesi(); syncRelevance(); render(); }
 
   document.querySelectorAll('.opts[data-group]').forEach(function(grp){
@@ -866,6 +910,7 @@
     SITE.guidelineEdition+' guideline &middot; '+SITE.hospitalShort; }
 
   paintConfigText();
+  renderTransfers();
   recalc();
 })();
 </script>

@@ -24,5 +24,36 @@
   "feedbackEmail": "lon.setnik@gmail.com",
   "transferCenter": "DHMC Transfer Center",
   "transferPhone": "(877) 999-9870",
+
+  "_transferDestinationsNote": [
+    "RECEIVING HOSPITALS, one entry per destination, listed here ALPHABETICALLY by",
+    "hospital name — which is also the order they are shown in, so a clinician",
+    "scanning the list mid-code always finds a given hospital in the same place.",
+    "",
+    "transferCenter/transferPhone above stay as they are: they name the DEFAULT",
+    "single destination (Dartmouth) for the cards that route to exactly one place,",
+    "and duplicating Dartmouth here is deliberate rather than a stray copy.",
+    "",
+    "WHICH DESTINATIONS A CARD OFFERS is not decided here — it is decided in each",
+    "tool's own SITE CONFIG block, because it is a clinical routing question, not",
+    "an identity one. As agreed with Lon 2026-08-19: PE and STEMI offer all three;",
+    "trauma offers Concord and Dartmouth only.",
+    "",
+    "Each destination carries three fields. `Label` is what is printed. `Phone` is",
+    "what is shown to a human. `Tel` is the E.164 dial string behind the tap-to-",
+    "call link — leave it EMPTY, not guessed, when the number is unknown: every",
+    "renderer treats an undialable Tel as 'not configured' and prints the line as",
+    "plain text instead of a link that dials nothing."
+  ],
+  "transferCmcLabel": "CMC (HCA New Hampshire) Transfer Line",
+  "transferCmcPhone": "[add the HCA New Hampshire transfer line]",
+  "transferCmcTel": "",
+  "transferConcordLabel": "Concord Hospital Transfer Center",
+  "transferConcordPhone": "800-992-9399",
+  "transferConcordTel": "+18009929399",
+  "transferDartmouthLabel": "Dartmouth-Hitchcock (DHMC) Transfer Center",
+  "transferDartmouthPhone": "877-999-9870 (urgent/emergent)",
+  "transferDartmouthTel": "+18779999870",
+
   "poisonControl": "1-800-222-1222"
 }

@@ -2730,10 +2730,24 @@ var SITE = {
   /* STEMI transfer-center contacts — LRH has no on-site cath lab, so a STEMI patient is
      transferred out. Numbers are each hospital's own transfer-center line (not a direct
      cardiology/cath-lab line — the transfer-center RN routes the call). Verify locally;
-     hospital transfer lines do change. */
+     hospital transfer lines do change.
+
+     The label/phone/tel strings are NOT typed here: they are site-identity tokens from the
+     root site.config.json (CLAUDE.md rule 2), so the same three hospitals read identically
+     on this card, on the PE pathway, and anywhere else they are offered. What this block
+     decides is the clinical routing question — WHICH destinations a STEMI can go to.
+
+     Order is ALPHABETICAL by hospital (CMC, Concord, Dartmouth), matching the PE pathway,
+     so the list a clinician scans mid-code is in the same order on both screens. It is NOT
+     a preference ranking — do not reorder it into one without saying so on the card.
+
+     CMC added 2026-08-19 (Lon): PE and STEMI both route to all three. Its transfer line is
+     not filled in yet, so it renders as "not configured" plain text rather than a tappable
+     link — see the render note below. */
   stemi: { contacts: [
-    { key:'dhmc',    label:'Dartmouth-Hitchcock (DHMC) Transfer Center', tel:'+18779999870', phoneDisplay:'877-999-9870 (urgent/emergent)' },
-    { key:'concord', label:'Concord Hospital Transfer Center',           tel:'+18009929399', phoneDisplay:'800-992-9399' }
+    { key:'cmc',     label:'{{SITE.transferCmcLabel}}',       tel:'{{SITE.transferCmcTel}}',       phoneDisplay:'{{SITE.transferCmcPhone}}' },
+    { key:'concord', label:'{{SITE.transferConcordLabel}}',   tel:'{{SITE.transferConcordTel}}',   phoneDisplay:'{{SITE.transferConcordPhone}}' },
+    { key:'dhmc',    label:'{{SITE.transferDartmouthLabel}}', tel:'{{SITE.transferDartmouthTel}}', phoneDisplay:'{{SITE.transferDartmouthPhone}}' }
   ] },
   /* Audience strip (design-review F31) — the ONE number that decides which card a shared
      weight *suggests* switching to; it never decides which dose is shown. 40 kg: top of
