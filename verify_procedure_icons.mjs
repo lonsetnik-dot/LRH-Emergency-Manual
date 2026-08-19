@@ -79,9 +79,9 @@ ck('1. no glyph landed on an unmapped card',
     .map(([card, keys]) => card + '=' + keys.join(','))
     .join(' ') || 'none', 'none');
 
-/* Penetrating neck trauma had its graphic removed in review (design/ICONOGRAPHY.md). The glyph still
-   exists in the source, so the guard is that nothing BINDS it to card 11. */
-ck('1. penetrating neck trauma (c11) is still deliberately un-iconed', cardMap.c11 === undefined, true);
+/* Penetrating neck trauma was left un-iconed at first review, then wired up on request — the
+   guard is now that it binds the 'neck' figure specifically, not a leftover/mismatched key. */
+ck('1. penetrating neck trauma (c11) carries the neck glyph', cardMap.c11, 'neck');
 
 /* ---- 2. NO DRIFT — cross-linked pages draw the identical figure ---- */
 const codes = await glyphsOf('/codes/?from=home');

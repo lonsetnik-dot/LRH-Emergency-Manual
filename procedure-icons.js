@@ -66,6 +66,9 @@ var PROC_ICONS = (function () {
   G.eschar = ink('M16 4 Q13 24 15 44') + ink('M32 4 Q35 24 33 44') + red('M24 7 Q23 24 24 41', 2.6, '6 4.5');
   G.binder = ink('M13 5 Q6 12 10 20 L16 25') + ink('M35 5 Q42 12 38 20 L32 25') + ic(14, 28, 4) + ic(34, 28, 4) + ink('M12 31 L9 42 M36 31 L39 42') + red('M4 24 L44 24 L44 38 L4 38 Z', 2.4) + red('M18 27 L30 27 L18 31 L30 31 L18 35 L30 35', 1.8);
   G.tq = ink('M18 4 Q16 24 18 44') + ink('M32 4 Q34 24 32 44') + ink2('M22 34 L28 40 M28 34 L22 40', 2) + red('M13 14 L37 14 L37 24 L13 24 Z', 2.6) + red('M25 19 L44 11', 3) + rdot(44, 11, 2.2);
+  /* Penetrating neck trauma: neck silhouette, zone lines I/II/III dashed (ink2), ONE red idea —
+     the penetrating wound, not a specific zone (current teaching is hard/soft signs over rigid
+     zone-based triage — see procedures/#c11's DECISION box). */
   G.neck = ink('M14 6 Q25 2 36 6') + ink('M18 6 L18 44') + ink('M32 6 L32 44') + ink2('M18 17 L32 17', 1.6, '3 3') + ink2('M18 31 L32 31', 1.6, '3 3') + red('M4 22 L16 25') + red('M16 25 L11 21') + red('M16 25 L11 29');
   G.junc = ink('M8 44 L8 16 Q8 9 15 7 L20 6') + ink('M20 6 Q28 1 35 6 L45 13') + ink('M27 19 Q33 16 39 20 L45 25') + ink('M36 26 Q34 34 35 44') + rc(24, 21, 5.5) + rdot(24, 21, 1.8);
   G.jada = ink('M15 11 Q24 3 33 11 Q41 20 33 30 Q28 36 26 40 L22 40 Q20 36 15 30 Q7 20 15 11 Z') + red('M24 45 L24 25', 2.4) + rc(24, 20, 4.5, 2.4);
@@ -152,12 +155,13 @@ var PROC_ICONS = (function () {
   };
 
   /* Which card each figure belongs to, so a consumer can bind by card id
-     rather than by hand. Penetrating neck trauma (c11) is deliberately absent:
-     design/ICONOGRAPHY.md removed that graphic in review. */
+     rather than by hand. Penetrating neck trauma (c11) was left un-iconed at
+     first review (design/ICONOGRAPHY.md) but was later asked for and wired up —
+     see the neck zones + wound mark below. */
   var BY_CARD = {
     c01: 'chest', c02: 'thora', c04: 'burr', c05: 'canth', c06: 'cvc',
-    c07: 'tvp', c08: 'eschar', c09: 'binder', c10: 'tq', c12: 'junc',
-    c13: 'jada', c14: 'cordis', c15: 'salad', c16: 'pigtail'
+    c07: 'tvp', c08: 'eschar', c09: 'binder', c10: 'tq', c11: 'neck',
+    c12: 'junc', c13: 'jada', c14: 'cordis', c15: 'salad', c16: 'pigtail'
   };
 
   /* A glyph sitting beside a title that already names the procedure is

@@ -218,9 +218,9 @@ The grammar is four rules, in the header of `procedure-icons.js` and in full in
 
 The anatomical decisions in `design/ICONOGRAPHY.md` were locked in clinical
 review — left chest for thoracotomy, patient's right IJ, "measure depth by CT"
-rather than fixed-pupil side. Do not regress them, and note that the penetrating
-neck graphic was removed deliberately: the glyph exists but is not mapped to any
-card, and should stay unmapped.
+rather than fixed-pupil side. Do not regress them. The penetrating neck graphic
+was left un-iconed at that same review, then later requested by a clinician and
+wired to `procedures/#c11` — see `design/ICONOGRAPHY.md` for what it draws.
 
 Decorative glyphs are `aria-hidden` with no role or label. That is not a detail —
 a labeled decorative SVG shadows the real figure for any selector or screen

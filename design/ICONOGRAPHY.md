@@ -31,7 +31,7 @@ Companion to `DESIGN_LANGUAGE.md`. Reference implementation: `LRH Procedure Icon
 - **Junctional**: axilla target — thorax (double-width, rib hints) + shoulder + abducted arm
 - **FONA**: trachea side-on, ETT curving IN the trachea via cricothyroid membrane
 - **RSI / SALAD**: burr-hole face; tube behind the tongue; SALAD = solid suction leads (1) + dashed ETT follows (2) + secretion dots; short ESOPH line ends below tongue level
-- Penetrating neck trauma: intentionally removed — no graphic
+- **Penetrating neck**: left un-iconed at first review, later requested and wired to `procedures/#c11` — neck silhouette, dashed zone lines I/II/III, one red wound mark (current teaching triages by hard/soft signs, not zone alone — the glyph does not pick a zone)
 
 ## Tweakable parameters
 `mouthOpen` and `jawSize` (0–100, default 50) parametrize the RSI/SALAD profiles. For production, bake at 50/50 unless told otherwise.

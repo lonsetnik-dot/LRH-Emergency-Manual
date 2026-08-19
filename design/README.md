@@ -28,9 +28,8 @@ hand-maintains a copy and a card, a poster and a label cannot drift apart.
 `verify_procedure_icons.mjs` asserts the grammar (one red idea, nothing filled,
 shared bases still shared) against the rendered markup on real pages.
 
-The penetrating-neck glyph exists in `procedure-icons.js` but is deliberately
-**not** in the card map — `ICONOGRAPHY.md` removed that graphic in review. Do not
-wire it up.
+The penetrating-neck glyph was left out of the card map at first review, then
+later requested and wired to `procedures/#c11` — see `ICONOGRAPHY.md`.
 
 The **glyph** tier (48-grid) is placed: 14 procedure cards, plus RSI/FONA in
 `codes/` and UVC/hysterotomy in `ob-neonatal/`. The **detail** tier (160-grid,
