@@ -34,6 +34,9 @@ build.mjs             build: inject shared CSS/JS, substitute {{SITE.*}}, emit d
 design-system*.css    shared design language, injected at build
 inventory.js          equipment inventory (CATALOG+STANDARDS generic; LOCATIONS = example)
 guidelines.js         upstream guideline registry (editions, review dates)
+procedure-icons.js    procedure glyph set, injected at build (design/ICONOGRAPHY.md)
+equipment-icons.js    equipment glyph set, injected at build
+design/               design specs + prototypes         ->  not published
 verify_*.mjs          the safety harness — run `bash run-tests.sh`
 netlify.toml          Netlify config (builds with node build.mjs, publishes dist/)
 ```
@@ -42,6 +45,11 @@ Every tool is a single self-contained `index.html` in its own folder — inline
 CSS/JS, no external dependencies, works offline (a generated service worker
 precaches the whole site). Operating rules for contributors and AI assistants
 are in `CLAUDE.md`; the reasoning behind them is in `PROJECT.md`.
+
+`design/` is the one folder that is not a tool and not built: it holds the
+design-system specs and the HTML prototypes they were drawn in. `build.mjs`
+skips it, so none of it reaches `dist/` or the offline cache. See
+`design/README.md` for what has been built from it and what has not.
 
 ## Develop
 
