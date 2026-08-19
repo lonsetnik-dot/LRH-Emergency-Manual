@@ -474,11 +474,12 @@ const FORK = 'dist/clinical-pathways/pe/__fork.html';
     .replace('catheterDirected: false', 'catheterDirected: true')
     .replace('pertOnSite: false', 'pertOnSite: true')
     .replace('version: "1.0"', 'version: "1.0-fork"')
-    /* ...and a site that HAS filled in the destination this edition leaves blank.
-       Both directions of the phone affordance have to be proven, not just the
-       unconfigured one: the same code must produce a real tel: link here. */
-    .replace("tel:'',       phone:'[add the HCA New Hampshire transfer line]'",
-             "tel:'+15555550123',       phone:'555-555-0123'");
+    /* ...and a site that has NOT yet filled one of its destinations in. Both
+       directions of the phone affordance have to be proven: this edition has all
+       three numbers, so the fork is where the unconfigured path gets tested. It
+       is the path an adopting ED actually lands on first. */
+    .replace("tel:'+18554228200',       phone:'855-422-8200'",
+             "tel:'',       phone:'[add your third transfer line]'");
   ck('5. the fork rewrite actually changed the config', forked === orig ? 'unchanged' : 'changed', 'changed');
   writeFileSync(FORK, forked);
 
@@ -499,15 +500,17 @@ const FORK = 'dist/clinical-pathways/pe/__fork.html';
   has('5. a site WITH a PERT is told to activate it', await final(), 'Activate the PE response team');
   has('5. a site WITH catheter lysis is told what it has', await txt('#advNote'), 'Available on site: catheter-directed lysis');
 
-  /* The destination this edition leaves blank is a live tap-to-call link on a site
-     that filled it in — same code, opposite rendering, driven only by config. */
+  /* A destination this edition HAS filled in renders as unconfigured plain text on
+     a fork that has not — same code, opposite rendering, driven only by config.
+     The live edition proves the dialable direction in 2i; this proves the other. */
   await pg.goto(BASE + '/clinical-pathways/pe/__fork.html?from=home', { waitUntil: 'networkidle' });
   await pg.waitForTimeout(300);
-  ck('5. a filled-in destination renders as a real tel: link',
-    await pg.locator('#xferBox a[href="tel:+15555550123"]').count(), 1);
-  ck('5. and the fork shows nothing as unconfigured',
-    norm(await pg.locator('#xferBox').innerText()).includes('not configured') ? 'still unconfigured' : 'all configured',
-    'all configured');
+  has('5. an unfilled destination is marked unconfigured on the fork',
+    norm(await pg.locator('#xferBox').innerText()), 'not configured');
+  ck('5. and it is NOT a tappable link on the fork',
+    await pg.locator('#xferBox a[href^="tel:"]').count(), (SITE.transferDestinations || []).length - 1);
+  ck('5. no dead tel: link is produced by the empty value',
+    await pg.locator('#xferBox a[href="tel:"], #xferBox a[href="tel:+"]').count(), 0);
 
   /* And the invariants are still invariant on the fork. */
   await scenario({ hemo: 'none', sev: 'high', rv: 'abnormal', bio: 'abnormal' });
