@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0D1420;--card:#161F2E;--card2:#1D2A3C;--ink:#EAF0F7;--ink2:#8FA0B5;--line:rgba(255,255,255,.10);--accent:#2FA372;--red:#E5484D;--gray:#5C6B7E;--blue:#4C8DDA;--green:#3DA35D;--amber:#F0B429;--purple:#9B7BD4;--teal:#3AA6A6;--orange:#E08A3C}
+body[data-theme="light"]{--bg:#EFF2F5;--card:#FFFFFF;--card2:#F4F6F9;--ink:#141E2B;--ink2:#5A6A7D;--line:rgba(15,35,60,.13);--accent:#00693E;--red:#C63238;--gray:#6B7A8D;--blue:#2F6FB5;--green:#1F7F49;--amber:#B07E13;--purple:#6C4FA3;--teal:#1F7E7E;--orange:#B4661F}
+html,body{margin:0;background:var(--bg)}
+a{color:var(--blue);text-decoration:none}a:hover{color:var(--accent)}
+input{font-family:inherit}
+@media print{
+  @page{margin:14mm}
+  html,body{background:#fff !important}
+  body{--bg:#fff;--card:#fff;--card2:#fff;--ink:#000;--ink2:#333;--line:#bbb;--accent:#00693E}
+  [data-noprint]{display:none !important}
+  h1{font-size:20pt !important}
+  button{min-height:0 !important;padding:2mm 0 !important;break-inside:avoid}
+  #sec-checklists,#sec-doses,#sec-related{font-size:9pt !important;margin-top:6mm !important}
+  [data-print-block]{break-inside:avoid;page-break-inside:avoid;border:1px solid #bbb !important;box-shadow:none !important}
+}
+</style>
+</helmet>
+<div style="min-height:100vh;background:var(--bg);color:var(--ink);font-family:'Source Sans 3',system-ui,sans-serif;-webkit-font-smoothing:antialiased">
+<div style="max-width:1000px;margin:0 auto;padding:0 14px 48px">
+
+<div data-noprint="1" style="position:sticky;top:0;z-index:30;background:var(--bg);border-bottom:1px solid var(--line)">
+  <div style="display:flex;align-items:center;gap:2px;height:48px">
+    <button onClick="{{ goBack }}" style="{{ backSty }}" aria-label="Back">‹<span style="font-size:12px;font-weight:700;letter-spacing:.06em">{{ backLabel }}</span></button>
+    <div style="flex:1;min-width:0;padding:0 6px">
+      <div style="font-size:15px;font-weight:800;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.2">{{ barTitle }}</div>
+      <div style="font-size:10.5px;font-weight:700;letter-spacing:.1em;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis">{{ crumb }}</div>
+    </div>
+    <button onClick="{{ toggleTools }}" style="{{ toolsSty }}" aria-label="Tools and settings">{{ toolsMark }}</button>
+  </div>
+  <div style="display:flex;gap:6px;overflow-x:auto;padding:0 0 9px;scrollbar-width:none">
+    <button onClick="{{ toggleWeight }}" style="{{ wChipSty }}">{{ wChip }}</button>
+    <button onClick="{{ openTimeline }}" style="{{ chipSty }}">TIMELINE{{ logCount }}</button>
+    <sc-for list="{{ jumps }}" as="j" hint-placeholder-count="2">
+      <button onClick="{{ j.go }}" style="{{ j.sty }}">{{ j.name }}</button>
+    </sc-for>
+  </div>
+  <sc-if value="{{ wOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;gap:8px;align-items:center;padding:0 0 10px;flex-wrap:wrap">
+    <input value="{{ w }}" onChange="{{ onW }}" inputMode="decimal" placeholder="kg" style="width:74px;background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:11px 10px;font-size:17px;font-weight:700;text-align:center" aria-label="Weight in kg">
+    <span style="font-size:13px;color:var(--ink2)">or age</span>
+    <input value="{{ a }}" onChange="{{ onA }}" inputMode="numeric" placeholder="yrs" style="width:62px;background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:11px 10px;font-size:16px;font-weight:700;text-align:center" aria-label="Age in years">
+    <button onClick="{{ estimate }}" style="background:var(--card2);border:1px solid var(--line);color:var(--ink);font:700 12px 'Source Sans 3',sans-serif;padding:11px 13px;border-radius:10px;cursor:pointer;min-height:44px">ESTIMATE KG</button>
+    <button onClick="{{ toggleWeight }}" style="background:var(--accent);border:none;color:#fff;font:800 12px 'Source Sans 3',sans-serif;letter-spacing:.06em;padding:11px 16px;border-radius:10px;cursor:pointer;min-height:44px">DONE</button>
+  </div>
+  </sc-if>
+  <sc-if value="{{ toolsOpen }}" hint-placeholder-val="{{ false }}">
+  <div style="display:flex;gap:6px;flex-wrap:wrap;padding:0 0 10px">
+    <button onClick="{{ toggleTheme }}" style="{{ chipSty }}">{{ themeLabel }} MODE</button>
+    <button onClick="{{ goTokens }}" style="{{ chipSty }}">DESIGN TOKENS</button>
+    <button onClick="{{ printAll }}" style="{{ chipSty }}">PRINT THIS CARD</button>
+    <button onClick="{{ doReset }}" style="{{ resetSty }}">{{ resetLabel }}</button>
+  </div>
+  </sc-if>
+</div>
+
+<sc-if value="{{ isHome }}" hint-placeholder-val="{{ true }}">
+<h1 style="font-size:30px;font-weight:800;letter-spacing:-.01em;margin:20px 0 6px">LRH Emergency Manual</h1>
+<p style="font-size:15.5px;line-height:1.55;color:var(--ink2);margin:0 0 14px;max-width:52ch">Choose a category or search. Every tool shares one weight, one case clock, and one timeline.</p>
+<div style="display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:4px 6px 4px 14px">
+  <span style="color:var(--ink2);font-size:16px">⌕</span>
+  <input value="{{ q }}" onChange="{{ onQ }}" placeholder="Search topics — HEART, PPH, cord prolapse…" style="flex:1;background:none;border:none;color:var(--ink);padding:13px 4px;font-size:16px;outline:none">
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:10px;margin-top:12px">
+<sc-for list="{{ cats }}" as="c" hint-placeholder-count="6">
+  <button onClick="{{ c.go }}" style="{{ c.sty }}">
+    <div style="display:flex;align-items:center;gap:12px">
+      <span style="{{ c.dotSty }}"></span>
+      <span style="font-size:19px;font-weight:800">{{ c.name }}</span>
+      <span style="flex:1"></span>
+      <span style="font-family:'JetBrains Mono',monospace;font-size:12px;font-weight:700;color:var(--ink2)">{{ c.count }}</span>
+    </div>
+    <div style="font-size:14px;line-height:1.5;color:var(--ink2);margin-top:6px">{{ c.desc }}</div>
+  </button>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ isIndex }}" hint-placeholder-val="{{ false }}">
+<h1 style="font-size:28px;font-weight:800;margin:20px 0 4px">{{ indexTitle }}</h1>
+<p style="font-size:15px;line-height:1.55;color:var(--ink2);margin:0 0 16px;max-width:56ch">{{ indexDesc }}</p>
+<sc-for list="{{ groups }}" as="g" hint-placeholder-count="3">
+  <div id="{{ g.id }}" style="display:flex;align-items:center;gap:9px;margin:18px 0 8px;scroll-margin-top:110px">
+    <span style="{{ g.dotSty }}"></span>
+    <span style="font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--ink2)">{{ g.name }}</span>
+    <span style="flex:1;height:1px;background:var(--line)"></span>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:8px">
+  <sc-for list="{{ g.items }}" as="it" hint-placeholder-count="4">
+    <button onClick="{{ it.go }}" style="{{ it.sty }}">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:{{ it.num }};flex:none">{{ it.n }}</span>
+      <span style="font-size:16.5px;font-weight:700;text-align:left;line-height:1.3">{{ it.name }}</span>
+      <span style="flex:1"></span>
+      <span style="font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--ink2);white-space:nowrap">{{ it.note }}</span>
+    </button>
+  </sc-for>
+  </div>
+</sc-for>
+</sc-if>
+
+<sc-if value="{{ isCard }}" hint-placeholder-val="{{ false }}">
+<div style="display:flex;align-items:baseline;gap:10px;margin:20px 0 4px;flex-wrap:wrap">
+  <span style="font-family:'JetBrains Mono',monospace;font-size:20px;font-weight:700;color:var(--red)">22</span>
+  <h1 style="font-size:27px;font-weight:800;margin:0">Post-Arrest Care</h1>
+  <span style="flex:1"></span>
+  <span style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--ink2)">FIRST HOUR AFTER ROSC</span>
+</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(300px,1fr));gap:8px;margin-top:12px">
+  <div style="background:var(--card);border:1px solid var(--line);border-left:4px solid var(--red);border-radius:12px;padding:12px 14px"><div style="font-size:10.5px;font-weight:800;letter-spacing:.14em;color:var(--red)">NAME</div><div style="font-size:14.5px;line-height:1.5;margin-top:4px">"ROSC — moving to post-arrest care." Say it out loud.</div></div>
+  <div style="background:var(--card);border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:12px;padding:12px 14px"><div style="font-size:10.5px;font-weight:800;letter-spacing:.14em;color:var(--blue)">CLAIM</div><div style="font-size:14.5px;line-height:1.5;margin-top:4px">Airway · pressure · ECG · temperature — assign each aloud.</div></div>
+  <div style="background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:12px;padding:12px 14px"><div style="font-size:10.5px;font-weight:800;letter-spacing:.14em;color:var(--accent)">AIM</div><div style="font-size:14.5px;line-height:1.5;margin-top:4px">Perfusion, normal CO₂, a 12-lead, and a temperature plan within the hour.</div></div>
+</div>
+<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
+  <button onClick="{{ logEcg }}" style="min-height:60px;border:none;border-radius:12px;background:var(--card2);border:1px solid var(--line);color:var(--ink);font:800 14.5px 'Source Sans 3',sans-serif;cursor:pointer">12-LEAD ECG — LOG IT</button>
+  <button onClick="{{ logTemp }}" style="min-height:60px;border-radius:12px;background:var(--card2);border:1px solid var(--line);color:var(--ink);font:800 14.5px 'Source Sans 3',sans-serif;cursor:pointer">TEMP MANAGEMENT — LOG IT</button>
+</div>
+<div id="sec-checklists" style="margin-top:16px;font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--ink2);scroll-margin-top:110px">CHECKLISTS — TAP TO OPEN</div>
+<sc-for list="{{ sections }}" as="s" hint-placeholder-count="4">
+  <div data-print-block="1" style="margin-top:8px;background:var(--card);border:1px solid var(--line);border-left:4px solid {{ s.color }};border-radius:14px;overflow:hidden">
+    <button onClick="{{ s.toggle }}" style="width:100%;display:flex;align-items:center;gap:10px;background:none;border:none;color:var(--ink);padding:15px 14px;font:800 14px 'Source Sans 3',sans-serif;letter-spacing:.05em;cursor:pointer;min-height:54px;text-align:left">{{ s.name }}<span style="flex:1"></span><span style="font-family:'JetBrains Mono',monospace;font-size:12px;color:var(--ink2)">{{ s.progress }}</span><span style="color:var(--ink2);font-size:16px">{{ s.chev }}</span></button>
+    <sc-if value="{{ s.open }}" hint-placeholder-val="{{ false }}">
+      <div style="border-top:1px solid var(--line)">
+      <sc-for list="{{ s.items }}" as="i" hint-placeholder-count="3">
+        <button onClick="{{ i.toggle }}" style="{{ i.sty }}"><span style="{{ i.boxSty }}">{{ i.mark }}</span><span style="{{ i.textSty }}">{{ i.text }}</span></button>
+      </sc-for>
+      </div>
+    </sc-if>
+  </div>
+</sc-for>
+
+<div id="sec-doses" style="margin-top:22px;font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--ink2);scroll-margin-top:110px">DOSES</div>
+<div style="margin-top:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden">
+<sc-for list="{{ doses }}" as="d" hint-placeholder-count="4">
+  <div style="display:flex;gap:12px;align-items:baseline;padding:13px 14px;border-bottom:1px solid var(--line)">
+    <span style="font-size:14.5px;font-weight:700;width:118px;flex:none">{{ d.name }}</span>
+    <span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:{{ d.color }}">{{ d.dose }}</span>
+    <span style="flex:1"></span>
+    <span style="font-size:12.5px;color:var(--ink2);text-align:right">{{ d.note }}</span>
+  </div>
+</sc-for>
+</div>
+
+<div id="sec-related" style="margin-top:22px;font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--ink2);scroll-margin-top:110px">RELATED CARDS</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:8px;margin-top:8px">
+<sc-for list="{{ related }}" as="r" hint-placeholder-count="3">
+  <button onClick="{{ r.go }}" style="{{ r.sty }}"><span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:{{ r.color }};flex:none">{{ r.n }}</span><span style="font-size:15.5px;font-weight:700;text-align:left">{{ r.name }}</span><span style="flex:1"></span><span style="color:var(--ink2);font-size:18px">›</span></button>
+</sc-for>
+</div>
+</sc-if>
+
+<sc-if value="{{ isTokens }}" hint-placeholder-val="{{ false }}">
+<h1 style="font-size:28px;font-weight:800;margin:20px 0 4px">Design language</h1>
+<p style="font-size:15px;line-height:1.55;color:var(--ink2);margin:0 0 16px;max-width:56ch">One token set across every tool. Color carries meaning; nothing decorative competes with it.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px">
+<sc-for list="{{ swatches }}" as="s" hint-placeholder-count="8">
+  <div style="background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px;display:flex;gap:10px;align-items:center">
+    <span style="{{ s.sw }}"></span>
+    <div><div style="font-size:13.5px;font-weight:700">{{ s.name }}</div><div style="font-size:12px;color:var(--ink2);line-height:1.4">{{ s.use }}</div></div>
+  </div>
+</sc-for>
+</div>
+<div style="margin-top:20px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px">
+  <div style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--ink2)">TYPE</div>
+  <div style="font-size:30px;font-weight:800;margin-top:8px">Source Sans 3 — 30/800 page title</div>
+  <div style="font-size:19px;font-weight:800;margin-top:6px">19/800 card title</div>
+  <div style="font-size:15px;line-height:1.6;margin-top:6px">15/400/1.6 body — the reading size for every checklist line and reference paragraph in the manual.</div>
+  <div style="font-size:11px;font-weight:800;letter-spacing:.14em;color:var(--ink2);margin-top:8px">11/800/.14EM SECTION LABEL</div>
+  <div style="font-family:'JetBrains Mono',monospace;font-size:26px;font-weight:700;margin-top:8px">2:00 · 04 — JetBrains Mono for numbers</div>
+</div>
+<div style="margin-top:10px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:16px;font-size:14.5px;line-height:1.65">
+  <div style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--ink2);margin-bottom:8px">RULES</div>
+  · Cards 14px radius, buttons 12px, 1px hairline borders. Category identity is a 4px left bar, never a filled block.<br>
+  · Primary action ≥64px tall, secondary ≥52px, nothing below 44px.<br>
+  · Motion is reserved for overdue things — a blink or a pulse means act now.<br>
+  · Icons only where the glyph is instant (bolt, heart, ECG trace). Everything else is a word.<br>
+  · Stacked multi-line choices are left-justified; single short labels centre.
+</div>
+</sc-if>
+
+<div data-noprint="1" style="display:flex;gap:6px;flex-wrap:wrap;margin-top:26px;padding-top:14px;border-top:1px solid var(--line)">
+  <span style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--ink2);align-self:center;margin-right:4px">DEMO</span>
+  <button onClick="{{ goHome }}" style="{{ navHome }}">HOME</button>
+  <button onClick="{{ goIndex }}" style="{{ navIndex }}">CATEGORY</button>
+  <button onClick="{{ goCard }}" style="{{ navCard }}">CARD</button>
+  <button onClick="{{ goTokens }}" style="{{ navTokens }}">TOKENS</button>
+</div>
+</div>
+
+<sc-if value="{{ tl }}" hint-placeholder-val="{{ false }}">
+<div style="position:fixed;inset:0;z-index:60;background:rgba(5,10,18,.72);display:flex;align-items:flex-end;justify-content:center" onClick="{{ closeTimeline }}">
+  <div style="width:100%;max-width:680px;background:var(--card);border-radius:20px 20px 0 0;border:1px solid var(--line);padding:16px 16px calc(16px + env(safe-area-inset-bottom));max-height:80vh;overflow:auto" onClick="{{ stop }}">
+    <div style="display:flex;align-items:center;gap:10px">
+      <span style="font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--ink2)">CASE TIMELINE</span><span style="flex:1"></span>
+      <button onClick="{{ closeTimeline }}" style="background:var(--card2);border:1px solid var(--line);color:var(--ink);font:700 12px 'Source Sans 3',sans-serif;padding:9px 14px;border-radius:10px;cursor:pointer;min-height:40px">CLOSE</button>
+    </div>
+    <div style="margin-top:10px;background:var(--card2);border-left:4px solid var(--amber);border-radius:10px;padding:10px 12px;font-size:13.5px;line-height:1.5">Times and events only — <b>no patient identifiers</b>. Not a medical record. Clears on RESET.</div>
+    <sc-if value="{{ noEvents }}" hint-placeholder-val="{{ true }}"><div style="font-size:14px;color:var(--ink2);padding:18px 2px">Nothing logged yet.</div></sc-if>
+    <sc-for list="{{ events }}" as="e" hint-placeholder-count="0">
+      <div style="display:flex;gap:12px;padding:10px 2px;border-bottom:1px solid var(--line);font-size:14.5px"><span style="font-family:'JetBrains Mono',monospace;font-weight:700;color:var(--accent)">{{ e.t }}</span><span style="line-height:1.4">{{ e.label }}</span></div>
+    </sc-for>
+    <button onClick="{{ copyTl }}" style="width:100%;margin-top:12px;min-height:56px;border:none;border-radius:12px;background:var(--accent);color:#fff;font:800 15px 'Source Sans 3',sans-serif;letter-spacing:.05em;cursor:pointer">{{ copyLabel }}</button>
+  </div>
+</div>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:430,&quot;height&quot;:932}}">
+class Component extends DCLogic {
+  state = { theme:'dark', screen:'home', w:'', a:'', q:'', tl:false, copied:false,
+    events:[], open:'ab', checked:{}, t0:Date.now(), wOpen:false, toolsOpen:false, resetArm:false };
+
+  componentDidMount(){ document.body.dataset.theme=this.state.theme; }
+  componentDidUpdate(){ document.body.dataset.theme=this.state.theme; }
+
+  kg(){ const k=parseFloat(this.state.w); return (k>0&&k<300)?k:null; }
+  fmt(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+  log(label){ this.setState(st=>({events:[{t:this.fmt((Date.now()-st.t0)/1000),label},...st.events]})); }
+
+  pill(active){ return {background:active?'var(--accent)':'var(--card)',border:'1px solid '+(active?'var(--accent)':'var(--line)'),color:active?'#fff':'var(--ink2)',font:"700 11px 'Source Sans 3',sans-serif",letterSpacing:'.08em',padding:'9px 13px',borderRadius:'999px',cursor:'pointer',minHeight:'40px'}; }
+
+  jumpTo(id){ const el=document.getElementById(id); if(!el) return;
+    const y=el.getBoundingClientRect().top+window.pageYOffset-96;
+    window.scrollTo({top:Math.max(0,y),behavior:'smooth'}); }
+
+  renderVals(){
+    const st=this.state, k=this.kg(), go=(s)=>()=>this.setState({screen:s});
+    const catCard=(c)=>({background:'var(--card)',border:'1px solid var(--line)',borderLeft:'4px solid '+c,borderRadius:'14px',padding:'14px',cursor:'pointer',textAlign:'left',color:'var(--ink)',minHeight:'88px',font:"inherit"});
+    const dot=(c)=>({width:'12px',height:'12px',borderRadius:'3px',background:c,flex:'none'});
+    const rowBtn=(c)=>({display:'flex',alignItems:'center',gap:'12px',background:'var(--card)',border:'1px solid var(--line)',borderLeft:'4px solid '+c,borderRadius:'12px',padding:'14px',minHeight:'62px',cursor:'pointer',color:'var(--ink)',font:'inherit'});
+
+    const cats=[
+      {name:'Codes & Resuscitation',desc:'Cardiac arrest, post-arrest, RSI, FONA — plus code-cart drawers.',count:'24 cards',c:'var(--red)'},
+      {name:'Pediatric Emergencies',desc:'Weight-based dosing engine and 15 pediatric ED topics.',count:'15 cards',c:'var(--purple)'},
+      {name:'OB & Neonatal',desc:'Delivery, newborn resuscitation, maternal emergencies.',count:'10 cards',c:'var(--blue)'},
+      {name:'Procedures',desc:'Rare, high-stakes procedures with equipment lists and figures.',count:'16 cards',c:'var(--teal)'},
+      {name:'Clinical Pathways',desc:'Accelerated diagnostic pathways, including chest pain / hs-troponin.',count:'8 cards',c:'var(--accent)'},
+      {name:'Trauma',desc:'Brain Injury Guidelines, massive transfusion, front-of-neck access.',count:'9 cards',c:'var(--orange)'}
+    ].map(c=>({...c, sty:catCard(c.c), dotSty:dot(c.c), go:()=>{ this.setState({screen:'index',indexTitle:c.name}); }}));
+
+    const mk=(n,name,note,c)=>({n,name,note:note||'',num:c,sty:rowBtn(c),go:()=>this.setState({screen:'card'})});
+    const groups=[
+      {name:'ARREST',c:'var(--red)',items:[mk('01','Pulseless VF / VT','LIVE','var(--red)'),mk('02','PEA / Asystole','','var(--red)'),mk('22','Post-Arrest Care','','var(--red)'),mk('03','Bradycardia','','var(--red)')]},
+      {name:'AIRWAY',c:'var(--blue)',items:[mk('06','Intubation / RSI Checklist','','var(--blue)'),mk('07','Front of Neck Access','','var(--blue)'),mk('08','SALAD — Contaminated Airway','','var(--blue)')]},
+      {name:'REFERENCE',c:'var(--teal)',items:[mk('30','Code cart — drawer contents','','var(--teal)'),mk('31','Push-dose pressors','','var(--teal)')]}
+    ].map(g=>({...g,id:'grp-'+g.name.toLowerCase(),dotSty:dot(g.c)}));
+
+    const doses=[
+      {name:'Norepinephrine',dose:'0.05–0.5 mcg/kg/min',note:'titrate to MAP ≥65',color:'var(--red)'},
+      {name:'Epinephrine',dose:'0.02–0.2 mcg/kg/min',note:'if bradycardic / low output',color:'var(--red)'},
+      {name:'Fentanyl',dose:'25–100 mcg IV q30–60 min',note:'analgesia first',color:'var(--blue)'},
+      {name:'Propofol',dose:'5–50 mcg/kg/min',note:'watch pressure',color:'var(--blue)'},
+      {name:'Cisatracurium',dose:'0.1 mg/kg bolus',note:'only for refractory shivering',color:'var(--amber)'}
+    ];
+    const related=[
+      {n:'01',name:'Pulseless VF / VT',color:'var(--red)'},
+      {n:'06',name:'Intubation / RSI',color:'var(--blue)'},
+      {n:'31',name:'Push-dose pressors',color:'var(--teal)'}
+    ].map(r=>({...r, sty:{...rowBtn(r.color),minHeight:'58px'}, go:()=>this.setState({screen:'card'})}));
+
+    const secDefs=[
+      {id:'ab',name:'AIRWAY & BREATHING',color:'var(--blue)',items:['Avoid hypoxia and hyperoxia — titrate FiO₂ to SpO₂ 92–98% once the reading is reliable.','Avoid hyperventilation — target ETCO₂ 35–45 mmHg, around 10 breaths/min.','Secure the airway if not already intubated; confirm with waveform capnography.']},
+      {id:'circ',name:'CIRCULATION & CAUSE-FINDING',color:'var(--red)',items:['Treat hypotension — MAP ≥65 mmHg; fluids first, then norepinephrine.','12-lead ECG immediately — STEMI or a new concerning pattern activates the cath lab.','Find the cause — H\u2019s and T\u2019s, bedside ultrasound, labs.']},
+      {id:'temp',name:'TEMPERATURE, SEDATION & NEURO',color:'var(--amber)',items:['Targeted temperature management for anyone not following commands.','Sedation for intubated patients; neuromuscular blocker only if shivering persists.']},
+      {id:'labs',name:'GLUCOSE, LABS & DISPOSITION',color:'var(--accent)',items:['Glucose — treat hypoglycemia, avoid tight control.','Arrange ICU admission or transfer; call early.']}
+    ];
+    const sections=secDefs.map(s=>{
+      const items=s.items.map((text,i)=>{ const key=s.id+i, on=!!st.checked[key];
+        return { text, mark:on?'✓':'', 
+          sty:{display:'flex',gap:'12px',alignItems:'flex-start',width:'100%',background:'none',border:'none',borderBottom:'1px solid var(--line)',padding:'14px',cursor:'pointer',textAlign:'left',font:'inherit',color:'var(--ink)',minHeight:'54px'},
+          boxSty:{width:'22px',height:'22px',borderRadius:'6px',border:'2px solid '+(on?s.color:'var(--line)'),background:on?s.color:'transparent',color:'#fff',font:"700 13px 'Source Sans 3',sans-serif",display:'flex',alignItems:'center',justifyContent:'center',flex:'none',marginTop:'1px'},
+          textSty:{fontSize:'14.5px',lineHeight:1.5,opacity:on?.5:1,textDecoration:on?'line-through':'none'},
+          toggle:()=>{ this.setState(p=>({checked:{...p.checked,[key]:!p.checked[key]}})); if(!on) this.log(text.split(' —')[0]); } };
+      });
+      const done=items.filter(i=>i.mark).length;
+      return {...s, items, progress:done+'/'+items.length, open:st.printMode||st.open===s.id, chev:st.open===s.id?'−':'+',
+        toggle:()=>this.setState(p=>({open:p.open===s.id?null:s.id}))};
+    });
+
+    const swatches=[['Accent','var(--accent)','Primary actions, live values'],['Red','var(--red)','Shock, arrest, critical'],['Amber','var(--amber)','Due now, caution'],['Blue','var(--blue)','Airway, navigation, info'],['Green','var(--green)','ROSC, resolved'],['Gray','var(--gray)','Non-shockable, inert'],['Purple','var(--purple)','Pediatric category'],['Teal','var(--teal)','Procedures category']]
+      .map(([name,c,use])=>({name,use,sw:{width:'34px',height:'34px',borderRadius:'9px',background:c,flex:'none'}}));
+
+    return {
+      themeLabel:st.theme==='dark'?'LIGHT':'DARK',
+      toggleTheme:()=>this.setState(s=>({theme:s.theme==='dark'?'light':'dark'})),
+      crumb: st.screen==='home'?'LRH · EMERGENCY DEPARTMENT':(st.screen==='index'?(st.indexTitle||'CODES & RESUSCITATION').toUpperCase():(st.screen==='card'?'CODES · 22 POST-ARREST':'SYSTEM')),
+      backLabel: st.screen==='home'?'':(st.screen==='card'?((st.indexTitle||'Codes & Resuscitation').split(' ')[0].replace('&','').toUpperCase()||'CODES'):'ALL CARDS'),
+      backSty:{display:'flex',alignItems:'center',gap:'4px',background:'none',border:'none',color:'var(--ink)',font:"700 22px 'Source Sans 3',sans-serif",padding:'0 8px 0 2px',cursor:'pointer',minHeight:'44px',opacity:st.screen==='home'?.35:1},
+      barTitle: st.screen==='home'?'LRH Emergency Manual':(st.screen==='index'?(st.indexTitle||'Codes & Resuscitation'):(st.screen==='card'?'22 · Post-Arrest Care':'Design language')),
+      toggleTools:()=>this.setState(s=>({toolsOpen:!s.toolsOpen,wOpen:false})),
+      toolsMark: st.toolsOpen?'✕':'⋯',
+      toolsSty:{background:st.toolsOpen?'var(--card2)':'none',border:'1px solid '+(st.toolsOpen?'var(--line)':'transparent'),color:'var(--ink)',font:"800 20px 'Source Sans 3',sans-serif",width:'44px',height:'44px',borderRadius:'10px',cursor:'pointer',flex:'none'},
+      toolsOpen:st.toolsOpen, wOpen:st.wOpen,
+      printAll:()=>{ const all={}; secDefs.forEach(s=>s.items.forEach((_,i)=>{ all[s.id+i]=st.checked[s.id+i]||false; }));
+        this.setState({printMode:true,toolsOpen:false}); setTimeout(()=>{ window.print(); this.setState({printMode:false}); },260); },
+      toggleWeight:()=>this.setState(s=>({wOpen:!s.wOpen,toolsOpen:false})),
+      chipSty:{background:'var(--card)',border:'1px solid var(--line)',color:'var(--ink2)',font:"700 11px 'Source Sans 3',sans-serif",letterSpacing:'.08em',padding:'0 13px',height:'34px',borderRadius:'999px',cursor:'pointer',whiteSpace:'nowrap',flex:'none'},
+      wChip: k?(k+' KG · '+(k<50?'PEDS':'ADULT')):'SET WEIGHT',
+      wChipSty:{background:k?'var(--card)':'transparent',border:'1px solid '+(k?'var(--accent)':'var(--amber)'),color:k?'var(--accent)':'var(--amber)',font:"800 11px 'Source Sans 3',sans-serif",letterSpacing:'.08em',padding:'0 13px',height:'34px',borderRadius:'999px',cursor:'pointer',whiteSpace:'nowrap',flex:'none'},
+      logCount: st.events.length?(' · '+st.events.length):'',
+      jumps: (st.screen==='card'?[{name:'CHECKLISTS',id:'sec-checklists'},{name:'DOSES',id:'sec-doses'},{name:'RELATED CARDS',id:'sec-related'}]
+        :(st.screen==='index'?[{name:'ARREST',id:'grp-arrest'},{name:'AIRWAY',id:'grp-airway'},{name:'REFERENCE',id:'grp-reference'}]:[]))
+        .map(j=>({...j, sty:{background:'var(--card)',border:'1px solid var(--line)',color:'var(--ink2)',font:"700 11px 'Source Sans 3',sans-serif",letterSpacing:'.08em',padding:'0 13px',height:'34px',borderRadius:'999px',cursor:'pointer',whiteSpace:'nowrap',flex:'none'},
+          go:()=>this.jumpTo(j.id)})),
+      resetLabel: st.resetArm?'SURE? — CLEARS TIMELINE':'RESET CASE',
+      resetSty:{background:st.resetArm?'var(--red)':'var(--card)',border:'1px solid '+(st.resetArm?'var(--red)':'var(--line)'),color:st.resetArm?'#fff':'var(--ink2)',font:"700 11px 'Source Sans 3',sans-serif",letterSpacing:'.08em',padding:'0 13px',height:'34px',borderRadius:'999px',cursor:'pointer',whiteSpace:'nowrap'},
+      doReset:()=>{ if(!st.resetArm){ this.setState({resetArm:true}); clearTimeout(this._ra); this._ra=setTimeout(()=>this.setState({resetArm:false}),2500); return; }
+        clearTimeout(this._ra); this.setState({events:[],checked:{},w:'',a:'',resetArm:false,toolsOpen:false,t0:Date.now()}); },
+      goBack:()=>this.setState(s=>({screen:s.screen==='card'?'index':'home'})),
+      w:st.w, a:st.a, onW:(e)=>this.setState({w:e.target.value}), onA:(e)=>this.setState({a:e.target.value}),
+      estimate:()=>{ const a=parseFloat(st.a); if(!(a>=0))return; const kg=Math.min(2*a+8,70); this.setState({w:String(kg)}); this.log('Weight estimated from age — '+kg+' kg'); },
+      wNote: k?(k+' kg · '+(k<50?'pediatric':'adult')):'no weight — per-kg doses hidden',
+      wNoteColor: k?'var(--accent)':'var(--ink2)',
+      q:st.q, onQ:(e)=>this.setState({q:e.target.value}),
+      isHome:st.screen==='home', isIndex:st.screen==='index', isCard:st.screen==='card', isTokens:st.screen==='tokens',
+      cats, groups, sections, swatches, doses, related,
+      indexTitle:st.indexTitle||'Codes & Resuscitation',
+      indexDesc:'Cards are numbered so you can call them out loud. Anything that lives in another tool links straight there — nothing is duplicated.',
+      logEcg:()=>this.log('12-lead ECG obtained'), logTemp:()=>this.log('Temperature management started'),
+      goHome:go('home'), goIndex:go('index'), goCard:go('card'), goTokens:go('tokens'),
+      navHome:this.pill(st.screen==='home'), navIndex:this.pill(st.screen==='index'), navCard:this.pill(st.screen==='card'), navTokens:this.pill(st.screen==='tokens'),
+      tl:st.tl, openTimeline:()=>this.setState({tl:true}), closeTimeline:()=>this.setState({tl:false,copied:false}), stop:(e)=>e.stopPropagation(),
+      events:st.events, noEvents:st.events.length===0,
+      copyLabel: st.copied?'COPIED':'COPY TO CLIPBOARD',
+      copyTl:()=>{ const txt=st.events.slice().reverse().map(e=>e.t+' · '+e.label).join('\n');
+        try{ navigator.clipboard.writeText(txt); }catch(e){} this.setState({copied:true}); }
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="design_doc_mode" content="canvas">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Source+Sans+3:wght@400;600;700;800&family=JetBrains+Mono:wght@500;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#0D1420;--card:#161F2E;--card2:#1D2A3C;--ink:#EAF0F7;--ink2:#8FA0B5;--line:rgba(255,255,255,.10);--accent:#2FA372;--red:#E5484D;--blue:#4C8DDA;--teal:#3AA6A6}
+body[data-theme="light"]{--bg:#EFF2F5;--card:#FFFFFF;--card2:#F4F6F9;--ink:#141E2B;--ink2:#5A6A7D;--line:rgba(15,35,60,.13);--accent:#00693E;--red:#C63238;--blue:#2F6FB5;--teal:#1F7E7E}
+html,body{margin:0;background:var(--bg)}
+a{color:var(--blue)}a:hover{color:var(--accent)}
+</style>
+</helmet>
+<div style="min-height:100vh;background:var(--bg);color:var(--ink);font-family:'Source Sans 3',system-ui,sans-serif;-webkit-font-smoothing:antialiased">
+<div style="max-width:1180px;margin:0 auto;padding:0 16px 60px">
+
+<div style="display:flex;align-items:center;gap:10px;padding:16px 0 12px;border-bottom:1px solid var(--line)">
+  <div style="flex:1"><div style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--teal)">PROCEDURES · ICON SYSTEM</div>
+  <div style="font-size:24px;font-weight:800">One grammar, two tiers</div></div>
+  <button onClick="{{ toggleTheme }}" style="background:var(--card);border:1px solid var(--line);color:var(--ink2);font:700 11px 'Source Sans 3',sans-serif;letter-spacing:.08em;padding:9px 12px;border-radius:10px;cursor:pointer;min-height:38px">{{ themeLabel }}</button>
+</div>
+
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(250px,1fr));gap:10px;margin-top:14px">
+  <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px"><div style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--red)">RULE 1</div><div style="font-size:14.5px;line-height:1.5;margin-top:4px"><b>Anatomy in ink, action in red.</b> The body is neutral strokes; the one red element is what you do — the cut, the tube, the band. Never more than one red idea per figure.</div></div>
+  <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px"><div style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--red)">RULE 2</div><div style="font-size:14.5px;line-height:1.5;margin-top:4px"><b>Same base, honest difference.</b> Related procedures share a base drawing and differ only by their key idea: CVC vs Cordis is thin-triple vs one-big-lumen on the same neck; chest tube vs pigtail is straight vs coiled on the same ribs.</div></div>
+  <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px"><div style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--red)">RULE 3</div><div style="font-size:14.5px;line-height:1.5;margin-top:4px"><b>Glyph = one landmark + one action.</b> Cards and door labels get the abstraction. Posters and checklists get the detail tier: same drawing plus dashed landmarks and a caption — never a different drawing.</div></div>
+  <div style="background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px"><div style="font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--red)">RULE 4</div><div style="font-size:14.5px;line-height:1.5;margin-top:4px"><b>Construction.</b> 48-unit grid, 2.2 stroke, round caps, nothing filled except action tips. Dashed = landmark or "the thing that follows." Must survive 16px.</div></div>
+</div>
+
+<div style="margin:22px 0 8px;font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--ink2)">LABEL-SIZE TEST — ALL 14 AT 20PX, EVERY ONE DISTINCT</div>
+<div style="display:flex;gap:14px;flex-wrap:wrap;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;color:var(--ink)">
+  <sc-for list="{{ strip }}" as="s" hint-placeholder-count="16"><span style="width:20px;height:20px;display:inline-block" dangerouslySetInnerHTML="{{ s.html }}"></span></sc-for>
+</div>
+
+<div style="margin:22px 0 8px;font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--ink2)">THE SET — GLYPH (CARDS · LABELS) + DETAIL FIGURE (POSTERS · CHECKLISTS)</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(520px,1fr));gap:10px">
+<sc-for list="{{ items }}" as="p" hint-placeholder-count="8">
+  <div style="background:var(--card);border:1px solid var(--line);border-left:4px solid var(--teal);border-radius:14px;padding:14px">
+    <div style="display:flex;align-items:baseline;gap:10px">
+      <span style="font-family:'JetBrains Mono',monospace;font-size:15px;font-weight:700;color:var(--teal)">{{ p.n }}</span>
+      <span style="font-size:17px;font-weight:800">{{ p.name }}</span>
+      <span style="flex:1"></span>
+      <span style="font-size:10.5px;font-weight:800;letter-spacing:.1em;color:var(--ink2)">{{ p.tag }}</span>
+    </div>
+    <div style="font-size:13.5px;color:var(--red);font-weight:700;margin:2px 0 10px">{{ p.idea }}</div>
+    <div style="display:flex;gap:12px;align-items:stretch">
+      <div style="display:flex;flex-direction:column;gap:8px;flex:none">
+        <div style="width:88px;height:88px;background:var(--card2);border:1px solid var(--line);border-radius:12px;display:flex;align-items:center;justify-content:center;color:var(--ink)"><span style="width:60px;height:60px" dangerouslySetInnerHTML="{{ p.glyph }}"></span></div>
+        <div style="display:flex;gap:8px;justify-content:center;color:var(--ink)">
+          <span style="width:26px;height:26px" dangerouslySetInnerHTML="{{ p.glyph }}"></span>
+          <span style="width:16px;height:16px" dangerouslySetInnerHTML="{{ p.glyph }}"></span>
+        </div>
+      </div>
+      <div style="flex:1;background:var(--card2);border:1px solid var(--line);border-radius:12px;padding:10px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:6px;color:var(--ink)"><span style="width:100%;max-width:300px" dangerouslySetInnerHTML="{{ p.detail }}"></span>
+      <div style="font-family:'JetBrains Mono',monospace;font-size:10px;font-weight:700;letter-spacing:.06em;color:var(--ink2);text-align:center">{{ p.caption }}</div></div>
+    </div>
+  </div>
+</sc-for>
+</div>
+
+<div style="margin:22px 0 8px;font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--ink2)">CROSS-LINKED PROCEDURES — GLYPH ONLY (DETAIL LIVES IN THEIR HOME CATEGORY)</div>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:10px">
+<sc-for list="{{ links }}" as="l" hint-placeholder-count="5">
+  <div style="background:var(--card);border:1px solid var(--line);border-left:4px solid var(--blue);border-radius:14px;padding:12px;display:flex;gap:12px;align-items:center">
+    <div style="width:56px;height:56px;background:var(--card2);border:1px solid var(--line);border-radius:10px;display:flex;align-items:center;justify-content:center;flex:none;color:var(--ink)"><span style="width:38px;height:38px" dangerouslySetInnerHTML="{{ l.glyph }}"></span></div>
+    <div><div style="font-size:15px;font-weight:800;line-height:1.25">{{ l.name }}</div>
+    <div style="font-size:12px;color:var(--ink2);margin-top:2px">{{ l.idea }}</div></div>
+  </div>
+</sc-for>
+</div>
+
+<div style="margin-top:18px;background:var(--card);border:1px solid var(--line);border-radius:14px;padding:14px;font-size:14px;line-height:1.6;color:var(--ink2)">Old CVC (two circles on a wire) and AVA 3Xi (two parallel bars) said nothing anatomical — and worse, said nothing about how they differ. In this set they share the neck-and-clavicle base and differ exactly where the procedures differ: lumen count and bore. That pairing rule is the whole system.</div>
+</div></div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:1180,&quot;height&quot;:900},&quot;jawSize&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:50,&quot;tsType&quot;:&quot;number&quot;,&quot;min&quot;:0,&quot;max&quot;:100,&quot;section&quot;:&quot;Airway figures&quot;,&quot;description&quot;:&quot;Jaw prominence on the RSI/SALAD profiles&quot;},&quot;mouthOpen&quot;:{&quot;editor&quot;:&quot;range&quot;,&quot;default&quot;:50,&quot;tsType&quot;:&quot;number&quot;,&quot;min&quot;:0,&quot;max&quot;:100,&quot;section&quot;:&quot;Airway figures&quot;,&quot;description&quot;:&quot;How wide the mouth is open&quot;}}">
+class Component extends DCLogic {
+  state = { theme:'dark' };
+  componentDidMount(){ document.body.dataset.theme=this.state.theme; }
+  componentDidUpdate(){ document.body.dataset.theme=this.state.theme; }
+
+  svg(vb, body){ return {__html:'<svg viewBox="'+vb+'" width="100%" height="100%" fill="none" stroke-linecap="round" stroke-linejoin="round">'+body+'</svg>'}; }
+  // shorthand builders
+  ink(d,w,dash){ return '<path d="'+d+'" stroke="currentColor" stroke-width="'+(w||2.2)+'"'+(dash?' stroke-dasharray="'+dash+'"':'')+'/>'; }
+  ink2(d,w,dash){ return '<path d="'+d+'" style="stroke:var(--ink2)" stroke-width="'+(w||1.6)+'"'+(dash?' stroke-dasharray="'+dash+'"':'')+'/>'; }
+  red(d,w,dash){ return '<path d="'+d+'" style="stroke:var(--red)" stroke-width="'+(w||2.6)+'"'+(dash?' stroke-dasharray="'+dash+'"':'')+'/>'; }
+  rc(cx,cy,r,w){ return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" style="stroke:var(--red)" stroke-width="'+(w||2.6)+'"/>'; }
+  rdot(cx,cy,r){ return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" style="fill:var(--red)" stroke="none"/>'; }
+  ic(cx,cy,r,w){ return '<circle cx="'+cx+'" cy="'+cy+'" r="'+r+'" stroke="currentColor" stroke-width="'+(w||2.2)+'"/>'; }
+  txt(x,y,s,anchor){ return '<text x="'+x+'" y="'+y+'" style="fill:var(--ink2);font:700 6.5px JetBrains Mono,monospace;letter-spacing:.08em" text-anchor="'+(anchor||'start')+'">'+s+'</text>'; }
+
+  glyphs(){
+    const g={};
+    const ribs = this.ink('M5 16 Q24 9 43 16')+this.ink('M5 27 Q24 20 43 27')+this.ink('M5 38 Q24 31 43 38');
+    g.chest = ribs + this.red('M45 45 L31 31',4.6) + this.red('M31 31 L18 18',4,'4 3');
+    g.pigtail = ribs + this.red('M45 45 L33 33',2) + this.red('M33 33 L27 27',2,'3.5 3') + this.red('M27 27 Q21 22 25 17 Q29 12 32 18 Q33 22 28 21',2,'3.5 3');
+    g.thora = this.ink('M12 16 Q28 8 44 16')+this.ink('M12 27 Q28 19 44 27')+this.ink('M12 38 Q28 30 44 38')+this.ink2('M5 5 L5 26 Q5 34 11 38',2.2)+this.ink2('M5 12 L12 15 M5 22 L12 26',1.5)+this.red('M14 33 Q28 25 42 33',3);
+    g.burr = this.ink('M42 26 Q42 5 25 5 Q9 5 9 20 L9 24 L5 30 L9 31 L9 36 Q9 40 15 40 L18 40 L18 44')+this.ink('M33 27 Q36 29 33 32')+this.rc(30,20,3.6,2.2)+this.rc(18,12,3.6,2.2)+this.rc(38,12,3.6,2.2);
+    g.canth = this.ink('M6 24 Q24 8 42 24 Q24 40 6 24 Z')+this.ic(24,24,5)+this.red('M40 24 L46 19')+this.red('M40 24 L46 29');
+    const neckBase = this.ink('M34 5 Q28 8 28 14 L28 21')+this.ink('M16 5 L16 21 Q16 27 10 30')+this.ink('M4 33 Q24 26 44 33');
+    g.cvc = neckBase + this.red('M20 15 L27 27 Q28 31 25 33',2.4)+this.red('M20 15 L9 5',1.8)+this.red('M20 15 L15 3',1.8)+this.red('M20 15 L22 2',1.8);
+    g.cordis = neckBase + this.red('M20 15 L28 29',5.5)+this.red('M20 15 L11 3',3.2)+this.red('M17 11 L8 9',1.8)+this.red('M14 7 L18 2',1.8);
+    g.tvp = this.ink('M24 43 C8 31 6 18 14 12 C19 8 24 12 24 17 C24 12 29 8 34 12 C42 18 40 31 24 43 Z')+this.ink2('M3 9 L7 9 L9 4 L11 13 L13 9 L17 9',1.8)+this.red('M30 3 Q27 12 25 18 Q24 22 21 26',2.2)+this.rdot(20.5,27.5,2.2);
+    g.eschar = this.ink('M16 4 Q13 24 15 44')+this.ink('M32 4 Q35 24 33 44')+this.red('M24 7 Q23 24 24 41',2.6,'6 4.5');
+    g.binder = this.ink('M13 5 Q6 12 10 20 L16 25')+this.ink('M35 5 Q42 12 38 20 L32 25')+this.ic(14,28,4)+this.ic(34,28,4)+this.ink('M12 31 L9 42 M36 31 L39 42')+this.red('M4 24 L44 24 L44 38 L4 38 Z',2.4)+this.red('M18 27 L30 27 L18 31 L30 31 L18 35 L30 35',1.8);
+    g.tq = this.ink('M18 4 Q16 24 18 44')+this.ink('M32 4 Q34 24 32 44')+this.ink2('M22 34 L28 40 M28 34 L22 40',2)+this.red('M13 14 L37 14 L37 24 L13 24 Z',2.6)+this.red('M25 19 L44 11',3)+this.rdot(44,11,2.2);
+    g.neck = this.ink('M14 6 Q25 2 36 6')+this.ink('M18 6 L18 44')+this.ink('M32 6 L32 44')+this.ink2('M18 17 L32 17',1.6,'3 3')+this.ink2('M18 31 L32 31',1.6,'3 3')+this.red('M4 22 L16 25')+this.red('M16 25 L11 21')+this.red('M16 25 L11 29');
+    g.junc = this.ink('M8 44 L8 16 Q8 9 15 7 L20 6')+this.ink('M20 6 Q28 1 35 6 L45 13')+this.ink('M27 19 Q33 16 39 20 L45 25')+this.ink('M36 26 Q34 34 35 44')+this.rc(24,21,5.5)+this.rdot(24,21,1.8);
+    g.jada = this.ink('M15 11 Q24 3 33 11 Q41 20 33 30 Q28 36 26 40 L22 40 Q20 36 15 30 Q7 20 15 11 Z')+this.red('M24 45 L24 25',2.4)+this.rc(24,20,4.5,2.4);
+    const mo=(this.props.mouthOpen??50)/100, jw=(this.props.jawSize??50)/100;
+    const gap=2+mo*6, jx=jw*4, jy=jw*3; // mouth gap px, jaw forward/down px
+    const face = this.ink('M42 26 Q42 5 25 5 Q9 5 9 20 L9 24 L5 30 L9 31 Q11 32 9 33',2.2)
+      + this.ink('M33 27 Q36 29 33 32')
+      + this.ink('M42 26 Q42 36 38 46',2.2)
+      + this.ink('M'+(9-jx*0.5)+' '+(33+gap)+' Q'+(9-jx*0.5)+' '+(37+gap*0.5+jy)+' '+(15-jx*0.5)+' '+(38+jy)+' L'+(19-jx*0.3)+' '+(38+jy)+' L'+(19-jx*0.3)+' 46',2.2)
+      + this.ink('M'+(11-jx*0.4)+' '+(33+gap)+' Q17 '+(30+gap*0.7)+' 22 '+(34+gap*0.6)+' Q24 '+(36+gap*0.6)+' 21 '+(38+gap*0.5),2)
+      + this.ink('M35 38 L35 46',2);
+    g.rsi = face + this.red('M2 29 Q14 26 21 32 Q26 36 26 46',2.6);
+    g.salad = face
+      +'<circle cx="30" cy="41" r="1.6" style="fill:var(--ink2)" stroke="none"/><circle cx="31" cy="45" r="1.6" style="fill:var(--ink2)" stroke="none"/>'
+      + this.red('M2 31 Q13 29 19 34 Q24 38 24 46',2.4)+this.red('M24 46 L20 41',2.4)+this.red('M24 46 L28 41',2.4)
+      + this.ink2('M2 26 Q15 23 23 30 Q28 34 28 46',2,'4 3.5');
+    // cross-links
+    g.fona = this.ink('M14 6 L14 42')+this.ink('M28 6 L28 42')+this.ink2('M14 12 L28 12 M14 34 L28 34 M14 41 L28 41',1.5)+this.red('M44 6 Q36 10 31 17 Q25 25 23 34 L23 42',2.8);
+
+    g.sedation = this.ink('M8 20 L30 20 L30 30 L8 30 Z')+this.ink('M4 25 L8 25')+this.ink('M13 20 L13 30')+this.red('M30 25 L44 25',2.4);
+    g.hyst = this.ink('M15 11 Q24 3 33 11 Q41 20 33 30 Q28 36 26 40 L22 40 Q20 36 15 30 Q7 20 15 11 Z')+this.red('M24 13 L24 31',2.8);
+    g.uvc = this.ic(24,24,15)+this.ink2('M19 28 a2.5 2.5 0 1 0 .1 0',1.6)+this.ink2('M29 28 a2.5 2.5 0 1 0 .1 0',1.6)+this.ic(24,19,4)+this.red('M42 4 L27 17',2.4);
+    return g;
+  }
+
+  details(){
+    const d={}, T=this.txt.bind(this);
+    const ribBase = this.ink('M14 26 Q80 12 146 26',2)+this.ink('M14 44 Q80 30 146 44',2)+this.ink('M14 62 Q80 48 146 62',2)+this.ink('M14 80 Q80 66 146 80',2)+this.ink2('M8 14 L58 4',1.6)+T(8,30,'3')+T(8,48,'4')+T(8,66,'5')+T(8,84,'6');
+    d.chest = ribBase + this.ink2('M62 42 L108 42 L84 74 Z',1.5,'4 3') + this.red('M150 106 L96 62',5.5) + this.red('M96 62 L58 30',4.6,'6 4');
+    d.pigtail = ribBase + this.ink2('M62 42 L108 42 L84 74 Z',1.5,'4 3') + this.red('M150 106 L100 64',2.2) + this.red('M100 64 L82 48',2,'5 4') + this.red('M82 48 Q70 38 78 30 Q86 22 92 32 Q95 40 84 38',2,'5 4');
+    d.thora = this.ink('M28 26 Q86 12 152 26',2)+this.ink('M28 44 Q86 30 152 44',2)+this.ink('M28 62 Q86 48 152 62',2)+this.ink('M28 80 Q86 66 152 80',2)+this.ink2('M14 12 L14 52 Q14 66 24 74 L30 79',2.4)+this.ink2('M14 22 L30 25 M14 38 L29 42 M14 54 L28 59',1.6)+T(8,8,'STERNUM')+T(156,24,'3','end')+T(156,42,'4','end')+T(156,60,'5','end')+T(156,78,'6','end')+this.red('M38 58 Q94 44 148 58',3.4)+T(28,100,'PATIENT SUPINE · LEFT CHEST · INCISION ABOVE RIB 5');
+    d.burr = this.ink('M132 60 Q136 22 100 12 Q56 2 40 28 L40 38 L28 52 L38 55 L38 66 Q38 74 50 74 L58 74 L58 92',2)+this.ink('M64 34 L76 34',2)+this.ink('M104 58 Q110 62 104 68',2)+this.rc(96,42,7,2.2)+this.rc(64,20,7,2.2)+this.rc(112,20,7,2.2)+T(96,45,'1','middle')+T(64,23,'2','middle')+T(112,23,'3','middle')+this.ink2('M96 49 L100 56',1.4,'3 3');
+    d.canth = this.ink('M22 55 Q80 17 138 55 Q80 93 22 55 Z',2)+this.ic(80,55,13,2)+this.red('M136 55 L152 44')+this.red('M136 55 L152 66')+this.red('M136 55 Q146 63 143 72',2.2,'4 3');
+    const neckD = this.ink('M116 10 Q104 18 104 32 L104 44',2)+this.ink('M64 8 L64 40 Q64 50 52 56',2)+this.ink('M18 74 Q80 58 142 74',2)+this.ink2('M78 20 L72 58',5,'0')+T(84,20,'RIJ')+T(12,90,'R');
+    d.cvc = neckD + this.red('M75 36 L70 54 Q69 60 74 63',2.6)+this.red('M75 36 L48 14',2)+this.red('M75 36 L60 8',2)+this.red('M75 36 L74 6',2);
+    d.cordis = neckD + this.red('M75 36 L70 56',8)+this.red('M75 36 L56 12',3.6)+this.red('M68 27 L50 24',2)+this.red('M63 18 L66 4',2);
+    d.tvp = this.ink('M80 78 C48 56 44 30 60 20 C70 13 80 20 80 30 C80 20 90 13 100 20 C116 30 112 56 80 78 Z',2)+this.red('M92 4 Q86 20 82 34 Q79 46 70 56',2.2)+this.rdot(68,58,3)+this.ink2('M16 98 L52 98 L54 84 L56 98 L64 98 Q70 88 76 98 L96 98 L98 84 L100 98 L108 98 Q114 88 120 98 L146 98',1.8);
+    d.eschar = this.ink('M14 34 Q80 26 148 34',2)+this.ink('M14 78 Q80 86 148 78',2)+this.ink2('M40 44 L52 56 M62 42 L74 54 M86 42 L98 54 M110 44 L122 56',1.4)+this.red('M22 57 Q84 57 142 57',2.6,'8 6');
+    d.binder = this.ink('M56 12 Q36 18 40 38 Q42 50 54 56 L62 60',2)+this.ink('M104 12 Q124 18 120 38 Q118 50 106 56 L98 60',2)+this.ink('M62 60 L64 50 Q66 42 74 42 L86 42 Q94 42 96 50 L98 60',2)+this.ink('M70 60 Q74 68 80 68 Q86 68 90 60',2)+this.ink('M70 60 L70 74 Q75 78 80 78 Q85 78 90 74 L90 60',1.6)+this.ic(58,64,8,2)+this.ic(102,64,8,2)+this.ink('M54 70 L46 96 M106 70 L114 96',2)+this.ink2('M36 20 L124 20',1.5,'4 4')+T(128,23,'✕ CREST')+this.red('M24 52 L136 52 L136 78 L24 78 Z',2.6)+this.red('M62 58 L98 58 L62 65 L98 65 L62 72 L98 72',2);
+    d.tq = this.ink('M14 34 Q80 26 150 32',2)+this.ink('M14 80 Q80 88 150 82',2)+this.ink2('M112 46 L124 62 M124 44 L112 64',2.2)+this.red('M46 26 L74 26 L74 90 L46 90 Z',3)+this.red('M60 22 L104 10',3.4)+this.rdot(104,10,3.4)+T(112,78,'LACERATION');
+    d.junc = this.ink('M20 108 L20 32 Q20 20 32 16 L48 12',2)+this.ink('M48 12 Q64 2 82 10 L128 34',2)+this.ink('M66 40 Q80 34 94 42 L124 56',2)+this.ink('M88 48 Q82 76 84 108',2)+this.ink2('M26 64 Q48 60 78 64 M26 82 Q48 78 78 82',1.6)+this.rc(58,42,13)+this.rdot(58,42,4)+T(96,18,'ARM ABDUCTED')+T(24,102,'THORAX');
+    d.jada = this.ink('M55 22 Q80 8 105 22 Q124 42 105 62 Q92 74 88 84 L72 84 Q68 74 55 62 Q36 42 55 22 Z',2)+this.ink('M72 84 L70 96 M88 84 L90 96',2)+this.red('M80 104 L80 48',2.6)+'<ellipse cx="80" cy="40" rx="13" ry="8" style="stroke:var(--red)" stroke-width="2.6"/>';
+    const dmo=(this.props.mouthOpen??50)/100, djw=(this.props.jawSize??50)/100;
+    const dgap=4+dmo*14, djx=djw*9, djy=djw*7;
+    d.salad = this.ink('M132 60 Q136 22 100 12 Q56 2 40 28 L40 38 L28 52 L38 55 Q41 58 38 60',2)
+      + this.ink('M104 58 Q110 62 104 68',2)
+      + this.ink('M132 60 Q131 80 118 92 L118 108',2)
+      + this.ink('M'+(38-djx*0.4)+' '+(60+dgap)+' Q'+(38-djx*0.4)+' '+(70+dgap*0.5+djy)+' '+(50-djx*0.3)+' '+(72+dgap*0.5+djy)+' L'+(58-djx*0.2)+' '+(72+dgap*0.5+djy)+' L60 108',2)
+      + this.ink('M'+(44-djx*0.4)+' '+(58+dgap*0.8)+' Q60 '+(50+dgap*0.7)+' 72 '+(58+dgap*0.6)+' Q78 '+(62+dgap*0.6)+' 72 '+(68+dgap*0.6)+' Q60 '+(70+dgap*0.7)+' '+(48-djx*0.3)+' '+(64+dgap*0.8),2)
+      + this.ink('M88 84 L88 108',2)
+      + T(96,88,'ESOPH')
+      + T(30,100,'TONGUE')
+      + '<circle cx="79" cy="92" r="2.4" style="fill:var(--ink2)" stroke="none"/><circle cx="77" cy="101" r="2.4" style="fill:var(--ink2)" stroke="none"/>'
+      + this.red('M8 66 Q40 60 62 72 Q74 80 74 106',2.8)+this.red('M74 106 L68 99',2.8)+this.red('M74 106 L80 99',2.8)
+      + this.ink2('M12 56 Q48 48 70 62 Q82 70 82 106',2.2,'5 4')
+      + T(4,60,'1')+T(4,48,'2');
+    return d;
+  }
+
+  renderVals(){
+    const g=this.glyphs(), dt=this.details();
+    const G=(k)=>this.svg('0 0 48 48',g[k]);
+    const D=(k)=>this.svg('0 0 160 116',dt[k]);
+    const items=[
+      {n:'01',name:'Chest Tube (Tube Thoracostomy)',tag:'BASE: RIBS',idea:'Triangle of safety — over the rib',k:'chest',cap:'TRIANGLE OF SAFETY · GO OVER THE RIB'},
+      {n:'16',name:'Pigtail Chest Tube',tag:'BASE: RIBS',idea:'Same entry, Seldinger — the tail coils',k:'pigtail',cap:'SELDINGER · TAIL COILS IN THE PLEURA'},
+      {n:'06',name:'Central Venous Catheter (CVC)',tag:'BASE: NECK',idea:'US-guided IJ — thin triple lumen',k:'cvc',cap:'US-GUIDED · 45° · THIN TRIPLE LUMEN'},
+      {n:'14',name:'Resuscitation Line (Cordis / AVA 3Xi)',tag:'BASE: NECK',idea:'One big lumen — built for volume',k:'cordis',cap:'8.5 FR INTRODUCER · BUILT FOR VOLUME'},
+      {n:'02',name:'Resuscitative Thoracotomy',tag:'BASE: RIBS',idea:'Left lateral — long 4–5th ICS incision',k:'thora',cap:'LEFT 4–5TH ICS ANTEROLATERAL · EXTEND = CLAMSHELL'},
+      {n:'04',name:'Emergency Burr Hole',tag:'HEAD',idea:'Measure depth and location by CT',k:'burr',cap:'1 TEMPORAL · 2 FRONTAL · 3 PARIETAL — SITE & DEPTH BY CT'},
+      {n:'05',name:'Lateral Canthotomy & Cantholysis',tag:'EYE',idea:'Cut the lateral canthus — release the lid',k:'canth',cap:'CANTHOTOMY, THEN CUT THE INFERIOR CRUS'},
+      {n:'07',name:'Transvenous Pacing (TVP)',tag:'HEART',idea:'Lead to the RV — spike then capture',k:'tvp',cap:'BALLOON TO RV · CAPTURE = SPIKE + WIDE QRS'},
+      {n:'08',name:'Escharotomy',tag:'LIMB',idea:'Release the burn — cut down to fat',k:'eschar',cap:'FULL-THICKNESS · RELEASE TO FAT, MIDLATERAL'},
+      {n:'09',name:'Pelvic Binder Application',tag:'PELVIS AP',idea:'At the trochanters, not the crest',k:'binder',cap:'AP VIEW · CENTER ON THE GREATER TROCHANTERS, NOT THE CREST'},
+      {n:'10',name:'Tourniquet Application',tag:'LIMB',idea:'Wide device proximal of the wound',k:'tq',cap:'PROXIMAL OF THE LACERATION · TWIST UNTIL IT STOPS'},
+      {n:'12',name:'Junctional Hemorrhage Control',tag:'AXILLA',idea:'Pack and press the axilla — no TQ fits',k:'junc',cap:'AXILLA / GROIN · PACK & PRESS WHERE NO TQ FITS'},
+      {n:'13',name:'JADA System Insertion',tag:'UTERUS',idea:'Vacuum — the uterus clamps down',k:'jada',cap:'VACUUM → THE UTERUS CLAMPS DOWN'},
+      {n:'15',name:'SALAD — Contaminated Airway',tag:'AIRWAY',idea:'Suction leads, the tube follows',k:'salad',cap:'NOSE → MOUTH → BEHIND THE TONGUE · 1 SUCTION LEADS · 2 TUBE FOLLOWS'},
+    ].map(p=>({...p, glyph:G(p.k), detail:D(p.k), caption:p.cap}));
+    const links=[
+      {name:'Front of Neck Access',idea:'Trachea side-on, tube in — via the cricothyroid membrane',k:'fona'},
+      {name:'Intubation / RSI',idea:'Same face base as SALAD — tube behind the tongue',k:'rsi'},
+      {name:'Procedural Sedation',idea:'Titrated syringe — drugs in, watch the CO₂',k:'sedation'},
+      {name:'Resuscitative Hysterotomy / ED C-Section',idea:'Same uterus base as JADA — midline incision',k:'hyst'},
+      {name:'Umbilical Vein Catheterization',idea:'One vein, two arteries — cannulate the big one',k:'uvc'},
+    ].map(l=>({...l, glyph:G(l.k)}));
+    return {
+      themeLabel:this.state.theme==='dark'?'LIGHT':'DARK',
+      toggleTheme:()=>this.setState(s=>({theme:s.theme==='dark'?'light':'dark'})),
+      items, links, strip: items.map(p=>({html:p.glyph}))
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -49,6 +49,11 @@
   .key .l { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:7.2pt; letter-spacing:0.1em; color:#5a6a78; margin-top:1.5pt; }
   .fig { border:1.5pt solid #d7dde3; margin-top:5pt; }
   .figcap { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:8pt; letter-spacing:0.1em; color:#9b1c2e; padding:3pt 6pt 0; }
+  :root { --ink:#16324f; --ink2:#5a6a78; --red:#9b1c2e; }
+  .proc-detail { width:100%; height:auto; display:block; color:var(--ink); }
+  .proc-cap { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:7pt; letter-spacing:0.06em; color:var(--ink2); padding:3pt 6pt 4pt; }
+  .h1glyph { width:0.3in; height:0.3in; vertical-align:-0.06in; margin-right:5pt; color:var(--ink); }
+  .h1glyph .proc-glyph { width:0.3in; height:0.3in; }
   footer.strip { border-top:1.5pt solid #16324f; margin-top:4pt; padding-top:3pt; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:6.4pt; line-height:1.3; letter-spacing:0.02em; color:#5a6a78; }
   /* Keep this block compact: it is the last thing on the sheet, so any growth here is what
      pushes a poster onto a second page. Re-run the poster page-count check after editing. */
@@ -66,7 +71,7 @@
 
 <div class="sheet">
   <div class="eyebrow">{{SITE.abbrev}} · EMERGENCY DEPARTMENT</div>
-  <h1>Resuscitative Thoracotomy (Clamshell)</h1>
+  <h1><span class="h1glyph pglyph" data-proc="thora" aria-hidden="true"></span>Resuscitative Thoracotomy (Clamshell)</h1>
   <div class="rule"></div>
 
   <p class="indication"><span class="tag">INDICATION</span>Unstable patient in extremis with deteriorating physiology and <b>PROVEN cardiac tamponade on ultrasound</b>. <b>No signs of life + PEA on arrival = consistently poor</b> (Alfred 2008–13: 9 independent survivors of 27).</p>
@@ -92,17 +97,7 @@
       </ul>
       <div class="fig">
         <div class="figcap">FIG 1 · CLAMSHELL INCISION — 5TH ICS, AXILLA TO AXILLA</div>
-        <svg viewBox="0 0 360 185" style="width:100%; height:auto; display:block;" role="img" aria-label="Clamshell thoracotomy incision line across the 5th intercostal space">
-          <rect x="0" y="0" width="360" height="185" fill="#fffefb"/>
-          <path d="M 40 12 C 20 65 24 140 50 180" fill="none" stroke="#5a6a78" stroke-width="2"/>
-          <path d="M 320 12 C 340 65 336 140 310 180" fill="none" stroke="#5a6a78" stroke-width="2"/>
-          <line x1="180" y1="16" x2="180" y2="112" stroke="#c9d2da" stroke-width="10" stroke-linecap="round"/>
-          <circle cx="130" cy="84" r="5" fill="#c9d2da"/><circle cx="230" cy="84" r="5" fill="#c9d2da"/>
-          <path d="M 45 112 C 110 142 250 142 315 112" fill="none" stroke="#9b1c2e" stroke-width="4" stroke-dasharray="9 6" stroke-linecap="round"/>
-          <text x="84" y="168" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#9b1c2e">5TH ICS · FOLLOW INFRAMAMMARY CREASE</text>
-          <text x="150" y="36" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10.5" fill="#5a6a78">STERNUM</text>
-          <text x="196" y="106" font-family="'IBM Plex Mono',ui-monospace,monospace" font-size="10" fill="#16324f">CUT TRANSVERSELY</text>
-        </svg>
+        <div style="padding:3pt 6pt;"><div style="max-width:55%;margin:0 auto;"><div class="pdetail" data-proc="thora" aria-hidden="true"></div></div><div class="proc-cap" data-proccap="thora" style="text-align:center;"></div></div>
       </div>
     </div>
     <div>
@@ -147,6 +142,24 @@
 (function(){
   var b=document.getElementById('printbtn');
   if(b) b.addEventListener('click', function(){ window.print(); }, false);
+})();
+/* @proc-icons */
+</script>
+<script>
+(function(){
+  if (typeof PROC_ICONS !== 'object') return;
+  document.querySelectorAll('.pglyph[data-proc]').forEach(function(el){
+    var k = el.getAttribute('data-proc');
+    el.innerHTML = PROC_ICONS.glyph(k, '');
+  });
+  document.querySelectorAll('.pdetail[data-proc]').forEach(function(el){
+    var k = el.getAttribute('data-proc');
+    el.innerHTML = PROC_ICONS.detail(k, '');
+  });
+  document.querySelectorAll('[data-proccap]').forEach(function(el){
+    var k = el.getAttribute('data-proccap');
+    el.textContent = PROC_ICONS.caption(k);
+  });
 })();
 </script>
 </body>
