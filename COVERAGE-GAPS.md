@@ -58,3 +58,27 @@ until each card passes clinical review; every card carries a DRAFT banner):
 | Severe alcohol withdrawal (#94) | `codes/` c34 |
 | Transfusion reaction (#95) | `codes/` c35 |
 | Electrical / lightning (#96) | `trauma/` c10 |
+
+**2026-08-17/18 — first clinical review pass** (`Crash_Card_Review__AHA_2023_Update.csv`,
+Lon Setnik). Seven of the thirteen were reviewed; the DRAFT banner came down on those and
+was replaced by a dated sign-off bar naming the reviewer. Where the review asked for a
+change, the change shipped with it:
+
+| Gap | Outcome | Where it lives now |
+|---|---|---|
+| Eclampsia (#84) | approved + refractory-seizure step and head imaging (#180) | `ob-neonatal/` c11 |
+| Sepsis (#85) | approved, **moved out of Codes** (#178); banner now "broad overview — follow local protocols" | `clinical-pathways/sepsis/` |
+| Massive PE (#86) | rewritten against the 2026 AHA/ACC guideline; **card 29 itself is still unreviewed** and keeps its DRAFT banner | `clinical-pathways/pe/` + `codes/` c29 |
+| Toxicology (#87) | approved + the stale pediatric banner replaced (#173) | `codes/` c36 |
+| Agitation (#89) | approved + restraint documentation split into its own step (#177) | `codes/` c30 |
+| DKA / HHS (#90) | approved, **moved out of Codes** (#176); banner now "basic overview — follow local DKA protocol" | `clinical-pathways/dka/` |
+| Alcohol withdrawal (#94) | rebuilt with **two pathways**, benzodiazepine-first and phenobarbital-first (#175) | `codes/` c34 |
+
+Also signed off in the same pass, outside the gap list: the `neonatal/` engine as a whole
+(its review banner came down and `guidelines.js` `nrp` flipped to `reconciled: true`), the
+neonatal airway ladder's mask and ETT-suction columns, `ob-neonatal/` card 04's equipment
+tiles, and `peds/` p16 airway equipment sizes.
+
+**Still unreviewed, banners still up:** hypothermia (#88), aortic catastrophe (#91), heat
+stroke (#92), MCI (#93), transfusion reaction (#95), electrical/lightning (#96), hazmat
+(#124). The reviewer left those rows blank — an unreviewed card must keep saying so.

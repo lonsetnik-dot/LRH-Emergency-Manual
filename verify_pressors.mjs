@@ -341,7 +341,11 @@ ck('5b. and the footer cites the pediatric guideline by name',
    /Pediatr Crit Care Med 2020;21\(2\):e52/.test(foot.replace(/\s+/g, ' ')), true);
 
 console.log('\n--- 6. the indications the issue named are all present and linked ---');
-for (const [key, href] of [['rosc', '#c22'], ['pe', '#c29'], ['cardiogenic', '#c21'], ['septic', '#c28'],
+/* Sepsis left this tool in the 2026-08 clinical review (#178) — the septic panel now links
+   the pathway directly rather than the retired #c28 anchor, so the reader gets one
+   navigation instead of a hash redirect. The rest still point at cards in this file. */
+for (const [key, href] of [['rosc', '#c22'], ['pe', '#c29'], ['cardiogenic', '#c21'],
+                           ['septic', '../clinical-pathways/sepsis/?from=codes'],
                            ['brady', '#c03'], ['anaphylaxis', '#c08'], ['tox', '#c36'], ['periintub', '#c06'],
                            ['hemorrhagic', '#c12']]) {
   await pick(key);
@@ -349,8 +353,18 @@ for (const [key, href] of [['rosc', '#c22'], ['pe', '#c29'], ['cardiogenic', '#c
 }
 
 console.log('\n--- 7. the cards that need a pressor link back to card 37 ---');
-for (const id of ['c22', 'c03', 'c06', 'c08', 'c09', 'c21', 'c28', 'c29', 'c36']) {
+for (const id of ['c22', 'c03', 'c06', 'c08', 'c09', 'c21', 'c29', 'c36']) {
   ck(`7. ${id} carries a link to #c37`, await pg.locator(`article#${id} a[href="#c37"]`).count() >= 1, true);
+}
+/* c28 was in that list until sepsis moved to /clinical-pathways/sepsis/. The requirement did
+   not go away with the card — the peripheral-norepinephrine line still has to hand the reader
+   the mL/hr — so it is asserted on the page that carries it now, cross-tool. */
+{
+  const sep = await b.newPage({ viewport: { width: 390, height: 844 } });
+  await sep.goto(BASE + '/clinical-pathways/sepsis/', { waitUntil: 'networkidle' });
+  ck('7. the sepsis pathway links back to card 37 for the mL/hr',
+     await sep.locator('a[href="../../codes/?from=home#c37"]').count() >= 1, true);
+  await sep.close();
 }
 
 console.log('\n--- 8. site search finds it by the terms a clinician types ---');

@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#005596">
+<title>Adult DKA / HHS &middot; {{SITE.title}}</title>
+<style>
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0}
+  /* @design-system */
+  /* ---- Page-specific layout only. Tokens, the .hdr chrome bar, .sr-only, .lrh-mono,
+     .reviewedbar and the themed body all come from design-system.css, injected at the
+     marker above. This page follows the pathway convention set by heart/ and pe/: a
+     reference/decision page, NOT a tick-through checklist. It carries no checkboxes and
+     no case state on purpose — this is the material you read while the protocol runs,
+     and a half-ticked overview would imply it is the protocol. ---- */
+  .wrap{max-width:840px; margin:0 auto; padding:0 16px 56px}
+  .page-title{font-size:27px; font-weight:800; letter-spacing:-0.015em; line-height:1.15; margin:18px 0 2px; color:var(--ink)}
+  .page-sub{font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.1em; color:var(--ink2); margin-bottom:4px}
+  .sec{border:1px solid var(--line); border-radius:12px; overflow:hidden; margin-top:12px; background:var(--card)}
+  .sec > .hd{padding:10px 13px; font-size:13.5px; font-weight:800; letter-spacing:0.03em; color:var(--on-sev)}
+  .sec.crit > .hd{background:var(--sev-crit)}
+  .sec.caution > .hd{background:var(--sev-caution)}
+  .sec.calm > .hd{background:var(--gray)}
+  .sec ul{margin:0; padding:6px 14px 13px; list-style:none}
+  .sec li{padding:9px 0; font-size:14.5px; line-height:1.55; color:var(--ink); border-top:1px solid var(--line)}
+  .sec li:first-child{border-top:none}
+  .kbar{margin:0 14px 13px; padding:10px 12px; border-left:4px solid var(--red); background:var(--card2); color:var(--ink); font-size:13.5px; line-height:1.5; border-radius:0 9px 9px 0}
+  .srcs{margin-top:20px; padding-top:13px; border-top:1px solid var(--line); font-size:12px; line-height:1.55; color:var(--ink2)}
+  footer{text-align:center; color:var(--ink2); font-size:.76rem; margin-top:22px}
+</style>
+</head>
+<body data-theme="dark">
+<div class="hdr">
+  <a class="ghost" href="../?from=tool">◀ PATHWAYS</a>
+  <span class="plabel">ADULT DKA / HHS</span>
+  <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20DKA%20pathway" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
+</div>
+
+<div class="wrap">
+  <h1 class="page-title">Adult DKA / HHS</h1>
+  <div class="page-sub">FLUIDS &middot; POTASSIUM RULES &middot; THEN INSULIN</div>
+
+  <div class="reviewedbar"><b>BASIC OVERVIEW &mdash; FOLLOW YOUR LOCAL DKA PROTOCOL.</b>
+    This page is orientation and the sequencing rules, not an order set. Where it and your
+    department&rsquo;s DKA protocol disagree, the protocol wins.
+    <br>Clinically reviewed 2026-08-18 &mdash; Lon Setnik; moved here from the Codes tool per
+    <a href="https://github.com/lonsetnik-dot/LRH-Emergency-Manual/issues/176">#176</a>, because this is
+    a workup you read, not a card you grab in a code.</div>
+
+  <div class="sec crit">
+    <div class="hd">1 &middot; CONFIRM &amp; START FLUIDS</div>
+    <ul>
+      <li><b>DKA:</b> glucose &gt; 250 + pH &lt; 7.3 / HCO<sub>3</sub> &lt; 18 + ketones.
+          <b>HHS:</b> glucose often &gt; 600, minimal ketosis, osmolality &gt; 320, worse
+          dehydration &mdash; same skeleton, gentler pace.</li>
+      <li>1 L balanced crystalloid (LR) in the first hour, then 250&ndash;500 mL/h titrated to
+          perfusion; corrected sodium guides later tonicity.</li>
+      <li>Hunt the trigger while the fluids run: infection, ischemia, missed insulin, new pump failure.</li>
+    </ul>
+  </div>
+
+  <div class="sec caution">
+    <div class="hd">2 &middot; POTASSIUM RULES &mdash; THIS PAGE&rsquo;S REASON TO EXIST</div>
+    <ul>
+      <li><b>K &lt; 3.3: HOLD insulin.</b> Replace potassium first (20&ndash;40 mEq/h with
+          monitoring) &mdash; insulin now can arrest them.</li>
+      <li><b>K 3.3&ndash;5.2:</b> add 20&ndash;30 mEq potassium to each liter and start insulin.</li>
+      <li><b>K &gt; 5.2:</b> no potassium yet; start insulin; recheck K every 2 h &mdash; it will
+          fall fast.</li>
+    </ul>
+    <div class="kbar"><b>The sequencing error is the harmful one.</b> Every other number on this
+      page can be a little wrong and the patient still gets better. Insulin before the potassium
+      is known is the one that kills.</div>
+  </div>
+
+  <div class="sec calm">
+    <div class="hd">3 &middot; INSULIN &amp; THE FINISH LINE</div>
+    <ul>
+      <li>Regular insulin <b>0.1 u/kg/h IV infusion</b> (bolus optional and skippable). Target a
+          glucose fall of 50&ndash;75 mg/dL/h.</li>
+      <li>Glucose &lt; 250 &rarr; <b>add D5 to the fluids, do not stop the insulin</b> &mdash; the
+          drip treats the ketoacid, the dextrose treats the number. Stop only when the gap is
+          closed and the patient is eating (overlap subcutaneous long-acting by 2 h).</li>
+      <li><b>HHS:</b> slower correction, bigger fluid debt, higher thrombosis risk.</li>
+      <li>Young DKA patient with headache or altered mental status <i>during</i> treatment =
+          <b>cerebral edema</b> until proven otherwise.</li>
+    </ul>
+  </div>
+
+  <div class="srcs">
+    <b>Sources:</b> ADA/EASD consensus on the management of hyperglycemic crises in adults
+    (Diabetes Care 2024) and the preceding ADA consensus statement (Diabetes Care 2009;32:1335);
+    SQuID protocol context (Ann Emerg Med 2023) for mild DKA.
+    &mdash; Personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for
+    clinical judgment. Verify all values locally.
+  </div>
+
+  <footer>{{SITE.title}}</footer>
+</div>
+</body>
+</html>
