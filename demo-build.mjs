@@ -45,6 +45,7 @@ const SKIP_ROOT_FILES = new Set([
   'build.mjs', 'demo-build.mjs', 'run-tests.sh', 'netlify.toml',
   'package.json', 'package-lock.json', 'shot.mjs', '.gitignore',
   'sw-template.js', 'sw-register.js',
+  'site.config.json',   // build input, not content — build.mjs skips it too
 ]);
 const SKIP_ROOT_EXT = ['.mjs', '.py', '.md'];
 
@@ -83,6 +84,25 @@ function injectDemoChrome(html) {
   return html;
 }
 
+/* Site identity — the same substitution build.mjs does, for the same reason and
+   with the same failure behavior (CLAUDE.md rule 2; SITES.md). This was missing:
+   the demo published 363 raw {{SITE.x}} markers across 37 pages, so the showroom
+   copy of the manual displayed literal template text where the hospital name, the
+   domain, the feedback address and — worst — the transfer-center phone numbers
+   should have been. Substitution runs AFTER the marker injections above so tokens
+   inside injected shared content are substituted too, exactly as in build.mjs. */
+const SITE = JSON.parse(readFileSync('site.config.json', 'utf8'));
+const TOKEN_RE = /\{\{SITE\.([A-Za-z0-9_]+)\}\}/g;
+function applySite(text, file) {
+  return text.replace(TOKEN_RE, (m, key) => {
+    if (typeof SITE[key] !== 'string') {
+      console.error(`demo build FAILED: ${file} uses ${m} but site.config.json has no string "${key}"`);
+      process.exit(1);
+    }
+    return SITE[key];
+  });
+}
+
 function walk(src, dst, atRoot) {
   mkdirSync(dst, { recursive: true });
   for (const name of readdirSync(src)) {
@@ -97,7 +117,9 @@ function walk(src, dst, atRoot) {
         .split(MARKER_INV).join(INV)
         .split(MARKER_ICONS).join(ICONS)
         .split(MARKER_GDL).join(GDL);
-      writeFileSync(d, injectDemoChrome(html));
+      writeFileSync(d, applySite(injectDemoChrome(html), d));
+    } else if (name.endsWith('.webmanifest')) {
+      writeFileSync(d, applySite(readFileSync(s, 'utf8'), d));
     } else copyFileSync(s, d);
   }
 }
@@ -105,7 +127,10 @@ function walk(src, dst, atRoot) {
 rmSync(OUT, { recursive: true, force: true });
 walk('.', OUT, true);
 
-// Sanity: fail loudly if any published .html still contains an un-injected marker.
+// Sanity: fail loudly if any published file still contains an un-injected marker
+// or an un-substituted identity token. Identity must never half-apply here either
+// — a demo that shows "{{SITE.transferPhone}}" where a number belongs is exactly
+// the thing a prospective site would notice first.
 let leftover = 0;
 (function scan(dir) {
   for (const name of readdirSync(dir)) {
@@ -117,8 +142,11 @@ let leftover = 0;
         console.error('!! un-injected marker left in', p); leftover++;
       }
     }
+    if (/\.(html|webmanifest)$/.test(name) && /\{\{SITE\./.test(readFileSync(p, 'utf8'))) {
+      console.error('!! un-substituted {{SITE.*}} token left in', p); leftover++;
+    }
   }
 })(OUT);
-if (leftover) { console.error(`build FAILED: ${leftover} file(s) with un-injected marker`); process.exit(1); }
+if (leftover) { console.error(`demo build FAILED: ${leftover} file(s) with un-injected marker or token`); process.exit(1); }
 
 console.log(`built ${OUT}/  (demo ribbon + noindex injected, no offline shell)`);
