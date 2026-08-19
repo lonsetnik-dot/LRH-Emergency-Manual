@@ -69,6 +69,15 @@
      theme-aware and a fork re-skins in one place. ===== */
   .t-ck{width:20px;height:20px;margin:2px 0 0;accent-color:var(--accent);flex:none}
   .t-div{border-top:1px solid var(--line)}
+  /* 320px reflow (ACCESSIBILITY.md §4) — clinical prose is full of long
+     unbreakable tokens: "JVD/crackles/edema/hepatomegaly", drug names joined by
+     slashes, URLs, "sepsis-associated". One of them pushed /codes/ 6px past a
+     320px viewport, which is a page-level horizontal scroll on the narrowest
+     phone this manual supports. Breaking inside a word is ugly; a checklist a
+     clinician has to scroll sideways to read is worse. Scoped to the checklist
+     row's text span, which is where the prose lives, so it cannot reflow a
+     dose, a table, or a figure. */
+  .t-div label > span{overflow-wrap:anywhere}
   /* Rounded corners on every interior panel, to match the bar/menu radius.
      overflow:hidden clips the colored header fill to the rounded top corners. */
   .t-box-crit,.t-box-caution,.t-box-info,.t-box-neutral{border-radius:12px;overflow:hidden}

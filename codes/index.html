@@ -23,6 +23,7 @@
      pre-JS fallback so layout isn't broken for the instant before that script runs. */
   html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; --sticky-h:54px; }
   /* @design-system */
+  /* @design-system-shell */
   /* ---- PROCEDURE GLYPHS (design/ICONOGRAPHY.md) — anatomy in ink, action in red.
      Cross-linked procedures carry the GLYPH only; the detail figure lives with
      their home category. Colour comes from the page tokens, so both themes and
@@ -113,24 +114,22 @@
     .twoup { display:grid; grid-template-columns:1fr 1fr; gap:0 20px; } .twoup > li { min-width:0; } .twoup li label { min-width:0; } .twoup li label > span { min-width:0; overflow-wrap:break-word; } .cs-unarmed { opacity:.45; pointer-events:none; }
   }
   #stickytop { position:sticky; top:0; z-index:30; }
-  /* Weight bar — a highlighted second strip below the .hdr bar (like peds/),
-     but with no dynamic band accent (codes has no Broselow color-coding), so
-     it's tokenized as a fixed highlighted panel rather than an accent-driven
-     one. The WEIGHT label chip is a deliberately constant gold/navy pair
-     (like the shared severity fills) — it's a small structural highlight
-     that doesn't need to shift with the theme.
-     wrap, don't scroll (weight-routing audit): with flex-wrap:nowrap +
-     overflow-x:auto, #wtdisplay — the confirmation of what the tool thinks the
-     weight is — sat past the right edge of a 390px phone, so a weight could be
-     entered and never read back. */
-  #wtbar { display:flex; align-items:center; gap:8px; flex-wrap:wrap; background:var(--card2); color:var(--ink); border-bottom:2px solid var(--blue); padding:5px 14px; }
-  #wtbar label { flex:none; display:inline-flex; align-items:center; background:#f7d97a; color:#16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10px; font-weight:700; letter-spacing:0.06em; padding:4px 7px; white-space:nowrap; }
-  #wtbar input { flex:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px; padding:4px 7px; border:1px solid var(--line); background:var(--card); color:var(--ink); min-height:44px; width:64px; }
-  #wtbar select, #wtbar button { flex:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px; font-weight:700; letter-spacing:0.04em; padding:4px 7px; border:1px solid var(--line); background:var(--card); color:var(--ink); min-height:44px; white-space:nowrap; cursor:pointer; }
-  #wtbar select { width:auto; cursor:pointer; }
-  #wtdisplay { flex:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; color:var(--amber); white-space:nowrap; }
-  #wtstale { flex:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; color:var(--amber); white-space:nowrap; }
+  /* ---- CASE SHELL layer 4 — the weight strip ----
+     Was a bespoke second bar (a gold WEIGHT chip, always-expanded inputs,
+     tokenized as its own panel). It is now the SAME control the engines and
+     peds/ carry, injected from design-system-shell.css at the marker above:
+     a collapsed 44px row that states the weight and the dosing mode, tapping
+     it opens the kg/age form. SHELL.md layer 4 is the spec; the reason is
+     that a clinician moving between /arrest/ and /codes/ mid-code was being
+     asked to operate two different weight interfaces for one patient.
+     Only the three things the shared sheet does NOT own stay here: the stale
+     marker, the transient adult-override notice, and the flash. ---- */
+  #wtstale { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; color:var(--amber); white-space:nowrap; margin-left:8px; }
   #wtbar.stale { border-bottom-color:var(--sev-caution); }
+  /* The override notice sits OUTSIDE the collapsible form on purpose: it exists
+     because clearing the arrest tool's adult-override would otherwise be
+     invisible, and a notice hidden inside a collapsed panel is invisible. */
+  #wtnotice { display:none; padding:7px 16px; background:var(--card); border-bottom:1px solid var(--line); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.04em; color:var(--amber); }
   .wdose { font-weight:700; color:var(--ink); }
   .wdose-vol { font-size:1.05em; }
   .wdose-mg { font-size:0.86em; font-weight:400; opacity:0.82; margin-left:3px; }
@@ -163,16 +162,55 @@
   .drugpick button.picked { background:var(--card2); box-shadow:inset 4px 0 0 var(--accent); }
   .drugpick .wdose.unset { font-size:11px; }
   @media print { .drugpick { display:none; } }
-  @keyframes wtbarflash { 0%,100% { background:var(--card2); } 50% { background:var(--blue); } }
-  #wtbar.flash { animation: wtbarflash 0.5s ease-in-out 2; }
-  @media (prefers-reduced-motion: reduce) { #wtbar.flash { animation:none; } }
+
+  /* ---- Card 37 · pressors by indication (issue #179) ------------------------
+     The indication router and the computed drip rows. Same shape as .drugpick
+     above: a 1px gap over a --line background draws the grid for free, and the
+     buttons carry .cs-router so they inherit the decision-router target floor
+     from LAYOUT.md rather than inventing one. Nothing here encodes a dose — the
+     rows are rendered from SITE.pressors by the PRESSORS module. */
+  .prs-pick { display:grid; grid-template-columns:1fr; gap:1px; background:var(--line); border:1px solid var(--line); }
+  @media (min-width:600px) { .prs-pick { grid-template-columns:1fr 1fr; } }
+  .prs-pick button { display:flex; flex-direction:column; align-items:flex-start; justify-content:center; gap:2px; text-align:left; padding:9px 14px; background:var(--card); color:var(--ink); border:none; cursor:pointer; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; }
+  .prs-pick button:hover, .prs-pick button:focus-visible { background:var(--card2); }
+  /* Selected state carries a text tag as well as the bar, so it survives
+     greyscale and print (DESIGN-SYSTEM.md §2 — color is never the only carrier). */
+  .prs-pick button[aria-pressed="true"] { background:var(--card2); box-shadow:inset 5px 0 0 var(--purple); }
+  .prs-pick .prs-n { font-size:13px; font-weight:700; letter-spacing:0.05em; }
+  .prs-pick .prs-s { font-size:11.5px; font-weight:400; line-height:1.3; letter-spacing:0.01em; color:var(--ink2); }
+  .prs-row { border:1px solid var(--line); background:var(--card2); padding:10px 12px; margin-top:8px; }
+  /* The chain: ordered dose = dose per minute = pump rate, of the standard bag.
+     Two big figures now instead of one, so 27px would push the pair onto three
+     lines at 320px; 22px keeps "3.7 mcg/min = 13.9 mL/hr" on one line on a phone
+     and still reads across a resus bay. The row flex-wraps rather than shrinking
+     further — a wrapped chain is legible, a 15px one is not. */
+  .prs-chain { display:flex; align-items:baseline; gap:7px; flex-wrap:wrap; margin-top:7px; }
+  .prs-q { white-space:nowrap; }
+  .prs-rate { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:22px; font-weight:800; line-height:1.1; color:var(--ink); }
+  .prs-rate.unset { font-size:14px; font-weight:700; color:var(--red); }
+  /* The ordered dose and the bag are context, not the number you act on — they
+     stay quiet so the two computed figures carry the row. */
+  .prs-ordered { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; color:var(--ink2); }
+  .prs-eq { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; color:var(--ink2); }
+  .prs-of { font-size:12.5px; color:var(--ink2); }
+  @media (min-width:600px) { .prs-rate { font-size:26px; } }
+  .prs-lbl { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; font-weight:700; color:var(--ink2); }
+  table.prs-dt { border-collapse:collapse; width:100%; min-width:560px; font-size:13px; margin:4px 0 2px; }
+  table.prs-dt th, table.prs-dt td { border:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top; }
+  table.prs-dt th { background:var(--card2); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:0.04em; color:var(--ink); }
+  /* The flash rides the COLLAPSED row (#wtoggle), which is always on screen —
+     flashing the form would be a no-op whenever it is collapsed, i.e. exactly
+     when a reader has tapped an unset dose because they can't find the field. */
+  @keyframes wtbarflash { 0%,100% { background:var(--card); } 50% { background:var(--blue); } }
+  #wtoggle.flash { animation: wtbarflash 0.5s ease-in-out 2; }
+  @media (prefers-reduced-motion: reduce) { #wtoggle.flash { animation:none; } }
   @media print {
     /* Force the light palette on paper regardless of the on-screen theme. */
     body[data-theme]{ --bg:#fff; --card:#fff; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D; --line:rgba(15,35,60,.18);
       --accent:#00693E; --red:#C63238; --amber:#B07E13; --blue:#2F6FB5; --green:#1F7F49; --gray:#6B7A8D;
       --purple:#6C4FA3; --teal:#1F7E7E; --orange:#B4661F; --sev-crit:#9b1c2e; --sev-caution:#8a6d1f;
       --sev-info:#2f62a8; --on-sev:#fffefb; --note-bg:#fdf3cf; --note-tx:#6b5410; background:#fff; }
-    .hdr, #betasplash, #wtbar, a[href="#top"], #c06cicopin, #startnewcasebtn { display:none; }
+    .hdr, #betasplash, #wtoggle, #wtbar, #wtnotice, a[href="#top"], #c06cicopin, #startnewcasebtn { display:none; }
     /* the weight bar/tappable-chip affordance is meaningless on paper (nothing to tap) —
        print the placeholder as plain italic text instead of a chip pointing at a hidden bar. */
     .wdose.unset { display:inline; background:none; border:none; border-radius:0; padding:0; font-style:italic; font-weight:400; cursor:auto; }
@@ -294,16 +332,35 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
   try{ if(/(^|[?&])startnewcase=1(&|$)/.test(location.search)) openModal(); }catch(e){}
 })();
 </script>
-<div id="wtbar">
-  <label for="wtkg">WEIGHT</label>
-  <input id="wtkg" type="number" inputmode="decimal" step="0.1" min="0" placeholder="kg">
-  <label for="wtage">or AGE</label>
-  <input id="wtage" type="number" inputmode="decimal" step="0.1" min="0" placeholder="age">
-  <select id="wtageunit"><option value="mo">months</option><option value="yr" selected>years</option></select>
-  <button type="button" id="wtestimate">ESTIMATE KG FROM AGE</button>
-  <span id="wtdisplay">no weight entered · per-kg doses hidden</span>
-  <span id="wtnotice" style="display:none; flex-basis:100%; font-size:12px; font-weight:700; letter-spacing:0.04em; color:#f2b84b;"></span>
+<!-- ============ CASE SHELL layer 4 — weight strip ============
+     Ported from the bespoke always-expanded bar this tool used to carry, so
+     codes/ now presents the SAME weight control as /arrest/, /tca/, /peds/ and
+     /neonatal/ (SHELL.md layer 4). Phone: collapsed 44px row, tap to expand.
+     >=768px: expanded until a weight is confirmed (ESTIMATE or DONE), then a
+     slim "tap to change" row. Unset renders amber, set renders green.
+     THE MODE LIVES HERE, not only in a banner: the collapsed row states the
+     weight, how it was obtained, and which dosing population that weight puts
+     the patient in — this tool's equivalent of peds' "WHITE drawer" and
+     arrest's "PALS (pediatric)". The population line is derived from
+     SITE.audience.thresholdKg, so a site that localizes that number gets a
+     row that agrees with its own cards.
+     The input ids are codes' originals (#wtkg/#wtage/#wtageunit/#wtestimate):
+     CODES_WT, the cross-tab re-sync and four verify suites bind to them, and
+     the shell contract is the chrome and the behavior, not the id spelling. -->
+<button class="shellweight" id="wtoggle" type="button">
+  <span class="k">WEIGHT</span>
+  <span class="v unset" id="wtdisplay">not set</span>
+  <span class="m" id="wmark">&#9660;</span>
+</button>
+<div class="shellweightform" id="wtbar" style="display:none">
+  <input class="inp" id="wtkg" type="number" inputmode="decimal" step="0.1" min="0" placeholder="kg" style="width:64px" aria-label="Weight in kg">
+  <span style="font-size:13px;color:var(--ink2)">kg &nbsp;&middot;&nbsp; or age</span>
+  <input class="inp" id="wtage" type="number" inputmode="decimal" step="0.1" min="0" placeholder="age" style="width:52px;font-size:16px" aria-label="Age">
+  <select class="inp" id="wtageunit" aria-label="Age unit" style="width:auto;font-size:16px;min-height:44px"><option value="mo">mo</option><option value="yr" selected>yr</option></select>
+  <button class="btn" type="button" id="wtestimate" style="font:700 12px var(--sans);padding:9px 12px;border-radius:9px;min-height:38px">ESTIMATE KG</button>
+  <button class="ghost" id="wdone" type="button" style="min-height:38px;border-color:var(--green);color:var(--green)">DONE &#10003;</button>
 </div>
+<div id="wtnotice"></div>
 </div>
 <!-- NRP off-ramp (weight-routing audit): NRP is for the NEWLY BORN (transition
      period), so a sub-3 kg weight or an age under 1 month asks the question
@@ -376,6 +433,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
         <a href="#c34" data-k="alcohol withdrawal dts delirium tremens ciwa diazepam lorazepam phenobarbital front load seizure thiamine etoh" class="lrh-row" style="--cc:var(--amber)"><span class="n lrh-mono">34</span><span class="t">Severe Alcohol Withdrawal / DTs</span></a>
         <a href="#c35" data-k="transfusion reaction stop the unit hemolytic febrile trali taco anaphylaxis blood bank hives urticaria dark urine" class="lrh-row" style="--cc:var(--blue)"><span class="n lrh-mono">35</span><span class="t">Transfusion Reaction</span></a>
         <a href="#c36" data-k="toxicology overdose poisoning opioid naloxone narcan tca sodium bicarbonate wide qrs beta blocker calcium channel blocker high dose insulin glucagon lipid emulsion poison control tox arrest" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">36</span><span class="t">Toxicology Crash Card</span></a>
+        <a href="#c37" data-k="pressor pressors vasopressor vasopressors inotrope inotropes drip infusion weight based calculator ml/hr mcg/kg/min norepinephrine levophed epinephrine vasopressin phenylephrine dopamine dobutamine milrinone push dose push-dose shock septic cardiogenic post rosc pulmonary embolism stemi anaphylaxis neurogenic bradycardia titrate map 65 extravasation phentolamine peripheral pressor" class="lrh-row" style="--cc:var(--purple)"><span class="n lrh-mono">37</span><span class="t">Pressors &amp; Inotropes &mdash; by Indication</span></a>
         <a href="#c13" data-k="status epilepticus seizure benzodiazepine lorazepam midazolam levetiracetam fosphenytoin second line code" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">13</span><span class="t">Status Epilepticus</span></a>
         <a href="#c14" data-k="vent ventilator dope displacement obstruction pneumothorax equipment failure decompensation intubated patient code" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">14</span><span class="t">Unstable on the Vent (DOPE)</span></a>
         <a href="#c15" data-k="status asthmaticus asthma albuterol ipratropium magnesium bipap severe exacerbation wheeze code" class="lrh-row" style="--cc:var(--red)"><span class="n lrh-mono">15</span><span class="t">Status Asthmaticus</span></a>
@@ -438,7 +496,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
       <details open style="border:2px solid var(--sev-crit);">
         <summary style="background:var(--sev-crit); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">CIRCULATION &amp; CAUSE-FINDING</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="22-4" class="t-ck t-ck-crit"><span><b>Treat hypotension — minimum target MAP ≥65 mmHg</b> (AHA); fluids first, then a vasopressor (norepinephrine or epinephrine infusion — push-dose pressor while you set one up). <b>Some sources argue for a higher target</b> (LITFL: MAP &gt;70, some experts &gt;80/SBP &gt;120) based on evolving cerebral-perfusion evidence — this isn't yet a Class 1 AHA number, so treat it as a reasonable ceiling to aim for once ≥65 is secured, not a hard requirement.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="22-4" class="t-ck t-ck-crit"><span><b>Treat hypotension — minimum target MAP ≥65 mmHg</b> (AHA); fluids first, then a vasopressor (norepinephrine or epinephrine infusion — push-dose pressor while you set one up). <b>Some sources argue for a higher target</b> (LITFL: MAP &gt;70, some experts &gt;80/SBP &gt;120) based on evolving cerebral-perfusion evidence — this isn't yet a Class 1 AHA number, so treat it as a reasonable ceiling to aim for once ≥65 is secured, not a hard requirement. <b>Starting rate in mL/hr for this patient's weight: <a href="#c37">card 37, POST-ROSC</a>.</b></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="22-5" class="t-ck t-ck-crit"><span><b>12-lead ECG immediately.</b> STEMI or a new concerning pattern → <a href="#c21">activate card 21</a> and start the transfer call in parallel, don't wait for the rest of this checklist. Without a clear STEMI, immediate vs. delayed angiography hasn't shown a mortality difference in recent trials (WikEM) — involve cardiology in that decision rather than reflexively cathing everyone.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="22-6" class="t-ck t-ck-crit"><span><b>Re-run the H's and T's</b> for the cause of the arrest itself, if not already found (<a href="#c01">card 01</a> checklist) — hypoxia, hypovolemia, hyper/hypokalemia, hydrogen ion (acidosis), hypothermia, tension pneumothorax, tamponade, toxins, thrombosis (coronary or pulmonary).</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="22-7" class="t-ck t-ck-crit"><span>Arterial line and a second reliable IV/IO access; labs — VBG/ABG, lactate, electrolytes, troponin, glucose; point-of-care ultrasound (cardiac, lung, IVC) if available; portable CXR; Foley catheter, goal urine output 0.5–1 mL/kg/hr.</span></label></li>
@@ -504,8 +562,8 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
         <summary style="background:var(--gray); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">IF ATROPINE INEFFECTIVE / CONTRAINDICATED</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="03-1" class="t-ck"><span><b>Transcutaneous pacing</b> — pads on, start ~60–80/min, titrate to capture (electrical + mechanical/pulse). Sedate/analgese if patient is awake — pacing is painful.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="03-2" class="t-ck"><span><b>Dopamine infusion</b> 5–20 mcg/kg/min IV, titrate to response.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="03-3" class="t-ck"><span><b>Epinephrine infusion</b> 2–10 mcg/min IV, titrate to response.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="03-2" class="t-ck"><span><b>Dopamine infusion</b> 5–20 mcg/kg/min IV, titrate to response — <a href="#c37">rate in mL/hr, card 37</a>.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="03-3" class="t-ck"><span><b>Epinephrine infusion</b> 2–10 mcg/min IV, titrate to response (published <i>not</i> per kg) — <a href="#c37">rate in mL/hr, card 37</a>.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="03-4" class="t-ck"><span>Get expert consultation early; prepare for <b>transvenous pacing</b> if a temporary transcutaneous bridge won't be enough — full equipment, float sequence, and generator settings on <a href="../procedures/?from=home#c07">Procedures card 07, Transvenous Pacing (TVP)</a>.</span></label></li>
         </ul>
       </details>
@@ -714,7 +772,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
       <details open style="border:2px solid var(--gray);">
         <summary style="background:var(--gray); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">2 · INDUCTION &amp; AIRWAY ATTEMPT</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-6" class="t-ck"><span><b>Medications ready:</b> induction + paralytic drawn up; post-tube sedation planned; push-dose epi in reach; norepinephrine ready.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-6" class="t-ck"><span><b>Medications ready:</b> induction + paralytic drawn up; post-tube sedation planned; push-dose epi in reach; norepinephrine ready — recipe and starting rate on <a href="#c37">card 37</a>.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-7" class="t-ck"><span><b>First-pass attempt:</b> laryngoscope choice confirmed (VL vs. DL); team member identified to call out SpO₂; external laryngeal manipulation (ELM) optimized if needed.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-8" class="t-ck t-ck-crit"><span><b>If first attempt fails:</b> say your 3 backups out loud — repeat laryngoscopy (bougie/2nd intubator) · iGel sized and ready · cric kit ready. Can't oxygenate by any route → <a href="#declare-cico">declare CICO (card 18)</a>.</span></label></li>
         </ul>
@@ -927,7 +985,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
         <summary style="background:var(--gray); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">IF NOT RESPONDING TO IM EPI</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="08-1" class="t-ck"><span><b>IV fluids:</b> 20 mL/kg crystalloid bolus (<span class="wdose" data-perkg="20" data-max="2000" data-unit="mL" data-decimals="0">enter weight ↑</span>; max 2 L/bolus) for hypotension — roughly 1–2 L for an average adult — repeat as needed.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="08-2" class="t-ck"><span><b>Refractory shock:</b> IV epinephrine infusion, low-dose, by experienced personnel with continuous monitoring — confirm your pharmacy's approved concentration/rate before mixing (~2–10 mcg/min is a commonly cited EM starting range, not a fixed guideline number).</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="08-2" class="t-ck"><span><b>Refractory shock:</b> IV epinephrine infusion, low-dose, by experienced personnel with continuous monitoring — confirm your pharmacy's approved concentration/rate before mixing (~2–10 mcg/min is a commonly cited EM starting range, not a fixed guideline number). Weight-based starting rate and the next agent: <a href="#c37">card 37, ANAPHYLAXIS</a>.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="08-3" class="t-ck"><span><b>On a beta-blocker and not responding to epi?</b> Glucagon 1–5 mg IV slow push (watch for vomiting/aspiration).</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="08-4" class="t-ck"><span><b>Positioning:</b> supine with legs elevated if tolerated; sitting if respiratory distress predominates; left-lateral if pregnant.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="08-5" class="t-ck"><span><b>Angioedema/stridor progressing?</b> Low threshold for early, elective, definitive airway — don't wait for severe stridor (<a href="#c06">see card 06</a>).</span></label></li>
@@ -978,7 +1036,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="09-1" class="t-ck"><span><b>Control external hemorrhage</b> — direct pressure first, then a tourniquet for extremity bleeding not controlled by pressure; wound packing + pressure dressing for junctional wounds.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="09-2" class="t-ck"><span><b>Permissive hypotension</b> (penetrating trauma, no TBI): target SBP ~80–90 mmHg until the source is controlled — don't chase a normal pressure with crystalloid, it dilutes clotting factors and dislodges clot.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="09-3" class="t-ck"><span><b>Concurrent TBI changes the target</b> — do NOT permissively hypotend; keep MAP ≥80 (age-based SBP floor: ~110 for ages 15–49/70+, ~100 for ages 50–69) to protect cerebral perfusion.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="09-4" class="t-ck"><span><b>Resuscitate with balanced blood products, not crystalloid</b> — activate MTP early if massive hemorrhage is anticipated (<a href="#c12">see card 12</a>).</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="09-4" class="t-ck"><span><b>Resuscitate with balanced blood products, not crystalloid</b> — activate MTP early if massive hemorrhage is anticipated (<a href="#c12">see card 12</a>). <b>A vasopressor is not the resuscitation here</b> — <a href="#c37">card 37, HEMORRHAGIC</a> names the one situation it is defensible in.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="09-5" class="t-ck"><span><b>Beat the lethal triad:</b> active warming (warmed fluids/blood, blankets), avoid excess crystalloid (acidosis), correct coagulopathy with balanced products + calcium + TXA.</span></label></li>
         </ul>
       </details>
@@ -1988,7 +2046,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
       <details style="border:2px solid var(--sev-crit);">
         <summary style="background:var(--sev-crit); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">CARDIOGENIC SHOCK — PRESSOR &amp; FLUID CHOICE</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="21-19" class="t-ck t-ck-crit"><span><b>Norepinephrine is first-line</b> for cardiogenic shock — the SOAP-II cardiogenic-shock subgroup showed a mortality benefit and fewer arrhythmic events vs. dopamine. Add <b>dobutamine</b> (an inotrope, not a pressor) for a low-output state once pressure is supported — it can drop BP on its own, so pair it with norepinephrine if hypotensive.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="21-19" class="t-ck t-ck-crit"><span><b>Norepinephrine is first-line</b> for cardiogenic shock — the SOAP-II cardiogenic-shock subgroup showed a mortality benefit and fewer arrhythmic events vs. dopamine. Add <b>dobutamine</b> (an inotrope, not a pressor) for a low-output state once pressure is supported — it can drop BP on its own, so pair it with norepinephrine if hypotensive. <b>Both rates in mL/hr for this patient: <a href="#c37">card 37, CARDIOGENIC</a>.</b></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="21-20" class="t-ck t-ck-crit"><span><b>Pulmonary edema/left-sided shock → avoid/minimize fluids</b>, diurese if volume-overloaded and pressure-supported; escalate to pressor/inotrope rather than fluid-loading.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="21-21" class="t-ck t-ck-crit"><span><b>RV infarct is the opposite — it's preload-dependent.</b> For hypotension with a suspected RV infarct (inferior STEMI + hypotension ± clear lung fields), try small, repeated crystalloid boluses first, reassessing after each — don't over-resuscitate, RV dilation can impair LV filling. <b>Avoid nitrates, morphine, and diuretics</b> in RV infarct — all drop preload and can precipitate profound hypotension. Escalate to pressor/inotrope if fluids don't correct it.</span></label></li>
         </ul>
@@ -2313,8 +2371,8 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
       <details open style="border:2px solid var(--blue);">
         <summary style="background:var(--blue); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">2 &middot; PRESSORS &mdash; DO NOT DROWN THEM INSTEAD</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="28-5" class="t-ck"><span><b>Norepinephrine is first-line.</b> Target MAP &ge; 65. Starting it through a good proximal peripheral IV is acceptable while access is arranged &mdash; hypotension is more dangerous than a peripheral pressor.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="28-6" class="t-ck"><span>Still hypotensive on norepinephrine ~0.25&ndash;0.5 mcg/kg/min &rarr; add vasopressin 0.03 u/min.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="28-5" class="t-ck"><span><b>Norepinephrine is first-line.</b> Target MAP &ge; 65. Starting it through a good proximal peripheral IV is acceptable while access is arranged &mdash; hypotension is more dangerous than a peripheral pressor. <b>Starting rate in mL/hr: <a href="#c37">card 37, SEPTIC</a>.</b></span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="28-6" class="t-ck"><span>Still hypotensive on norepinephrine ~0.25&ndash;0.5 mcg/kg/min &rarr; add vasopressin 0.03 u/min — a fixed rate, not a titration (<a href="#c37">card 37</a> for the mL/hr).</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="28-7" class="t-ck"><span>Refractory shock &rarr; hydrocortisone 200 mg/day (50 mg IV q6h).</span></label></li>
         </ul>
       </details>
@@ -2365,7 +2423,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
       <details open style="border:2px solid var(--blue);">
         <summary style="background:var(--blue); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">3 &middot; SUPPORT THE RIGHT VENTRICLE</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="29-7" class="t-ck"><span><b>Fluid-restrict:</b> the RV is full &mdash; more than ~500 mL usually makes it worse. Norepinephrine early for pressure; vasopressors and/or inotropes are the recommendation once there is shock.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="29-7" class="t-ck"><span><b>Fluid-restrict:</b> the RV is full &mdash; more than ~500 mL usually makes it worse. Norepinephrine early for pressure; vasopressors and/or inotropes are the recommendation once there is shock &mdash; <a href="#c37">card 37, MASSIVE PE</a> for the rate and the RV inotrope.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="29-8" class="t-ck"><span>Avoid intubation if humanly possible &mdash; induction + positive pressure is when these patients arrest. Prefer heated high-flow nasal cannula for hypoxia. If forced: pressor running first, most hemodynamically neutral agent you have.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="29-9" class="t-ck"><span><b>LMWH over unfractionated heparin</b> for the patient who is not going straight to lysis; UFH (80 u/kg bolus, 18 u/kg/h) is for the refractory patient and for anyone in whom lysis is imminent. Lactate on everyone in Categories C&ndash;E.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="29-12" class="t-ck"><span><b>Stable with high-risk features (C3&ndash;D): transfer may be considered</b> &mdash; catheter-directed lysis, thrombectomy, embolectomy and ECMO live at the referral center. <b>Unstable (Category E): do NOT transfer before stabilizing.</b> Stabilize here, then move.</span></label></li>
@@ -2657,7 +2715,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="36-7" class="t-ck"><span>Calcium: <b>gluconate 3&ndash;6 g IV</b> (or chloride 1&ndash;2 g via good/central line), repeatable.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="36-8" class="t-ck"><span>Beta-blocker: add <b>glucagon 5&ndash;10 mg IV</b> (expect vomiting).</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="36-9" class="t-ck"><span><b>High-dose insulin: 1 u/kg bolus &rarr; 0.5&ndash;1 u/kg/h</b> with dextrose infusion and q30 min glucose/K &mdash; start it early, it takes ~30 min to work.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="36-10" class="t-ck"><span>Lipophilic agent (verapamil, bupropion) peri-arrest: <b>20% lipid emulsion 1.5 mL/kg bolus</b>, may repeat, then infusion. Pacing/pressors as bridges.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="36-10" class="t-ck"><span>Lipophilic agent (verapamil, bupropion) peri-arrest: <b>20% lipid emulsion 1.5 mL/kg bolus</b>, may repeat, then infusion. Pacing/pressors as bridges — <a href="#c37">card 37, BB/CCB OVERDOSE</a>.</span></label></li>
         </ul>
       </details>
       <details open style="border:2px solid var(--gray);">
@@ -2670,6 +2728,75 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
       </details>
     </div>
     <div style="padding:14px; font-size:12px; line-height:1.5; color:var(--ink2); border-top:1px solid var(--line); margin-top:14px;"><b>Sources:</b> AHA 2023 guideline for management of poisoned patients in cardiac arrest and life-threatening toxicity (Circulation 2023;148:e149); ACMT position statements (lipid, HIE); Goldfrank&rsquo;s Toxicologic Emergencies 11e.</div>
+    <div style="padding:0 14px 20px; font-size:12px; color:var(--ink2);">
+      <span class="verstamp"></span> &mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
+    </div>
+  </article>
+
+  <!-- ============ CARD 37 &middot; PRESSORS &amp; INOTROPES BY INDICATION (issue #179) ============
+       A calculator, not a checklist. The clinician picks the SHOCK, not the drug: the
+       question at the bedside is "this patient is hypotensive and I think it's sepsis" —
+       "which pressor" is the answer, not the input. Built like peds card 16 (the airway
+       equipment card): one live panel computed from the shared case weight, plus a full
+       reference ladder underneath, and every number on screen rendered from SITE.pressors
+       rather than typed into the markup — so a department that hangs a different bag gets
+       a card that agrees with its own pumps. ---- -->
+  <article id="c37" data-audience="adult" data-peds-alt="peds#p02">
+    <div style="padding:0 14px;">
+      <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--purple); font-size:16px; margin-right:8px;">37</span>Pressors &amp; Inotropes &mdash; by Indication</h2>
+        <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2); text-align:right;">PICK THE SHOCK &middot; GET THE mL/HR</span>
+      </div>
+    </div>
+    <div style="margin:14px 14px 0; border:2px solid var(--sev-caution); background:var(--note-bg); color:var(--note-tx); padding:11px 14px; font-size:13px; line-height:1.4;">&#9888; <b>DRAFT &mdash; NOT CLINICALLY REVIEWED:</b> written from the published guidelines cited below for issue <a href="https://github.com/lonsetnik-dot/LRH-Emergency-Manual/issues/179" style="color:var(--note-tx);">#179</a>. <b>Every rate on this card is computed from the standard bag concentrations in this file's SITE CONFIG block</b> &mdash; if your pharmacy hangs a different mix, every number here is wrong until that block is changed. Confirm the concentration on the bag in your hand before you set a pump.</div>
+    <div class="steps" style="padding:14px 14px 0;">
+
+      <details open style="border:2px solid var(--sev-crit); grid-column:1 / -1;">
+        <summary style="background:var(--sev-crit); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">1 &middot; WHAT KIND OF SHOCK IS THIS?</summary>
+        <div style="padding:4px 12px 12px;">
+          <div class="console"><div id="prsPick" class="prs-pick" role="group" aria-label="Choose the indication"></div></div>
+          <p id="prsWtCue" style="font-size:12.5px; line-height:1.4; color:var(--ink2); margin:8px 0 0;"></p>
+        </div>
+      </details>
+
+      <details open style="border:2px solid var(--sev-info); grid-column:1 / -1;">
+        <summary style="background:var(--sev-info); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">2 &middot; WHAT TO START &mdash; AND AT WHAT RATE</summary>
+        <div style="padding:4px 12px 12px;">
+          <div id="prsPlan"></div>
+        </div>
+      </details>
+
+      <details open style="border:2px solid var(--sev-caution); grid-column:1 / -1;">
+        <summary style="background:var(--sev-caution); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">3 &middot; PUSH-DOSE BRIDGE &mdash; WHILE THE DRIP IS BEING MIXED</summary>
+        <div style="padding:4px 12px 12px;">
+          <p style="font-size:13px; line-height:1.45; margin:4px 0 8px; color:var(--ink);">A push-dose pressor is a <b>bridge measured in minutes</b>, not a plan. Start the infusion in parallel &mdash; if you have pushed three doses and no drip is being mixed, that is the problem to fix.</p>
+          <div id="prsPush"></div>
+        </div>
+      </details>
+
+      <details style="border:2px solid var(--gray); grid-column:1 / -1;">
+        <summary style="background:var(--gray); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">EVERY AGENT &mdash; mL/HR AT THIS WEIGHT</summary>
+        <div style="padding:4px 12px 12px;">
+          <div id="prsTable" style="overflow-x:auto;"></div>
+          <p id="prsFormula" style="font-size:12.5px; line-height:1.45; color:var(--ink2); margin:8px 0 0;"></p>
+        </div>
+      </details>
+
+      <details style="border:2px solid var(--gray); grid-column:1 / -1;">
+        <summary style="background:var(--gray); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">LINES, EXTRAVASATION, AND WHAT THE PRESSOR IS COVERING UP</summary>
+        <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="37-1" class="t-ck t-ck-crit"><span><b>Start it peripherally rather than wait.</b> A good proximal IV (20 G or larger, antecubital or above, blood return confirmed) is an accepted route for a vasopressor while central access is arranged. Hypotension is more dangerous than a peripheral pressor.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="37-2" class="t-ck"><span><b>Name the person watching the site</b> and have them look every 15 minutes. Peripheral vasopressors are safe because somebody is looking, not because they are inherently safe.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="37-3" class="t-ck t-ck-crit"><span><b>Extravasation:</b> stop the infusion, <b>leave the catheter in</b> and aspirate through it, then infiltrate the area with <b>phentolamine 5&ndash;10 mg in 10&ndash;15 mL normal saline</b> through that catheter and subcutaneously around the site. Topical nitroglycerin 2% paste is the alternative if phentolamine is not stocked. Elevate; do not apply heat.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="37-4" class="t-ck"><span><b>One dedicated line per pressor, on a pump, labeled.</b> Never run a pressor into the line you are pushing boluses through &mdash; a flush becomes a bolus of vasopressor, and a paused pump becomes a pressure crash nobody ordered.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="37-5" class="t-ck t-ck-caution"><span><b>Check an ionized calcium, and fix the acidosis.</b> Catecholamines work poorly in a hypocalcemic, acidotic patient &mdash; a pressor that "isn't working" is often a metabolic problem, not a dosing problem.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="37-6" class="t-ck t-ck-crit"><span><b>Ask what the pressor is covering up</b> before you titrate again: hypovolemia, tension pneumothorax, tamponade, auto-PEEP in the ventilated patient, hypoxia, an untreated arrhythmia, adrenal insufficiency, or the anaphylaxis nobody has named yet.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="37-7" class="t-ck"><span><b>Arterial line once you are on a second agent or titrating fast</b> &mdash; a cuff under-reads and over-reads unpredictably at low flow. It is a monitor, not a prerequisite: never delay the pressor for the line.</span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="37-8" class="t-ck t-ck-crit"><span><b>Say the target out loud and close the loop on the pump.</b> "Norepinephrine, MAP goal 65, titrate" &mdash; then read the rate off the pump screen and confirm it matches. Ordered-but-not-running is the most common way a pressor fails.</span></label></li>
+        </ul>
+      </details>
+    </div>
+    <div style="padding:14px; font-size:12px; line-height:1.5; color:var(--ink2); border-top:1px solid var(--line); margin-top:14px;"><b>Sources:</b> <b>Septic/distributive</b> &mdash; Surviving Sepsis Campaign 2021 (Evans L, et al. <i>Crit Care Med</i> 2021;49:e1063): norepinephrine first-line, MAP target &ge;65, vasopressin added at norepinephrine ~0.25&ndash;0.5 mcg/kg/min, epinephrine third, hydrocortisone for refractory shock, and peripheral initiation while access is arranged (with CENSER, <i>AJRCCM</i> 2019). <b>Cardiogenic</b> &mdash; 2025 ACC/AHA/ACEP/NAEMSP/SCAI acute coronary syndromes guideline; norepinephrine-over-dopamine from the SOAP II cardiogenic subgroup (De Backer D, et al. <i>N Engl J Med</i> 2010;362:779). <b>Post-ROSC</b> &mdash; AHA Guidelines for CPR and ECC, post-cardiac-arrest care (avoidance of hypotension, MAP &ge;65 / SBP &ge;90). <b>Massive PE</b> &mdash; ESC 2019 acute pulmonary embolism guidelines (<i>Eur Heart J</i> 2019;41:543): fluid restriction, early norepinephrine, inotrope for the low-output RV. <b>Bradycardia</b> &mdash; AHA adult bradycardia algorithm: epinephrine 2&ndash;10 mcg/min and dopamine 5&ndash;20 mcg/kg/min, both as bridges to pacing; the epinephrine figure is published <i>not</i> weight-based and is carried that way here. <b>Neurogenic</b> &mdash; MAP 85&ndash;90 for spinal cord perfusion is the widely-taught target from the AANS/CNS acute cervical spine and spinal cord injury guidance; it rests on low-quality evidence and remains a consult conversation. <b>Push-dose regimens, standard bag concentrations, and the phentolamine extravasation dose</b> &mdash; EMCrit / WikEM / LITFL tertiary references; these are the values most likely to differ at your site, and they live in this file's SITE CONFIG block for exactly that reason. <b>Pediatric (under 40 kg).</b> Infusion dosing for children is <b>not</b> on this card &mdash; see <a href="../peds/?from=codes#p02">Peds card 02</a>. Vasopressin is a specific hole rather than a gap in this card: <b>no FDA-approved or society-endorsed weight-based pediatric dose exists for vasopressin in any shock type</b>, so entering a pediatric weight withholds that row's rate instead of showing the adult one &mdash; Weiss SL, Peters MJ, Alhazzani W, et al. <a href="https://journals.lww.com/pccmjournal/fulltext/10.1097/pcc.0000000000002198~surviving-sepsis-campaign-international-guidelines-for-the" target="_blank" rel="noopener">Surviving Sepsis Campaign International Guidelines for the Management of Septic Shock and Sepsis-Associated Organ Dysfunction in Children</a>, <i>Pediatr Crit Care Med</i> 2020;21(2):e52&ndash;e106.</div>
     <div style="padding:0 14px 20px; font-size:12px; color:var(--ink2);">
       <span class="verstamp"></span> &mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.
     </div>
@@ -2704,8 +2831,8 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
 
 /* ===== SITE CONFIG (site-specific — edit to localize) ===== */
 var SITE = {
-  version: "3.4",
-  lastReviewed: "2026-08-17",
+  version: "3.6",
+  lastReviewed: "2026-08-19",
   /* WS10.2 — minutes of manual-wide inactivity (lrh-case-lastactive) before the weight
      strip appends an "ENTERED HH:MM · N MIN AGO" line and ambers #wtbar's border.
      Purely informational — never hides the kg value, its color, or any .wdose span.
@@ -2763,6 +2890,207 @@ var SITE = {
      weight; an ex-preemie <3 kg can belong in PALS. NRP 8th ed epi 0.02 mg/kg IV/UVC
      (range 0.01–0.03) vs PALS 0.01 mg/kg is the divergence the banner names. */
   nrp: { maxKg: 3, maxAgeYrs: 1/12 },
+  /* ===== Card 37 — vasopressors and inotropes, by indication (issue #179) =====
+     THE BLOCK AN ADOPTING ED REWRITES, and the one with the sharpest edge on it.
+
+     · `mix` / `concPerMl` is THE STANDARD BAG. Every mL/hr this card prints is
+       (dose × weight × 60) ÷ concPerMl, so a department that hangs
+       norepinephrine 8 mg/250 mL against a config that still says 4 mg/250 mL
+       reads exactly half the rate it needs, in a confident large font, forever.
+       This is the most dangerous number in this file — check it against the bag
+       your pharmacy actually sends before the card is trusted, and again
+       whenever the pharmacy changes a premix.
+     · The per-indication `ladder` is which agent THIS department reaches for,
+       in what order. The evidence puts norepinephrine first for nearly every ED
+       shock; the second and third rungs are legitimately house practice.
+     · `start` / `low` / `high` are per-minute figures in the row's own `unit`,
+       not mL/hr — the mL/hr is derived, never typed, so a localized
+       concentration can never disagree with a localized dose.
+
+     Clinical invariants that must survive localization (asserted by
+     verify_pressors.mjs against the rendered screen, never re-typed from this
+     block): norepinephrine leads the septic, cardiogenic, post-ROSC and PE
+     ladders; vasopressin is a FIXED units/min rate and is never turned into a
+     per-kg dose; the AHA bradycardia epinephrine figure stays mcg/min and never
+     becomes mcg/kg/min; hemorrhagic shock's ladder names a pressor only as a
+     bridge, with blood and hemorrhage control as the answer; every agent
+     declares a concentration; and a per-kg agent never renders a rate with no
+     weight entered.
+
+     Fields — key, label, cls (what the drug does, in one phrase), mix (the bag
+     as pharmacy labels it), concPerMl (mcg/mL — or units/mL for vasopressin),
+     dosing ('kg' = per kilogram per minute, 'fixed' = per minute regardless of
+     weight), unit (as a clinician says it), start/low/high, decimals (precision
+     of the DOSE figure, not of the rate), note.
+
+     pedsGap (optional) — THE EVIDENCE ITSELF IS MISSING FOR CHILDREN. Not "use
+     caution": there is no dose to compute. An agent carrying this field has its
+     rate WITHHELD below SITE.audience.thresholdKg (the same 40 kg the per-card
+     audience strips use), and prints the note plus its source in place of a
+     number. Vasopressin carries it today: every figure on that row is an adult
+     fixed rate, and rendering it beside a 12 kg child would be the confident
+     wrong number in a large font that this whole card is built to avoid. The
+     field is general on purpose — a site that finds the same hole in another
+     agent adds it there rather than special-casing the renderer.
+     { note, detail, source, url }.
+     ======================================================================== */
+  pressors: {
+    /* Shown under the full table — the arithmetic, spelled out, so a champion can
+       check the card against a pump by hand rather than trusting it. */
+    peripheralNote: "A peripheral vasopressor is safe because somebody is watching the site, not because it is inherently safe. Rates climbing well past the start figure, or a second agent, mean it is time to escalate access — not to keep titrating quietly.",
+    agents: [
+      { key:'norepi', label:'Norepinephrine', cls:'Vasopressor · α ≫ β',
+        mix:'4 mg / 250 mL', concPerMl:16, dosing:'kg', unit:'mcg/kg/min',
+        start:0.05, low:0.01, high:1, decimals:2,
+        note:'First-line for nearly every shock in the ED. No hard ceiling — the range here is the usual working one, not a limit.' },
+      { key:'epi', label:'Epinephrine (infusion)', cls:'Vasopressor + inotrope · α + β',
+        mix:'4 mg / 250 mL', concPerMl:16, dosing:'kg', unit:'mcg/kg/min',
+        start:0.05, low:0.01, high:0.5, decimals:2,
+        note:'Adds inotropy and chronotropy. Costs lactate, glucose and arrhythmia risk.' },
+      { key:'epiFixed', label:'Epinephrine (bradycardia rate)', cls:'Vasopressor + chronotrope',
+        mix:'4 mg / 250 mL', concPerMl:16, dosing:'fixed', unit:'mcg/min',
+        start:2, low:2, high:10, decimals:0,
+        note:'The AHA bradycardia algorithm publishes this one NOT per kilogram. Kept as its own row so nobody quietly converts 2–10 mcg/min into a per-kg dose.' },
+      { key:'vaso', label:'Vasopressin', cls:'Vasopressor · V1, non-adrenergic',
+        mix:'20 units / 100 mL', concPerMl:0.2, dosing:'fixed', unit:'units/min',
+        start:0.03, low:0.03, high:0.04, decimals:3,
+        note:'A fixed rate, not a titration. Added to norepinephrine — not used alone as a first pressor.',
+        /* pedsGap — see the block comment above. The rate on this row is an ADULT
+           fixed rate; below SITE.audience.thresholdKg the card withholds it and
+           prints this instead, because printing 9 mL/hr beside a 12 kg child is
+           exactly the confident-wrong-number this card exists to avoid. */
+        pedsGap: {
+          note: 'No FDA-approved or society-endorsed weight-based pediatric dose exists for vasopressin in any shock type.',
+          detail: 'The rate on this row is the ADULT fixed rate and is withheld here. The pediatric Surviving Sepsis Campaign guideline suggests AGAINST vasopressin as a routine addition in pediatric septic shock, and publishes no weight-based dose to give in its place — so this card will not compute one. If it is used, it is an individualized decision made with critical care / pediatric intensive care, not a number read off an aid.',
+          source: 'Weiss SL, Peters MJ, Alhazzani W, et al. Surviving Sepsis Campaign International Guidelines for the Management of Septic Shock and Sepsis-Associated Organ Dysfunction in Children. Pediatr Crit Care Med 2020;21(2):e52–e106.',
+          url: 'https://journals.lww.com/pccmjournal/fulltext/10.1097/pcc.0000000000002198~surviving-sepsis-campaign-international-guidelines-for-the'
+        } },
+      { key:'phenyl', label:'Phenylephrine', cls:'Vasopressor · pure α',
+        mix:'20 mg / 250 mL', concPerMl:80, dosing:'kg', unit:'mcg/kg/min',
+        start:0.5, low:0.5, high:9, decimals:2,
+        note:'No inotropy, and it slows the heart by reflex. A niche agent — tachyarrhythmia-limited or outflow-obstruction physiology — not a default.' },
+      { key:'dobut', label:'Dobutamine', cls:'INOTROPE · β1 (not a pressor)',
+        mix:'500 mg / 250 mL', concPerMl:2000, dosing:'kg', unit:'mcg/kg/min',
+        start:2.5, low:2.5, high:20, decimals:1,
+        note:'Raises cardiac output and DROPS blood pressure. Only once pressure is supported, and usually running alongside norepinephrine.' },
+      { key:'dopa', label:'Dopamine', cls:'Vasopressor + chronotrope',
+        mix:'400 mg / 250 mL', concPerMl:1600, dosing:'kg', unit:'mcg/kg/min',
+        start:5, low:5, high:20, decimals:1,
+        note:'More arrhythmia than norepinephrine (SOAP II). Kept here as a bradycardia bridge, not as a shock first-line.' },
+      { key:'milrin', label:'Milrinone', cls:'Inodilator · PDE-3',
+        mix:'20 mg / 100 mL', concPerMl:200, dosing:'kg', unit:'mcg/kg/min',
+        start:0.125, low:0.125, high:0.75, decimals:3,
+        note:'Long-acting, renally cleared, and it vasodilates. RV failure with adequate pressure — a consult decision, not an ED reflex.' }
+    ],
+    /* Push-dose: deliberately NOT weight-based and deliberately not computed.
+       These are drawn up by hand under time pressure, and the failure mode worth
+       designing against is a decimal error in the dilution, not a rounding error
+       in the dose — so the card prints the recipe, not a calculated number. */
+    pushDose: [
+      { label:'Epinephrine — push-dose', conc:'10 mcg/mL',
+        mix:'1 mL of the 100 mcg/mL cardiac syringe into 9 mL normal saline',
+        dose:'10–20 mcg (1–2 mL) IV q2–5 min',
+        onset:'onset ~1 min · lasts 5–10 min',
+        note:'Adds inotropy — the better bridge when the pump is failing as well as the tone.' },
+      { label:'Phenylephrine — push-dose', conc:'100 mcg/mL',
+        mix:'1 mL of 10 mg/mL into a 100 mL normal saline bag',
+        dose:'100–200 mcg (1–2 mL) IV q2–5 min',
+        onset:'onset ~1 min · lasts 10–20 min',
+        note:'Pure α — it will slow the heart. The peri-intubation choice in a tachycardic patient.' }
+    ],
+    indications: [
+      { key:'septic', label:'Septic / distributive shock', sub:'Warm, vasoplegic, a source of infection',
+        target:'MAP ≥ 65 mmHg',
+        before:'Fluids and the pressor run in parallel — do not finish 30 mL/kg into an already-wet patient before starting norepinephrine, and do not skip the fluid in a dry one.',
+        ladder:[
+          { agent:'norepi', role:'FIRST', when:'Start it as soon as the patient is hypotensive; peripheral is acceptable while access is arranged.' },
+          { agent:'vaso',   role:'ADD SECOND', when:'When norepinephrine reaches roughly 0.25–0.5 mcg/kg/min. A fixed rate — hang it, do not titrate it.' },
+          { agent:'epi',    role:'ADD THIRD',  when:'Still under target on both of the above. Consider hydrocortisone 50 mg IV q6h for refractory shock.' }
+        ],
+        links:[{href:'#c28', label:'Card 28 — Sepsis / Septic Shock'}] },
+
+      { key:'cardiogenic', label:'Cardiogenic shock / STEMI', sub:'Cold, wet, the pump has failed',
+        target:'MAP ≥ 65 mmHg — and reperfusion is the actual treatment',
+        before:'The pressor buys time to the cath lab or the lytic. Nothing on this card opens an artery.',
+        ladder:[
+          { agent:'norepi', role:'FIRST', when:'Fewer arrhythmic events and lower mortality than dopamine in the SOAP II cardiogenic subgroup.' },
+          { agent:'dobut',  role:'ADD FOR LOW OUTPUT', when:'Once pressure is supported and output is still low. It drops BP on its own — never alone in a hypotensive patient.' }
+        ],
+        links:[{href:'#c21', label:'Card 21 — STEMI'}] },
+
+      { key:'rosc', label:'Post-ROSC', sub:'A pulse is back and the pressure is falling',
+        target:'MAP ≥ 65 mmHg · SBP ≥ 90 — a single hypotensive episode is a second injury',
+        before:'Expect the crash and get ahead of it: have the drip mixed before you need it, and bridge with push-dose in the gap.',
+        ladder:[
+          { agent:'norepi', role:'FIRST', when:'The default vasopressor for post-arrest hypotension.' },
+          { agent:'epi',    role:'ALTERNATIVE', when:'When inotropy is also needed — poor contractility on the bedside echo.' }
+        ],
+        links:[{href:'#c22', label:'Card 22 — Post-ROSC Care'}, {href:'../arrest/?from=codes', label:'Arrest engine'}] },
+
+      { key:'pe', label:'Massive PE / RV failure', sub:'Obstructive — the right ventricle is full and failing',
+        target:'MAP ≥ 65 mmHg, and do NOT fluid-load',
+        before:'More than ~500 mL of fluid usually makes the RV worse. Pressure early, make the lysis decision now, and avoid intubation if humanly possible.',
+        ladder:[
+          { agent:'norepi', role:'FIRST', when:'Raises the pressure and perfuses the RV coronary bed at the same time.' },
+          { agent:'dobut',  role:'ADD FOR RV OUTPUT', when:'Low-output RV once pressure is supported — watch it drop the BP.' },
+          { agent:'milrin', role:'CONSULT-LEVEL', when:'Inodilator alternative: long-acting and renally cleared. Discuss before starting it in the ED.' }
+        ],
+        links:[{href:'#c29', label:'Card 29 — Massive Pulmonary Embolism'}] },
+
+      { key:'anaphylaxis', label:'Anaphylaxis — refractory to IM epi', sub:'Two IM doses in and still shocked',
+        target:'Perfusion and an airway — not a MAP number',
+        before:'IM epinephrine into the anterolateral thigh, repeated, plus aggressive fluids comes FIRST. An infusion is for the patient who has had repeat IM doses and is still shocked.',
+        ladder:[
+          { agent:'epi',    role:'FIRST', when:'After repeat IM doses. Titrate to perfusion, not to a number.' },
+          { agent:'norepi', role:'ADD', when:'Still hypotensive on the epinephrine infusion. If they take a beta-blocker, add glucagon.' }
+        ],
+        links:[{href:'#c08', label:'Card 08 — Anaphylaxis'}] },
+
+      { key:'hemorrhagic', label:'Hemorrhagic shock', sub:'Bleeding — the pressor is NOT the treatment',
+        target:'A perfusing pressure and mentation — permissive hypotension until the bleeding is controlled',
+        before:'BLOOD, AND CONTROL OF THE BLEEDING. A vasopressor in an unresuscitated bleeding patient raises the number on the monitor and worsens the outcome. The only defensible use is a short bridge: peri-intubation, or imminent arrest with blood on its way.',
+        ladder:[
+          { agent:'norepi', role:'BRIDGE ONLY', when:'While blood is being brought and the MTP is running — never as the resuscitation itself.' }
+        ],
+        links:[{href:'#c12', label:'Card 12 — Massive Transfusion Protocol'}, {href:'#c09', label:'Card 09 — Bleeding / Hemorrhagic Shock'}] },
+
+      { key:'neurogenic', label:'Neurogenic shock', sub:'Spinal cord injury — hypotension WITH bradycardia',
+        target:'MAP 85–90 mmHg for spinal cord perfusion (typically held ~7 days) — once hemorrhage is excluded',
+        before:'In a trauma patient this is a diagnosis of exclusion. Find and treat the bleeding first; warm, well-perfused extremities with a slow heart rate are the clue, not the proof.',
+        ladder:[
+          { agent:'norepi', role:'FIRST', when:'The α + β profile supports the pressure and the heart rate together.' },
+          { agent:'phenyl', role:'AVOID ALONE', when:'Pure α worsens the reflex bradycardia that defines this shock. Listed so it is a considered choice, not a default.' }
+        ],
+        links:[{href:'../trauma/?from=codes', label:'Trauma tool'}] },
+
+      { key:'brady', label:'Symptomatic bradycardia', sub:'Atropine has failed, or will not work',
+        target:'Perfusion and a rate — while transcutaneous pacing is set up',
+        before:'Pads on and the pacer set up in parallel. These drips are the bridge to pacing, not a substitute for it.',
+        ladder:[
+          { agent:'epiFixed', role:'FIRST', when:'Titrated to response. The AHA algorithm publishes this figure in mcg/min, not per kilogram.' },
+          { agent:'dopa',     role:'ALTERNATIVE', when:'Titrated to response — the other agent named in the same algorithm.' }
+        ],
+        links:[{href:'#c03', label:'Card 03 — Symptomatic Bradycardia'}] },
+
+      { key:'tox', label:'Beta-blocker / calcium-channel blocker overdose', sub:'Toxicologic cardiogenic shock',
+        target:'Perfusion — the antidote is the treatment',
+        before:'High-dose insulin euglycemia is the inotrope here, with calcium and glucagon. Start it EARLY — it takes ~30 min to work. Poison Control {{SITE.poisonControl}} on speaker.',
+        ladder:[
+          { agent:'norepi', role:'ADJUNCT', when:'Holds the pressure while the antidotes take effect. Expect to need high rates.' },
+          { agent:'epi',    role:'ADJUNCT', when:'When inotropy is also needed. Never let titrating a pressor delay the insulin.' }
+        ],
+        links:[{href:'#c36', label:'Card 36 — Toxicology Crash Card'}] },
+
+      { key:'periintub', label:'Peri-intubation hypotension', sub:'Before, during and after the tube',
+        target:'Do not induce a shocked patient without pressure support ready',
+        before:'Resuscitate before you induce. A pressor drawn up, or better, a drip already running BEFORE the drugs go in — induction plus positive pressure is when these patients arrest.',
+        ladder:[
+          { agent:'norepi', role:'FIRST', when:'Running before induction whenever there is time to hang it.' },
+          { agent:'phenyl', role:'PUSH-DOSE BRIDGE', when:'Tachycardic patient with no drip yet — see the push-dose panel.' }
+        ],
+        links:[{href:'#c06', label:'Card 06 — Intubation / RSI Checklist'}] }
+    ]
+  },
   /* ===== Card 06 — RSI and post-intubation drug menus =====
      The menu a clinician taps mid-intubation. Each entry renders as one button
      that stamps the time, computes its dose from the shared case weight and
@@ -3422,6 +3750,8 @@ var CODES_WT = (function(){
   var _wtNoticeT=null;
   function showWtNotice(msg){
     var el=document.getElementById('wtnotice'); if(!el) return;
+    /* Its own row under the strip, so it is readable whether the weight form is
+       expanded or collapsed — see the #wtnotice note in the stylesheet. */
     el.textContent=msg; el.style.display='block';
     if(_wtNoticeT) clearTimeout(_wtNoticeT);
     _wtNoticeT=setTimeout(function(){ el.style.display='none'; }, 8000);
@@ -3486,11 +3816,31 @@ var CODES_WT = (function(){
   }
   setInterval(paintStale, 30000);
   document.addEventListener('click', function(){ paintStale(); }, true);
+  /* The collapsed shell row's value (SHELL.md layer 4): unset renders amber via
+     .v.unset, a set weight renders green via .v.set — the same two states peds/
+     and the engines paint. The row states the DOSING-RELEVANT fact: the kg, how
+     it was obtained, and which dosing population that kg puts the patient in.
+     That last part is peds' "WHITE drawer" and arrest's "PALS (pediatric)" in
+     this tool's terms, and it is DERIVED from SITE.audience.thresholdKg — the
+     same number the per-card audience strips use — so the row can never
+     disagree with the cards, and a site that localizes the threshold gets a row
+     that moves with it. A site that has not set a threshold (null) gets no
+     population phrase rather than a guessed one. */
+  function populationPhrase(kg){
+    var t = (SITE.audience && typeof SITE.audience.thresholdKg==='number') ? SITE.audience.thresholdKg : null;
+    if(t===null) return '';
+    return kg < t ? ' · PEDIATRIC WEIGHT' : ' · adult doses';
+  }
   function paint(){
     if(!dispEl){ paintStale(); return; }
-    if(wtKg===null||isNaN(wtKg)){ dispEl.textContent='no weight entered · per-kg doses hidden'; dispEl.style.color='#f7d97a'; paintStale(); return; }
-    dispEl.textContent = fmt(wtKg)+' kg'+(src==='estimated' ? ' (age-estimate)' : ' (measured)');
-    dispEl.style.color = src==='estimated' ? '#f2b84b' : '#8fd19e';
+    dispEl.style.color='';
+    if(wtKg===null||isNaN(wtKg)){
+      dispEl.textContent='not set';
+      dispEl.className='v unset';
+      paintStale(); return;
+    }
+    dispEl.textContent = fmt(wtKg)+' kg · '+(src==='estimated' ? 'age-estimate' : 'measured')+populationPhrase(wtKg);
+    dispEl.className='v set';
     paintStale();
   }
   /* Age→weight estimate — identical bands/formula to peds/index.html's PEDS_WT
@@ -3510,6 +3860,7 @@ var CODES_WT = (function(){
   }
   function recompute(){
     if(window.CODESDOSE) window.CODESDOSE.recompute(wtKg);
+    if(window.PRESSORS) window.PRESSORS.recompute(wtKg);
     paint();
     if(window.AUDIENCE) window.AUDIENCE.paint();
     paintNrp();
@@ -3583,18 +3934,24 @@ var CODES_WT = (function(){
     document.addEventListener('click', function(ev){
       var t=ev.target.closest ? ev.target.closest('.wdose.unset') : null;
       if(!t || t.hasAttribute('data-inline')) return;
+      if(window.CODESSHELL) window.CODESSHELL.openWeightForm();
       kgEl.scrollIntoView({behavior:'smooth', block:'nearest'});
-      kgEl.focus();
-      var bar=document.getElementById('wtbar');
-      if(bar){ bar.classList.remove('flash'); void bar.offsetWidth; bar.classList.add('flash'); }
+      /* Deferred, the same 30 ms the shell's own toggle uses: the field has just
+         been un-hidden by openWeightForm() on this very click, and the browser's
+         default focus handling for the tapped chip lands AFTER our listener —
+         focusing synchronously here gets silently overwritten. */
+      setTimeout(function(){ try{ kgEl.focus(); }catch(e){} }, 30);
+      var row=document.getElementById('wtoggle');
+      if(row){ row.classList.remove('flash'); void row.offsetWidth; row.classList.add('flash'); }
     });
     document.addEventListener('keydown', function(ev){
       if(ev.key!=='Enter' && ev.key!==' ') return;
       var t=ev.target.closest ? ev.target.closest('.wdose.unset') : null;
       if(!t || t.hasAttribute('data-inline')) return;
       ev.preventDefault();
+      if(window.CODESSHELL) window.CODESSHELL.openWeightForm();
       kgEl.scrollIntoView({behavior:'smooth', block:'nearest'});
-      kgEl.focus();
+      setTimeout(function(){ try{ kgEl.focus(); }catch(e){} }, 30);
     });
   }
   /* ---- Cross-tab / cross-tool weight re-sync (weight-routing audit) --------
@@ -3630,6 +3987,7 @@ var CODES_WT = (function(){
     if(changed){
       _lastCommittedWtKg=wtKg; _lastCommittedAgeYrs=ageYrs;
       if(window.CODESDOSE) window.CODESDOSE.recompute(wtKg);
+      if(window.PRESSORS) window.PRESSORS.recompute(wtKg);
       paint();
       if(window.AUDIENCE) window.AUDIENCE.paint();
       paintNrp();
@@ -3643,6 +4001,46 @@ var CODES_WT = (function(){
 
   return { getKg:function(){ return wtKg; }, getAgeYrs:function(){ return ageYrs; }, resync:resyncFromStorage };
 })();
+
+/* ---- CASE SHELL layer 4 — the weight ribbon's collapse/expand -------------
+   Independently copied from peds/index.html's identical controller (tools share
+   the CONTRACT, not the code — CLAUDE.md rule 4 / SHELL.md). Behavior, verbatim
+   from the spec: phone defaults collapsed; >=768px it starts expanded until the
+   weight is confirmed (ESTIMATE or DONE) or one is already carried in from
+   another tool, then becomes a slim "tap to change" row. A user's own toggle
+   always wins over both defaults.
+
+   openWeightForm() is exposed because the "enter weight" chips on unset doses
+   focus the kg field: with the form collapsed, focusing a display:none input is
+   a silent no-op, and the chip that used to work would simply do nothing. ---- */
+var CODESSHELL = (function(){
+  function $(id){ return document.getElementById(id); }
+  var wtoggle=$('wtoggle'), wform=$('wtbar'), wmark=$('wmark');
+  var wOpen=null, wConfirmed=false;
+  function wide(){ return window.matchMedia('(min-width:768px)').matches; }
+  function hasWeight(){ try{ return CODES_WT.getKg()!==null; }catch(e){ return false; } }
+  function paintWeightStrip(){
+    if(!wform||!wmark) return;
+    var open = wOpen!==null ? wOpen : (wide() && !wConfirmed && !hasWeight());
+    wform.style.display = open ? 'flex' : 'none';
+    wmark.textContent = open ? '\u25B2' : (wide() ? '\u270E tap to change' : '\u25BC');
+  }
+  function openWeightForm(){
+    if(!wform) return;
+    if(wform.style.display==='none'){ wOpen=true; paintWeightStrip(); }
+  }
+  if(wtoggle) wtoggle.addEventListener('click', function(){
+    wOpen = wform.style.display==='none';
+    paintWeightStrip();
+    if(wOpen) setTimeout(function(){ try{ $('wtkg').focus(); }catch(e){} }, 30);
+  });
+  if($('wdone')) $('wdone').addEventListener('click', function(){ wConfirmed=true; wOpen=null; paintWeightStrip(); });
+  if($('wtestimate')) $('wtestimate').addEventListener('click', function(){ wConfirmed=true; });
+  window.addEventListener('resize', paintWeightStrip);
+  paintWeightStrip();
+  return { paintWeightStrip:paintWeightStrip, openWeightForm:openWeightForm };
+})();
+try{ window.CODESSHELL = CODESSHELL; }catch(e){}
 /* data-conc (mg per mL, only meaningful when data-unit="mg") is supported here identically
    to peds/index.html's PEDSDOSE (design-review F29) but is not wired up on any row in this
    file yet — none of codes' weight-based rows currently state a concentration in their own
@@ -3760,6 +4158,322 @@ var CODESDOSE = (function(){
   recompute(CODES_WT.getKg());
   return { recompute:recompute };
 })();
+
+/* ---- Card 37: pressors and inotropes by indication (issue #179) --------------
+   The one arithmetic in this module, and the only place it is written down:
+
+       mL/hr  =  (dose per minute × 60) ÷ concentration per mL
+       dose per minute = dose × weight   for a 'kg' agent
+                       = dose           for a 'fixed' agent
+
+   Everything on the card — the plan panel, the full table, the units, the bag
+   labels — is rendered from SITE.pressors through that one function, so a fork
+   that changes a bag concentration or a house first-line agent gets a card that
+   still agrees with itself. Nothing is hand-typed into the markup (the #117
+   lesson from /airway/, where a config-driven ladder printed hand-typed numbers
+   on screen and a localized site would have got a screen contradicting itself).
+
+   Why the rate is deliberately NOT rendered through the shared .wdose engine:
+   .wdose computes a per-kilogram BOLUS in the drug's own unit. An infusion rate
+   is a different quantity — it needs the concentration and the per-hour
+   conversion — and forcing it through data-perkg would mean baking the bag
+   concentration into a markup attribute, i.e. exactly the hardcoding this card
+   exists to avoid.
+
+   State is in-memory only. The picked indication is a reading position, not a
+   case fact: nothing here is written to localStorage, so no key is added to the
+   shared contract (CASE-STATE.md) and RESET has nothing to sweep. ---------- */
+var PRESSORS = (function(){
+  var pickEl=document.getElementById('prsPick'), planEl=document.getElementById('prsPlan'),
+      pushEl=document.getElementById('prsPush'), tableEl=document.getElementById('prsTable'),
+      formulaEl=document.getElementById('prsFormula'), wtCueEl=document.getElementById('prsWtCue');
+  if(!pickEl || typeof SITE!=='object' || !SITE.pressors) return { recompute:function(){} };
+  var P=SITE.pressors, kg=null, picked=null;
+
+  function esc(s){ return String(s==null?'':s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+  function agentFor(key){
+    for(var i=0;i<P.agents.length;i++){ if(P.agents[i].key===key) return P.agents[i]; }
+    return null;
+  }
+  /* THE calculation. Returns null when the agent needs a weight and there isn't
+     one — the caller must then print the "enter a weight" state, never a rate. */
+  function mlPerHr(a, dose){
+    if(a.dosing==='kg'){
+      if(kg===null || isNaN(kg) || kg<=0) return null;
+      return (dose*kg*60)/a.concPerMl;
+    }
+    return (dose*60)/a.concPerMl;
+  }
+  /* Pumps take a tenth of a mL/hr; anything finer is false precision on a drug
+     titrated to a blood pressure. Trailing ".0" is dropped so a whole number
+     reads as one.
+
+     Never print "0" for a real, nonzero rate — the same rule the shared .wdose
+     engine had to learn (weight-routing audit: etomidate rendered "0 mg" at
+     1 kg). At a small child's weight a concentrated adult bag really does work
+     out to a fraction of a mL/hr; showing "0.04" is both true and visibly
+     absurd for a pump, which is the useful signal. "0 mL/HR" next to a drug
+     name is not. The audience strip above the card is what actually routes a
+     pediatric weight away from here; this only makes sure the number never
+     lies while it happens. */
+  function fmtRate(n){
+    var d=1;
+    while(n>0 && parseFloat(n.toFixed(d))===0 && d<3) d++;
+    var r=Number(n.toFixed(d));
+    return (r%1===0) ? String(r) : r.toFixed(d);
+  }
+  function fmtDose(n, dec){
+    var d=(dec===undefined||isNaN(dec))?2:dec;
+    var t=Number(n).toFixed(d);
+    if(t.indexOf('.')>-1) t=t.replace(/0+$/,'').replace(/\.$/,'');
+    return t;
+  }
+  /* ---- the chain, shown in full on every row --------------------------------
+     A clinician checks an infusion in three places, and the card now prints all
+     three rather than only the last one:
+
+         0.05 mcg/kg/min   =   3.7 mcg/min   =   13.9 mL/hr   of 4 mg / 250 mL
+         (what is ordered)     (what is        (what goes      (what makes the
+                                actually        on the pump)    other two true)
+                                going in)
+
+     The middle figure is the one that used to be missing, and it is the one that
+     catches a wrong bag: a clinician who knows roughly what mcg/min this patient
+     should be on can see instantly that 13.9 mL/hr of the hung concentration
+     delivers it — or does not. Printing only mL/hr asks them to trust the
+     concentration in this file, which is precisely the value most likely to be
+     wrong at an adopting site.
+
+     A FIXED-rate agent has no first link: vasopressin is ordered in units/min,
+     not per kilogram, so its chain starts at the per-minute figure. The card
+     never manufactures a per-kg number for one — that is a clinical invariant
+     the verify suite asserts, not a display preference. */
+  function perMinUnit(a){ return String(a.unit||'').replace('/kg',''); }
+  function perMinVal(a, dose){
+    if(a.dosing==='kg'){
+      if(kg===null || isNaN(kg) || kg<=0) return null;
+      return dose*kg;
+    }
+    return dose;
+  }
+  /* The figure and its unit are ONE token — flex-wrap must never leave "2.3" at the
+     end of a line and "mL/hr" at the start of the next, which reads as a bare
+     number beside the wrong unit. */
+  function bigVal(n, unit){
+    return '<span class="prs-q"><span class="prs-rate">'+fmtRate(n)+'</span> <span class="prs-lbl">'+esc(unit)+'</span></span>';
+  }
+  function chainHtml(a, dose){
+    var h='<div class="prs-chain">';
+    /* Link 1 — only for a per-kg agent, and it needs no weight to state. */
+    if(a.dosing==='kg'){
+      h+='<span class="prs-ordered">'+esc(fmtDose(dose,a.decimals))+' '+esc(a.unit)+'</span><span class="prs-eq">=</span>';
+    }
+    if(pedsGapApplies(a)){
+      h+='<span class="prs-rate unset">NO PEDIATRIC DOSE &mdash; SEE BELOW</span>';
+    } else {
+      var pm=perMinVal(a, dose), ml=mlPerHr(a, dose);
+      if(pm===null || ml===null){
+        h+='<span class="prs-rate unset">ENTER A WEIGHT ABOVE</span>';
+      } else {
+        h+=bigVal(pm, perMinUnit(a))+'<span class="prs-eq">=</span>'+bigVal(ml, 'mL/hr');
+      }
+    }
+    h+='<span class="prs-of">of '+esc(a.mix)+'</span></div>';
+    return h;
+  }
+  /* The same chain for the usual range, one line, low–high at each link. */
+  function rangeChain(a){
+    var lo=fmtDose(a.low,a.decimals), hi=fmtDose(a.high,a.decimals);
+    var out='Usual range '+esc(lo)+'&ndash;'+esc(hi)+' '+esc(a.unit);
+    if(pedsGapApplies(a)) return out+' &middot; <b style="color:var(--red);">no pediatric rate computed</b>';
+    var pmLo=perMinVal(a,a.low), pmHi=perMinVal(a,a.high),
+        mlLo=mlPerHr(a,a.low), mlHi=mlPerHr(a,a.high);
+    if(pmLo===null || mlLo===null) return out;
+    if(a.dosing==='kg') out+=' = '+fmtRate(pmLo)+'&ndash;'+fmtRate(pmHi)+' '+esc(perMinUnit(a));
+    return out+' = '+fmtRate(mlLo)+'&ndash;'+fmtRate(mlHi)+' mL/hr';
+  }
+  function rateText(a, dose){
+    if(pedsGapApplies(a)) return '<b style="color:var(--red);">no peds dose</b>';
+    var v=mlPerHr(a, dose);
+    return v===null ? '&mdash;' : fmtRate(v)+' mL/hr';
+  }
+  /* The unit once, at the end — "2.9–292.5 mL/hr" rather than
+     "2.9 mL/hr–292.5 mL/hr", which reads as two separate rates. */
+  function rangeText(a){
+    if(pedsGapApplies(a)) return '&mdash;';
+    var lo=mlPerHr(a, a.low), hi=mlPerHr(a, a.high);
+    if(lo===null || hi===null) return '&mdash;';
+    return fmtRate(lo)+'&ndash;'+fmtRate(hi)+' mL/hr';
+  }
+  /* ---- pedsGap (see SITE.pressors' block comment) --------------------------
+     An agent whose PEDIATRIC dose has no published basis withholds its rate
+     below the audience threshold instead of printing the adult one. Reads the
+     same SITE.audience.thresholdKg the per-card strips use, so one number moves
+     both and a localized site cannot end up with a card that flags a weight as
+     pediatric in one place and doses it as adult in another. */
+  function pedsThreshold(){
+    return (SITE.audience && typeof SITE.audience.thresholdKg==='number') ? SITE.audience.thresholdKg : null;
+  }
+  function pedsGapApplies(a){
+    if(!a || !a.pedsGap) return false;
+    var t=pedsThreshold();
+    return t!==null && kg!==null && !isNaN(kg) && kg>0 && kg<t;
+  }
+  function pedsGapHtml(a){
+    if(!pedsGapApplies(a)) return '';
+    var g=a.pedsGap, t=pedsThreshold();
+    return '<div style="margin-top:8px; border:2px solid var(--sev-crit); background:var(--card); padding:9px 11px;">'+
+      '<div class="prs-lbl" style="color:var(--red);">NO PEDIATRIC DOSE TO COMPUTE &middot; UNDER '+esc(String(t))+' KG</div>'+
+      '<div style="font-size:13.5px; font-weight:700; line-height:1.4; margin-top:3px; color:var(--ink);">'+esc(g.note)+'</div>'+
+      (g.detail ? '<div style="font-size:12.5px; line-height:1.45; margin-top:5px; color:var(--ink);">'+esc(g.detail)+'</div>' : '')+
+      '<div style="font-size:11.5px; line-height:1.4; margin-top:6px; color:var(--ink2);">'+esc(g.source)+
+      (g.url ? ' &middot; <a href="'+esc(g.url)+'" target="_blank" rel="noopener">read the guideline</a>' : '')+
+      '</div></div>';
+  }
+
+  /* ---- the indication router ---- */
+  (function build(){
+    var h='';
+    P.indications.forEach(function(ind){
+      h+='<button type="button" class="cs-router" data-ind="'+esc(ind.key)+'" aria-pressed="false">'+
+         '<span class="prs-n">'+esc(ind.label).toUpperCase()+'</span>'+
+         '<span class="prs-s">'+esc(ind.sub)+'</span></button>';
+    });
+    pickEl.innerHTML=h;
+    pickEl.addEventListener('click', function(ev){
+      var b=ev.target.closest ? ev.target.closest('button[data-ind]') : null;
+      if(!b) return;
+      picked = (picked===b.getAttribute('data-ind')) ? null : b.getAttribute('data-ind');
+      paint();
+    });
+  })();
+
+  function paintPick(){
+    Array.prototype.forEach.call(pickEl.querySelectorAll('button[data-ind]'), function(b){
+      var on = b.getAttribute('data-ind')===picked;
+      b.setAttribute('aria-pressed', on?'true':'false');
+      var s=b.querySelector('.prs-s'), ind=null;
+      P.indications.forEach(function(i){ if(i.key===b.getAttribute('data-ind')) ind=i; });
+      /* The selected state carries a word as well as a color bar, so it survives
+         greyscale, print and a colorblind reader (DESIGN-SYSTEM.md §2). */
+      if(s && ind) s.innerHTML = (on?'<b>&#9656; SHOWING BELOW</b> &middot; ':'')+esc(ind.sub);
+    });
+  }
+
+  function planFor(ind){
+    var h='';
+    h+='<div style="border-left:6px solid var(--purple); background:var(--card2); padding:10px 12px;">'+
+       '<div class="prs-lbl">TARGET</div>'+
+       '<div style="font-size:15px; font-weight:700; line-height:1.3; color:var(--ink);">'+esc(ind.target)+'</div>'+
+       '<div style="font-size:13px; line-height:1.45; margin-top:6px; color:var(--ink);">'+esc(ind.before)+'</div></div>';
+    ind.ladder.forEach(function(rung, i){
+      var a=agentFor(rung.agent);
+      if(!a) return;
+      h+='<div class="prs-row">'+
+         '<div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">'+
+         '<div class="prs-lbl">'+(i+1)+' &middot; '+esc(rung.role)+'</div>'+
+         '<div class="prs-lbl">'+esc(a.cls)+'</div></div>'+
+         '<div style="font-size:17px; font-weight:800; line-height:1.2; margin-top:2px; color:var(--ink);">'+esc(a.label)+'</div>'+
+         chainHtml(a, a.start)+
+         '<div style="font-size:12.5px; line-height:1.4; color:var(--ink2); margin-top:4px;">'+rangeChain(a)+'</div>'+
+         '<div style="font-size:13px; line-height:1.45; margin-top:6px; color:var(--ink);">'+esc(rung.when)+'</div>'+
+         pedsGapHtml(a)+
+         '</div>';
+    });
+    if(ind.links && ind.links.length){
+      var ls=ind.links.map(function(l){ return '<a href="'+esc(l.href)+'">'+esc(l.label)+'</a>'; }).join(' &middot; ');
+      h+='<p style="font-size:13px; line-height:1.45; margin:10px 0 0;">Full pathway: '+ls+'</p>';
+    }
+    return h;
+  }
+
+  function paintPlan(){
+    if(!planEl) return;
+    if(!picked){
+      planEl.innerHTML='<div style="border:2px dashed var(--line); background:var(--card2); padding:12px; font-size:13.5px; line-height:1.45;">'+
+        '<b>Pick the indication above.</b> The ladder, the target and the starting rate in mL/hr for this patient&rsquo;s weight all fill in from it. '+
+        'If you already know the agent, the full table further down carries every one of them at this weight.</div>';
+      return;
+    }
+    var ind=null;
+    P.indications.forEach(function(i){ if(i.key===picked) ind=i; });
+    planEl.innerHTML = ind ? planFor(ind) : '';
+  }
+
+  function paintPush(){
+    if(!pushEl) return;
+    var h='';
+    (P.pushDose||[]).forEach(function(d){
+      h+='<div class="prs-row">'+
+         '<div style="font-size:16px; font-weight:800; line-height:1.2;">'+esc(d.label)+'</div>'+
+         '<div style="font-family:\'IBM Plex Mono\',\'SF Mono\',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; margin-top:4px; color:var(--ink);">'+esc(d.dose)+'</div>'+
+         '<div style="font-size:12.5px; line-height:1.45; color:var(--ink2); margin-top:3px;"><b>'+esc(d.conc)+'</b> &mdash; '+esc(d.mix)+' &middot; '+esc(d.onset)+'</div>'+
+         '<div style="font-size:13px; line-height:1.45; margin-top:5px;">'+esc(d.note)+'</div></div>';
+    });
+    pushEl.innerHTML=h;
+  }
+
+  /* The table says the same three things as the plan chain, stacked rather than
+     inline so the column stays readable on a phone. */
+  function cellChain(a){
+    if(pedsGapApplies(a)) return '<b style="color:var(--red);">no peds dose</b>';
+    var pm=perMinVal(a,a.start), ml=mlPerHr(a,a.start);
+    if(pm===null || ml===null) return '&mdash;';
+    return '<b>'+fmtRate(pm)+' '+esc(perMinUnit(a))+'</b><br><b>'+fmtRate(ml)+' mL/hr</b>';
+  }
+  function cellRange(a){
+    if(pedsGapApplies(a)) return '<b style="color:var(--red);">no peds dose</b>';
+    var pmLo=perMinVal(a,a.low), pmHi=perMinVal(a,a.high),
+        mlLo=mlPerHr(a,a.low), mlHi=mlPerHr(a,a.high);
+    if(pmLo===null || mlLo===null) return '&mdash;';
+    var out='';
+    if(a.dosing==='kg') out+=fmtRate(pmLo)+'&ndash;'+fmtRate(pmHi)+' '+esc(perMinUnit(a))+'<br>';
+    return out+fmtRate(mlLo)+'&ndash;'+fmtRate(mlHi)+' mL/hr';
+  }
+  function paintTable(){
+    if(!tableEl) return;
+    var h='<table class="prs-dt"><thead><tr><th>AGENT</th><th>STANDARD BAG</th><th>ORDERED AS</th><th>START &mdash; PER MIN &amp; ON THE PUMP</th><th>USUAL RANGE</th></tr></thead><tbody>';
+    P.agents.forEach(function(a){
+      var used = false;
+      if(picked){
+        P.indications.forEach(function(i){
+          if(i.key!==picked) return;
+          i.ladder.forEach(function(r){ if(r.agent===a.key) used=true; });
+        });
+      }
+      h+='<tr'+(used?' style="background:var(--card2); font-weight:700;"':'')+'>'+
+         '<td>'+(used?'&#9656; ':'')+esc(a.label)+'<div style="font-weight:400; font-size:11.5px; color:var(--ink2);">'+esc(a.cls)+'</div></td>'+
+         '<td>'+esc(a.mix)+'</td>'+
+         '<td>'+esc(fmtDose(a.start,a.decimals))+' '+esc(a.unit)+'</td>'+
+         '<td>'+cellChain(a)+'</td>'+
+         '<td>'+cellRange(a)+'</td></tr>'+
+         '<tr><td colspan="5" style="font-weight:400; font-size:12px; color:var(--ink2);">'+esc(a.note)+pedsGapHtml(a)+'</td></tr>';
+    });
+    tableEl.innerHTML=h+'</tbody></table>';
+  }
+
+  function paintCue(){
+    if(!wtCueEl) return;
+    wtCueEl.innerHTML = (kg===null||isNaN(kg)||kg<=0)
+      ? '<b style="color:var(--red);">No weight entered</b> &mdash; the per-kilogram rates below stay blank until one is. Enter it in the weight bar at the top of the page; fixed-rate agents (vasopressin, the bradycardia epinephrine rate) still compute without it.'
+      : 'Rates below are for the <b>'+esc(String(kg))+' kg</b> weight in the bar above, at this file&rsquo;s configured bag concentrations. '+esc(P.peripheralNote||'');
+  }
+
+  function paint(){ paintPick(); paintPlan(); paintPush(); paintTable(); paintCue(); }
+
+  function recompute(k){ kg=(k===undefined||k===null||isNaN(k)||k<=0)?null:k; paint(); }
+
+  if(formulaEl) formulaEl.innerHTML='Every rate on this card is <b>(dose per minute &times; 60) &divide; concentration per mL</b>, '+
+    'with dose per minute = dose &times; weight for a per-kilogram agent and dose alone for a fixed-rate one. '+
+    'The bag concentrations are this file&rsquo;s SITE CONFIG values, not the label on the bag in your hand &mdash; check them against each other.';
+
+  recompute(CODES_WT.getKg());
+  return { recompute:recompute, mlPerHr:mlPerHr };
+})();
+/* Exposed on window so the shared weight engine's recompute() can find it (same
+   pattern as CODESDOSE/AUDIENCE above) and so verify_pressors.mjs can check the
+   rendered screen against the arithmetic rather than re-typing the numbers. */
+try{ window.PRESSORS = PRESSORS; }catch(e){}
 
 /* ---- Audience strip (design-review F31) — derived from the shared weight, never chosen.
    Reads data-audience ("adult" | "peds" | "any") and optional data-peds-alt (e.g. "peds#p16")
