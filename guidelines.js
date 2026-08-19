@@ -584,7 +584,7 @@ var GDL_SOURCES = [
     lastVerified: null,
     citedSince: "2026-08-12",
     impact: "high",
-    dependents: ["codes/#c28"],
+    dependents: ["codes/#c28", "codes/#c37"],
     watch: [
       { kind: "pubmed", label: "Surviving Sepsis Campaign guidelines",
         term: '(guideline[pt] OR "practice guideline"[pt]) AND ("surviving sepsis"[tiab] OR "septic shock"[ti])' }

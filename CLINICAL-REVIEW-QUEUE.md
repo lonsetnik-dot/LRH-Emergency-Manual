@@ -18,13 +18,16 @@ to prevent.
 
 ---
 
-## 1. Cards that announce themselves as unreviewed (13)
+## 1. Cards that announce themselves as unreviewed (14)
 
 Each carries a visible banner: *"⚠ DRAFT — NOT CLINICALLY REVIEWED: written
 from the published guidelines cited below to fill coverage gap #NN. Verify
 every dose and threshold against local protocol and pharmacy before this card
 is trusted."* Drafted 2026-08-12 to fill the COVERAGE-GAPS.md list; the
 GitHub issues stay open until each is signed off.
+
+The last row was drafted later, for a different reason — a request rather than
+a coverage gap — and carries the same banner.
 
 | Card | Title | Gap issue | Highest-risk content to check first |
 |---|---|---|---|
@@ -41,6 +44,7 @@ GitHub issues stay open until each is signed off.
 | `trauma/` c09 | MCI — First 15 Minutes | [#93](../../issues/93) | **Also needs the real LRH call tree filled in** |
 | `trauma/` c10 | Electrical & Lightning Injury | [#96](../../issues/96) | Reverse-triage claim; monitoring duration |
 | `ob-neonatal/` c11 | Eclampsia / Severe Preeclampsia | [#84](../../issues/84) | Magnesium load and infusion; BP agent choice; toxicity rescue |
+| `codes/` c37 | Pressors & Inotropes — by Indication | [#179](../../issues/179) | **The bag concentrations first** — every mL/hr on the card is derived from them, so a wrong `concPerMl` is wrong in a large font on every indication. Then the per-indication ladders, the MAP targets (especially neurogenic 85–90), and the push-dose recipes |
 
 ## 2. A whole tool carrying unreconciled content
 
