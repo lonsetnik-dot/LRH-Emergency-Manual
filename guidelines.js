@@ -456,6 +456,25 @@ var GDL_SOURCES = [
         term: '("Circulation"[jour] OR "J Am Coll Cardiol"[jour]) AND (guideline[pt] OR "practice guideline"[pt]) AND ("acute coronary syndrome"[tiab] OR "aortic disease"[tiab] OR "myocardial infarction"[tiab])' }
     ] },
 
+  { id: "aha-acc-pe",
+    body: "AHA / ACC (10-society)",
+    title: "Guideline for the evaluation and management of acute pulmonary embolism in adults",
+    edition: "2026",
+    citation: "2026 AHA/ACC/ACCP/ACEP/CHEST/SCAI/SHM/SIR/SVM/SVN guideline for the evaluation and management of acute pulmonary embolism in adults (Circulation 2026;153:e977–e1051; doi:10.1161/CIR.0000000000001415).",
+    url: "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001415",
+    cadence: "The first de novo joint AHA/ACC guideline dedicated to acute PE, published March 2026. The ACC/AHA Joint Committee revises on a roughly 5–10 year cycle, with focused updates in between when a single trial moves a recommendation.",
+    reviewEvery: 365,
+    lastVerified: null,
+    citedSince: "2026-08-19",
+    impact: "high",
+    dependents: ["clinical-pathways/pe/", "codes/#c29"],
+    watch: [
+      { kind: "page", label: "AHA professional guidelines and statements",
+        url: "https://professional.heart.org/en/guidelines-and-statements" },
+      { kind: "pubmed", label: "AHA/ACC pulmonary embolism guideline",
+        term: '("Circulation"[jour] OR "J Am Coll Cardiol"[jour]) AND (guideline[pt] OR "practice guideline"[pt]) AND "pulmonary embolism"[tiab]' }
+    ] },
+
   { id: "esc-pe",
     body: "ESC",
     title: "Guidelines on the diagnosis and management of acute pulmonary embolism",
@@ -463,11 +482,17 @@ var GDL_SOURCES = [
     citation: "European Society of Cardiology. 2019 Guidelines for the diagnosis and management of acute pulmonary embolism (Eur Heart J 2019;41:543).",
     url: "https://www.escardio.org/Guidelines",
     cadence: "ESC revises on a roughly 5-year cycle and announces the year's guidelines at its annual congress; a 2019 document is a live candidate for replacement.",
+    /* Demoted to a HISTORICAL citation as of 2026-08-19: the manual's PE content is
+       now written against the 2026 AHA/ACC guideline above. The 2019 ESC scheme is
+       still cited — the PE pathway prints it in the "how this maps to the schemes it
+       replaces" table, because clinicians read outside records and old notes written
+       in intermediate-low / intermediate-high language — so it stays a registry row
+       rather than being deleted. What it no longer does is supply any threshold. */
     reviewEvery: 365,
     lastVerified: null,
     citedSince: "2026-08-09",
-    impact: "medium",
-    dependents: ["codes/"],
+    impact: "low",
+    dependents: ["clinical-pathways/pe/"],
     watch: [
       { kind: "page", label: "ESC clinical practice guidelines",
         url: "https://www.escardio.org/Guidelines" },

@@ -84,7 +84,7 @@ console.log('\n--- 2. prose navigation is underlined, everywhere ---');
    by shape rather than by an allow-list, so a new chip cannot silently
    acquire an underline and a new prose link cannot silently lose one. */
 const PAGES = ['/', '/codes/', '/peds/', '/trauma/', '/procedures/', '/ob-neonatal/',
-               '/clinical-pathways/heart/', '/arrest/', '/tca/', '/airway/', '/neonatal/',
+               '/clinical-pathways/heart/', '/clinical-pathways/pe/', '/arrest/', '/tca/', '/airway/', '/neonatal/',
                '/pph/', '/dystocia/', '/system/', '/sources/', '/equipment-readiness/'];
 let proseTotal = 0;
 for (const p of PAGES) {
