@@ -88,6 +88,16 @@ var PROC_ICONS = (function () {
   G.sedation = ink('M8 20 L30 20 L30 30 L8 30 Z') + ink('M4 25 L8 25') + ink('M13 20 L13 30') + red('M30 25 L44 25', 2.4);
   G.hyst = ink('M15 11 Q24 3 33 11 Q41 20 33 30 Q28 36 26 40 L22 40 Q20 36 15 30 Q7 20 15 11 Z') + red('M24 13 L24 31', 2.8);
   G.uvc = ic(24, 24, 15) + ink2('M19 28 a2.5 2.5 0 1 0 .1 0', 1.6) + ink2('M29 28 a2.5 2.5 0 1 0 .1 0', 1.6) + ic(24, 19, 4) + red('M42 4 L27 17', 2.4);
+  /* ED C-section shares the JADA/hysterotomy uterus base (§2) — differs by ONE red idea: a
+     transverse lower-segment incision, not hysterotomy's full vertical midline cut. */
+  G.csection = ink('M15 11 Q24 3 33 11 Q41 20 33 30 Q28 36 26 40 L22 40 Q20 36 15 30 Q7 20 15 11 Z') + red('M16 30 L32 30', 2.8);
+  /* Blakemore balloon tamponade: shaft + the two balloons (elongated esophageal above, round
+     gastric below) in ink, same two-shape idea as the equipment-icons.js cart-label glyph but
+     redrawn in this set's own grammar. The ONE red idea is traction against the GE junction —
+     the crush of the pulley/weight, not the balloons themselves. */
+  G.blakemore = ink('M24 2 L24 46', 2.4) + '<ellipse cx="24" cy="16" rx="6" ry="10" stroke="currentColor" stroke-width="2.2"/>'
+    + '<ellipse cx="24" cy="34" rx="8" ry="7" stroke="currentColor" stroke-width="2.2"/>'
+    + red('M19 41 L24 46 L29 41', 2.4) + rdot(24, 46, 2);
 
   /* ---- DETAIL FIGURES · 0 0 160 116 ---- */
   var D = {};
