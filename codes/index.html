@@ -23,6 +23,7 @@
      pre-JS fallback so layout isn't broken for the instant before that script runs. */
   html { -webkit-text-size-adjust:100%; scroll-behavior:smooth; --sticky-h:54px; }
   /* @design-system */
+  /* @design-system-shell */
   /* ---- Shared design language (tokens, the .hdr chrome bar, the .lrh-* menu
      rows/filter, the themed <body>, and the .t-* card-interior classes) is
      injected from design-system.css at the marker above (build.mjs), edited
@@ -107,24 +108,22 @@
     .twoup { display:grid; grid-template-columns:1fr 1fr; gap:0 20px; } .twoup > li { min-width:0; } .twoup li label { min-width:0; } .twoup li label > span { min-width:0; overflow-wrap:break-word; } .cs-unarmed { opacity:.45; pointer-events:none; }
   }
   #stickytop { position:sticky; top:0; z-index:30; }
-  /* Weight bar — a highlighted second strip below the .hdr bar (like peds/),
-     but with no dynamic band accent (codes has no Broselow color-coding), so
-     it's tokenized as a fixed highlighted panel rather than an accent-driven
-     one. The WEIGHT label chip is a deliberately constant gold/navy pair
-     (like the shared severity fills) — it's a small structural highlight
-     that doesn't need to shift with the theme.
-     wrap, don't scroll (weight-routing audit): with flex-wrap:nowrap +
-     overflow-x:auto, #wtdisplay — the confirmation of what the tool thinks the
-     weight is — sat past the right edge of a 390px phone, so a weight could be
-     entered and never read back. */
-  #wtbar { display:flex; align-items:center; gap:8px; flex-wrap:wrap; background:var(--card2); color:var(--ink); border-bottom:2px solid var(--blue); padding:5px 14px; }
-  #wtbar label { flex:none; display:inline-flex; align-items:center; background:#f7d97a; color:#16324f; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10px; font-weight:700; letter-spacing:0.06em; padding:4px 7px; white-space:nowrap; }
-  #wtbar input { flex:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px; padding:4px 7px; border:1px solid var(--line); background:var(--card); color:var(--ink); min-height:44px; width:64px; }
-  #wtbar select, #wtbar button { flex:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px; font-weight:700; letter-spacing:0.04em; padding:4px 7px; border:1px solid var(--line); background:var(--card); color:var(--ink); min-height:44px; white-space:nowrap; cursor:pointer; }
-  #wtbar select { width:auto; cursor:pointer; }
-  #wtdisplay { flex:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; color:var(--amber); white-space:nowrap; }
-  #wtstale { flex:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; color:var(--amber); white-space:nowrap; }
+  /* ---- CASE SHELL layer 4 — the weight strip ----
+     Was a bespoke second bar (a gold WEIGHT chip, always-expanded inputs,
+     tokenized as its own panel). It is now the SAME control the engines and
+     peds/ carry, injected from design-system-shell.css at the marker above:
+     a collapsed 44px row that states the weight and the dosing mode, tapping
+     it opens the kg/age form. SHELL.md layer 4 is the spec; the reason is
+     that a clinician moving between /arrest/ and /codes/ mid-code was being
+     asked to operate two different weight interfaces for one patient.
+     Only the three things the shared sheet does NOT own stay here: the stale
+     marker, the transient adult-override notice, and the flash. ---- */
+  #wtstale { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; color:var(--amber); white-space:nowrap; margin-left:8px; }
   #wtbar.stale { border-bottom-color:var(--sev-caution); }
+  /* The override notice sits OUTSIDE the collapsible form on purpose: it exists
+     because clearing the arrest tool's adult-override would otherwise be
+     invisible, and a notice hidden inside a collapsed panel is invisible. */
+  #wtnotice { display:none; padding:7px 16px; background:var(--card); border-bottom:1px solid var(--line); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.04em; color:var(--amber); }
   .wdose { font-weight:700; color:var(--ink); }
   .wdose-vol { font-size:1.05em; }
   .wdose-mg { font-size:0.86em; font-weight:400; opacity:0.82; margin-left:3px; }
@@ -180,16 +179,19 @@
   table.prs-dt { border-collapse:collapse; width:100%; min-width:560px; font-size:13px; margin:4px 0 2px; }
   table.prs-dt th, table.prs-dt td { border:1px solid var(--line); padding:6px 8px; text-align:left; vertical-align:top; }
   table.prs-dt th { background:var(--card2); font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:10.5px; letter-spacing:0.04em; color:var(--ink); }
-  @keyframes wtbarflash { 0%,100% { background:var(--card2); } 50% { background:var(--blue); } }
-  #wtbar.flash { animation: wtbarflash 0.5s ease-in-out 2; }
-  @media (prefers-reduced-motion: reduce) { #wtbar.flash { animation:none; } }
+  /* The flash rides the COLLAPSED row (#wtoggle), which is always on screen —
+     flashing the form would be a no-op whenever it is collapsed, i.e. exactly
+     when a reader has tapped an unset dose because they can't find the field. */
+  @keyframes wtbarflash { 0%,100% { background:var(--card); } 50% { background:var(--blue); } }
+  #wtoggle.flash { animation: wtbarflash 0.5s ease-in-out 2; }
+  @media (prefers-reduced-motion: reduce) { #wtoggle.flash { animation:none; } }
   @media print {
     /* Force the light palette on paper regardless of the on-screen theme. */
     body[data-theme]{ --bg:#fff; --card:#fff; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D; --line:rgba(15,35,60,.18);
       --accent:#00693E; --red:#C63238; --amber:#B07E13; --blue:#2F6FB5; --green:#1F7F49; --gray:#6B7A8D;
       --purple:#6C4FA3; --teal:#1F7E7E; --orange:#B4661F; --sev-crit:#9b1c2e; --sev-caution:#8a6d1f;
       --sev-info:#2f62a8; --on-sev:#fffefb; --note-bg:#fdf3cf; --note-tx:#6b5410; background:#fff; }
-    .hdr, #betasplash, #wtbar, a[href="#top"], #c06cicopin, #startnewcasebtn { display:none; }
+    .hdr, #betasplash, #wtoggle, #wtbar, #wtnotice, a[href="#top"], #c06cicopin, #startnewcasebtn { display:none; }
     /* the weight bar/tappable-chip affordance is meaningless on paper (nothing to tap) —
        print the placeholder as plain italic text instead of a chip pointing at a hidden bar. */
     .wdose.unset { display:inline; background:none; border:none; border-radius:0; padding:0; font-style:italic; font-weight:400; cursor:auto; }
@@ -311,16 +313,35 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
   try{ if(/(^|[?&])startnewcase=1(&|$)/.test(location.search)) openModal(); }catch(e){}
 })();
 </script>
-<div id="wtbar">
-  <label for="wtkg">WEIGHT</label>
-  <input id="wtkg" type="number" inputmode="decimal" step="0.1" min="0" placeholder="kg">
-  <label for="wtage">or AGE</label>
-  <input id="wtage" type="number" inputmode="decimal" step="0.1" min="0" placeholder="age">
-  <select id="wtageunit"><option value="mo">months</option><option value="yr" selected>years</option></select>
-  <button type="button" id="wtestimate">ESTIMATE KG FROM AGE</button>
-  <span id="wtdisplay">no weight entered · per-kg doses hidden</span>
-  <span id="wtnotice" style="display:none; flex-basis:100%; font-size:12px; font-weight:700; letter-spacing:0.04em; color:#f2b84b;"></span>
+<!-- ============ CASE SHELL layer 4 — weight strip ============
+     Ported from the bespoke always-expanded bar this tool used to carry, so
+     codes/ now presents the SAME weight control as /arrest/, /tca/, /peds/ and
+     /neonatal/ (SHELL.md layer 4). Phone: collapsed 44px row, tap to expand.
+     >=768px: expanded until a weight is confirmed (ESTIMATE or DONE), then a
+     slim "tap to change" row. Unset renders amber, set renders green.
+     THE MODE LIVES HERE, not only in a banner: the collapsed row states the
+     weight, how it was obtained, and which dosing population that weight puts
+     the patient in — this tool's equivalent of peds' "WHITE drawer" and
+     arrest's "PALS (pediatric)". The population line is derived from
+     SITE.audience.thresholdKg, so a site that localizes that number gets a
+     row that agrees with its own cards.
+     The input ids are codes' originals (#wtkg/#wtage/#wtageunit/#wtestimate):
+     CODES_WT, the cross-tab re-sync and four verify suites bind to them, and
+     the shell contract is the chrome and the behavior, not the id spelling. -->
+<button class="shellweight" id="wtoggle" type="button">
+  <span class="k">WEIGHT</span>
+  <span class="v unset" id="wtdisplay">not set</span>
+  <span class="m" id="wmark">&#9660;</span>
+</button>
+<div class="shellweightform" id="wtbar" style="display:none">
+  <input class="inp" id="wtkg" type="number" inputmode="decimal" step="0.1" min="0" placeholder="kg" style="width:64px" aria-label="Weight in kg">
+  <span style="font-size:13px;color:var(--ink2)">kg &nbsp;&middot;&nbsp; or age</span>
+  <input class="inp" id="wtage" type="number" inputmode="decimal" step="0.1" min="0" placeholder="age" style="width:52px;font-size:16px" aria-label="Age">
+  <select class="inp" id="wtageunit" aria-label="Age unit" style="width:auto;font-size:16px;min-height:44px"><option value="mo">mo</option><option value="yr" selected>yr</option></select>
+  <button class="btn" type="button" id="wtestimate" style="font:700 12px var(--sans);padding:9px 12px;border-radius:9px;min-height:38px">ESTIMATE KG</button>
+  <button class="ghost" id="wdone" type="button" style="min-height:38px;border-color:var(--green);color:var(--green)">DONE &#10003;</button>
 </div>
+<div id="wtnotice"></div>
 </div>
 <!-- NRP off-ramp (weight-routing audit): NRP is for the NEWLY BORN (transition
      period), so a sub-3 kg weight or an age under 1 month asks the question
@@ -3666,6 +3687,8 @@ var CODES_WT = (function(){
   var _wtNoticeT=null;
   function showWtNotice(msg){
     var el=document.getElementById('wtnotice'); if(!el) return;
+    /* Its own row under the strip, so it is readable whether the weight form is
+       expanded or collapsed — see the #wtnotice note in the stylesheet. */
     el.textContent=msg; el.style.display='block';
     if(_wtNoticeT) clearTimeout(_wtNoticeT);
     _wtNoticeT=setTimeout(function(){ el.style.display='none'; }, 8000);
@@ -3730,11 +3753,31 @@ var CODES_WT = (function(){
   }
   setInterval(paintStale, 30000);
   document.addEventListener('click', function(){ paintStale(); }, true);
+  /* The collapsed shell row's value (SHELL.md layer 4): unset renders amber via
+     .v.unset, a set weight renders green via .v.set — the same two states peds/
+     and the engines paint. The row states the DOSING-RELEVANT fact: the kg, how
+     it was obtained, and which dosing population that kg puts the patient in.
+     That last part is peds' "WHITE drawer" and arrest's "PALS (pediatric)" in
+     this tool's terms, and it is DERIVED from SITE.audience.thresholdKg — the
+     same number the per-card audience strips use — so the row can never
+     disagree with the cards, and a site that localizes the threshold gets a row
+     that moves with it. A site that has not set a threshold (null) gets no
+     population phrase rather than a guessed one. */
+  function populationPhrase(kg){
+    var t = (SITE.audience && typeof SITE.audience.thresholdKg==='number') ? SITE.audience.thresholdKg : null;
+    if(t===null) return '';
+    return kg < t ? ' · PEDIATRIC WEIGHT' : ' · adult doses';
+  }
   function paint(){
     if(!dispEl){ paintStale(); return; }
-    if(wtKg===null||isNaN(wtKg)){ dispEl.textContent='no weight entered · per-kg doses hidden'; dispEl.style.color='#f7d97a'; paintStale(); return; }
-    dispEl.textContent = fmt(wtKg)+' kg'+(src==='estimated' ? ' (age-estimate)' : ' (measured)');
-    dispEl.style.color = src==='estimated' ? '#f2b84b' : '#8fd19e';
+    dispEl.style.color='';
+    if(wtKg===null||isNaN(wtKg)){
+      dispEl.textContent='not set';
+      dispEl.className='v unset';
+      paintStale(); return;
+    }
+    dispEl.textContent = fmt(wtKg)+' kg · '+(src==='estimated' ? 'age-estimate' : 'measured')+populationPhrase(wtKg);
+    dispEl.className='v set';
     paintStale();
   }
   /* Age→weight estimate — identical bands/formula to peds/index.html's PEDS_WT
@@ -3828,18 +3871,24 @@ var CODES_WT = (function(){
     document.addEventListener('click', function(ev){
       var t=ev.target.closest ? ev.target.closest('.wdose.unset') : null;
       if(!t || t.hasAttribute('data-inline')) return;
+      if(window.CODESSHELL) window.CODESSHELL.openWeightForm();
       kgEl.scrollIntoView({behavior:'smooth', block:'nearest'});
-      kgEl.focus();
-      var bar=document.getElementById('wtbar');
-      if(bar){ bar.classList.remove('flash'); void bar.offsetWidth; bar.classList.add('flash'); }
+      /* Deferred, the same 30 ms the shell's own toggle uses: the field has just
+         been un-hidden by openWeightForm() on this very click, and the browser's
+         default focus handling for the tapped chip lands AFTER our listener —
+         focusing synchronously here gets silently overwritten. */
+      setTimeout(function(){ try{ kgEl.focus(); }catch(e){} }, 30);
+      var row=document.getElementById('wtoggle');
+      if(row){ row.classList.remove('flash'); void row.offsetWidth; row.classList.add('flash'); }
     });
     document.addEventListener('keydown', function(ev){
       if(ev.key!=='Enter' && ev.key!==' ') return;
       var t=ev.target.closest ? ev.target.closest('.wdose.unset') : null;
       if(!t || t.hasAttribute('data-inline')) return;
       ev.preventDefault();
+      if(window.CODESSHELL) window.CODESSHELL.openWeightForm();
       kgEl.scrollIntoView({behavior:'smooth', block:'nearest'});
-      kgEl.focus();
+      setTimeout(function(){ try{ kgEl.focus(); }catch(e){} }, 30);
     });
   }
   /* ---- Cross-tab / cross-tool weight re-sync (weight-routing audit) --------
@@ -3889,6 +3938,46 @@ var CODES_WT = (function(){
 
   return { getKg:function(){ return wtKg; }, getAgeYrs:function(){ return ageYrs; }, resync:resyncFromStorage };
 })();
+
+/* ---- CASE SHELL layer 4 — the weight ribbon's collapse/expand -------------
+   Independently copied from peds/index.html's identical controller (tools share
+   the CONTRACT, not the code — CLAUDE.md rule 4 / SHELL.md). Behavior, verbatim
+   from the spec: phone defaults collapsed; >=768px it starts expanded until the
+   weight is confirmed (ESTIMATE or DONE) or one is already carried in from
+   another tool, then becomes a slim "tap to change" row. A user's own toggle
+   always wins over both defaults.
+
+   openWeightForm() is exposed because the "enter weight" chips on unset doses
+   focus the kg field: with the form collapsed, focusing a display:none input is
+   a silent no-op, and the chip that used to work would simply do nothing. ---- */
+var CODESSHELL = (function(){
+  function $(id){ return document.getElementById(id); }
+  var wtoggle=$('wtoggle'), wform=$('wtbar'), wmark=$('wmark');
+  var wOpen=null, wConfirmed=false;
+  function wide(){ return window.matchMedia('(min-width:768px)').matches; }
+  function hasWeight(){ try{ return CODES_WT.getKg()!==null; }catch(e){ return false; } }
+  function paintWeightStrip(){
+    if(!wform||!wmark) return;
+    var open = wOpen!==null ? wOpen : (wide() && !wConfirmed && !hasWeight());
+    wform.style.display = open ? 'flex' : 'none';
+    wmark.textContent = open ? '\u25B2' : (wide() ? '\u270E tap to change' : '\u25BC');
+  }
+  function openWeightForm(){
+    if(!wform) return;
+    if(wform.style.display==='none'){ wOpen=true; paintWeightStrip(); }
+  }
+  if(wtoggle) wtoggle.addEventListener('click', function(){
+    wOpen = wform.style.display==='none';
+    paintWeightStrip();
+    if(wOpen) setTimeout(function(){ try{ $('wtkg').focus(); }catch(e){} }, 30);
+  });
+  if($('wdone')) $('wdone').addEventListener('click', function(){ wConfirmed=true; wOpen=null; paintWeightStrip(); });
+  if($('wtestimate')) $('wtestimate').addEventListener('click', function(){ wConfirmed=true; });
+  window.addEventListener('resize', paintWeightStrip);
+  paintWeightStrip();
+  return { paintWeightStrip:paintWeightStrip, openWeightForm:openWeightForm };
+})();
+try{ window.CODESSHELL = CODESSHELL; }catch(e){}
 /* data-conc (mg per mL, only meaningful when data-unit="mg") is supported here identically
    to peds/index.html's PEDSDOSE (design-review F29) but is not wired up on any row in this
    file yet — none of codes' weight-based rows currently state a concentration in their own
