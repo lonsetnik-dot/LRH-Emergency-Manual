@@ -379,15 +379,35 @@
         </div>
       </div>
       <div style="display: flex; flex-direction: column; gap: 18px; align-items: center">
-        <svg width="180" height="210" sc-camel-view-box="0 0 180 210" aria-label="A cairn of stacked stones">
-          <ellipse cx="90" cy="196" rx="82" ry="10" fill="oklch(0.9 0.01 250)"></ellipse>
-          <rect x="18" y="152" width="144" height="40" rx="20" fill="#003a66"></rect>
-          <rect x="34" y="112" width="112" height="36" rx="18" fill="oklch(0.40 0.07 140)"></rect>
-          <rect x="50" y="76" width="80" height="32" rx="16" fill="#005596"></rect>
-          <rect x="64" y="44" width="52" height="28" rx="14" fill="#2f74ad"></rect>
-          <rect x="76" y="18" width="28" height="22" rx="11" fill="#5f93c0"></rect>
+        <svg width="220" height="240" sc-camel-view-box="0 0 220 240" aria-label="A cairn of four stacked stones: kits, support, training, ready">
+          <ellipse cx="110" cy="222" rx="92" ry="10" fill="oklch(0.9 0.01 250)"></ellipse>
+
+          <!-- Tier 1 (bottom, widest) — the right equipment, organized into kits -->
+          <rect x="14" y="168" width="192" height="44" rx="22" fill="#003a66"></rect>
+          <rect x="76" y="179" width="18" height="16" rx="2" fill="none" stroke="#dbe9f5" stroke-width="1.6" aria-hidden="true"></rect>
+          <line x1="76" y1="186" x2="94" y2="186" stroke="#dbe9f5" stroke-width="1.6" aria-hidden="true"></line>
+          <text x="104" y="195" fill="#fff" font-family="'Atkinson Hyperlegible', sans-serif" font-weight="700" font-size="13" letter-spacing="0.06em">KITS</text>
+
+          <!-- Tier 2 — local support in doing the work: phone lines, protocols -->
+          <rect x="34" y="120" width="152" height="40" rx="20" fill="#005596"></rect>
+          <circle cx="74" cy="132" r="3.2" fill="#eaf3fb" aria-hidden="true"></circle>
+          <circle cx="86" cy="144" r="3.2" fill="#eaf3fb" aria-hidden="true"></circle>
+          <line x1="76" y1="134" x2="84" y2="142" stroke="#eaf3fb" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"></line>
+          <text x="96" y="145" fill="#fff" font-family="'Atkinson Hyperlegible', sans-serif" font-weight="700" font-size="13" letter-spacing="0.06em">SUPPORT</text>
+
+          <!-- Tier 3 — training built into the tools themselves -->
+          <rect x="54" y="76" width="112" height="36" rx="18" fill="#2f74ad"></rect>
+          <line x1="68" y1="86" x2="80" y2="86" stroke="#eaf3fb" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"></line>
+          <line x1="68" y1="92" x2="80" y2="92" stroke="#eaf3fb" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"></line>
+          <line x1="68" y1="98" x2="80" y2="98" stroke="#eaf3fb" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"></line>
+          <text x="86" y="99" fill="#fff" font-family="'Atkinson Hyperlegible', sans-serif" font-weight="700" font-size="11.5" letter-spacing="0.05em">TRAINING</text>
+
+          <!-- Tier 4 (top) — readiness -->
+          <rect x="74" y="36" width="72" height="32" rx="16" fill="oklch(0.40 0.07 140)"></rect>
+          <polyline points="86,52 90,56 96,47" fill="none" stroke="#eafff3" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></polyline>
+          <text x="102" y="57" fill="#fff" font-family="'Atkinson Hyperlegible', sans-serif" font-weight="700" font-size="12" letter-spacing="0.06em">READY</text>
         </svg>
-        <p style="font-size: 14.5px; line-height: 1.55; color: oklch(0.45 0.02 160); max-width: 300px; text-align: center; margin: 0; font-style: italic">A cairn is a stack of stones left on the trail by those who walked it before you — so you can find the way in bad weather. Add a stone if you can. It's part of the environment now, helping the next traveler the way it helped you.</p>
+        <p style="font-size: 14.5px; line-height: 1.55; color: oklch(0.45 0.02 160); max-width: 320px; text-align: center; margin: 0; font-style: italic">A cairn is a stack of stones left on the trail by those who walked it before you — so you can find the way in bad weather. From the ground up: the right equipment, organized into kits. Local support for doing the work of emergency medicine — phone lines, protocols, the people you call. Training built into the tools themselves. Readiness, at the top. Add a stone if you can — it becomes part of the trail, helping the next traveler the way it helped you.</p>
       </div>
     </div>
   </header>
@@ -396,17 +416,17 @@
     <div style="max-width: 1100px; margin: 0 auto">
       <div style="display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 8px">
         <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 34px; color: #fff; margin: 0">The manual, live</h2>
-        <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: oklch(0.78 0.07 250)">Sample content</span>
+        <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: oklch(0.78 0.07 250)">Live screenshot</span>
       </div>
-      <p style="color: oklch(0.82 0.01 160); font-size: 16px; max-width: 640px; margin: 0 0 32px; line-height: 1.6">This is the reference implementation an adopting ED starts from — a sample below, the real thing one click away. Each tool is live and checkable at the bedside, not a PDF.</p>
+      <p style="color: oklch(0.82 0.01 160); font-size: 16px; max-width: 640px; margin: 0 0 32px; line-height: 1.6">Below is an actual screenshot of the reference implementation running live at Littleton Regional Healthcare — not a mockup. Every tool is live and checkable at the bedside, not a PDF.</p>
       <div style="background: #f6f7f6; border-radius: 14px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,0.35)">
-        <a href="https://demo.cairnready.org/codes/" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; gap: 8px; padding: 12px 18px; background: oklch(0.93 0.01 160); border-bottom: 1px solid oklch(0.87 0.01 160); text-decoration: none">
+        <a href="https://lrhemergencymanual.net/codes/?from=home#c01" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; gap: 8px; padding: 12px 18px; background: oklch(0.93 0.01 160); border-bottom: 1px solid oklch(0.87 0.01 160); text-decoration: none">
           <span style="width: 11px; height: 11px; border-radius: 50%; background: oklch(0.75 0.03 160)"></span>
           <span style="width: 11px; height: 11px; border-radius: 50%; background: oklch(0.75 0.03 160)"></span>
           <span style="width: 11px; height: 11px; border-radius: 50%; background: oklch(0.75 0.03 160)"></span>
-          <span style="flex: 1; text-align: center; font-size: 13px; color: oklch(0.5 0.02 160); font-family: monospace">demo.cairnready.org/codes ↗</span>
+          <span style="flex: 1; text-align: center; font-size: 13px; color: oklch(0.5 0.02 160); font-family: monospace">lrhemergencymanual.net/codes ↗</span>
         </a>
-        <div class="cn-demo" style="display: grid; grid-template-columns: 300px 1fr; min-height: 420px">
+        <div class="cn-demo" style="display: grid; grid-template-columns: 260px 1fr; min-height: 420px">
           <div class="cn-tabs" style="border-right: 1px solid oklch(0.88 0.01 160); padding: 18px 14px; display: flex; flex-direction: column; gap: 6px; background: #fdfdfc">
             <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 14px; border-radius: 8px; border-left: 3px solid #005596; background: oklch(0.95 0.015 250)">
               <span style="font-weight: 700; font-size: 15px; color: oklch(0.25 0.02 160)">Codes</span>
@@ -420,26 +440,15 @@
             <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 14px; color: oklch(0.5 0.02 160)"><span style="font-size: 14.5px">Kit labels &amp; posters</span><span style="font-size: 12px; opacity: 0.75">printable</span></div>
             <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 14px; color: oklch(0.5 0.02 160)"><span style="font-size: 14.5px">Guideline sources</span><span style="font-size: 12px; opacity: 0.75">provenance</span></div>
           </div>
-          <div class="cn-pane" style="padding: 28px 32px">
-            <div style="font-size: 12.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #005596; margin-bottom: 6px">Resuscitation reference</div>
-            <h3 style="font-family: Bitter, serif; font-size: 24px; font-weight: 700; margin: 0 0 10px">Cardiac arrest — VF / pVT</h3>
-            <p style="font-size: 15.5px; line-height: 1.6; color: oklch(0.4 0.02 160); margin: 0 0 22px; max-width: 520px">Code and resuscitation cards, including the code-cart drawer contents, checkable one-handed mid-resuscitation.</p>
-            <div style="border: 1px solid oklch(0.87 0.01 160); border-radius: 10px; background: #fff; max-width: 520px; overflow: hidden">
-              <div style="padding: 10px 16px; background: oklch(0.95 0.015 250); font-size: 13px; font-weight: 700; color: oklch(0.36 0.08 250); border-bottom: 1px solid oklch(0.88 0.01 160)">SHOCKABLE RHYTHM — first cycle</div>
-              <div style="display: flex; flex-direction: column">
-                <div style="display: flex; gap: 12px; align-items: flex-start; padding: 11px 16px; border-bottom: 1px solid oklch(0.94 0.005 160); font-size: 15px; line-height: 1.45"><span style="color: #005596; flex: none">—</span><span>Defibrillate — follow your local energy setting</span></div>
-                <div style="display: flex; gap: 12px; align-items: flex-start; padding: 11px 16px; border-bottom: 1px solid oklch(0.94 0.005 160); font-size: 15px; line-height: 1.45"><span style="color: #005596; flex: none">—</span><span>Resume compressions immediately, 2-minute cycle</span></div>
-                <div style="display: flex; gap: 12px; align-items: flex-start; padding: 11px 16px; border-bottom: 1px solid oklch(0.94 0.005 160); font-size: 15px; line-height: 1.45"><span style="color: #005596; flex: none">—</span><span>Epinephrine 1 mg IV/IO, repeat every 3–5 min</span></div>
-                <div style="display: flex; gap: 12px; align-items: flex-start; padding: 11px 16px; border-bottom: 1px solid oklch(0.94 0.005 160); font-size: 15px; line-height: 1.45"><span style="color: #005596; flex: none">—</span><span>Amiodarone after 3rd shock (local dosing)</span></div>
-                <div style="display: flex; gap: 12px; align-items: flex-start; padding: 11px 16px; font-size: 15px; line-height: 1.45"><span style="color: #005596; flex: none">—</span><span>Address reversible causes: H's and T's</span></div>
-              </div>
-            </div>
-            <p style="font-size: 13px; color: oklch(0.55 0.02 160); margin: 18px 0 0; font-style: italic">Illustrative sample — every value is localized and validated by the adopting site before use.</p>
+          <div class="cn-pane" style="position: relative; background: #0e1e30; overflow: hidden; max-height: 460px">
+            <img src="screenshots/codes-arrest.png" alt="Screenshot of the live Codes tool: the cardiac arrest — VF / pVT resuscitation card, dark mode" style="display: block; width: 100%; height: auto">
+            <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 90px; background: linear-gradient(to bottom, transparent, #0e1e30 92%)"></div>
+            <div style="position: absolute; left: 18px; bottom: 14px; font-size: 12.5px; color: oklch(0.85 0.01 160); font-style: italic">Illustrative — every dose and number is localized and validated by the adopting site before use.</div>
           </div>
         </div>
       </div>
       <div style="text-align: center; margin-top: 28px">
-        <a href="https://demo.cairnready.org/" target="_blank" rel="noopener noreferrer" style="display: inline-block; background: #005596; color: #fff; padding: 13px 26px; border-radius: 8px; font-weight: 700; font-size: 15.5px; text-decoration: none">Open the live demo — all 8 categories ↗</a>
+        <a href="https://lrhemergencymanual.net/" target="_blank" rel="noopener noreferrer" style="display: inline-block; background: #005596; color: #fff; padding: 13px 26px; border-radius: 8px; font-weight: 700; font-size: 15.5px; text-decoration: none">Open the live manual — all 8 categories ↗</a>
       </div>
     </div>
   </section>
@@ -486,9 +495,17 @@
             <div style="display: flex; gap: 10px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; line-height: 1.5"><span style="color: #5f93c0; flex: none">9:55</span><span style="color: #c6d3de">HR 140, crying — case ends</span></div>
           </div>
         </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px">
+          <a href="https://lrhemergencymanual.net/dystocia/" target="_blank" rel="noopener noreferrer" style="display: block; border-radius: 10px; overflow: hidden; border: 1px solid rgba(95,147,192,0.3)">
+            <img src="screenshots/dystocia.png" alt="Screenshot of the live shoulder dystocia engine" style="display: block; width: 100%; height: 96px; object-fit: cover; object-position: top">
+          </a>
+          <a href="https://lrhemergencymanual.net/neonatal/" target="_blank" rel="noopener noreferrer" style="display: block; border-radius: 10px; overflow: hidden; border: 1px solid rgba(95,147,192,0.3)">
+            <img src="screenshots/neonatal.png" alt="Screenshot of the live neonatal resuscitation engine" style="display: block; width: 100%; height: 96px; object-fit: cover; object-position: top">
+          </a>
+        </div>
         <div style="display: flex; flex-direction: column; gap: 10px">
-          <a href="https://demo.cairnready.org/dystocia/" target="_blank" rel="noopener noreferrer" style="display: block; text-align: center; min-height: 48px; line-height: 48px; background: #005596; color: #fff; border-radius: 10px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 15px; font-weight: 700; text-decoration: none">Try the dystocia engine ↗</a>
-          <a href="https://demo.cairnready.org/neonatal/" target="_blank" rel="noopener noreferrer" style="display: block; text-align: center; min-height: 48px; line-height: 48px; background: none; color: #5f93c0; border: 1.5px solid #2f74ad; border-radius: 10px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 15px; font-weight: 700; text-decoration: none">Try the neonatal engine ↗</a>
+          <a href="https://lrhemergencymanual.net/dystocia/" target="_blank" rel="noopener noreferrer" style="display: block; text-align: center; min-height: 48px; line-height: 48px; background: #005596; color: #fff; border-radius: 10px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 15px; font-weight: 700; text-decoration: none">Try the dystocia engine ↗</a>
+          <a href="https://lrhemergencymanual.net/neonatal/" target="_blank" rel="noopener noreferrer" style="display: block; text-align: center; min-height: 48px; line-height: 48px; background: none; color: #5f93c0; border: 1.5px solid #2f74ad; border-radius: 10px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 15px; font-weight: 700; text-decoration: none">Try the neonatal engine ↗</a>
         </div>
       </div>
     </div>
