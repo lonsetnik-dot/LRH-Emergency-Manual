@@ -274,6 +274,31 @@ Four rules, and every one of them was written after a real defect:
 screen below the bar; the step did not change → the page was not scrolled.** Note that
 "was not scrolled" cannot be a raw `scrollY` comparison, for the clamping reason above.
 
+## Checklist rows: ACTION on screen, WHY behind a tap
+
+Every checklist row in the manual is two tiers — `<b>ACTION</b><i class="t-why">reasoning</i>`
+— because a row is read mid-task by someone whose hands are busy. `.t-why` is hidden until
+the tool's one WHY control is tapped, always shown in print, and remembered as a preference
+(`lrh-pref-why`). Full rationale and the writing rules are in `DESIGN-SYSTEM.md` §6b.
+
+Three things to know before editing or adding a row:
+
+- **The action must stand alone.** A number the step cannot be performed without belongs in
+  the action, never only behind the WHY. `verify_checklist_clarity.mjs` fails a row that
+  hides a dose-shaped value from its own action, and `tools_clarify.mjs` refuses to write
+  one. `data-ref` is the only sanctioned way to hide a number, per row, on purpose.
+- **Do not rewrite a kit-contents row for readability.** Those strings are byte-identical
+  across the card, the poster, the cart label and `inventory.js`; rewording one is a
+  different task, done to all four at once. Several rows stay over the length target for
+  exactly this reason, and the suite's budget block names them.
+- **A row rendered from config gets its tiers in config.** A `SITE.withdrawal` rung accepts
+  `{do, why}`, so a fork that localizes its ladder localizes the reasoning with it.
+
+`tools_clarify.mjs` is the dev-only helper that applies these rewrites; it refuses rather
+than warns whenever a replacement would drop live markup (a `.wdose` span, a tap-to-log
+button, a cross-card link, any `data-*` hook), because every one of those failures is
+invisible on screen afterwards.
+
 ## Config-driven verification (issue #117)
 
 The `verify_*.mjs` suites are the safety harness that makes it viable for a
