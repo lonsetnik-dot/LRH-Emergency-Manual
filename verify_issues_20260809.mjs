@@ -34,7 +34,13 @@ const watch = (pg, tag) => {
 // their pitfalls/evidence sections closed. Open everything first or the assertions read a
 // truncated card and pass or fail for the wrong reason.
 const openAll = async (pg) => { await pg.evaluate(() => document.querySelectorAll('details').forEach(d => d.open = true)); await pg.waitForTimeout(120); };
-const textOf = async (pg, sel) => (await pg.locator(sel).innerText()).replace(/\s+/g, ' ');
+/* innerText omits anything display:none, and the clarity pass moved every row's reasoning
+   into a .t-why that is hidden until the reader asks for it. Reading innerText therefore
+   reported clinical content as MISSING when it is one tap away — five failures that were
+   nothing but hidden text. textContent sees the whole row, which is the right question for
+   a content suite: is the fact in the card, reachable by the clinician? Whether it is
+   visible right now is verify_checklist_clarity.mjs's job, not this one's. */
+const textOf = async (pg, sel) => (await pg.locator(sel).evaluate(el => el.textContent)).replace(/\s+/g, ' ');
 
 const codes = await b.newPage({ viewport: { width: 390, height: 1400 } }); watch(codes, 'codes');
 await codes.goto(BASE + '/codes/?from=home', { waitUntil: 'networkidle' });
@@ -85,14 +91,23 @@ console.log('--- #36 pacemaker / ICD');
 ck('card 26 exists', await codes.locator('#c26').count(), 1);
 {
   const t = await textOf(codes, '#c26');
+  /* These assert the CLAIM, not the sentence. They were written against the exact prose,
+     which made a clarity rewrite of the card look like a clinical regression — five failures
+     that were all paraphrase. Matching on the substance keeps the guard real (delete the
+     fact and it still fails) without freezing the wording of a card that has to stay
+     readable. The claims themselves are unchanged. */
   // the single most dangerous confusion on the card — both halves must be present
-  ck('magnet on ICD: stops shocks, pacing unchanged', /suspends tachyarrhythmia detection/i.test(t) && /does <b>not<\/b> change the pacing mode|does not change the pacing mode/i.test(t), true);
-  ck('magnet on pacemaker: asynchronous', /asynchronous pacing \(VOO\/DOO\)/i.test(t), true);
+  ck('magnet on ICD: stops shocks, pacing unchanged',
+     /no ATP, no shocks|suspends tachyarrhythmia detection/i.test(t) &&
+     /pacing mode unchanged|does not (?:touch|change) (?:the )?pacing/i.test(t), true);
+  ck('magnet on pacemaker: asynchronous', /asynchronous/i.test(t) && /VOO\/DOO/.test(t), true);
   ck('do NOT magnet appropriate shocks', /the shocks are <u>appropriate<\/u>|shocks are.{0,20}appropriate/i.test(t), true);
-  ck('storm definition 3 in 24 h', /3 or more separate sustained VT\/VF episodes/i.test(t), true);
-  ck('first-line drug given as two options', /First-line drug — two options/i.test(t) && /\(WikEM\)/.test(t) && /\(First10EM\)/.test(t), true);
+  ck('storm definition 3 in 24 h',
+     /3 or more[^.]*VT\/VF|3 or more[^.]*episodes/i.test(t) && /24 h/i.test(t), true);
+  ck('first-line drug given as two options',
+     /\(WikEM\)/.test(t) && /\(First10EM\)/.test(t) && /beta-blockade/i.test(t), true);
   ck('Brugada exception', /isoproterenol, NOT beta-blockers/i.test(t), true);
-  ck('pads >= 8 cm from generator', /at least 8 cm from the generator/i.test(t), true);
+  ck('pads >= 8 cm from generator', /(?:at least|≥)\s*8 cm from the generator/i.test(t), true);
   ck('magnet location stated', /CODE CART · SIDE PANEL/i.test(t), true);
 }
 

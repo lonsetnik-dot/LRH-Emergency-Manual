@@ -170,6 +170,7 @@ try{
 <div class="hdr">
   <a class="ghost" href="../?from=tool">&#9664; MANUAL</a>
   <button class="ghost" id="backbtn" type="button" style="display:none">&#9664; BACK</button>
+  <button class="ghost whybtn" id="whybtn" type="button" aria-pressed="false" aria-label="Show the reasoning on every step">WHY +</button>
   <span class="plabel">OB &amp; NEONATAL</span>
   <button class="ghost" id="summarybtn" type="button">TIMELINE</button>
   <button class="ghost danger" id="resetbtn" type="button" style="display:none">RESET</button>
@@ -2868,6 +2869,11 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
     el.innerHTML = PROC_ICONS.glyph(el.getAttribute('data-proc'), '');
   });
 })();
+</script>
+<script>
+/* Shared case-shell behavior (case-shell.js): the WHY control that reveals the
+   reasoning tier (.t-why) on every checklist row at once. Edited once, shared. */
+/* @shell-js */
 </script>
 </body>
 </html>
