@@ -8,32 +8,40 @@
 ## The model
 
 ```
-main  —  the LRH reference implementation
+lrh  —  the LRH reference implementation, and the branch that DEPLOYS
 ├── site.config.json      LRH identity, real phone lines
 ├── <tool>/SITE CONFIG    LRH's validated clinical values
 │
 ├─ build.mjs      → dist/       → lrhemergencymanual.net   (production)
-├─ demo-build.mjs → dist-demo/  → demo.cairnready.org      (DEMO ribbon + noindex)
-├─ cairn/         → published in place → cairnready.org    (explainer)
+├─ demo-build.mjs → dist-demo/  → not currently deployed anywhere
 │
 └─ hospital edition: <site #2>   (branch or fork — deploys to its own domain)
      site.config.json rewritten  + per-tool SITE CONFIG values validated
 ```
 
-**There is no separate generic branch, and `main` is not generic.** That is a
-deliberate change from the original model (a CairnReady generic trunk on
-`main`, LRH on a branch), retired when the demo became a *build* of the real
-thing rather than a fork of it. `demo-build.mjs` says so in its header: the
-demo serves "the same tool content as build.mjs's dist/ — the real reference
-implementation, nothing generic or fake", differing only by a DEMO ribbon,
-`noindex`, and no offline shell. A prospective site is shown a manual that a
-real ED actually uses at the bedside, which is the whole argument.
+**`lrh` is the trunk. Everything lands there, and landing there is live.**
+There is no separate generic branch, and `lrh` is not generic — the demo is a
+*build* of the real thing rather than a fork of it. `demo-build.mjs` says so in
+its header: it serves "the same tool content as build.mjs's dist/ — the real
+reference implementation, nothing generic or fake", differing only by a DEMO
+ribbon, `noindex`, and no offline shell. That build has no site attached at the
+moment; when one is wanted, it comes from this same branch.
 
-> **Do not "restore" a generic identity to `main`.** It would swap the
-> hospital's live manual for a demo edition and pull the ground out from under
-> `demo-build.mjs` at the same time. If a generic edition is ever wanted again,
-> it is a new branch off `main` with `site.config.json` rewritten — the same
-> pathway as any other edition below.
+`cairnready.org` is a **separate set of sites in a different repository**. It
+is named here only so nobody goes looking for it in this one.
+
+> ### `main` is retired — do not use it
+>
+> This document used to name `main` as the reference implementation that
+> deploys to production. That was wrong, and the cost was concrete: a full
+> session of work was built, verified, reviewed and merged to `main`, where
+> nothing serves it, while the live manual sat 37 commits behind. The docs
+> were believed over the deployment, because nothing in the repo contradicted
+> them and Netlify's production-branch setting is not visible from here.
+>
+> If you are about to open a pull request, **check its base is `lrh`.** If a
+> future edition needs a generic identity, it is a new branch off `lrh` with
+> `site.config.json` rewritten — the same pathway as any other edition below.
 
 A **hospital edition** is a branch or fork that changes only the two
 localization layers below. It never rewrites logic, layout, or the verify
@@ -63,13 +71,13 @@ block at the top of its own file:
 ```
 
 These stay per-tool deliberately: a threshold belongs next to the logic that
-uses it and the citation for it. On `main` they hold LRH's validated values,
+uses it and the citation for it. On `lrh` they hold LRH's validated values,
 or national-guideline defaults where LRH has not diverged, or clearly flagged
 placeholders where nobody has decided yet. **Every one of them requires local
 clinical validation before another hospital's edition goes live** — see
 `LOCALIZING.md` and `LOCALIZATION-WORKSHEET.md` for the walk-through, and
 `inventory.js` for the third localized surface (the `LOCATIONS` block — the
-only part of the inventory a hospital rewrites; `main` ships LRH's layout as
+only part of the inventory a hospital rewrites; `lrh` ships LRH's layout as
 a worked example).
 
 ## What is deliberately NOT localized

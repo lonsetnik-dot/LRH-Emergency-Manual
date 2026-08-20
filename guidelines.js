@@ -107,7 +107,7 @@ var GDL_SOURCES = [
     url: "https://cpr.heart.org/en/resuscitation-science/cpr-and-ecc-guidelines",
     cadence: "Published alongside the adult ECC set; same autumn cycle.",
     reviewEvery: 180,
-    lastVerified: null,
+    lastVerified: "2026-08-17",
     citedSince: "2026-08-10",
     impact: "high",
     dependents: ["peds/", "arrest/", "codes/", "vems/"],
@@ -164,11 +164,11 @@ var GDL_SOURCES = [
     url: "https://www.aap.org/en/learning/neonatal-resuscitation-program/",
     cadence: "New textbook edition roughly every 5–6 years, with a change summary at release and an instructor transition deadline; the guideline half moves on the AHA autumn cycle.",
     reviewEvery: 180,
-    lastVerified: null,
+    lastVerified: "2026-08-18",
     citedSince: "2026-08-12",
     impact: "high",
-    reconciled: false,
-    reconcileNote: "neonatal/ carries content brought over unchanged from ob-neonatal/ card 03 and NOT yet reconciled line-by-line with the NRP 9th edition. The tool shows a review banner and verify_neonatal_screen.mjs fails if the banner is switched off quietly. Flip reconciled to true only when a clinician has signed the reconciliation off — not when the banner is removed.",
+    reconciled: true,
+    reconcileNote: "Reconciled and signed off by a clinician (Lon Setnik) on 2026-08-18, in the crash-card review that also covered the airway ladder's mask and ETT-suction columns and ob-neonatal/ card 04's equipment tiles — the three places this row's numbers surface. That sign-off is what this field was waiting for: the content had been carried over unchanged from the retired ob-neonatal/ card 03, which carried no citation, and was never checked line-by-line against NRP 9th edition until then. The review banner came down in the same change. Anything that alters a dose, the SpO2 target table, the compression ratio or an airway size sets this back to false and puts the banner back up — the flag tracks the CONTENT, not the fact that a review once happened.",
     dependents: ["neonatal/", "peds/", "arrest/", "ob-neonatal/"],
     watch: [
       { kind: "page", label: "AAP NRP program page",
@@ -371,7 +371,7 @@ var GDL_SOURCES = [
     url: "https://www.acog.org/clinical/clinical-guidance",
     cadence: "As above. The antihypertensive doses in these two documents are the ones the manual prints.",
     reviewEvery: 180,
-    lastVerified: null,
+    lastVerified: "2026-08-17",
     citedSince: "2026-08-07",
     impact: "high",
     dependents: ["ob-neonatal/"],
@@ -392,7 +392,7 @@ var GDL_SOURCES = [
     url: "https://www.acep.org/patient-care/clinical-policies",
     cadence: "Topic by topic; each policy is revised on its own multi-year cycle and announced on one index page.",
     reviewEvery: 365,
-    lastVerified: null,
+    lastVerified: "2026-08-18",
     citedSince: "2026-08-12",
     impact: "medium",
     dependents: ["trauma/", "codes/", "peds/"],
@@ -585,7 +585,7 @@ var GDL_SOURCES = [
     url: "https://shop.lww.com/",
     cadence: "New edition roughly every 4–5 years, announced by the publisher; no interim updates.",
     reviewEvery: 365,
-    lastVerified: null,
+    lastVerified: "2026-08-17",
     citedSince: "2026-08-17",
     impact: "medium",
     dependents: ["peds/#p16"],
@@ -606,13 +606,40 @@ var GDL_SOURCES = [
     url: "https://www.sccm.org/SurvivingSepsisCampaign/Guidelines",
     cadence: "Major revision roughly every 4 years, with focused updates between; announced at SCCM congress.",
     reviewEvery: 365,
-    lastVerified: null,
+    lastVerified: "2026-08-18",
     citedSince: "2026-08-12",
     impact: "high",
-    dependents: ["codes/#c28"],
+    dependents: ["clinical-pathways/sepsis/", "codes/#c37"],
     watch: [
       { kind: "pubmed", label: "Surviving Sepsis Campaign guidelines",
         term: '(guideline[pt] OR "practice guideline"[pt]) AND ("surviving sepsis"[tiab] OR "septic shock"[ti])' }
+    ] },
+
+  /* Separate row from ssc-sepsis on purpose: the pediatric guideline is its own
+     document on its own revision cycle, and the question this registry answers —
+     "SSC republished, what in this manual moves?" — has a different answer for
+     each. A 2020 pediatric edition sitting beside a 2021 adult one is exactly the
+     fact a single merged row would hide. */
+  { id: "ssc-peds",
+    body: "Surviving Sepsis Campaign (pediatric) / SCCM + ESICM",
+    title: "International Guidelines for the Management of Septic Shock and Sepsis-Associated Organ Dysfunction in Children",
+    edition: "2020",
+    citation: "Weiss SL, Peters MJ, Alhazzani W, et al. Surviving Sepsis Campaign International Guidelines for the Management of Septic Shock and Sepsis-Associated Organ Dysfunction in Children. Pediatr Crit Care Med 2020;21(2):e52-e106.",
+    url: "https://journals.lww.com/pccmjournal/fulltext/10.1097/pcc.0000000000002198~surviving-sepsis-campaign-international-guidelines-for-the",
+    cadence: "First edition 2020; the adult guideline revises roughly every 4 years and the pediatric one has not yet had a second edition, so a revision is a live possibility on any SCCM congress cycle.",
+    reviewEvery: 365,
+    lastVerified: null,
+    citedSince: "2026-08-19",
+    impact: "medium",
+    /* Cited for an ABSENCE, which is the unusual and fragile case: card 37
+       withholds a vasopressin rate under 40 kg on the strength of there being no
+       endorsed weight-based pediatric dose. If a future edition publishes one,
+       the card does not merely become out of date — its stated reason stops being
+       true. Check that specific claim first when this row is reviewed. */
+    dependents: ["codes/#c37"],
+    watch: [
+      { kind: "pubmed", label: "Pediatric surviving sepsis / septic shock guidelines",
+        term: '(guideline[pt] OR "practice guideline"[pt]) AND ("septic shock"[tiab] OR sepsis[tiab]) AND (child[MeSH Terms] OR pediatric[tiab] OR children[ti])' }
     ] },
 
   { id: "wms",
@@ -640,10 +667,10 @@ var GDL_SOURCES = [
     url: "https://diabetesjournals.org/care",
     cadence: "Consensus reports are infrequent; the annual Standards of Care restate the crisis guidance and publish each January.",
     reviewEvery: 365,
-    lastVerified: null,
+    lastVerified: "2026-08-18",
     citedSince: "2026-08-12",
     impact: "high",
-    dependents: ["codes/#c31"],
+    dependents: ["clinical-pathways/dka/"],
     watch: [
       { kind: "pubmed", label: "Hyperglycemic crises guidance",
         term: '("diabetes care"[jour]) AND ("hyperglycemic crises"[tiab] OR "diabetic ketoacidosis"[ti]) AND (guideline[pt] OR consensus[tiab])' }
@@ -657,7 +684,7 @@ var GDL_SOURCES = [
     url: "https://www.asam.org/quality-care/clinical-guidelines",
     cadence: "Infrequent; ASAM announces new and revised guidelines on its clinical-guidelines page.",
     reviewEvery: 365,
-    lastVerified: null,
+    lastVerified: "2026-08-18",
     citedSince: "2026-08-12",
     impact: "medium",
     dependents: ["codes/#c34"],
@@ -674,7 +701,7 @@ var GDL_SOURCES = [
     url: "https://www.ahajournals.org/doi/10.1161/CIR.0000000000001161",
     cadence: "Folded into the AHA autumn guideline cycle; a focused update can supersede it without a new full edition.",
     reviewEvery: 180,
-    lastVerified: null,
+    lastVerified: "2026-08-18",
     citedSince: "2026-08-12",
     impact: "high",
     dependents: ["codes/#c36"],
