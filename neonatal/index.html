@@ -345,7 +345,21 @@ var SITE = {
      The full textbook was not available, so anything not named here is still
      inherited from the previous card. */
   review:{
-    on:true,
+    /* OFF as of 2026-08-18: a clinician reviewed this tool and signed it off — see
+       signedOff below, and guidelines.js `nrp`, whose reconciled flag flipped in the same
+       change. The banner was never meant to be permanent; it was meant to stay up until
+       exactly this happened.
+
+       The guard against switching it off QUIETLY has moved rather than disappeared:
+       verify_neonatal_screen.mjs no longer asserts "the banner is visible", it asserts that
+       the banner matches this flag AND that turning it off is accompanied by a name and a
+       date here. Setting on:false with an empty signedOff fails the suite. That is the same
+       distinction guidelines.js draws with lastVerified:null — an unreviewed thing must be
+       able to say so, and a reviewed one has to say who and when. */
+    on:false,
+    signedOff:{ by:"Lon Setnik", date:"2026-08-18",
+      note:"Crash-card review: the engine as a whole, plus the airway ladder's mask and "+
+           "ETT-suction columns, reviewed against NRP and approved." },
     text:"ALIGNED TO THE 2025 AHA/AAP GUIDELINES for the items named in SOURCE & PROVENANCE — cord "+
          "management as the first step, deferred clamping ≥60 s, intact cord milking for the "+
          "non-vigorous term and late-preterm newborn, the supraglottic airway as a primary device, and "+

@@ -96,6 +96,15 @@
   .t-mono-r{font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.08em;color:var(--ink2);text-align:right}
   .t-mono-n{font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;color:var(--ink);font-size:16px;margin-right:8px}
   .t-localize{margin:14px 14px 0;border:2px solid var(--sev-caution);background:var(--note-bg);color:var(--note-tx);padding:11px 14px;font-size:13px;line-height:1.4;border-radius:12px}
+  /* Sign-off bar — what replaces "DRAFT — NOT CLINICALLY REVIEWED" once a clinician has
+     actually reviewed a card (crash-card review, 2026-08-17/18). Deliberately NOT a silent
+     deletion: the honest answer to "when did anyone last check this is still true" is a date
+     and a name, the same distinction guidelines.js draws between lastVerified:null and a real
+     date. Calm styling — hairline border, no warning glyph — so it reads as provenance rather
+     than an alarm, while reusing the note-bg/note-tx pair whose contrast verify_accessibility
+     already checks in both themes. */
+  .reviewedbar{margin:14px 14px 0;border:1px solid var(--line);background:var(--note-bg);color:var(--note-tx);padding:10px 14px;font-size:12.5px;line-height:1.45;border-radius:12px}
+  .reviewedbar a{color:var(--note-tx)}
   .t-notebtn{flex:none;min-height:32px;padding:0 10px;background:none;border:1px solid var(--note-tx);color:var(--note-tx);font:inherit;font-weight:700;letter-spacing:.04em;cursor:pointer}
 
   /* ---- Issue #107: the square boxes inside the rounded ones ----------------
