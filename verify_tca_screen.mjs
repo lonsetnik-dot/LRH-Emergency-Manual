@@ -245,6 +245,32 @@ await fresh();
      await pg.evaluate(() => [...document.querySelectorAll('[data-stop]')].every(b => b.getAttribute('aria-pressed') === 'false')), true);
 }
 
+/* ---- 3c. SAY IT OUT LOUD (2026-08-20) ----
+   The start button already declares the arrest. What it cannot carry is the
+   second sentence — what we are NOT doing. Running the practised ACLS
+   algorithm is the commonest failure in a traumatic arrest, and it is
+   prevented by somebody saying so once, out loud, at the start. Asserted from
+   SITE.declare so a department can put the sentence in its own voice. */
+await fresh();
+await pg.click('#startbtn'); await pg.waitForTimeout(400);
+{
+  const cfg = await pg.evaluate(() => ({ call: SITE.declare.call, script: SITE.declare.script }));
+  ck('3c. the declaration card is up as the case opens', await vis('#saybox'), true);
+  ck('3c. it speaks the configured call, not a hardcoded one',
+     (await pg.textContent('#saycall')).includes(cfg.call), true);
+  /* The invariant, written out rather than read from config: whatever a site
+     puts in the script, it has to say that this is NOT normal ACLS. That is
+     the entire reason the card exists, and a fork must not localize it away
+     into a pleasantry. */
+  ck('3c. the script says out loud that this is not normal ACLS',
+     /not\s+doing\s+normal\s+ACLS/i.test(cfg.script), true);
+  ck('3c. and the script is on screen, not just in config',
+     (await pg.textContent('#sayscript')).includes(cfg.script), true);
+  await pg.click('#saidbtn'); await pg.waitForTimeout(300);
+  ck('3c. tapping it stands the card down', await vis('#saybox'), false);
+  ck('3c. and puts the moment on the timeline', /Declared traumatic cardiac arrest/i.test(await tlText()), true);
+}
+
 /* ---- 4. declare: pill, dock, ticker, workstreams ---- */
 await fresh();
 await pg.click('#startbtn'); await pg.waitForTimeout(400);
@@ -341,7 +367,22 @@ await pg.click('#rearrestbtn'); await pg.waitForTimeout(250);
 ck('6. re-arrest returns to active with the TCA tag', (await vis('#active')) && (await txt('#pilltag')) === 'TCA', true);
 await pg.click('#ceasebtn'); await pg.waitForTimeout(200);
 ck('6. cessation criteria card shows (both-true gate)', await vis('#ceasecard'), true);
-await pg.click('#ceaseconfirm'); await pg.waitForTimeout(250);
+
+/* The list of what counts as a sign of life, at the moment somebody has to
+   answer it. It used to be left to recall, and this is the worst moment of a
+   case to be recalling a list. From SITE.signsOfLife, so a site can add one —
+   but the INVARIANT is that cardiac motion is on it, because that is the
+   finding the eFAST above is looking for and the one the cessation decision
+   turns on. */
+{
+  const sol = await pg.evaluate(() => SITE.signsOfLife);
+  const shown = await pg.textContent('#solist');
+  ck('6. every configured sign of life is printed at the decision',
+     sol.every(x => shown.includes(x)), true);
+  ck('6. cardiac motion is among them', sol.some(x => /cardiac motion/i.test(x)), true);
+  ck('6. and they are framed as ANY one, not all',
+     /ANY ONE OF THESE/i.test(await pg.textContent('#ceasecard')), true);
+}await pg.click('#ceaseconfirm'); await pg.waitForTimeout(250);
 ck('6. ceased screen visible', await vis('#ceased'), true);
 ck('6. the pill tag reads CEASED', await txt('#pilltag'), 'CEASED');
 ck('6. the time of death is on the timeline', /Resuscitation ceased/.test(await tlText()), true);

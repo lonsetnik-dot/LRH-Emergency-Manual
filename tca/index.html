@@ -229,6 +229,22 @@ a{color:var(--blue)}  /* text-decoration:none removed: it would have
   <!-- ============================== ACTIVE =============================== -->
   <div id="active" style="display:none">
 
+    <!-- ============== SAY IT OUT LOUD (2026-08-20, from the model) ==========
+         The start button already says DECLARE. What it could not carry is the
+         SECOND sentence — the one that tells the team what we are NOT doing.
+         Running the ACLS algorithm everyone has practised a hundred times is
+         the commonest failure mode in a traumatic arrest, and it is prevented
+         by somebody saying so out loud, once, at the start. Rendered from
+         SITE.declare because the wording is a departmental voice rather than
+         a clinical value. Dismissed by tapping, not by a timer: it is a thing
+         someone did, and the tap is what puts it on the timeline. -->
+    <div class="card" id="saybox" data-opcard style="margin-top:12px;padding:14px;border:2px solid var(--red)">
+      <div class="sec" style="color:var(--red)">SAY IT OUT LOUD</div>
+      <div id="saycall" style="font:800 19px var(--sans);line-height:1.3;margin:7px 0 9px"></div>
+      <div id="sayscript" style="font-size:15px;font-weight:600;line-height:1.45;border-left:3px solid var(--red);padding-left:12px"></div>
+      <button type="button" id="saidbtn" style="width:100%;margin-top:13px;min-height:64px;border:none;border-radius:12px;background:var(--green);color:#fff;font:800 17px var(--sans);letter-spacing:.02em;cursor:pointer">SAID IT — LOG IT</button>
+    </div>
+
     <!-- Reversible causes — the whole game. Correct these, not the monitor. -->
     <div class="card" style="margin-top:12px;padding:12px;border:2px solid var(--amber)">
       <div class="sec" style="color:var(--amber)">TREAT THE REVERSIBLE CAUSES — NOT THE MONITOR</div>
@@ -286,6 +302,16 @@ a{color:var(--blue)}  /* text-decoration:none removed: it would have
       <div style="font-size:13.5px;line-height:1.55;margin-top:6px">
         · No ROSC <b>after all reversible causes have been addressed</b><br>
         · <b>No detectable cardiac activity on eFAST</b>
+      </div>
+      <!-- What counts as a sign of life, printed at the moment somebody has to
+           answer it (2026-08-20, from the model). It was previously left to
+           recall — and this is the worst moment of the case to be recalling a
+           list. Rendered from SITE.signsOfLife; ANY one of them is a sign,
+           which is why they read as a checklist of ways to still be alive
+           rather than as criteria to satisfy. -->
+      <div style="margin-top:11px;padding-top:10px;border-top:1px solid var(--line)">
+        <div class="sec" style="color:var(--ink2)">ANY ONE OF THESE IS A SIGN OF LIFE</div>
+        <div id="solist" style="font-size:13.5px;line-height:1.55;margin-top:6px"></div>
       </div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
         <button id="ceaseback" type="button" class="btn" style="min-height:56px;font:700 14px var(--sans)">KEEP GOING</button>
@@ -758,6 +784,17 @@ function renderGate(){
   if(btn) btn.style.display = any ? 'none' : '';
 }
 
+/* The declaration card: visible until somebody taps that they said it, then
+   gone for the rest of the case. Not persisted separately — S.said lives with
+   the case and clears on RESET, and the tap itself is what lands on the
+   timeline, where the debrief can see when the room was told. */
+function renderSay(){
+  var box=$('saybox'); if(!box) return;
+  box.style.display = S.said ? 'none' : '';
+  var c=$('saycall'); if(c) c.textContent = '\u201c' + SITE.declare.call + '\u201d';
+  var t=$('sayscript'); if(t) t.textContent = '\u201c' + SITE.declare.script + '\u201d';
+}
+
 function renderWork(){
   var seq = (S.mode==='sequential');
   $('worktitle').textContent = seq ? 'WORK THE PRIORITIES IN ORDER — TAP EACH DONE' : 'ASSIGN EACH WORKSTREAM — WORK IN PARALLEL';
@@ -903,6 +940,7 @@ function planLabel(){
 
 function paint(){
   if(S.phase==='idle') renderGate();
+  if(S.phase!=='idle') renderSay();
   /* --accent is set per theme in CSS (orange = Trauma category); no JS override. */
   paintCaseClock();
   var running = (S.phase==='active');
@@ -979,6 +1017,11 @@ function paint(){
   $('pregboxActive').style.cssText = 'margin-top:0;'+(S.pregnant?'border-color:var(--orange);background:var(--orange);color:'+(S.theme==='dark'?'#141E2B':'#fff'):'');
   $('pregboxActive').textContent = S.pregnant ? '✓' : '';
 
+  var sol=$('solist');
+  if(sol && !sol.getAttribute('data-filled')){
+    var li=''; for(var q=0;q<SITE.signsOfLife.length;q++){ li += '\u00b7 ' + SITE.signsOfLife[q] + '<br>'; }
+    sol.innerHTML = li; sol.setAttribute('data-filled','1');
+  }
   $('soltxt').textContent = SITE.noSignsOfLifeMin;
   $('soltxt2').textContent = SITE.noSignsOfLifeMin;
   $('hystmin').textContent = SITE.hysterotomyByMin;
@@ -1278,6 +1321,9 @@ function wire(){
   document.addEventListener('click', function(e){
     var g=e.target.closest ? e.target.closest('[data-stop]') : null;
     if(g){ var gi=g.getAttribute('data-stop'); S.stop[gi]=!S.stop[gi]; paint(); return; }
+    if(e.target.closest && e.target.closest('#saidbtn')){
+      S.said=true; log('Declared traumatic cardiac arrest to the room'); paint(); return;
+    }
     if(e.target.closest && e.target.closest('#declarebtn')){
       /* Deliberately does NOT start a case or a clock. Nothing to time and
          nothing to log against a patient — the decision was not to begin. */
