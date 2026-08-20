@@ -43,9 +43,18 @@ const ACTION_MAX = 110;
    budget is the count of over-long rows on the day it was measured: the suite fails if any
    tool gets WORSE, and the number is lowered as cards are converted. It reaches 0 when the
    pass is finished, and from then on it is an ordinary assertion.
-   Lower these. Never raise one. */
+   Lower these. Never raise one.
+
+   /codes/ is finished, and its floor is 5 rather than 0 — worth saying why, because the next
+   editor will otherwise spend a pass trying to reach 0 and reword something they should not:
+     · three rows are KIT CONTENTS (c23), which CLAUDE.md requires to stay byte-identical
+       across the card, the poster, the cart label and inventory.js. They are a packing list,
+       not prose, and verify_kit_consistency.mjs fails if anyone shortens them.
+     · two rows (c06) are RSI dose tables — three live weight-computed doses on one line.
+       Splitting them into one drug per row is a different, clinical decision about the card.
+   Those five are structural. Everything else in /codes/ now reads in one glance. */
 const BUDGET = {
-  '/codes/': 291, '/procedures/': 196, '/trauma/': 143, '/peds/': 112, '/ob-neonatal/': 23,
+  '/codes/': 5, '/procedures/': 196, '/trauma/': 143, '/peds/': 112, '/ob-neonatal/': 23,
 };
 
 const TOOLS = Object.keys(BUDGET);

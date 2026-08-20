@@ -57,12 +57,18 @@ ck('menu tile reaches it', await codes.locator('a[href="#c24"]').count() > 0, tr
   const t = await textOf(codes, '#c24');
   ck('bleeding lung DOWN', /Bleeding lung DOWN/i.test(t), true);
   ck('ETT >= 8.0 and the reason', /ETT\s*≥8\.0 mm/i.test(t) && /bronchoscope has to fit/i.test(t), true);
+  /* These assert the CLAIM, not the sentence — same fix already made on card 26 below. The
+     clarity pass rewrote these rows into a short action plus a hidden reason; the facts are
+     unchanged, so an assertion tied to the old wording reported a paraphrase as a clinical
+     regression. Delete the fact and each of these still fails. */
   // LRH stocks no blocker and no DLT — the card must say the big ETT IS the isolation technique
-  ck('no-blocker reality stated', /stocks neither a bronchial blocker nor a double-lumen tube/i.test(t), true);
+  ck('no-blocker reality stated',
+     /no blocker or double-lumen tube/i.test(t) && /single ETT[^.]*IS the technique/i.test(t), true);
   ck('blind mainstem success rates', /95%/.test(t) && /73%/.test(t), true);
   ck('nebulized TXA 500 mg', /Nebulized TXA 500 mg/i.test(t), true);
   ck('IV TXA 1 g over 10 min', /1 g over 10 min/i.test(t), true);
-  ck('does not intubate the effective cougher', /effective cough is doing a better job/i.test(t), true);
+  ck('does not intubate the effective cougher',
+     /effective cough/i.test(t) && /intubate for failure/i.test(t), true);
   ck('one-lung Vt 3-4 mL/kg', /3&ndash;4 mL\/kg|3–4 mL\/kg/.test(t), true);
   ck('contrast with the GI-bleed TXA rule is drawn', /card 23/i.test(t) && /HALT-IT/.test(t), true);
   ck('states its cabinet location', /ROOM 7 \(RESUS BAY\) CABINET/i.test(t), true);
@@ -75,14 +81,18 @@ console.log('--- #26 epistaxis');
 ck('card 25 exists', await codes.locator('#c25').count(), 1);
 {
   const t = await textOf(codes, '#c25');
-  ck('cartilage not bony bridge', /soft cartilaginous part/i.test(t) && /Not the bony bridge/i.test(t), true);
+  ck('cartilage not bony bridge', /soft cartilag/i.test(t) && /not the bony bridge/i.test(t), true);
   ck('pressure-duration disagreement shown', /≥10 min/.test(t) && /15–20 min/.test(t) && /≥20 min/.test(t), true);
-  ck('never cauterize both septal sides', /Never cauterize both sides of the septum/i.test(t), true);
-  ck('Rapid Rhino sterile water 30 s, air only', /sterile water for a full 30 seconds/i.test(t) && /inflate with <b>air only<\/b>|air only/i.test(t), true);
-  ck('Foley volumes and the 15 mL ceiling', /5–7 mL/.test(t) && /maximum 15 mL/i.test(t), true);
+  ck('never cauterize both septal sides',
+     /never both sides at once/i.test(t) && /both sides of the septum/i.test(t), true);
+  ck('Rapid Rhino sterile water 30 s, air only',
+     /sterile water 30 s/i.test(t) && /inflate with air/i.test(t), true);
+  ck('Foley volumes and the 15 mL ceiling', /5–7 mL/.test(t) && /max(?:imum)? 15 mL/i.test(t), true);
   ck('posterior pack is admitted on telemetry', /Every posterior pack is admitted/i.test(t), true);
   ck('TXA both trials shown', /Zahed/.test(t) && /NoPAC/.test(t), true);
-  ck('antibiotics given as two lettered options', /two options/i.test(t) && /StatPearls and Iowa/i.test(t) && /Core EM and REBEL EM/i.test(t), true);
+  ck('antibiotics given as two lettered options',
+     /\bA:[^.]*antistaphylococcal/i.test(t) && /StatPearls,? and? ?Iowa/i.test(t)
+     && /\bB:\s*none/i.test(t) && /Core EM and REBEL EM/i.test(t), true);
   ck('links to the pacemaker card for electrocautery', await codes.locator('#c25 a[href="#c26"]').count() > 0, true);
 }
 
