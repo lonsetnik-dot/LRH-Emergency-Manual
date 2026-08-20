@@ -164,6 +164,52 @@ await pg.waitForTimeout(1200);
 ck('5. a NEW weight still clears the override (WS10.4)',
   (await weightState()).override, null);
 
+/* ---- 5b. THE DIALOG DESCRIBES THE BUTTON UNDER IT ----
+   A safety-critical dialog that misstates what its own control does is worse than the bug it
+   replaced: the first version of this fix kept "(this clears the entered weight)" after STAY
+   had been changed to keep it. Assert the claim is gone and the honest one is present. */
+await enter(cfg.thresholdKg - 10, 30);
+await pg.click('article#' + noAlt + ' .audiencestrip');
+await pg.waitForTimeout(200);
+const modalBody = await pg.textContent('#audiencemodalbody');
+ck('5b. the dialog no longer claims STAY clears the weight',
+   /clears the entered weight/i.test(modalBody), false);
+ck('5b. it says the weight is kept', /weight stays/i.test(modalBody), true);
+ck('5b. and that the answer can be undone', /reversible/i.test(modalBody), true);
+/* The button label is the part read under time pressure. On a card with no pediatric version
+   it opens the Pediatrics manual — saying "GO TO PEDIATRIC CARD" is the same overpromise
+   #173 was filed about, just moved from the strip to the dialog. */
+const goLabel = await pg.textContent('#audiencemodalgo');
+ck('5b. no-alt card does not promise a pediatric CARD in the dialog',
+   /PEDIATRIC CARD/.test(goLabel), false);
+ck('5b. it names where it actually lands', /PEDIATRICS MANUAL/.test(goLabel), true);
+await pg.click('#audiencemodalstay');
+await pg.waitForTimeout(250);
+
+/* A card WITH a real destination still says "card", because there it is true. */
+await pg.evaluate(() => { try { localStorage.removeItem('lrh-case-adultoverride'); } catch (e) {} });
+await enter(cfg.thresholdKg - 10, 30);
+await pg.click('article#' + hasAlt + ' .audiencestrip');
+await pg.waitForTimeout(200);
+ck('5b. a card with a real destination still says CARD',
+   /PEDIATRIC CARD/.test(await pg.textContent('#audiencemodalgo')), true);
+await pg.click('#audiencemodalstay');
+await pg.waitForTimeout(250);
+await pg.evaluate(() => { try { localStorage.removeItem('lrh-case-adultoverride'); } catch (e) {} });
+
+/* ---- 5c. NO UNLABELLED NAVIGATION ----
+   Every strip that navigates must say so. Dropping the "TAP FOR ..." label while leaving the
+   handler attached turned an adult-age strip into a silent full-page jump to another tool. */
+await pg.evaluate(() => { const el = document.getElementById('wtkg');
+  el.value = ''; el.dispatchEvent(new Event('input', { bubbles: true })); });
+await pg.evaluate(a => { const el = document.getElementById('wtage');
+  el.value = a; el.dispatchEvent(new Event('input', { bubbles: true })); }, String(cfg.adultAgeYrs + 18));
+await pg.waitForTimeout(250);
+const silent = await pg.evaluate(() => [...document.querySelectorAll('.audiencestrip')]
+  .filter(s => s.onclick && !/TAP/.test(s.textContent))
+  .map(s => s.closest('article').id));
+ck('5c. no strip navigates without saying it is tappable', silent.join(',') || 'none', 'none');
+
 /* ---- 6. the tox card carries its sign-off, not a DRAFT banner ---- */
 const tox = await pg.evaluate(() => {
   const a = document.querySelector('article#c36');
@@ -175,7 +221,64 @@ ck('6. the toxicology card no longer says NOT CLINICALLY REVIEWED', tox.draft, f
 ck('6. it names the review date instead', /CLINICALLY REVIEWED 2026-08-18/.test(tox.reviewed), true);
 ck('6. and who did it', /Lon Setnik/.test(tox.reviewed), true);
 
-ck('7. no page errors throughout', errs.length, 0);
+/* ---- 7. CROSS-TAB: the strip follows the key it depends on ----
+   The override is shared with /arrest/ (CASE-STATE.md), so it can change with weight and age
+   untouched. resyncFromStorage used to repaint the strip only when weight/age changed, which
+   left every adult card reading "MARKED ADULT" after the override was cleared next door —
+   quiet where the red warning belongs. Simulated the way another tab does it: write the key,
+   then fire the storage event. */
+await enter(cfg.thresholdKg - 10, 30);
+await pg.click('article#' + noAlt + ' .audiencestrip');
+await pg.waitForTimeout(150);
+await pg.click('#audiencemodalstay');
+await pg.waitForTimeout(1200);
+ck('7. marked adult before the cross-tab change',
+   /MARKED ADULT/.test((await strip(noAlt)).txt), true);
+await pg.evaluate(() => {
+  localStorage.removeItem('lrh-case-adultoverride');
+  window.dispatchEvent(new StorageEvent('storage', { key: 'lrh-case-adultoverride' }));
+});
+await pg.waitForTimeout(300);
+const afterCrossTab = await strip(noAlt);
+ck('7. clearing the override in another tab repaints the strip',
+   /MARKED ADULT/.test(afterCrossTab.txt), false);
+ck('7. and the sub-threshold warning comes back',
+   /warn/.test(afterCrossTab.cls), true);
+
+/* ---- 8. THE MOVED CARDS LAND SOMEWHERE THAT CAN GET YOU BACK ----
+   codes/#c28 and #c31 redirect to the pathways with from=codes. That parameter was documented
+   as driving the pathway's back link before anything read it, so a reader arriving from a
+   printed QR was dropped on an index they never chose. */
+for (const [hash, slug] of [['#c28', 'sepsis'], ['#c31', 'dka']]) {
+  const p2 = await b.newPage({ viewport: { width: 390, height: 844 } });
+  await p2.goto(BASE + '/codes/?from=home' + hash, { waitUntil: 'networkidle' });
+  await p2.waitForTimeout(400);
+  ck(`8. codes/${hash} redirects to the ${slug} pathway`,
+     p2.url().includes('/clinical-pathways/' + slug + '/'), true);
+  const back = await p2.evaluate(() => {
+    const el = document.getElementById('backlink');
+    return el ? { href: el.getAttribute('href'), txt: el.textContent.trim() } : null;
+  });
+  ck(`8. ${slug} back link returns to Codes, not the index`, back && back.href, '../../codes/?from=tool');
+  ck(`8. ${slug} back link says so`, back && /CODES/.test(back.txt), true);
+  /* Golden rule 6: every tool carries a version and a last-reviewed date. */
+  const stamp = await p2.evaluate(() => (document.getElementById('verStamp') || {}).textContent || '');
+  ck(`8. ${slug} carries a version stamp`, /^v\d/.test(stamp.trim()), true);
+  ck(`8. ${slug} names its review date`, /last reviewed \d{4}-\d{2}-\d{2}/.test(stamp), true);
+  await p2.close();
+}
+
+/* Arriving through the pathways index keeps the default back control. */
+{
+  const p3 = await b.newPage({ viewport: { width: 390, height: 844 } });
+  await p3.goto(BASE + '/clinical-pathways/sepsis/?from=tool', { waitUntil: 'networkidle' });
+  await p3.waitForTimeout(200);
+  ck('8. arriving from the index keeps the PATHWAYS back link',
+     await p3.evaluate(() => document.getElementById('backlink').getAttribute('href')), '../?from=tool');
+  await p3.close();
+}
+
+ck('9. no page errors throughout', errs.length, 0);
 
 await b.close();
 console.log('\n' + pass + ' passed, ' + fail + ' failed');
