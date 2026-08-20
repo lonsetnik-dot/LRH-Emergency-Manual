@@ -33,19 +33,19 @@ You'll see these in Claude's messages and on GitHub. You don't have to *use*
 them — just recognize them.
 
 - **Repository ("repo")** — the whole project folder, stored on GitHub.
-- **`lrh`** — the official, live version. What's on `lrh` is what publishes to
-  lrhemergencymanual.net. (`main` is a retired branch that deploys nowhere —
-  work merged there changes nothing. Always check a pull request's base is
-  `lrh` before merging it.)
+- **`main`** — the official, live version. What's on `main` is what publishes
+  to lrhemergencymanual.net — *provided Netlify's Production branch field says
+  `main`*. That field is the real answer and it lives outside this repo. Always
+  check a pull request's base before merging it.
 - **Branch** — a private scratch copy where a change is built and tested *without
   touching the live site*. Named things like `ci-and-docs-2026-08-10`.
 - **Commit** — one saved step of work, with a description. The history is a
   stack of commits.
 - **Pull request ("PR")** — a proposal that says "take the work on this branch
-  and add it to `lrh`." It's the review-and-approve gate. Has a number (#52).
-- **Merge** — accepting a pull request, so its work becomes part of `lrh` — and
+  and add it to `main`." It's the review-and-approve gate. Has a number (#52).
+- **Merge** — accepting a pull request, so its work becomes part of `main` — and
   therefore goes live.
-- **Deploy** — Netlify building and publishing a version. `lrh` deploys to the
+- **Deploy** — Netlify building and publishing a version. `main` deploys to the
   real site; a branch gets its own private **branch deploy / deploy preview** so
   you can look before it's live.
 
@@ -75,7 +75,7 @@ Here's the whole lifecycle, and who does each step:
   Claude:  merges the pull request once you're happy
    │
    ▼
-  Netlify: publishes lrh → lrhemergencymanual.net updates. Done.
+  Netlify: publishes main → lrhemergencymanual.net updates. Done.
 ```
 
 **What you personally look at is only the last-mile stuff:** the green check

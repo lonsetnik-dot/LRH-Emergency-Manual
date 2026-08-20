@@ -3,27 +3,28 @@
 This repository is a set of **client-side, bedside emergency-department
 decision-support tools**.
 
-> ## THE BRANCH IS `lrh`. NOT `main`.
+> ## THE BRANCH IS `main`, AND NETLIFY MUST AGREE.
 >
-> **`lrh` is the trunk and the deploy branch** — the LRH reference
+> **`main` is the trunk and the deploy branch** — the LRH reference
 > implementation, localized to Littleton Regional Healthcare, and the live
 > bedside instrument at lrhemergencymanual.net. Branch from it, and open every
-> pull request against it.
+> pull request against it. It is the only branch; an `lrh` branch existed for a
+> while and was consolidated into `main` and deleted.
 >
-> **`main` is retired.** It is not deployed, not served, and not read. This
-> file used to say the opposite, and the cost was concrete: an entire session
-> of work was built, verified, reviewed and merged to `main` — where nothing
-> serves it — while the live manual sat 37 commits behind. Netlify's
-> production-branch setting is not visible from inside the repo, so nothing
-> contradicted the wrong sentence until a human noticed the site had not
-> changed. **If a doc and the deployment disagree, the deployment wins; go and
-> check which branch the site is actually built from before you trust a
-> sentence like this one.**
+> **THE REPO CANNOT TELL YOU IF THIS IS TRUE.** Which branch actually deploys
+> lives in Netlify — Project configuration → Build & deploy → Branches and
+> deploy contexts → *Production branch* — and nothing in these files is checked
+> against it. This sentence has been wrong before, and the cost was concrete: a
+> full session of work was built, verified, reviewed and merged to a branch
+> nothing served, while the live manual sat 37 commits behind, and no test
+> caught it because no test can. **If a doc and the deployment disagree, the
+> deployment wins.** If work you merged is not showing up on the live site,
+> check that Netlify field before you look anywhere else.
 
 `demo-build.mjs` produces a showroom copy of the same content (DEMO ribbon,
 `noindex`) from this same branch; it has no site attached at the moment.
 `cairnready.org` is a **separate set of sites in another repository** — not
-this one. **There is no generic trunk branch, and `lrh` must not be reverted
+this one. **There is no generic trunk branch, and `main` must not be reverted
 to a generic identity** — that would swap a hospital's live manual for a demo.
 Another hospital's edition is a new branch/fork that localizes
 `site.config.json` and the per-tool SITE CONFIG blocks. See `SITES.md`. Follow
@@ -422,8 +423,8 @@ live file (not needed for pure documentation-only changes) — adjust it for
 whatever's actually pending (e.g. don't say "open a PR" if one's already
 open on this branch):
 
-1. **Commit & push** to a feature branch off `lrh` (never straight to
-   `lrh` — it is what lrhemergencymanual.net serves).
+1. **Commit & push** to a feature branch off `main` (never straight to
+   `main` — it is what lrhemergencymanual.net serves).
 2. **Test on the Netlify branch deploy** — pushing to any connected branch
    automatically builds a live, fully-working deploy at its own URL,
    completely separate from production. Find it on Netlify → Deploys → the
@@ -431,12 +432,12 @@ open on this branch):
    pre-merge test step: safe, live, and it doesn't require merging first. The
    URL persists and auto-updates on every new push to that branch, so it's
    worth bookmarking for the duration of the branch's life.
-3. **Once it checks out on the branch deploy, merge the PR** into `lrh` on
-   GitHub (compare URL pattern: `.../compare/lrh...<branch-name>`). Check the
+3. **Once it checks out on the branch deploy, merge the PR** into `main` on
+   GitHub (compare URL pattern: `.../compare/main...<branch-name>`). Check the
    base branch on the PR page before merging — GitHub may still default the
    base to another branch, and a PR merged into the wrong one looks exactly
    like success while changing nothing on the live site.
-4. **Netlify auto-builds `lrh`** → `build.mjs` → production
+4. **Netlify auto-builds `main`** → `build.mjs` → production
    (`lrhemergencymanual.net`). One more quick check on production closes the
    loop. If a change touches `site.config.json` or any `{{SITE.*}}` token, run
    `demo-build.mjs` too: it has its own substitution pass and its own failure
