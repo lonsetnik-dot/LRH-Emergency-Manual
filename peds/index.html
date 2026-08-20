@@ -147,6 +147,7 @@
   <a class="shellback shell-phone" id="backlink" href="../?from=tool" aria-label="Back to the manual">&#8249;</a>
   <a class="shellback shell-wide" id="backlinkwide" href="../?from=tool">MANUAL &#8250;</a>
   <button class="shelltool" id="toolbtn" type="button" aria-haspopup="true"><span class="shellsq" id="toolsq" style="background:var(--purple)"></span>PEDS<span class="shellcaret">&#9660;</span></button>
+  <button class="ghost whybtn" id="whybtn" type="button" aria-pressed="false" aria-label="Show the reasoning on every step">WHY +</button>
   <div class="shellbarmid">
     <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:700;letter-spacing:.06em">READY</span>
   </div>
@@ -2361,6 +2362,11 @@ var PEDSAIR = (function(){
   var resetwide=$('resetwide'), resetbtn=$('resetbtn');
   if(resetwide && resetbtn) resetwide.addEventListener('click', function(){ resetbtn.click(); });
 })();
+</script>
+<script>
+/* Shared case-shell behavior (case-shell.js): the WHY control that reveals the
+   reasoning tier (.t-why) on every checklist row at once. Edited once, shared. */
+/* @shell-js */
 </script>
 </body>
 </html>

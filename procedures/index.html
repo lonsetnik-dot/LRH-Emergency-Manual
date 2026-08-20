@@ -143,6 +143,7 @@
 <div class="hdr">
   <a class="ghost" href="../?from=tool">◀ MANUAL</a>
   <button class="ghost" id="backbtn" type="button" style="display:none">◀ BACK</button>
+  <button class="ghost whybtn" id="whybtn" type="button" aria-pressed="false" aria-label="Show the reasoning on every step">WHY +</button>
   <div class="plabel">PROCEDURES</div>
   <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Procedures" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
 </div>
@@ -1675,6 +1676,11 @@ var SITE = {
     el.textContent = PROC_ICONS.caption(k);
   });
 })();
+</script>
+<script>
+/* Shared case-shell behavior (case-shell.js): the WHY control that reveals the
+   reasoning tier (.t-why) on every checklist row at once. Edited once, shared. */
+/* @shell-js */
 </script>
 </body>
 </html>
