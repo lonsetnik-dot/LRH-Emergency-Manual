@@ -52,9 +52,15 @@ const ACTION_MAX = 110;
        not prose, and verify_kit_consistency.mjs fails if anyone shortens them.
      · two rows (c06) are RSI dose tables — three live weight-computed doses on one line.
        Splitting them into one drug per row is a different, clinical decision about the card.
-   Those five are structural. Everything else in /codes/ now reads in one glance. */
+   Those five are structural. Everything else in /codes/ now reads in one glance.
+
+   /procedures/ has the same shape of residue: four KIT CONTENTS rows (the CVC catheter and
+   sharps lists, the AVA 3Xi kit, the DuCanto suction pair) under the same byte-identity
+   contract, and the chest-tube antibiotic row, which is rendered from SITE.abx and carries
+   both the drug and "never delay decompression for it" — demoting either half would be the
+   wrong trade. */
 const BUDGET = {
-  '/codes/': 5, '/procedures/': 196, '/trauma/': 1, '/peds/': 0, '/ob-neonatal/': 2,
+  '/codes/': 5, '/procedures/': 5, '/trauma/': 1, '/peds/': 0, '/ob-neonatal/': 2,
 };
 
 const TOOLS = Object.keys(BUDGET);
