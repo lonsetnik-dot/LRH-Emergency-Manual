@@ -95,6 +95,33 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
 .met-dot.beating { animation: metbeat 0.55s infinite; }
 .met-dot.beating-slow { animation: metbeat 1.2s infinite; }
 @media (prefers-reduced-motion: reduce) { .met-dot.beating, .met-dot.beating-slow { animation: none; } }
+
+#case-topbar { display: flex; align-items: center; gap: 8px; height: 58px; padding: 0 16px; background: #0e1a2b; border-bottom: 1px solid #1c2b40; }
+#case-actionbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 16px; background: #0c1626; border-bottom: 1px solid #1c2b40; }
+.case-clocks { flex: 1; display: flex; justify-content: center; gap: 10px; min-width: 0; }
+.case-topbar-btns { display: flex; gap: 8px; flex-shrink: 0; }
+
+/* Responsive: below this width the two-column layouts, the nav's six text
+   links, and the case walkthrough's fixed-width chrome (a 320px sidebar
+   column, a no-wrap top bar cramming a breadcrumb + clocks + two buttons
+   into one 58px-tall row) all stop fitting a phone and start overlapping
+   instead of reflowing. */
+@media (max-width: 760px) {
+  .nav-links > a:not(:last-child) { display: none; }
+  .hero-grid { grid-template-columns: 1fr !important; gap: 36px !important; }
+  .two-col { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .form-two-col { grid-template-columns: 1fr !important; }
+  .glyph-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .feature-grid { grid-template-columns: 1fr !important; }
+  .steps-grid { grid-template-columns: 1fr 1fr !important; }
+  .stats-grid { grid-template-columns: 1fr !important; }
+  .case-grid { grid-template-columns: 1fr !important; min-height: 0 !important; }
+
+  #case-topbar { flex-wrap: wrap; height: auto; padding: 10px 12px; row-gap: 8px; }
+  .case-crumb { display: none !important; }
+  .case-clocks { flex: 1 1 auto; justify-content: flex-start; }
+  .case-topbar-btns { order: 2; }
+}
 </style>
 </head>
 <body>
@@ -106,7 +133,7 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
         <span style="font-family: Bitter, serif; font-weight: 800; font-size: 22px; color: oklch(0.24 0.015 160)">Cairn</span>
       </a>
       <div style="flex: 1"></div>
-      <div style="display: flex; gap: 22px; align-items: center; font-size: 15px">
+      <div class="nav-links" style="display: flex; gap: 22px; align-items: center; font-size: 15px">
         <a href="#preview" style="color: oklch(0.35 0.02 160)">Walk a case</a>
         <a href="#inside" style="color: oklch(0.35 0.02 160)">What's inside</a>
         <a href="#how" style="color: oklch(0.35 0.02 160)">How it works</a>
@@ -118,7 +145,7 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
   </nav>
 
   <header id="top" style="padding: 88px 32px 72px; background: linear-gradient(180deg, #f6f7f6 0%, oklch(0.955 0.012 250) 100%)">
-    <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1.4fr 1fr; gap: 64px; align-items: center">
+    <div class="hero-grid" style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1.4fr 1fr; gap: 64px; align-items: center">
       <div>
         <div style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #005596; border: 1px solid oklch(0.8 0.05 250); border-radius: 999px; padding: 5px 14px; margin-bottom: 24px">Open source &middot; cairnready.org</div>
         <h1 style="font-family: Bitter, serif; font-weight: 800; font-size: 54px; line-height: 1.08; margin: 0 0 22px; text-wrap: balance">Ready for the rare, in every rural ED.</h1>
@@ -166,9 +193,9 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
       <div id="case-chips" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px"></div>
 
       <div style="background: #0b1320; border-radius: 14px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,0.4)">
-        <div id="case-topbar" style="display: flex; align-items: center; gap: 8px; height: 58px; padding: 0 16px; background: #0e1a2b; border-bottom: 1px solid #1c2b40"></div>
-        <div id="case-actionbar" style="display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 16px; background: #0c1626; border-bottom: 1px solid #1c2b40"></div>
-        <div style="display: grid; grid-template-columns: 1fr 320px; min-height: 430px">
+        <div id="case-topbar"></div>
+        <div id="case-actionbar"></div>
+        <div class="case-grid" style="display: grid; grid-template-columns: 1fr 320px; min-height: 430px">
           <div id="case-main" style="padding: 22px 24px; display: flex; flex-direction: column; gap: 14px"></div>
           <div style="border-left: 1px solid #1c2b40; background: #101d31; display: flex; flex-direction: column">
             <div style="padding: 13px 18px; border-bottom: 1px solid #1c2b40; display: flex; align-items: baseline; gap: 10px">
@@ -199,7 +226,7 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
           <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #005596">print-ready &middot; drawer faces, stock strips, wall posters</span>
         </div>
         <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0 0 22px; max-width: 660px">Anatomy in ink, the one action in red — never more than one red idea per figure. Related procedures share a base drawing and differ only by that idea: the hysterotomy's vertical midline cut and the C-section's transverse one sit on the same uterus. The same glyph rides the drawer label, the poster and the live card, so the cart and the screen agree.</p>
-        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px">
+        <div class="glyph-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px">
           <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
             <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #fdfdfc">
               <svg width="62" height="62" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
@@ -302,7 +329,7 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
         </div>
       </div>
 
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px">
+      <div class="feature-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px">
         <div style="background: #fff; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; padding: 26px 24px">
           <div style="width: 40px; height: 40px; border-radius: 9px; background: oklch(0.94 0.02 250); display: flex; align-items: center; justify-content: center; margin-bottom: 16px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #005596; display: block"></span></div>
           <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Interactive emergency manual</h3>
@@ -341,7 +368,7 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
     <div style="max-width: 1100px; margin: 0 auto">
       <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 34px; margin: 0 0 12px">How a department adopts it</h2>
       <p style="font-size: 17px; color: oklch(0.42 0.02 160); max-width: 640px; margin: 0 0 44px; line-height: 1.6">It starts with one local physician champion. No developers required — the mechanical steps are the kind an AI assistant does for you.</p>
-      <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px">
+      <div class="steps-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px">
         <div style="position: relative; padding: 24px 22px 26px; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; background: #f6f7f6">
           <div style="font-family: Bitter, serif; font-weight: 800; font-size: 15px; color: #005596; margin-bottom: 10px">01</div>
           <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Take a branch</h3>
@@ -371,7 +398,7 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
     <div style="max-width: 1100px; margin: 0 auto">
       <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 34px; margin: 0 0 12px">Why cognitive aids, why rural</h2>
       <p style="font-size: 17px; color: oklch(0.42 0.02 160); max-width: 660px; margin: 0 0 40px; line-height: 1.6">A rural ED sees everything an urban trauma center sees — just rarely. When the once-in-three-years case arrives, recall under stress is not a plan. Checklists and practiced teams are.</p>
-      <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-bottom: 36px">
+      <div class="stats-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-bottom: 36px">
         <div style="background: #fff; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; padding: 28px 24px">
           <div style="font-family: Bitter, serif; font-weight: 800; font-size: 42px; color: #005596; line-height: 1">6% vs 23%</div>
           <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 12px 0 0">Critical management steps missed in simulated operating-room crises with checklists versus without them.<sup>1</sup></p>
@@ -392,7 +419,7 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
   </section>
 
   <section id="governance" style="padding: 72px 32px; background: oklch(0.95 0.015 250)">
-    <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start">
+    <div class="two-col" style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start">
       <div>
         <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 30px; margin: 0 0 14px">Open source, openly governed</h2>
         <p style="font-size: 16px; line-height: 1.65; color: oklch(0.38 0.02 160); margin: 0 0 14px">Everything lives in one repository under a permissive license: the manual, the cognitive aids, the kit lists, the label and poster templates, the simulation scripts, and the guideline-provenance records that say which source each tool is written against and when a human last checked it.</p>
@@ -414,7 +441,7 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
   </section>
 
   <section id="join" style="padding: 88px 32px; background: oklch(0.3 0.05 250)">
-    <div style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start">
+    <div class="two-col" style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start">
       <div>
         <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 34px; color: #fff; margin: 0 0 14px">Join the network</h2>
         <p style="font-size: 16.5px; line-height: 1.65; color: oklch(0.85 0.01 160); margin: 0 0 14px">Be the physician champion for your department — or just follow along while you decide. We'll connect you with the branch, the localization worksheet, and the people who have already walked the trail.</p>
@@ -423,7 +450,7 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
       <div style="background: #fff; border-radius: 12px; padding: 30px">
         <form name="join" method="POST" data-netlify="true" id="join-form" style="display: flex; flex-direction: column; gap: 16px">
           <input type="hidden" name="form-name" value="join">
-          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px">
+          <div class="form-two-col" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px">
             <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 700; color: oklch(0.35 0.02 160)">Name
               <input required type="text" name="name" style="border: 1px solid oklch(0.85 0.01 160); border-radius: 7px; padding: 10px 12px; font-size: 15px">
             </label>
@@ -582,12 +609,14 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
       return '<span style="' + c.style + '"><span style="width:8px;height:8px;border-radius:50%;background:' + c.dot + '"></span><span style="font-family:\'JetBrains Mono\',monospace;font-size:17px;font-weight:700;color:#fff">' + esc(c.time) + '</span><span style="font-family:\'JetBrains Mono\',monospace;font-size:11px;letter-spacing:0.06em;color:' + c.tagColor + '">' + esc(c.tag) + '</span></span>';
     }).join('');
     document.getElementById('case-topbar').innerHTML =
-      '<span style="min-height:40px;display:flex;align-items:center;padding:0 10px;color:#9db4d0;font-size:14px;font-weight:700">Manual</span>' +
-      '<span style="color:#48607f">›</span>' +
+      '<span class="case-crumb" style="min-height:40px;display:flex;align-items:center;padding:0 10px;color:#9db4d0;font-size:14px;font-weight:700">Manual</span>' +
+      '<span class="case-crumb" style="color:#48607f">›</span>' +
       '<span style="display:flex;align-items:center;gap:8px;min-height:40px;padding:0 10px;color:#eef3f9;font-size:16.5px;font-weight:700;white-space:nowrap"><span style="width:9px;height:9px;border-radius:3px;background:' + m.sectionColor + '"></span>' + esc(m.section) + '</span>' +
-      '<div style="flex:1;display:flex;justify-content:center;gap:10px;min-width:0">' + clocksHtml + '</div>' +
-      '<span style="min-height:40px;display:flex;align-items:center;padding:0 11px;border:1px solid #2a3d58;border-radius:10px;color:#cdd9e8;font-size:12.5px;font-weight:700;letter-spacing:0.05em">TIMELINE</span>' +
-      '<span style="min-height:40px;display:flex;align-items:center;padding:0 11px;border:1px solid #6e2d3a;border-radius:10px;color:#f0899a;font-size:12.5px;font-weight:700;letter-spacing:0.05em">RESET</span>';
+      '<div class="case-clocks">' + clocksHtml + '</div>' +
+      '<div class="case-topbar-btns">' +
+      '<span style="min-height:40px;display:flex;align-items:center;padding:0 11px;border:1px solid #2a3d58;border-radius:10px;color:#cdd9e8;font-size:12.5px;font-weight:700;letter-spacing:0.05em;white-space:nowrap">TIMELINE</span>' +
+      '<span style="min-height:40px;display:flex;align-items:center;padding:0 11px;border:1px solid #6e2d3a;border-radius:10px;color:#f0899a;font-size:12.5px;font-weight:700;letter-spacing:0.05em;white-space:nowrap">RESET</span>' +
+      '</div>';
   }
 
   function renderActionbar(m) {
