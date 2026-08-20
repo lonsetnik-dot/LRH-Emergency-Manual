@@ -7,7 +7,7 @@
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0D1420">
 <title>{{SITE.abbrev}} Traumatic Cardiac Arrest — Cognitive Aid</title>
-<meta name="description" content="Mobile cognitive aid for traumatic cardiac arrest (TCA): reversible-cause workstreams (hemorrhage, airway, chest decompression, tamponade, obstetric), sequential vs simultaneous team modes, weight-based fluid/TXA/calcium, and an event log. Personal aid, not hospital policy.">
+<meta name="description" content="Mobile cognitive aid for traumatic cardiac arrest (TCA): reversible causes worked in priority order (hemorrhage, airway, chest decompression, tamponade, obstetric), weight-based fluid/TXA/calcium, and an event log. Personal aid, not hospital policy.">
 <style>
 /* @design-system-live */
 /* ---- Shared live-protocol skeleton (tokens, .hdr/.card/.btn/.acc/.chip/etc.,
@@ -411,10 +411,9 @@ a{color:var(--blue)}  /* text-decoration:none removed: it would have
    site-specific calls (MEP, OPSTAT, RWH numbers, ROTEM) for a small rural
    hospital. Edit SITE.local to adapt to your own site.
 
-   MODE: 'sequential' models a rural / limited team working the reversible
-   causes in priority order; 'simultaneous' models a full trauma team working
-   them in parallel. The guideline makes resource availability the deciding
-   factor, so each site picks ONE model here at localization — see SITE.mode.
+   ORDER: the reversible causes are worked in PRIORITY ORDER — a rural team
+   cannot do everything at once. See the config note on the removed team-mode
+   setting for why there is no longer a parallel alternative.
 
    v0.2.1 (2026-08-15): rebuilt the chrome onto the case shell (SHELL.md) —
    app bar + tool switcher, case-clock pill, weight strip, standard tele-ED
@@ -424,13 +423,15 @@ a{color:var(--blue)}  /* text-decoration:none removed: it would have
    ========================================================================== */
 var SITE = {
   version: "0.2.2", lastReviewed: "2026-08-17",
-  /* TEAM MODEL — chosen ONCE per site at localization; NOT a bedside control.
-     'sequential'   = rural / limited team: reversible causes in priority order,
-                      conventional CPR is a secondary priority.
-     'simultaneous' = full trauma team: workstreams assigned and worked in
-                      parallel, CPR concurrent.
-     The originating site is a rural critical-access hospital → sequential. */
-  mode: "sequential",
+  /* TEAM MODEL — removed 2026-08-20. This aid works the reversible causes in
+     PRIORITY ORDER, because one or two clinicians cannot do everything at
+     once, and conventional CPR is a secondary priority behind them.
+     A 'simultaneous' mode existed for a full trauma team working the
+     workstreams in parallel. It is gone: this manual is for rural
+     critical-access EDs, nobody ran it, and a second untested rendering path
+     through the one screen a clinician reads during a traumatic arrest is a
+     liability rather than an option. A centre with a full trauma team needs a
+     different aid, not a flag on this one. */
   noSignsOfLifeMin: 10,                  /* DNR if no signs of life beyond this */
   cprPauseMaxMin: 2,                     /* pause CPR in progress for at most this */
   conventionalResusMin: 10,              /* conventional BLS/ALS ± compressions window */
@@ -595,7 +596,7 @@ var SS = {
   markCaseStarted:function(){ if(SS.getCaseStartMs()===null) SS.set('lrh-case-startms', String(Date.now())); }
 };
 
-var S = { theme:'dark', mode:SITE.mode, kg:null, ageY:null, override:false, stop:{}, said:false, step:0,
+var S = { theme:'dark', kg:null, ageY:null, override:false, stop:{}, said:false, step:0,
           phase:'idle', codeStart:null, checked:{}, pregnant:false,
           reversibleAddressed:false, addressedAt:null,
           events:[], open:null, resetArm:false, showCustom:false,
@@ -796,15 +797,14 @@ function renderSay(){
 }
 
 function renderWork(){
-  var seq = (S.mode==='sequential');
-  $('worktitle').textContent = seq ? 'WORK THE PRIORITIES IN ORDER — TAP EACH DONE' : 'ASSIGN EACH WORKSTREAM — WORK IN PARALLEL';
+  $('worktitle').textContent = 'WORK THE PRIORITIES IN ORDER — TAP EACH DONE';
   var h='';
   for(var w=0; w<WORK.length; w++){
     var it=WORK[w];
     if(it.id==='O' && !S.pregnant) continue;      /* obstetric only when flagged */
     var done=0, total=it.tasks.length;
     for(var i=0;i<total;i++){ if(S.checked[it.id+i]) done++; }
-    var num = seq ? '<span class="mono" style="font-size:15px;font-weight:700;color:'+it.color+';flex:none;width:20px;text-align:center">'+(w+1)+'</span>' : '';
+    var num = '<span class="mono" style="font-size:15px;font-weight:700;color:'+it.color+';flex:none;width:20px;text-align:center">'+(w+1)+'</span>';
     h+='<div class="wcard" style="border-left:4px solid '+it.color+'">'+
        '<div style="display:flex;align-items:center;gap:10px;padding:13px 14px">'+num+
          '<div style="flex:1;min-width:0">'+
@@ -862,15 +862,11 @@ var ACC = [
      '<p style="margin-bottom:0">So the priority is rapid correction of the <b>two H&rsquo;s &amp; two T&rsquo;s — Hypoxia, Hypovolemia, Tension &amp; Tamponade</b>. '+
      'Hemorrhage control, volume replacement, airway management and chest decompression come <b>before</b> conventional CPR — unless a medical cause is suspected.</p>';
  }},
- {id:'seqsim', title:'SEQUENTIAL vs SIMULTANEOUS — HOW THIS SITE IS SET', body:function(){
-   var seq=(S.mode==='sequential');
-   return '<p>The reversible causes should ideally be corrected <b>at the same time</b>. Whether you can depends on how many hands you have — so each site is configured for <b>one</b> model at setup, not switched at the bedside.</p>'+
-     '<p><b>This aid is set to '+(seq?'SEQUENTIAL':'SIMULTANEOUS')+'</b> for {{SITE.abbrev}}. To change it for another site, set <code>SITE.mode</code> in the config block.</p>'+
-     '<p><b>Simultaneous (full trauma team):</b> assign hemorrhage, airway, breathing, cardiac and obstetric to separate people and work them in parallel. '+
-     'These priorities are met quickly and CPR can run concurrently.</p>'+
-     '<p><b>Sequential (rural / limited team):</b> one or two clinicians cannot do everything at once, so work the priorities in order — '+
-     'catastrophic hemorrhage, then airway, then chest decompression, then the pump. Conventional CPR is a <b>secondary</b> priority here: '+
-     'start compressions after the airway is managed and tamponade is corrected, and expect little benefit until volume is restored.</p>'+
+ {id:'seqsim', title:'WHY PRIORITY ORDER, AND WHERE CPR SITS', body:function(){
+   return '<p>The reversible causes should ideally be corrected <b>at the same time</b>. Whether you can depends on how many hands you have, and in a rural department the honest answer is that you cannot — so this aid works them in <b>priority order</b>: '+
+     'catastrophic hemorrhage, then airway, then chest decompression, then the pump.</p>'+
+     '<p><b>Conventional CPR is a secondary priority here.</b> Start compressions after the airway is managed and tamponade is corrected, and expect little benefit until volume is restored. '+
+     'Chest compressions cannot circulate blood that is not in the circulation, which is why they come after the bleeding and the tamponade rather than before them.</p>'+
      '<p style="margin-bottom:0">If CPR is already in progress on arrival, <b>pause it for at most '+SITE.cprPauseMaxMin+' minutes</b> to correct the reversible causes.</p>';
  }},
  {id:'hem', title:'HEMORRHAGE CONTROL, ACCESS & REPLACE', body:function(){
@@ -932,7 +928,7 @@ function renderAccordions(){
 }
 
 function planLabel(){
-  if(S.phase==='active') return 'TRAUMATIC CARDIAC ARREST · '+(S.mode==='sequential'?'SEQUENTIAL':'SIMULTANEOUS');
+  if(S.phase==='active') return 'TRAUMATIC CARDIAC ARREST';
   if(S.phase==='rosc')   return 'TCA · ROSC — POST-RESUS CARE';
   if(S.phase==='ceased') return 'TCA · RESUSCITATION CEASED';
   return 'TRM · TRAUMATIC CARDIAC ARREST';
@@ -972,8 +968,6 @@ function paint(){
   $('resetwide').style.background = S.resetArm ? 'var(--red)' : '';
   $('resetwide').style.color = S.resetArm ? '#fff' : '';
 
-  /* Team model is fixed per site at localization (SITE.mode) — no bedside toggle. */
-  var seq=(S.mode==='sequential');
 
   /* Weight strip (layer 4): collapsed row ↔ the input form. Phone default is
      collapsed; ≥768px it stays open until confirmed (DONE ✓ / ESTIMATE, or a
@@ -1038,9 +1032,7 @@ function paint(){
   $('ceased').style.display = S.phase==='ceased' ? '' : 'none';
 
   if(running){
-    $('cprnote').innerHTML = seq
-      ? 'If CPR is already running, <b>pause it for up to '+SITE.cprPauseMaxMin+' min</b> to correct these. Start compressions only after the airway is managed and tamponade is corrected.'
-      : 'If CPR is already running, <b>pause it for up to '+SITE.cprPauseMaxMin+' min</b> to correct these. With a full team, compressions run concurrently.';
+    $('cprnote').innerHTML = 'If CPR is already running, <b>pause it for up to '+SITE.cprPauseMaxMin+' min</b> to correct these. Start compressions only after the airway is managed and tamponade is corrected.';
     renderWork();
     renderDoses();
 
@@ -1084,7 +1076,7 @@ function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
 function startTCA(){
   S.codeStart = Date.now(); S.phase='active';
   SS.markCaseStarted();
-  log('TRAUMATIC CARDIAC ARREST declared — '+(S.mode==='sequential'?'sequential / limited team':'simultaneous / full team'), EV.red);
+  log('TRAUMATIC CARDIAC ARREST declared', EV.red);
   log(SITE.local.activation, EV.amber);
   if(S.pregnant) log('Pregnant ≥'+SITE.pregGestWeeks+' wk — OB + neonatal called, hysterotomy planned within '+SITE.hysterotomyByMin+' min', EV.amber);
   /* Seed the timeline with a pre-case tele-ED activation (SHELL.md). */
@@ -1096,7 +1088,7 @@ function doReset(){
      they now have the same blast radius (weight-routing audit — TCA's used to
      clear only this tool while arrest's swept every tool's case state). */
   SS.sweep();
-  S = { theme:S.theme, mode:S.mode, kg:null, ageY:null, override:false,
+  S = { theme:S.theme, kg:null, ageY:null, override:false,
         /* The stop gate resets with the case: the next patient is a new
            decision, and a criterion left checked from the last one would hide
            the START button on a patient nobody has assessed yet. */

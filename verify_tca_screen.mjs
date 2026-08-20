@@ -317,7 +317,8 @@ ck('4. thoracotomy link present', hasLink('Resuscitative thoracotomy', 'procedur
 ck('4. tourniquet link present', hasLink('Tourniquet', 'procedures/?from=home#c10'), true);
 ck('4. sequential mode shows priority numbers', await pg.$eval('#worksteps', e => /1|2|3/.test(e.textContent)), true);
 ck('4. sequential worktitle mentions priority order', /ORDER/.test(await txt('#worktitle')), true);
-ck('4. plabel reflects the configured sequential mode', /SEQUENTIAL/.test(await txt('#plabel')), true);
+ck('4. plabel names the protocol, with no mode suffix',
+   /TRAUMATIC CARDIAC ARREST/.test(await txt('#plabel')) && !/SEQUENTIAL|SIMULTANEOUS/.test(await txt('#plabel')), true);
 ck('4. CPR-in-progress pause note present', /pause/i.test(await txt('#cprnote')), true);
 
 /* the inline circulation numbers still route by weight (same math as the rows) */
@@ -400,24 +401,27 @@ ck('7. hysterotomy aims at the configured minutes (SITE.hysterotomyByMin)',
 ck('7. resuscitative hysterotomy link present',
    await pg.$$eval('#worksteps a.wlink', as => as.some(a => a.getAttribute('href').includes('ob-neonatal/?from=home#c10'))), true);
 
-/* ---- 8. simultaneous rendering via a config-swapped copy ---- */
+/* ---- 8. there is ONE rendering of the priorities (2026-08-20) ----
+   A 'simultaneous' team mode used to render the same workstreams as a parallel
+   assignment list, and this block exercised it through a config-swapped copy.
+   It is gone: this manual is for rural critical-access EDs, nobody ran that
+   mode, and a second untested rendering path through the one screen a
+   clinician reads during a traumatic arrest is a liability rather than an
+   option. What replaces the block is the assertion that it cannot come back by
+   accident — no mode switch, and the priority framing is not conditional. */
 {
-  const fs = await import('fs');
-  const distFile = join(__dirname, 'dist', 'tca', 'index.html');
-  const src = fs.readFileSync(distFile, 'utf8');
-  const swapped = src.replace('mode: "sequential"', 'mode: "simultaneous"');
-  ck('8. SITE.mode config swap point present', swapped !== src, true);
-  const tmp = join(__dirname, 'dist', 'tca', '_verify_simultaneous.html');
-  fs.writeFileSync(tmp, swapped);
-  const p2 = await b.newPage({ viewport: { width: 390, height: 844 } });
-  await p2.goto(BASE + '/tca/_verify_simultaneous.html');
-  await p2.waitForTimeout(250);
-  await p2.click('#startbtn'); await p2.waitForTimeout(250);
-  ck('8. simultaneous config: worktitle mentions parallel', /PARALLEL/.test(await p2.$eval('#worktitle', e => e.textContent)), true);
-  ck('8. simultaneous config: plabel reflects it', /SIMULTANEOUS/.test(await p2.$eval('#plabel', e => e.textContent)), true);
-  ck('8. simultaneous config: CPR note says concurrent', /concurrent/.test(await p2.$eval('#cprnote', e => e.textContent.toLowerCase())), true);
-  await p2.close();
-  fs.unlinkSync(tmp);
+  ck('8. no team-mode switch remains in the shipped file', await pg.evaluate(() =>
+     typeof SITE.mode === 'undefined'), true);
+  ck('8. the priorities are always framed as an ORDER',
+     /IN ORDER/i.test(await pg.$eval('#worktitle', e => e.textContent)), true);
+  /* The clinical invariant the removed mode used to soften: with few hands,
+     compressions come AFTER the airway and the tamponade. The simultaneous
+     copy said they run concurrently, which is true for a full trauma team and
+     false here. Only one of those sentences should be reachable now. */
+  const note = await pg.$eval('#cprnote', e => e.textContent);
+  ck('8. CPR is placed after airway and tamponade, not concurrent',
+     /only after the airway is managed and tamponade is corrected/i.test(note), true);
+  ck('8. and the concurrent-CPR wording is unreachable', /concurrent/i.test(note), false);
 }
 
 /* ---- 9. PHI guard on the free-text log ---- */
