@@ -178,6 +178,27 @@ a{color:var(--blue)}  /* text-decoration:none removed: it would have
       </label>
     </div>
 
+    <!-- ===================== DECIDE FIRST (2026-08-20) =====================
+         The gate. Traumatic cardiac arrest is the one arrest where the first
+         decision is whether to resuscitate at all, and it is made in seconds
+         by whoever is standing there. Four criteria, any one of which stops
+         it, rendered from SITE.stop so a centre with in-house surgical cover
+         can delete the fourth. Checking one swaps the START button for a
+         DECLARE button — the tool refuses to start a code it has just been
+         told not to start, rather than printing a caution and letting the big
+         red button work anyway. -->
+    <div class="card" id="gate" style="margin-top:14px;padding:0;border:2px solid var(--amber);overflow:hidden">
+      <div style="display:flex;justify-content:center;padding:13px 14px 0">
+        <span style="background:var(--amber);color:#141E2B;font:800 12px var(--sans);letter-spacing:.12em;padding:8px 17px;border-radius:999px">DECIDE FIRST</span>
+      </div>
+      <div style="padding:11px 14px 14px">
+        <div style="font:800 20px var(--sans);line-height:1.25">Should I start a code on this trauma patient?</div>
+        <div style="font-size:13.5px;color:var(--ink2);margin:3px 0 11px">If <b style="color:var(--ink)">yes to any</b> of these, stop.</div>
+        <div id="gaterows" style="display:grid;gap:8px"></div>
+        <div id="gateout" style="margin-top:12px"></div>
+      </div>
+    </div>
+
     <button id="startbtn" type="button" style="width:100%;margin-top:12px;min-height:96px;border:none;border-radius:16px;background:var(--red);color:#fff;font:800 21px var(--sans);letter-spacing:.03em;cursor:pointer;box-shadow:0 6px 24px rgba(229,72,77,.25)">
       DECLARE &ldquo;TRAUMATIC CARDIAC ARREST&rdquo;
       <div style="font-size:12.5px;font-weight:600;opacity:.9;margin-top:5px">Say it out loud — shared mental model. Starts the clock · activates trauma team + massive transfusion protocol</div>
@@ -400,6 +421,38 @@ var SITE = {
           pedsGluconateMgPerKg: 50, pedsGluconateMaxMg: 3000 },
   bp:   { sbp: 90, mapLow: 50, mapHigh: 60, tbiSbp: 110, tbiMap: 80 },
   trigger: { maxKg: 50, maxAgeYrs: 12 }, /* weight-based (peds) dosing threshold */
+  /* STOP CRITERIA — the gate before a code is started at all (2026-08-20).
+     Traumatic cardiac arrest is the one arrest where the first decision is
+     whether to resuscitate, and it is made in seconds under pressure by
+     whoever is standing there. Printing the criteria as four things to answer
+     turns that into a decision someone MADE rather than one that happened.
+     Any single yes stops it — they are not weighed against each other.
+     Localizable: a centre with in-house surgical cover deletes the fourth. */
+  stop: [
+    "Lost vitals before the last {window} minutes",
+    "Obvious non-survivable injury",
+    "Mass casualty — resources needed elsewhere",
+    "No surgical support available for this"
+  ],
+  stopWindowMin: 15,        /* the arrest window in the first stop criterion */
+  /* THE SENTENCE THAT CHANGES THE ROOM. Said out loud, it stops the team from
+     running the ACLS algorithm they have practised a hundred times, which is
+     the single commonest failure in a traumatic arrest. It is config because
+     the wording is a departmental voice, not a clinical value. */
+  declare: {
+    call: "This is Traumatic Cardiac Arrest",
+    script: "We are not doing normal ACLS. We are resuscitating with blood, looking for immediately reversible injuries, and we will stop if we cannot find any."
+  },
+  /* SIGNS OF LIFE — the end gate, and the list is the answer to "how do I
+     know". Kept written out rather than left to memory because it is asked at
+     the worst moment of the case. */
+  signsOfLife: [
+    "Cardiac motion on ultrasound",
+    "Palpable pulse or measurable blood pressure",
+    "Organized ECG activity",
+    "Pupillary response",
+    "Spontaneous movement or respiratory effort"
+  ],
   /* ---- Site-specific strings — genericized from the RMH original ---------- */
   local: {
     activation: "Activate the trauma team and the massive transfusion protocol.",
@@ -516,7 +569,7 @@ var SS = {
   markCaseStarted:function(){ if(SS.getCaseStartMs()===null) SS.set('lrh-case-startms', String(Date.now())); }
 };
 
-var S = { theme:'dark', mode:SITE.mode, kg:null, ageY:null, override:false,
+var S = { theme:'dark', mode:SITE.mode, kg:null, ageY:null, override:false, stop:{}, said:false, step:0,
           phase:'idle', codeStart:null, checked:{}, pregnant:false,
           reversibleAddressed:false, addressedAt:null,
           events:[], open:null, resetArm:false, showCustom:false,
@@ -673,6 +726,38 @@ function reassessRemain(){
 }
 
 /* =============================== RENDER ==================================== */
+/* ===================== DECIDE FIRST — the stop gate =======================
+   Renders SITE.stop as four things to answer, and enforces the answer: any one
+   checked hides the START button entirely and offers DECLARE instead. Printing
+   a caution while leaving the red button live would make the gate advisory,
+   and an advisory gate in a room where somebody has already reached for the
+   chest is not a gate. Nothing here is persisted — it is a decision about
+   whether this case begins, not a fact about a patient (CASE-STATE.md). */
+function renderGate(){
+  var rows='';
+  for(var i=0;i<SITE.stop.length;i++){
+    var on=!!S.stop[i];
+    var txt=SITE.stop[i].replace('{window}', SITE.stopWindowMin);
+    rows+='<button type="button" class="wrow" data-stop="'+i+'" aria-pressed="'+(on?'true':'false')+'" '+
+          'style="min-height:52px;'+(on?'border-color:var(--red);background:rgba(229,72,77,.10)':'')+'">'+
+            '<span class="wbox" style="'+(on?'border-color:var(--red);background:var(--red);color:#fff':'')+'">'+(on?'✓':'')+'</span>'+
+            '<span class="wtext" style="font-weight:600">'+txt+'</span>'+
+          '</button>';
+  }
+  var g=$('gaterows'); if(g) g.innerHTML=rows;
+  var any=false; for(var k=0;k<SITE.stop.length;k++){ if(S.stop[k]) any=true; }
+  var out=$('gateout'), btn=$('startbtn');
+  if(out){
+    out.innerHTML = any
+      ? '<div style="border:1px solid var(--red);border-radius:12px;padding:11px 12px;font-size:14px;line-height:1.5">'+
+        'This patient is not a candidate for resuscitative thoracotomy. Declare, support the family, and document what was found.</div>'+
+        '<button type="button" id="declarebtn" style="width:100%;margin-top:9px;min-height:64px;border:none;border-radius:12px;'+
+        'background:var(--gray);color:#fff;font:800 17px var(--sans);letter-spacing:.03em;cursor:pointer">DO NOT START — DECLARE</button>'
+      : '';
+  }
+  if(btn) btn.style.display = any ? 'none' : '';
+}
+
 function renderWork(){
   var seq = (S.mode==='sequential');
   $('worktitle').textContent = seq ? 'WORK THE PRIORITIES IN ORDER — TAP EACH DONE' : 'ASSIGN EACH WORKSTREAM — WORK IN PARALLEL';
@@ -817,6 +902,7 @@ function planLabel(){
 }
 
 function paint(){
+  if(S.phase==='idle') renderGate();
   /* --accent is set per theme in CSS (orange = Trauma category); no JS override. */
   paintCaseClock();
   var running = (S.phase==='active');
@@ -968,6 +1054,10 @@ function doReset(){
      clear only this tool while arrest's swept every tool's case state). */
   SS.sweep();
   S = { theme:S.theme, mode:S.mode, kg:null, ageY:null, override:false,
+        /* The stop gate resets with the case: the next patient is a new
+           decision, and a criterion left checked from the last one would hide
+           the START button on a patient nobody has assessed yet. */
+        stop:{}, said:false, step:0, declared:false,
         phase:'idle', codeStart:null, checked:{}, pregnant:false,
         reversibleAddressed:false, addressedAt:null,
         events:[], open:null, resetArm:false, showCustom:false,
@@ -1184,8 +1274,15 @@ function wire(){
   $('customlog').addEventListener('click', submitCustom);
   $('customin').addEventListener('keydown', function(e){ if(e.key==='Enter') submitCustom(); });
 
-  /* Delegated taps: workstream checkboxes + accordion headers. */
+  /* Delegated taps: stop-gate criteria, workstream checkboxes, accordions. */
   document.addEventListener('click', function(e){
+    var g=e.target.closest ? e.target.closest('[data-stop]') : null;
+    if(g){ var gi=g.getAttribute('data-stop'); S.stop[gi]=!S.stop[gi]; paint(); return; }
+    if(e.target.closest && e.target.closest('#declarebtn')){
+      /* Deliberately does NOT start a case or a clock. Nothing to time and
+         nothing to log against a patient — the decision was not to begin. */
+      S.declared=true; paint(); return;
+    }
     var t=e.target.closest ? e.target.closest('[data-task]') : null;
     if(t){
       var key=t.getAttribute('data-task'), was=!!S.checked[key];

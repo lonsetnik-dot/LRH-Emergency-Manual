@@ -199,6 +199,52 @@ ck('3. a second tap logs nothing twice', (await tlText()).split('Tele-ED activat
 await pg.click('#startbtn'); await pg.waitForTimeout(400);
 ck('3. a pre-case tele activation seeds the case log', /Tele-ED already on the line/.test(await tlText()), true);
 
+/* ---- 3b. DECIDE FIRST — the stop gate (2026-08-20) ----
+   Traumatic cardiac arrest is the one arrest where the first decision is
+   whether to resuscitate at all. Asserted against SITE.stop rather than
+   against four hardcoded sentences, so a centre that deletes the "no surgical
+   support" criterion — the localization this exists to allow — keeps a green
+   run. What is written out is the INVARIANT a fork must not be able to
+   localize away: any single criterion blocks the start. */
+await fresh();
+{
+  const cfg = await pg.evaluate(() => ({ n: SITE.stop.length, win: SITE.stopWindowMin, first: SITE.stop[0] }));
+  ck('3b. the gate renders one row per configured stop criterion',
+     await pg.locator('[data-stop]').count(), cfg.n);
+  /* The window is a localized number in a templated string; the screen must
+     show the value, never the raw {window} token. */
+  const firstTxt = await pg.locator('[data-stop]').first().textContent();
+  ck('3b. the arrest window is substituted from config, not printed raw',
+     firstTxt.includes(String(cfg.win)) && !/\{window\}/.test(firstTxt), true);
+  ck('3b. START is offered while nothing is checked', await vis('#startbtn'), true);
+  ck('3b. no DECLARE button while nothing is checked', await vis('#declarebtn'), false);
+
+  /* Every criterion independently, because "any one stops it" is the claim.
+     A gate that only honoured the first would pass a spot check. */
+  for (let i = 0; i < cfg.n; i++) {
+    await pg.click(`[data-stop="${i}"]`); await pg.waitForTimeout(120);
+    ck(`3b. criterion ${i} alone removes START`, await vis('#startbtn'), false);
+    ck(`3b. criterion ${i} alone offers DECLARE instead`, await vis('#declarebtn'), true);
+    await pg.click(`[data-stop="${i}"]`); await pg.waitForTimeout(120);
+  }
+  ck('3b. clearing every criterion restores START', await vis('#startbtn'), true);
+
+  /* The gate must not be able to start a case it has just refused. Asserted as
+     "the control is gone", not "a warning appeared": a caution beside a live
+     red button is not a gate in a room where someone has already reached for
+     the chest. */
+  await pg.click('[data-stop="0"]'); await pg.waitForTimeout(150);
+  ck('3b. no case can be started while a stop criterion stands',
+     await pg.evaluate(() => document.querySelector('#casepill') && getComputedStyle(document.querySelector('#casepill')).display !== 'none'), false);
+
+  /* And the decision resets with the case — a criterion left checked from the
+     last patient would hide START on a patient nobody has assessed. */
+  await doReset();
+  ck('3b. RESET clears the gate for the next patient', await vis('#startbtn'), true);
+  ck('3b. RESET clears the checked criteria too',
+     await pg.evaluate(() => [...document.querySelectorAll('[data-stop]')].every(b => b.getAttribute('aria-pressed') === 'false')), true);
+}
+
 /* ---- 4. declare: pill, dock, ticker, workstreams ---- */
 await fresh();
 await pg.click('#startbtn'); await pg.waitForTimeout(400);
