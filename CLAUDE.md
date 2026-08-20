@@ -232,6 +232,48 @@ Decorative glyphs are `aria-hidden` with no role or label. That is not a detail 
 a labeled decorative SVG shadows the real figure for any selector or screen
 reader looking for the drawing that carries the meaning.
 
+## The case shell's reveal behavior (`case-shell.js`)
+
+`case-shell.js` is the shared runtime for the case shell, injected at the marker
+`/* @shell-js */` exactly like `design-system.css` and `inventory.js`. Consumers: all six
+live-protocol engines (`arrest/`, `airway/`, `tca/`, `neonatal/`, `pph/`, `dystocia/`).
+
+It exists because **the next step was off the top of the screen.** A clinician scrolls down
+to read the ladder, taps the action it just told them to take, and the operating card — now
+showing the next step — is a thousand pixels above the viewport. Measured on every engine
+before the fix: dystocia −883, neonatal −585, pph −902, arrest −1132, airway −441. During a
+shoulder dystocia the head-to-body interval is the clock, so this was spending the one
+resource the tool exists to protect.
+
+**Wiring is one attribute.** Mark the operating card `data-opcard` and nothing else. A new
+engine gets the behavior by carrying that attribute and the marker; a page without one gets
+no behavior and no error. Never hand-write scrolling into an engine.
+
+**The hard part is NOT scrolling.** An unrequested jump mid-code takes the text away from
+whoever is reading it — the same reason the offline shell never reloads a page by itself.
+Four rules, and every one of them was written after a real defect:
+
+- **The step must have changed, not just the DOM.** Engines re-render the whole card on the
+  1 s tick, so "the card mutated" is nearly meaningless — it made *any* tap within the
+  gesture window scroll the page, including opening a reference accordion. What is compared
+  is the card's text **with digits and punctuation stripped**: a countdown going 2:31 → 2:30
+  leaves that signature identical, advancing PRESSURE → LEGS changes it.
+- **A deliberate scroll wins**, and it is detected from `wheel`/`touchmove`, never the
+  `scroll` event — advancing a step shortens the page, the browser clamps `scrollY`, and
+  that emits `scroll` with nobody having touched anything. Listening to it silently
+  cancelled the very reveals this module exists to perform.
+- **One decision per gesture.** Concluding "already visible, nothing to do" without
+  disarming let a later clock tick act on a stale gesture and scroll seconds after the tap.
+- **A picker suspends the decision rather than resolving it**, and the module polls for the
+  sheet to close rather than waiting for a mutation, because some engines repaint every
+  second and some only on a state change. The baseline signature is captured only when
+  arming *fresh*, so dismissing a picker with ✕ does not re-baseline against a card that has
+  already advanced.
+
+`verify_case_shell.mjs` asserts the pair that matters: **the step changed → the card is on
+screen below the bar; the step did not change → the page was not scrolled.** Note that
+"was not scrolled" cannot be a raw `scrollY` comparison, for the clamping reason above.
+
 ## Config-driven verification (issue #117)
 
 The `verify_*.mjs` suites are the safety harness that makes it viable for a
