@@ -3991,9 +3991,21 @@ var CODES_WT = (function(){
       if(window.CODESDOSE) window.CODESDOSE.recompute(wtKg);
       if(window.PRESSORS) window.PRESSORS.recompute(wtKg);
       paint();
-      if(window.AUDIENCE) window.AUDIENCE.paint();
       paintNrp();
     }
+    /* The audience strip repaints UNCONDITIONALLY, outside `changed`. Since issue #173 it
+       renders from lrh-case-adultoverride as well as weight and age, and that key is shared
+       with /arrest/ (CASE-STATE.md) — so it can flip in another tab with weight and age
+       untouched. Gating the repaint on a weight/age change left every adult card showing
+       "MARKED ADULT" after the override had been cleared next door: the quiet state where
+       the red sub-threshold warning belongs, persisting until some unrelated weight edit.
+
+       Deliberately not a "did the override change since last time" flag — the first attempt
+       at this fix was exactly that, and it missed, because a local change through the strip
+       never updated the flag, so a later clear compared equal and skipped the repaint. paint()
+       is idempotent and cheap (it rewrites a few dozen one-line strips), and this runs only on
+       storage events and visibilitychange, never in a loop. Recomputing beats tracking. */
+    if(window.AUDIENCE) window.AUDIENCE.paint();
   }
   window.addEventListener('storage', function(ev){
     if(!ev.key || ev.key.indexOf('lrh-case-')!==0) return;
@@ -4619,8 +4631,19 @@ var AUDIENCE = (function(){
     var body = modal.querySelector('#audiencemodalbody');
     var kgText = (Math.round(kg*10)/10)+' kg';
     body.textContent = alt
-      ? ('This card shows adult doses. The weight entered ('+kgText+') suggests this is a pediatric patient — go to the pediatric card, or stay here if this patient is actually an adult (this clears the entered weight).')
-      : ('This card shows adult doses. The weight entered ('+kgText+') suggests this is a pediatric patient, but there is no pediatric version of this card yet — go to the Pediatrics manual to find the right one, or stay here if this patient is actually an adult (this clears the entered weight).');
+      /* Says what STAY actually does. It used to clear the weight and these strings said so;
+         issue #173 changed it to KEEP the weight and record an adult override, and leaving the
+         old sentence here would have been worse than the original bug — a clinician who reads
+         "this clears the entered weight" either avoids the button to protect the number the
+         lipid and insulin doses come from, or presses it and stops trusting the field that
+         still shows the weight. The dialog has to describe the button under it. */
+      ? ('This card shows adult doses. The weight entered ('+kgText+') suggests this is a pediatric patient — go to the pediatric card, or mark this patient as an adult and stay here. The weight stays either way; marking is reversible.')
+      : ('This card shows adult doses. The weight entered ('+kgText+') suggests this is a pediatric patient, but there is no pediatric version of this card yet — open the Pediatrics manual to find the right one, or mark this patient as an adult and stay here. The weight stays either way; marking is reversible.');
+    /* And the button label matches where it lands. On a card with no pediatric version it
+       opens the Pediatrics manual, not "the pediatric card" — the same overpromise #173 was
+       filed about, still live on the one control read under time pressure. */
+    var goBtn = modal.querySelector('#audiencemodalgo');
+    if(goBtn) goBtn.textContent = alt ? 'GO TO PEDIATRIC CARD' : 'OPEN PEDIATRICS MANUAL';
     modal.style.display = 'flex';
   }
   function closeModal(){ if(modal) modal.style.display='none'; }
@@ -4658,9 +4681,14 @@ var AUDIENCE = (function(){
         return;
       }
       if(!set){
-        /* Age alone settles it only when there is no weight to disagree with. */
+        /* Age alone settles it only when there is no weight to disagree with.
+           The offer stays ON in this state even when the age says adult, because dropping
+           the label while leaving the handler attached made an unlabeled full-page
+           navigation: on c03 a strip reading "30 y · ADULT DOSING" still routed to the
+           arrest tool when tapped, mid-case, with nothing on it saying it was a link.
+           Either both go or neither does — and the kg>=THRESH branch below keeps both. */
         s.el.className = 'audiencestrip quiet' + (route ? '' : ' inert');
-        s.el.textContent = ageAdult ? (age+' y · ADULT DOSING') : ('ADULT DOSING'+offer);
+        s.el.textContent = (ageAdult ? (age+' y · ADULT DOSING') : 'ADULT DOSING') + offer;
         s.el.onclick = route;
         return;
       }

@@ -33,7 +33,7 @@
 </head>
 <body data-theme="dark">
 <div class="hdr">
-  <a class="ghost" href="../?from=tool">◀ PATHWAYS</a>
+  <a class="ghost" id="backlink" href="../?from=tool">◀ PATHWAYS</a>
   <span class="plabel">ADULT DKA / HHS</span>
   <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20DKA%20pathway" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
 </div>
@@ -97,7 +97,37 @@
     clinical judgment. Verify all values locally.
   </div>
 
+  <!-- Version + last-reviewed stamp (CLAUDE.md golden rule 6), rendered from this page's
+       own SITE block the way clinical-pathways/heart/ does it, so a champion auditing the
+       live site can tell which revision they are looking at. -->
+  <div id="verStamp" style="margin-top:18px; text-align:center; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:var(--ink2)"></div>
   <footer>{{SITE.title}}</footer>
 </div>
+
+<script>
+/* ===== SITE CONFIG (site-specific — edit to localize) ===== */
+var SITE = { version:"1.0", lastReviewed:"2026-08-18", reviewedBy:"Lon Setnik" };
+(function(){
+  var vs=document.getElementById('verStamp');
+  if(vs) vs.textContent='v'+SITE.version+' \u00B7 last reviewed '+SITE.lastReviewed+' \u00B7 '+SITE.reviewedBy;
+})();
+</script>
+<script>
+/* Back control honors ?from=<tool>, the manual's existing convention (verify_backnav.mjs).
+   Cards 28 and 31 were retired from /codes/ and their anchors redirect here with from=codes,
+   so a reader who scanned a printed QR or followed an old link is one tap from where they
+   came from rather than dropped on a Clinical Pathways index they never chose. Default stays
+   the pathways index for anyone who arrived through it. These pages sit one level deeper than
+   a top-level tool, hence ../../. */
+(function(){
+  var el=document.getElementById('backlink');
+  if(!el) return;
+  var m=/[?&]from=([a-z-]+)/.exec(location.search||'');
+  var from=m?m[1]:'';
+  if(!from || from==='tool' || from==='home') return;
+  el.setAttribute('href','../../'+from+'/?from=tool');
+  el.textContent='\u25C0 '+from.toUpperCase();
+})();
+</script>
 </body>
 </html>
