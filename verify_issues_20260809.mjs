@@ -128,9 +128,13 @@ ck('procedures card 15 exists', await proc.locator('#c15').count(), 1);
   const t = await textOf(proc, '#c15');
   ck('decontaminate then intubate framing', /Decontaminate, then intubate/i.test(t), true);
   // the three trajectories are the reason this card is better than a generic SALAD description
-  ck('trajectory 1 — from the gut', /Coming UP from the GI tract/i.test(t) && /proximal esophagus/i.test(t), true);
-  ck('trajectory 2 — from the lung', /Coming UP from the respiratory tract/i.test(t) && /toward the source of the froth/i.test(t), true);
-  ck('trajectory 3 — from above', /Coming DOWN from above/i.test(t) && /do NOT park deep/i.test(t), true);
+  /* Claim, not sentence — same fix as cards 24/25 above. The clarity pass shortened each
+     trajectory heading and moved its differential into the WHY tier; what must survive is
+     that all three directions of flow are named and each carries its own maneuver. */
+  ck('trajectory 1 — from the gut', /UP from the GI tract/i.test(t) && /proximal esophagus/i.test(t), true);
+  ck('trajectory 2 — from the lung',
+     /UP from the (?:lungs|respiratory tract)/i.test(t) && /bougie[^.]*froth/i.test(t), true);
+  ck('trajectory 3 — from above', /DOWN from above/i.test(t) && /do NOT park deep/i.test(t), true);
   ck('resus.me credited for the framework', await proc.locator('#c15 a[href*="resus.me"]').count() > 0, true);
   ck('two tested suctions', /Two suction units<\/b>, both tested|both tested/i.test(t), true);
   ck('suction the tube before the first breath', /before the first breath/i.test(t), true);
@@ -149,11 +153,13 @@ ck('procedures card 16 exists', await proc.locator('#c16').count(), 1);
   ck('one stocked size, 14 Fr, stated plainly', /This site stocks one size: 14 Fr/.test(t), true);
   ck('lidocaine ceiling', /3 mg\/kg/.test(t) && /250 mg/.test(t), true);
   // LRH resolved this: hemothorax is a chest tube. P-CAT stays as the reason the question exists.
-  ck('hemothorax routed to a chest tube', /at this site this is a chest tube, not a pigtail/i.test(t) && /28–32 Fr/.test(t) && /P-CAT/.test(t), true);
-  ck('wire depth given as two options', /Two options for depth/i.test(t) && /15–20 cm/.test(t), true);
+  ck('hemothorax routed to a chest tube',
+     /hemothorax is a chest tube, not a pigtail/i.test(t) && /28–32 Fr/.test(t) && /P-CAT/.test(t), true);
+  ck('wire depth given as two options',
+     /options for depth/i.test(t) && /15–20 cm/.test(t) && /clear the needle/i.test(t), true);
   ck('never clamp a bubbling drain', /Never clamp a bubbling drain/i.test(t), true);
   ck('1.5 L then clamp', /1\.5 L/.test(t), true);
-  ck('CXR after every insertion', /Post-insertion chest radiograph for every patient/i.test(t), true);
+  ck('CXR after every insertion', /(?:CXR|chest radiograph) for every patient/i.test(t), true);
   ck('anterior 2nd space explicitly NOT printed', /deliberately not described here/i.test(t), true);
   ck('figure present', await proc.locator('#c16 svg[aria-label*="triangle of safety"]').count(), 1);
   /* Target the FIGURE explicitly. This used to read `#c16 svg` first(), which
