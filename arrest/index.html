@@ -216,7 +216,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
       <button class="ghost" id="rhythmchange" type="button" style="white-space:nowrap">RE-CHECK</button>
     </div>
 
-    <div class="card" id="cyclecard" style="margin-top:8px;padding:14px;border-radius:16px">
+    <div class="card" id="cyclecard" data-opcard style="margin-top:8px;padding:14px;border-radius:16px">
       <div style="display:flex;align-items:center;justify-content:space-between">
         <div class="sec">CPR CYCLE — RHYTHM CHECK AT 0:00</div>
         <div class="sec" style="text-align:right">SHOCKS <span class="mono" id="shockn" style="font-size:20px;color:var(--red)">0</span></div>
@@ -1902,6 +1902,12 @@ wire();
 paint();
 setInterval(paint, 200);
 })();
+</script>
+<script>
+/* Shared case-shell behavior (SHELL.md) — brings the operating card marked
+   data-opcard back into view when an action advances the protocol, so the next
+   step is never left above the top of the screen. Edited once, in case-shell.js. */
+/* @shell-js */
 </script>
 </body>
 </html>
