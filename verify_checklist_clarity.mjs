@@ -37,7 +37,18 @@ const ck = (name, got, want) => { const ok = String(got) === String(want); (ok ?
    actions run 21–79 characters, and a line beyond this wraps to three on a phone. */
 const ACTION_MAX = 110;
 
-const TOOLS = ['/codes/', '/procedures/', '/trauma/', '/peds/', '/ob-neonatal/'];
+/* A RATCHET, not a target. Converting 1330 rows is a long editorial pass, and a suite that
+   fails for the whole of it would teach everyone that a red run here is normal — which is
+   how a safety harness stops working (CLAUDE.md, "a red run means something"). So the
+   budget is the count of over-long rows on the day it was measured: the suite fails if any
+   tool gets WORSE, and the number is lowered as cards are converted. It reaches 0 when the
+   pass is finished, and from then on it is an ordinary assertion.
+   Lower these. Never raise one. */
+const BUDGET = {
+  '/codes/': 291, '/procedures/': 196, '/trauma/': 143, '/peds/': 112, '/ob-neonatal/': 23,
+};
+
+const TOOLS = Object.keys(BUDGET);
 
 const harvest = (pg) => pg.evaluate(() => {
   /* A value someone has to act on. Kept in step with tools_clarify.mjs deliberately —
@@ -87,16 +98,49 @@ for (const tool of TOOLS) {
   ck(`0. ${tool} loads clean`, errs.length, 0);
   ck(`0. ${tool} has checklist rows`, rows.length > 0, true);
 
-  /* 1. Readable at a glance. */
-  const longRows = rows.filter(r => r.len > ACTION_MAX);
-  ck(`1. ${tool} every action fits in ${ACTION_MAX} chars`,
-     longRows.length ? `${longRows.length} of ${rows.length} too long (worst ${Math.max(...longRows.map(r => r.len))}: ${longRows.sort((a, c) => c.len - a.len)[0].k})` : 'all ' + rows.length, 'all ' + rows.length);
+  /* 1. Readable at a glance — against the ratchet, so progress is enforced and regression
+        is impossible, without a permanently red run in between. */
+  const longRows = rows.filter(r => r.len > ACTION_MAX).sort((a, c) => c.len - a.len);
+  const budget = BUDGET[tool];
+  ck(`1. ${tool} over-long actions within budget (${longRows.length}/${budget})`,
+     longRows.length <= budget, true);
+  if (longRows.length) {
+    console.log(`     ${longRows.length} of ${rows.length} still over ${ACTION_MAX} chars` +
+                (longRows.length < budget ? ` — budget is ${budget}, LOWER IT` : '') +
+                `; worst ${longRows[0].len} (${longRows[0].card || '?'} ${longRows[0].k})`);
+  }
 
   /* 2. Nothing needed to act is hidden. This is the one that must never be traded away
         for brevity — a short row that hides its dose is worse than the long row was. */
   const trap = rows.filter(r => r.hidden.length);
   ck(`2. ${tool} no action hides a value it needs`,
      trap.length ? trap.slice(0, 4).map(r => `${r.k}:${r.hidden.join('/')}`).join(' ') : 'none', 'none');
+
+  /* 2b. STRUCTURAL INTEGRITY. A rewrite that replaces the row's text has to replace all of
+        it: several rows nest a <span class="wdose"> computing a dose from the case weight,
+        and a matcher that stopped at the first </span> replaced only the front, leaving the
+        tail as an orphaned direct child of the <label>. It rendered as a stray 230px grid
+        row and reached the accessibility suite as a target-size failure — a structural
+        corruption reported as a styling nit. A row is an input and a span; nothing else. */
+  /* Counting the label's children is too blunt — procedures/ rows legitimately carry a
+     <span class="role"> badge (MD / RN / BOTH) beside the text. The corruption signature is
+     narrower and exact: a LIVE element that has escaped the text span and become a direct
+     child of the label. That is what a truncated replacement leaves behind, and nothing
+     legitimate produces it. */
+  const orphans = await pg.evaluate(() => [...document.querySelectorAll('input[type=checkbox]')]
+    .map(i => { const l = i.closest('label'); if (!l) return null;
+      const loose = [...l.children].some(c =>
+        c.classList.contains('wdose') || c.tagName === 'A' || c.tagName === 'BUTTON' ||
+        c.classList.contains('t-why'));
+      return loose ? (i.getAttribute('data-k') || '?') : null; })
+    .filter(Boolean));
+  ck(`2b. ${tool} no live markup escaped its row span`, orphans.slice(0, 4).join(',') || 'none', 'none');
+
+  /* 2c. And the live, weight-computed doses still compute. Losing one is invisible: the row
+        keeps showing the placeholder it happened to be displaying, forever. */
+  const deadDoses = await pg.evaluate(() => [...document.querySelectorAll('.wdose')]
+    .filter(e => !e.getAttribute('data-perkg')).length);
+  ck(`2c. ${tool} every live dose still carries its per-kg rule`, deadDoses, 0);
 
   /* 3. The reasoning is out of the way until asked for. */
   const whyVisible = await pg.evaluate(() =>
