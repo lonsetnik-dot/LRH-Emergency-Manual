@@ -249,6 +249,22 @@ resource the tool exists to protect.
 engine gets the behavior by carrying that attribute and the marker; a page without one gets
 no behavior and no error. Never hand-write scrolling into an engine.
 
+**The operating card is a REGION.** Mark every element that is part of "what to do now",
+not just the box at the bottom of it: `arrest/` marks the rhythm-unknown bar and the rhythm
+bar alongside its cycle card, `pph/` its blood-loss adder, `dystocia/` its head-to-body
+clock, `tca/` its workstream list. The module anchors on whichever marked element is
+currently topmost on screen and ignores ones that are `display:none`, so a bar that exists
+in one phase participates only in that phase — and a bar appearing or disappearing counts
+as a step change. Marking only the last box scrolled arrest's amber "PADS ON — CHECK THE
+RHYTHM" button off the top of the screen at the start of every case: the module hid the
+next action while dutifully revealing the card below it.
+
+**A reveal never scrolls a visible control off the top.** Content pushed above the sticky
+bar cannot be reached by scrolling the way the page invites you to, and nothing on screen
+suggests it is up there. `reveal()` refuses rather than compromises, which is why several
+engines simply do not move at the start of a case — that is the correct outcome, not a
+missing feature.
+
 **The hard part is NOT scrolling.** An unrequested jump mid-code takes the text away from
 whoever is reading it — the same reason the offline shell never reloads a page by itself.
 Four rules, and every one of them was written after a real defect:

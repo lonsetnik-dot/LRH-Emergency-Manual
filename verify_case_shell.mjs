@@ -41,8 +41,11 @@ const ck = (name, got, want) => { const ok = String(got) === String(want); (ok ?
 const ENGINES = ['/arrest/', '/airway/', '/tca/', '/neonatal/', '/pph/', '/dystocia/'];
 
 const START_RE = /START|BEGIN|ANNOUNCE|NO PULSE|DECLARE|BABY OUT/i;
-const open = async (path) => {
-  const pg = await b.newPage({ viewport: { width: 390, height: 844 } });
+/* Default 844 is a tall phone; several checks below pass a SHORTER viewport deliberately,
+   because the defect this suite exists to catch only appears when the operating region does
+   not fit — which is every real phone with browser chrome. */
+const open = async (path, viewport) => {
+  const pg = await b.newPage({ viewport: viewport || { width: 390, height: 844 } });
   pg.on('pageerror', e => { console.log('   pageerror on ' + path + ': ' + e); fail++; });
   await pg.goto(BASE + path + '?from=home', { waitUntil: 'networkidle' });
   await pg.waitForTimeout(300);
@@ -56,8 +59,11 @@ const startCase = async (pg) => {
   }, START_RE.source);
   await pg.waitForTimeout(800);
 };
+/* The top of the operating REGION as the module itself resolves it — the topmost piece
+   currently on screen, which is what a reveal anchors on. Asking the DOM for the first
+   [data-opcard] instead would measure a bar that is display:none during this phase. */
 const cardTop = (pg) => pg.evaluate(() => {
-  const el = document.querySelector('[data-opcard]');
+  const el = (typeof CASE_SHELL === 'object' && CASE_SHELL.card()) || document.querySelector('[data-opcard]');
   return el ? Math.round(el.getBoundingClientRect().top) : null;
 });
 const scrollY = (pg) => pg.evaluate(() => Math.round(window.scrollY));
@@ -66,10 +72,19 @@ const toBottom = async (pg) => { await pg.evaluate(() => window.scrollTo(0, docu
 console.log('--- 1. every engine marks its operating card ---');
 for (const path of ENGINES) {
   const pg = await open(path);
+  /* At least one, not exactly one. The operating card is a REGION: arrest/ marks the
+     rhythm-unknown bar and the rhythm bar alongside its cycle card, because whichever of
+     them is on screen carries the thing to do now, and anchoring on the cycle card alone
+     scrolled arrest's "PADS ON — CHECK THE RHYTHM" button off the top of the screen at the
+     start of every case. What must hold is that no engine has zero. */
   const n = await pg.evaluate(() => document.querySelectorAll('[data-opcard]').length);
-  ck(`1. ${path} marks exactly one operating card`, n, 1);
-  const wired = await pg.evaluate(() => typeof CASE_SHELL === 'object' && !!CASE_SHELL.card());
-  ck(`1. ${path} has the shared module bound to it`, wired, true);
+  ck(`1. ${path} marks its operating card`, n >= 1, true);
+  /* Asked as "how many did the module latch onto at boot", NOT "is one visible now" —
+     before a case starts none of them are rendered, so the visible-now form of this
+     question passes and fails for reasons that have nothing to do with wiring. */
+  const wired = await pg.evaluate(() =>
+    typeof CASE_SHELL === 'object' && typeof CASE_SHELL.bound === 'function' ? CASE_SHELL.bound() : 0);
+  ck(`1. ${path} has the shared module bound to every one of them`, wired, n);
   await pg.close();
 }
 
@@ -91,8 +106,12 @@ for (const path of ENGINES) {
   const sigBefore = await pg.evaluate(() => CASE_SHELL.signature());
 
   const tapped = await pg.evaluate(() => {
-    const card = document.querySelector('[data-opcard]');
-    const btn = [...card.querySelectorAll('button')].find(x => x.offsetParent);
+    /* Any control in the operating region, not only in its last box: arrest's action while
+       the rhythm is unknown lives in the bar ABOVE the cycle card, and pph's blood-loss
+       adder lives above its phase box. */
+    const btn = CASE_SHELL.cards()
+      .reduce((acc, c) => acc.concat([...c.querySelectorAll('button')]), [])
+      .find(x => x.offsetParent);
     if (!btn) return false;
     btn.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true }));
     btn.click();
@@ -103,9 +122,9 @@ for (const path of ENGINES) {
 
   /* If that opened a picker, resolving it is the gesture that advances the protocol. */
   await pg.evaluate(() => {
-    const card = document.querySelector('[data-opcard]');
+    const region = CASE_SHELL.cards();
     const inSheet = [...document.querySelectorAll('button')].filter(el => {
-      if (!el.offsetParent || card.contains(el)) return false;
+      if (!el.offsetParent || region.some(c => c.contains(el))) return false;
       let n = el;
       while (n && n !== document.body) {
         let cs; try { cs = getComputedStyle(n); } catch (e) { return false; }
@@ -135,6 +154,80 @@ for (const path of ENGINES) {
     ck(`2. ${path} did not advance — the page was not scrolled`,
        end.y >= Math.min(yBefore, end.max) - 8, true);
   }
+  await pg.close();
+}
+
+/* TWO SEPARATE PROPERTIES LIVE BELOW, and only one of them is a safety property.
+     · reveal() refusing to scroll a visible control off the top is the SAFETY property.
+       Delete it and this block goes red (verified by mutation on airway/ and tca/).
+     · marking each phase bar with data-opcard is a QUALITY property: it puts the anchor and
+       the step signature on the right element, so a bar appearing or disappearing reads as
+       a step change. Un-marking arrest's PADS ON bar does NOT turn this block red, because
+       the safety property already prevents the harm. That is the correct relationship and
+       it is stated here rather than papered over with a check written to fail. */
+console.log('\n--- 2b. STARTING A CASE NEVER HIDES THE FIRST ACTION ---');
+/* The regression that made this check exist, reported from the bedside: on arrest/, tapping
+   START scrolled the amber "PADS ON — CHECK THE RHYTHM" button clean off the top of the
+   screen. The module had done exactly what it was told — reveal the cycle card — and the
+   cycle card is not the whole operating card at that moment. The bar above it is.
+
+   Invisible at a desktop height, which is why it shipped: at 390x844 the region fits and
+   nothing scrolls. It only appears on a phone. So this runs SHORT, and it asserts the thing
+   the clinician cares about rather than a scroll offset — after starting a case from the top
+   of the page, the first control you are asked to touch is on screen and reachable. */
+for (const path of ENGINES) {
+  const pg = await open(path, { width: 390, height: 640 });
+  await startCase(pg);
+  await pg.waitForTimeout(900);
+  const r = await pg.evaluate(() => {
+    const bar = CASE_SHELL.chromeHeight();
+    /* Deliberately asked of the WHOLE PAGE, not of CASE_SHELL.cards(). Scoping this to the
+       operating region made the check unfalsifiable: removing the PADS ON bar from the
+       region also removed it from the check, so the original defect passed. Whether an
+       element is wired as part of the region is the thing under test — it cannot also be
+       the filter. The page starts at scrollY 0, so nothing can sit above the bar unless
+       starting the case scrolled it there. */
+    const inChrome = el => { for (var n = el; n && n !== document.body; n = n.parentElement) {
+      var cs; try { cs = getComputedStyle(n); } catch (e) { return false; }
+      if (cs.position === 'fixed' || cs.position === 'sticky') return true;
+    } return false; };
+    const above = [...document.querySelectorAll('button')]
+      .filter(x => x.offsetParent && x.getBoundingClientRect().height > 0 && !inChrome(x))
+      .filter(x => x.getBoundingClientRect().bottom <= bar)
+      .map(x => (x.textContent || '').trim().replace(/\s+/g, ' ').slice(0, 34));
+    const btn = CASE_SHELL.cards()
+      .reduce((acc, c) => acc.concat([...c.querySelectorAll('button')]), [])
+      .filter(x => x.offsetParent)
+      .sort((a, b) => a.getBoundingClientRect().top - b.getBoundingClientRect().top)[0];
+    if (!btn) return { none: true, above: above };
+    const b = btn.getBoundingClientRect();
+    const live = CASE_SHELL.cards().map(c => c.getBoundingClientRect());
+    const rTop = Math.min.apply(null, live.map(x => x.top));
+    const rBottom = Math.max.apply(null, live.map(x => x.bottom));
+    return { above: above, bar: Math.round(bar), top: Math.round(b.top), bottom: Math.round(b.bottom),
+             vh: window.innerHeight, label: (btn.textContent || '').trim().slice(0, 34),
+             regionTop: Math.round(rTop), regionH: Math.round(rBottom - rTop),
+             fits: (rBottom - rTop) <= window.innerHeight - bar };
+  });
+  ck(`2b. ${path} starting a case scrolled no control off the top`,
+     (r.above || []).join(' | ') || 'none', 'none');
+  if (r.none) { console.log(`     ${path} has no control in the region at start — skipped`); await pg.close(); continue; }
+  /* ABOVE the bar is the defect: content scrolled off the top cannot be reached by scrolling
+     down, and nothing on screen suggests it is up there. */
+  ck(`2b. ${path} first action is not hidden above/behind the bar ("${r.label}")`,
+     r.top >= r.bar, true);
+  /* Deliberately NOT "the action is on screen", and NOT "the region begins on screen".
+     Both were tried and both are the assumption that produced the bug in the first place —
+     that scrolling down to the operating card is always worth what it pushes off the top.
+     Neither generalizes: neonatal opens with an 854px region on a 640px screen (warm, dry,
+     stimulate, position, THEN confirm), and tca's workstreams start at y=845 because you
+     pick the reversible causes above them first. Both are correct, and a suite that called
+     them failures would teach this repo that a red run here is normal.
+
+     What IS universal is direction: nothing the clinician needs may end up above the bar,
+     where scrolling the way the page invites you to will never find it. */
+  ck(`2b. ${path} the operating region does not start above the bar`, r.regionTop >= r.bar, true);
+  console.log(`     ${path} region ${r.regionH}px, starts at y=${r.regionTop} on a ${r.vh}px screen`);
   await pg.close();
 }
 
