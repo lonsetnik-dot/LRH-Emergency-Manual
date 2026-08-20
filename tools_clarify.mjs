@@ -27,13 +27,30 @@ let html = readFileSync(file, 'utf8');
 const ENT = { '&mdash;': '\u2014', '&ndash;': '\u2013', '&rsquo;': '\u2019', '&lsquo;': '\u2018',
   '&ldquo;': '\u201c', '&rdquo;': '\u201d', '&amp;': '&', '&lt;': '<', '&gt;': '>', '&nbsp;': ' ',
   '&deg;': '\u00b0', '&plusmn;': '\u00b1', '&ge;': '\u2265', '&le;': '\u2264', '&times;': '\u00d7',
-  '&middot;': '\u00b7', '&rarr;': '\u2192', '&hellip;': '\u2026' };
+  '&middot;': '\u00b7', '&rarr;': '\u2192', '&hellip;': '\u2026',
+  '&asymp;': '\u2248', '&sup2;': '\u00b2', '&sup3;': '\u00b3', '&frac12;': '\u00bd', '&mu;': '\u00b5' };
 const strip = s => s.replace(/<[^>]+>/g, '')
   .replace(/&[a-z]+;|&#\d+;/gi, e => ENT[e.toLowerCase()] !== undefined ? ENT[e.toLowerCase()] : ' ')
   .replace(/\s+/g, ' ').trim();
 /* A value someone has to ACT on: a number with a unit, a range, or a rate. Deliberately
    loose — a false positive costs a moment's thought, a false negative hides a dose. */
 const DOSE = /\d+(?:[.,]\d+)?\s*(?:mg|mcg|g|mL|ml|L|units?|u\b|mmHg|°C|kg|Fr|J\b|%|\/min|\/hr|mEq|mmol|breaths|beats|h\b|hours?|min\b|minutes?|sec)/gi;
+
+/* KIT CONTENTS ARE NOT PROSE. inventory.js is the single source for every physical item,
+   and CLAUDE.md requires a kit's content strings to be byte-identical across the procedure
+   card, the poster, the cart label and the inventory — verify_kit_consistency.mjs asserts
+   it across all four. Rewriting one of those rows for readability silently breaks that
+   contract: it reads better and the laminated label in the cabinet no longer matches the
+   screen. Three Blakemore rows were rewritten before this guard existed, and the kit suite
+   is what caught it. A kit row may only be reworded by changing inventory.js and every
+   artifact together, which is a different task from this one. */
+const KIT_STRINGS = new Set();
+try {
+  const inv = readFileSync('inventory.js', 'utf8');
+  for (const m of inv.matchAll(/contents\s*:\s*\[([\s\S]*?)\]/g)) {
+    for (const s of m[1].matchAll(/"([^"]+)"/g)) KIT_STRINGS.add(s[1].trim());
+  }
+} catch (e) { /* a consumer without an inventory is fine */ }
 
 let applied = 0, refused = 0;
 for (const r of rewrites) {
@@ -58,7 +75,11 @@ for (const r of rewrites) {
     let tm;
     while (depth > 0 && (tm = TAG.exec(html))) { depth += tm[1] ? -1 : 1; if (depth === 0) break; }
     if (!tm) continue;
-    rowSpans.push({ head: om[0], body: html.slice(i, tm.index), tail: tm[0], at: om.index });
+    /* Which card the row belongs to, so an identical row on two cards can be addressed.
+       c19 and c20 (LVAD responsive / unresponsive) share their defibrillation row verbatim. */
+    const artAt = html.lastIndexOf('<article id="', om.index);
+    const art = artAt >= 0 ? (html.slice(artAt, artAt + 40).match(/id="([^"]+)"/) || [])[1] : '';
+    rowSpans.push({ head: om[0], body: html.slice(i, tm.index), tail: tm[0], at: om.index, card: art });
   }
 
   let target;
@@ -66,7 +87,7 @@ for (const r of rewrites) {
     target = rowSpans.find(s => s.head.includes('data-k="' + r.k + '"'));
     if (!target) { console.error(`  MISSING  ${r.k}`); refused++; continue; }
   } else {
-    const hits = rowSpans.filter(s => strip(s.body).includes(r.find));
+    const hits = rowSpans.filter(s => strip(s.body).includes(r.find) && (!r.card || s.card === r.card));
     if (hits.length !== 1) {
       console.error(`  ${hits.length ? 'AMBIGUOUS' : 'MISSING'}  find="${r.find}" matched ${hits.length} rows`);
       refused++; continue;
@@ -94,13 +115,28 @@ for (const r of rewrites) {
 
      So: whatever live markup the original carried, the replacement must carry too. This
      refuses rather than warns, because the failure mode is invisible. */
-  const LIVE = /class="[^"]*\b(?:wdose|dosev|logstamp)\b[^"]*"|<button|<a\s|data-perkg|data-logevent|\sid="/g;
+  /* Any data-* attribute in a row body is a hook something else writes into — data-perkg for
+     the weight engine, data-logevent for the timeline, data-seccall for the site's security
+     contact. Naming them one at a time meant the guard only knew the hooks that had already
+     been broken once; matching the shape catches the next one too. */
+  const LIVE = /class="[^"]*\b(?:wdose|dosev|logstamp)\b[^"]*"|<button|<a\s|\sdata-[a-z][a-z-]*|\sid="/g;
   const origLive = (m[2].match(LIVE) || []);
   const newLive = ((r.action + (r.why || '')).match(LIVE) || []);
   const lost = origLive.filter(x => !newLive.includes(x));
   if (lost.length) {
     console.error(`  REFUSED  ${r.k || r.find}: replacement drops live markup: ${[...new Set(lost)].join(' ')}`);
     console.error(`           original: ${m[2].replace(/\s+/g, ' ').slice(0, 200)}`);
+    refused++; continue;
+  }
+
+  /* Does this row carry a kit-contents string? Compare on the ORIGINAL, not the
+     replacement — the point is to catch the row before it is reworded. */
+  const origText = strip(m[2]);
+  const kitHit = [...KIT_STRINGS].filter(s => s.length > 12 && origText.includes(s));
+  const keptAll = kitHit.every(s => strip(r.action + ' ' + (r.why || '')).includes(s));
+  if (kitHit.length && !keptAll) {
+    console.error(`  REFUSED  ${r.k || r.find}: rewrites a KIT CONTENTS row; these strings must stay`);
+    console.error(`           byte-identical across card, poster, label and inventory: ${kitHit.map(s => JSON.stringify(s)).join(', ')}`);
     refused++; continue;
   }
 

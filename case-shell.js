@@ -61,11 +61,27 @@
    Motion respects prefers-reduced-motion, per ACCESSIBILITY.md.
 
    ---------------------------------------------------------------------------
-   WIRING: mark the operating card with data-opcard. One attribute per engine:
+   WIRING: mark the operating card with data-opcard.
 
        <div class="card" id="phasebox" data-opcard> … </div>
 
    Nothing else. A tool with no such element gets no behavior and no error.
+
+   THE OPERATING CARD IS A REGION, NOT ALWAYS ONE BOX, and this cost a real
+   defect. arrest/ renders the amber "PADS ON — CHECK THE RHYTHM" bar directly
+   ABOVE its cycle card while the rhythm is still unknown, and that bar carries
+   the only thing to do at that moment. With data-opcard on the cycle card
+   alone, starting a case revealed the cycle card correctly and scrolled the
+   PADS ON button off the top of the screen — the module hiding the very next
+   action, which is the exact failure it exists to prevent. pph/ and dystocia/
+   have the same shape: the blood-loss adder and the head-to-body clock sit
+   above their phase boxes.
+
+   So mark EVERY element that is part of "what to do now", and the module
+   anchors on whichever of them is currently topmost on screen. Elements that
+   are display:none are ignored, so a bar that only exists during one phase
+   participates only during that phase. The step signature is their combined
+   text, which means a bar APPEARING or DISAPPEARING is itself a step change.
    =========================================================================== */
 var CASE_SHELL = (function () {
   'use strict';
@@ -93,15 +109,44 @@ var CASE_SHELL = (function () {
   var OVERLAY_POLL_MS = 250;
   var OVERLAY_MAX_WAIT_MS = 60000;
 
-  var lastGestureAt = 0, armed = false, observer = null, card = null;
+  var lastGestureAt = 0, armed = false, observer = null, cards = [];
   var settleTimer = null, lastRevealAt = 0, signatureAtGesture = '', overlayWaited = 0;
 
-  /* The card's meaning, with everything that changes on its own removed: digits (clocks,
+  /* Rendered right now — not merely present in the DOM. Every engine keeps its phase bars
+     in the document and toggles display, so this is what distinguishes "part of the
+     operating region during this phase" from "part of it during some other phase". */
+  function isRendered(el) {
+    var r = el.getBoundingClientRect();
+    return r.height > 0 || r.width > 0;
+  }
+
+  function liveCards() {
+    var out = [];
+    for (var i = 0; i < cards.length; i++) if (isRendered(cards[i])) out.push(cards[i]);
+    return out;
+  }
+
+  /* The element the reveal scrolls to: the topmost piece of the operating region currently
+     on screen. Measured rather than taken from document order, so an engine that reorders
+     its bars cannot silently anchor on the wrong one. */
+  function anchorCard() {
+    var live = liveCards(), best = null, bestTop = Infinity;
+    for (var i = 0; i < live.length; i++) {
+      var t = live[i].getBoundingClientRect().top;
+      if (t < bestTop) { bestTop = t; best = live[i]; }
+    }
+    return best;
+  }
+
+  /* The region's meaning, with everything that changes on its own removed: digits (clocks,
      counters, doses that recompute), punctuation and case. Two renders of the SAME step
-     one second apart produce identical signatures. */
-  function stepSignature(el) {
-    if (!el) return '';
-    return (el.textContent || '').replace(/[^a-z]+/gi, '').toLowerCase();
+     one second apart produce identical signatures. Combining the live cards means a bar
+     appearing or disappearing — arrest/ retiring PADS ON once a rhythm is named — reads as
+     the step change it is. */
+  function stepSignature() {
+    var live = liveCards(), s = '';
+    for (var i = 0; i < live.length; i++) s += (live[i].textContent || '');
+    return s.replace(/[^a-z]+/gi, '').toLowerCase();
   }
 
   function reducedMotion() {
@@ -154,9 +199,38 @@ var CASE_SHELL = (function () {
     return false;
   }
 
+  /* Would scrolling to `target` push a control the clinician can currently see up behind the
+     bar? Content scrolled off the TOP is the worst outcome this module can produce: it cannot
+     be reached by scrolling the way the page invites you to, and nothing on screen suggests
+     there is anything up there. That is precisely the reported defect — starting a case on
+     arrest/ scrolled the amber PADS ON button off the top while dutifully revealing the cycle
+     card below it.
+
+     Ignores controls inside the sticky chrome, which travel with the viewport. */
+  function wouldHideAControl(target) {
+    var delta = target - window.scrollY;
+    if (delta <= 0) return false;                            /* scrolling UP hides nothing above */
+    var barH = chromeHeight(), nodes = document.querySelectorAll('button,a[href],input,select');
+    for (var i = 0; i < nodes.length; i++) {
+      var el = nodes[i];
+      if (!el.offsetParent) continue;
+      var r = el.getBoundingClientRect();
+      if (r.height === 0 || r.bottom <= barH || r.top >= (window.innerHeight || 0)) continue;
+      var fixed = false;
+      for (var n = el; n && n !== document.body; n = n.parentElement) {
+        var cs; try { cs = window.getComputedStyle(n); } catch (e) { break; }
+        if (cs.position === 'fixed' || cs.position === 'sticky') { fixed = true; break; }
+      }
+      if (fixed) continue;
+      if (r.bottom - delta <= barH) return true;              /* this one would go up and out */
+    }
+    return false;
+  }
+
   function reveal(el) {
     var target = window.scrollY + el.getBoundingClientRect().top - chromeHeight() - GAP;
     if (target < 0) target = 0;
+    if (wouldHideAControl(target)) return;
     try {
       window.scrollTo({ top: target, behavior: reducedMotion() ? 'auto' : 'smooth' });
     } catch (e) {
@@ -165,10 +239,10 @@ var CASE_SHELL = (function () {
   }
 
   function maybeReveal() {
-    if (!armed || !card) return;
+    if (!armed || !cards.length) return;
     if (Date.now() - lastGestureAt > GESTURE_MS) { armed = false; return; }
     if (Date.now() - lastRevealAt < COOLDOWN_MS) return;
-    if (stepSignature(card) === signatureAtGesture) return;   /* only the clock moved */
+    if (stepSignature() === signatureAtGesture) return;       /* only the clock moved */
 
     /* A picker is up. The step behind it has already changed — every engine advances the
        card when the sheet opens — so stay ARMED rather than resolving now: scrolling under
@@ -195,9 +269,10 @@ var CASE_SHELL = (function () {
        let an unrelated later tick act on a stale gesture and scroll the page long after the
        tap that armed it. One tap, one decision. */
     armed = false;
-    if (!needsReveal(card)) return;
+    var target = anchorCard();
+    if (!target || !needsReveal(target)) return;
     lastRevealAt = Date.now();
-    reveal(card);
+    reveal(target);
   }
 
   /* Coalesce a burst of mutations into one measurement of the finished DOM. */
@@ -214,7 +289,7 @@ var CASE_SHELL = (function () {
        clinician last acted from a settled screen", and that question survives the taps
        taken inside one interaction. */
     if (!armed || Date.now() - lastGestureAt > GESTURE_MS) {
-      signatureAtGesture = stepSignature(card);
+      signatureAtGesture = stepSignature();
     }
     lastGestureAt = Date.now();
     armed = true;
@@ -236,8 +311,8 @@ var CASE_SHELL = (function () {
   }
 
   function start() {
-    card = document.querySelector('[data-opcard]');
-    if (!card) return;                                       /* nothing to do on this page */
+    cards = [].slice.call(document.querySelectorAll('[data-opcard]'));
+    if (!cards.length) return;                               /* nothing to do on this page */
 
     /* Capture phase: the gesture must be recorded before the engine's own
        handler runs and re-renders the card. */
@@ -252,7 +327,13 @@ var CASE_SHELL = (function () {
 
     if (typeof MutationObserver !== 'function') return;
     observer = new MutationObserver(scheduleReveal);
-    observer.observe(card, { childList: true, subtree: true, characterData: true });
+    /* Every piece, not just the anchor: a bar being shown or hidden is a change to the
+       operating region even when the card below it did not re-render. Watching attributes
+       too, because that is how a `display:none` phase bar arrives. */
+    for (var i = 0; i < cards.length; i++) {
+      observer.observe(cards[i], { childList: true, subtree: true, characterData: true,
+                                   attributes: true, attributeFilter: ['style', 'class'] });
+    }
   }
 
   /* =========================================================================
@@ -305,9 +386,15 @@ var CASE_SHELL = (function () {
   /* Exposed for the verify suite and for a champion reading behavior from the
      console — the same courtesy window.SITE gets (issues #116/#117/#118). */
   return {
-    card: function () { return card; },
-    needsReveal: function () { return card ? needsReveal(card) : false; },
-    signature: function () { return stepSignature(card); },
+    /* How many operating-region elements the module LATCHED ONTO at boot — not how many
+       are on screen now. The two answer different questions, and a suite that asks the
+       wrong one is unfalsifiable: before a case starts nothing is rendered, so "is the
+       module wired to this page" cannot be answered by looking at what is visible. */
+    bound: function () { return cards.length; },
+    card: function () { return anchorCard(); },
+    cards: function () { return liveCards(); },
+    needsReveal: function () { var a = anchorCard(); return a ? needsReveal(a) : false; },
+    signature: function () { return stepSignature(); },
     chromeHeight: chromeHeight,
     config: { gestureMs: GESTURE_MS, readableFraction: READABLE_FRACTION, gap: GAP,
               settleMs: SETTLE_MS, cooldownMs: COOLDOWN_MS }

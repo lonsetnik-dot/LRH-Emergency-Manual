@@ -43,9 +43,24 @@ const ACTION_MAX = 110;
    budget is the count of over-long rows on the day it was measured: the suite fails if any
    tool gets WORSE, and the number is lowered as cards are converted. It reaches 0 when the
    pass is finished, and from then on it is an ordinary assertion.
-   Lower these. Never raise one. */
+   Lower these. Never raise one.
+
+   /codes/ is finished, and its floor is 5 rather than 0 — worth saying why, because the next
+   editor will otherwise spend a pass trying to reach 0 and reword something they should not:
+     · three rows are KIT CONTENTS (c23), which CLAUDE.md requires to stay byte-identical
+       across the card, the poster, the cart label and inventory.js. They are a packing list,
+       not prose, and verify_kit_consistency.mjs fails if anyone shortens them.
+     · two rows (c06) are RSI dose tables — three live weight-computed doses on one line.
+       Splitting them into one drug per row is a different, clinical decision about the card.
+   Those five are structural. Everything else in /codes/ now reads in one glance.
+
+   /procedures/ has the same shape of residue: four KIT CONTENTS rows (the CVC catheter and
+   sharps lists, the AVA 3Xi kit, the DuCanto suction pair) under the same byte-identity
+   contract, and the chest-tube antibiotic row, which is rendered from SITE.abx and carries
+   both the drug and "never delay decompression for it" — demoting either half would be the
+   wrong trade. */
 const BUDGET = {
-  '/codes/': 291, '/procedures/': 196, '/trauma/': 143, '/peds/': 112, '/ob-neonatal/': 23,
+  '/codes/': 5, '/procedures/': 5, '/trauma/': 1, '/peds/': 0, '/ob-neonatal/': 2,
 };
 
 const TOOLS = Object.keys(BUDGET);
@@ -76,6 +91,12 @@ const harvest = (pg) => pg.evaluate(() => {
     const whyText = (why && !refOnly) ? why.textContent.trim() : '';
     const clone = span.cloneNode(true);
     [...clone.querySelectorAll('.t-why')].forEach(n => n.remove());
+    /* A button's label is a control, not a line of the step. Several rows carry tap-to-log
+       buttons ("BLOOD STARTED — LOG IT"), and counting their captions as prose made a
+       three-word action measure 40 characters longer than what anyone reads — which would
+       have pushed an editor to shorten the clinical text to pay for a button. What is being
+       measured here is the sentence the clinician reads, so the controls come out. */
+    [...clone.querySelectorAll('button')].forEach(n => n.remove());
     const action = clone.textContent.replace(/\s+/g, ' ').trim();
     const inAction = new Set(norm(action));
     return {

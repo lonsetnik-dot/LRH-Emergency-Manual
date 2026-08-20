@@ -249,6 +249,22 @@ resource the tool exists to protect.
 engine gets the behavior by carrying that attribute and the marker; a page without one gets
 no behavior and no error. Never hand-write scrolling into an engine.
 
+**The operating card is a REGION.** Mark every element that is part of "what to do now",
+not just the box at the bottom of it: `arrest/` marks the rhythm-unknown bar and the rhythm
+bar alongside its cycle card, `pph/` its blood-loss adder, `dystocia/` its head-to-body
+clock, `tca/` its workstream list. The module anchors on whichever marked element is
+currently topmost on screen and ignores ones that are `display:none`, so a bar that exists
+in one phase participates only in that phase — and a bar appearing or disappearing counts
+as a step change. Marking only the last box scrolled arrest's amber "PADS ON — CHECK THE
+RHYTHM" button off the top of the screen at the start of every case: the module hid the
+next action while dutifully revealing the card below it.
+
+**A reveal never scrolls a visible control off the top.** Content pushed above the sticky
+bar cannot be reached by scrolling the way the page invites you to, and nothing on screen
+suggests it is up there. `reveal()` refuses rather than compromises, which is why several
+engines simply do not move at the start of a case — that is the correct outcome, not a
+missing feature.
+
 **The hard part is NOT scrolling.** An unrequested jump mid-code takes the text away from
 whoever is reading it — the same reason the offline shell never reloads a page by itself.
 Four rules, and every one of them was written after a real defect:
@@ -273,6 +289,31 @@ Four rules, and every one of them was written after a real defect:
 `verify_case_shell.mjs` asserts the pair that matters: **the step changed → the card is on
 screen below the bar; the step did not change → the page was not scrolled.** Note that
 "was not scrolled" cannot be a raw `scrollY` comparison, for the clamping reason above.
+
+## Checklist rows: ACTION on screen, WHY behind a tap
+
+Every checklist row in the manual is two tiers — `<b>ACTION</b><i class="t-why">reasoning</i>`
+— because a row is read mid-task by someone whose hands are busy. `.t-why` is hidden until
+the tool's one WHY control is tapped, always shown in print, and remembered as a preference
+(`lrh-pref-why`). Full rationale and the writing rules are in `DESIGN-SYSTEM.md` §6b.
+
+Three things to know before editing or adding a row:
+
+- **The action must stand alone.** A number the step cannot be performed without belongs in
+  the action, never only behind the WHY. `verify_checklist_clarity.mjs` fails a row that
+  hides a dose-shaped value from its own action, and `tools_clarify.mjs` refuses to write
+  one. `data-ref` is the only sanctioned way to hide a number, per row, on purpose.
+- **Do not rewrite a kit-contents row for readability.** Those strings are byte-identical
+  across the card, the poster, the cart label and `inventory.js`; rewording one is a
+  different task, done to all four at once. Several rows stay over the length target for
+  exactly this reason, and the suite's budget block names them.
+- **A row rendered from config gets its tiers in config.** A `SITE.withdrawal` rung accepts
+  `{do, why}`, so a fork that localizes its ladder localizes the reasoning with it.
+
+`tools_clarify.mjs` is the dev-only helper that applies these rewrites; it refuses rather
+than warns whenever a replacement would drop live markup (a `.wdose` span, a tap-to-log
+button, a cross-card link, any `data-*` hook), because every one of those failures is
+invisible on screen afterwards.
 
 ## Config-driven verification (issue #117)
 
