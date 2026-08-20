@@ -54,7 +54,7 @@ const ACTION_MAX = 110;
        Splitting them into one drug per row is a different, clinical decision about the card.
    Those five are structural. Everything else in /codes/ now reads in one glance. */
 const BUDGET = {
-  '/codes/': 5, '/procedures/': 196, '/trauma/': 1, '/peds/': 112, '/ob-neonatal/': 2,
+  '/codes/': 5, '/procedures/': 196, '/trauma/': 1, '/peds/': 0, '/ob-neonatal/': 2,
 };
 
 const TOOLS = Object.keys(BUDGET);
