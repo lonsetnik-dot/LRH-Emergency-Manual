@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html><head>
+<html lang="en">
+<head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Cairn — Ready for the rare, in every rural ED</title>
@@ -9,17 +10,8 @@
 <meta property="og:title" content="Cairn — Ready for the rare, in every rural ED">
 <meta property="og:description" content="Open-source, offline-first bedside cognitive aids for rural emergency departments.">
 <meta property="og:url" content="https://cairnready.org/">
-<script>window.__resources = {
-  "https://unpkg.com/react@18.3.1/umd/react.production.min.js": "assets/react.production.min.js",
-  "https://unpkg.com/react-dom@18.3.1/umd/react-dom.production.min.js": "assets/react-dom.production.min.js"
-};</script>
-<script src="assets/dc-runtime.js"></script>
-</head>
-<body>
-<x-dc>
-<helmet>
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<style>/* latin-ext */
+<style>
+/* latin-ext */
 @font-face {
   font-family: 'Atkinson Hyperlegible';
   font-style: italic;
@@ -73,341 +65,119 @@
   src: url("fonts/212f30df.woff2") format('woff2');
   unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
 }
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("fonts/8f917849.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("fonts/6b48e5fe.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("fonts/32788062.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("fonts/442487d5.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 400;
-  font-display: swap;
-  src: url("fonts/5a42923c.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("fonts/8f917849.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("fonts/6b48e5fe.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("fonts/32788062.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("fonts/442487d5.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 500;
-  font-display: swap;
-  src: url("fonts/5a42923c.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("fonts/8f917849.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("fonts/6b48e5fe.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("fonts/32788062.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("fonts/442487d5.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 600;
-  font-display: swap;
-  src: url("fonts/5a42923c.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("fonts/8f917849.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("fonts/6b48e5fe.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("fonts/32788062.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("fonts/442487d5.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 700;
-  font-display: swap;
-  src: url("fonts/5a42923c.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-/* cyrillic-ext */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 800;
-  font-display: swap;
-  src: url("fonts/8f917849.woff2") format('woff2');
-  unicode-range: U+0460-052F, U+1C80-1C8A, U+20B4, U+2DE0-2DFF, U+A640-A69F, U+FE2E-FE2F;
-}
-/* cyrillic */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 800;
-  font-display: swap;
-  src: url("fonts/6b48e5fe.woff2") format('woff2');
-  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
-}
-/* vietnamese */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 800;
-  font-display: swap;
-  src: url("fonts/32788062.woff2") format('woff2');
-  unicode-range: U+0102-0103, U+0110-0111, U+0128-0129, U+0168-0169, U+01A0-01A1, U+01AF-01B0, U+0300-0301, U+0303-0304, U+0308-0309, U+0323, U+0329, U+1EA0-1EF9, U+20AB;
-}
-/* latin-ext */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 800;
-  font-display: swap;
-  src: url("fonts/442487d5.woff2") format('woff2');
-  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
-}
-/* latin */
-@font-face {
-  font-family: 'Bitter';
-  font-style: normal;
-  font-weight: 800;
-  font-display: swap;
-  src: url("fonts/5a42923c.woff2") format('woff2');
-  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
-}
-</style>
-<style>
-  html { scroll-behavior: smooth; }
-  body { margin: 0; background: #f6f7f6; color: oklch(0.24 0.015 160); font-family: 'Atkinson Hyperlegible', sans-serif; }
-  a { color: #005596; text-decoration: none; }
-  a:hover { color: #003a66; text-decoration: underline; }
-  input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
+/* Bitter — weights 400/500/600/700/800, latin + latin-ext (cyrillic/vietnamese subsets omitted: no such content on this page) */
+@font-face { font-family: 'Bitter'; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/442487d5.woff2") format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Bitter'; font-style: normal; font-weight: 400; font-display: swap; src: url("fonts/5a42923c.woff2") format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Bitter'; font-style: normal; font-weight: 700; font-display: swap; src: url("fonts/442487d5.woff2") format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Bitter'; font-style: normal; font-weight: 700; font-display: swap; src: url("fonts/5a42923c.woff2") format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
+@font-face { font-family: 'Bitter'; font-style: normal; font-weight: 800; font-display: swap; src: url("fonts/442487d5.woff2") format('woff2'); unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF; }
+@font-face { font-family: 'Bitter'; font-style: normal; font-weight: 800; font-display: swap; src: url("fonts/5a42923c.woff2") format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 
-  /* ---- responsive retrofit: same identity, phone-first stacking ----
-     Everything below overrides inline styles, hence the !important. */
-  @media (max-width: 1020px){
-    .cn-grid3{grid-template-columns:repeat(2,1fr)!important}
-    .cn-grid4{grid-template-columns:repeat(2,1fr)!important}
-  }
-  @media (max-width: 900px){
-    header#top{padding:52px 20px 48px!important}
-    .cn-hgrid{grid-template-columns:1fr!important;gap:36px!important}
-    header#top h1{font-size:clamp(33px,8.5vw,54px)!important}
-    .cn-grid2{grid-template-columns:1fr!important;gap:34px!important}
-    section,footer{padding-left:20px!important;padding-right:20px!important}
-  }
-  @media (max-width: 820px){
-    .cn-nav{padding:0 16px!important}
-    .cn-navin{gap:14px!important}
-    /* phones keep the logo and the one action; the section links are a
-       nicety the linear page does not need */
-    .cn-links a:not(.cn-cta){display:none}
-  }
-  @media (max-width: 760px){
-    .cn-demo{grid-template-columns:1fr!important;min-height:0!important}
-    .cn-tabs{flex-direction:row!important;overflow-x:auto;-webkit-overflow-scrolling:touch;
-      border-right:none!important;border-bottom:1px solid oklch(0.88 0.01 160);
-      padding:10px 12px!important;gap:8px!important}
-    .cn-tabs button{width:auto!important;flex:0 0 auto;white-space:nowrap;gap:8px}
-    .cn-tabs button span+span{display:none}
-    .cn-pane{padding:20px 16px!important}
-  }
-  @media (max-width: 640px){
-    section{padding-top:54px!important;padding-bottom:54px!important}
-    .cn-grid3,.cn-grid4{grid-template-columns:1fr!important}
-    h2{font-size:clamp(26px,7vw,34px)!important}
-    footer{padding-top:36px!important}
-  }
-  @media (max-width: 480px){
-    .cn-form2{grid-template-columns:1fr!important}
-  }
+html { scroll-behavior: smooth; }
+body { margin: 0; background: #f6f7f6; color: oklch(0.24 0.015 160); font-family: 'Atkinson Hyperlegible', sans-serif; }
+a { color: #005596; text-decoration: none; }
+a:hover { color: #003a66; text-decoration: underline; }
+input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
+
+.btn-blue { background: #005596; color: #fff; border: none; border-radius: 8px; font-weight: 700; text-decoration: none; display: inline-block; cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif; }
+.btn-blue:hover, .btn-blue:focus-visible { background: #004478; color: #fff; text-decoration: none; }
+.btn-outline { border: 1.5px solid oklch(0.6 0.05 250); color: oklch(0.3 0.05 250); border-radius: 8px; font-weight: 700; text-decoration: none; display: inline-block; background: none; cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif; }
+.btn-outline:hover, .btn-outline:focus-visible { border-color: oklch(0.42 0.09 250); text-decoration: none; }
+
+.faq-q { width: 100%; text-align: left; background: none; border: none; padding: 18px 22px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 16.5px; font-weight: 700; color: oklch(0.24 0.015 160); cursor: pointer; display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+.faq-a { margin: 0; padding: 0 22px 20px; font-size: 15.5px; line-height: 1.65; color: oklch(0.4 0.02 160); }
+.faq-a[hidden] { display: none; }
+
+.case-chip { min-height: 42px; padding: 0 15px; border-radius: 999px; cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 13.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.3); color: #dce6f2; }
+.case-chip.active { background: #fff; border: none; color: oklch(0.3 0.05 250); }
+
+@keyframes metbeat { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.55; transform: scale(0.86); } }
+.met-dot.beating { animation: metbeat 0.55s infinite; }
+.met-dot.beating-slow { animation: metbeat 1.2s infinite; }
+@media (prefers-reduced-motion: reduce) { .met-dot.beating, .met-dot.beating-slow { animation: none; } }
+
+#case-topbar { display: flex; align-items: center; gap: 8px; height: 58px; padding: 0 16px; background: #0e1a2b; border-bottom: 1px solid #1c2b40; }
+#case-actionbar { display: flex; flex-wrap: wrap; align-items: center; gap: 10px; padding: 10px 16px; background: #0c1626; border-bottom: 1px solid #1c2b40; }
+.case-clocks { flex: 1; display: flex; justify-content: center; gap: 10px; min-width: 0; }
+.case-topbar-btns { display: flex; gap: 8px; flex-shrink: 0; }
+
+/* Responsive: below this width the two-column layouts, the nav's six text
+   links, and the case walkthrough's fixed-width chrome (a 320px sidebar
+   column, a no-wrap top bar cramming a breadcrumb + clocks + two buttons
+   into one 58px-tall row) all stop fitting a phone and start overlapping
+   instead of reflowing. */
+@media (max-width: 760px) {
+  .nav-links > a:not(:last-child) { display: none; }
+  .hero-grid { grid-template-columns: 1fr !important; gap: 36px !important; }
+  .two-col { grid-template-columns: 1fr !important; gap: 32px !important; }
+  .form-two-col { grid-template-columns: 1fr !important; }
+  .glyph-grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .feature-grid { grid-template-columns: 1fr !important; }
+  .steps-grid { grid-template-columns: 1fr 1fr !important; }
+  .stats-grid { grid-template-columns: 1fr !important; }
+  .case-grid { grid-template-columns: 1fr !important; min-height: 0 !important; }
+
+  #case-topbar { flex-wrap: wrap; height: auto; padding: 10px 12px; row-gap: 8px; }
+  .case-crumb { display: none !important; }
+  .case-clocks { flex: 1 1 auto; justify-content: flex-start; }
+  .case-topbar-btns { order: 2; }
+}
 </style>
-</helmet>
+</head>
+<body>
 <div style="min-width: 320px">
-  <nav class="cn-nav" style="position: sticky; top: 0; z-index: 50; background: rgba(246,247,246,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid oklch(0.9 0.01 160); padding: 0 32px">
-    <div class="cn-navin" style="max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 28px; height: 64px">
-      <a href="#top" style="display: flex; align-items: center; gap: 10px; text-decoration: none">
-        <svg width="26" height="30" sc-camel-view-box="0 0 26 30" aria-hidden="true"><rect x="7" y="1" width="12" height="7" rx="3.5" fill="#005596"></rect><rect x="4" y="11" width="18" height="7" rx="3.5" fill="#005596"></rect><rect x="1" y="21" width="24" height="8" rx="4" fill="#003a66"></rect></svg>
+  <nav style="position: sticky; top: 0; z-index: 50; background: rgba(246,247,246,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid oklch(0.9 0.01 160); padding: 0 32px">
+    <div style="max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 28px; height: 64px">
+      <a href="https://lrhemergencymanual.net/" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; gap: 10px; text-decoration: none">
+        <svg width="26" height="30" viewBox="0 0 26 30" aria-hidden="true"><rect x="7" y="1" width="12" height="7" rx="3.5" fill="#005596"></rect><rect x="4" y="11" width="18" height="7" rx="3.5" fill="#005596"></rect><rect x="1" y="21" width="24" height="8" rx="4" fill="#003a66"></rect></svg>
         <span style="font-family: Bitter, serif; font-weight: 800; font-size: 22px; color: oklch(0.24 0.015 160)">Cairn</span>
       </a>
       <div style="flex: 1"></div>
-      <div class="cn-links" style="display: flex; gap: 22px; align-items: center; font-size: 15px">
-        <a href="#preview" style="color: oklch(0.35 0.02 160)">The manual</a>
-        <a href="#walk" style="color: oklch(0.35 0.02 160)">Walk a case</a>
+      <div class="nav-links" style="display: flex; gap: 22px; align-items: center; font-size: 15px">
+        <a href="#preview" style="color: oklch(0.35 0.02 160)">Walk a case</a>
         <a href="#inside" style="color: oklch(0.35 0.02 160)">What's inside</a>
         <a href="#how" style="color: oklch(0.35 0.02 160)">How it works</a>
         <a href="#evidence" style="color: oklch(0.35 0.02 160)">Evidence</a>
         <a href="#faq" style="color: oklch(0.35 0.02 160)">FAQ</a>
-        <a href="#join" class="cn-cta" style="background: #005596; color: #fff; padding: 9px 18px; border-radius: 6px; font-weight: 700" style-hover="background: #004478; color: #fff; text-decoration: none">Join the network</a>
+        <a href="#join" class="btn-blue" style="padding: 9px 18px">Join the network</a>
       </div>
     </div>
   </nav>
 
   <header id="top" style="padding: 88px 32px 72px; background: linear-gradient(180deg, #f6f7f6 0%, oklch(0.955 0.012 250) 100%)">
-    <div class="cn-hgrid" style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1.4fr 1fr; gap: 64px; align-items: center">
+    <div class="hero-grid" style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1.4fr 1fr; gap: 64px; align-items: center">
       <div>
-        <div style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #005596; border: 1px solid oklch(0.8 0.05 250); border-radius: 999px; padding: 5px 14px; margin-bottom: 24px">Open source · cairnready.org</div>
+        <div style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #005596; border: 1px solid oklch(0.8 0.05 250); border-radius: 999px; padding: 5px 14px; margin-bottom: 24px">Open source &middot; cairnready.org</div>
         <h1 style="font-family: Bitter, serif; font-weight: 800; font-size: 54px; line-height: 1.08; margin: 0 0 22px; text-wrap: balance">Ready for the rare, in every rural ED.</h1>
-        <p style="font-size: 19px; line-height: 1.6; color: oklch(0.35 0.02 160); margin: 0 0 16px; max-width: 560px">Cairn is an open-source readiness system for rural emergency departments: an interactive emergency manual and team cognitive aids, equipment kit lists and readiness audits, kit indicators, infographics, and simulations you can run with a pillow and fifteen minutes.</p>
-        <p style="font-size: 16px; line-height: 1.6; color: oklch(0.45 0.02 160); margin: 0 0 32px; max-width: 560px">A local physician champion takes a branch, keeps the parts that fit, localizes the doses, phone numbers and cart maps, and practices with the team. Then shares what they learned back.</p>
+        <p style="font-size: 21px; line-height: 1.5; color: oklch(0.32 0.02 160); margin: 0 0 20px; max-width: 540px">Your department sees the once-in-three-years case too. Cairn is the open-source system that gets you ready for it — and it is free.</p>
+        <ul style="list-style: none; margin: 0 0 24px; padding: 0; display: flex; flex-direction: column; gap: 9px; max-width: 540px; font-size: 16.5px; line-height: 1.5; color: oklch(0.38 0.02 160)">
+          <li style="display: flex; gap: 11px"><span style="color: #005596; font-weight: 700">&rarr;</span><span>An interactive manual and team cognitive aids that run the clock, the doses and the checklist with you</span></li>
+          <li style="display: flex; gap: 11px"><span style="color: #005596; font-weight: 700">&rarr;</span><span>Kit lists, readiness audits and printable drawer labels for the carts you actually have</span></li>
+          <li style="display: flex; gap: 11px"><span style="color: #005596; font-weight: 700">&rarr;</span><span>Simulations you can run with a pillow and fifteen minutes — no sim lab</span></li>
+        </ul>
+        <p style="font-size: 16px; line-height: 1.6; color: oklch(0.45 0.02 160); margin: 0 0 32px; max-width: 540px">One local champion takes a branch, keeps what fits, swaps in your doses and phone numbers, and practices with the team. Then shares what they learned back.</p>
         <div style="display: flex; gap: 14px; flex-wrap: wrap">
-          <a href="#preview" style="background: #005596; color: #fff; padding: 14px 26px; border-radius: 8px; font-weight: 700; font-size: 16px" style-hover="background: #004478; color: #fff; text-decoration: none">Explore the manual</a>
-          <a href="#join" style="border: 1.5px solid oklch(0.6 0.05 250); color: oklch(0.3 0.05 250); padding: 14px 26px; border-radius: 8px; font-weight: 700; font-size: 16px" style-hover="border-color: oklch(0.42 0.09 250); text-decoration: none">Join the network</a>
+          <a href="#preview" class="btn-blue" style="padding: 14px 26px; font-size: 16px">Explore the manual</a>
+          <a href="#join" class="btn-outline" style="padding: 14px 26px; font-size: 16px">Join the network</a>
         </div>
       </div>
       <div style="display: flex; flex-direction: column; gap: 18px; align-items: center">
-        <svg width="220" height="240" sc-camel-view-box="0 0 220 240" aria-label="A cairn of four stacked stones: kits, support, training, ready">
-          <ellipse cx="110" cy="222" rx="92" ry="10" fill="oklch(0.9 0.01 250)"></ellipse>
-
-          <!-- Tier 1 (bottom, widest) — the right equipment, organized into kits -->
-          <rect x="14" y="168" width="192" height="44" rx="22" fill="#003a66"></rect>
-          <rect x="76" y="179" width="18" height="16" rx="2" fill="none" stroke="#dbe9f5" stroke-width="1.6" aria-hidden="true"></rect>
-          <line x1="76" y1="186" x2="94" y2="186" stroke="#dbe9f5" stroke-width="1.6" aria-hidden="true"></line>
-          <text x="104" y="195" fill="#fff" font-family="'Atkinson Hyperlegible', sans-serif" font-weight="700" font-size="13" letter-spacing="0.06em">KITS</text>
-
-          <!-- Tier 2 — local support in doing the work: phone lines, protocols -->
-          <rect x="34" y="120" width="152" height="40" rx="20" fill="#005596"></rect>
-          <circle cx="74" cy="132" r="3.2" fill="#eaf3fb" aria-hidden="true"></circle>
-          <circle cx="86" cy="144" r="3.2" fill="#eaf3fb" aria-hidden="true"></circle>
-          <line x1="76" y1="134" x2="84" y2="142" stroke="#eaf3fb" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"></line>
-          <text x="96" y="145" fill="#fff" font-family="'Atkinson Hyperlegible', sans-serif" font-weight="700" font-size="13" letter-spacing="0.06em">SUPPORT</text>
-
-          <!-- Tier 3 — training built into the tools themselves -->
-          <rect x="54" y="76" width="112" height="36" rx="18" fill="#2f74ad"></rect>
-          <line x1="68" y1="86" x2="80" y2="86" stroke="#eaf3fb" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"></line>
-          <line x1="68" y1="92" x2="80" y2="92" stroke="#eaf3fb" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"></line>
-          <line x1="68" y1="98" x2="80" y2="98" stroke="#eaf3fb" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"></line>
-          <text x="86" y="99" fill="#fff" font-family="'Atkinson Hyperlegible', sans-serif" font-weight="700" font-size="11.5" letter-spacing="0.05em">TRAINING</text>
-
-          <!-- Tier 4 (top) — readiness -->
-          <rect x="74" y="36" width="72" height="32" rx="16" fill="oklch(0.40 0.07 140)"></rect>
-          <polyline points="86,52 90,56 96,47" fill="none" stroke="#eafff3" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"></polyline>
-          <text x="102" y="57" fill="#fff" font-family="'Atkinson Hyperlegible', sans-serif" font-weight="700" font-size="12" letter-spacing="0.06em">READY</text>
+        <svg width="210" height="200" viewBox="0 0 210 200" aria-label="A cairn of four stones, from the base up: kits, support, training, readiness">
+          <ellipse cx="105" cy="186" rx="88" ry="9" fill="oklch(0.9 0.01 250)"></ellipse>
+          <rect x="8" y="140" width="194" height="42" rx="21" fill="#003a66"></rect>
+          <text x="105" y="167" text-anchor="middle" fill="#ffffff" font-family="'Atkinson Hyperlegible', sans-serif" font-size="15" font-weight="700" letter-spacing="1.1">EQUIPMENT LISTS</text>
+          <rect x="24" y="94" width="162" height="40" rx="20" fill="#004478"></rect>
+          <text x="105" y="120" text-anchor="middle" fill="#ffffff" font-family="'Atkinson Hyperlegible', sans-serif" font-size="15" font-weight="700" letter-spacing="1.1">COGNITIVE AIDS</text>
+          <rect x="47" y="50" width="116" height="38" rx="19" fill="#005596"></rect>
+          <text x="105" y="75" text-anchor="middle" fill="#ffffff" font-family="'Atkinson Hyperlegible', sans-serif" font-size="15" font-weight="700" letter-spacing="1.3">TRAINING</text>
+          <rect x="66" y="8" width="78" height="36" rx="18" fill="#2f74ad"></rect>
+          <text x="105" y="32" text-anchor="middle" fill="#ffffff" font-family="'Atkinson Hyperlegible', sans-serif" font-size="15" font-weight="700" letter-spacing="1.3">READY</text>
         </svg>
-        <p style="font-size: 14.5px; line-height: 1.55; color: oklch(0.45 0.02 160); max-width: 320px; text-align: center; margin: 0; font-style: italic">A cairn is a stack of stones left on the trail by those who walked it before you — so you can find the way in bad weather. From the ground up: the right equipment, organized into kits. Local support for doing the work of emergency medicine — phone lines, protocols, the people you call. Training built into the tools themselves. Readiness, at the top. Add a stone if you can — it becomes part of the trail, helping the next traveler the way it helped you.</p>
+        <div style="max-width: 320px; display: flex; flex-direction: column; gap: 12px; font-size: 14.5px; line-height: 1.55; color: oklch(0.42 0.02 160)">
+          <p style="margin: 0; font-style: italic">A cairn is a stack of stones left by those who walked the trail before you — so you can find the way in bad weather.</p>
+          <p style="margin: 0">From the ground up: <strong style="color: oklch(0.28 0.02 160)">equipment lists</strong> — the right kit, where you can find it. <strong style="color: oklch(0.28 0.02 160)">Cognitive aids</strong> that run the clock and the checklist with you. <strong style="color: oklch(0.28 0.02 160)">Training</strong> built into the tools themselves. <strong style="color: oklch(0.28 0.02 160)">Ready</strong> at the top.</p>
+          <p style="margin: 0">Add a stone if you can. It becomes part of the trail for whoever comes next.</p>
+        </div>
       </div>
     </div>
   </header>
@@ -415,98 +185,32 @@
   <section id="preview" style="padding: 80px 32px; background: oklch(0.3 0.05 250)">
     <div style="max-width: 1100px; margin: 0 auto">
       <div style="display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 8px">
-        <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 34px; color: #fff; margin: 0">The manual, live</h2>
-        <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: oklch(0.78 0.07 250)">Live screenshot</span>
+        <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 34px; color: #fff; margin: 0">Walk one case</h2>
+        <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: oklch(0.78 0.07 250)">Maternal cardiac arrest &middot; 34 weeks</span>
       </div>
-      <p style="color: oklch(0.82 0.01 160); font-size: 16px; max-width: 640px; margin: 0 0 32px; line-height: 1.6">Below is an actual screenshot of the reference implementation running live at Littleton Regional Healthcare — not a mockup. Every tool is live and checkable at the bedside, not a PDF.</p>
-      <div style="background: #f6f7f6; border-radius: 14px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,0.35)">
-        <a href="https://lrhemergencymanual.net/codes/?from=home#c01" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; gap: 8px; padding: 12px 18px; background: oklch(0.93 0.01 160); border-bottom: 1px solid oklch(0.87 0.01 160); text-decoration: none">
-          <span style="width: 11px; height: 11px; border-radius: 50%; background: oklch(0.75 0.03 160)"></span>
-          <span style="width: 11px; height: 11px; border-radius: 50%; background: oklch(0.75 0.03 160)"></span>
-          <span style="width: 11px; height: 11px; border-radius: 50%; background: oklch(0.75 0.03 160)"></span>
-          <span style="flex: 1; text-align: center; font-size: 13px; color: oklch(0.5 0.02 160); font-family: monospace">lrhemergencymanual.net/codes ↗</span>
-        </a>
-        <div class="cn-demo" style="display: grid; grid-template-columns: 260px 1fr; min-height: 420px">
-          <div class="cn-tabs" style="border-right: 1px solid oklch(0.88 0.01 160); padding: 18px 14px; display: flex; flex-direction: column; gap: 6px; background: #fdfdfc">
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 14px; border-radius: 8px; border-left: 3px solid #005596; background: oklch(0.95 0.015 250)">
-              <span style="font-weight: 700; font-size: 15px; color: oklch(0.25 0.02 160)">Codes</span>
-              <span style="font-size: 12.5px; color: oklch(0.45 0.02 160)">36 cards</span>
-            </div>
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 14px; color: oklch(0.5 0.02 160)"><span style="font-size: 14.5px">Pediatric emergencies</span><span style="font-size: 12px; opacity: 0.75">14 cards</span></div>
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 14px; color: oklch(0.5 0.02 160)"><span style="font-size: 14.5px">OB &amp; neonatal</span><span style="font-size: 12px; opacity: 0.75">7 tools</span></div>
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 14px; color: oklch(0.5 0.02 160)"><span style="font-size: 14.5px">Procedures</span><span style="font-size: 12px; opacity: 0.75">15 cards</span></div>
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 14px; color: oklch(0.5 0.02 160)"><span style="font-size: 14.5px">Equipment readiness</span><span style="font-size: 12px; opacity: 0.75">7 standards</span></div>
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 14px; color: oklch(0.5 0.02 160)"><span style="font-size: 14.5px">Simulations</span><span style="font-size: 12px; opacity: 0.75">9 sims</span></div>
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 14px; color: oklch(0.5 0.02 160)"><span style="font-size: 14.5px">Kit labels &amp; posters</span><span style="font-size: 12px; opacity: 0.75">printable</span></div>
-            <div style="display: flex; justify-content: space-between; align-items: baseline; gap: 10px; padding: 11px 14px; color: oklch(0.5 0.02 160)"><span style="font-size: 14.5px">Guideline sources</span><span style="font-size: 12px; opacity: 0.75">provenance</span></div>
-          </div>
-          <div class="cn-pane" style="position: relative; background: #0e1e30; overflow: hidden; max-height: 460px">
-            <img src="screenshots/codes-arrest.png" alt="Screenshot of the live Codes tool: the cardiac arrest — VF / pVT resuscitation card, dark mode" style="display: block; width: 100%; height: auto">
-            <div style="position: absolute; left: 0; right: 0; bottom: 0; height: 90px; background: linear-gradient(to bottom, transparent, #0e1e30 92%)"></div>
-            <div style="position: absolute; left: 18px; bottom: 14px; font-size: 12.5px; color: oklch(0.85 0.01 160); font-style: italic">Illustrative — every dose and number is localized and validated by the adopting site before use.</div>
-          </div>
-        </div>
-      </div>
-      <div style="text-align: center; margin-top: 28px">
-        <a href="https://lrhemergencymanual.net/" target="_blank" rel="noopener noreferrer" style="display: inline-block; background: #005596; color: #fff; padding: 13px 26px; border-radius: 8px; font-weight: 700; font-size: 15.5px; text-decoration: none">Open the live manual — all 8 categories ↗</a>
-      </div>
-    </div>
-  </section>
+      <p style="color: oklch(0.82 0.01 160); font-size: 16px; max-width: 700px; margin: 0 0 28px; line-height: 1.6">One patient becomes two. ACLS, then a resuscitative hysterotomy, then a newborn to resuscitate — three protocols in six minutes, on one screen, in one continuous case. Step through what the team actually sees.</p>
 
-  <section id="walk" style="padding: 88px 32px; background: #fff; border-top: 1px solid oklch(0.92 0.005 160); border-bottom: 1px solid oklch(0.92 0.005 160)">
-    <div style="max-width: 1100px; margin: 0 auto">
-      <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 34px; margin: 0 0 12px">Walk a case</h2>
-      <p style="font-size: 17px; color: oklch(0.42 0.02 160); max-width: 640px; margin: 0 0 8px; line-height: 1.6">A precipitous birth becomes a shoulder dystocia becomes a blue baby — three tools handing off to each other. Here's what that handoff looks like.</p>
-      <p style="font-size: 14px; color: oklch(0.52 0.02 160); max-width: 640px; margin: 0 0 36px; line-height: 1.6">Illustrative record of the real engines &middot; try the timed, tap-through versions yourself below &middot; not clinical guidance.</p>
-      <div style="max-width: 460px; margin: 0 auto; background: #0e1e30; border-radius: 20px; padding: 16px; box-shadow: 0 24px 60px rgba(3,20,38,0.45)">
-        <div style="font-family: ui-monospace, Menlo, monospace; font-size: 11px; font-weight: 700; letter-spacing: 0.14em; color: #5f93c0; padding: 2px 4px 14px">SIM 1 &middot; PRECIPITOUS BIRTH</div>
-        <div style="display: flex; flex-direction: column; gap: 0; margin-bottom: 14px">
-          <div style="display: flex; gap: 12px; padding-bottom: 16px">
-            <div style="flex: none; display: flex; flex-direction: column; align-items: center; width: 10px">
-              <span style="width: 9px; height: 9px; border-radius: 50%; background: #5f93c0; flex: none"></span>
-              <span style="width: 1.5px; flex: 1; background: rgba(95,147,192,0.3); margin-top: 4px"></span>
+      <div id="case-chips" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px"></div>
+
+      <div style="background: #0b1320; border-radius: 14px; overflow: hidden; box-shadow: 0 24px 60px rgba(0,0,0,0.4)">
+        <div id="case-topbar"></div>
+        <div id="case-actionbar"></div>
+        <div class="case-grid" style="display: grid; grid-template-columns: 1fr 320px; min-height: 430px">
+          <div id="case-main" style="padding: 22px 24px; display: flex; flex-direction: column; gap: 14px"></div>
+          <div style="border-left: 1px solid #1c2b40; background: #101d31; display: flex; flex-direction: column">
+            <div style="padding: 13px 18px; border-bottom: 1px solid #1c2b40; display: flex; align-items: baseline; gap: 10px">
+              <span style="font-family: 'JetBrains Mono', monospace; font-size: 12px; font-weight: 700; letter-spacing: 0.1em; color: #eef3f9">CASE TIMELINE</span>
+              <span style="font-size: 11px; color: #7f95b2">auto-logged</span>
             </div>
-            <div><div style="font-family: ui-monospace, Menlo, monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: #93a4b5; margin-bottom: 3px">OB &middot; IMMINENT DELIVERY</div><p style="margin: 0; font-size: 14.5px; line-height: 1.5; color: #e8eef5">Head delivers, then stops — turtle sign. Gentle traction fails. <b>Shoulder dystocia declared</b> — the head-to-body clock starts, and it will not restart.</p></div>
-          </div>
-          <div style="display: flex; gap: 12px; padding-bottom: 16px">
-            <div style="flex: none; display: flex; flex-direction: column; align-items: center; width: 10px">
-              <span style="width: 9px; height: 9px; border-radius: 50%; background: #5f93c0; flex: none"></span>
-              <span style="width: 1.5px; flex: 1; background: rgba(95,147,192,0.3); margin-top: 4px"></span>
-            </div>
-            <div><div style="font-family: ui-monospace, Menlo, monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: #93a4b5; margin-bottom: 3px">DYSTOCIA ENGINE &middot; HELPERR</div><p style="margin: 0; font-size: 14.5px; line-height: 1.5; color: #e8eef5">One rung at a time — help called, McRoberts, suprapubic pressure — each logged against the running interval. <b>Baby out at 1:38.</b> One tap stamps time of birth; every clock downstream runs off it.</p></div>
-          </div>
-          <div style="display: flex; gap: 12px">
-            <div style="flex: none; display: flex; flex-direction: column; align-items: center; width: 10px">
-              <span style="width: 9px; height: 9px; border-radius: 50%; background: #93c0a4; flex: none"></span>
-            </div>
-            <div><div style="font-family: ui-monospace, Menlo, monospace; font-size: 10px; font-weight: 700; letter-spacing: 0.08em; color: #93a4b5; margin-bottom: 3px">NEONATAL ENGINE &middot; NRP</div><p style="margin: 0; font-size: 14.5px; line-height: 1.5; color: #e8eef5">Floppy, blue, not crying. Warm &middot; dry &middot; stimulate, then PPV in 30-second cycles off the birth clock. HR climbs 50 &rarr; 90 &rarr; 120 &mdash; <b>HR 140, crying, at 9:55.</b> Apgar marks fired on their own.</p></div>
+            <div id="case-log" style="padding: 8px 18px 16px; display: flex; flex-direction: column; overflow: hidden"></div>
+            <div style="flex: 1"></div>
+            <div style="padding: 12px 18px; border-top: 1px solid #1c2b40; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #7f95b2; line-height: 1.5">device only &middot; no identifiers &middot; cleared on reset</div>
           </div>
         </div>
-        <div style="border-left: 3px solid #93c0a4; background: rgba(147,192,164,0.1); padding: 12px 14px; border-radius: 0 10px 10px 0; margin-bottom: 12px">
-          <p style="margin: 0 0 8px; font-size: 15px; line-height: 1.55; color: #e8eef5"><b>That record below? Nobody wrote it.</b> The delivery card stamped the clock, the dystocia engine held the interval, the neonatal engine ran the cycles — while the team's hands were busy.</p>
-          <p style="margin: 0; font-size: 14px; line-height: 1.55; color: #93a4b5">On the floor, teams drill exactly this chain with a pillow and fifteen minutes — it doubles as an equipment walk for new staff.</p>
-        </div>
-        <div style="background: rgba(255,255,255,0.04); border: 1px solid rgba(95,147,192,0.25); border-radius: 10px; padding: 10px 12px; margin-bottom: 16px">
-          <div style="font-family: ui-monospace, Menlo, monospace; font-size: 10.5px; font-weight: 700; letter-spacing: 0.14em; color: #93a4b5; margin-bottom: 6px">CASE RECORD — KEPT FOR THE TEAM</div>
-          <div style="display: flex; flex-direction: column; gap: 4px">
-            <div style="display: flex; gap: 10px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; line-height: 1.5"><span style="color: #5f93c0; flex: none">0:00</span><span style="color: #c6d3de">Case started — delivery card open</span></div>
-            <div style="display: flex; gap: 10px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; line-height: 1.5"><span style="color: #5f93c0; flex: none">1:04</span><span style="color: #c6d3de">Shoulder dystocia declared — HELPERR open</span></div>
-            <div style="display: flex; gap: 10px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; line-height: 1.5"><span style="color: #5f93c0; flex: none">1:38</span><span style="color: #c6d3de">Born — head-to-body interval 1:38 total</span></div>
-            <div style="display: flex; gap: 10px; font-family: ui-monospace, Menlo, monospace; font-size: 12px; line-height: 1.5"><span style="color: #5f93c0; flex: none">9:55</span><span style="color: #c6d3de">HR 140, crying — case ends</span></div>
-          </div>
-        </div>
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 10px">
-          <a href="https://lrhemergencymanual.net/dystocia/" target="_blank" rel="noopener noreferrer" style="display: block; border-radius: 10px; overflow: hidden; border: 1px solid rgba(95,147,192,0.3)">
-            <img src="screenshots/dystocia.png" alt="Screenshot of the live shoulder dystocia engine" style="display: block; width: 100%; height: 96px; object-fit: cover; object-position: top">
-          </a>
-          <a href="https://lrhemergencymanual.net/neonatal/" target="_blank" rel="noopener noreferrer" style="display: block; border-radius: 10px; overflow: hidden; border: 1px solid rgba(95,147,192,0.3)">
-            <img src="screenshots/neonatal.png" alt="Screenshot of the live neonatal resuscitation engine" style="display: block; width: 100%; height: 96px; object-fit: cover; object-position: top">
-          </a>
-        </div>
-        <div style="display: flex; flex-direction: column; gap: 10px">
-          <a href="https://lrhemergencymanual.net/dystocia/" target="_blank" rel="noopener noreferrer" style="display: block; text-align: center; min-height: 48px; line-height: 48px; background: #005596; color: #fff; border-radius: 10px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 15px; font-weight: 700; text-decoration: none">Try the dystocia engine ↗</a>
-          <a href="https://lrhemergencymanual.net/neonatal/" target="_blank" rel="noopener noreferrer" style="display: block; text-align: center; min-height: 48px; line-height: 48px; background: none; color: #5f93c0; border: 1.5px solid #2f74ad; border-radius: 10px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 15px; font-weight: 700; text-decoration: none">Try the neonatal engine ↗</a>
-        </div>
+      </div>
+      <p style="color: oklch(0.75 0.02 250); font-size: 13.5px; margin: 18px 0 0; font-style: italic">Illustrative walkthrough. Every dose, energy setting and time target is localized and clinically validated by the adopting site before use.</p>
+      <div style="text-align: center; margin-top: 28px">
+        <a href="https://lrhemergencymanual.net/" target="_blank" rel="noopener noreferrer" class="btn-blue" style="padding: 13px 26px; font-size: 15.5px">Open the live manual &middot; lrhemergencymanual.net &#8599;</a>
       </div>
     </div>
   </section>
@@ -515,16 +219,147 @@
     <div style="max-width: 1100px; margin: 0 auto">
       <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 34px; margin: 0 0 12px">What's inside a branch</h2>
       <p style="font-size: 17px; color: oklch(0.42 0.02 160); max-width: 620px; margin: 0 0 44px; line-height: 1.6">One repository, plain static files, no build step. Take all of it or just the pieces your department needs.</p>
-      <div class="cn-grid3" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px">
-        <sc-for list="{{ features }}" as="f" hint-placeholder-count="6">
-          <div style="background: #fff; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; padding: 26px 24px">
-            <div style="width: 40px; height: 40px; border-radius: 9px; background: oklch(0.94 0.02 250); display: flex; align-items: center; justify-content: center; margin-bottom: 16px">
-              <span style="width: 14px; height: 14px; border-radius: 4px; background: #005596; display: block"></span>
+
+      <div style="border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; background: #fff; padding: 26px 28px; margin-bottom: 26px">
+        <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 4px">
+          <h3 style="font-family: Bitter, serif; font-size: 20px; font-weight: 700; margin: 0">Kit glyphs</h3>
+          <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #005596">print-ready &middot; drawer faces, stock strips, wall posters</span>
+        </div>
+        <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0 0 22px; max-width: 660px">Anatomy in ink, the one action in red — never more than one red idea per figure. Related procedures share a base drawing and differ only by that idea: the hysterotomy's vertical midline cut and the C-section's transverse one sit on the same uterus. The same glyph rides the drawer label, the poster and the live card, so the cart and the screen agree.</p>
+        <div class="glyph-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px">
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #fdfdfc">
+              <svg width="62" height="62" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M15 11 Q24 3 33 11 Q41 20 33 30 Q28 36 26 40 L22 40 Q20 36 15 30 Q7 20 15 11 Z" stroke="#16324f" stroke-width="2.2"></path>
+                <path d="M24 13 L24 31" stroke="#c0392b" stroke-width="2.8"></path>
+              </svg>
             </div>
-            <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">{{ f.name }}</h3>
-            <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">{{ f.desc }}</p>
+            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: oklch(0.3 0.02 160); line-height: 1.3">Resuscitative hysterotomy</span>
+            <span style="font-size: 11.5px; text-align: center; color: oklch(0.52 0.02 160)">OB cart &middot; drawer 5</span>
           </div>
-        </sc-for>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #fdfdfc">
+              <svg width="62" height="62" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M15 11 Q24 3 33 11 Q41 20 33 30 Q28 36 26 40 L22 40 Q20 36 15 30 Q7 20 15 11 Z" stroke="#16324f" stroke-width="2.2"></path>
+                <path d="M24 45 L24 25" stroke="#c0392b" stroke-width="2.4"></path>
+                <path d="M24 15.5 a4.5 4.5 0 1 0 0.1 0" stroke="#c0392b" stroke-width="2.4"></path>
+              </svg>
+            </div>
+            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: oklch(0.3 0.02 160); line-height: 1.3">JADA &mdash; PPH</span>
+            <span style="font-size: 11.5px; text-align: center; color: oklch(0.52 0.02 160)">OB cart &middot; drawer 3</span>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #fdfdfc">
+              <svg width="62" height="62" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M15 11 Q24 3 33 11 Q41 20 33 30 Q28 36 26 40 L22 40 Q20 36 15 30 Q7 20 15 11 Z" stroke="#16324f" stroke-width="2.2"></path>
+                <path d="M16 30 L32 30" stroke="#c0392b" stroke-width="2.8"></path>
+              </svg>
+            </div>
+            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: oklch(0.3 0.02 160); line-height: 1.3">ED C-section</span>
+            <span style="font-size: 11.5px; text-align: center; color: oklch(0.52 0.02 160)">OB cart &middot; drawer 5</span>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #fdfdfc">
+              <svg width="62" height="62" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M5 16 Q24 9 43 16" stroke="#16324f" stroke-width="2.2"></path>
+                <path d="M5 27 Q24 20 43 27" stroke="#16324f" stroke-width="2.2"></path>
+                <path d="M5 38 Q24 31 43 38" stroke="#16324f" stroke-width="2.2"></path>
+                <path d="M45 45 L31 31" stroke="#c0392b" stroke-width="4.6"></path>
+                <path d="M31 31 L18 18" stroke="#c0392b" stroke-width="4" stroke-dasharray="4 3"></path>
+              </svg>
+            </div>
+            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: oklch(0.3 0.02 160); line-height: 1.3">Chest tube</span>
+            <span style="font-size: 11.5px; text-align: center; color: oklch(0.52 0.02 160)">Trauma cart</span>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #fdfdfc">
+              <svg width="62" height="62" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M34 5 Q28 8 28 14 L28 21" stroke="#16324f" stroke-width="2.2"></path>
+                <path d="M16 5 L16 21 Q16 27 10 30" stroke="#16324f" stroke-width="2.2"></path>
+                <path d="M4 33 Q24 26 44 33" stroke="#16324f" stroke-width="2.2"></path>
+                <path d="M20 15 L28 29" stroke="#c0392b" stroke-width="5.5"></path>
+                <path d="M20 15 L11 3" stroke="#c0392b" stroke-width="3.2"></path>
+                <path d="M17 11 L8 9" stroke="#c0392b" stroke-width="1.8"></path>
+                <path d="M14 7 L18 2" stroke="#c0392b" stroke-width="1.8"></path>
+              </svg>
+            </div>
+            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: oklch(0.3 0.02 160); line-height: 1.3">Resus line</span>
+            <span style="font-size: 11.5px; text-align: center; color: oklch(0.52 0.02 160)">Resus bay</span>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #fdfdfc">
+              <svg width="62" height="62" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M42 26 Q42 5 25 5 Q9 5 9 20 L9 24 L5 30 L9 31 Q11 32 9 33" stroke="#16324f" stroke-width="2.2"></path>
+                <path d="M33 27 Q36 29 33 32" stroke="#16324f" stroke-width="2.2"></path>
+                <path d="M42 26 Q42 36 38 46" stroke="#16324f" stroke-width="2.2"></path>
+                <path d="M8 38 Q8 40.5 14 39.5 L18.4 39.5 L18.4 46" stroke="#16324f" stroke-width="2.2"></path>
+                <path d="M10.2 38 Q17 33.5 22 38 Q24 40 21 40.5" stroke="#16324f" stroke-width="2"></path>
+                <path d="M35 38 L35 46" stroke="#16324f" stroke-width="2"></path>
+                <path d="M2 29 Q14 26 21 32 Q26 36 26 46" stroke="#c0392b" stroke-width="2.6"></path>
+              </svg>
+            </div>
+            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: oklch(0.3 0.02 160); line-height: 1.3">RSI</span>
+            <span style="font-size: 11.5px; text-align: center; color: oklch(0.52 0.02 160)">Airway cart</span>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #fdfdfc">
+              <svg width="62" height="62" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M14 6 L14 42" stroke="#16324f" stroke-width="2.2"></path>
+                <path d="M28 6 L28 42" stroke="#16324f" stroke-width="2.2"></path>
+                <path d="M14 12 L28 12 M14 34 L28 34 M14 41 L28 41" stroke="#16324f" stroke-width="1.5"></path>
+                <path d="M44 6 Q36 10 31 17 Q25 25 23 34 L23 42" stroke="#c0392b" stroke-width="2.8"></path>
+              </svg>
+            </div>
+            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: oklch(0.3 0.02 160); line-height: 1.3">FONA</span>
+            <span style="font-size: 11.5px; text-align: center; color: oklch(0.52 0.02 160)">Airway cart &middot; drawer 4</span>
+          </div>
+          <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
+            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #fdfdfc">
+              <svg width="62" height="62" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                <path d="M18 4 Q16 24 18 44" stroke="#16324f" stroke-width="2.2"></path>
+                <path d="M32 4 Q34 24 32 44" stroke="#16324f" stroke-width="2.2"></path>
+                <path d="M22 34 L28 40 M28 34 L22 40" stroke="#16324f" stroke-width="2"></path>
+                <path d="M13 14 L37 14 L37 24 L13 24 Z" stroke="#c0392b" stroke-width="2.6"></path>
+                <path d="M25 19 L44 11" stroke="#c0392b" stroke-width="3"></path>
+              </svg>
+            </div>
+            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: oklch(0.3 0.02 160); line-height: 1.3">Tourniquet</span>
+            <span style="font-size: 11.5px; text-align: center; color: oklch(0.52 0.02 160)">Trauma cart</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="feature-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px">
+        <div style="background: #fff; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; padding: 26px 24px">
+          <div style="width: 40px; height: 40px; border-radius: 9px; background: oklch(0.94 0.02 250); display: flex; align-items: center; justify-content: center; margin-bottom: 16px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #005596; display: block"></span></div>
+          <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Interactive emergency manual</h3>
+          <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">Live, checkable cognitive aids for codes, pediatric, OB and neonatal emergencies, trauma, and rare procedures — timers and dosing engines, not PDFs.</p>
+        </div>
+        <div style="background: #fff; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; padding: 26px 24px">
+          <div style="width: 40px; height: 40px; border-radius: 9px; background: oklch(0.94 0.02 250); display: flex; align-items: center; justify-content: center; margin-bottom: 16px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #005596; display: block"></span></div>
+          <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Team cognitive aids</h3>
+          <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">Aids for the whole team, including the hard conversations: consultant calls, code status, breaking bad news, and the post-event debrief.</p>
+        </div>
+        <div style="background: #fff; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; padding: 26px 24px">
+          <div style="width: 40px; height: 40px; border-radius: 9px; background: oklch(0.94 0.02 250); display: flex; align-items: center; justify-content: center; margin-bottom: 16px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #005596; display: block"></span></div>
+          <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Equipment kit lists &amp; audits</h3>
+          <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">Every kit, item, and size — searchable, scored against seven national equipment standards, with gap-recording you can export as findings.</p>
+        </div>
+        <div style="background: #fff; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; padding: 26px 24px">
+          <div style="width: 40px; height: 40px; border-radius: 9px; background: oklch(0.94 0.02 250); display: flex; align-items: center; justify-content: center; margin-bottom: 16px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #005596; display: block"></span></div>
+          <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Kit indicators &amp; labels</h3>
+          <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">Print-ready drawer faces, stock strips, and kit cards. Color finds the drawer; words and pictograms name it; QR codes close the loop to the live card.</p>
+        </div>
+        <div style="background: #fff; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; padding: 26px 24px">
+          <div style="width: 40px; height: 40px; border-radius: 9px; background: oklch(0.94 0.02 250); display: flex; align-items: center; justify-content: center; margin-bottom: 16px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #005596; display: block"></span></div>
+          <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Simulations &amp; VEMS kit</h3>
+          <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">Pillow-patient drills that chain real workflows, plus a laminatable visual-simulation deck. A table and fifteen minutes — no mannequin, no sim lab.</p>
+        </div>
+        <div style="background: #fff; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; padding: 26px 24px">
+          <div style="width: 40px; height: 40px; border-radius: 9px; background: oklch(0.94 0.02 250); display: flex; align-items: center; justify-content: center; margin-bottom: 16px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #005596; display: block"></span></div>
+          <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Infographics &amp; provenance</h3>
+          <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">Wall posters for the resus bay, plus a provenance record for every tool: source guideline, edition, and the date a human last checked it.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -533,14 +368,27 @@
     <div style="max-width: 1100px; margin: 0 auto">
       <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 34px; margin: 0 0 12px">How a department adopts it</h2>
       <p style="font-size: 17px; color: oklch(0.42 0.02 160); max-width: 640px; margin: 0 0 44px; line-height: 1.6">It starts with one local physician champion. No developers required — the mechanical steps are the kind an AI assistant does for you.</p>
-      <div class="cn-grid4" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px">
-        <sc-for list="{{ steps }}" as="s" hint-placeholder-count="4">
-          <div style="position: relative; padding: 24px 22px 26px; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; background: #f6f7f6">
-            <div style="font-family: Bitter, serif; font-weight: 800; font-size: 15px; color: #005596; margin-bottom: 10px">{{ s.num }}</div>
-            <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">{{ s.name }}</h3>
-            <p style="font-size: 14.5px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">{{ s.desc }}</p>
-          </div>
-        </sc-for>
+      <div class="steps-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px">
+        <div style="position: relative; padding: 24px 22px 26px; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; background: #f6f7f6">
+          <div style="font-family: Bitter, serif; font-weight: 800; font-size: 15px; color: #005596; margin-bottom: 10px">01</div>
+          <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Take a branch</h3>
+          <p style="font-size: 14.5px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">Reach out and we'll hand you the repository. Fork it into your own copy — independent history, your hosting, your control. Free static hosting publishes it automatically.</p>
+        </div>
+        <div style="position: relative; padding: 24px 22px 26px; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; background: #f6f7f6">
+          <div style="font-family: Bitter, serif; font-weight: 800; font-size: 15px; color: #005596; margin-bottom: 10px">02</div>
+          <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Localize it</h3>
+          <p style="font-size: 14.5px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">Keep the parts that fit your ED. Edit the marked config blocks — your doses, assays, phone numbers, cart layout — then validate every value clinically.</p>
+        </div>
+        <div style="position: relative; padding: 24px 22px 26px; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; background: #f6f7f6">
+          <div style="font-family: Bitter, serif; font-weight: 800; font-size: 15px; color: #005596; margin-bottom: 10px">03</div>
+          <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Practice with it</h3>
+          <p style="font-size: 14.5px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">Run the simulations with your real team and real carts. New hires find the equipment; what they can't find feeds your readiness audit.</p>
+        </div>
+        <div style="position: relative; padding: 24px 22px 26px; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; background: #f6f7f6">
+          <div style="font-family: Bitter, serif; font-weight: 800; font-size: 15px; color: #005596; margin-bottom: 10px">04</div>
+          <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Share it back</h3>
+          <p style="font-size: 14.5px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">A better checklist, a clearer label, a gap in coverage — contribute it upstream so the next department starts further up the trail.</p>
+        </div>
       </div>
       <p style="margin: 36px 0 0; font-size: 16px; line-height: 1.6; color: oklch(0.4 0.02 160); max-width: 720px">The loop closes on itself: simulations double as orientation walks, what the new hire can't find feeds the equipment readiness audit, and the audit tells you which kit indicators to print next. Practice and preparedness are the same activity.</p>
     </div>
@@ -550,7 +398,7 @@
     <div style="max-width: 1100px; margin: 0 auto">
       <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 34px; margin: 0 0 12px">Why cognitive aids, why rural</h2>
       <p style="font-size: 17px; color: oklch(0.42 0.02 160); max-width: 660px; margin: 0 0 40px; line-height: 1.6">A rural ED sees everything an urban trauma center sees — just rarely. When the once-in-three-years case arrives, recall under stress is not a plan. Checklists and practiced teams are.</p>
-      <div class="cn-grid3" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-bottom: 36px">
+      <div class="stats-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-bottom: 36px">
         <div style="background: #fff; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; padding: 28px 24px">
           <div style="font-family: Bitter, serif; font-weight: 800; font-size: 42px; color: #005596; line-height: 1">6% vs 23%</div>
           <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 12px 0 0">Critical management steps missed in simulated operating-room crises with checklists versus without them.<sup>1</sup></p>
@@ -565,13 +413,13 @@
         </div>
       </div>
       <div style="font-size: 13.5px; line-height: 1.7; color: oklch(0.5 0.02 160); max-width: 760px">
-        <p style="margin: 0">1. Arriaga AF, et al. Simulation-based trial of surgical-crisis checklists. <em>N Engl J Med.</em> 2013;368:246-53. &nbsp; 2. US Census Bureau, 2020 Census urban–rural classification. &nbsp; 3. UNC Cecil G. Sheps Center for Health Services Research, Rural Hospital Closures tracker. See also Goldhaber-Fiebert SN, Howard SK. Implementing emergency manuals. <em>Anesth Analg.</em> 2013;117:1149-61.</p>
+        <p style="margin: 0">1. Arriaga AF, et al. Simulation-based trial of surgical-crisis checklists. <em>N Engl J Med.</em> 2013;368:246-53. &nbsp; 2. US Census Bureau, 2020 Census urban&ndash;rural classification. &nbsp; 3. UNC Cecil G. Sheps Center for Health Services Research, Rural Hospital Closures tracker. See also Goldhaber-Fiebert SN, Howard SK. Implementing emergency manuals. <em>Anesth Analg.</em> 2013;117:1149-61.</p>
       </div>
     </div>
   </section>
 
   <section id="governance" style="padding: 72px 32px; background: oklch(0.95 0.015 250)">
-    <div class="cn-grid2" style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start">
+    <div class="two-col" style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start">
       <div>
         <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 30px; margin: 0 0 14px">Open source, openly governed</h2>
         <p style="font-size: 16px; line-height: 1.65; color: oklch(0.38 0.02 160); margin: 0 0 14px">Everything lives in one repository under a permissive license: the manual, the cognitive aids, the kit lists, the label and poster templates, the simulation scripts, and the guideline-provenance records that say which source each tool is written against and when a human last checked it.</p>
@@ -580,7 +428,7 @@
       <div style="background: #fff; border: 1px solid oklch(0.88 0.02 250); border-radius: 12px; padding: 28px">
         <h3 style="font-family: Bitter, serif; font-size: 20px; font-weight: 700; margin: 0 0 10px">Governance is being built</h3>
         <p style="font-size: 15.5px; line-height: 1.6; color: oklch(0.4 0.02 160); margin: 0 0 18px">Clinical review panel, co-maintainers, contribution pathways — the structures are forming now, and early voices shape them. If you want a say in how a shared rural readiness commons is run, this is the moment.</p>
-        <a href="#join" style="display: inline-block; background: #005596; color: #fff; padding: 11px 22px; border-radius: 7px; font-weight: 700; font-size: 15px" style-hover="background: #004478; color: #fff; text-decoration: none">Tell us you're interested</a>
+        <a href="#join" class="btn-blue" style="padding: 11px 22px; font-size: 15px">Tell us you're interested</a>
       </div>
     </div>
   </section>
@@ -588,70 +436,55 @@
   <section id="faq" style="padding: 88px 32px">
     <div style="max-width: 780px; margin: 0 auto">
       <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 34px; margin: 0 0 36px">Questions champions ask</h2>
-      <div style="display: flex; flex-direction: column; gap: 12px">
-        <sc-for list="{{ faqs }}" as="q" hint-placeholder-count="6">
-          <div style="background: #fff; border: 1px solid oklch(0.9 0.01 160); border-radius: 10px; overflow: hidden">
-            <button sc-camel-on-click="{{ q.toggle }}" style="width: 100%; text-align: left; background: none; border: none; padding: 18px 22px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 16.5px; font-weight: 700; color: oklch(0.24 0.015 160); cursor: pointer; display: flex; justify-content: space-between; gap: 16px; align-items: center">
-              <span>{{ q.q }}</span>
-              <span style="color: #005596; font-size: 20px; flex-shrink: 0">{{ q.mark }}</span>
-            </button>
-            <sc-if value="{{ q.open }}" hint-placeholder-val="{{ false }}">
-              <p style="margin: 0; padding: 0 22px 20px; font-size: 15.5px; line-height: 1.65; color: oklch(0.4 0.02 160)">{{ q.a }}</p>
-            </sc-if>
-          </div>
-        </sc-for>
-      </div>
+      <div id="faq-list" style="display: flex; flex-direction: column; gap: 12px"></div>
     </div>
   </section>
 
   <section id="join" style="padding: 88px 32px; background: oklch(0.3 0.05 250)">
-    <div class="cn-grid2" style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start">
+    <div class="two-col" style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start">
       <div>
         <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 34px; color: #fff; margin: 0 0 14px">Join the network</h2>
         <p style="font-size: 16.5px; line-height: 1.65; color: oklch(0.85 0.01 160); margin: 0 0 14px">Be the physician champion for your department — or just follow along while you decide. We'll connect you with the branch, the localization worksheet, and the people who have already walked the trail.</p>
         <p style="font-size: 15px; line-height: 1.6; color: oklch(0.72 0.02 160); margin: 0">Prefer to work at your own pace? Say so in the note — we'll send you the repository and the localization worksheet and leave you to it.</p>
       </div>
       <div style="background: #fff; border-radius: 12px; padding: 30px">
-        <sc-if value="{{ notSent }}" hint-placeholder-val="{{ true }}">
-          <form name="join" method="POST" data-netlify="true" sc-camel-on-submit="{{ submitJoin }}" style="display: flex; flex-direction: column; gap: 16px">
-            <div class="cn-form2" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px">
-              <input type="hidden" name="form-name" value="join"><label style="display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 700; color: oklch(0.35 0.02 160)">Name
-                <input required="" type="text" name="name" style="border: 1px solid oklch(0.85 0.01 160); border-radius: 7px; padding: 10px 12px; font-size: 15px">
-              </label>
-              <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 700; color: oklch(0.35 0.02 160)">Email
-                <input required="" type="email" name="email" style="border: 1px solid oklch(0.85 0.01 160); border-radius: 7px; padding: 10px 12px; font-size: 15px">
-              </label>
-            </div>
-            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 700; color: oklch(0.35 0.02 160)">Hospital / emergency department
-              <input type="text" name="site" style="border: 1px solid oklch(0.85 0.01 160); border-radius: 7px; padding: 10px 12px; font-size: 15px">
+        <form name="join" method="POST" data-netlify="true" id="join-form" style="display: flex; flex-direction: column; gap: 16px">
+          <input type="hidden" name="form-name" value="join">
+          <div class="form-two-col" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px">
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 700; color: oklch(0.35 0.02 160)">Name
+              <input required type="text" name="name" style="border: 1px solid oklch(0.85 0.01 160); border-radius: 7px; padding: 10px 12px; font-size: 15px">
             </label>
-            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 700; color: oklch(0.35 0.02 160)">Role
-              <sc-raw-select name="role" style="border: 1px solid oklch(0.85 0.01 160); border-radius: 7px; padding: 10px 12px; font-size: 15px; background: #fff">
-                <option>Physician</option>
-                <option>Nurse</option>
-                <option>APP (PA / NP)</option>
-                <option>Administrator</option>
-                <option>Educator / sim lead</option>
-                <option>Other</option>
-              </sc-raw-select>
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 700; color: oklch(0.35 0.02 160)">Email
+              <input required type="email" name="email" style="border: 1px solid oklch(0.85 0.01 160); border-radius: 7px; padding: 10px 12px; font-size: 15px">
             </label>
-            <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14.5px; color: oklch(0.35 0.02 160)">
-              <span style="font-size: 13.5px; font-weight: 700">I'm interested in…</span>
-              <label style="display: flex; gap: 10px; align-items: center"><input type="checkbox" name="i1" style="accent-color: #005596"> Becoming a champion for my ED</label>
-              <label style="display: flex; gap: 10px; align-items: center"><input type="checkbox" name="i2" style="accent-color: #005596"> Contributing content or review</label>
-              <label style="display: flex; gap: 10px; align-items: center"><input type="checkbox" name="i3" style="accent-color: #005596"> Helping shape governance</label>
-            </div>
-            <button type="submit" style="background: #005596; color: #fff; border: none; border-radius: 8px; padding: 13px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 16px; font-weight: 700; cursor: pointer" style-hover="background: #004478">Count me in</button>
-            <p style="margin: 0; font-size: 12.5px; line-height: 1.5; color: oklch(0.55 0.02 160)">We use this only to reply and connect you with the network — never sold, never shared, deleted on request.</p>
-          </form>
-        </sc-if>
-        <sc-if value="{{ sent }}" hint-placeholder-val="{{ false }}">
-          <div style="text-align: center; padding: 30px 10px">
-            <svg width="44" height="52" sc-camel-view-box="0 0 26 30" aria-hidden="true" style="margin-bottom: 14px"><rect x="7" y="1" width="12" height="7" rx="3.5" fill="#005596"></rect><rect x="4" y="11" width="18" height="7" rx="3.5" fill="#005596"></rect><rect x="1" y="21" width="24" height="8" rx="4" fill="#003a66"></rect></svg>
-            <h3 style="font-family: Bitter, serif; font-size: 22px; font-weight: 700; margin: 0 0 8px">Another stone on the cairn.</h3>
-            <p style="font-size: 15.5px; line-height: 1.6; color: oklch(0.4 0.02 160); margin: 0">Thanks — we'll be in touch with the repository, the localization guide, and an introduction to the network.</p>
           </div>
-        </sc-if>
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 700; color: oklch(0.35 0.02 160)">Hospital / emergency department
+            <input type="text" name="site" style="border: 1px solid oklch(0.85 0.01 160); border-radius: 7px; padding: 10px 12px; font-size: 15px">
+          </label>
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 700; color: oklch(0.35 0.02 160)">Role
+            <select name="role" style="border: 1px solid oklch(0.85 0.01 160); border-radius: 7px; padding: 10px 12px; font-size: 15px; background: #fff">
+              <option>Physician</option>
+              <option>Nurse</option>
+              <option>APP (PA / NP)</option>
+              <option>Administrator</option>
+              <option>Educator / sim lead</option>
+              <option>Other</option>
+            </select>
+          </label>
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14.5px; color: oklch(0.35 0.02 160)">
+            <span style="font-size: 13.5px; font-weight: 700">I'm interested in&hellip;</span>
+            <label style="display: flex; gap: 10px; align-items: center"><input type="checkbox" name="i1" style="accent-color: #005596"> Becoming a champion for my ED</label>
+            <label style="display: flex; gap: 10px; align-items: center"><input type="checkbox" name="i2" style="accent-color: #005596"> Contributing content or review</label>
+            <label style="display: flex; gap: 10px; align-items: center"><input type="checkbox" name="i3" style="accent-color: #005596"> Helping shape governance</label>
+          </div>
+          <button type="submit" class="btn-blue" style="width: 100%; padding: 13px; font-size: 16px">Count me in</button>
+          <p style="margin: 0; font-size: 12.5px; line-height: 1.5; color: oklch(0.55 0.02 160)">We use this only to reply and connect you with the network — never sold, never shared, deleted on request.</p>
+        </form>
+        <div id="join-thanks" hidden style="text-align: center; padding: 30px 10px">
+          <svg width="44" height="52" viewBox="0 0 26 30" aria-hidden="true" style="margin-bottom: 14px"><rect x="7" y="1" width="12" height="7" rx="3.5" fill="#005596"></rect><rect x="4" y="11" width="18" height="7" rx="3.5" fill="#005596"></rect><rect x="1" y="21" width="24" height="8" rx="4" fill="#003a66"></rect></svg>
+          <h3 style="font-family: Bitter, serif; font-size: 22px; font-weight: 700; margin: 0 0 8px">Another stone on the cairn.</h3>
+          <p style="font-size: 15.5px; line-height: 1.6; color: oklch(0.4 0.02 160); margin: 0">Thanks &mdash; we'll be in touch with the repository, the localization guide, and an introduction to the network.</p>
+        </div>
       </div>
     </div>
   </section>
@@ -659,58 +492,226 @@
   <footer style="padding: 44px 32px 56px; background: oklch(0.25 0.04 250)">
     <div style="max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px">
       <div style="display: flex; align-items: center; gap: 10px">
-        <svg width="20" height="24" sc-camel-view-box="0 0 26 30" aria-hidden="true"><rect x="7" y="1" width="12" height="7" rx="3.5" fill="#5f93c0"></rect><rect x="4" y="11" width="18" height="7" rx="3.5" fill="#5f93c0"></rect><rect x="1" y="21" width="24" height="8" rx="4" fill="#5f93c0"></rect></svg>
+        <svg width="20" height="24" viewBox="0 0 26 30" aria-hidden="true"><rect x="7" y="1" width="12" height="7" rx="3.5" fill="#5f93c0"></rect><rect x="4" y="11" width="18" height="7" rx="3.5" fill="#5f93c0"></rect><rect x="1" y="21" width="24" height="8" rx="4" fill="#5f93c0"></rect></svg>
         <span style="font-family: Bitter, serif; font-weight: 700; font-size: 17px; color: #fff">Cairn</span>
-        <span style="color: oklch(0.6 0.02 160); font-size: 14px">· cairnready.org · open source</span>
+        <span style="color: oklch(0.6 0.02 160); font-size: 14px">&middot; cairnready.org &middot; open source</span>
       </div>
       <p style="margin: 0; font-size: 13.5px; line-height: 1.7; color: oklch(0.68 0.02 160); max-width: 820px">Cairn is a cognitive aid, not a source of truth you inherit unverified. It is not part of any hospital IT system or EHR, not a substitute for clinical judgment, and not an FDA-cleared device. Every adopting site is responsible for validating all content — every dose, threshold, and protocol — against its own assays, formulary, equipment, and medical direction before clinical use. No patient data is stored or transmitted, by design.</p>
       <p style="margin: 0; font-size: 13px; color: oklch(0.55 0.02 160)">Built in the open by rural emergency clinicians, for each other.</p>
     </div>
   </footer>
 </div>
-</x-dc>
-<script type="text/x-dc" data-dc-script="" data-props="{&quot;$preview&quot;: {&quot;width&quot;: 1280}}">
-class Component extends DCLogic {
-  state = { faq: -1, sent: false };
 
-  renderVals() {
-    const FAQS = [
-      { q: "Is this ready for clinical use out of the box?", a: "No — and it never will be, by design. Cairn is a reference implementation. Your branch becomes clinically usable only after your team validates every dose, threshold, and protocol against your own assays, formulary, and medical direction, and re-stamps each tool with your review date." },
-      { q: "Do I need to be a developer?", a: "No. It's plain static files with no build step. Site-specific values live in clearly marked config blocks, and the mechanical steps — forking, hosting, swapping values — are exactly the kind an AI assistant can do for you. The localization worksheet walks you through the rest." },
-      { q: "What does it cost?", a: "Nothing. It's open source under a permissive license. You pay with your own clinical validation effort — which you'd owe any tool — and, we hope, by sharing improvements back." },
-      { q: "Does it touch patient data?", a: "Never. Everything runs in the browser on the device. Tools may keep ephemeral, identifier-free state on the device (timers, checklist progress) with a reset control, but nothing is stored on a server or transmitted. This is a hard rule, not a default." },
-      { q: "Can we adopt only part of it?", a: "Yes — that's the expected path. Take the pediatric dosing engine and the equipment audit; skip the rest. Every tool is a self-contained file in its own folder, so keeping a subset is deleting folders, not surgery." },
-      { q: "How does content stay current?", a: "Each tool records which guideline it's written against and when a human last reviewed it. An automated job watches each guideline body monthly, and a review calendar catches what the watching misses. Your branch inherits the mechanism and applies it with your reviewers." }
-    ];
-    return {
-      features: [
-        { name: "Interactive emergency manual", desc: "Live, checkable cognitive aids for codes, pediatric, OB and neonatal emergencies, trauma, and rare procedures — timers and dosing engines, not PDFs." },
-        { name: "Team cognitive aids", desc: "Aids for the whole team, including the hard conversations: consultant calls, code status, breaking bad news, and the post-event debrief." },
-        { name: "Equipment kit lists & audits", desc: "Every kit, item, and size — searchable, scored against seven national equipment standards, with gap-recording you can export as findings." },
-        { name: "Kit indicators & labels", desc: "Print-ready drawer faces, stock strips, and kit cards. Color finds the drawer; words and pictograms name it; QR codes close the loop to the live card." },
-        { name: "Simulations & VEMS kit", desc: "Pillow-patient drills that chain real workflows, plus a laminatable visual-simulation deck. A table and fifteen minutes — no mannequin, no sim lab." },
-        { name: "Infographics & provenance", desc: "Wall posters for the resus bay, plus a provenance record for every tool: source guideline, edition, and the date a human last checked it." }
-      ],
-      steps: [
-        { num: "01", name: "Take a branch", desc: "Reach out and we'll hand you the repository. Fork it into your own copy — independent history, your hosting, your control. Free static hosting publishes it automatically." },
-        { num: "02", name: "Localize it", desc: "Keep the parts that fit your ED. Edit the marked config blocks — your doses, assays, phone numbers, cart layout — then validate every value clinically." },
-        { num: "03", name: "Practice with it", desc: "Run the simulations with your real team and real carts. New hires find the equipment; what they can't find feeds your readiness audit." },
-        { num: "04", name: "Share it back", desc: "A better checklist, a clearer label, a gap in coverage — contribute it upstream so the next department starts further up the trail." }
-      ],
-      faqs: FAQS.map((f, i) => ({ ...f, open: i === this.state.faq, mark: i === this.state.faq ? "–" : "+", toggle: () => this.setState({ faq: this.state.faq === i ? -1 : i }) })),
-      sent: this.state.sent,
-      notSent: !this.state.sent,
-      submitJoin: (e) => {
-        e.preventDefault();
-        const fd = new FormData(e.target);
-        fd.set("form-name", "join");
-        fetch("/", { method: "POST", headers: { "Content-Type": "application/x-www-form-urlencoded" }, body: new URLSearchParams(fd).toString() }).catch(() => {});
-        this.setState({ sent: true });
-      }
-    };
+<script>
+(function () {
+  'use strict';
+  var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  function esc(s) {
+    var d = document.createElement('div');
+    d.textContent = s == null ? '' : String(s);
+    return d.innerHTML;
   }
-}
+
+  // ---------------------------------------------------------------------
+  // Walk one case — a chip selects which "moment" of a chained maternal
+  // arrest -> resuscitative hysterotomy -> neonatal resuscitation case is
+  // shown. Plain data + plain DOM updates; no framework, nothing to break.
+  // ---------------------------------------------------------------------
+  function chip(scheme, due) {
+    var c = {
+      amber: ['#2b2113', '#d98b2e', '#e8b05f'],
+      purple: ['#221a33', '#9b7bd4', '#b9a2e2'],
+      blue: ['#12233a', '#3f7fc4', '#7db1e0'],
+      red: ['#3a1220', '#e0455a', '#ffd7dd'],
+      teal: ['#123528', '#2fa08c', '#6fd4b8']
+    }[scheme];
+    return 'display:inline-flex;flex-direction:column;justify-content:center;min-height:52px;padding:6px 16px;border-radius:12px;font-family:\'Atkinson Hyperlegible\',sans-serif;font-size:13.5px;font-weight:700;letter-spacing:0.03em;white-space:nowrap;flex-shrink:0;background:' + c[0] + ';border:' + (due ? '2px' : '1.5px') + ' solid ' + c[1] + ';color:' + c[2] + ';';
+  }
+  var pillRed = 'display:flex;align-items:center;gap:9px;min-height:40px;padding:0 14px;background:#3a1220;border:1px solid #e0455a;border-radius:999px;white-space:nowrap;flex-shrink:0;';
+  var pillTeal = 'display:flex;align-items:center;gap:9px;min-height:40px;padding:0 14px;background:#123528;border:1px solid #2fa08c;border-radius:999px;white-space:nowrap;flex-shrink:0;';
+  function metDotClass(on, slow) { return 'met-dot' + (on ? (slow ? ' beating-slow' : ' beating') : ''); }
+  var doneRow = { box: '#4fc08a', mark: '✓' }, openRow = { box: '#48607f', mark: '' }, nowRow = { box: '#e0455a', mark: '!' };
+
+  function moments() {
+    return [
+      { t: '0:00', label: 'Arrest', section: 'Codes', sectionColor: '#e0455a',
+        clocks: [{ time: '0:12', tag: 'CODE', style: pillRed, dot: '#e0455a', tagColor: '#f0899a' }],
+        actions: [{ label: 'SHOCK', style: chip('amber') }, { label: 'EPI GIVEN', style: chip('purple'), clock: 'GIVE NOW', clockColor: '#ff8fa0' }, { label: 'RHYTHM ✓', style: chip('blue'), clock: '1:48' }],
+        hasMet: true, metOn: true, metSlow: false, metMode: '30:2 · 110', metStatus: 'compress', metColor: '#4fc08a',
+        cardTag: 'RESUSCITATION · CARDIAC ARREST', cardTitle: 'VF / pVT — first cycle',
+        banner: 'Fundus at or above the umbilicus. Left uterine displacement now, continuous. Plan a resuscitative hysterotomy — incision by 4 minutes if no ROSC.', bannerTag: 'PREGNANT ≥ 20 WEEKS — FLAGGED AT INTAKE', bannerBorder: '#e6bf45',
+        rows: [Object.assign({}, doneRow, { text: 'Compressions started, backboard in' }), Object.assign({}, doneRow, { text: 'Pads on — shockable rhythm confirmed' }), Object.assign({}, nowRow, { text: 'Epinephrine — first dose now', val: '1 mg IV/IO' }), Object.assign({}, openRow, { text: 'Amiodarone after 3rd shock', val: '300 mg' }), Object.assign({}, openRow, { text: 'Manual left uterine displacement — assign one person' })],
+        handoff: '',
+        log: [{ t: '0:11', label: 'Pregnancy flagged — hysterotomy planned by 5 min', color: '#e6bf45' }, { t: '0:08', label: 'Shock delivered — 200 J', color: '#d98b2e' }, { t: '0:04', label: 'Tele-ED activated', color: '#4aa3df' }, { t: '0:00', label: 'Code blue — CPR started', color: '#e0455a' }] },
+
+      { t: '2:00', label: 'Rhythm check', section: 'Codes', sectionColor: '#e0455a',
+        clocks: [{ time: '2:04', tag: 'CODE', style: pillRed, dot: '#e0455a', tagColor: '#f0899a' }],
+        actions: [{ label: 'SHOCK', style: chip('amber', true), clock: 'SHOCKABLE', clockColor: '#ffd7dd' }, { label: 'EPI GIVEN', style: chip('purple'), clock: '2:56' }, { label: 'RHYTHM ✓', style: chip('blue'), clock: '2:00' }],
+        hasMet: true, metOn: true, metSlow: false, metMode: '30:2 · 110', metStatus: 'paused 7 s — rhythm check', metColor: '#e6bf45',
+        cardTag: 'AT THE RHYTHM CHECK', cardTitle: 'Still VF — shock, then cut',
+        banner: 'No ROSC after one defibrillation. The decision is made by the team lead: hysterotomy now. CPR never stops.', bannerTag: 'DECISION POINT — INCISION BY 4:00', bannerBorder: '#e0455a',
+        rows: [Object.assign({}, doneRow, { text: 'Rhythm check — shockable, VF' }), Object.assign({}, nowRow, { text: 'Shock, resume compressions immediately', val: '200 J' }), Object.assign({}, doneRow, { text: 'Metronome paused 10 s automatically for the check' }), Object.assign({}, openRow, { text: 'OB cart to the bedside — drawer 5, C-section kit' }), Object.assign({}, openRow, { text: 'Second team for the neonate — set up in parallel' })],
+        handoff: '→ Open Resuscitative hysterotomy (OB & Neonatal, card 10). The case clock, the weight and the log come with you.',
+        log: [{ t: '2:04', label: 'Rhythm check — shockable (VF)', color: '#3f7fc4' }, { t: '1:58', label: 'Epinephrine 1 mg given', color: '#9b7bd4' }, { t: '0:11', label: 'Pregnancy flagged — hysterotomy planned by 5 min', color: '#e6bf45' }, { t: '0:00', label: 'Code blue — CPR started', color: '#e0455a' }] },
+
+      { t: '3:20', label: 'Hysterotomy', section: 'OB & Neonatal', sectionColor: '#3f7fc4',
+        clocks: [{ time: '3:22', tag: 'CODE', style: pillRed, dot: '#e0455a', tagColor: '#f0899a' }],
+        actions: [{ label: 'INCISION MADE', style: chip('red', true), clock: 'BY 4:00 — 0:38', clockColor: '#ffd7dd' }, { label: 'BABY OUT', style: chip('teal'), clock: 'BY 5:00' }, { label: 'RHYTHM ✓', style: chip('blue'), clock: '0:42' }],
+        hasMet: true, metOn: true, metSlow: false, metMode: '30:2 · 110', metStatus: 'compress — never stops', metColor: '#4fc08a',
+        cardTag: 'PROCEDURE · CARD 10', cardTitle: 'Resuscitative hysterotomy',
+        banner: 'Scalpel, 10 blade — the only truly essential item. In hand means you start when the decision is made; everything else is nice to have.', bannerTag: 'OB CART · DRAWER 5 — C-SECTION KIT', bannerBorder: '#4aa3df',
+        rows: [Object.assign({}, doneRow, { text: 'Splash prep — never delays the incision' }), Object.assign({}, nowRow, { text: 'Vertical midline, umbilicus to symphysis, deep to fascia', val: '10 blade' }), Object.assign({}, openRow, { text: 'Fingers separate the rectus muscles; scissors on fascia only if needed' }), Object.assign({}, openRow, { text: 'Vertical uterine incision, extend with fingers' }), Object.assign({}, openRow, { text: 'Three cord clamps — long segment for a cord gas', val: '≤ 60 min' })],
+        handoff: '',
+        log: [{ t: '3:18', label: 'Hysterotomy — decision made, kit open', color: '#e0455a' }, { t: '3:02', label: 'Shock delivered — 200 J', color: '#d98b2e' }, { t: '2:04', label: 'Rhythm check — shockable (VF)', color: '#3f7fc4' }, { t: '1:58', label: 'Epinephrine 1 mg given', color: '#9b7bd4' }] },
+
+      { t: '4:40', label: 'Baby out', section: 'OB & Neonatal', sectionColor: '#3f7fc4',
+        clocks: [{ time: '4:41', tag: 'CODE', style: pillRed, dot: '#e0455a', tagColor: '#f0899a' }, { time: '0:00', tag: 'NRP', style: pillTeal, dot: '#2fa08c', tagColor: '#6fd4b8' }],
+        actions: [{ label: 'PPV ✓', style: chip('amber', true), clock: 'GOLDEN MINUTE', clockColor: '#ffd7dd' }, { label: 'EPI GIVEN', style: chip('purple'), clock: 'GIVE NOW' }, { label: 'HR CHECK', style: chip('blue'), clock: '0:30' }],
+        hasMet: true, metOn: true, metSlow: true, metMode: 'VENT · 50', metStatus: 'breaths — newborn', metColor: '#4fc08a',
+        cardTag: 'NEONATAL RESUSCITATION · NRP', cardTitle: 'Second clock, second patient',
+        banner: 'Baby out at 4:38 — 22 seconds inside the target. A second clock starts; the maternal clock keeps running above it. Two patients, two teams, one log.', bannerTag: 'HANDOFF — NRP CLOCK STARTED', bannerBorder: '#2fa08c',
+        rows: [Object.assign({}, doneRow, { text: 'Warm, dry, stimulate — cord clamped, time noted' }), Object.assign({}, nowRow, { text: 'PPV within 60 seconds of birth', val: '40–60/min' }), Object.assign({}, openRow, { text: 'HR check at 30 s — under 60 means compressions 3:1' }), Object.assign({}, openRow, { text: 'Epinephrine if HR stays under 60', val: '0.07 mg' }), Object.assign({}, openRow, { text: 'Weight 3.5 kg — every neonatal dose recomputed' })],
+        handoff: 'Mother’s ACLS continues uninterrupted — aortocaval compression is now relieved. Recheck her rhythm at the next cycle.',
+        log: [{ t: '4:38', label: 'BABY OUT — handed to neonatal team', color: '#2fa08c' }, { t: '4:12', label: 'Uterine incision, infant extracted', color: '#e0455a' }, { t: '3:22', label: 'Incision made — 10 blade, vertical midline', color: '#e0455a' }, { t: '3:18', label: 'Hysterotomy — decision made', color: '#e0455a' }] },
+
+      { t: '6:10', label: 'Two patients', section: 'OB & Neonatal', sectionColor: '#3f7fc4',
+        clocks: [{ time: '6:12', tag: 'CODE', style: pillRed, dot: '#e0455a', tagColor: '#f0899a' }, { time: '1:31', tag: 'NRP', style: pillTeal, dot: '#2fa08c', tagColor: '#6fd4b8' }],
+        actions: [{ label: 'ROSC', style: chip('teal'), clock: 'MOTHER' }, { label: 'EPI GIVEN', style: chip('purple'), clock: '1:24' }, { label: 'HR CHECK', style: chip('blue', true), clock: 'DUE NOW', clockColor: '#ffd7dd' }],
+        hasMet: true, metOn: true, metSlow: true, metMode: 'VENT · 50', metStatus: 'breaths — HR 88 and rising', metColor: '#4fc08a',
+        cardTag: 'BOTH WORKSTREAMS', cardTitle: 'What the app is holding for you',
+        banner: '', bannerTag: '', bannerBorder: '',
+        rows: [Object.assign({}, doneRow, { text: 'Mother — ROSC at 5:54, post-arrest care card queued' }), Object.assign({}, doneRow, { text: 'Baby — HR 88, PPV effective, sats climbing to target' }), Object.assign({}, nowRow, { text: 'HR check due now — the app asks, you answer' }), Object.assign({}, openRow, { text: 'Cord gas — draw within 60 min of delivery', val: 'by 5:38' }), Object.assign({}, openRow, { text: 'Oxytocin 5 units IV, close uterus, staple skin' })],
+        handoff: 'Every entry below was logged by tapping the tool, not by remembering. The debrief starts from this list.',
+        log: [{ t: '5:54', label: 'ROSC — mother', color: '#2fa08c' }, { t: '5:10', label: 'HR check — 60–99, effective PPV', color: '#3f7fc4' }, { t: '4:52', label: 'PPV started — 40–60/min, room air', color: '#d98b2e' }, { t: '4:38', label: 'BABY OUT — handed to neonatal team', color: '#2fa08c' }] }
+    ];
+  }
+
+  var MOM = moments();
+  var step = 0;
+
+  function stepChipStyle(on) {
+    return 'min-height:42px;padding:0 15px;border-radius:999px;cursor:pointer;font-family:\'Atkinson Hyperlegible\',sans-serif;font-size:13.5px;font-weight:700;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;' + (on ? 'background:#fff;border:none;color:oklch(0.3 0.05 250)' : 'background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.3);color:#dce6f2');
+  }
+
+  function renderChips() {
+    var el = document.getElementById('case-chips');
+    el.innerHTML = MOM.map(function (m, i) {
+      return '<button type="button" data-i="' + i + '" style="' + stepChipStyle(i === step) + '"><span style="font-family:\'JetBrains Mono\',monospace;opacity:0.85">' + esc(m.t) + '</span> ' + esc(m.label) + '</button>';
+    }).join('');
+    Array.prototype.forEach.call(el.querySelectorAll('button'), function (b) {
+      b.addEventListener('click', function () { step = parseInt(b.dataset.i, 10); render(); });
+    });
+  }
+
+  function renderTopbar(m) {
+    var clocksHtml = m.clocks.map(function (c) {
+      return '<span style="' + c.style + '"><span style="width:8px;height:8px;border-radius:50%;background:' + c.dot + '"></span><span style="font-family:\'JetBrains Mono\',monospace;font-size:17px;font-weight:700;color:#fff">' + esc(c.time) + '</span><span style="font-family:\'JetBrains Mono\',monospace;font-size:11px;letter-spacing:0.06em;color:' + c.tagColor + '">' + esc(c.tag) + '</span></span>';
+    }).join('');
+    document.getElementById('case-topbar').innerHTML =
+      '<span class="case-crumb" style="min-height:40px;display:flex;align-items:center;padding:0 10px;color:#9db4d0;font-size:14px;font-weight:700">Manual</span>' +
+      '<span class="case-crumb" style="color:#48607f">›</span>' +
+      '<span style="display:flex;align-items:center;gap:8px;min-height:40px;padding:0 10px;color:#eef3f9;font-size:16.5px;font-weight:700;white-space:nowrap"><span style="width:9px;height:9px;border-radius:3px;background:' + m.sectionColor + '"></span>' + esc(m.section) + '</span>' +
+      '<div class="case-clocks">' + clocksHtml + '</div>' +
+      '<div class="case-topbar-btns">' +
+      '<span style="min-height:40px;display:flex;align-items:center;padding:0 11px;border:1px solid #2a3d58;border-radius:10px;color:#cdd9e8;font-size:12.5px;font-weight:700;letter-spacing:0.05em;white-space:nowrap">TIMELINE</span>' +
+      '<span style="min-height:40px;display:flex;align-items:center;padding:0 11px;border:1px solid #6e2d3a;border-radius:10px;color:#f0899a;font-size:12.5px;font-weight:700;letter-spacing:0.05em;white-space:nowrap">RESET</span>' +
+      '</div>';
+  }
+
+  function renderActionbar(m) {
+    var actionsHtml = m.actions.map(function (a) {
+      var clockHtml = a.clock ? '<span style="display:block;font-family:\'JetBrains Mono\',monospace;font-size:13px;margin-top:2px;color:' + a.clockColor + '">' + esc(a.clock) + '</span>' : '';
+      return '<span style="' + a.style + '">' + esc(a.label) + clockHtml + '</span>';
+    }).join('');
+    var metHtml = '';
+    if (m.hasMet) {
+      metHtml = '<span style="display:flex;align-items:center;gap:10px;flex-shrink:0">' +
+        '<span class="' + metDotClass(m.metOn, m.metSlow) + '" style="width:15px;height:15px;border-radius:50%;flex-shrink:0;background:' + (m.metOn ? '#4fc08a' : '#48607f') + (reduceMotion ? '' : '') + '"></span>' +
+        '<span style="display:block"><span style="display:block;color:#cdd9e8;font-family:\'JetBrains Mono\',monospace;font-size:12px;font-weight:700;white-space:nowrap">' + esc(m.metMode) + '</span><span style="display:block;font-size:11px;color:' + m.metColor + ';white-space:nowrap">' + esc(m.metStatus) + '</span></span>' +
+        '<span style="min-height:34px;display:flex;align-items:center;padding:0 12px;border:1px solid #2a3d58;border-radius:999px;color:#9db4d0;font-size:11.5px;font-weight:700;letter-spacing:0.05em">MUTE</span>' +
+        '</span>';
+    }
+    document.getElementById('case-actionbar').innerHTML = actionsHtml + '<span style="flex:1"></span>' + metHtml;
+  }
+
+  function renderMain(m) {
+    var bannerHtml = m.banner ? '<div style="border:1.5px solid ' + m.bannerBorder + ';border-radius:12px;padding:13px 16px;color:#eef3f9;font-size:14.5px;line-height:1.5"><span style="display:block;font-family:\'JetBrains Mono\',monospace;font-size:11.5px;font-weight:700;letter-spacing:0.1em;color:' + m.bannerBorder + ';margin-bottom:4px">' + esc(m.bannerTag) + '</span>' + esc(m.banner) + '</div>' : '';
+    var rowsHtml = m.rows.map(function (r) {
+      var valHtml = r.val ? '<span style="font-family:\'JetBrains Mono\',monospace;font-size:14px;font-weight:700;color:#4fc08a;white-space:nowrap">' + esc(r.val) + '</span>' : '';
+      return '<div style="display:flex;align-items:center;gap:12px;background:#101d31;border-radius:11px;padding:11px 15px">' +
+        '<span style="width:16px;height:16px;border-radius:4px;border:1.5px solid ' + r.box + ';flex-shrink:0;display:flex;align-items:center;justify-content:center;color:' + r.box + ';font-size:11px;font-weight:700">' + esc(r.mark) + '</span>' +
+        '<span style="flex:1;min-width:0;color:#cdd9e8;font-size:14.5px;line-height:1.4">' + esc(r.text) + '</span>' + valHtml + '</div>';
+    }).join('');
+    var handoffHtml = m.handoff ? '<div style="margin-top:2px;background:#0e2a44;border:1.5px solid #4aa3df;border-radius:12px;padding:13px 16px;color:#8fc6ec;font-size:14.5px;font-weight:700;line-height:1.45">' + esc(m.handoff) + '</div>' : '';
+    document.getElementById('case-main').innerHTML = bannerHtml +
+      '<div style="font-family:\'JetBrains Mono\',monospace;font-size:11.5px;font-weight:700;letter-spacing:0.12em;color:#7f95b2">' + esc(m.cardTag) + '</div>' +
+      '<h3 style="font-family:Bitter,serif;font-size:23px;font-weight:700;color:#eef3f9;margin:0">' + esc(m.cardTitle) + '</h3>' +
+      '<div style="display:flex;flex-direction:column;gap:8px">' + rowsHtml + '</div>' + handoffHtml;
+  }
+
+  function renderLog(m) {
+    document.getElementById('case-log').innerHTML = m.log.map(function (ev) {
+      return '<div style="display:flex;gap:11px;align-items:baseline;padding:7px 0;border-bottom:1px solid #16243a">' +
+        '<span style="font-family:\'JetBrains Mono\',monospace;font-size:13px;font-weight:700;color:#eef3f9;min-width:40px">' + esc(ev.t) + '</span>' +
+        '<span style="width:7px;height:7px;border-radius:50%;background:' + ev.color + ';flex-shrink:0;position:relative;top:-2px"></span>' +
+        '<span style="font-size:13px;color:#cdd9e8;line-height:1.4">' + esc(ev.label) + '</span></div>';
+    }).join('');
+  }
+
+  function render() {
+    renderChips();
+    var m = MOM[step];
+    renderTopbar(m);
+    renderActionbar(m);
+    renderMain(m);
+    renderLog(m);
+  }
+  render();
+
+  // ---------------------------------------------------------------------
+  // FAQ accordion — plain toggle, one open at a time.
+  // ---------------------------------------------------------------------
+  var FAQS = [
+    { q: 'Is this ready for clinical use out of the box?', a: 'No — and it never will be, by design. Cairn is a reference implementation. Your branch becomes clinically usable only after your team validates every dose, threshold, and protocol against your own assays, formulary, and medical direction, and re-stamps each tool with your review date.' },
+    { q: 'Do I need to be a developer?', a: 'No. It’s plain static files with no build step. Site-specific values live in clearly marked config blocks, and the mechanical steps — forking, hosting, swapping values — are exactly the kind an AI assistant can do for you. The localization worksheet walks you through the rest.' },
+    { q: 'What does it cost?', a: 'Nothing. It’s open source under a permissive license. You pay with your own clinical validation effort — which you’d owe any tool — and, we hope, by sharing improvements back.' },
+    { q: 'Does it touch patient data?', a: 'Never. Everything runs in the browser on the device. Tools may keep ephemeral, identifier-free state on the device (timers, checklist progress) with a reset control, but nothing is stored on a server or transmitted. This is a hard rule, not a default.' },
+    { q: 'Can we adopt only part of it?', a: 'Yes — that’s the expected path. Take the pediatric dosing engine and the equipment audit; skip the rest. Every tool is a self-contained file in its own folder, so keeping a subset is deleting folders, not surgery.' },
+    { q: 'How does content stay current?', a: 'Each tool records which guideline it’s written against and when a human last reviewed it. An automated job watches each guideline body monthly, and a review calendar catches what the watching misses. Your branch inherits the mechanism and applies it with your reviewers.' }
+  ];
+  var faqOpen = -1;
+  function renderFaq() {
+    var el = document.getElementById('faq-list');
+    el.innerHTML = FAQS.map(function (f, i) {
+      var open = i === faqOpen;
+      return '<div style="background:#fff;border:1px solid oklch(0.9 0.01 160);border-radius:10px;overflow:hidden">' +
+        '<button type="button" class="faq-q" data-i="' + i + '"><span>' + esc(f.q) + '</span><span style="color:#005596;font-size:20px;flex-shrink:0">' + (open ? '–' : '+') + '</span></button>' +
+        '<p class="faq-a"' + (open ? '' : ' hidden') + '>' + esc(f.a) + '</p></div>';
+    }).join('');
+    Array.prototype.forEach.call(el.querySelectorAll('.faq-q'), function (b) {
+      b.addEventListener('click', function () {
+        var i = parseInt(b.dataset.i, 10);
+        faqOpen = faqOpen === i ? -1 : i;
+        renderFaq();
+      });
+    });
+  }
+  renderFaq();
+
+  // ---------------------------------------------------------------------
+  // Join form — real Netlify submit (not just a local state flip).
+  // ---------------------------------------------------------------------
+  var form = document.getElementById('join-form');
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var fd = new FormData(form);
+    fd.set('form-name', 'join');
+    fetch('/', { method: 'POST', headers: { 'Content-Type': 'application/x-www-form-urlencoded' }, body: new URLSearchParams(fd).toString() }).catch(function () {});
+    form.hidden = true;
+    document.getElementById('join-thanks').hidden = false;
+  });
+})();
 </script>
-
-
-</body></html>
+</body>
+</html>
