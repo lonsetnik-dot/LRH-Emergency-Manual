@@ -233,14 +233,14 @@ a{color:var(--blue)}  /* text-decoration:none removed: it would have
     </div>
 
     <div class="sec" id="worktitle" style="margin-top:16px;letter-spacing:.12em"></div>
-    <div id="worksteps"></div>
+    <div id="worksteps" data-opcard></div>
 
     <!-- computed doses / targets -->
     <div class="sec" style="margin-top:18px;letter-spacing:.12em">BLOOD-PRESSURE TARGET</div>
     <div class="card" style="margin-top:8px;overflow:hidden" id="dosebox"></div>
 
     <!-- decision point -->
-    <div class="card" id="tenmin" style="margin-top:14px;padding:12px">
+    <div class="card" id="tenmin" data-opcard style="margin-top:14px;padding:12px">
       <div style="display:flex;align-items:center;gap:10px">
         <div style="flex:1">
           <div class="sec">REVERSIBLE CAUSES ADDRESSED?</div>
@@ -1238,6 +1238,12 @@ wire();
 paint();
 setInterval(tick, 250);
 })();
+</script>
+<script>
+/* Shared case-shell behavior (SHELL.md) — brings the operating card marked
+   data-opcard back into view when an action advances the protocol, so the next
+   step is never left above the top of the screen. Edited once, in case-shell.js. */
+/* @shell-js */
 </script>
 </body>
 </html>

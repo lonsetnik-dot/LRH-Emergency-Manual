@@ -203,7 +203,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
          roles and tele-ED sit compactly under it, and the dosing block follows
          as reference, because the next-step numbers already ride the action
          buttons (layers 2/6). -->
-    <div id="unknownbar" class="card" style="margin-top:8px;padding:10px 12px;border:2px solid var(--amber)">
+    <div id="unknownbar" class="card" data-opcard style="margin-top:8px;padding:10px 12px;border:2px solid var(--amber)">
       <div class="sec" style="color:var(--amber)">RHYTHM NOT YET KNOWN — THIS IS STILL JUST CPR</div>
       <div style="font-size:13.5px;line-height:1.45;margin-top:4px">
         Good compressions, pads on, airway supported. <b>The first rhythm you see chooses the algorithm</b> — until then nothing below is committed.
@@ -211,12 +211,12 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
       <button class="btn" id="firstrcbtn" type="button" style="width:100%;min-height:64px;margin-top:10px;background:var(--amber);color:#141E2B;border:none;font:800 17px var(--sans)">PADS ON — CHECK THE RHYTHM</button>
     </div>
 
-    <div id="rhythmbar" class="card" style="display:none;margin-top:8px;padding:10px 12px;align-items:center;gap:10px">
+    <div id="rhythmbar" class="card" data-opcard style="display:none;margin-top:8px;padding:10px 12px;align-items:center;gap:10px">
       <div style="flex:1;font-size:14px;line-height:1.4" id="rhythmtext"></div>
       <button class="ghost" id="rhythmchange" type="button" style="white-space:nowrap">RE-CHECK</button>
     </div>
 
-    <div class="card" id="cyclecard" style="margin-top:8px;padding:14px;border-radius:16px">
+    <div class="card" id="cyclecard" data-opcard style="margin-top:8px;padding:14px;border-radius:16px">
       <div style="display:flex;align-items:center;justify-content:space-between">
         <div class="sec">CPR CYCLE — RHYTHM CHECK AT 0:00</div>
         <div class="sec" style="text-align:right">SHOCKS <span class="mono" id="shockn" style="font-size:20px;color:var(--red)">0</span></div>
@@ -1902,6 +1902,12 @@ wire();
 paint();
 setInterval(paint, 200);
 })();
+</script>
+<script>
+/* Shared case-shell behavior (SHELL.md) — brings the operating card marked
+   data-opcard back into view when an action advances the protocol, so the next
+   step is never left above the top of the screen. Edited once, in case-shell.js. */
+/* @shell-js */
 </script>
 </body>
 </html>

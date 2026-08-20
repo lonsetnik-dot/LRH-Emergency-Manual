@@ -107,18 +107,37 @@ ck('1s. the ⋯ menu holds timeline, feedback and reset',
 await tap('#menubtn');
 
 /* ---- 2. provenance — what this screen claims about its own sourcing ----
-   Written out, not read from config as a pass/fail. The engine is now aligned to
-   the 2025 AHA/AAP guideline for the named items and inherited for everything
-   else, and it has to keep saying BOTH halves. Dropping the second half would be
-   the dangerous edit: a screen that looks fully sourced when only part of it is.
+   THE BANNER CAME DOWN on 2026-08-18, when a clinician actually reviewed the engine
+   (SITE.review.signedOff; guidelines.js `nrp` reconciled in the same change). It was
+   never meant to be permanent — it was meant to stay up until exactly that happened.
 
-   The citation is asserted by DOI because a guideline reference that drifts is
-   worse than none — someone checks it and finds the wrong document. */
-ck('2. the provenance banner is showing', await pg.locator('#revbanner').isVisible(), true);
-const rev = await txt('#revbanner');
-ck('2. it names the 2025 AHA/AAP guidelines', /2025 AHA\/AAP GUIDELINES/i.test(rev), true);
-ck('2. it says which items were aligned', /cord management/i.test(rev) && /supraglottic/i.test(rev), true);
-ck('2. it also says what was NOT verified', /not.{0,30}individually verified/i.test(rev), true);
+   So the guard moved rather than disappeared. It used to be "the banner is visible",
+   which stops being true the moment the review it was waiting for arrives. What is
+   asserted now is the thing that must NEVER be true: that the banner is off and nobody
+   is named. A future editor who quietly flips SITE.review.on to false to make a screen
+   look finished fails here, which is the whole point of the original guard.
+
+   The SOURCE & PROVENANCE panel is a separate matter and still has to say both halves —
+   what was aligned to the 2025 guideline and what was inherited unchanged. A sign-off
+   does not retroactively give the inherited values a citation, and the citations are
+   asserted by DOI because a guideline reference that drifts is worse than none. */
+const review = await pg.evaluate(() => ({
+  on: !!(SITE.review && SITE.review.on),
+  by: (SITE.review && SITE.review.signedOff && SITE.review.signedOff.by) || '',
+  date: (SITE.review && SITE.review.signedOff && SITE.review.signedOff.date) || '',
+}));
+ck('2. the banner on screen matches SITE.review.on',
+   await pg.locator('#revbanner').isVisible(), review.on);
+ck('2. the banner is only off because someone SIGNED it off',
+   review.on || (review.by.length > 0 && /^\d{4}-\d{2}-\d{2}$/.test(review.date)), true);
+if (review.on) {
+  const rev = await txt('#revbanner');
+  ck('2. it names the 2025 AHA/AAP guidelines', /2025 AHA\/AAP GUIDELINES/i.test(rev), true);
+  ck('2. it says which items were aligned', /cord management/i.test(rev) && /supraglottic/i.test(rev), true);
+  ck('2. it also says what was NOT verified', /not.{0,30}individually verified/i.test(rev), true);
+} else {
+  console.log('     (banner off — signed off by ' + review.by + ' on ' + review.date + ')');
+}
 const src = await openAcc('src');
 ck('2. the source cites Part 5 by DOI', /10\.1161\/CIR\.0000000000001367/.test(src), true);
 ck('2. the source cites the ILCOR CoSTR by DOI', /10\.1161\/CIR\.0000000000001363/.test(src), true);
@@ -286,13 +305,17 @@ ck('4t. the LOG ticker rides on the dock with the newest event',
 const yOf = async sel => (await pg.locator(sel).boundingBox())?.y ?? -1;
 ck('4t2. the operating card leads the scroll area while running',
    (await yOf('#phasebox')) < (await yOf('#scopebar')) &&
-   (await yOf('#phasebox')) < (await yOf('#revbanner')), true);
+   /* only meaningful while the banner is rendered; a hidden element has no box */
+   (!review.on || (await yOf('#phasebox')) < (await yOf('#revbanner'))), true);
 ck('4t2. the tele slot compacts beneath the operating card',
    (await yOf('#phasebox')) < (await yOf('#telebtn')), true);
 ck('4t2. the SpO₂-by-minute row is part of the operating block',
    (await yOf('#satbox')) < (await yOf('#scopebar')), true);
-ck('4t2. the review banner is still on screen while running',
-   await pg.locator('#revbanner').isVisible(), true);
+/* The banner used to be asserted visible mid-case. Now that it is signed off, what
+   matters is that it does not REAPPEAR unannounced while a resuscitation is running —
+   a banner that materializes mid-code moves the buttons under someone's thumb. */
+ck('4t2. the banner state does not change once a case is running',
+   await pg.locator('#revbanner').isVisible(), review.on);
 /* Idle keeps prompt → start → tele (the routing question stays ahead of START). */
 await fresh();
 ck('4t2. idle keeps the start button ahead of the tele slot',

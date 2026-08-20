@@ -260,7 +260,8 @@ var INV_CATALOG = {
   "kit-thoracotomy": { name:"Thoracotomy Tray", cat:"kit", std:["ACS-COT"], contents:[
     "Finochietto rib spreader","Gigli saw with handles","Mayo scissors, heavy","Scalpel No. 20 blade",
     "Long artery forceps","Vascular (aortic) cross-clamp","3-0 monofilament on a large needle",
-    "Skin stapler","Foley 16 Fr + 20 mL syringe"] },
+    "Skin stapler","Foley 16 Fr + 20 mL syringe","Lebsche knife or heavy trauma shears",
+    "Teflon pledgets","Side-biting (Satinsky) clamp","Vascular clamp for the hilum"] },
   "kit-burr-hole": { name:"Burr Hole Kit", cat:"kit", std:["ACS-COT"], contents:[
     "Codman disposable perforator","Hudson brace or driver","Scalpel No. 10 blade","Self-retaining retractor",
     "Sharp dural hook","Bone nibbler","Lidocaine 1% with epinephrine 10 mL + syringe","Clippers",

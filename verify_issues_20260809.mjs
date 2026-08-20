@@ -34,7 +34,13 @@ const watch = (pg, tag) => {
 // their pitfalls/evidence sections closed. Open everything first or the assertions read a
 // truncated card and pass or fail for the wrong reason.
 const openAll = async (pg) => { await pg.evaluate(() => document.querySelectorAll('details').forEach(d => d.open = true)); await pg.waitForTimeout(120); };
-const textOf = async (pg, sel) => (await pg.locator(sel).innerText()).replace(/\s+/g, ' ');
+/* innerText omits anything display:none, and the clarity pass moved every row's reasoning
+   into a .t-why that is hidden until the reader asks for it. Reading innerText therefore
+   reported clinical content as MISSING when it is one tap away — five failures that were
+   nothing but hidden text. textContent sees the whole row, which is the right question for
+   a content suite: is the fact in the card, reachable by the clinician? Whether it is
+   visible right now is verify_checklist_clarity.mjs's job, not this one's. */
+const textOf = async (pg, sel) => (await pg.locator(sel).evaluate(el => el.textContent)).replace(/\s+/g, ' ');
 
 const codes = await b.newPage({ viewport: { width: 390, height: 1400 } }); watch(codes, 'codes');
 await codes.goto(BASE + '/codes/?from=home', { waitUntil: 'networkidle' });
@@ -51,12 +57,18 @@ ck('menu tile reaches it', await codes.locator('a[href="#c24"]').count() > 0, tr
   const t = await textOf(codes, '#c24');
   ck('bleeding lung DOWN', /Bleeding lung DOWN/i.test(t), true);
   ck('ETT >= 8.0 and the reason', /ETT\s*≥8\.0 mm/i.test(t) && /bronchoscope has to fit/i.test(t), true);
+  /* These assert the CLAIM, not the sentence — same fix already made on card 26 below. The
+     clarity pass rewrote these rows into a short action plus a hidden reason; the facts are
+     unchanged, so an assertion tied to the old wording reported a paraphrase as a clinical
+     regression. Delete the fact and each of these still fails. */
   // LRH stocks no blocker and no DLT — the card must say the big ETT IS the isolation technique
-  ck('no-blocker reality stated', /stocks neither a bronchial blocker nor a double-lumen tube/i.test(t), true);
+  ck('no-blocker reality stated',
+     /no blocker or double-lumen tube/i.test(t) && /single ETT[^.]*IS the technique/i.test(t), true);
   ck('blind mainstem success rates', /95%/.test(t) && /73%/.test(t), true);
   ck('nebulized TXA 500 mg', /Nebulized TXA 500 mg/i.test(t), true);
   ck('IV TXA 1 g over 10 min', /1 g over 10 min/i.test(t), true);
-  ck('does not intubate the effective cougher', /effective cough is doing a better job/i.test(t), true);
+  ck('does not intubate the effective cougher',
+     /effective cough/i.test(t) && /intubate for failure/i.test(t), true);
   ck('one-lung Vt 3-4 mL/kg', /3&ndash;4 mL\/kg|3–4 mL\/kg/.test(t), true);
   ck('contrast with the GI-bleed TXA rule is drawn', /card 23/i.test(t) && /HALT-IT/.test(t), true);
   ck('states its cabinet location', /ROOM 7 \(RESUS BAY\) CABINET/i.test(t), true);
@@ -69,14 +81,18 @@ console.log('--- #26 epistaxis');
 ck('card 25 exists', await codes.locator('#c25').count(), 1);
 {
   const t = await textOf(codes, '#c25');
-  ck('cartilage not bony bridge', /soft cartilaginous part/i.test(t) && /Not the bony bridge/i.test(t), true);
+  ck('cartilage not bony bridge', /soft cartilag/i.test(t) && /not the bony bridge/i.test(t), true);
   ck('pressure-duration disagreement shown', /≥10 min/.test(t) && /15–20 min/.test(t) && /≥20 min/.test(t), true);
-  ck('never cauterize both septal sides', /Never cauterize both sides of the septum/i.test(t), true);
-  ck('Rapid Rhino sterile water 30 s, air only', /sterile water for a full 30 seconds/i.test(t) && /inflate with <b>air only<\/b>|air only/i.test(t), true);
-  ck('Foley volumes and the 15 mL ceiling', /5–7 mL/.test(t) && /maximum 15 mL/i.test(t), true);
+  ck('never cauterize both septal sides',
+     /never both sides at once/i.test(t) && /both sides of the septum/i.test(t), true);
+  ck('Rapid Rhino sterile water 30 s, air only',
+     /sterile water 30 s/i.test(t) && /inflate with air/i.test(t), true);
+  ck('Foley volumes and the 15 mL ceiling', /5–7 mL/.test(t) && /max(?:imum)? 15 mL/i.test(t), true);
   ck('posterior pack is admitted on telemetry', /Every posterior pack is admitted/i.test(t), true);
   ck('TXA both trials shown', /Zahed/.test(t) && /NoPAC/.test(t), true);
-  ck('antibiotics given as two lettered options', /two options/i.test(t) && /StatPearls and Iowa/i.test(t) && /Core EM and REBEL EM/i.test(t), true);
+  ck('antibiotics given as two lettered options',
+     /\bA:[^.]*antistaphylococcal/i.test(t) && /StatPearls,? and? ?Iowa/i.test(t)
+     && /\bB:\s*none/i.test(t) && /Core EM and REBEL EM/i.test(t), true);
   ck('links to the pacemaker card for electrocautery', await codes.locator('#c25 a[href="#c26"]').count() > 0, true);
 }
 
@@ -85,14 +101,23 @@ console.log('--- #36 pacemaker / ICD');
 ck('card 26 exists', await codes.locator('#c26').count(), 1);
 {
   const t = await textOf(codes, '#c26');
+  /* These assert the CLAIM, not the sentence. They were written against the exact prose,
+     which made a clarity rewrite of the card look like a clinical regression — five failures
+     that were all paraphrase. Matching on the substance keeps the guard real (delete the
+     fact and it still fails) without freezing the wording of a card that has to stay
+     readable. The claims themselves are unchanged. */
   // the single most dangerous confusion on the card — both halves must be present
-  ck('magnet on ICD: stops shocks, pacing unchanged', /suspends tachyarrhythmia detection/i.test(t) && /does <b>not<\/b> change the pacing mode|does not change the pacing mode/i.test(t), true);
-  ck('magnet on pacemaker: asynchronous', /asynchronous pacing \(VOO\/DOO\)/i.test(t), true);
+  ck('magnet on ICD: stops shocks, pacing unchanged',
+     /no ATP, no shocks|suspends tachyarrhythmia detection/i.test(t) &&
+     /pacing mode unchanged|does not (?:touch|change) (?:the )?pacing/i.test(t), true);
+  ck('magnet on pacemaker: asynchronous', /asynchronous/i.test(t) && /VOO\/DOO/.test(t), true);
   ck('do NOT magnet appropriate shocks', /the shocks are <u>appropriate<\/u>|shocks are.{0,20}appropriate/i.test(t), true);
-  ck('storm definition 3 in 24 h', /3 or more separate sustained VT\/VF episodes/i.test(t), true);
-  ck('first-line drug given as two options', /First-line drug — two options/i.test(t) && /\(WikEM\)/.test(t) && /\(First10EM\)/.test(t), true);
+  ck('storm definition 3 in 24 h',
+     /3 or more[^.]*VT\/VF|3 or more[^.]*episodes/i.test(t) && /24 h/i.test(t), true);
+  ck('first-line drug given as two options',
+     /\(WikEM\)/.test(t) && /\(First10EM\)/.test(t) && /beta-blockade/i.test(t), true);
   ck('Brugada exception', /isoproterenol, NOT beta-blockers/i.test(t), true);
-  ck('pads >= 8 cm from generator', /at least 8 cm from the generator/i.test(t), true);
+  ck('pads >= 8 cm from generator', /(?:at least|≥)\s*8 cm from the generator/i.test(t), true);
   ck('magnet location stated', /CODE CART · SIDE PANEL/i.test(t), true);
 }
 
@@ -103,9 +128,13 @@ ck('procedures card 15 exists', await proc.locator('#c15').count(), 1);
   const t = await textOf(proc, '#c15');
   ck('decontaminate then intubate framing', /Decontaminate, then intubate/i.test(t), true);
   // the three trajectories are the reason this card is better than a generic SALAD description
-  ck('trajectory 1 — from the gut', /Coming UP from the GI tract/i.test(t) && /proximal esophagus/i.test(t), true);
-  ck('trajectory 2 — from the lung', /Coming UP from the respiratory tract/i.test(t) && /toward the source of the froth/i.test(t), true);
-  ck('trajectory 3 — from above', /Coming DOWN from above/i.test(t) && /do NOT park deep/i.test(t), true);
+  /* Claim, not sentence — same fix as cards 24/25 above. The clarity pass shortened each
+     trajectory heading and moved its differential into the WHY tier; what must survive is
+     that all three directions of flow are named and each carries its own maneuver. */
+  ck('trajectory 1 — from the gut', /UP from the GI tract/i.test(t) && /proximal esophagus/i.test(t), true);
+  ck('trajectory 2 — from the lung',
+     /UP from the (?:lungs|respiratory tract)/i.test(t) && /bougie[^.]*froth/i.test(t), true);
+  ck('trajectory 3 — from above', /DOWN from above/i.test(t) && /do NOT park deep/i.test(t), true);
   ck('resus.me credited for the framework', await proc.locator('#c15 a[href*="resus.me"]').count() > 0, true);
   ck('two tested suctions', /Two suction units<\/b>, both tested|both tested/i.test(t), true);
   ck('suction the tube before the first breath', /before the first breath/i.test(t), true);
@@ -124,11 +153,13 @@ ck('procedures card 16 exists', await proc.locator('#c16').count(), 1);
   ck('one stocked size, 14 Fr, stated plainly', /This site stocks one size: 14 Fr/.test(t), true);
   ck('lidocaine ceiling', /3 mg\/kg/.test(t) && /250 mg/.test(t), true);
   // LRH resolved this: hemothorax is a chest tube. P-CAT stays as the reason the question exists.
-  ck('hemothorax routed to a chest tube', /at this site this is a chest tube, not a pigtail/i.test(t) && /28–32 Fr/.test(t) && /P-CAT/.test(t), true);
-  ck('wire depth given as two options', /Two options for depth/i.test(t) && /15–20 cm/.test(t), true);
+  ck('hemothorax routed to a chest tube',
+     /hemothorax is a chest tube, not a pigtail/i.test(t) && /28–32 Fr/.test(t) && /P-CAT/.test(t), true);
+  ck('wire depth given as two options',
+     /options for depth/i.test(t) && /15–20 cm/.test(t) && /clear the needle/i.test(t), true);
   ck('never clamp a bubbling drain', /Never clamp a bubbling drain/i.test(t), true);
   ck('1.5 L then clamp', /1\.5 L/.test(t), true);
-  ck('CXR after every insertion', /Post-insertion chest radiograph for every patient/i.test(t), true);
+  ck('CXR after every insertion', /(?:CXR|chest radiograph) for every patient/i.test(t), true);
   ck('anterior 2nd space explicitly NOT printed', /deliberately not described here/i.test(t), true);
   ck('figure present', await proc.locator('#c16 svg[aria-label*="triangle of safety"]').count(), 1);
   /* Target the FIGURE explicitly. This used to read `#c16 svg` first(), which

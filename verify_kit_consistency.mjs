@@ -130,7 +130,12 @@ const KITS = [
   {
     name: 'Thoracotomy Tray',
     location: /ROOM 7|TRAUMA CART|OB \/ NEONATAL CART/i,
-    items: ['Finochietto rib spreader', 'Gigli saw with handles', 'Vascular (aortic) cross-clamp'],
+    /* The rib spreader is the item this tray is named for on the shelf, and the three added
+       in the 2026-08 clamshell/cardiac-repair pass are the ones a clamshell cannot be done
+       without — so all of them are pinned across the artifacts, not just sampled. */
+    items: ['Finochietto rib spreader', 'Gigli saw with handles', 'Vascular (aortic) cross-clamp',
+            'Lebsche knife or heavy trauma shears', 'Teflon pledgets',
+            'Side-biting (Satinsky) clamp', 'Vascular clamp for the hilum'],
     artifacts: [
       { file: 'procedures/index.html', role: 'interactive card' },
       { file: 'labels/index.html',     role: 'kit card + build sheet' },
