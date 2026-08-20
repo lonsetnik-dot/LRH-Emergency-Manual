@@ -117,10 +117,10 @@
   </div>
 
   <div id="live" style="display:none">
-    <div class="hbi" id="hbibox"></div>
+    <div class="hbi" id="hbibox" data-opcard></div>
     <div class="never" id="neverbox"></div>
 
-    <div class="card" id="phasebox" style="margin-top:10px;padding:14px;border-radius:16px"></div>
+    <div class="card" id="phasebox" data-opcard style="margin-top:10px;padding:14px;border-radius:16px"></div>
 
     <div class="card" style="margin-top:10px;padding:12px">
       <div class="sec">THE LADDER</div>
@@ -684,6 +684,12 @@ CS.touchActive();
 paint();
 setInterval(paint, 500);
 })();
+</script>
+<script>
+/* Shared case-shell behavior (SHELL.md) — brings the operating card marked
+   data-opcard back into view when an action advances the protocol, so the next
+   step is never left above the top of the screen. Edited once, in case-shell.js. */
+/* @shell-js */
 </script>
 </body>
 </html>

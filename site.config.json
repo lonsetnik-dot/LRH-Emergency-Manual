@@ -6,8 +6,11 @@
     "matching key, or if any un-substituted token survives into dist/ — identity can",
     "never silently half-apply.",
     "",
-    "This branch is the LRH hospital edition of the CairnReady generic trunk — see",
-    "SITES.md. Identity lives here; clinical site-specific values stay in each",
+    "main is the LRH reference implementation — see SITES.md. build.mjs serves",
+    "it at lrhemergencymanual.net; demo-build.mjs serves the same content as a",
+    "ribboned showroom copy at demo.cairnready.org. There is no generic edition",
+    "on main, deliberately: the demo shows a manual a real ED uses at the",
+    "bedside. Identity lives here; clinical site-specific values stay in each",
     "tool's marked SITE CONFIG block, next to the logic that uses them and the",
     "citation for them. QR codes bake the domain below into their pixels —",
     "regenerate them (generate_qr_codes.py + the embedded matrices) if it changes."

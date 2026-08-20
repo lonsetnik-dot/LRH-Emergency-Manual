@@ -43,27 +43,31 @@ ck('1. tile navigates to c23', (await pg.evaluate(() => location.hash)), '#c23')
 ck('1. c23 is the visible card', await pg.locator('#c23').isVisible(), true);
 
 /* ---- 2. clinical content that must not be silently dropped ---- */
-const card = (await pg.locator('#c23').innerText()).replace(/\s+/g, ' ');
+/* textContent, not innerText: the clarity pass moved each row's reasoning into a .t-why tier
+   that is display:none until the WHY control is tapped. innerText omits hidden text, so a fact
+   that is present in the card and one tap away read as missing. Whether it is visible right now
+   is verify_checklist_clarity.mjs's question; this suite's question is whether the fact is in
+   the card at all. */
+const card = (await pg.locator('#c23').evaluate(el => el.textContent)).replace(/\s+/g, ' ');
 const has = (re) => re.test(card);
-ck('2. blood-not-crystalloid stated', has(/Transfuse blood, not crystalloid/i), true);
+ck('2. blood-not-crystalloid stated', has(/blood, not crystalloid/i), true);
 ck('2. permissive hypotension stated', has(/Permissive hypotension/i), true);
 ck('2. Hb thresholds 7 and 8 present', has(/≥7 g\/dL/) && has(/~8 g\/dL/), true);
-ck('2. octreotide bolus + infusion', has(/50 mcg IV bolus, then 50 mcg\/hr/i), true);
+ck('2. octreotide bolus + infusion', has(/octreotide 50 mcg IV, then 50 mcg\/hr/i), true);
 ck('2. ceftriaxone 1 g', has(/Ceftriaxone 1 g IV/i), true);
 ck('2. ketamine 0.5 + roc 1.5', has(/Ketamine 0\.5 mg\/kg/i) && has(/rocuronium 1\.5 mg\/kg/i), true);
 ck('2. metoclopramide 10 mg', has(/Metoclopramide 10 mg IV/i), true);
 ck('2. aortoenteric fistula warning', has(/aortoenteric fistula/i), true);
-ck('2. endoscopy timing 12 h / 24 h', has(/within 12 hours/i) && has(/within 24 hours/i), true);
+ck('2. endoscopy timing 12 h / 24 h', has(/within 12 h(?:ours)?\b/i) && has(/within 24 h(?:ours)?\b/i), true);
 /* Transfer line comes from site.config.json — generic edition prints its placeholder. */
 ck('2. transfer line printed', card.includes(SITE.transferPhone), true);
 
 /* ---- 3. where more than one course is defensible, the card must OFFER BOTH ---- */
 // The project's rule: print them as lettered options with the source on each, rather than quietly
 // picking a winner. A card that resolves it silently is the failure mode this checks for.
-ck('3. PPI given as two lettered options', has(/PPI &mdash; two options|PPI — two options/i)
-  && has(/no PPI in the ED/i) && has(/First10EM/i)
-  && has(/pantoprazole 80 mg bolus, then 8 mg\/hr/i) && has(/WikEM/i), true);
-ck('3. TXA contraindicated, HALT-IT named', has(/do NOT give it for GI bleeding/i) && has(/HALT-IT/), true);
+ck('3. PPI given as two lettered options', has(/\bA:\s*no PPI in the ED/i) && has(/First10EM/i)
+  && has(/\bB:\s*pantoprazole 80 mg bolus,? then 8 mg\/hr/i) && has(/WikEM/i), true);
+ck('3. TXA contraindicated, HALT-IT named', has(/do NOT give TXA for GI bleeding/i) && has(/HALT-IT/), true);
 
 /* ---- 4. digital -> physical: the card says where the kit is ---- */
 ck('4. card states the location', has(/ROOM 7 \(RESUS BAY\) CABINET · GI HEMORRHAGE \/ BLAKEMORE KIT/i), true);

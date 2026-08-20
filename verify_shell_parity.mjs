@@ -84,13 +84,40 @@ for (const cls of ['.card{', '.btn{', '.ghost{', '.inp{']) {
   ok('shell sheet defines the ' + cls.replace('{', '') + ' primitive', shellCss.includes(cls));
 }
 
-/* Consumers must not hand-copy shell CSS — that is what this file prevents. */
-const consumers = ['peds/index.html'];
+/* Consumers must not hand-copy shell CSS — that is what this file prevents.
+   codes/ joined the list when its bespoke weight bar was retired: the manual had
+   two weight interfaces for one patient, and a clinician moving between /arrest/
+   and /codes/ mid-code had to operate both. */
+const consumers = ['peds/index.html', 'codes/index.html'];
 for (const f of consumers) {
   const html = readFileSync(f, 'utf8');
   ok(f + ' injects the shell by marker, not by hand-copy', html.includes('/* @design-system-shell */'));
   const style = html.slice(html.indexOf('<style'), html.indexOf('</style>'));
   ok(f + ' does not hand-copy .shellbar geometry', !/\.shellbar\s*\{[^}]*height:\s*56px/.test(style));
+}
+
+/* ---- One weight control, everywhere (SHELL.md layer 4) --------------------
+   The shell exists so nothing is re-learned mid-crisis, and the weight strip is
+   the layer a clinician touches for EVERY weight-based dose in the manual. Until
+   2026-08-19 codes/ carried its own always-expanded bar, so one patient's weight
+   had two interfaces — /arrest/ asked for it one way and /codes/ another, for
+   the same kg, in the same code. This asserts the markup rather than trusting a
+   comment: every tool that carries the shared case weight presents the SAME
+   collapsed row + expanding form, and none of them re-declares the geometry
+   locally. (ob-neonatal/ is deliberately absent: its in-card fields hold the
+   NEONATE's weight under lrh-ob-weight — a different patient, per
+   CASE-STATE.md — and are not this control.) */
+const weightTools = ['arrest/index.html', 'tca/index.html', 'neonatal/index.html',
+                     'peds/index.html', 'codes/index.html'];
+for (const f of weightTools) {
+  const html = readFileSync(f, 'utf8');
+  ok(f + ' presents the shared collapsed weight row', /<button class="shellweight" id="wtoggle"/.test(html));
+  ok(f + ' — the row carries the key / value / marker spans',
+     /class="shellweight"[\s\S]{0,400}?class="k"[\s\S]{0,400}?class="v [\s\S]{0,400}?class="m"/.test(html));
+  ok(f + ' — and an expanding form, hidden by default', /class="shellweightform"[^>]*style="display:none"/.test(html));
+  const style = html.slice(html.indexOf('<style'), html.indexOf('</style>'));
+  ok(f + ' does not re-declare a weight bar of its own',
+     !/#w(t)?bar\s*\{[^}]*display:\s*flex/.test(style));
 }
 
 /* build.mjs must actually substitute the marker, and must fail the build if one

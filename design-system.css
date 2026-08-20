@@ -69,6 +69,15 @@
      theme-aware and a fork re-skins in one place. ===== */
   .t-ck{width:20px;height:20px;margin:2px 0 0;accent-color:var(--accent);flex:none}
   .t-div{border-top:1px solid var(--line)}
+  /* 320px reflow (ACCESSIBILITY.md §4) — clinical prose is full of long
+     unbreakable tokens: "JVD/crackles/edema/hepatomegaly", drug names joined by
+     slashes, URLs, "sepsis-associated". One of them pushed /codes/ 6px past a
+     320px viewport, which is a page-level horizontal scroll on the narrowest
+     phone this manual supports. Breaking inside a word is ugly; a checklist a
+     clinician has to scroll sideways to read is worse. Scoped to the checklist
+     row's text span, which is where the prose lives, so it cannot reflow a
+     dose, a table, or a figure. */
+  .t-div label > span{overflow-wrap:anywhere}
   /* Rounded corners on every interior panel, to match the bar/menu radius.
      overflow:hidden clips the colored header fill to the rounded top corners. */
   .t-box-crit,.t-box-caution,.t-box-info,.t-box-neutral{border-radius:12px;overflow:hidden}
@@ -86,7 +95,34 @@
   .t-note2{margin-top:2px;font-size:12.5px;color:var(--ink2)}
   .t-mono-r{font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.08em;color:var(--ink2);text-align:right}
   .t-mono-n{font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;color:var(--ink);font-size:16px;margin-right:8px}
+  /* ---- Two-tier checklist rows: the ACTION is always on screen, the reasoning is one
+     tap away. An emergency manual is read by someone who cannot read — glancing, mid-task,
+     with their hands busy. The rows carried the action and its justification in one
+     paragraph (median 133 characters, 596 of them over 200), so the thing to DO was buried
+     in the thing to KNOW.
+
+     .t-why is everything that is not the action: rationale, provenance, source
+     disagreements, edge cases. Hidden by default, revealed for the whole tool by the WHY
+     control in the header, and ALWAYS printed — a printed card is a reference read at a
+     desk, not a screen read during a code, and it should carry everything.
+
+     Nothing is deleted by this. If a value is needed to perform the step it belongs in the
+     action, not in here; verify_checklist_clarity.mjs enforces that. ---- */
+  .t-why{display:none;margin-top:5px;font-size:13px;line-height:1.45;color:var(--ink2);font-style:normal}
+  body.showwhy .t-why{display:block}
+  @media print{.t-why{display:block !important}}
+  .whybtn[aria-pressed="true"]{background:var(--card2);color:var(--ink);border-color:var(--ink2)}
+
   .t-localize{margin:14px 14px 0;border:2px solid var(--sev-caution);background:var(--note-bg);color:var(--note-tx);padding:11px 14px;font-size:13px;line-height:1.4;border-radius:12px}
+  /* Sign-off bar — what replaces "DRAFT — NOT CLINICALLY REVIEWED" once a clinician has
+     actually reviewed a card (crash-card review, 2026-08-17/18). Deliberately NOT a silent
+     deletion: the honest answer to "when did anyone last check this is still true" is a date
+     and a name, the same distinction guidelines.js draws between lastVerified:null and a real
+     date. Calm styling — hairline border, no warning glyph — so it reads as provenance rather
+     than an alarm, while reusing the note-bg/note-tx pair whose contrast verify_accessibility
+     already checks in both themes. */
+  .reviewedbar{margin:14px 14px 0;border:1px solid var(--line);background:var(--note-bg);color:var(--note-tx);padding:10px 14px;font-size:12.5px;line-height:1.45;border-radius:12px}
+  .reviewedbar a{color:var(--note-tx)}
   .t-notebtn{flex:none;min-height:32px;padding:0 10px;background:none;border:1px solid var(--note-tx);color:var(--note-tx);font:inherit;font-weight:700;letter-spacing:.04em;cursor:pointer}
 
   /* ---- Issue #107: the square boxes inside the rounded ones ----------------

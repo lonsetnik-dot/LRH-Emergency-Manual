@@ -232,6 +232,89 @@ Decorative glyphs are `aria-hidden` with no role or label. That is not a detail 
 a labeled decorative SVG shadows the real figure for any selector or screen
 reader looking for the drawing that carries the meaning.
 
+## The case shell's reveal behavior (`case-shell.js`)
+
+`case-shell.js` is the shared runtime for the case shell, injected at the marker
+`/* @shell-js */` exactly like `design-system.css` and `inventory.js`. Consumers: all six
+live-protocol engines (`arrest/`, `airway/`, `tca/`, `neonatal/`, `pph/`, `dystocia/`).
+
+It exists because **the next step was off the top of the screen.** A clinician scrolls down
+to read the ladder, taps the action it just told them to take, and the operating card — now
+showing the next step — is a thousand pixels above the viewport. Measured on every engine
+before the fix: dystocia −883, neonatal −585, pph −902, arrest −1132, airway −441. During a
+shoulder dystocia the head-to-body interval is the clock, so this was spending the one
+resource the tool exists to protect.
+
+**Wiring is one attribute.** Mark the operating card `data-opcard` and nothing else. A new
+engine gets the behavior by carrying that attribute and the marker; a page without one gets
+no behavior and no error. Never hand-write scrolling into an engine.
+
+**The operating card is a REGION.** Mark every element that is part of "what to do now",
+not just the box at the bottom of it: `arrest/` marks the rhythm-unknown bar and the rhythm
+bar alongside its cycle card, `pph/` its blood-loss adder, `dystocia/` its head-to-body
+clock, `tca/` its workstream list. The module anchors on whichever marked element is
+currently topmost on screen and ignores ones that are `display:none`, so a bar that exists
+in one phase participates only in that phase — and a bar appearing or disappearing counts
+as a step change. Marking only the last box scrolled arrest's amber "PADS ON — CHECK THE
+RHYTHM" button off the top of the screen at the start of every case: the module hid the
+next action while dutifully revealing the card below it.
+
+**A reveal never scrolls a visible control off the top.** Content pushed above the sticky
+bar cannot be reached by scrolling the way the page invites you to, and nothing on screen
+suggests it is up there. `reveal()` refuses rather than compromises, which is why several
+engines simply do not move at the start of a case — that is the correct outcome, not a
+missing feature.
+
+**The hard part is NOT scrolling.** An unrequested jump mid-code takes the text away from
+whoever is reading it — the same reason the offline shell never reloads a page by itself.
+Four rules, and every one of them was written after a real defect:
+
+- **The step must have changed, not just the DOM.** Engines re-render the whole card on the
+  1 s tick, so "the card mutated" is nearly meaningless — it made *any* tap within the
+  gesture window scroll the page, including opening a reference accordion. What is compared
+  is the card's text **with digits and punctuation stripped**: a countdown going 2:31 → 2:30
+  leaves that signature identical, advancing PRESSURE → LEGS changes it.
+- **A deliberate scroll wins**, and it is detected from `wheel`/`touchmove`, never the
+  `scroll` event — advancing a step shortens the page, the browser clamps `scrollY`, and
+  that emits `scroll` with nobody having touched anything. Listening to it silently
+  cancelled the very reveals this module exists to perform.
+- **One decision per gesture.** Concluding "already visible, nothing to do" without
+  disarming let a later clock tick act on a stale gesture and scroll seconds after the tap.
+- **A picker suspends the decision rather than resolving it**, and the module polls for the
+  sheet to close rather than waiting for a mutation, because some engines repaint every
+  second and some only on a state change. The baseline signature is captured only when
+  arming *fresh*, so dismissing a picker with ✕ does not re-baseline against a card that has
+  already advanced.
+
+`verify_case_shell.mjs` asserts the pair that matters: **the step changed → the card is on
+screen below the bar; the step did not change → the page was not scrolled.** Note that
+"was not scrolled" cannot be a raw `scrollY` comparison, for the clamping reason above.
+
+## Checklist rows: ACTION on screen, WHY behind a tap
+
+Every checklist row in the manual is two tiers — `<b>ACTION</b><i class="t-why">reasoning</i>`
+— because a row is read mid-task by someone whose hands are busy. `.t-why` is hidden until
+the tool's one WHY control is tapped, always shown in print, and remembered as a preference
+(`lrh-pref-why`). Full rationale and the writing rules are in `DESIGN-SYSTEM.md` §6b.
+
+Three things to know before editing or adding a row:
+
+- **The action must stand alone.** A number the step cannot be performed without belongs in
+  the action, never only behind the WHY. `verify_checklist_clarity.mjs` fails a row that
+  hides a dose-shaped value from its own action, and `tools_clarify.mjs` refuses to write
+  one. `data-ref` is the only sanctioned way to hide a number, per row, on purpose.
+- **Do not rewrite a kit-contents row for readability.** Those strings are byte-identical
+  across the card, the poster, the cart label and `inventory.js`; rewording one is a
+  different task, done to all four at once. Several rows stay over the length target for
+  exactly this reason, and the suite's budget block names them.
+- **A row rendered from config gets its tiers in config.** A `SITE.withdrawal` rung accepts
+  `{do, why}`, so a fork that localizes its ladder localizes the reasoning with it.
+
+`tools_clarify.mjs` is the dev-only helper that applies these rewrites; it refuses rather
+than warns whenever a replacement would drop live markup (a `.wdose` span, a tap-to-log
+button, a cross-card link, any `data-*` hook), because every one of those failures is
+invisible on screen afterwards.
+
 ## Config-driven verification (issue #117)
 
 The `verify_*.mjs` suites are the safety harness that makes it viable for a
@@ -300,10 +383,21 @@ Four rules when touching it:
   change detected" rather than "nothing changed". Do not tighten that wording,
   and do not drop a `reviewEvery` because a probe looks reliable.
 
-Known open item carried in the registry itself: `nrp` has `reconciled:false` —
-`neonatal/` still carries content not reconciled line-by-line with NRP 9th
-edition. Flip it to true only on a clinician's sign-off, not when the review
-banner comes down.
+That open item is now closed, and how it closed is the worked example: `nrp` carried
+`reconciled:false` because `neonatal/` had content inherited from an uncited card and
+never checked line-by-line. On 2026-08-18 a clinician reviewed it, so the flag went true,
+`SITE.review.on` in `neonatal/index.html` went false, and both changes cite the same
+sign-off. Flip a `reconciled` flag on a clinician's sign-off, never because a banner came
+down or a review "looks done" — and set it back to false whenever the content it covers
+moves again.
+
+`verify_neonatal_screen.mjs` shows the shape a banner guard should take once its banner is
+allowed to come down. It used to assert "the review banner is visible", which stops being
+a useful test the moment the review it was waiting for happens — and would have pushed the
+next editor to delete the check. It now asserts the banner matches `SITE.review.on` **and**
+that switching it off is accompanied by a name and a date in `SITE.review.signedOff`. The
+thing being guarded was never "the banner exists"; it was "nobody makes this look reviewed
+without saying who reviewed it."
 
 ## Deploy & test workflow
 
@@ -365,10 +459,10 @@ test it" is not sufficient close-out for a deliverable.
   stamped on one tap, 30-second cycles off that clock, heart-rate driven
   pathway, Apgar marks that fire on their own, and the SpO₂ target for the
   minute the baby is actually in. A live-protocol peer of `arrest/`, `airway/`
-  and `tca/`, not a card. **Its content was carried over unchanged from card 03
-  and has not been reconciled with NRP 9th edition — the review banner stays up
-  until a clinician signs it off, and `verify_neonatal_screen.mjs` fails if
-  anyone switches it off quietly.**
+  and `tca/`, not a card. Clinically reviewed and signed off 2026-08-18 — the
+  review banner is down and `guidelines.js` `nrp` is `reconciled: true`. The
+  sign-off is recorded in `SITE.review.signedOff`, and the suite requires it:
+  the banner may only be off while a name and a date are named there.
 - `pph/` — the postpartum hemorrhage **engine** (issue #135): clock from
   recognition, running blood loss as first-class state, escalation prompts that
   fire on the trend, and uterotonics greyed out by a contraindication asked once
@@ -382,7 +476,13 @@ test it" is not sufficient close-out for a deliverable.
 - `procedures/` — Rare, high-stakes procedure checklists (chest tube,
   thoracotomy, burr hole, canthotomy, CVC, TVP, tourniquet, JADA, etc.).
 - `trauma/` — Trauma activation and resuscitation pathways.
-- `clinical-pathways/` — Diagnostic pathways (e.g. Chest Pain / HEART).
+- `clinical-pathways/` — Diagnostic and workup pathways: Chest Pain / HEART,
+  the PE clinical categories, plus `sepsis/` and `dka/`, which moved out of
+  `codes/` in the 2026-08 clinical review (issues #178, #176). The dividing line
+  the review drew: `codes/` is for what you grab while a patient is crashing;
+  a workup that unfolds over hours off a departmental order set belongs here.
+  Their old anchors (`codes/#c28`, `#c31`) hash-redirect so printed QR codes and
+  old links still resolve.
 - `posters/` — Printable one-page posters generated from procedure content.
 - `debrief/` — redirect stub only; the debrief card lives in `conversations/`
   (card 04). Kept so old links and printed QR codes still resolve.

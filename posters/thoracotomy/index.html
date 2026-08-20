@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#005596">
 <title>Resuscitative Thoracotomy — Wall Poster · {{SITE.title}}</title>
-<meta name="description" content="Printable letter-portrait wall poster: clamshell resuscitative thoracotomy — selection gate, sequence, key numbers.">
+<meta name="description" content="Printable letter-portrait wall poster: clamshell resuscitative thoracotomy — ten phases from decide to signs of life, with the equipment and the key numbers.">
 <link rel="canonical" href="https://{{SITE.domain}}/posters/thoracotomy/">
 <style>
   /* ===== SITE CONFIG (site-specific — accent + text edits to localize go here) ===== */
@@ -27,26 +27,45 @@
     .sheet { width:auto; margin:0; padding:0; box-shadow:none; }
   }
   .eyebrow { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10pt; font-weight:700; letter-spacing:0.22em; color:#9b1c2e; }
-  h1 { margin:2pt 0 5pt; font-size:26.5pt; line-height:1.0; letter-spacing:-0.5pt; color:#16324f; text-transform:uppercase; }
+  h1 { margin:2pt 0 4pt; font-size:23pt; line-height:1.0; letter-spacing:-0.5pt; color:#16324f; text-transform:uppercase; }
   .rule { height:5pt; background:#9b1c2e; }
-  .indication { margin:5pt 0 6pt; font-size:11.2pt; line-height:1.3; }
+  .indication { margin:4pt 0 0; font-size:9.6pt; line-height:1.22; }
   .indication .tag { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:9pt; font-weight:700; letter-spacing:0.14em; color:#fff; background:#9b1c2e; padding:1.5pt 5pt; margin-right:5pt; }
   .cols { display:grid; grid-template-columns:1fr 1.18fr; gap:0.24in; }
   .colhead { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11pt; font-weight:700; letter-spacing:0.14em; border-bottom:2.5pt solid #16324f; padding-bottom:3pt; margin-bottom:5pt; }
   .loc { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:8.2pt; letter-spacing:0.08em; color:#16324f; background:#eef1f5; border-left:3pt solid #9b1c2e; padding:4pt 6pt; margin:0 0 6pt; }
   ul.eq { list-style:none; margin:0; padding:0; }
-  ul.eq li { font-size:10pt; line-height:1.22; padding:1.6pt 0 1.6pt 17pt; text-indent:-17pt; }
+  ul.eq li { font-size:8.8pt; line-height:1.16; padding:1pt 0 1pt 15pt; text-indent:-15pt; }
   ul.eq li::before { content:"\25A1\00A0\00A0"; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5pt; color:#9b1c2e; }
   .grp { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:8pt; font-weight:700; letter-spacing:0.16em; color:#5a6a78; margin:6pt 0 1.5pt; }
   ol.steps { list-style:none; margin:0; padding:0; counter-reset:st; }
   ol.steps li { counter-increment:st; font-size:10pt; line-height:1.22; margin:0 0 3.4pt; padding-left:20pt; position:relative; }
   ol.steps li::before { content:counter(st); position:absolute; left:0; top:0.5pt; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10pt; font-weight:700; color:#9b1c2e; }
-  .warn { border:1.5pt solid #9b1c2e; color:#9b1c2e; font-size:9.3pt; line-height:1.28; padding:3.5pt 6pt; margin-top:2pt; font-weight:700; }
+  .warn { border:1.2pt solid #9b1c2e; color:#9b1c2e; font-size:8.2pt; line-height:1.2; padding:3pt 5pt; margin-top:3pt; font-weight:700; }
   .keys { display:flex; border:2.5pt solid #16324f; margin-top:6pt; }
   .key { flex:1; text-align:center; padding:4.5pt 2pt 3.5pt; border-left:1.5pt solid #d7dde3; }
   .key:first-child { border-left:none; }
   .key .v { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:19pt; font-weight:800; color:#9b1c2e; white-space:nowrap; }
   .key .l { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:7.2pt; letter-spacing:0.1em; color:#5a6a78; margin-top:1.5pt; }
+  /* PHASE LADDER — the poster's dominant element. A wall poster is read at two paces: from
+     across the room ("what phase are we in") and at arm's length ("what exactly do I do").
+     The number and the ACTION carry the first; the detail line carries the second. Everything
+     that is not one of those two jobs belongs on the card, which the QR reaches. */
+  ol.phases { list-style:none; margin:5pt 0 0; padding:0; counter-reset:ph; }
+  ol.phases li { counter-increment:ph; position:relative; padding:0 0 0 32pt; margin:0 0 4.2pt;
+                 break-inside:avoid; page-break-inside:avoid; }
+  ol.phases li::before { content:counter(ph); position:absolute; left:0; top:-1.5pt; width:25pt;
+                 text-align:right; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+                 font-size:15.5pt; font-weight:800; color:#9b1c2e; line-height:1; }
+  ol.phases .act { font-size:12.4pt; font-weight:800; line-height:1.06; letter-spacing:-0.2pt;
+                 color:#16324f; text-transform:uppercase; }
+  ol.phases .det { font-size:9.2pt; line-height:1.2; color:#16324f; margin-top:0.5pt; }
+  ol.phases li.gate::before { color:#16324f; }
+  .stopband { border:1.5pt solid #9b1c2e; background:#fbeef0; padding:3pt 6pt; margin:4pt 0 0;
+              font-size:8.9pt; line-height:1.2; }
+  .stopband b { color:#9b1c2e; }
+  .band { display:grid; grid-template-columns:1.2fr 1fr; gap:0.18in; margin-top:5pt;
+          border-top:2pt solid #16324f; padding-top:4pt; }
   .fig { border:1.5pt solid #d7dde3; margin-top:5pt; }
   .figcap { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:8pt; letter-spacing:0.1em; color:#9b1c2e; padding:3pt 6pt 0; }
   :root { --ink:#16324f; --ink2:#5a6a78; --red:#9b1c2e; }
@@ -74,49 +93,37 @@
   <h1><span class="h1glyph pglyph" data-proc="thora" aria-hidden="true"></span>Resuscitative Thoracotomy (Clamshell)</h1>
   <div class="rule"></div>
 
-  <p class="indication"><span class="tag">INDICATION</span>Unstable patient in extremis with deteriorating physiology and <b>PROVEN cardiac tamponade on ultrasound</b>. <b>No signs of life + PEA on arrival = consistently poor</b> (Alfred 2008–13: 9 independent survivors of 27).</p>
+  <p class="indication"><span class="tag">INDICATION</span>Penetrating torso injury with <b>signs of life in the last ~15 min</b>, or a witnessed blunt arrest under ~10 min <b>with a surgeon</b>. Tamponade is the pathology you are looking for &mdash; it hides with no external signs and a normal ECG.</p>
 
-  <div class="cols">
+  <div class="stopband"><b>DO NOT START IF ANY:</b> no signs of life <b>+</b> PEA on arrival (Alfred 2008&ndash;13: 9 independent survivors of 27) &middot; obvious non-survivable injury &middot; mass-casualty incident &middot; no surgical support for what you are about to open.</div>
+
+  <ol class="phases">
+    <li class="gate"><div class="act">Decide</div><div class="det">Gate it against the box above, out loud, before you touch a scalpel. The decision is the procedure.</div></li>
+    <li class="gate"><div class="act">Organize</div><div class="det">Say it. Name a surgeon to call, one airway, one transfusionist. Blood in the room before the chest is open.</div></li>
+    <li><div class="act">X &middot; A &middot; B &middot; C</div><div class="det">External bleeding first. iGel or ETT. <b>BILATERAL finger thoracostomies.</b> Large-bore access, blood not crystalloid.</div></li>
+    <li><div class="act">Incision</div><div class="det">Splash prep only. <b>LEFT 5th ICS</b>, sternum &rarr; the table, through muscle into pleura along its whole length.</div></li>
+    <li><div class="act">Rib spreader &mdash; open wide</div><div class="det">Finochietto in, <b>crank handle DOWN toward the axilla</b> &mdash; handle up blocks the clamshell. Sweep the lung aside.</div></li>
+    <li><div class="act">Open the pericardium</div><div class="det">Tent with forceps. Long <b>VERTICAL</b> cut <b>anterior to the phrenic</b>. Clot out, <b>deliver the heart</b>, look at every surface.</div></li>
+    <li><div class="act">Close the heart</div><div class="det">Finger first. Then Foley 16 Fr (5&ndash;10 mL, clamp the port) &middot; staples &middot; pledgeted 3-0. <b>Under a coronary, never through.</b></div></li>
+    <li><div class="act">Cross over if the right bleeds</div><div class="det">Blood on the <b>right</b> is the reason &mdash; a hard view on the left is not. Mirror it, split the sternum, <b>clamp BOTH mammaries</b>.</div></li>
+    <li><div class="act">Aorta &middot; hilum</div><div class="det">Compress the descending aorta against the spine. Bleeding lung &rarr; divide the pulmonary ligament, twist the hilum 180&deg;.</div></li>
+    <li><div class="act">Signs of life?</div><div class="det"><b>Yes</b> &rarr; blood, TXA, calcium, OR or transfer; mammary bleeding <b>will</b> start. <b>No</b> &rarr; stop, note the time, debrief.</div></li>
+  </ol>
+
+  <div class="band">
     <div>
-      <div class="colhead">EQUIPMENT</div>
-      <div class="loc">TRAUMA CART · THORACOSTOMY + RIB SPREADER shelves<br>(scalpel in SCALPEL drawer)</div>
+      <div class="grp">EQUIPMENT &mdash; TRAUMA CART &middot; RIB SPREADER SHELF</div>
       <ul class="eq">
-        <li>Scalpel — large blade, <b>No. 10 / 20</b></li>
-        <li>Heavy Mayo scissors / trauma shears</li>
-        <li><b>Finochietto rib spreader</b> — RIB SPREADER shelf</li>
-        <li>Gigli saw or heavy scissors — for the sternum</li>
-        <li>Artery forceps (pericardium) + long forceps</li>
-        <li><b>3-0 nylon or prolene</b> suture on large needle · skin stapler · Foley catheter (wound occlusion)</li>
-        <li>Vascular / aortic cross-clamp · internal defib paddles</li>
-        <li>Chlorhexidine or iodine — splash prep only</li>
+        <li>Scalpel <b>No. 10 / 20</b> &middot; heavy Mayo scissors / trauma shears</li>
+        <li><b>Finochietto rib spreader</b> &middot; Gigli saw, Lebsche knife or shears</li>
+        <li>Artery forceps &middot; <b>3-0 nylon/prolene</b> &middot; stapler &middot; Foley &middot; pledgets</li>
+        <li>Vascular clamps <b>&times;2</b> (aortic + hilar) &middot; internal defib paddles</li>
       </ul>
-      <div class="grp">IN PARALLEL — OTHER HANDS</div>
-      <ul class="eq">
-        <li>ETT in place · bilateral finger thoracostomies</li>
-        <li>Large-bore access (14 g / RIC / MAC) · blood + MTP</li>
-      </ul>
-      <div class="fig">
-        <div class="figcap">FIG 1 · CLAMSHELL INCISION — 5TH ICS, AXILLA TO AXILLA</div>
-        <div style="padding:3pt 6pt;"><div style="max-width:55%;margin:0 auto;"><div class="pdetail" data-proc="thora" aria-hidden="true"></div></div><div class="proc-cap" data-proccap="thora" style="text-align:center;"></div></div>
-      </div>
+      <div class="warn">LOCALIZE: agree in advance whether ED thoracotomy is in this facility&rsquo;s scope and what surgical backup exists &mdash; decide before the event, not at the bedside.</div>
     </div>
-    <div>
-      <div class="colhead">STEPS</div>
-      <ol class="steps">
-        <li><b>Gate the decision:</b> tamponade proven on ultrasound — it may hide with no external signs and a normal ECG. Airway, bilateral finger thoracostomies, and MTP run in parallel.</li>
-        <li><b>Splash prep</b> — no delay for full asepsis.</li>
-        <li>Extend the LEFT thoracostomy incision along the <b>5th ICS</b>, sternum &rarr; mid-axillary line.</li>
-        <li>Cut intercostal muscle into pleura along the full length with heavy scissors.</li>
-        <li>Mirror the incision on the RIGHT; divide the <b>sternum transversely</b> — Gigli saw or heavy scissors.</li>
-        <li><b>Finochietto in</b>, handle toward the axilla; open WIDE; sweep the left lung out of the way.</li>
-        <li>Tent the pericardium with artery forceps; open with a long <b>VERTICAL</b> incision, <b>anterior to the phrenic nerve</b>.</li>
-        <li>Deliver the heart; evacuate clot; inspect every surface for the wound.</li>
-        <li><b>Wound control:</b> finger occlusion first &rarr; staples or 3-0 nylon/prolene suture (avoid coronaries) &rarr; Foley balloon through the defect, gentle traction.</li>
-        <li>Internal massage, two-handed, <b>~100/min</b>; VF &rarr; internal defibrillation <b>10–20 J</b>.</li>
-        <li>Aorta: hand along the posterior left chest wall — compress the descending aorta against the spine or cross-clamp at the diaphragm.</li>
-        <li><b>ROSC &rarr; mammary + intercostal bleeding WILL start</b> — control it; sedate/ventilate; straight to OR / transfer.</li>
-      </ol>
-      <div class="warn">LOCALIZE: agree in advance whether ED thoracotomy is in this facility&rsquo;s scope and what surgical backup exists — decide before the event, not at the bedside.</div>
+    <div class="fig">
+      <div class="figcap">FIG 1 &middot; CLAMSHELL INCISION &mdash; 5TH ICS, AXILLA TO AXILLA</div>
+      <div style="padding:3pt 6pt;"><div style="max-width:62%;margin:0 auto;"><div class="pdetail" data-proc="thora" aria-hidden="true"></div></div><div class="proc-cap" data-proccap="thora" style="text-align:center;"></div></div>
     </div>
   </div>
 
@@ -129,7 +136,7 @@
   </div>
 
   <footer class="strip">
-    v0.3 · 2026-08-08 · personal/unofficial aid — not hospital policy · verify locally · {{SITE.domain}}/posters/thoracotomy/<br>
+    v0.4 · 2026-08-20 · personal/unofficial aid — not hospital policy · verify locally · {{SITE.domain}}/posters/thoracotomy/<br>
     Content adapted from The Procedures Course, Alfred STAR Program (Alfred Health) + cited open references (LITFL CCC: resuscitative thoracotomy; EMCrit: procedure of thoracotomy). Cardiac-wound suture (3-0 nylon/prolene) follows the Western Trauma Association Resuscitative Thoracotomy algorithm, Note D.
       <div class="qr">
       <svg viewBox="0 0 246 246" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="QR code linking to the Resuscitative Thoracotomy procedure checklist (card 02)"><rect width="246" height="246" fill="#fffefb"/><g fill="#16324f"><rect x="24" y="24" width="42" height="6"/><rect x="72" y="24" width="6" height="6"/><rect x="84" y="24" width="18" height="6"/><rect x="126" y="24" width="12" height="6"/><rect x="150" y="24" width="12" height="6"/><rect x="180" y="24" width="42" height="6"/><rect x="24" y="30" width="6" height="6"/><rect x="60" y="30" width="6" height="6"/><rect x="78" y="30" width="6" height="6"/><rect x="90" y="30" width="6" height="6"/><rect x="102" y="30" width="12" height="6"/><rect x="120" y="30" width="12" height="6"/><rect x="144" y="30" width="12" height="6"/><rect x="168" y="30" width="6" height="6"/><rect x="180" y="30" width="6" height="6"/><rect x="216" y="30" width="6" height="6"/><rect x="24" y="36" width="6" height="6"/><rect x="36" y="36" width="18" height="6"/><rect x="60" y="36" width="6" height="6"/><rect x="72" y="36" width="12" height="6"/><rect x="90" y="36" width="6" height="6"/><rect x="108" y="36" width="12" height="6"/><rect x="126" y="36" width="6" height="6"/><rect x="138" y="36" width="6" height="6"/><rect x="150" y="36" width="18" height="6"/><rect x="180" y="36" width="6" height="6"/><rect x="192" y="36" width="18" height="6"/><rect x="216" y="36" width="6" height="6"/><rect x="24" y="42" width="6" height="6"/><rect x="36" y="42" width="18" height="6"/><rect x="60" y="42" width="6" height="6"/><rect x="78" y="42" width="6" height="6"/><rect x="90" y="42" width="12" height="6"/><rect x="108" y="42" width="6" height="6"/><rect x="120" y="42" width="24" height="6"/><rect x="150" y="42" width="24" height="6"/><rect x="180" y="42" width="6" height="6"/><rect x="192" y="42" width="18" height="6"/><rect x="216" y="42" width="6" height="6"/><rect x="24" y="48" width="6" height="6"/><rect x="36" y="48" width="18" height="6"/><rect x="60" y="48" width="6" height="6"/><rect x="78" y="48" width="6" height="6"/><rect x="90" y="48" width="6" height="6"/><rect x="102" y="48" width="36" height="6"/><rect x="144" y="48" width="18" height="6"/><rect x="180" y="48" width="6" height="6"/><rect x="192" y="48" width="18" height="6"/><rect x="216" y="48" width="6" height="6"/><rect x="24" y="54" width="6" height="6"/><rect x="60" y="54" width="6" height="6"/><rect x="72" y="54" width="30" height="6"/><rect x="108" y="54" width="6" height="6"/><rect x="120" y="54" width="6" height="6"/><rect x="144" y="54" width="6" height="6"/><rect x="156" y="54" width="6" height="6"/><rect x="180" y="54" width="6" height="6"/><rect x="216" y="54" width="6" height="6"/><rect x="24" y="60" width="42" height="6"/><rect x="72" y="60" width="6" height="6"/><rect x="84" y="60" width="6" height="6"/><rect x="96" y="60" width="6" height="6"/><rect x="108" y="60" width="6" height="6"/><rect x="120" y="60" width="6" height="6"/><rect x="132" y="60" width="6" height="6"/><rect x="144" y="60" width="6" height="6"/><rect x="156" y="60" width="6" height="6"/><rect x="168" y="60" width="6" height="6"/><rect x="180" y="60" width="42" height="6"/><rect x="90" y="66" width="6" height="6"/><rect x="132" y="66" width="6" height="6"/><rect x="144" y="66" width="6" height="6"/><rect x="156" y="66" width="18" height="6"/><rect x="24" y="72" width="6" height="6"/><rect x="36" y="72" width="6" height="6"/><rect x="60" y="72" width="12" height="6"/><rect x="90" y="72" width="12" height="6"/><rect x="108" y="72" width="18" height="6"/><rect x="138" y="72" width="12" height="6"/><rect x="162" y="72" width="12" height="6"/><rect x="186" y="72" width="6" height="6"/><rect x="204" y="72" width="6" height="6"/><rect x="216" y="72" width="6" height="6"/><rect x="24" y="78" width="36" height="6"/><rect x="90" y="78" width="6" height="6"/><rect x="114" y="78" width="12" height="6"/><rect x="138" y="78" width="36" height="6"/><rect x="180" y="78" width="6" height="6"/><rect x="198" y="78" width="6" height="6"/><rect x="216" y="78" width="6" height="6"/><rect x="24" y="84" width="6" height="6"/><rect x="36" y="84" width="18" height="6"/><rect x="60" y="84" width="6" height="6"/><rect x="72" y="84" width="6" height="6"/><rect x="84" y="84" width="6" height="6"/><rect x="102" y="84" width="24" height="6"/><rect x="132" y="84" width="12" height="6"/><rect x="162" y="84" width="6" height="6"/><rect x="174" y="84" width="12" height="6"/><rect x="198" y="84" width="12" height="6"/><rect x="216" y="84" width="6" height="6"/><rect x="30" y="90" width="12" height="6"/><rect x="84" y="90" width="6" height="6"/><rect x="96" y="90" width="6" height="6"/><rect x="108" y="90" width="18" height="6"/><rect x="132" y="90" width="6" height="6"/><rect x="156" y="90" width="6" height="6"/><rect x="168" y="90" width="6" height="6"/><rect x="180" y="90" width="24" height="6"/><rect x="216" y="90" width="6" height="6"/><rect x="42" y="96" width="6" height="6"/><rect x="54" y="96" width="18" height="6"/><rect x="96" y="96" width="18" height="6"/><rect x="120" y="96" width="6" height="6"/><rect x="132" y="96" width="6" height="6"/><rect x="144" y="96" width="6" height="6"/><rect x="162" y="96" width="12" height="6"/><rect x="180" y="96" width="6" height="6"/><rect x="210" y="96" width="12" height="6"/><rect x="24" y="102" width="6" height="6"/><rect x="42" y="102" width="6" height="6"/><rect x="54" y="102" width="6" height="6"/><rect x="78" y="102" width="24" height="6"/><rect x="108" y="102" width="6" height="6"/><rect x="120" y="102" width="30" height="6"/><rect x="162" y="102" width="12" height="6"/><rect x="180" y="102" width="12" height="6"/><rect x="198" y="102" width="24" height="6"/><rect x="24" y="108" width="54" height="6"/><rect x="96" y="108" width="6" height="6"/><rect x="120" y="108" width="6" height="6"/><rect x="138" y="108" width="6" height="6"/><rect x="156" y="108" width="12" height="6"/><rect x="192" y="108" width="6" height="6"/><rect x="216" y="108" width="6" height="6"/><rect x="42" y="114" width="6" height="6"/><rect x="54" y="114" width="6" height="6"/><rect x="72" y="114" width="12" height="6"/><rect x="114" y="114" width="12" height="6"/><rect x="144" y="114" width="6" height="6"/><rect x="162" y="114" width="30" height="6"/><rect x="198" y="114" width="6" height="6"/><rect x="24" y="120" width="12" height="6"/><rect x="60" y="120" width="12" height="6"/><rect x="78" y="120" width="6" height="6"/><rect x="90" y="120" width="12" height="6"/><rect x="120" y="120" width="6" height="6"/><rect x="168" y="120" width="6" height="6"/><rect x="180" y="120" width="12" height="6"/><rect x="198" y="120" width="6" height="6"/><rect x="210" y="120" width="6" height="6"/><rect x="24" y="126" width="6" height="6"/><rect x="42" y="126" width="6" height="6"/><rect x="72" y="126" width="6" height="6"/><rect x="96" y="126" width="6" height="6"/><rect x="108" y="126" width="18" height="6"/><rect x="132" y="126" width="24" height="6"/><rect x="162" y="126" width="12" height="6"/><rect x="180" y="126" width="6" height="6"/><rect x="198" y="126" width="6" height="6"/><rect x="210" y="126" width="12" height="6"/><rect x="24" y="132" width="24" height="6"/><rect x="54" y="132" width="24" height="6"/><rect x="90" y="132" width="12" height="6"/><rect x="108" y="132" width="36" height="6"/><rect x="150" y="132" width="6" height="6"/><rect x="162" y="132" width="12" height="6"/><rect x="180" y="132" width="12" height="6"/><rect x="198" y="132" width="12" height="6"/><rect x="216" y="132" width="6" height="6"/><rect x="24" y="138" width="6" height="6"/><rect x="36" y="138" width="6" height="6"/><rect x="48" y="138" width="6" height="6"/><rect x="66" y="138" width="6" height="6"/><rect x="84" y="138" width="12" height="6"/><rect x="114" y="138" width="12" height="6"/><rect x="138" y="138" width="6" height="6"/><rect x="156" y="138" width="6" height="6"/><rect x="174" y="138" width="6" height="6"/><rect x="192" y="138" width="12" height="6"/><rect x="30" y="144" width="6" height="6"/><rect x="48" y="144" width="6" height="6"/><rect x="60" y="144" width="6" height="6"/><rect x="78" y="144" width="6" height="6"/><rect x="96" y="144" width="6" height="6"/><rect x="108" y="144" width="6" height="6"/><rect x="132" y="144" width="18" height="6"/><rect x="156" y="144" width="6" height="6"/><rect x="180" y="144" width="6" height="6"/><rect x="210" y="144" width="12" height="6"/><rect x="30" y="150" width="12" height="6"/><rect x="66" y="150" width="6" height="6"/><rect x="78" y="150" width="6" height="6"/><rect x="90" y="150" width="24" height="6"/><rect x="132" y="150" width="18" height="6"/><rect x="156" y="150" width="12" height="6"/><rect x="174" y="150" width="18" height="6"/><rect x="216" y="150" width="6" height="6"/><rect x="24" y="156" width="12" height="6"/><rect x="42" y="156" width="6" height="6"/><rect x="60" y="156" width="18" height="6"/><rect x="102" y="156" width="18" height="6"/><rect x="126" y="156" width="6" height="6"/><rect x="138" y="156" width="6" height="6"/><rect x="162" y="156" width="6" height="6"/><rect x="186" y="156" width="12" height="6"/><rect x="216" y="156" width="6" height="6"/><rect x="36" y="162" width="6" height="6"/><rect x="66" y="162" width="6" height="6"/><rect x="102" y="162" width="6" height="6"/><rect x="132" y="162" width="18" height="6"/><rect x="156" y="162" width="18" height="6"/><rect x="186" y="162" width="6" height="6"/><rect x="198" y="162" width="6" height="6"/><rect x="24" y="168" width="42" height="6"/><rect x="78" y="168" width="12" height="6"/><rect x="108" y="168" width="18" height="6"/><rect x="144" y="168" width="6" height="6"/><rect x="168" y="168" width="36" height="6"/><rect x="210" y="168" width="6" height="6"/><rect x="72" y="174" width="12" height="6"/><rect x="114" y="174" width="6" height="6"/><rect x="138" y="174" width="18" height="6"/><rect x="168" y="174" width="6" height="6"/><rect x="192" y="174" width="6" height="6"/><rect x="210" y="174" width="12" height="6"/><rect x="24" y="180" width="42" height="6"/><rect x="72" y="180" width="6" height="6"/><rect x="102" y="180" width="24" height="6"/><rect x="132" y="180" width="24" height="6"/><rect x="168" y="180" width="6" height="6"/><rect x="180" y="180" width="6" height="6"/><rect x="192" y="180" width="18" height="6"/><rect x="216" y="180" width="6" height="6"/><rect x="24" y="186" width="6" height="6"/><rect x="60" y="186" width="6" height="6"/><rect x="96" y="186" width="6" height="6"/><rect x="108" y="186" width="6" height="6"/><rect x="120" y="186" width="6" height="6"/><rect x="138" y="186" width="12" height="6"/><rect x="156" y="186" width="18" height="6"/><rect x="192" y="186" width="12" height="6"/><rect x="210" y="186" width="12" height="6"/><rect x="24" y="192" width="6" height="6"/><rect x="36" y="192" width="18" height="6"/><rect x="60" y="192" width="6" height="6"/><rect x="78" y="192" width="6" height="6"/><rect x="90" y="192" width="6" height="6"/><rect x="102" y="192" width="6" height="6"/><rect x="120" y="192" width="18" height="6"/><rect x="144" y="192" width="6" height="6"/><rect x="162" y="192" width="36" height="6"/><rect x="24" y="198" width="6" height="6"/><rect x="36" y="198" width="18" height="6"/><rect x="60" y="198" width="6" height="6"/><rect x="84" y="198" width="12" height="6"/><rect x="102" y="198" width="6" height="6"/><rect x="120" y="198" width="6" height="6"/><rect x="138" y="198" width="12" height="6"/><rect x="168" y="198" width="12" height="6"/><rect x="186" y="198" width="18" height="6"/><rect x="210" y="198" width="12" height="6"/><rect x="24" y="204" width="6" height="6"/><rect x="36" y="204" width="18" height="6"/><rect x="60" y="204" width="6" height="6"/><rect x="72" y="204" width="18" height="6"/><rect x="108" y="204" width="6" height="6"/><rect x="120" y="204" width="36" height="6"/><rect x="162" y="204" width="12" height="6"/><rect x="186" y="204" width="12" height="6"/><rect x="204" y="204" width="18" height="6"/><rect x="24" y="210" width="6" height="6"/><rect x="60" y="210" width="6" height="6"/><rect x="78" y="210" width="6" height="6"/><rect x="90" y="210" width="6" height="6"/><rect x="102" y="210" width="6" height="6"/><rect x="114" y="210" width="12" height="6"/><rect x="132" y="210" width="6" height="6"/><rect x="156" y="210" width="6" height="6"/><rect x="168" y="210" width="6" height="6"/><rect x="186" y="210" width="18" height="6"/><rect x="24" y="216" width="42" height="6"/><rect x="72" y="216" width="6" height="6"/><rect x="84" y="216" width="6" height="6"/><rect x="96" y="216" width="6" height="6"/><rect x="108" y="216" width="6" height="6"/><rect x="120" y="216" width="6" height="6"/><rect x="144" y="216" width="6" height="6"/><rect x="162" y="216" width="12" height="6"/><rect x="186" y="216" width="18" height="6"/><rect x="216" y="216" width="6" height="6"/></g></svg>
