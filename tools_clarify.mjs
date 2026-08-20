@@ -115,7 +115,11 @@ for (const r of rewrites) {
 
      So: whatever live markup the original carried, the replacement must carry too. This
      refuses rather than warns, because the failure mode is invisible. */
-  const LIVE = /class="[^"]*\b(?:wdose|dosev|logstamp)\b[^"]*"|<button|<a\s|data-perkg|data-logevent|\sid="/g;
+  /* Any data-* attribute in a row body is a hook something else writes into — data-perkg for
+     the weight engine, data-logevent for the timeline, data-seccall for the site's security
+     contact. Naming them one at a time meant the guard only knew the hooks that had already
+     been broken once; matching the shape catches the next one too. */
+  const LIVE = /class="[^"]*\b(?:wdose|dosev|logstamp)\b[^"]*"|<button|<a\s|\sdata-[a-z][a-z-]*|\sid="/g;
   const origLive = (m[2].match(LIVE) || []);
   const newLive = ((r.action + (r.why || '')).match(LIVE) || []);
   const lost = origLive.filter(x => !newLive.includes(x));

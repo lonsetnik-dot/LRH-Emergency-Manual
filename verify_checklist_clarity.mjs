@@ -54,7 +54,7 @@ const ACTION_MAX = 110;
        Splitting them into one drug per row is a different, clinical decision about the card.
    Those five are structural. Everything else in /codes/ now reads in one glance. */
 const BUDGET = {
-  '/codes/': 5, '/procedures/': 196, '/trauma/': 143, '/peds/': 112, '/ob-neonatal/': 23,
+  '/codes/': 5, '/procedures/': 196, '/trauma/': 1, '/peds/': 112, '/ob-neonatal/': 2,
 };
 
 const TOOLS = Object.keys(BUDGET);
@@ -85,6 +85,12 @@ const harvest = (pg) => pg.evaluate(() => {
     const whyText = (why && !refOnly) ? why.textContent.trim() : '';
     const clone = span.cloneNode(true);
     [...clone.querySelectorAll('.t-why')].forEach(n => n.remove());
+    /* A button's label is a control, not a line of the step. Several rows carry tap-to-log
+       buttons ("BLOOD STARTED — LOG IT"), and counting their captions as prose made a
+       three-word action measure 40 characters longer than what anyone reads — which would
+       have pushed an editor to shorten the clinical text to pay for a button. What is being
+       measured here is the sentence the clinician reads, so the controls come out. */
+    [...clone.querySelectorAll('button')].forEach(n => n.remove());
     const action = clone.textContent.replace(/\s+/g, ' ').trim();
     const inAction = new Set(norm(action));
     return {
