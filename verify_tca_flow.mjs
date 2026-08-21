@@ -117,6 +117,49 @@ console.log('\n--- 4. what must not be softened');
      /inferior pulmonary ligament/i.test(clam), true);
 }
 
+/* ---- 4b. PREGNANCY — not a stop, and not skippable ----
+   Pregnancy does not stop the code; it adds two people to the room and a
+   procedure with a four-minute clock. It is asked before anyone starts rather
+   than discovered on the eFAST. */
+await open();
+{
+  ck('4b. the arrest window is asked as a question', /minutes ago\?/.test(await pg.textContent('[data-stop="0"]')), true);
+  ck('4b. pregnancy is asked separately from the stop criteria',
+     await pg.locator('[data-preg]').count(), 2);
+  ck('4b. and it is NOT one of the stop criteria',
+     /pregnan/i.test(await pg.evaluate(() => [...document.querySelectorAll('[data-stop]')].map(x => x.textContent).join(' '))), false);
+  await pg.click('[data-preg="1"]'); await pg.waitForTimeout(200);
+  ck('4b. YES activates OB and pediatrics, said as two calls',
+     /ACTIVATE OB AND PEDIATRICS/i.test(await pg.textContent('#screen')), true);
+  ck('4b. and says the resuscitation still runs', await vis('[data-go="proceed"]'), true);
+
+  /* The route that skips the chest entirely still reaches the hysterotomy. A
+     hysterotomy is indicated in maternal arrest whether or not a chest was
+     opened, and there are six ways to reach the signs-of-life question — any
+     one left unrouted would silently drop the procedure. */
+  await tap('proceed');
+  for (const d of ['organize','bleeding','airway','fnt','thor']) await step(d);
+  await step('life');
+  const h = await head();
+  ck('4b. pregnant + no thoracotomy still reaches the hysterotomy', /HYSTEROTOMY/.test(h), true);
+  ck('4b. it is labelled by the condition, not numbered into the sequence',
+     /PREGNANT/.test(h) && !/STEP \d+ · RESUSCITATIVE/.test(h), true);
+  /* It is done for HER. This is the sentence people get backwards. */
+  ck('4b. the card says it is done for the mother',
+     /done for the mother/i.test(await pg.textContent('#screen')), true);
+  ck('4b. and carries the four-minute clock',
+     /by 4 minutes/.test(await pg.textContent('#screen')), true);
+  await step('life');
+  ck('4b. and then continues to signs of life', /SIGNS OF LIFE/.test(await head()), true);
+}
+/* Not pregnant goes straight there — the step must not appear for everyone. */
+await open();
+await pg.click('[data-preg="0"]'); await pg.waitForTimeout(150);
+await tap('proceed');
+for (const d of ['organize','bleeding','airway','fnt','thor']) await step(d);
+await step('life');
+ck('4b. not pregnant goes straight to signs of life', /SIGNS OF LIFE/.test(await head()), true);
+
 /* ---- 5. both endings ---- */
 console.log('\n--- 5. the endings');
 await step('life');
