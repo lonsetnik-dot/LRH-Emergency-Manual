@@ -49,7 +49,141 @@ const GDL = readFileSync('guidelines.js', 'utf8').trim();
 const MARKER_GDL = '/* @guidelines */';
 const SW_TEMPLATE = readFileSync('sw-template.js', 'utf8');
 const SW_REGISTER = readFileSync('sw-register.js', 'utf8').trim();
-const OUT = 'dist';
+/* The output directory, overridable so a suite can build a throwaway copy
+   without touching the dist/ the rest of the run is being served from. */
+const OUT = process.env.BUILD_OUT || 'dist';
+
+/* ---- Transclusion: {{PROC:<tool>#<cNN>|<SECTION>}} -------------------------
+   A tool that walks somebody through a procedure it already has a card for must
+   not re-type that card. The manual had two copies of CLOSE THE HEART, CLAMSHELL
+   EXTENSION and HILAR TWIST — both written the same day, one in procedures/ card
+   02 and one hand-typed into tca/ — which is exactly the drift the shared icon
+   sets and inventory.js exist to prevent, in prose instead of pictures.
+
+   So a live engine names the section it needs and gets the card's own rows:
+
+       l: {{PROC:procedures#c02|CLOSE THE HEART — PICK THE FASTEST THING THAT HOLDS}}
+
+   substitutes to a JSON array of {do, why} — the two tiers of the checklist row
+   (DESIGN-SYSTEM.md §6b) — so the consuming page renders them in its own visual
+   language while the WORDS have exactly one home. Editing the card moves the
+   engine on the next build; there is no second place to remember.
+
+   Live markup does NOT travel. A row's tap-to-log button writes into the CARD's
+   case timeline, and a cross-card link is relative to the card's folder — both
+   are wrong once the row is somewhere else. They are dropped here rather than
+   carried, which is why every transclusion is paired with a link to the full
+   card on the consuming screen: what this mechanism moves is the text.
+
+   It fails the build the way {{SITE.*}} does — a renamed section is a silent
+   content loss otherwise, and the error names the headings that do exist. */
+const PROC_RE = /\{\{PROC:([a-z][a-z0-9-]*)#(c\d+)\|([^}|]+)\}\}/g;
+const ENT = { mdash: '—', ndash: '–', rsquo: '’', lsquo: '‘',
+  ldquo: '“', rdquo: '”', amp: '&', lt: '<', gt: '>', nbsp: ' ',
+  deg: '°', plusmn: '±', ge: '≥', le: '≤', times: '×',
+  middot: '·', rarr: '→', hellip: '…', asymp: '≈',
+  sup2: '²', sup3: '³', frac12: '½', mu: 'µ', quot: '"' };
+const decode = s => s.replace(/&([a-z]+[0-9]*);/gi, (m, n) => ENT[n.toLowerCase()] ?? m)
+  .replace(/&#(\d+);/g, (m, n) => String.fromCharCode(+n));
+const headKey = s => decode(s.replace(/<[^>]+>/g, ' ')).replace(/\s+/g, ' ').trim().toUpperCase();
+
+/* Matching close tag by depth, not the first one — several rows nest the tag
+   they are being scanned for (a <span> inside a row's <span>), and stopping at
+   the first close silently truncates the row. */
+function closeAt(html, tag, from) {
+  const re = new RegExp('<(/?)' + tag + '\\b[^>]*>', 'g');
+  re.lastIndex = from;
+  let depth = 1, m;
+  while (depth > 0 && (m = re.exec(html))) { depth += m[1] ? -1 : 1; if (!depth) return m.index; }
+  return -1;
+}
+
+/* Row text, with the ONE bit of markup that carries meaning kept: <b> is the
+   ACTION tier, and dropping it would flatten the two tiers back into one. */
+function rowText(html) {
+  return html
+    .replace(/<button\b[\s\S]*?<\/button>/gi, " ")      // logs into the CARD’s own case timeline
+    .replace(/<b\b[^>]*>/gi, "\u0001").replace(/<\/b>/gi, "\u0002")
+    .replace(/<br\b[^>]*>/gi, "\u0003")
+    .replace(/<[^>]+>/g, " ")                           // every other tag becomes a gap
+    .replace(/\s+/g, " ")
+    /* Turning tags into spaces leaves a space wherever a tag hugged punctuation
+       — "…now </span>." and "(<b>x</b>)". Close them back up, or every
+       transcluded row reads as if it were typed by somebody in a hurry. */
+    .replace(/\s+([.,;:!?%)’”])/g, "$1")
+    .replace(/([(“])\s+/g, "$1")
+    .replace(/\u0001\s*/g, "<b>").replace(/\s*\u0002/g, "</b>").replace(/\u0003/g, "<br>")
+    .replace(/<b>\s*<\/b>/g, "")
+    .trim();
+}
+
+const procCache = new Map();
+function procSections(tool, card, file) {
+  const key = tool + '#' + card;
+  if (procCache.has(key)) return procCache.get(key);
+  let src;
+  try { src = readFileSync(join(tool, 'index.html'), 'utf8'); }
+  catch { console.error(`build FAILED: ${file} transcludes ${key} but ${tool}/index.html does not exist`); process.exit(1); }
+  const at = src.indexOf(`<article id="${card}"`);
+  if (at < 0) { console.error(`build FAILED: ${file} transcludes ${key} but ${tool}/index.html has no <article id="${card}">`); process.exit(1); }
+  const next = src.indexOf('<article id="', at + 1);
+  const art = src.slice(at, next < 0 ? src.length : next);
+
+  const out = new Map();
+  const D = /<details\b[^>]*>/gi;
+  let d;
+  while ((d = D.exec(art))) {
+    const end = closeAt(art, 'details', d.index + d[0].length);
+    if (end < 0) continue;
+    const inner = art.slice(d.index + d[0].length, end);
+    const sm = inner.match(/<summary\b[^>]*>([\s\S]*?)<\/summary>/i);
+    if (!sm) continue;
+    /* Two spellings of a heading, because two tools spell it differently:
+       procedures/ puts the text straight in the <summary>, ob-neonatal/ wraps
+       it in a <span> with a second <span> of right-aligned meta beside it.
+       Both are registered so a citation reads the same either way. */
+    const first = sm[1].match(/<span\b[^>]*>([\s\S]*?)<\/span>/i);
+    const names = new Set([headKey(sm[1])]);
+    if (first) names.add(headKey(first[1]));
+
+    const rows = [];
+    const L = /<li\b[^>]*>/gi;
+    let li;
+    while ((li = L.exec(inner))) {
+      const lend = closeAt(inner, 'li', li.index + li[0].length);
+      if (lend < 0) continue;
+      let body = inner.slice(li.index + li[0].length, lend);
+      L.lastIndex = lend;
+      const wm = body.match(/<i class="t-why"[^>]*>([\s\S]*?)<\/i>/i);
+      if (wm) body = body.replace(wm[0], '');
+      const doText = rowText(body);
+      if (!doText) continue;
+      rows.push({ do: doText, why: wm ? rowText(wm[1]) : '' });
+    }
+    for (const n of names) if (!out.has(n)) out.set(n, rows);
+  }
+  procCache.set(key, out);
+  return out;
+}
+
+function applyProc(text, file) {
+  return text.replace(PROC_RE, (m, tool, card, heading) => {
+    const sections = procSections(tool, card, file);
+    const want = headKey(heading);
+    const rows = sections.get(want);
+    if (!rows) {
+      console.error(`build FAILED: ${file} transcludes ${tool}#${card} section "${heading.trim()}", which does not exist.`);
+      console.error(`  sections in ${tool}/index.html #${card}: ${[...sections.keys()].map(s => JSON.stringify(s)).join(', ')}`);
+      process.exit(1);
+    }
+    if (!rows.length) {
+      console.error(`build FAILED: ${file} transcludes ${tool}#${card} section "${heading.trim()}" but it has no rows`);
+      process.exit(1);
+    }
+    // Emitted into a <script>: escape < so a row can never close the element.
+    return JSON.stringify(rows).replace(/</g, '\\u003c');
+  });
+}
 
 /* Site identity (site.config.json) — every {{SITE.key}} token in HTML (and the
    webmanifest) is replaced here at build time, AFTER the shared-file markers are
@@ -99,7 +233,7 @@ function walk(src, dst, atRoot) {
     if (statSync(s).isDirectory()) walk(s, d, false);
     else if (name.endsWith('.html')) {
       const html = readFileSync(s, 'utf8');
-      writeFileSync(d, applySite(injectSW(html.split(MARKER).join(CSS).split(MARKER_LIVE).join(CSS_LIVE).split(MARKER_SHELL).join(CSS_SHELL).split(MARKER_INV).join(INV).split(MARKER_ICONS).join(ICONS).split(MARKER_PROCICONS).join(PROCICONS).split(MARKER_SHELLJS).join(SHELLJS).split(MARKER_GDL).join(GDL)), s));
+      writeFileSync(d, applySite(applyProc(injectSW(html.split(MARKER).join(CSS).split(MARKER_LIVE).join(CSS_LIVE).split(MARKER_SHELL).join(CSS_SHELL).split(MARKER_INV).join(INV).split(MARKER_ICONS).join(ICONS).split(MARKER_PROCICONS).join(PROCICONS).split(MARKER_SHELLJS).join(SHELLJS).split(MARKER_GDL).join(GDL)), s), s));
     } else if (name.endsWith('.webmanifest')) {
       writeFileSync(d, applySite(readFileSync(s, 'utf8'), s));
     } else copyFileSync(s, d);
@@ -221,8 +355,8 @@ let leftover = 0;
     else if (name.endsWith('.html') && (readFileSync(p, 'utf8').includes(MARKER) || readFileSync(p, 'utf8').includes(MARKER_LIVE) || readFileSync(p, 'utf8').includes(MARKER_INV) || readFileSync(p, 'utf8').includes(MARKER_ICONS) || readFileSync(p, 'utf8').includes(MARKER_SHELL) || readFileSync(p, 'utf8').includes(MARKER_PROCICONS) || readFileSync(p, 'utf8').includes(MARKER_SHELLJS) || readFileSync(p, 'utf8').includes(MARKER_GDL))) {
       console.error('!! un-injected marker left in', p); leftover++;
     }
-    else if (/\.(html|webmanifest)$/.test(name) && /\{\{SITE\./.test(readFileSync(p, 'utf8'))) {
-      console.error('!! un-substituted {{SITE.*}} token left in', p); leftover++;
+    else if (/\.(html|webmanifest)$/.test(name) && /\{\{(SITE\.|PROC:)/.test(readFileSync(p, 'utf8'))) {
+      console.error('!! un-substituted {{SITE.*}} / {{PROC:...}} token left in', p); leftover++;
     }
   }
 })(OUT);

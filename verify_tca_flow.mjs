@@ -179,7 +179,10 @@ ck('4b. not pregnant goes straight to signs of life', /SIGNS OF LIFE/.test(await
 
 /* ---- 5. both endings ---- */
 console.log('\n--- 5. the endings');
-await step('life');
+/* Already on the signs-of-life screen from the not-pregnant route above. This
+   used to advance to it a second time, which stopped working the moment that
+   route landed here directly — a suite that walks the graph must not also
+   assume where it starts. */
 ck('5. signs of life are listed where the question is asked',
    /cardiac motion/i.test(await pg.textContent('#screen')), true);
 await tap('lifeyes');

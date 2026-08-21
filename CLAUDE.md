@@ -249,6 +249,49 @@ Decorative glyphs are `aria-hidden` with no role or label. That is not a detail 
 a labeled decorative SVG shadows the real figure for any selector or screen
 reader looking for the drawing that carries the meaning.
 
+## Transcluded card sections (`{{PROC:tool#cNN|SECTION}}`)
+
+A live engine that walks somebody through a procedure the manual already has a
+card for **does not re-type that card.** It names the section and gets the card's
+own rows, substituted at build like `{{SITE.*}}`:
+
+```js
+l: {{PROC:procedures#c02|CLOSE THE HEART — PICK THE FASTEST THING THAT HOLDS}}
+```
+
+The token becomes a JSON array of `{do, why}` — the two tiers of the checklist
+row — so the consuming page renders them in **its own** visual language while the
+words have exactly one home. `tca/` is the first consumer; it borrows six
+sections from `procedures/` cards 02, 09, 10 and 15, the hysterotomy from
+`ob-neonatal/` card 10, and the debrief from `conversations/` card 04.
+
+This exists because the second copy already happened. CLAMSHELL EXTENSION, CLOSE
+THE HEART and HILAR TWIST were written into `procedures/` card 02 and then
+hand-typed again into `tca/` **the same day**. Nothing looked wrong; editing
+either one afterwards would have left the other saying the old thing, and no test
+could have told. Four things follow:
+
+- **Live markup does not travel.** A row's tap-to-log button writes into the
+  *card's* case timeline and its cross-links are relative to the card's folder;
+  both are wrong once the row is somewhere else, so they are dropped. What
+  transclusion moves is the text — which is why every transcluded sheet is paired
+  with a link to the full card, and why the glyph beside that link is derived
+  from the link rather than declared next to it.
+- **The build fails on a section that does not resolve**, and the error names the
+  headings that do exist. A renamed section is a silent content loss otherwise.
+- **A card is still the place to edit.** Change the card; the engine moves on the
+  next build. Never "fix" a transcluded row by pasting it into the engine.
+- **`verify_transclusion.mjs` compares the RENDERED text**, page against page —
+  the same thing `verify_procedure_icons.mjs` does for drawings — rather than
+  trusting that both went through the same build. It also builds a probe with a
+  bad token (`BUILD_OUT` sends that build to a temp directory so `dist/` is never
+  disturbed) and asserts it fails.
+
+Finger thoracostomy is the one gap: it is a *row* inside the chest-tube card's
+technique list, not a card, so `tca/`'s sheet for it stays hand-written and says
+so. A card of its own is worth having — three tools name the procedure and none
+of them owns it.
+
 ## The case shell's reveal behavior (`case-shell.js`)
 
 `case-shell.js` is the shared runtime for the case shell, injected at the marker

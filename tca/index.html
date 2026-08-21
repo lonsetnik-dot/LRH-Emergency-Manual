@@ -56,7 +56,19 @@ a{color:var(--blue)}
      display:inline-flex;align-items:center;justify-content:center;font:800 15px var(--sans);color:#fff}
 .stoprow[aria-pressed="true"] .box{border-color:var(--red);background:var(--red)}
 .num{display:flex;gap:10px;font-size:15px;line-height:1.4;margin-top:8px}
-.num b{font-family:var(--mono);font-weight:700;color:var(--red);flex:none}
+.num>b{font-family:var(--mono);font-weight:700;color:var(--red);flex:none}
+/* The WHY tier of a transcluded checklist row (DESIGN-SYSTEM.md §6b). It is
+   shown only inside a procedure sheet — something you open deliberately, with
+   the intention of doing the procedure — and never on the step card, where the
+   only job is the next action. */
+.num i.why{display:block;font-style:normal;color:var(--ink2);font-size:13.5px;line-height:1.45;margin-top:3px}
+/* Shared procedure glyphs (design/ICONOGRAPHY.md). A clinician learns the
+   drawing from the card; the same drawing has to be on the row that opens it,
+   or the two artifacts teach two different things. */
+.pg{width:26px;height:26px;flex:none;color:var(--ink)}
+.pg-lg{width:46px;height:46px;flex:none;color:var(--ink)}
+.linkrow .pg{margin-right:2px}
+.from{font-size:12px;color:var(--ink2);margin-top:2px}
 .pill{background:var(--accent);color:var(--accentInk);border-radius:999px;padding:9px 18px;
       font-size:14px;font-weight:800;letter-spacing:.06em}
 .sheet{position:fixed;inset:0;z-index:60;background:rgba(4,8,14,.72);display:flex;align-items:flex-end}
@@ -112,7 +124,8 @@ a{color:var(--blue)}
    NO PHI (rule 3). The event trail holds times and the labels below — never a
    name, a number, or anything typed about a patient — and RESET clears it.
    ========================================================================== */
-var VERSION='1.0.0', REVIEWED='2026-08-21';
+/* @proc-icons */
+var VERSION='1.1.0', REVIEWED='2026-08-21';
 /* The one localizable clinical number on this screen. */
 var ARREST_WINDOW_MIN=10;
 
@@ -123,84 +136,93 @@ var STOPS=[
   'No surgical support for this'
 ];
 
+/* THE PROCEDURE SHEETS ARE NOT WRITTEN HERE.
+   Every sheet below whose rows come from a PROC transclusion token is the manual's
+   own card, transcluded at build (see build.mjs) — the same words, the same
+   order, the same two tiers, rendered in this tool's language. This tool used
+   to carry a second hand-typed copy of CLOSE THE HEART, CLAMSHELL EXTENSION and
+   HILAR TWIST, written the same day as the card's; editing one would have moved
+   the manual and left the engine saying the old thing, with nothing to catch it.
+
+   `href` points at the full card, because what transclusion moves is the text:
+   the card's tap-to-log buttons and cross-links stay on the card. The glyph is
+   worked out FROM that href (see glyph() below), so a row cannot link to one
+   card and draw another. `icon` is only for a sheet whose card lives outside
+   procedures/, where there is no card-to-glyph map to read. */
 var SHEETS={
-    hyst:{k:'PROCEDURE',t:'Resuscitative hysterotomy',l:[
-      'It is done for the MOTHER. An emptied uterus stops compressing the vena cava and her circulation can work again — the baby is the second reason, not the first.',
-      'The clock is the arrest, not the decision: incision by 4 minutes, baby out by 5. Call the elapsed time out loud every minute.',
-      'Do not move her, do not wait for an OR, do not wait for OB. If she is going to survive it happens where she is arresting.',
-      'Scalpel with a 10 blade is the only item you truly need. Splash prep if it is at hand — it never delays the incision.',
-      'Vertical midline incision umbilicus to pubis, through to peritoneum. Fingers separate the rectus muscles.',
-      'Vertical uterine incision, extended with fingers or bandage scissors. Deliver the baby, three cord clamps — two on the baby side, cut between.',
-      'Continue the maternal resuscitation throughout and after. Delivery is a step in her resuscitation, not the end of it.']},
-    airway:{k:'PROCEDURE',t:'Advanced airway — iGel or intubate',l:[
-      'iGel is the faster choice with one operator and a bloody field. Size by weight, lube the back, insert to hard stop.',
-      'Intubating: suction first. Two large-bore rigid suctions, SALAD technique — suction the airway, then the tube follows the suction catheter down.',
-      'Bougie loaded on the first attempt. Video if the blood lets you see.',
-      'Confirm with waveform capnography. Absent ETCO₂ in arrest is not proof of misplacement — look, and check depth.',
-      'Secure it and hand ventilation to one named person. 10 breaths/min, do not bag hard — you will drop the preload further.']},
-    finger:{k:'PROCEDURE',t:'Finger thoracostomy — bilateral',l:[
-      'Arm abducted. 5th intercostal space, anterior to mid axillary line, at nipple level.',
-      '4–5 cm transverse incision through skin and subcutaneous tissue.',
-      'Blunt dissect over the top of the rib with a clamp, then push through the pleura — expect a rush of air or blood.',
-      'Sweep a finger 360° for lung, clot, and diaphragm. Feel for a hole.',
-      'Do the other side. Both sides, every time, before you conclude the chest is not the problem.',
-      'Massive blood out on either side is a thoracotomy conversation, not a chest tube conversation.']},
-    thor:{k:'PROCEDURE',t:'Resuscitative thoracotomy',l:[
-      'Indication: penetrating torso injury with signs of life in the last ~15 min, or blunt arrest with witnessed loss under ~10 min and a surgeon.',
-      'Left anterolateral incision in the 5th intercostal space, above rib 5, from sternum to the table.',
-      'Cut through intercostals with scissors, spread with a rib spreader or Finochietto — handle down.',
-      'Open the pericardium longitudinally, anterior to the phrenic nerve. Evacuate clot.',
-      'Deliver the heart. Look at every surface, including the back.',
-      'Descending aorta cross-clamp only if you need it for abdominal or pelvic bleeding — it buys minutes, not hours.']},
-    cardiac:{k:'PROCEDURE',t:'Close the heart',l:[
-      'Finger first. Direct pressure on the hole stops the bleeding while you set up.',
-      'Foley — 16 Fr through the wound, balloon up with 5–10 mL saline, gentle traction, clamp the port. Do not pull it through the myocardium. Good for ventricular holes.',
-      'Skin stapler — fastest for a linear ventricular laceration in a bleeding field. Staples across the defect, perpendicular.',
-      'Pledgeted suture — 2-0 or 3-0 non-absorbable, horizontal mattress over pledgets. The definitive answer for atrium and for anything near a coronary.',
-      'Near a coronary: pass the suture underneath the vessel, never through it.',
-      'Atrium: a side-biting clamp or a purse string is often quicker than pledgets.']},
-    hilar:{k:'PROCEDURE',t:'Hilar twist — pulmonary laceration',l:[
-      'For massive unilateral pulmonary haemorrhage or air embolism from a deep lung injury.',
-      'Divide the inferior pulmonary ligament first — the lung will not rotate without it.',
-      'Rotate the lung 180° anteriorly and superiorly around the hilum. Clockwise on the right, anticlockwise on the left.',
-      'This kinks the hilar vessels and bronchus — bleeding stops, ventilation to that lung stops.',
-      'Alternative: clamp the whole hilum with a vascular clamp, or compress it in your hand.',
-      'This is a bridge to the OR. Note the time — the lung is ischaemic from now.']},
-    post:{k:'REFERENCE',t:'Post-ROSC care after TCA',l:[
-      'Keep the blood going. Ongoing transfusion, 1:1:1, warm it.',
-      'Correct the lethal triad — temperature, calcium, pH. Check ionised calcium after every few units.',
-      'Permissive hypotension until surgical control, unless there is a head injury.',
-      'TXA if within 3 hours and not already given.',
-      'Definitive imaging only if it does not delay the OR.',
-      'Sedate and paralyse if needed. Reassess the chest and the thoracostomies before you move.']},
-    tq:{k:'PROCEDURE',t:'Tourniquet application',l:[
-      'High and tight if the wound is a mess, otherwise 5–8 cm proximal of the laceration — never over a joint.',
-      'Wide windlass device over clothing is fine. Skin contact is not required.',
-      'Twist the windlass until the bleeding stops and the distal pulse is gone. Pain means it is probably working.',
-      'Lock the windlass, write the time on the strap, and say it out loud for the record.',
-      'Still bleeding? Second tourniquet immediately proximal to the first.',
-      'Do not loosen it to check. It comes off in the OR.']},
-    binder:{k:'PROCEDURE',t:'Pelvic binder application',l:[
-      'Center on the greater trochanters, not the iliac crests. Too high does nothing.',
-      'Log roll or slide it under — one movement, then stop moving the pelvis.',
-      'Pull both ends until snug and fasten. You want reduction, not compression injury.',
-      'Empty the pockets and remove hard objects underneath first.',
-      'Reassess for external bleeding after it is on, and check the film if you have one.',
-      'It is a temporary measure for an unstable pelvis in a bleeding patient — the answer is still blood and a surgeon.']},
-    debrief:{k:'AFTER',t:'Team debrief',l:[
-      'Do it now, in the room, before anyone leaves. Five minutes is enough.',
-      'Name what happened, plainly, with the timeline you just logged.',
-      'What went well — say it specifically and by role.',
-      'What was hard, or slow, or missing — equipment, access, blood, communication.',
-      'One thing we change next time. Only one, and give it an owner.',
-      'Check on the people in the room. Name that this was a hard one and point to the support that exists.',
-      'Send the event log and anything that needs fixing to the department for follow-up.']},
-    or:{k:'DISPOSITION',t:'Prepare for OR or transfer',l:[
-      'Call the surgeon back and state the injury, what you did, and what is holding.',
-      'Blood travels with the patient. Confirm units, warmer, and a pump.',
-      'Cover the open chest, keep the retractor in, do not close.',
-      'One named person owns the airway and one owns the transfusion for the move.',
-      'If transferring out: accepting surgeon on the phone, transport with blood, and send the record you just built.']}};
+    hyst:{k:'PROCEDURE',t:'Resuscitative hysterotomy',icon:'hyst',
+      from:'OB &amp; Neonatal · card 10',href:'../ob-neonatal/?from=tca#c10',
+      l:[].concat({{PROC:ob-neonatal#c10|1 · IMMEDIATE (WITH CPR)}},
+                  {{PROC:ob-neonatal#c10|2 · THE INCISION}},
+                  {{PROC:ob-neonatal#c10|3 · DELIVERY & MATERNAL CARE}})},
+    airway:{k:'PROCEDURE',t:'SALAD — intubating a bloody airway',
+      from:'Procedures · card 15',href:'../procedures/?from=tca#c15',
+      l:{{PROC:procedures#c15|THE SEQUENCE}}},
+    /* FINGER THORACOSTOMY HAS NO CARD OF ITS OWN. It is one row inside the
+       chest-tube card's technique list ("in arrest this IS the complete
+       procedure"), so there is no section to transclude and this sheet stays
+       hand-written. The link goes to the chest-tube card, which is where a
+       clinician would look. A finger-thoracostomy card is worth having — three
+       tools name the procedure and none of them owns it — but writing one is a
+       clinical task, not a wiring task. */
+    finger:{k:'PROCEDURE',t:'Finger thoracostomy — bilateral',
+      from:'No card of its own — see Chest tube · card 01',href:'../procedures/?from=tca#c01',
+      l:[{do:'<b>Arm abducted. 5th intercostal space, anterior to mid axillary line, at nipple level.</b>',why:''},
+         {do:'<b>4–5 cm transverse incision through skin and subcutaneous tissue.</b>',why:''},
+         {do:'<b>Blunt dissect over the top of the rib, then push through the pleura.</b>',why:'Expect a rush of air or blood. Over the top of the rib keeps you off the neurovascular bundle.'},
+         {do:'<b>Sweep a finger 360° for lung, clot and diaphragm. Feel for a hole.</b>',why:''},
+         {do:'<b>Do the other side. Both sides, every time.</b>',why:'Before you conclude the chest is not the problem.'},
+         {do:'<b>Massive blood out on either side is a thoracotomy conversation.</b>',why:'Not a chest tube conversation — a chest tube does not fix the thing that is bleeding.'}]},
+    thor:{k:'PROCEDURE',t:'Resuscitative thoracotomy',
+      from:'Procedures · card 02',href:'../procedures/?from=tca#c02',
+      l:{{PROC:procedures#c02|SEQUENCE — STEP BY STEP}}},
+    clam:{k:'PROCEDURE',t:'Clamshell extension',
+      from:'Procedures · card 02',href:'../procedures/?from=tca#c02',
+      l:{{PROC:procedures#c02|CLAMSHELL EXTENSION — WHEN THE RIGHT CHEST IS BLEEDING}}},
+    cardiac:{k:'PROCEDURE',t:'Close the heart',
+      from:'Procedures · card 02',href:'../procedures/?from=tca#c02',
+      l:{{PROC:procedures#c02|CLOSE THE HEART — PICK THE FASTEST THING THAT HOLDS}}},
+    hilar:{k:'PROCEDURE',t:'Hilar twist — pulmonary laceration',
+      from:'Procedures · card 02',href:'../procedures/?from=tca#c02',
+      l:{{PROC:procedures#c02|HILAR TWIST — MASSIVE UNILATERAL LUNG BLEEDING}}},
+    tq:{k:'PROCEDURE',t:'Tourniquet application',
+      from:'Procedures · card 10',href:'../procedures/?from=tca#c10',
+      l:{{PROC:procedures#c10|TECHNIQUE — STEP BY STEP}}},
+    binder:{k:'PROCEDURE',t:'Pelvic binder application',
+      from:'Procedures · card 09',href:'../procedures/?from=tca#c09',
+      l:{{PROC:procedures#c09|TECHNIQUE — STEP BY STEP}}},
+    /* The debrief had its own five bullets here. It should not: the manual has
+       one debrief, in conversations/ card 04, and a team that debriefs a TCA the
+       same way it debriefs everything else is the point of having one. */
+    debrief:{k:'AFTER',t:'Team debrief',from:'Conversations · card 04',
+      href:'../conversations/?from=tca#c04',
+      l:[].concat({{PROC:conversations#c04|2 · STATE THE BASIC ASSUMPTION}},
+                  {{PROC:conversations#c04|3 · REVIEW THE CASE — WHAT DID YOU SEE?}},
+                  {{PROC:conversations#c04|4 · PLUS / DELTA / PLUS — ENABLED & INHIBITED}})},
+    /* No card owns "what to do in the ten minutes after a traumatic arrest gets
+       a pulse back" or "how this patient leaves the room", so these two stay
+       written here rather than pointing somewhere that does not exist. */
+    post:{k:'REFERENCE',t:'Post-ROSC care after TCA',
+      l:[{do:'<b>Keep the blood going.</b>',why:'Ongoing transfusion, 1:1:1, warmed.'},
+         {do:'<b>Correct the lethal triad — temperature, calcium, pH.</b>',why:'Check ionized calcium after every few units.'},
+         {do:'<b>Permissive hypotension until surgical control</b>, unless there is a head injury.',why:''},
+         {do:'<b>TXA if within 3 hours and not already given.</b>',why:''},
+         {do:'<b>Definitive imaging only if it does not delay the OR.</b>',why:''},
+         {do:'<b>Reassess the chest and the thoracostomies before you move.</b>',why:'Sedate and paralyze as needed for the move.'}]},
+    or:{k:'DISPOSITION',t:'Prepare for OR or transfer',
+      l:[{do:'<b>Call the surgeon back</b> — the injury, what you did, and what is holding.',why:''},
+         {do:'<b>Blood travels with the patient.</b>',why:'Confirm units, warmer and a pump before you leave the room.'},
+         {do:'<b>Cover the open chest, keep the retractor in, do not close.</b>',why:''},
+         {do:'<b>One named person owns the airway, one owns the transfusion</b>, for the move.',why:''},
+         {do:'<b>Transferring out: accepting surgeon on the phone, transport with blood.</b>',why:'Send the record you just built with them.'}]}};
+
+/* WHAT THE HYSTEROTOMY STEP CARD SHOWS: the cutting, sections 2 and 3 of the
+   card. Section 1 is the setup a TCA team is already doing — roles, uterine
+   displacement, the clock — and putting all fifteen rows on the operating card
+   is exactly the wall of text this manual exists to avoid. All three sections
+   are in the sheet, one tap away, and there is still only one source. */
+var HYST_STEPS=[].concat({{PROC:ob-neonatal#c10|2 · THE INCISION}},
+                         {{PROC:ob-neonatal#c10|3 · DELIVERY & MATERNAL CARE}});
 
 var S={phase:'decide',stops:[false,false,false,false],start:null,step:'say',
        events:[],xDone:false,sheet:null,resetArm:false,stopAt:null,lifeAt:null,pregnant:null,hystDone:false,theme:'dark'};
@@ -237,8 +259,36 @@ function numbered(list){
   var h=''; for(var i=0;i<list.length;i++){ h+='<div class="num"><b>'+(i+1)+'</b><span>'+list[i]+'</span></div>'; }
   return h;
 }
+/* A transcluded row has two tiers. On a STEP CARD only the action is drawn:
+   the card is read one-handed by somebody who has already decided to do this,
+   and the reasoning is what makes a screen unreadable in a code. The WHY is
+   there in the sheet, which is opened on purpose. */
+function rows(list,withWhy){
+  var h='';
+  for(var i=0;i<list.length;i++){
+    h+='<div class="num"><b>'+(i+1)+'</b><span>'+list[i].do+
+       (withWhy&&list[i].why?'<i class="why">'+list[i].why+'</i>':'')+'</span></div>';
+  }
+  return h;
+}
+/* The glyph for a sheet, DERIVED FROM THE LINK. A sheet that opens a procedures
+   card shows that card's own glyph (design/ICONOGRAPHY.md), worked out from the
+   href rather than declared beside it \u2014 there is then no second place to keep in
+   step, and no way to point a row at one card while drawing another. Only a
+   sheet whose card lives elsewhere names an icon; a sheet with neither \u2014 the two
+   TCA-only reference sheets \u2014 gets none. */
+function glyph(id,cls){
+  var sh=SHEETS[id]; if(!sh) return '';
+  var m=(sh.href||'').match(/\/procedures\/[^#]*#(c\d+)$/);
+  var key = (m && PROC_ICONS.forCard(m[1])) || sh.icon;
+  if(!key) return '';
+  var svg = PROC_ICONS.glyph(key);
+  return svg ? svg.replace('<svg ','<svg class="'+(cls||'pg')+'" ') : '';
+}
 function linkRow(id,label){
-  return '<button class="linkrow" type="button" data-sheet="'+id+'"><span>'+label+'</span><span style="color:var(--ink2)">\u203a</span></button>';
+  return '<button class="linkrow" type="button" data-sheet="'+id+'">'+
+    '<span style="display:flex;align-items:center;gap:10px;min-width:0">'+glyph(id)+'<span>'+label+'</span></span>'+
+    '<span style="color:var(--ink2)">\u203a</span></button>';
 }
 function stepCard(color,n,head,title,sub,body,actions){
   return '<div class="card" style="border-color:var('+color+')">'+
@@ -379,38 +429,28 @@ function renderStep(){
       bigBtn('--red','YES \u2014 EXTEND TO CLAMSHELL','Cross the sternum, open the right chest','clam|Extending to clamshell')+
       '<button class="alt" type="button" data-step="life" data-note="Right chest dry">NO \u2014 RIGHT CHEST DRY</button>');
   } else if(st==='clam'){
+    /* The steps on screen ARE procedures/ card 02's clamshell and hilar-twist
+       sections, transcluded \u2014 actions only here, reasoning one tap away in the
+       sheet. Nothing on this screen is a second copy to keep in step. */
     h=stepCard('--red','9','CLAMSHELL THORACOTOMY','Extend across \u2014 open both chests','',
-      numbered(['Mirror the incision on the right \u2014 same 5th ICS, sternum to the table',
-                'Divide the sternum transversely with heavy shears or a Lebsche knife',
-                'Lift the anterior chest wall up like a book \u2014 both pleural cavities open',
-                'Find and clamp both internal mammary arteries \u2014 they bleed once you have a pressure',
-                'Pack, then find the source: hilum, great vessels, lung'])+
+      rows(SHEETS.clam.l,false)+
       '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line)">'+
         '<div class="eyebrow" style="color:var(--ink2)">HILAR TWIST \u2014 RIGHT LUNG</div>'+
-        numbered(['Divide the inferior pulmonary ligament \u2014 the lung will not rotate without it',
-                  'Rotate the lung 180\u00b0 anteriorly and superiorly around the hilum \u2014 clockwise on the right',
-                  'Bleeding and ventilation to that lung both stop \u2014 note the time, it is ischaemic from now',
-                  'Alternative: clamp the whole hilum, or compress it in your hand'])+
-      '</div>'+linkRow('hilar','Full hilar twist card'),
+        rows(SHEETS.hilar.l,false)+
+      '</div>'+linkRow('clam','Full clamshell card')+linkRow('hilar','Full hilar twist card'),
       '<button class="big" style="background:var(--accent)" data-step="life" data-note="Checking for signs of life">CONTROLLED \u2014 LOG IT</button>'+
       '<button class="quiet" type="button" data-step="life" data-note="Checking for signs of life">NOTHING REPAIRABLE</button>');
   } else if(st==='hyst'){
-    /* Content matches ob-neonatal card 10 — the same clock, the same incision,
-       the same three cord clamps — so the two artifacts do not drift. The full
-       card is one tap away for anything this screen does not carry. */
-    /* Deliberately NOT numbered into the main sequence. It only appears when
+    /* The steps ARE ob-neonatal card 10, transcluded — the same clock, the same
+       incision, the same three cord clamps, because they are literally the same
+       rows. They cannot drift; there is only one copy.
+       Deliberately NOT numbered into the main sequence. It only appears when
        she is pregnant, so numbering it would make "step 10" mean different
        things for different patients — and the numbers are what somebody calls
        across a room. It is labelled by the condition that summons it. */
     h=stepCard('--amber','\u2014 PREGNANT','RESUSCITATIVE HYSTEROTOMY','Incision by 4 minutes of arrest, baby out by 5',
       'It is done for the mother. Emptying the uterus is what lets her circulation work \u2014 the baby is the second reason, not the first.',
-      numbered(['Scalpel, 10 blade \u2014 the only truly essential item. Splash prep never delays the incision',
-                'Vertical midline incision, umbilicus to pubis, through to the peritoneum',
-                'Fingers separate the rectus muscles to expose the uterus',
-                'Vertical uterine incision \u2014 extend with fingers or bandage scissors',
-                'Deliver the baby; three cord clamps, two on the baby side, cut between',
-                'Hand the baby to the pediatric team \u2014 they are already here'])+
-      linkRow('hyst','Full resuscitative hysterotomy card'),
+      rows(HYST_STEPS,false)+linkRow('hyst','Full resuscitative hysterotomy card'),
       '<button class="big" style="background:var(--amber);color:#141E2B" data-step="life" data-note="Hysterotomy \u2014 baby delivered">DELIVERED \u2014 LOG IT</button>');
   } else if(st==='life'){
     h=stepCard('--blue','10','DO YOU HAVE SIGNS OF LIFE?','','',
@@ -460,11 +500,21 @@ function renderTrail(){
 function renderSheet(){
   if(!S.sheet){ $('sheetwrap').innerHTML=''; return; }
   var sh=SHEETS[S.sheet]; if(!sh){ $('sheetwrap').innerHTML=''; return; }
+  var g=glyph(S.sheet,'pg-lg');
   var h='<div class="sheet" data-close><div class="sheetin">'+
-    '<div class="eyebrow" style="color:var(--ink2)">'+sh.k+'</div>'+
-    '<div class="title" style="font-size:19px">'+sh.t+'</div>';
-  for(var i=0;i<sh.l.length;i++){ h+='<div class="num"><b>'+(i+1)+'</b><span>'+sh.l[i]+'</span></div>'; }
-  h+='<button class="quiet" type="button" data-close style="margin-top:16px;min-height:56px">CLOSE</button></div></div>';
+    '<div style="display:flex;align-items:center;gap:12px">'+g+
+      '<div style="min-width:0">'+
+        '<div class="eyebrow" style="color:var(--ink2)">'+sh.k+'</div>'+
+        '<div class="title" style="font-size:19px;margin:2px 0 0">'+sh.t+'</div>'+
+        /* WHERE THIS TEXT LIVES. These rows are the card's, not this tool's, and
+           saying so is what makes the link below an obvious next tap rather than
+           a duplicate. The two sheets with no card say nothing here. */
+        (sh.from?'<div class="from">'+sh.from+'</div>':'')+
+      '</div></div>'+
+    rows(sh.l,true);
+  if(sh.href) h+='<a class="linkrow" href="'+sh.href+'" style="margin-top:16px">'+
+    '<span>Open the full card</span><span style="color:var(--ink2)">›</span></a>';
+  h+='<button class="quiet" type="button" data-close style="margin-top:10px;min-height:56px">CLOSE</button></div></div>';
   $('sheetwrap').innerHTML=h;
 }
 
@@ -527,6 +577,11 @@ $('resetbtn').addEventListener('click', function(){
      sheet:null,resetArm:false,stopAt:null,lifeAt:null,pregnant:null,hystDone:false,theme:S.theme};
   paint(); toTop();
 });
+
+/* Config-driven verification (CLAUDE.md, issue #117): the sheet table names
+   which card each screen borrows from, so the suite asserts against THAT rather
+   than against a second list of card ids typed into a test. */
+try{ window.SHEETS = SHEETS; }catch(e){}
 
 setInterval(function(){ if(S.phase==='run') $('clock').textContent=clock(); }, 500);
 paint();
