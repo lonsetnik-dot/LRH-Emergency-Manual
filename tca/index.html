@@ -14,23 +14,23 @@
    arrest window in the first stop criterion) and PERFUSING_YES / PERFUSING_NO
    (what counts as a reason to continue the resuscitation). */
 :root{--bg:#0D1420;--card:#161F2E;--card2:#1D2A3C;--ink:#EAF0F7;--ink2:#8FA0B5;
-      --line:rgba(255,255,255,.10);--accent:#2FA372;--accentInk:#fff;--red:#E5484D;
+      --line:rgba(255,255,255,.10);--accent:#2FA372;--accentInk:#fff;--red:#E5484D; --red-tx:#E96569; --amber-tx:#F0B429; --blue-tx:#5492DC; --green-tx:#3DA35D; --gray-tx:#8291A3; --teal-tx:#3AA6A6;
       --gray:#5C6B7E;--blue:#4C8DDA;--green:#3DA35D;--amber:#F0B429;
       --sans:'Source Sans 3',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
       --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace}
 body[data-theme="light"]{--bg:#EFF2F5;--card:#FFFFFF;--card2:#F4F6F9;--ink:#141E2B;--ink2:#5A6A7D;
-      --line:rgba(15,35,60,.13);--accent:#00693E;--red:#C63238;--gray:#6B7A8D;--blue:#2F6FB5;
+      --line:rgba(15,35,60,.13);--accent:#00693E;--red:#C63238; --red-tx:#C63238; --amber-tx:#906710; --blue-tx:#2F6FB5; --green-tx:#1F7E49; --gray-tx:#626F81; --teal-tx:#1E7A7A;--gray:#6B7A8D;--blue:#2F6FB5;
       --green:#1F7F49;--amber:#B07E13}
 *{box-sizing:border-box}
 html,body{margin:0;padding:0;background:var(--bg)}
 body{color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
-a{color:var(--blue)}
+a{color:var(--blue-tx)}
 @keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
 .wrap{min-height:100vh;background:var(--bg)}
 .inner{max-width:680px;margin:0 auto;padding:0 14px 40px}
 .bar{position:sticky;top:0;z-index:30;background:var(--bg);padding:12px 0 10px;
      display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
-.kick{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--red)}
+.kick{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--red-tx)}
 .clock{font-family:var(--mono);font-size:26px;font-weight:700}
 .dot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:blink 1.4s infinite;display:inline-block}
 .phase{font-size:12px;color:var(--ink2);font-weight:600}
@@ -57,7 +57,7 @@ a{color:var(--blue)}
      display:inline-flex;align-items:center;justify-content:center;font:800 15px var(--sans);color:#fff}
 .stoprow[aria-pressed="true"] .box{border-color:var(--red);background:var(--red)}
 .num{display:flex;gap:10px;font-size:15px;line-height:1.4;margin-top:8px}
-.num>b{font-family:var(--mono);font-weight:700;color:var(--red);flex:none}
+.num>b{font-family:var(--mono);font-weight:700;color:var(--red-tx);flex:none}
 /* The WHY tier of a transcluded checklist row (DESIGN-SYSTEM.md §6b). It is
    shown only inside a procedure sheet — something you open deliberately, with
    the intention of doing the procedure — and never on the step card, where the
@@ -87,6 +87,7 @@ a{color:var(--blue)}
 </style>
 </head>
 <body data-theme="dark">
+<script>/* @theme-boot */</script>
 <div class="wrap"><div class="inner">
 
 <div class="bar">
@@ -98,7 +99,6 @@ a{color:var(--blue)}
       <span class="phase" id="phase">DECIDE</span>
     </div>
   </div>
-  <button class="chip" id="themebtn" type="button">LIGHT</button>
   <button class="chip" id="resetbtn" type="button">RESET</button>
 </div>
 
@@ -242,7 +242,7 @@ var HYST_STEPS=[].concat({{PROC:ob-neonatal#c10|2 · THE INCISION}},
                          {{PROC:ob-neonatal#c10|3 · DELIVERY & MATERNAL CARE}});
 
 var S={phase:'decide',stops:[false,false,false,false],start:null,step:'say',
-       events:[],xDone:false,sheet:null,resetArm:false,stopAt:null,lifeAt:null,pregnant:null,hystDone:false,theme:'dark'};
+       events:[],xDone:false,sheet:null,resetArm:false,stopAt:null,lifeAt:null,pregnant:null,hystDone:false,theme:(document.body.dataset.theme==='light'?'light':'dark')};
 
 function $(id){ return document.getElementById(id); }
 function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -349,7 +349,7 @@ function renderDecide(){
         (S.pregnant===false?'border:none;background:var(--gray);color:#fff':'border:1px solid var(--line);background:var(--card2);color:var(--ink)')+'">NO</button>'+
     '</div>'+
     (S.pregnant ? '<div style="margin-top:10px;border:2px solid var(--amber);border-radius:12px;padding:12px;background:rgba(240,180,41,.10)">'+
-      '<div class="eyebrow" style="color:var(--amber)">ACTIVATE OB AND PEDIATRICS NOW</div>'+
+      '<div class="eyebrow" style="color:var(--amber-tx)">ACTIVATE OB AND PEDIATRICS NOW</div>'+
       '<div style="font-size:14.5px;line-height:1.5;margin-top:6px">Say it as two separate calls. '+
       'The resuscitation below runs unchanged, and it ends with <b>resuscitative hysterotomy</b> \u2014 '+
       'incision by 4 minutes of arrest, baby out by 5.</div></div>' : '')+
@@ -392,7 +392,7 @@ function renderStep(){
       '<button class="big" style="background:var(--accent)" data-step="bleeding" data-note="Organized">GET ORGANIZED</button></div>';
   } else if(st==='bleeding'){
     h='<div class="card" style="border-color:var(--red)">'+
-      '<div class="eyebrow" style="color:var(--red)">STEP 3 \u00b7 CONTROL EXTERNAL BLEEDING</div>'+
+      '<div class="eyebrow" style="color:var(--red-tx)">STEP 3 \u00b7 CONTROL EXTERNAL BLEEDING</div>'+
       '<div class="title">Stop what you can see</div>'+
       '<div class="sub">Pressure, tourniquet, pelvic binder. Blood on the floor is blood you can still keep.</div>'+
       '<button class="linkrow" type="button" data-x style="border-color:'+(S.xDone?'var(--red)':'var(--line)')+'">'+
@@ -482,10 +482,10 @@ function renderStep(){
        that looks like life on a monitor and is not a reason to keep cutting. */
     var yes='', no='';
     for(var y=0;y<PERFUSING_YES.length;y++)
-      yes+='<div style="display:flex;gap:9px;margin-top:7px"><span style="color:var(--green);font-weight:800">\u2713</span>'+
+      yes+='<div style="display:flex;gap:9px;margin-top:7px"><span style="color:var(--green-tx);font-weight:800">\u2713</span>'+
            '<span>'+PERFUSING_YES[y]+'</span></div>';
     for(var n=0;n<PERFUSING_NO.length;n++)
-      no+='<div style="display:flex;gap:9px;margin-top:7px"><span style="color:var(--gray);font-weight:800">\u2715</span>'+
+      no+='<div style="display:flex;gap:9px;margin-top:7px"><span style="color:var(--gray-tx);font-weight:800">\u2715</span>'+
           '<span style="color:var(--ink2)">'+PERFUSING_NO[n]+'</span></div>';
     h=stepCard('--blue','10','KEEP GOING?','Is there organized, perfusing cardiac activity?','',
       '<div style="font-size:14.5px;line-height:1.5;margin:10px 0 0">'+yes+'</div>'+
@@ -500,7 +500,7 @@ function renderStep(){
 
 function renderLive(){
   return '<div class="card" style="border-color:var(--green)">'+
-    '<div class="eyebrow" style="color:var(--green)">PERFUSING \u2014 KEEP GOING</div>'+
+    '<div class="eyebrow" style="color:var(--green-tx)">PERFUSING \u2014 KEEP GOING</div>'+
     '<div class="title">Confirmed at '+S.lifeAt+'</div>'+
     '<button class="linkrow" type="button" data-log="TXA \u2014 1 g IV over 10 min, then 1 g over 8 h">'+
       '<span>TXA \u2014 1 g IV over 10 min, then 1 g over 8 h</span><span style="color:var(--ink2)">LOG</span></button>'+
@@ -514,7 +514,7 @@ function renderLive(){
 
 function renderStopped(){
   return '<div class="card" style="border-color:var(--gray)">'+
-    '<div class="eyebrow" style="color:var(--gray)">RESUSCITATION STOPPED</div>'+
+    '<div class="eyebrow" style="color:var(--gray-tx)">RESUSCITATION STOPPED</div>'+
     '<div class="title">Time called: '+S.stopAt+'</div>'+
     '<div style="font-size:14.5px;line-height:1.7;margin-top:10px">'+
       '\u00b7 Say it out loud to the room, and thank them by name<br>'+
@@ -558,7 +558,6 @@ function paint(){
   $('clock').textContent=clock();
   $('dot').style.display = S.phase==='run' ? '' : 'none';
   $('phase').textContent = S.phase==='decide'?'DECIDE':(S.phase==='run'?'RESUSCITATING':(S.phase==='live'?'PERFUSING':'STOPPED'));
-  $('themebtn').textContent = S.theme==='dark'?'LIGHT':'DARK';
   $('resetbtn').textContent = S.resetArm?'SURE?':'RESET';
   $('resetbtn').style.background = S.resetArm?'var(--red)':'var(--card)';
   $('resetbtn').style.color = S.resetArm?'#fff':'var(--ink2)';
@@ -604,7 +603,6 @@ document.addEventListener('click', function(e){
   if(a==='back'){ S.phase='run'; S.step='life'; paint(); toTop(); return; }
 });
 
-$('themebtn').addEventListener('click', function(){ S.theme = S.theme==='dark'?'light':'dark'; paint(); });
 var ra;
 $('resetbtn').addEventListener('click', function(){
   if(!S.resetArm){ S.resetArm=true; paint(); clearTimeout(ra); ra=setTimeout(function(){ S.resetArm=false; paint(); },2500); return; }

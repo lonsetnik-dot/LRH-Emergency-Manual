@@ -28,12 +28,40 @@
 :root{
   --bg:#0D1420; --card:#161F2E; --card2:#1D2A3C; --ink:#EAF0F7; --ink2:#8FA0B5;
   --line:rgba(255,255,255,.10);
-  --red:#E5484D; --gray:#5C6B7E; --blue:#4C8DDA; --green:#3DA35D; --amber:#F0B429;
+  --red:#E5484D; --gray:#5C6B7E; --blue:#4C8DDA; --green:#3DA35D; --amber:#F0B429; --teal:#3AA6A6;
+  /* -tx = the same meaning as TEXT on a themed ground; the bare token stays the
+     FILL behind white text. One value cannot clear 4.5:1 in both roles. */
+  --red-tx:#E96569; --gray-tx:#8291A3; --blue-tx:#5492DC; --green-tx:#3DA35D;
+  --amber-tx:#F0B429; --teal-tx:#3AA6A6;
+  --sev-caution:#8a6d1f; --note-bg:rgba(240,180,41,.12); --note-tx:#f0cf7a;
+    --sev-ok:#1a6b45; --sev-teal:#1a6a6a;
   --purple:#9B7BD4; /* the shell's drug-action slot (SHELL.md layer 6); promoted from tca's local block */
   --accent:#2FA372; --accentInk:#fff;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
   --mono:ui-monospace,"SF Mono",Menlo,Consolas,"Roboto Mono",monospace;
 }
+/* ---- Light theme for the live engines.
+   These five (airway, arrest, dystocia, neonatal, pph) shipped dark-only: the
+   sheet had a single :root and no light block, so the manual-wide LIGHT/DARK
+   choice set data-theme on <body> and nothing repainted. They are already
+   token-driven (arrest alone resolves 204 var() references against 26 literals),
+   so the choice is simply a matter of giving those tokens a light value —
+   the same values design-system.css uses, so an engine and a card side by side
+   agree. ---- */
+body[data-theme="light"]{
+  --bg:#EFF2F5; --card:#FFFFFF; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D;
+  --line:rgba(15,35,60,.13);
+  --red:#C63238; --gray:#6B7A8D; --blue:#2F6FB5; --green:#1F7F49; --amber:#B07E13; --teal:#1F7E7E;
+  --red-tx:#C63238; --gray-tx:#626F81; --blue-tx:#2F6FB5; --green-tx:#1F7E49;
+  --amber-tx:#906710; --teal-tx:#1E7A7A;
+  --purple:#6C4FA3; --accent:#00693E; --accentInk:#fff;
+  --sev-caution:#8a6d1f; --note-bg:#fdf3cf; --note-tx:#6b5410;
+}
+  /* Bare links had no rule at all, so any link a card author did not style
+     fell back to the UA default #0000EE — 1.8:1 on --card in dark. Component
+     rules (.lrh-row, .logit, .shelltele) all set their own colour and win on
+     specificity, so this only catches the ones nobody styled. */
+  a{color:var(--blue-tx)}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
 button,input{font-family:inherit}
@@ -142,12 +170,12 @@ article [data-log],article [data-logevent],[data-log],[data-logevent]{border-rad
     font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
     font-size:11.5px; font-weight:700; letter-spacing:0.06em; text-decoration:none}
   .logit:hover,.logit:focus-visible{border-color:var(--accent); color:var(--accent)}
-  .logit.logged{background:rgba(61,163,93,.16); border-color:var(--green); color:var(--green)}
+  .logit.logged{background:rgba(61,163,93,.16); border-color:var(--green); color:var(--green-tx)}
   .logit .logstamp{font-weight:800}
   /* A critical step's pill reads red until it is recorded, because the missing
      time on these is the one a debrief asks about. */
-  .logit.crit{border-color:var(--red); color:var(--red)}
-  .logit.crit.logged{border-color:var(--green); color:var(--green)}
+  .logit.crit{border-color:var(--red); color:var(--red-tx)}
+  .logit.crit.logged{border-color:var(--green); color:var(--green-tx)}
   @media print{ .logit{display:none} }
 
 /* ===== case shell (SHELL.md) =====================================================
@@ -171,13 +199,13 @@ article [data-log],article [data-logevent],[data-log],[data-logevent]{border-rad
 .shellpilltag{color:#F0899A;font:700 11px var(--mono);letter-spacing:.06em}
 .shellmore{min-width:44px;min-height:44px;background:none;border:none;color:var(--ink);font-size:22px;cursor:pointer;border-radius:10px}
 .shellbar .ghost{min-height:44px;display:inline-flex;align-items:center}
-.shellreset{border-color:rgba(229,72,77,.55) !important;color:var(--red) !important}
+.shellreset{border-color:rgba(229,72,77,.55) !important;color:var(--red-tx) !important}
 /* -- bar dropdowns (tool switcher + ⋯ overflow) -- */
 .shellmenu{position:fixed;top:58px;z-index:70;width:250px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.5);padding:6px}
 .shellmenu.left{left:8px}.shellmenu.right{right:8px}
 .shellmenurow{width:100%;display:flex;gap:10px;align-items:center;min-height:46px;padding:0 14px;background:none;border:none;color:var(--ink);font:700 15px var(--sans);cursor:pointer;border-radius:9px;text-align:left;text-decoration:none;box-sizing:border-box}
 .shellmenurow.on{background:var(--card2)}
-.shellmenurow.danger{color:var(--red)}
+.shellmenurow.danger{color:var(--red-tx)}
 .shellmenudiv{height:1px;background:var(--line);margin:6px 10px}
 .shellmenusub{margin-left:auto;font:600 11px var(--mono);color:var(--ink2);letter-spacing:.04em}
 
@@ -197,28 +225,28 @@ article [data-log],article [data-logevent],[data-log],[data-logevent]{border-rad
 @keyframes metbeat{0%{transform:scale(1);opacity:1}30%{transform:scale(1.45);opacity:.75}60%{transform:scale(1);opacity:1}100%{transform:scale(1);opacity:1}}
 @media (prefers-reduced-motion: reduce){.shellmetdot{animation:none}}
 .shellmetmode{color:var(--ink);font:700 12.5px var(--sans);letter-spacing:.05em;white-space:nowrap}
-.shellmetstatus{font-size:11.5px;font-weight:600;white-space:nowrap;color:var(--green)}
+.shellmetstatus{font-size:11.5px;font-weight:600;white-space:nowrap;color:var(--green-tx)}
 .shellsmallchip{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 12px;border-radius:999px;background:none;border:1px solid var(--line);color:var(--ink2);font:700 11.5px var(--sans);letter-spacing:.05em;cursor:pointer;white-space:nowrap;flex:none}
-.shellsmallchip.on{background:rgba(61,163,93,.15);border-color:var(--green);color:var(--green)}
+.shellsmallchip.on{background:rgba(61,163,93,.15);border-color:var(--green);color:var(--green-tx)}
 
 /* -- layer 4: weight strip -- */
 .shellweight{width:100%;display:flex;align-items:center;gap:10px;min-height:44px;padding:0 16px;background:var(--card);border:none;border-bottom:1px solid var(--line);cursor:pointer;font-family:var(--sans);text-align:left;box-sizing:border-box}
 .shellweight .k{font:800 12px var(--sans);letter-spacing:.08em;color:var(--ink2)}
 .shellweight .v{font:700 15px var(--mono)}
-.shellweight .v.set{color:var(--green)}
-.shellweight .v.unset{color:var(--amber);font-family:var(--sans)}
+.shellweight .v.set{color:var(--green-tx)}
+.shellweight .v.unset{color:var(--amber-tx);font-family:var(--sans)}
 .shellweight .m{margin-left:auto;font-size:11px;color:var(--ink2);white-space:nowrap}
 .shellweightform{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px 16px;background:var(--card);border-bottom:1px solid var(--line)}
 
 /* -- layer 5: face-up content pieces -- */
-.shelltele{display:block;width:100%;background:rgba(76,141,218,.12);border:1.5px solid var(--blue);border-radius:14px;padding:15px;color:#8FBBEA;font:700 16px var(--sans);letter-spacing:.04em;cursor:pointer;margin-top:10px;box-sizing:border-box}
+.shelltele{display:block;width:100%;background:rgba(76,141,218,.12);border:1.5px solid var(--blue);border-radius:14px;padding:15px;color:var(--blue-tx);font:700 16px var(--sans);letter-spacing:.04em;cursor:pointer;margin-top:10px;box-sizing:border-box}
 .shelltele .sub{display:block;font:600 12.5px var(--sans);letter-spacing:0;margin-top:5px;color:var(--ink2)}
-.shellteledone{background:rgba(76,141,218,.10);border:1.5px solid var(--line);border-radius:14px;padding:13px 16px;color:#8FBBEA;font:700 14px var(--sans);letter-spacing:.04em;text-align:center;margin-top:10px}
+.shellteledone{background:rgba(76,141,218,.10);border:1.5px solid var(--line);border-radius:14px;padding:13px 16px;color:var(--blue-tx);font:700 14px var(--sans);letter-spacing:.04em;text-align:center;margin-top:10px}
 .shelldose{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
 .shelldose .nm{color:var(--ink);font:700 14px var(--sans)}
 .shelldose .rl{color:var(--ink2);font-size:12px;margin-top:1px}
-.shelldose .vl{margin-left:auto;font:700 16px var(--mono);color:var(--green);white-space:nowrap;text-align:right}
-.shelldose .vl.unset{color:var(--amber);font:700 13px var(--sans)}
+.shelldose .vl{margin-left:auto;font:700 16px var(--mono);color:var(--green-tx);white-space:nowrap;text-align:right}
+.shelldose .vl.unset{color:var(--amber-tx);font:700 13px var(--sans)}
 .shellothers{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 16px;background:none;border:1px solid var(--line);border-radius:12px;color:var(--ink2);font:700 13px var(--sans);letter-spacing:.06em;cursor:pointer;width:100%;box-sizing:border-box}
 
 /* -- layer 6: pinned action dock (phone, running only) + slot schemes -- */
@@ -227,9 +255,9 @@ article [data-log],article [data-logevent],[data-log],[data-logevent]{border-rad
 .shelldockbtn{flex:1;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-height:54px;border-radius:12px;font:700 15px var(--sans);letter-spacing:.02em;cursor:pointer;white-space:nowrap;padding:6px 12px}
 .shelldockclock{display:block;font:700 13px var(--mono);margin-top:2px}
 .shelldockclock.due{color:#FF8FA0}
-.scheme-amber{background:rgba(240,180,41,.13);border:1.5px solid var(--amber);color:var(--amber)}
+.scheme-amber{background:rgba(240,180,41,.13);border:1.5px solid var(--amber);color:var(--amber-tx)}
 .scheme-purple{background:rgba(155,123,212,.14);border:1.5px solid var(--purple);color:#B9A2E2}
-.scheme-blue{background:rgba(76,141,218,.14);border:1.5px solid var(--blue);color:#8FBBEA}
+.scheme-blue{background:rgba(76,141,218,.14);border:1.5px solid var(--blue);color:var(--blue-tx)}
 .shellticker{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 10px;background:none;border:none;border-radius:8px;color:var(--ink2);font:600 12px var(--mono);cursor:pointer;text-align:left;white-space:nowrap;overflow:hidden;width:100%;box-sizing:border-box}
 .shellticker .tk{overflow:hidden;text-overflow:ellipsis}
 .shellticker .lg{margin-left:auto;color:var(--ink2);font:700 11px var(--sans);flex:none}

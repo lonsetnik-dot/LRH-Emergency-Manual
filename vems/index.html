@@ -33,9 +33,9 @@
 .beat .bd{padding:11px 13px}
 .stem{border-left:3px solid var(--blue);background:var(--card2);padding:9px 11px;border-radius:0 8px 8px 0;font-style:italic;font-size:14.5px;line-height:1.5}
 .stem b{font-style:normal}
-.flip{display:inline-block;margin-top:9px;border:1.5px dashed var(--amber);color:var(--amber);border-radius:9px;padding:6px 10px;font:800 11.5px var(--mono,ui-monospace,monospace);letter-spacing:.06em}
-.adv{margin-top:9px;font:800 11.5px var(--mono,ui-monospace,monospace);letter-spacing:.05em;color:var(--amber)}
-.golink{display:inline-flex;align-items:center;min-height:38px;margin-top:8px;padding:0 13px;border:1px solid var(--teal);color:var(--teal);border-radius:999px;font:800 12px var(--mono,ui-monospace,monospace);letter-spacing:.04em;text-decoration:none}
+.flip{display:inline-block;margin-top:9px;border:1.5px dashed var(--amber);color:var(--amber-tx);border-radius:9px;padding:6px 10px;font:800 11.5px var(--mono,ui-monospace,monospace);letter-spacing:.06em}
+.adv{margin-top:9px;font:800 11.5px var(--mono,ui-monospace,monospace);letter-spacing:.05em;color:var(--amber-tx)}
+.golink{display:inline-flex;align-items:center;min-height:38px;margin-top:8px;padding:0 13px;border:1px solid var(--teal);color:var(--teal-tx);border-radius:999px;font:800 12px var(--mono,ui-monospace,monospace);letter-spacing:.04em;text-decoration:none}
 .prow{display:flex;gap:8px;flex-wrap:wrap;padding:10px 14px 0}
 .pbtn{flex:1 1 200px;min-height:52px;border:none;border-radius:12px;background:var(--accent);color:#fff;font:800 13.5px var(--sans,inherit);letter-spacing:.05em;cursor:pointer}
 .pbtn.alt{background:var(--card2);color:var(--ink);border:1px solid var(--line)}
@@ -79,19 +79,19 @@
   body.only-poster .d-poster,body.only-cards .d-cards:first-of-type,
   body.only-sheet .d-sheet{break-before:auto;page-break-before:auto}
 }
-.pttl{font:800 10pt var(--mono,ui-monospace,monospace);letter-spacing:.2em;color:#5a6a78;border-bottom:2pt solid #16324f;padding-bottom:3pt;margin-bottom:8pt}
+.pttl{font:800 10pt var(--mono,ui-monospace,monospace);letter-spacing:.2em;color:var(--ink2);border-bottom:2pt solid #16324f;padding-bottom:3pt;margin-bottom:8pt}
 
 /* --- the patient poster: the "external representation of the patient" ----- */
 .ppatient{border:2.5pt solid #16324f;padding:10pt}
-.ppatient h2{margin:0 0 2pt;font-size:22pt;line-height:1;text-transform:uppercase;color:#16324f}
-.ppatient .sub{font:700 10pt var(--mono,ui-monospace,monospace);letter-spacing:.1em;color:#9b1c2e;margin-bottom:8pt}
+.ppatient h2{margin:0 0 2pt;font-size:22pt;line-height:1;text-transform:uppercase;color:var(--ink)}
+.ppatient .sub{font:700 10pt var(--mono,ui-monospace,monospace);letter-spacing:.1em;color:var(--red-tx);margin-bottom:8pt}
 .pfig{border:1pt solid #d7dde3;background:#fffefb}
 .pvitals{display:flex;border:2pt solid #16324f;margin-top:8pt}
 .pvitals .c{flex:1;text-align:center;padding:5pt 2pt;border-left:1pt solid #d7dde3}
 .pvitals .c:first-child{border-left:none}
-.pvitals .v{font:800 17pt var(--mono,ui-monospace,monospace);color:#9b1c2e}
-.pvitals .l{font:700 6.6pt var(--mono,ui-monospace,monospace);letter-spacing:.1em;color:#5a6a78}
-.plane{margin-top:8pt;border:1pt dashed #b9c2cc;padding:7pt;font-size:9.5pt;line-height:1.4;color:#16324f}
+.pvitals .v{font:800 17pt var(--mono,ui-monospace,monospace);color:var(--red-tx)}
+.pvitals .l{font:700 6.6pt var(--mono,ui-monospace,monospace);letter-spacing:.1em;color:var(--ink2)}
+.plane{margin-top:8pt;border:1pt dashed #b9c2cc;padding:7pt;font-size:9.5pt;line-height:1.4;color:var(--ink)}
 
 /* --- the cut-up card grids -----------------------------------------------
    box-sizing is scoped here rather than set globally: design-system.css does
@@ -109,9 +109,9 @@
 .cardgrid.mon .pcard{height:3.35in;justify-content:center}
 .pcard .sw{background:#fffefb;width:100%}
 .pcard svg{width:1.32in;height:1.32in;display:block;margin:0 auto}
-.pcard .nm{font:800 12pt inherit;line-height:1.15;margin-top:4pt;color:#16324f}
-.pcard .sz{font:700 8.4pt var(--mono,ui-monospace,monospace);letter-spacing:.05em;color:#9b1c2e;margin-top:3pt}
-.pcard .lo{font:700 7.2pt var(--mono,ui-monospace,monospace);letter-spacing:.04em;color:#5a6a78;margin-top:auto;
+.pcard .nm{font:800 12pt inherit;line-height:1.15;margin-top:4pt;color:var(--ink)}
+.pcard .sz{font:700 8.4pt var(--mono,ui-monospace,monospace);letter-spacing:.05em;color:var(--red-tx);margin-top:3pt}
+.pcard .lo{font:700 7.2pt var(--mono,ui-monospace,monospace);letter-spacing:.04em;color:var(--ink2);margin-top:auto;
            border-top:1pt solid #e2e7ec;padding-top:4pt;width:100%;line-height:1.3}
 .pcard.decoy .nm::after{content:"";}
 /* Monitor cards: the number IS the card. Everything else is chrome. */
@@ -124,21 +124,22 @@
 .moncard .cue{font:700 7.6pt var(--mono,ui-monospace,monospace);color:#f0b429;margin-top:6pt;line-height:1.35}
 
 /* --- the facilitator run sheet ------------------------------------------- */
-.rs{font-size:9.6pt;line-height:1.4;color:#16324f}
+.rs{font-size:9.6pt;line-height:1.4;color:var(--ink)}
 .rs .rb{border:1pt solid #b9c2cc;margin-bottom:6pt;break-inside:avoid;page-break-inside:avoid}
 .rs .rb h4{margin:0;padding:4pt 6pt;font:800 8.4pt var(--mono,ui-monospace,monospace);letter-spacing:.12em;
-           background:#eef1f5;border-bottom:1pt solid #b9c2cc;color:#16324f}
+           background:var(--card2);border-bottom:1pt solid #b9c2cc;color:var(--ink)}
 .rs .rb .in{padding:5pt 6pt}
 .rs .say{border-left:2.5pt solid #2f62a8;padding:3pt 6pt;font-style:italic;margin-bottom:4pt}
 .rs .say b{font-style:normal}
-.rs .tr{font:800 8pt var(--mono,ui-monospace,monospace);color:#8a6d1f;margin-top:3pt}
-.rs .fl{font:800 8pt var(--mono,ui-monospace,monospace);color:#9b1c2e;margin-top:3pt}
+.rs .tr{font:800 8pt var(--mono,ui-monospace,monospace);color:var(--amber-tx);margin-top:3pt}
+.rs .fl{font:800 8pt var(--mono,ui-monospace,monospace);color:var(--red-tx);margin-top:3pt}
 .rs ul{margin:3pt 0 0;padding-left:13pt}
 .pfoot{border-top:1pt solid #16324f;margin-top:6pt;padding-top:3pt;
-       font:400 6.6pt var(--mono,ui-monospace,monospace);line-height:1.35;color:#5a6a78}
+       font:400 6.6pt var(--mono,ui-monospace,monospace);line-height:1.35;color:var(--ink2)}
 </style>
 </head>
 <body data-theme="dark">
+<script>/* @theme-boot */</script>
 
 <div id="betasplash" class="screenonly" style="position:fixed;inset:0;z-index:9999;background:var(--bg);color:var(--ink);display:flex;flex-direction:column;align-items:center;justify-content:center;padding:28px;text-align:center">
   <div style="font:800 11px ui-monospace,monospace;letter-spacing:.22em;border:1.5px solid var(--accent);color:var(--accent);padding:6px 12px;border-radius:999px">TRAINING ONLY</div>
@@ -268,7 +269,7 @@ var CASES = [{
      silhouette that fits none of them. */
   fig: function(){
   return '<div class="pfig"><svg viewBox="0 0 520 320" style="width:100%;height:auto;display:block" role="img" aria-label="Lateral view of an adult head and neck with a swollen tongue and the cricothyroid membrane marked, and dashed zones for placing equipment cards">'+
-     '<rect x="0" y="0" width="520" height="320" fill="#fffefb"/>'+
+     '<rect x="0" y="0" width="520" height="320" fill="var(--card)"/>'+
      /* Lateral (side) view, facing left, head slightly extended. A side view is
         the only one that shows what this case is actually about: the column of
         air from mouth to trachea, where it is being closed off, and where the
@@ -276,45 +277,45 @@ var CASES = [{
         that. Anatomy is schematic on purpose — this is a place to put cards,
         not a plate to learn anatomy from. */
      /* shoulder + chest */
-     '<path d="M240 320 C242 284 272 266 320 262 L520 262 L520 320 Z" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+     '<path d="M240 320 C242 284 272 266 320 262 L520 262 L520 320 Z" fill="var(--card2)" stroke="var(--ink2)" stroke-width="2"/>'+
      /* neck */
-     '<path d="M198 196 C196 232 212 252 250 258 L330 262 L336 240 C300 232 268 214 262 178 Z" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+     '<path d="M198 196 C196 232 212 252 250 258 L330 262 L336 240 C300 232 268 214 262 178 Z" fill="var(--card2)" stroke="var(--ink2)" stroke-width="2"/>'+
      /* head in profile: forehead, brow, nose, lips, chin, jaw, occiput */
      '<path d="M214 36 C158 40 122 80 124 116 L112 126 C94 142 100 154 118 156 '+
        'L120 170 C112 176 116 184 126 186 L128 200 C130 212 142 218 158 218 '+
        'L214 222 C252 222 274 200 280 166 C288 116 272 44 214 36 Z" '+
-       'fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+       'fill="var(--card2)" stroke="var(--ink2)" stroke-width="2"/>'+
      /* the airway column: oropharynx down to trachea, drawn as the lumen */
      '<path d="M150 176 C186 180 208 194 214 216 L214 258" fill="none" stroke="#c9d2da" stroke-width="15" stroke-linecap="round"/>'+
      /* SWOLLEN TONGUE — the thing that is closing the column */
      '<path d="M138 172 C168 168 194 178 200 196 C204 210 190 216 172 212 '+
-       'C152 208 136 194 138 172 Z" fill="rgba(155,28,46,0.34)" stroke="#9b1c2e" stroke-width="2.2"/>'+
-     '<path d="M132 168 L96 150" stroke="#9b1c2e" stroke-width="1.6"/>'+
-     '<text x="18" y="146" font-family="ui-monospace,monospace" font-size="11.5" font-weight="700" fill="#9b1c2e">SWOLLEN TONGUE</text>'+
+       'C152 208 136 194 138 172 Z" fill="rgba(155,28,46,0.34)" stroke="var(--red-tx)" stroke-width="2.2"/>'+
+     '<path d="M132 168 L96 150" stroke="var(--red-tx)" stroke-width="1.6"/>'+
+     '<text x="18" y="146" font-family="ui-monospace,monospace" font-size="11.5" font-weight="700" fill="var(--red-tx)">SWOLLEN TONGUE</text>'+
      /* thyroid cartilage, then the membrane, then the trachea below it */
-     '<path d="M200 226 L232 222 L234 240 L202 244 Z" fill="none" stroke="#5a6a78" stroke-width="2"/>'+
+     '<path d="M200 226 L232 222 L234 240 L202 244 Z" fill="none" stroke="var(--ink2)" stroke-width="2"/>'+
      '<rect x="202" y="246" width="32" height="14" fill="rgba(15,122,134,0.30)" stroke="#0f7a86" stroke-width="2.5"/>'+
      '<path d="M236 253 L286 253" stroke="#0f7a86" stroke-width="1.6"/>'+
      /* Opaque plate under the callout. It crosses the shoulder, and teal-on-grey
         at 9.5 pt is the first thing to become unreadable on a tired photocopy. */
-     '<rect x="286" y="236" width="224" height="32" rx="3" fill="#fffefb" stroke="#d7dde3" stroke-width="1.2"/>'+
+     '<rect x="286" y="236" width="224" height="32" rx="3" fill="var(--card)" stroke="#d7dde3" stroke-width="1.2"/>'+
      '<text x="292" y="250" font-family="ui-monospace,monospace" font-size="11.5" font-weight="700" fill="#0f7a86">CRICOTHYROID MEMBRANE</text>'+
-     '<text x="292" y="264" font-family="ui-monospace,monospace" font-size="9.5" fill="#5a6a78">SCALPEL &#8594; BOUGIE &#8594; TUBE, HERE</text>'+
+     '<text x="292" y="264" font-family="ui-monospace,monospace" font-size="9.5" fill="var(--ink2)">SCALPEL &#8594; BOUGIE &#8594; TUBE, HERE</text>'+
      /* card landing zones */
-     '<rect x="18" y="18" width="140" height="72" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
-     '<text x="28" y="44" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">AIRWAY DEVICE</text>'+
-     '<text x="28" y="58" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">IN USE — PUT</text>'+
-     '<text x="28" y="72" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">THE CARD HERE</text>'+
-     '<rect x="360" y="18" width="142" height="72" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
-     '<text x="370" y="44" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">MONITOR CARD</text>'+
-     '<text x="370" y="58" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">GOES HERE —</text>'+
-     '<text x="370" y="72" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">SWAP EACH BEAT</text>'+
-     '<rect x="18" y="200" width="140" height="66" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
-     '<text x="28" y="226" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">DRUGS GIVEN —</text>'+
-     '<text x="28" y="240" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">SAY THE DOSE</text>'+
-     '<text x="28" y="254" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">OUT LOUD</text>'+
-     '<rect x="18" y="278" width="186" height="34" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
-     '<text x="28" y="299" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">ACCESS CARDS HERE</text>'+
+     '<rect x="18" y="18" width="140" height="72" fill="none" stroke="var(--line)" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+     '<text x="28" y="44" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">AIRWAY DEVICE</text>'+
+     '<text x="28" y="58" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">IN USE — PUT</text>'+
+     '<text x="28" y="72" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">THE CARD HERE</text>'+
+     '<rect x="360" y="18" width="142" height="72" fill="none" stroke="var(--line)" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+     '<text x="370" y="44" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">MONITOR CARD</text>'+
+     '<text x="370" y="58" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">GOES HERE —</text>'+
+     '<text x="370" y="72" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">SWAP EACH BEAT</text>'+
+     '<rect x="18" y="200" width="140" height="66" fill="none" stroke="var(--line)" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+     '<text x="28" y="226" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">DRUGS GIVEN —</text>'+
+     '<text x="28" y="240" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">SAY THE DOSE</text>'+
+     '<text x="28" y="254" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">OUT LOUD</text>'+
+     '<rect x="18" y="278" width="186" height="34" fill="none" stroke="var(--line)" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+     '<text x="28" y="299" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">ACCESS CARDS HERE</text>'+
      '</svg></div>';
   },
   /* The poster's printed baseline. The monitor CARDS carry the trajectory. */
@@ -456,49 +457,49 @@ var CASES = [{
 
   fig: function(){
     return '<div class="pfig"><svg viewBox="0 0 520 320" style="width:100%;height:auto;display:block" role="img" aria-label="Two zones: a mother in lithotomy on the left and a newborn on a radiant warmer on the right, with dashed areas for placing equipment cards">'+
-      '<rect x="0" y="0" width="520" height="320" fill="#fffefb"/>'+
+      '<rect x="0" y="0" width="520" height="320" fill="var(--card)"/>'+
       /* A DIVIDED poster. The line down the middle is the clinical point: at the
          moment of delivery this becomes two patients with two teams, and the
          team that has only ever practiced on one body forgets the mother. */
-      '<line x1="266" y1="10" x2="266" y2="310" stroke="#b9c2cc" stroke-width="2" stroke-dasharray="7 6"/>'+
-      '<text x="16" y="24" font-family="ui-monospace,monospace" font-size="11.5" font-weight="700" fill="#16324f">MOTHER</text>'+
-      '<text x="280" y="24" font-family="ui-monospace,monospace" font-size="11.5" font-weight="700" fill="#16324f">NEWBORN — AT THE WARMER</text>'+
+      '<line x1="266" y1="10" x2="266" y2="310" stroke="var(--line)" stroke-width="2" stroke-dasharray="7 6"/>'+
+      '<text x="16" y="24" font-family="ui-monospace,monospace" font-size="11.5" font-weight="700" fill="var(--ink)">MOTHER</text>'+
+      '<text x="280" y="24" font-family="ui-monospace,monospace" font-size="11.5" font-weight="700" fill="var(--ink)">NEWBORN — AT THE WARMER</text>'+
       /* --- mother, lithotomy, schematic --- */
-      '<path d="M28 232 C28 208 44 196 68 196 L150 196 C176 196 190 212 190 236 L190 268 L28 268 Z" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
-      '<circle cx="52" cy="170" r="20" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+      '<path d="M28 232 C28 208 44 196 68 196 L150 196 C176 196 190 212 190 236 L190 268 L28 268 Z" fill="var(--card2)" stroke="var(--ink2)" stroke-width="2"/>'+
+      '<circle cx="52" cy="170" r="20" fill="var(--card2)" stroke="var(--ink2)" stroke-width="2"/>'+
       /* thighs up (McRoberts is the first maneuver, so the legs are drawn where they go) */
-      '<path d="M150 200 C186 176 206 140 208 108" fill="none" stroke="#5a6a78" stroke-width="13" stroke-linecap="round"/>'+
-      '<path d="M120 200 C150 168 162 132 160 100" fill="none" stroke="#5a6a78" stroke-width="13" stroke-linecap="round"/>'+
-      '<text x="150" y="92" font-family="ui-monospace,monospace" font-size="9.5" fill="#5a6a78">KNEES TO CHEST</text>'+
+      '<path d="M150 200 C186 176 206 140 208 108" fill="none" stroke="var(--ink2)" stroke-width="13" stroke-linecap="round"/>'+
+      '<path d="M120 200 C150 168 162 132 160 100" fill="none" stroke="var(--ink2)" stroke-width="13" stroke-linecap="round"/>'+
+      '<text x="150" y="92" font-family="ui-monospace,monospace" font-size="9.5" fill="var(--ink2)">KNEES TO CHEST</text>'+
       /* the perineum — where the head is */
-      '<circle cx="182" cy="212" r="15" fill="rgba(155,28,46,0.30)" stroke="#9b1c2e" stroke-width="2.2"/>'+
-      '<path d="M198 212 L232 206" stroke="#9b1c2e" stroke-width="1.6"/>'+
-      '<text x="196" y="196" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#9b1c2e">HEAD</text>'+
+      '<circle cx="182" cy="212" r="15" fill="rgba(155,28,46,0.30)" stroke="var(--red-tx)" stroke-width="2.2"/>'+
+      '<path d="M198 212 L232 206" stroke="var(--red-tx)" stroke-width="1.6"/>'+
+      '<text x="196" y="196" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="var(--red-tx)">HEAD</text>'+
       /* suprapubic pressure target — named because pointing at it is the drill */
       '<circle cx="120" cy="204" r="9" fill="none" stroke="#0f7a86" stroke-width="2.4"/>'+
       '<text x="60" y="290" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#0f7a86">SUPRAPUBIC PRESSURE — SAY WHICH WAY</text>'+
       '<path d="M120 214 L112 282" stroke="#0f7a86" stroke-width="1.4"/>'+
-      '<rect x="16" y="34" width="150" height="52" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
-      '<text x="26" y="56" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">DELIVERY CARDS</text>'+
-      '<text x="26" y="70" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">GO HERE</text>'+
+      '<rect x="16" y="34" width="150" height="52" fill="none" stroke="var(--line)" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+      '<text x="26" y="56" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">DELIVERY CARDS</text>'+
+      '<text x="26" y="70" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">GO HERE</text>'+
       /* --- newborn on the warmer --- */
-      '<rect x="286" y="150" width="216" height="118" rx="6" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
-      '<path d="M286 150 L286 128 L502 128 L502 150" fill="none" stroke="#5a6a78" stroke-width="2"/>'+
-      '<text x="300" y="144" font-family="ui-monospace,monospace" font-size="9" fill="#5a6a78">RADIANT WARMER — ON BEFORE THE BIRTH</text>'+
+      '<rect x="286" y="150" width="216" height="118" rx="6" fill="var(--card2)" stroke="var(--ink2)" stroke-width="2"/>'+
+      '<path d="M286 150 L286 128 L502 128 L502 150" fill="none" stroke="var(--ink2)" stroke-width="2"/>'+
+      '<text x="300" y="144" font-family="ui-monospace,monospace" font-size="9" fill="var(--ink2)">RADIANT WARMER — ON BEFORE THE BIRTH</text>'+
       /* baby: head, body, arms, legs */
       babyFig(316, 168, 1.0, 'rgba(47,111,181,0.30)', '#2F6FB5')+
-      '<text x="292" y="258" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#2F6FB5">BLUE + FLOPPY</text>'+
-      '<path d="M336 186 L336 168" stroke="#5a6a78" stroke-width="1.4"/>'+
-      '<text x="292" y="164" font-family="ui-monospace,monospace" font-size="9" fill="#5a6a78">MASK SEAL</text>'+
+      '<text x="292" y="258" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="var(--blue-tx)">BLUE + FLOPPY</text>'+
+      '<path d="M336 186 L336 168" stroke="var(--ink2)" stroke-width="1.4"/>'+
+      '<text x="292" y="164" font-family="ui-monospace,monospace" font-size="9" fill="var(--ink2)">MASK SEAL</text>'+
       /* umbilicus — where the UVC goes if it comes to that */
-      '<circle cx="390" cy="203" r="5" fill="#9b1c2e"/>'+
-      '<path d="M396 203 L438 203" stroke="#9b1c2e" stroke-width="1.4"/>'+
-      '<text x="442" y="207" font-family="ui-monospace,monospace" font-size="9" font-weight="700" fill="#9b1c2e">UVC</text>'+
-      '<rect x="286" y="278" width="216" height="32" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
-      '<text x="296" y="299" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">NEWBORN CARDS + MONITOR CARD HERE</text>'+
-      '<rect x="286" y="34" width="216" height="52" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
-      '<text x="296" y="56" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">TIME OF BIRTH — WRITE IT</text>'+
-      '<text x="296" y="70" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">THE MOMENT IT HAPPENS</text>'+
+      '<circle cx="390" cy="203" r="5" fill="var(--red-tx)"/>'+
+      '<path d="M396 203 L438 203" stroke="var(--red-tx)" stroke-width="1.4"/>'+
+      '<text x="442" y="207" font-family="ui-monospace,monospace" font-size="9" font-weight="700" fill="var(--red-tx)">UVC</text>'+
+      '<rect x="286" y="278" width="216" height="32" fill="none" stroke="var(--line)" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+      '<text x="296" y="299" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">NEWBORN CARDS + MONITOR CARD HERE</text>'+
+      '<rect x="286" y="34" width="216" height="52" fill="none" stroke="var(--line)" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+      '<text x="296" y="56" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">TIME OF BIRTH — WRITE IT</text>'+
+      '<text x="296" y="70" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">THE MOMENT IT HAPPENS</text>'+
       '</svg></div>';
   },
 
@@ -634,32 +635,32 @@ var CASES = [{
 
   fig: function(){
     return '<div class="pfig"><svg viewBox="0 0 520 320" style="width:100%;height:auto;display:block" role="img" aria-label="A postpartum patient with the uterine fundus marked for massage and a growing area of blood loss, with dashed zones for placing equipment cards">'+
-      '<rect x="0" y="0" width="520" height="320" fill="#fffefb"/>'+
+      '<rect x="0" y="0" width="520" height="320" fill="var(--card)"/>'+
       /* torso, supine, from the front — this case is decided at the fundus and
          at the perineum, so both have to be reachable on the same sheet. */
-      '<path d="M150 40 C196 40 214 62 216 96 L222 210 C226 250 208 274 178 278 L120 278 C90 274 74 250 78 210 L84 96 C86 62 104 40 150 40 Z" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
-      '<circle cx="150" cy="26" r="18" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+      '<path d="M150 40 C196 40 214 62 216 96 L222 210 C226 250 208 274 178 278 L120 278 C90 274 74 250 78 210 L84 96 C86 62 104 40 150 40 Z" fill="var(--card2)" stroke="var(--ink2)" stroke-width="2"/>'+
+      '<circle cx="150" cy="26" r="18" fill="var(--card2)" stroke="var(--ink2)" stroke-width="2"/>'+
       /* the fundus — boggy, and the first thing a hand goes on */
-      '<circle cx="150" cy="176" r="40" fill="rgba(155,28,46,0.22)" stroke="#9b1c2e" stroke-width="2.5"/>'+
-      '<text x="128" y="180" font-family="ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#9b1c2e">FUNDUS</text>'+
-      '<path d="M190 168 L250 158" stroke="#9b1c2e" stroke-width="1.6"/>'+
-      '<rect x="250" y="140" width="252" height="34" rx="3" fill="#fffefb" stroke="#d7dde3" stroke-width="1.2"/>'+
-      '<text x="256" y="154" font-family="ui-monospace,monospace" font-size="10.5" font-weight="700" fill="#9b1c2e">BOGGY — PUT A HAND ON IT</text>'+
-      '<text x="256" y="168" font-family="ui-monospace,monospace" font-size="9" fill="#5a6a78">MASSAGE IS THE FIRST MOVE, AND IT IS FREE</text>'+
+      '<circle cx="150" cy="176" r="40" fill="rgba(155,28,46,0.22)" stroke="var(--red-tx)" stroke-width="2.5"/>'+
+      '<text x="128" y="180" font-family="ui-monospace,monospace" font-size="10.5" font-weight="700" fill="var(--red-tx)">FUNDUS</text>'+
+      '<path d="M190 168 L250 158" stroke="var(--red-tx)" stroke-width="1.6"/>'+
+      '<rect x="250" y="140" width="252" height="34" rx="3" fill="var(--card)" stroke="#d7dde3" stroke-width="1.2"/>'+
+      '<text x="256" y="154" font-family="ui-monospace,monospace" font-size="10.5" font-weight="700" fill="var(--red-tx)">BOGGY — PUT A HAND ON IT</text>'+
+      '<text x="256" y="168" font-family="ui-monospace,monospace" font-size="9" fill="var(--ink2)">MASSAGE IS THE FIRST MOVE, AND IT IS FREE</text>'+
       /* the loss, growing downward — deliberately drawn as an area, not a number */
-      '<path d="M104 268 C112 296 128 312 150 312 C172 312 190 296 198 268 Z" fill="rgba(155,28,46,0.34)" stroke="#9b1c2e" stroke-width="2"/>'+
-      '<text x="82" y="306" font-family="ui-monospace,monospace" font-size="9" font-weight="700" fill="#9b1c2e">EBL</text>'+
-      '<rect x="250" y="196" width="252" height="46" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
-      '<text x="260" y="216" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">UTEROTONICS — LAY THE CARD DOWN</text>'+
-      '<text x="260" y="230" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">AND SAY THE DOSE OUT LOUD</text>'+
-      '<rect x="250" y="252" width="252" height="46" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
-      '<text x="260" y="272" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">BLOOD + ACCESS CARDS HERE</text>'+
-      '<text x="260" y="286" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">NAME A RUNNER AND A CHECKER</text>'+
-      '<rect x="250" y="34" width="252" height="90" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
-      '<text x="260" y="56" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">MONITOR CARD HERE —</text>'+
-      '<text x="260" y="70" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">SWAP IT EVERY BEAT AND</text>'+
-      '<text x="260" y="84" font-family="ui-monospace,monospace" font-size="10" fill="#5a6a78">READ THE EBL OUT LOUD</text>'+
-      '<text x="260" y="106" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#9b1c2e">THE TRAJECTORY IS THE FINDING</text>'+
+      '<path d="M104 268 C112 296 128 312 150 312 C172 312 190 296 198 268 Z" fill="rgba(155,28,46,0.34)" stroke="var(--red-tx)" stroke-width="2"/>'+
+      '<text x="82" y="306" font-family="ui-monospace,monospace" font-size="9" font-weight="700" fill="var(--red-tx)">EBL</text>'+
+      '<rect x="250" y="196" width="252" height="46" fill="none" stroke="var(--line)" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+      '<text x="260" y="216" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">UTEROTONICS — LAY THE CARD DOWN</text>'+
+      '<text x="260" y="230" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">AND SAY THE DOSE OUT LOUD</text>'+
+      '<rect x="250" y="252" width="252" height="46" fill="none" stroke="var(--line)" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+      '<text x="260" y="272" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">BLOOD + ACCESS CARDS HERE</text>'+
+      '<text x="260" y="286" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">NAME A RUNNER AND A CHECKER</text>'+
+      '<rect x="250" y="34" width="252" height="90" fill="none" stroke="var(--line)" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+      '<text x="260" y="56" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">MONITOR CARD HERE —</text>'+
+      '<text x="260" y="70" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">SWAP IT EVERY BEAT AND</text>'+
+      '<text x="260" y="84" font-family="ui-monospace,monospace" font-size="10" fill="var(--ink2)">READ THE EBL OUT LOUD</text>'+
+      '<text x="260" y="106" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="var(--red-tx)">THE TRAJECTORY IS THE FINDING</text>'+
       '</svg></div>';
   },
 
@@ -780,48 +781,48 @@ var CASES = [{
 
   fig: function(){
     return '<div class="pfig"><svg viewBox="0 0 520 320" style="width:100%;height:auto;display:block" role="img" aria-label="Three zones: the mother in knee-chest position, the operating field, and the newborn resuscitation area, showing the physician handing over between them">'+
-      '<rect x="0" y="0" width="520" height="320" fill="#fffefb"/>'+
+      '<rect x="0" y="0" width="520" height="320" fill="var(--card)"/>'+
       /* THREE zones, because this case has three places and one doctor. The
          arrows across the dividers are the case: the same person moves. */
-      '<line x1="180" y1="34" x2="180" y2="310" stroke="#b9c2cc" stroke-width="2" stroke-dasharray="7 6"/>'+
-      '<line x1="350" y1="34" x2="350" y2="310" stroke="#b9c2cc" stroke-width="2" stroke-dasharray="7 6"/>'+
+      '<line x1="180" y1="34" x2="180" y2="310" stroke="var(--line)" stroke-width="2" stroke-dasharray="7 6"/>'+
+      '<line x1="350" y1="34" x2="350" y2="310" stroke="var(--line)" stroke-width="2" stroke-dasharray="7 6"/>'+
       /* Zone headers stay short so they cannot collide across the dividers —
          the long version of each is written inside its own zone. */
-      '<text x="14" y="22" font-family="ui-monospace,monospace" font-size="10" font-weight="700" fill="#16324f">1 · HAND IN</text>'+
-      '<text x="192" y="22" font-family="ui-monospace,monospace" font-size="10" font-weight="700" fill="#16324f">2 · AIRWAY — YOU</text>'+
-      '<text x="362" y="22" font-family="ui-monospace,monospace" font-size="10" font-weight="700" fill="#16324f">3 · NEWBORN — YOU</text>'+
+      '<text x="14" y="22" font-family="ui-monospace,monospace" font-size="10" font-weight="700" fill="var(--ink)">1 · HAND IN</text>'+
+      '<text x="192" y="22" font-family="ui-monospace,monospace" font-size="10" font-weight="700" fill="var(--ink)">2 · AIRWAY — YOU</text>'+
+      '<text x="362" y="22" font-family="ui-monospace,monospace" font-size="10" font-weight="700" fill="var(--ink)">3 · NEWBORN — YOU</text>'+
       /* zone 1 — knee-chest, hand elevating the presenting part */
-      '<path d="M28 250 C28 222 48 208 76 208 L138 208 C158 208 168 222 168 244 L168 276 L28 276 Z" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
-      '<circle cx="48" cy="188" r="16" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
-      '<path d="M138 212 C160 186 166 156 162 132" fill="none" stroke="#5a6a78" stroke-width="12" stroke-linecap="round"/>'+
-      '<circle cx="150" cy="232" r="14" fill="rgba(155,28,46,0.30)" stroke="#9b1c2e" stroke-width="2.2"/>'+
-      '<text x="26" y="300" font-family="ui-monospace,monospace" font-size="9" font-weight="700" fill="#9b1c2e">HAND STAYS UNTIL DELIVERY</text>'+
-      '<text x="26" y="120" font-family="ui-monospace,monospace" font-size="9.5" fill="#5a6a78">KNEE–CHEST</text>'+
-      '<text x="26" y="134" font-family="ui-monospace,monospace" font-size="9.5" fill="#5a6a78">OR TRENDELENBURG</text>'+
+      '<path d="M28 250 C28 222 48 208 76 208 L138 208 C158 208 168 222 168 244 L168 276 L28 276 Z" fill="var(--card2)" stroke="var(--ink2)" stroke-width="2"/>'+
+      '<circle cx="48" cy="188" r="16" fill="var(--card2)" stroke="var(--ink2)" stroke-width="2"/>'+
+      '<path d="M138 212 C160 186 166 156 162 132" fill="none" stroke="var(--ink2)" stroke-width="12" stroke-linecap="round"/>'+
+      '<circle cx="150" cy="232" r="14" fill="rgba(155,28,46,0.30)" stroke="var(--red-tx)" stroke-width="2.2"/>'+
+      '<text x="26" y="300" font-family="ui-monospace,monospace" font-size="9" font-weight="700" fill="var(--red-tx)">HAND STAYS UNTIL DELIVERY</text>'+
+      '<text x="26" y="120" font-family="ui-monospace,monospace" font-size="9.5" fill="var(--ink2)">KNEE–CHEST</text>'+
+      '<text x="26" y="134" font-family="ui-monospace,monospace" font-size="9.5" fill="var(--ink2)">OR TRENDELENBURG</text>'+
       /* zone 2 — the operating field / head of the bed */
-      '<rect x="196" y="120" width="138" height="118" rx="6" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
-      '<circle cx="265" cy="152" r="19" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
-      '<path d="M246 178 h38" stroke="#9b1c2e" stroke-width="3"/>'+
-      '<text x="204" y="200" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#9b1c2e">RSI — YOU ARE THE</text>'+
-      '<text x="204" y="214" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#9b1c2e">ANESTHETIST NOW</text>'+
-      '<rect x="196" y="248" width="138" height="52" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
-      '<text x="204" y="268" font-family="ui-monospace,monospace" font-size="9.5" fill="#5a6a78">AIRWAY + DRUG</text>'+
-      '<text x="204" y="282" font-family="ui-monospace,monospace" font-size="9.5" fill="#5a6a78">CARDS HERE</text>'+
+      '<rect x="196" y="120" width="138" height="118" rx="6" fill="var(--card2)" stroke="var(--ink2)" stroke-width="2"/>'+
+      '<circle cx="265" cy="152" r="19" fill="var(--card2)" stroke="var(--ink2)" stroke-width="2"/>'+
+      '<path d="M246 178 h38" stroke="var(--red-tx)" stroke-width="3"/>'+
+      '<text x="204" y="200" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="var(--red-tx)">RSI — YOU ARE THE</text>'+
+      '<text x="204" y="214" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="var(--red-tx)">ANESTHETIST NOW</text>'+
+      '<rect x="196" y="248" width="138" height="52" fill="none" stroke="var(--line)" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+      '<text x="204" y="268" font-family="ui-monospace,monospace" font-size="9.5" fill="var(--ink2)">AIRWAY + DRUG</text>'+
+      '<text x="204" y="282" font-family="ui-monospace,monospace" font-size="9.5" fill="var(--ink2)">CARDS HERE</text>'+
       /* zone 3 — the warmer */
-      '<rect x="366" y="120" width="140" height="118" rx="6" fill="#eef1f5" stroke="#5a6a78" stroke-width="2"/>'+
+      '<rect x="366" y="120" width="140" height="118" rx="6" fill="var(--card2)" stroke="var(--ink2)" stroke-width="2"/>'+
       babyFig(378, 140, 0.82, 'rgba(47,111,181,0.30)', '#2F6FB5')+
-      '<text x="374" y="214" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#2F6FB5">WARMER — ON</text>'+
-      '<text x="374" y="228" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="#2F6FB5">BEFORE THE CUT</text>'+
-      '<rect x="366" y="248" width="140" height="52" fill="none" stroke="#b9c2cc" stroke-width="1.6" stroke-dasharray="6 5"/>'+
-      '<text x="374" y="268" font-family="ui-monospace,monospace" font-size="9.5" fill="#5a6a78">NEWBORN CARDS</text>'+
-      '<text x="374" y="282" font-family="ui-monospace,monospace" font-size="9.5" fill="#5a6a78">+ MONITOR HERE</text>'+
+      '<text x="374" y="214" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="var(--blue-tx)">WARMER — ON</text>'+
+      '<text x="374" y="228" font-family="ui-monospace,monospace" font-size="9.5" font-weight="700" fill="var(--blue-tx)">BEFORE THE CUT</text>'+
+      '<rect x="366" y="248" width="140" height="52" fill="none" stroke="var(--line)" stroke-width="1.6" stroke-dasharray="6 5"/>'+
+      '<text x="374" y="268" font-family="ui-monospace,monospace" font-size="9.5" fill="var(--ink2)">NEWBORN CARDS</text>'+
+      '<text x="374" y="282" font-family="ui-monospace,monospace" font-size="9.5" fill="var(--ink2)">+ MONITOR HERE</text>'+
       /* the two moves the doctor makes — the actual subject of the drill */
-      '<path d="M120 62 L326 62" stroke="#8a6d1f" stroke-width="2.4" marker-end="url(#vah)"/>'+
-      '<path d="M240 96 L474 96" stroke="#8a6d1f" stroke-width="2.4" marker-end="url(#vah)"/>'+
+      '<path d="M120 62 L326 62" stroke="var(--amber-tx)" stroke-width="2.4" marker-end="url(#vah)"/>'+
+      '<path d="M240 96 L474 96" stroke="var(--amber-tx)" stroke-width="2.4" marker-end="url(#vah)"/>'+
       '<defs><marker id="vah" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="7" markerHeight="7" orient="auto">'+
-      '<path d="M0 0 L10 5 L0 10 z" fill="#8a6d1f"/></marker></defs>'+
-      '<text x="150" y="56" font-family="ui-monospace,monospace" font-size="9" font-weight="700" fill="#8a6d1f">YOU MOVE</text>'+
-      '<text x="248" y="90" font-family="ui-monospace,monospace" font-size="9" font-weight="700" fill="#8a6d1f">AND AGAIN — SO WHO HAS MOM?</text>'+
+      '<path d="M0 0 L10 5 L0 10 z" fill="var(--amber-tx)"/></marker></defs>'+
+      '<text x="150" y="56" font-family="ui-monospace,monospace" font-size="9" font-weight="700" fill="var(--amber-tx)">YOU MOVE</text>'+
+      '<text x="248" y="90" font-family="ui-monospace,monospace" font-size="9" font-weight="700" fill="var(--amber-tx)">AND AGAIN — SO WHO HAS MOM?</text>'+
       '</svg></div>';
   },
 
@@ -1087,7 +1088,7 @@ function paintScreen(){
        '<ul style="margin:8px 0 0;padding:0;list-style:none">';
     b.does.forEach(function(d){ h+='<li class="t-div" style="padding:8px 0;font-size:14px;line-height:1.45">'+d+'</li>'; });
     h+='</ul><div class="adv">ADVANCE WHEN &rsaquo; '+esc(b.adv)+'</div>'+
-       (b.fail?'<div class="adv" style="color:var(--red)">REWIND IF &rsaquo; '+esc(b.fail)+'</div>':'')+
+       (b.fail?'<div class="adv" style="color:var(--red-tx)">REWIND IF &rsaquo; '+esc(b.fail)+'</div>':'')+
        '</div></div>';
   });
 
@@ -1126,7 +1127,7 @@ function posterSheet(){
   h+='<div class="pvitals">'+bv.map(function(x){
        return '<div class="c"><div class="v">'+esc(x.v)+'</div><div class="l">'+esc(x.l)+'</div></div>';
      }).join('')+'</div>'+
-     '<div style="font:700 7.4pt ui-monospace,monospace;letter-spacing:.08em;color:#5a6a78;margin-top:3pt">'+
+     '<div style="font:700 7.4pt ui-monospace,monospace;letter-spacing:.08em;color:var(--ink2);margin-top:3pt">'+
      'STARTING VITALS ONLY — THE MONITOR CARDS CARRY THE TRAJECTORY. COVER THIS STRIP WITH THE CURRENT CARD.</div>';
 
   h+='<div class="plane"><b>How to use this sheet.</b> Put an equipment card down on the poster to show an action, '+

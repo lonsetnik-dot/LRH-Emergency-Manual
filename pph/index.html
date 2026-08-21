@@ -16,7 +16,7 @@
 /* The running blood loss is the single most important number on this screen and
    the one the card could not hold, so it gets the largest type on the page. */
 .ebl{display:flex;align-items:center;gap:12px;margin-top:10px;padding:12px;border:2px solid var(--line);border-radius:14px;background:var(--card2)}
-.ebl .n{font:800 40px var(--mono);line-height:1;color:var(--red)}
+.ebl .n{font:800 40px var(--mono);line-height:1;color:var(--red-tx)}
 .ebl .u{font:700 12px var(--mono);color:var(--ink2);letter-spacing:.08em}
 .ebl .t{flex:1;font-size:12.5px;color:var(--ink2);line-height:1.35}
 .addrow{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-top:8px}
@@ -37,12 +37,13 @@
 .tog{display:flex;gap:7px;flex-wrap:wrap;margin-top:8px}
 .tog button{min-height:44px;padding:0 12px;border-radius:999px;border:1px solid var(--line);
   background:var(--card2);color:var(--ink2);font:800 11.5px var(--sans);cursor:pointer}
-.tog button[aria-pressed="true"]{border-color:var(--red);color:var(--red);border-width:2px}
+.tog button[aria-pressed="true"]{border-color:var(--red);color:var(--red-tx);border-width:2px}
 .rev{margin:12px 14px 0;border:2px solid var(--sev-caution);background:var(--note-bg);color:var(--note-tx);
      padding:11px 13px;border-radius:12px;font-size:13px;line-height:1.45}
 </style>
 </head>
 <body data-theme="dark">
+<script>/* @theme-boot */</script>
 <h1 class="sr-only">Postpartum Hemorrhage — Live Engine</h1>
 
 <!-- ============ CASE SHELL layer 1 — app bar (SHELL.md) ============
@@ -127,18 +128,18 @@
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
       <button class="btn" id="logtoggle" type="button" style="min-height:52px;font:700 14px var(--sans)">LOG IT</button>
-      <button class="btn" id="stopbtn" type="button" style="min-height:52px;font:700 14px var(--sans);border-color:var(--green);color:var(--green)">BLEEDING CONTROLLED</button>
+      <button class="btn" id="stopbtn" type="button" style="min-height:52px;font:700 14px var(--sans);border-color:var(--green);color:var(--green-tx)">BLEEDING CONTROLLED</button>
     </div>
     <div id="customrow" style="display:none;gap:8px;margin-top:8px">
       <input id="customin" aria-label="Custom event to log" style="flex:1;background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:12px;font-size:15px" placeholder="e.g. bimanual compression started">
       <button id="customlog" type="button" style="border:none;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG IT</button>
     </div>
-    <div id="customwarn" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>
+    <div id="customwarn" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber-tx)"></div>
   </div>
 
   <div id="done" style="display:none">
     <div class="card" style="margin-top:14px;border:2px solid var(--green);border-radius:16px;padding:16px">
-      <div class="sec" style="color:var(--green)">BLEEDING CONTROLLED</div>
+      <div class="sec" style="color:var(--green-tx)">BLEEDING CONTROLLED</div>
       <div style="font-size:20px;font-weight:800;margin:4px 0 10px">Controlled at <span id="doneat" class="mono">0:00</span></div>
       <div id="donebody" style="font-size:14.5px;line-height:1.6"></div>
       <button id="resumebtn" type="button" style="width:100%;margin-top:12px;min-height:56px;border:none;border-radius:12px;background:var(--gray);color:#fff;font:800 15px var(--sans);cursor:pointer">BLEEDING AGAIN — BACK TO THE PATHWAY</button>
@@ -164,7 +165,7 @@
        deletion. -->
   <div class="card" id="scopebar" style="margin-top:10px;padding:9px 12px;border-color:var(--amber);font-size:12.5px;line-height:1.45">
     <b>Mother after delivery</b> — escalate on the <b>trend</b>, not a single number. Newborn also needs help?
-    <a href="../neonatal/?from=home" style="color:var(--blue)">Neonatal resuscitation</a> — say out loud who is staying with her.
+    <a href="../neonatal/?from=home" style="color:var(--blue-tx)">Neonatal resuscitation</a> — say out loud who is staying with her.
   </div>
 
   <div class="rev" id="revbanner"></div>
@@ -302,7 +303,7 @@ var SITE = {
 };
 try{ window.SITE = SITE; }catch(e){}
 
-var S = { theme:'dark', phase:'idle', t0:null, ebl:0, given:{}, flags:{}, eblSaid:{},
+var S = { theme:(document.body.dataset.theme==='light'?'light':'dark'), phase:'idle', t0:null, ebl:0, given:{}, flags:{}, eblSaid:{},
           lastCall:0, events:[], open:null, resetArm:false, doneAt:null, showCustom:false,
           /* case shell (SHELL.md) UI state — in-memory only, no new persisted
              keys. teleAt is the case-clock string on the confirmation row. */
@@ -384,7 +385,7 @@ function row(who, html){
 
 function phaseBox(){
   var b=band(), h='';
-  h+='<div class="sec" style="color:var(--red)">'+esc(b.label)+'</div>';
+  h+='<div class="sec" style="color:var(--red-tx)">'+esc(b.label)+'</div>';
 
   if(b.id==='t0' || b.id==='t5'){
     h+='<div style="font-size:22px;font-weight:800;margin-top:4px">Massage · call · access</div>'+
@@ -412,7 +413,7 @@ function phaseBox(){
            SITE.blood.oNegUnits+' units uncrossmatched O-negative, and activate '+esc(SITE.local.mtp)+'.')+
        row('PROVIDER','OB delayed past 15 minutes: firmly <b>pack the vaginal vault</b> with sterile Kerlix.')+
        row('PROVIDER',esc(SITE.local.jada)+' if OB is at the bedside and the uterus is atonic — '+
-           '<a href="../procedures/?from=home#c13" style="color:var(--blue)">procedures card 13</a>.')+
+           '<a href="../procedures/?from=home#c13" style="color:var(--blue-tx)">procedures card 13</a>.')+
        row('TEAM','Hand off to the arriving OB attending. Say the running total out loud as you do.')+
        '</div>';
   }
@@ -426,13 +427,13 @@ function phaseBox(){
     return bi >= mi;
   });
   if(meds.length){
-    h+='<div class="sec" style="margin-top:14px;color:var(--amber)">UTEROTONICS — SAY EACH DOSE OUT LOUD</div>';
+    h+='<div class="sec" style="margin-top:14px;color:var(--amber-tx)">UTEROTONICS — SAY EACH DOSE OUT LOUD</div>';
     meds.forEach(function(m){
       var blocked = m.block && S.flags[m.block];
       var given = S.given[m.id];
       h+='<div class="med'+(given?' given':'')+(blocked?' blocked':'')+'">'+
          '<div class="nm"><b>'+esc(m.n)+'</b><i>'+esc(m.d)+
-         (blocked?' <span style="color:var(--red);font-weight:700">— '+esc(m.blockWhy)+'</span>':'')+'</i></div>'+
+         (blocked?' <span style="color:var(--red-tx);font-weight:700">— '+esc(m.blockWhy)+'</span>':'')+'</i></div>'+
          (blocked ? '<button type="button" disabled style="opacity:.6">BLOCKED</button>'
                   : '<button type="button" data-med="'+m.id+'">'+(given?'✓ GIVEN '+given:'GIVEN')+'</button>')+
          '</div>';
@@ -477,7 +478,7 @@ var ACC=[
   { id:'scope', t:'SCOPE — FULL DETAIL', b:function(){
       return '<p><b>This is the mother after delivery.</b> Escalate on the <b>trend</b> — loss climbing while pressure falls — '+
         'not on a single number.</p><p>If the newborn also needs help that is '+
-        '<a href="../neonatal/?from=home" style="color:var(--blue)">neonatal resuscitation</a>, and it needs a '+
+        '<a href="../neonatal/?from=home" style="color:var(--blue-tx)">neonatal resuscitation</a>, and it needs a '+
         '<b>different person</b>: say out loud who is staying with her.</p>'; } },
   { id:'flags', t:'CONTRAINDICATIONS — ASK ONCE, NOW', b:function(){
       var h='<p>Answered up front so the screen can rule a drug out for you, rather than you '+
@@ -500,7 +501,7 @@ var ACC=[
       return h; } },
   { id:'meds', t:'UTEROTONICS + DOSES', b:function(){
       return '<p>'+SITE.meds.map(function(m){
-        return '<b>'+esc(m.n)+'</b> — '+esc(m.d)+(m.blockWhy?' <span style="color:var(--red)">'+esc(m.blockWhy)+'</span>':'');
+        return '<b>'+esc(m.n)+'</b> — '+esc(m.d)+(m.blockWhy?' <span style="color:var(--red-tx)">'+esc(m.blockWhy)+'</span>':'');
       }).join('<br><br>')+'</p><p>Kit lives in the '+esc(SITE.local.cart)+'.</p>'; } },
   /* The old EVENT LOG accordion is retired — the case shell's timeline
      (layer 8, #shelltl) is the one view of S.events now. */
@@ -612,7 +613,7 @@ function paint(){
       '· Uterus firm and bleeding stopped, confirmed out loud<br>'+
       '· Labs back, products accounted for, OB at the bedside<br>'+
       '· Disposition and level of monitoring named<br>'+
-      '· The team gets a <a href="../conversations/?from=home#c04" style="color:var(--blue)">debrief</a>';
+      '· The team gets a <a href="../conversations/?from=home#c04" style="color:var(--blue-tx)">debrief</a>';
   }
 
   var h='';

@@ -10,13 +10,17 @@
      bookmark, QR code, and deep link working: it forwards immediately to the
      Conversations debrief card. Delete this folder only when no printed QR
      points here anymore. -->
+<style>/* @design-system */</style>
 <meta http-equiv="refresh" content="0; url=../conversations/?from=home#c04">
 <script>location.replace('../conversations/?from=home#c04');</script>
 </head>
-<body>
-<p style="font-family:Helvetica,Arial,sans-serif; padding:24px;">
+<body data-theme="dark">
+<script>/* @theme-boot */</script>
+<!-- Themed even though it is only on screen for an instant: without it the
+     redirect flashes a white page at a clinician who chose dark. -->
+<p style="padding:24px; color:var(--ink);">
   The Debrief card now lives in
-  <a href="../conversations/?from=home#c04">Conversations &rarr; Debrief</a>.
+  <a href="../conversations/?from=home#c04" style="color:var(--accent)">Conversations &rarr; Debrief</a>.
 </p>
 </body>
 </html>
