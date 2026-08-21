@@ -22,7 +22,7 @@
   /* ---- Shared design language injected above (build.mjs). Only this tool's
      own audit/capture styles live below. ---- */
   main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
-  a { color:var(--blue); }
+  a { color:var(--blue-tx); }
   a:hover { color:var(--ink); }
   button { -webkit-appearance:none; appearance:none; border-radius:0; touch-action:manipulation; }
   .steps { display:grid; grid-template-columns:1fr; gap:12px; align-items:start; padding:14px 14px 0; }
@@ -30,10 +30,10 @@
   /* status chips */
   .st{display:inline-block;font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
     font-size:10.5px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:6px;white-space:nowrap}
-  .st-ok{background:rgba(61,163,93,.18);color:var(--green);border:1px solid var(--green)}
-  .st-set{background:rgba(61,163,93,.28);color:var(--green);border:1px solid var(--green)}
+  .st-ok{background:rgba(61,163,93,.18);color:var(--green-tx);border:1px solid var(--green)}
+  .st-set{background:rgba(61,163,93,.28);color:var(--green-tx);border:1px solid var(--green)}
   .st-vf{background:var(--note-bg);color:var(--note-tx);border:1px solid var(--note-tx)}
-  .st-gap{background:rgba(229,72,77,.15);color:var(--red);border:1px solid var(--red)}
+  .st-gap{background:rgba(229,72,77,.15);color:var(--red-tx);border:1px solid var(--red)}
   .st-new{background:var(--card2);color:var(--ink2);border:1px solid var(--line)}
   .st-na{background:var(--card2);color:var(--ink2);border:1px dashed var(--ink2)}
   /* audit rows */
@@ -48,10 +48,10 @@
   .eqsel{flex:0 0 auto;max-width:100%}
   .eqloc{flex:1 1 190px;min-width:0}
   .eqsel:focus-visible,.eqloc:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-  .eqrow[data-state="gap"] .eqsel{border-color:var(--red);color:var(--red)}
+  .eqrow[data-state="gap"] .eqsel{border-color:var(--red);color:var(--red-tx)}
   .eqrow[data-state="set"] .eqsel{border-color:var(--green)}
   .eqhead{padding:14px 0 2px;font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;
-    font-weight:700;letter-spacing:.1em;color:var(--teal)}
+    font-weight:700;letter-spacing:.1em;color:var(--teal-tx)}
   .eqkit{border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-top:10px;background:var(--card2)}
   .eqkit>.kname{font-size:15px;font-weight:700}
   .eqkit .eqrow:first-of-type{border-top:0}
@@ -75,7 +75,7 @@
   .eqbtn{min-height:44px;padding:0 14px;background:var(--card2);border:1px solid var(--line);color:var(--ink2);
     font:inherit;font-weight:700;letter-spacing:.04em;cursor:pointer;border-radius:8px}
   .eqbtn:hover{border-color:var(--accent);color:var(--accent)}
-  .eqbtn.danger{color:var(--red);border-color:var(--red)}
+  .eqbtn.danger{color:var(--red-tx);border-color:var(--red)}
   @media print {
     body[data-theme]{ --bg:#fff; --card:#fff; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D; --line:rgba(15,35,60,.18);
       --accent:#00693E; --red:#C63238; --amber:#B07E13; --blue:#2F6FB5; --green:#1F7F49; --gray:#6B7A8D;
@@ -737,7 +737,7 @@ try{ window.SITE = SITE; }catch(e){}
     h+='<div class="lrh-mono" style="font-size:11.5px;color:var(--ink2);padding-bottom:8px">LAST CHECKED '
       +(st.lastChecked ? esc(st.lastChecked.when)+' &middot; '+esc(st.lastChecked.by)
                        : '&mdash; never recorded on this device')
-      +(st.lastExported ? '' : (st.lastChecked ? ' &middot; <b style="color:var(--amber)">NOT EXPORTED</b>' : ''))
+      +(st.lastExported ? '' : (st.lastChecked ? ' &middot; <b style="color:var(--amber-tx)">NOT EXPORTED</b>' : ''))
       +'</div>';
 
     items.forEach(function(name,i){
@@ -756,7 +756,7 @@ try{ window.SITE = SITE; }catch(e){}
 
     h+='<div style="border-top:2px solid var(--line);margin-top:10px;padding-top:10px">'
       +'<div class="lrh-mono" style="font-size:11.5px;color:var(--ink2)">'+done+' of '+items.length+' marked'
-      +(bad?' &middot; <b style="color:var(--red)">'+bad+' NOT OK</b>':'')+'</div>'
+      +(bad?' &middot; <b style="color:var(--red-tx)">'+bad+' NOT OK</b>':'')+'</div>'
       +'<label style="display:block;font-size:12.5px;color:var(--ink2);margin:10px 0 4px" for="kc-init">Your initials '
       +'&mdash; initials only, never a full name (shared device)</label>'
       /* No maxlength: it silently truncated "Lon Setnik" to "Lon", which the
@@ -764,7 +764,7 @@ try{ window.SITE = SITE; }catch(e){}
          of refusing one. Let the full name be typed and rejected out loud. */
       +'<input id="kc-init" class="eqloc" type="text" inputmode="text" autocomplete="off" '
       +'style="flex:none;width:120px" placeholder="e.g. LS">'
-      +'<div id="kc-warn" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>'
+      +'<div id="kc-warn" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber-tx)"></div>'
       +'<div style="display:flex;gap:8px;flex-wrap:wrap;margin-top:10px">'
       +'<button type="button" class="eqbtn" id="kc-save">RECORD THIS CHECK</button>'
       +'<button type="button" class="eqbtn" id="kc-csv">EXPORT CSV</button>'

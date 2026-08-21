@@ -189,8 +189,21 @@ await pg.click('#menubtn'); await pg.waitForTimeout(200);
 const more = await pg.evaluate(() => document.getElementById('moremenu').innerText);
 ok('⋯ menu offers the case timeline', /timeline/i.test(more));
 ok('⋯ menu offers feedback', /feedback/i.test(more));
-ok('⋯ menu offers reset, in red', /reset/i.test(more) && await pg.evaluate(() =>
-  /rgb\(229, 72, 77\)|rgb\(198, 50, 56\)/.test(getComputedStyle(document.querySelector('#moremenu .danger')).color)));
+/* Asserts the destructive item is painted with the manual's red TEXT token,
+   resolved from the page, rather than a literal RGB. The literal broke the
+   moment --red split into a fill token and a --red-tx text token for contrast;
+   reading the token keeps the check honest across future palette work while
+   still going red if someone paints RESET the same colour as everything else. */
+ok('⋯ menu offers reset, in red', /reset/i.test(more) && await pg.evaluate(() => {
+  const el = document.querySelector('#moremenu .danger');
+  if (!el) return false;
+  const px = v => { const d = document.createElement('span'); d.style.color = v;
+    document.body.appendChild(d); const c = getComputedStyle(d).color; d.remove(); return c; };
+  const red = px(getComputedStyle(document.body).getPropertyValue('--red-tx').trim() || '#E5484D');
+  const ink = px(getComputedStyle(document.body).getPropertyValue('--ink').trim());
+  const got = getComputedStyle(el).color;
+  return got === red && got !== ink;
+}));
 
 /* --- layer 8: the timeline opens from BOTH entry points --- */
 await pg.click('#tlbtn'); await pg.waitForTimeout(250);

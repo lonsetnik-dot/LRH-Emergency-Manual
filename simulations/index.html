@@ -27,7 +27,7 @@
   /* green box/head (positive outcome / debrief) — same local pattern debrief/ uses;
      green is not a shared severity. */
   .t-box-green{border:2px solid var(--green);border-radius:12px;overflow:hidden}
-  .t-head-green{background:var(--green)}
+  .t-head-green{background:var(--sev-ok)}
   /* ---- EQUIPMENT WALK (orientation) — the rows a team physically finds during
      the sim. Same visual language as equipment-readiness/, because it writes
      the same record. ---- */
@@ -40,17 +40,18 @@
   .swsel{flex:0 0 auto;max-width:100%}
   .swloc{flex:1 1 190px;min-width:0}
   .swsel:focus-visible,.swloc:focus-visible{outline:2px solid var(--accent);outline-offset:1px}
-  .swrow[data-state="gap"] .swsel{border-color:var(--red);color:var(--red)}
+  .swrow[data-state="gap"] .swsel{border-color:var(--red);color:var(--red-tx)}
   .swrow[data-state="set"] .swsel{border-color:var(--green)}
   .st{display:inline-block;font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
     font-size:10.5px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:6px;white-space:nowrap}
-  .st-ok{background:rgba(61,163,93,.18);color:var(--green);border:1px solid var(--green)}
-  .st-set{background:rgba(61,163,93,.28);color:var(--green);border:1px solid var(--green)}
+  .st-ok{background:rgba(61,163,93,.18);color:var(--green-tx);border:1px solid var(--green)}
+  .st-set{background:rgba(61,163,93,.28);color:var(--green-tx);border:1px solid var(--green)}
   .st-vf{background:var(--note-bg);color:var(--note-tx);border:1px solid var(--note-tx)}
-  .st-gap{background:rgba(229,72,77,.15);color:var(--red);border:1px solid var(--red)}
+  .st-gap{background:rgba(229,72,77,.15);color:var(--red-tx);border:1px solid var(--red)}
   .st-new{background:var(--card2);color:var(--ink2);border:1px solid var(--line)}
   .st-na{background:var(--card2);color:var(--ink2);border:1px dashed var(--ink2)}
   .swsum{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;letter-spacing:.06em;color:var(--ink2)}
+  .t-head .swsum{color:var(--on-sev)}
   .swbtn{min-height:44px;padding:0 14px;background:var(--card2);border:1px solid var(--line);color:var(--ink2);
     font:inherit;font-weight:700;letter-spacing:.04em;cursor:pointer;border-radius:8px}
   .swbtn:hover{border-color:var(--accent);color:var(--accent)}
@@ -70,15 +71,15 @@
   /* "open this card" jump chip — the recorder's cue to drive the manual */
   .golink{display:inline-flex;align-items:center;gap:6px;margin:4px 6px 4px 0;min-height:38px;
     padding:6px 12px;background:var(--card);border:2px solid var(--teal);border-radius:9px;
-    color:var(--teal);text-decoration:none;font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+    color:var(--teal-tx);text-decoration:none;font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
     font-size:12px;font-weight:700;letter-spacing:.05em}
-  .golink:hover{color:var(--teal);border-color:var(--teal);background:var(--card2)}
+  .golink:hover{color:var(--teal-tx);border-color:var(--teal);background:var(--card2)}
   /* the ADVANCE WHEN trigger line closing each phase */
   .adv{margin:8px 0 2px;font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
-    font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--amber)}
+    font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--amber-tx)}
   main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
   article { scroll-margin-top:var(--sticky-h,54px); margin-top:12px; }
-  a { color:var(--blue); }
+  a { color:var(--blue-tx); }
   a:hover { color:var(--ink); }
   a[href^="#"] { -webkit-tap-highlight-color:rgba(47,98,168,0.2); }
   summary::-webkit-details-marker { display:none; }

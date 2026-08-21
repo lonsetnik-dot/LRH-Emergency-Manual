@@ -22,18 +22,18 @@
   /* ---- Shared design language injected above (build.mjs). Only this page's
      own provenance styles live below. ---- */
   main { max-width:1100px; margin:0 auto; padding-bottom:56px; }
-  a { color:var(--blue); }
+  a { color:var(--blue-tx); }
   a:hover { color:var(--ink); }
   button { -webkit-appearance:none; appearance:none; border-radius:0; touch-action:manipulation; }
 
   /* status + impact chips */
   .st{display:inline-block;font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
     font-size:10.5px;font-weight:700;letter-spacing:.06em;padding:2px 7px;border-radius:6px;white-space:nowrap}
-  .st-current{background:rgba(61,163,93,.18);color:var(--green);border:1px solid var(--green)}
+  .st-current{background:rgba(61,163,93,.18);color:var(--green-tx);border:1px solid var(--green)}
   .st-due{background:var(--note-bg);color:var(--note-tx);border:1px solid var(--note-tx)}
-  .st-overdue{background:rgba(229,72,77,.15);color:var(--red);border:1px solid var(--red)}
+  .st-overdue{background:rgba(229,72,77,.15);color:var(--red-tx);border:1px solid var(--red)}
   .st-never{background:var(--card2);color:var(--ink2);border:1px dashed var(--ink2)}
-  .st-unrec{background:rgba(229,72,77,.15);color:var(--red);border:1px solid var(--red)}
+  .st-unrec{background:rgba(229,72,77,.15);color:var(--red-tx);border:1px solid var(--red)}
   .st-high{background:var(--card2);color:var(--ink);border:1px solid var(--line)}
   .st-medium,.st-low{background:var(--card2);color:var(--ink2);border:1px solid var(--line)}
 
@@ -42,7 +42,7 @@
   .src:first-of-type{border-top:0}
   .src h3{margin:0 0 3px;font-size:16.5px;line-height:1.25}
   .src .body{font-family:'IBM Plex Mono',ui-monospace,monospace;font-size:11px;font-weight:700;
-    letter-spacing:.1em;color:var(--teal);display:block;margin-bottom:2px}
+    letter-spacing:.1em;color:var(--teal-tx);display:block;margin-bottom:2px}
   .src .chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
   .src .meta{font-size:13px;color:var(--ink2);line-height:1.45;margin:4px 0 0}
   .src .meta b{color:var(--ink)}

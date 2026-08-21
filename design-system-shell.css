@@ -61,13 +61,13 @@
 .shellpilltag{color:#F0899A;font:700 11px var(--mono);letter-spacing:.06em}
 .shellmore{min-width:44px;min-height:44px;background:none;border:none;color:var(--ink);font-size:22px;cursor:pointer;border-radius:10px}
 .shellbar .ghost{min-height:44px;display:inline-flex;align-items:center}
-.shellreset{border-color:rgba(229,72,77,.55) !important;color:var(--red) !important}
+.shellreset{border-color:rgba(229,72,77,.55) !important;color:var(--red-tx) !important}
 /* -- bar dropdowns (tool switcher + ⋯ overflow) -- */
 .shellmenu{position:fixed;top:58px;z-index:70;width:250px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:0 16px 40px rgba(0,0,0,.5);padding:6px}
 .shellmenu.left{left:8px}.shellmenu.right{right:8px}
 .shellmenurow{width:100%;display:flex;gap:10px;align-items:center;min-height:46px;padding:0 14px;background:none;border:none;color:var(--ink);font:700 15px var(--sans);cursor:pointer;border-radius:9px;text-align:left;text-decoration:none;box-sizing:border-box}
 .shellmenurow.on{background:var(--card2)}
-.shellmenurow.danger{color:var(--red)}
+.shellmenurow.danger{color:var(--red-tx)}
 .shellmenudiv{height:1px;background:var(--line);margin:6px 10px}
 .shellmenusub{margin-left:auto;font:600 11px var(--mono);color:var(--ink2);letter-spacing:.04em}
 
@@ -87,28 +87,28 @@
 @keyframes metbeat{0%{transform:scale(1);opacity:1}30%{transform:scale(1.45);opacity:.75}60%{transform:scale(1);opacity:1}100%{transform:scale(1);opacity:1}}
 @media (prefers-reduced-motion: reduce){.shellmetdot{animation:none}}
 .shellmetmode{color:var(--ink);font:700 12.5px var(--sans);letter-spacing:.05em;white-space:nowrap}
-.shellmetstatus{font-size:11.5px;font-weight:600;white-space:nowrap;color:var(--green)}
+.shellmetstatus{font-size:11.5px;font-weight:600;white-space:nowrap;color:var(--green-tx)}
 .shellsmallchip{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 12px;border-radius:999px;background:none;border:1px solid var(--line);color:var(--ink2);font:700 11.5px var(--sans);letter-spacing:.05em;cursor:pointer;white-space:nowrap;flex:none}
-.shellsmallchip.on{background:rgba(61,163,93,.15);border-color:var(--green);color:var(--green)}
+.shellsmallchip.on{background:rgba(61,163,93,.15);border-color:var(--green);color:var(--green-tx)}
 
 /* -- layer 4: weight strip -- */
 .shellweight{width:100%;display:flex;align-items:center;gap:10px;min-height:44px;padding:0 16px;background:var(--card);border:none;border-bottom:1px solid var(--line);cursor:pointer;font-family:var(--sans);text-align:left;box-sizing:border-box}
 .shellweight .k{font:800 12px var(--sans);letter-spacing:.08em;color:var(--ink2)}
 .shellweight .v{font:700 15px var(--mono)}
-.shellweight .v.set{color:var(--green)}
-.shellweight .v.unset{color:var(--amber);font-family:var(--sans)}
+.shellweight .v.set{color:var(--green-tx)}
+.shellweight .v.unset{color:var(--amber-tx);font-family:var(--sans)}
 .shellweight .m{margin-left:auto;font-size:11px;color:var(--ink2);white-space:nowrap}
 .shellweightform{display:flex;flex-wrap:wrap;gap:10px;align-items:center;padding:12px 16px;background:var(--card);border-bottom:1px solid var(--line)}
 
 /* -- layer 5: face-up content pieces -- */
-.shelltele{display:block;width:100%;background:rgba(76,141,218,.12);border:1.5px solid var(--blue);border-radius:14px;padding:15px;color:#8FBBEA;font:700 16px var(--sans);letter-spacing:.04em;cursor:pointer;margin-top:10px;box-sizing:border-box}
+.shelltele{display:block;width:100%;background:rgba(76,141,218,.12);border:1.5px solid var(--blue);border-radius:14px;padding:15px;color:var(--blue-tx);font:700 16px var(--sans);letter-spacing:.04em;cursor:pointer;margin-top:10px;box-sizing:border-box}
 .shelltele .sub{display:block;font:600 12.5px var(--sans);letter-spacing:0;margin-top:5px;color:var(--ink2)}
-.shellteledone{background:rgba(76,141,218,.10);border:1.5px solid var(--line);border-radius:14px;padding:13px 16px;color:#8FBBEA;font:700 14px var(--sans);letter-spacing:.04em;text-align:center;margin-top:10px}
+.shellteledone{background:rgba(76,141,218,.10);border:1.5px solid var(--line);border-radius:14px;padding:13px 16px;color:var(--blue-tx);font:700 14px var(--sans);letter-spacing:.04em;text-align:center;margin-top:10px}
 .shelldose{display:flex;align-items:center;gap:12px;background:var(--card);border:1px solid var(--line);border-radius:12px;padding:12px 16px}
 .shelldose .nm{color:var(--ink);font:700 14px var(--sans)}
 .shelldose .rl{color:var(--ink2);font-size:12px;margin-top:1px}
-.shelldose .vl{margin-left:auto;font:700 16px var(--mono);color:var(--green);white-space:nowrap;text-align:right}
-.shelldose .vl.unset{color:var(--amber);font:700 13px var(--sans)}
+.shelldose .vl{margin-left:auto;font:700 16px var(--mono);color:var(--green-tx);white-space:nowrap;text-align:right}
+.shelldose .vl.unset{color:var(--amber-tx);font:700 13px var(--sans)}
 .shellothers{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 16px;background:none;border:1px solid var(--line);border-radius:12px;color:var(--ink2);font:700 13px var(--sans);letter-spacing:.06em;cursor:pointer;width:100%;box-sizing:border-box}
 
 /* -- layer 6: pinned action dock (phone, running only) + slot schemes -- */
@@ -117,9 +117,9 @@
 .shelldockbtn{flex:1;display:inline-flex;flex-direction:column;align-items:center;justify-content:center;min-height:54px;border-radius:12px;font:700 15px var(--sans);letter-spacing:.02em;cursor:pointer;white-space:nowrap;padding:6px 12px}
 .shelldockclock{display:block;font:700 13px var(--mono);margin-top:2px}
 .shelldockclock.due{color:#FF8FA0}
-.scheme-amber{background:rgba(240,180,41,.13);border:1.5px solid var(--amber);color:var(--amber)}
+.scheme-amber{background:rgba(240,180,41,.13);border:1.5px solid var(--amber);color:var(--amber-tx)}
 .scheme-purple{background:rgba(155,123,212,.14);border:1.5px solid var(--purple);color:#B9A2E2}
-.scheme-blue{background:rgba(76,141,218,.14);border:1.5px solid var(--blue);color:#8FBBEA}
+.scheme-blue{background:rgba(76,141,218,.14);border:1.5px solid var(--blue);color:var(--blue-tx)}
 .shellticker{display:flex;align-items:center;gap:10px;min-height:44px;padding:0 10px;background:none;border:none;border-radius:8px;color:var(--ink2);font:600 12px var(--mono);cursor:pointer;text-align:left;white-space:nowrap;overflow:hidden;width:100%;box-sizing:border-box}
 .shellticker .tk{overflow:hidden;text-overflow:ellipsis}
 .shellticker .lg{margin-left:auto;color:var(--ink2);font:700 11px var(--sans);flex:none}

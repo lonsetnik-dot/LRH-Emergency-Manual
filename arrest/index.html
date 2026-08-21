@@ -108,9 +108,9 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
   <input class="inp" id="aIn" inputmode="decimal" placeholder="age" style="width:52px;font-size:16px" aria-label="Age">
   <select class="inp" id="aUnit" aria-label="Age unit" style="width:auto;font-size:16px;min-height:44px"><option value="mo">mo</option><option value="yr" selected>yr</option></select>
   <button class="btn" id="estbtn" type="button" style="font:700 12px var(--sans);padding:9px 12px;border-radius:9px;min-height:38px">ESTIMATE KG</button>
-  <button class="ghost" id="wdone" type="button" style="min-height:38px;border-color:var(--green);color:var(--green)">DONE ✓</button>
+  <button class="ghost" id="wdone" type="button" style="min-height:38px;border-color:var(--green);color:var(--green-tx)">DONE ✓</button>
   <span id="wnote" style="font-size:13px;font-weight:700;color:var(--accent)">enter weight</span>
-  <span id="werr" style="display:none;flex-basis:100%;font-size:12.5px;font-weight:700;color:var(--red)"></span>
+  <span id="werr" style="display:none;flex-basis:100%;font-size:12.5px;font-weight:700;color:var(--red-tx)"></span>
   <span id="pedscrit" style="display:none;flex-basis:100%;align-items:center;gap:10px">
     <span style="flex:1;font-size:12.5px;font-weight:700;color:var(--accent);line-height:1.35">Pediatric criteria met — dosing is weight-based PALS</span>
     <button class="ghost" id="dismisspeds" type="button" style="white-space:nowrap">TREAT AS ADULT</button>
@@ -135,7 +135,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
        unlike the retired peds-mode banner, whose DISMISS read as a dosing
        switch. -->
   <div id="nrpbanner" class="card" style="display:none;gap:10px;align-items:center;margin-top:8px;border-color:var(--red);border-left:8px solid var(--red);padding:8px 10px">
-    <div style="flex:1;font-size:13px;line-height:1.4"><b>NEWLY BORN (first days of life)?</b> Use <a href="../neonatal/?from=arrest" style="color:var(--red);font-weight:800">NEONATAL RESUSCITATION (NRP) &rarr;</a> — doses differ: epi <b>0.02 mg/kg</b> (NRP) vs 0.01 mg/kg (PALS). Older infant who simply weighs &lt;3 kg? Dismiss and continue with PALS.</div>
+    <div style="flex:1;font-size:13px;line-height:1.4"><b>NEWLY BORN (first days of life)?</b> Use <a href="../neonatal/?from=arrest" style="color:var(--red-tx);font-weight:800">NEONATAL RESUSCITATION (NRP) &rarr;</a> — doses differ: epi <b>0.02 mg/kg</b> (NRP) vs 0.01 mg/kg (PALS). Older infant who simply weighs &lt;3 kg? Dismiss and continue with PALS.</div>
     <button class="ghost" id="dismissnrp" type="button" style="white-space:nowrap">DISMISS</button>
   </div>
 
@@ -168,7 +168,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
 
   <div id="idle">
     <div class="card" id="pulsegate" style="margin-top:14px;padding:12px;border-color:var(--amber)">
-      <div class="sec" style="color:var(--amber)">FIRST — FEEL FOR A PULSE. TEN SECONDS, NO LONGER.</div>
+      <div class="sec" style="color:var(--amber-tx)">FIRST — FEEL FOR A PULSE. TEN SECONDS, NO LONGER.</div>
       <div style="font-size:13.5px;line-height:1.5;margin-top:4px">
         Carotid or femoral in an adult; brachial or femoral in an infant. Look for normal breathing at the same time.
         <b>If you are not certain there is a pulse, there is no pulse</b> — start compressions.
@@ -181,7 +181,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
       <div style="font-size:13px;font-weight:600;opacity:.85;margin-top:4px">Code blue · starts the clock and the 2:00 cycle · rhythm decided at the first check</div>
     </button>
 
-    <button id="respstartbtn" type="button" style="width:100%;margin-top:10px;min-height:84px;border:2px solid var(--blue);border-radius:16px;background:transparent;color:var(--blue);font:800 19px var(--sans);letter-spacing:.03em;cursor:pointer">
+    <button id="respstartbtn" type="button" style="width:100%;margin-top:10px;min-height:84px;border:2px solid var(--blue);border-radius:16px;background:transparent;color:var(--blue-tx);font:800 19px var(--sans);letter-spacing:.03em;cursor:pointer">
       <span style="display:inline-flex;align-items:center;justify-content:center;gap:10px">
         <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v9"></path><path d="M12 12c0 4-1.5 8-4.5 8S4 17 4 14"></path><path d="M12 12c0 4 1.5 8 4.5 8S20 17 20 14"></path></svg>PULSE, NOT BREATHING</span>
       <div style="font-size:13px;font-weight:600;color:var(--ink2);margin-top:4px">Rescue breathing — starts a paced breath tone</div>
@@ -205,7 +205,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
          as reference, because the next-step numbers already ride the action
          buttons (layers 2/6). -->
     <div id="unknownbar" class="card" data-opcard style="margin-top:8px;padding:10px 12px;border:2px solid var(--amber)">
-      <div class="sec" style="color:var(--amber)">RHYTHM NOT YET KNOWN — THIS IS STILL JUST CPR</div>
+      <div class="sec" style="color:var(--amber-tx)">RHYTHM NOT YET KNOWN — THIS IS STILL JUST CPR</div>
       <div style="font-size:13.5px;line-height:1.45;margin-top:4px">
         Good compressions, pads on, airway supported. <b>The first rhythm you see chooses the algorithm</b> — until then nothing below is committed.
       </div>
@@ -220,7 +220,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
     <div class="card" id="cyclecard" data-opcard style="margin-top:8px;padding:14px;border-radius:16px">
       <div style="display:flex;align-items:center;justify-content:space-between">
         <div class="sec">CPR CYCLE — RHYTHM CHECK AT 0:00</div>
-        <div class="sec" style="text-align:right">SHOCKS <span class="mono" id="shockn" style="font-size:20px;color:var(--red)">0</span></div>
+        <div class="sec" style="text-align:right">SHOCKS <span class="mono" id="shockn" style="font-size:20px;color:var(--red-tx)">0</span></div>
       </div>
       <div style="display:flex;align-items:baseline;gap:14px;margin-top:2px">
         <span class="mono" id="cycleclock" role="timer" style="font-size:54px;font-weight:700;line-height:1">2:00</span>
@@ -248,7 +248,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
         <input id="customin" aria-label="Custom event to log" class="inp" style="flex:1;text-align:left;font-size:15px;font-weight:400;border-radius:10px;padding:12px" placeholder="e.g. IO placed right tibia, calcium given…">
         <button id="customlog" type="button" style="border:none;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG IT</button>
       </div>
-      <div id="customwarn" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>
+      <div id="customwarn" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber-tx)"></div>
       <div style="margin-top:8px;font-size:12.5px;color:var(--ink2)">Anything can be tapped at any time — the algorithm is a guide, not a lock.</div>
     </div>
 
@@ -277,7 +277,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
     <!-- The old "Advanced airway placed?" card became the ADV AIRWAY toggle
          chip in the shell's metronome group (SHELL.md layer 3). -->
 
-    <button id="roscbtn" type="button" style="width:100%;margin-top:10px;min-height:60px;border:2px solid var(--green);border-radius:14px;background:transparent;color:var(--green);font:800 17px var(--sans);letter-spacing:.05em;cursor:pointer">
+    <button id="roscbtn" type="button" style="width:100%;margin-top:10px;min-height:60px;border:2px solid var(--green);border-radius:14px;background:transparent;color:var(--green-tx);font:800 17px var(--sans);letter-spacing:.05em;cursor:pointer">
       <span style="display:inline-flex;align-items:center;justify-content:center;gap:10px">
         <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21C7 17 3 13.5 3 9.5 3 7 5 5 7.5 5c1.8 0 3.4 1 4.5 2.6C13.1 6 14.7 5 16.5 5 19 5 21 7 21 9.5c0 4-4 7.5-9 11.5z"></path><path d="M5 12h4l1.5-3 2 5 1.5-2h5"></path></svg>ROSC — PULSE RETURNED</span>
     </button>
@@ -321,8 +321,8 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
   <div id="resp" style="display:none">
     <div class="card" id="ventcard" style="margin-top:14px;padding:14px;border-radius:16px;border:2px solid var(--blue)">
       <div style="display:flex;align-items:center;justify-content:space-between">
-        <div class="sec" style="color:var(--blue)">RESCUE BREATHING — PULSE PRESENT</div>
-        <div class="sec" style="text-align:right">BREATHS <span class="mono" id="breathn" style="font-size:20px;color:var(--blue)">0</span></div>
+        <div class="sec" style="color:var(--blue-tx)">RESCUE BREATHING — PULSE PRESENT</div>
+        <div class="sec" style="text-align:right">BREATHS <span class="mono" id="breathn" style="font-size:20px;color:var(--blue-tx)">0</span></div>
       </div>
       <div style="display:flex;align-items:baseline;gap:14px;margin-top:2px">
         <span class="mono" id="ventclock" role="timer" style="font-size:54px;font-weight:700;line-height:1">6</span>
@@ -337,10 +337,10 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
     </div>
 
     <div id="pulsedue" class="card due" style="display:none;margin-top:10px;border:2px solid var(--amber);padding:12px">
-      <div class="sec" style="color:var(--amber)">PULSE CHECK DUE — <span id="pulsedueat">2</span> MINUTES SINCE THE LAST ONE</div>
+      <div class="sec" style="color:var(--amber-tx)">PULSE CHECK DUE — <span id="pulsedueat">2</span> MINUTES SINCE THE LAST ONE</div>
       <div style="font-size:13px;color:var(--ink2);margin-top:3px">Ten seconds, no longer. Keep breathing for them while you feel.</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
-        <button class="btn" id="pulseyes" type="button" style="min-height:64px;border-color:var(--green);color:var(--green);font:800 14px var(--sans)">STILL A PULSE
+        <button class="btn" id="pulseyes" type="button" style="min-height:64px;border-color:var(--green);color:var(--green-tx);font:800 14px var(--sans)">STILL A PULSE
           <div style="font-size:11.5px;font-weight:600;color:var(--ink2);margin-top:2px">keep breathing for them</div></button>
         <button class="btn" id="pulseno" type="button" style="min-height:64px;background:var(--red);color:#fff;border:none;font:800 14px var(--sans)">NO PULSE
           <div style="font-size:11.5px;font-weight:600;opacity:.85;margin-top:2px">start CPR now</div></button>
@@ -348,7 +348,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
     </div>
 
     <div id="bradycard" class="card" style="display:none;margin-top:10px;padding:12px;border-color:var(--red)">
-      <div class="sec" style="color:var(--red)">PEDIATRIC — THE PULSE IS NOT THE WHOLE ANSWER</div>
+      <div class="sec" style="color:var(--red-tx)">PEDIATRIC — THE PULSE IS NOT THE WHOLE ANSWER</div>
       <div style="font-size:13.5px;line-height:1.5;margin-top:4px">
         If the heart rate stays below <b><span id="bradyhr2">60</span>/min with signs of cardiopulmonary compromise</b> despite
         oxygenation and ventilation, <b>start compressions</b> — even though you can feel a pulse. In children the
@@ -357,7 +357,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
     </div>
 
     <div id="spontcard" class="card" style="display:none;margin-top:10px;padding:12px;border:2px solid var(--green)">
-      <div class="sec" style="color:var(--green)">BREATHING ON THEIR OWN — TONE STOPPED</div>
+      <div class="sec" style="color:var(--green-tx)">BREATHING ON THEIR OWN — TONE STOPPED</div>
       <div style="font-size:13.5px;line-height:1.5;margin-top:4px">
         Stay at the head. Recheck rate, depth, saturation and end-tidal CO₂. Apnea that resolved once will often resolve again in the other direction.
       </div>
@@ -381,22 +381,22 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
 
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
       <button class="btn" id="respcpr" type="button" style="min-height:64px;background:var(--red);color:#fff;border:none;font:800 15px var(--sans)">LOST THE PULSE — START CPR</button>
-      <button class="btn" id="respok" type="button" style="min-height:64px;border-color:var(--green);color:var(--green);font:800 15px var(--sans)">BREATHING ON THEIR OWN</button>
+      <button class="btn" id="respok" type="button" style="min-height:64px;border-color:var(--green);color:var(--green-tx);font:800 15px var(--sans)">BREATHING ON THEIR OWN</button>
     </div>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
       <button class="btn" id="resplog" type="button" style="min-height:48px;font:700 13px var(--sans)">LOG IT</button>
-      <a class="btn" id="resplink" href="../airway/" style="min-height:48px;font:700 13px var(--sans);display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--blue);border-color:var(--blue)">CANNOT VENTILATE →</a>
+      <a class="btn" id="resplink" href="../airway/" style="min-height:48px;font:700 13px var(--sans);display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--blue-tx);border-color:var(--blue)">CANNOT VENTILATE →</a>
     </div>
     <div id="customrow2" style="display:none;gap:8px;margin-top:8px">
       <input id="customin2" aria-label="Custom event to log" class="inp" style="flex:1;text-align:left;font-size:15px;font-weight:400;border-radius:10px;padding:12px" placeholder="e.g. naloxone 0.4 mg IV, chest rising well">
       <button id="customlog2" type="button" style="border:none;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG IT</button>
     </div>
-    <div id="customwarn2" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>
+    <div id="customwarn2" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber-tx)"></div>
   </div>
 
   <div id="rosc" style="display:none">
     <div class="card" style="margin-top:14px;border:2px solid var(--green);border-radius:16px;padding:16px">
-      <div class="sec" style="color:var(--green)">ROSC — POST-ARREST CARE</div>
+      <div class="sec" style="color:var(--green-tx)">ROSC — POST-ARREST CARE</div>
       <div style="font-size:20px;font-weight:800;margin:4px 0 10px">Pulse returned at <span id="roscwall" class="mono">--:--</span> <span style="font-size:13px;font-weight:600;color:var(--ink2)">(<span id="roscat" class="mono">0:00</span> into the code)</span></div>
       <div style="font-size:14.5px;line-height:1.6">
         · Support airway + oxygenation — target SpO₂ 94–99%, avoid hyperventilation<br>
@@ -405,7 +405,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
         · Find and treat the cause (H's &amp; T's)
       </div>
       <a href="../codes/?from=home#c22" class="btn" style="display:flex;align-items:center;justify-content:center;width:100%;margin-top:12px;min-height:52px;text-decoration:none;border:1px solid var(--line);border-radius:12px;background:var(--card2);color:var(--ink);font:800 14px var(--sans);letter-spacing:.02em">FULL POST-ARREST CARE — CODES CARD 22 →</a>
-      <button id="roscvent" type="button" style="width:100%;margin-top:8px;min-height:60px;border:2px solid var(--blue);border-radius:12px;background:transparent;color:var(--blue);font:800 16px var(--sans);cursor:pointer">NOT BREATHING ADEQUATELY — RESCUE BREATHING</button>
+      <button id="roscvent" type="button" style="width:100%;margin-top:8px;min-height:60px;border:2px solid var(--blue);border-radius:12px;background:transparent;color:var(--blue-tx);font:800 16px var(--sans);cursor:pointer">NOT BREATHING ADEQUATELY — RESCUE BREATHING</button>
       <button id="rearrestbtn" type="button" style="width:100%;margin-top:8px;min-height:60px;border:none;border-radius:12px;background:var(--red);color:#fff;font:800 17px var(--sans);cursor:pointer">RE-ARREST — RESUME CPR</button>
       <a class="btn" href="../debrief/?from=home" style="display:flex;align-items:center;justify-content:center;width:100%;margin-top:8px;min-height:52px;text-decoration:none;border-color:var(--accent);color:var(--accent);font:800 14px var(--sans);letter-spacing:.02em">OPEN THE DEBRIEF TOOL &rarr;</a>
     </div>
@@ -428,7 +428,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
         · Care for the team. Run an <b>immediate check-in</b> as soon as it is practical<br>
         · Family notification, and the conversation that goes with it
       </div>
-      <a class="btn" href="../conversations/?from=home#c03" style="display:flex;align-items:center;justify-content:center;width:100%;margin-top:12px;min-height:52px;text-decoration:none;border-color:var(--blue);color:var(--blue);font:800 14px var(--sans)">DELIVERING THE NEWS — SPIKES &rsaquo;</a>
+      <a class="btn" href="../conversations/?from=home#c03" style="display:flex;align-items:center;justify-content:center;width:100%;margin-top:12px;min-height:52px;text-decoration:none;border-color:var(--blue);color:var(--blue-tx);font:800 14px var(--sans)">DELIVERING THE NEWS — SPIKES &rsaquo;</a>
       <a class="btn" href="../conversations/?from=home#c04" style="display:flex;align-items:center;justify-content:center;width:100%;margin-top:8px;min-height:52px;text-decoration:none;border-color:var(--accent);color:var(--accent);font:800 14px var(--sans)">OPEN THE DEBRIEF &rsaquo;</a>
       <button id="resumearrest" type="button" style="width:100%;margin-top:8px;min-height:52px;border:none;border-radius:12px;background:var(--gray);color:#fff;font:800 14px var(--sans);cursor:pointer">RESUMED — BACK TO THE CODE</button>
     </div>
@@ -644,7 +644,7 @@ function wallTime(ms){
 /* phase: 'idle' | 'cpr' | 'resp' | 'rosc' | 'ceased'
    rhythm: null until the first rhythm check — the whole point of the code blue
    front door is that the algorithm is NOT chosen at the moment CPR starts. */
-var S = { theme:'dark', kg:null, ageY:null, phase:'idle', codeStart:null, cycleStart:null,
+var S = { theme:(document.body.dataset.theme==='light'?'light':'dark'), kg:null, ageY:null, phase:'idle', codeStart:null, cycleStart:null,
           shocks:0, epiN:0, lastEpiAt:null, amioN:0, airway:false, roles:false,
           override:false, events:[], open:null, met:false,
           resetArm:false, roscAt:null, rcOpen:false, rcOrg:false, showCustom:false,

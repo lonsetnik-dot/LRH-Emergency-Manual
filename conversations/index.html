@@ -25,7 +25,7 @@
      tool's own page layout and the script-line style live below. ---- */
   main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
   article { scroll-margin-top:54px; margin-top:12px; }
-  a { color:var(--blue); }
+  a { color:var(--blue-tx); }
   a:hover { color:var(--ink); }
   summary::-webkit-details-marker { display:none; }
   button { -webkit-appearance:none; appearance:none; border-radius:0; touch-action:manipulation; -webkit-tap-highlight-color:rgba(22,50,79,0.15); }
@@ -35,10 +35,10 @@
   .meta { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2); text-transform:uppercase; }
   .nav2 { display:grid; grid-template-columns:1fr 1fr; gap:8px; padding:12px 14px 0; }
   .nav2 a { display:flex; flex-direction:column; gap:3px; padding:12px 13px; background:var(--card); border:1px solid var(--line); border-left:4px solid var(--blue); text-decoration:none; color:var(--ink); }
-  .nav2 a .n { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.07em; color:var(--blue); }
+  .nav2 a .n { font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.07em; color:var(--blue-tx); }
   /* Green marks the positive PLUS/DELTA/PLUS debrief step — not a shared severity. */
   .t-box-green { border:2px solid var(--green); border-radius:12px; overflow:hidden; }
-  .t-head-green { background:var(--green); }
+  .t-head-green { background:var(--sev-ok); }
   #stickytop { position:sticky; top:0; z-index:5; }
   @media (min-width:760px) { .steps { grid-template-columns:repeat(auto-fit,minmax(320px,1fr)); } }
   @media print {

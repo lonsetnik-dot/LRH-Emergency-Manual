@@ -58,7 +58,7 @@
   main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
   article { scroll-margin-top:var(--sticky-h,94px); margin-top:12px; }
   section#top { scroll-margin-top:0; }
-  a { color:var(--blue); }
+  a { color:var(--blue-tx); }
   a:hover { color:var(--ink); }
   a[href^="#"] { -webkit-tap-highlight-color:rgba(47,98,168,0.2); }
   summary::-webkit-details-marker { display:none; }
@@ -99,10 +99,10 @@
   #stickytop { position:sticky; top:0; z-index:30; }
   #wtzone { display:inline-flex; align-items:center; gap:6px; font-family:var(--mono); font-size:11px; letter-spacing:0.06em; color:var(--ink2); }
   #wtzone .sw { width:13px; height:13px; border-radius:50%; border:1.5px solid var(--ink2); flex:none; background:transparent; }
-  #wtstale { font-family:var(--mono); font-size:11.5px; color:var(--amber); }
+  #wtstale { font-family:var(--mono); font-size:11.5px; color:var(--amber-tx); }
   #wtbar.stale { border-bottom-color:var(--amber); }
   .wdose { font-weight:700; color:var(--ink); }
-  .wdose.unset { color:var(--red); font-weight:400; font-style:italic; }
+  .wdose.unset { color:var(--red-tx); font-weight:400; font-style:italic; }
   .wdose-vol { font-size:1.05em; }
   .wdose-mg { font-size:0.86em; font-weight:400; opacity:0.82; margin-left:3px; }
   table.dt { border-collapse:collapse; width:100%; font-size:13.5px; margin:6px 0 2px; }
@@ -300,7 +300,7 @@
   <input class="inp" id="wtage" type="number" inputmode="decimal" step="0.1" min="0" placeholder="age" style="width:52px;font-size:16px" aria-label="Age">
   <select class="inp" id="wtageunit" aria-label="Age unit" style="width:auto;font-size:16px;min-height:44px"><option value="mo">mo</option><option value="yr" selected>yr</option></select>
   <button class="btn" type="button" id="wtestimate" style="font:700 12px var(--sans);padding:9px 12px;border-radius:9px;min-height:38px">ESTIMATE KG</button>
-  <button class="ghost" id="wdone" type="button" style="min-height:38px;border-color:var(--green);color:var(--green)">DONE &#10003;</button>
+  <button class="ghost" id="wdone" type="button" style="min-height:38px;border-color:var(--green);color:var(--green-tx)">DONE &#10003;</button>
   <span id="wtzone" style="flex-basis:100%"></span>
 </div>
 </div>
@@ -379,7 +379,7 @@
   <article id="p02" data-audience="peds">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red); font-size:16px; margin-right:8px;">02</span>Anaphylaxis</h2>
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red-tx); font-size:16px; margin-right:8px;">02</span>Anaphylaxis</h2>
         <span class="t-mono-r">EPINEPHRINE IS FIRST-LINE — DON'T DELAY IT</span>
       </div>
     </div>
@@ -399,8 +399,8 @@
         </table>
         <div style="margin:10px 0 4px; border:2px solid var(--sev-crit);">
           <div style="padding:9px 12px; background:var(--card2);">
-            <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--red);">SINCE LAST EPI DOSE</div>
-            <div id="pepclock" role="timer" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:30px; font-weight:700; line-height:1.1; color:var(--red);">—</div>
+            <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--red-tx);">SINCE LAST EPI DOSE</div>
+            <div id="pepclock" role="timer" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:30px; font-weight:700; line-height:1.1; color:var(--red-tx);">—</div>
             <div id="pepcue" aria-live="polite" aria-atomic="true" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap each button when that dose is given — each is time-stamped to the case timeline.</div>
           </div>
           <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0; border-top:1px solid #fbeaec;">
@@ -453,14 +453,14 @@
   <article id="p03" data-audience="peds">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red); font-size:16px; margin-right:8px;">03</span>Asthma Exacerbation</h2>
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red-tx); font-size:16px; margin-right:8px;">03</span>Asthma Exacerbation</h2>
         <span class="t-mono-r">DEXAMETHASONE-FIRST · PASS SEVERITY</span>
       </div>
     </div>
     <div class="nca" style="padding:12px 14px 0;">
-      <div style="border:2px solid var(--sev-crit); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--red);">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"Pediatric asthma exacerbation — [mild/moderate/severe], starting weight-based albuterol." Say it out loud.</div></div>
+      <div style="border:2px solid var(--sev-crit); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--red-tx);">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"Pediatric asthma exacerbation — [mild/moderate/severe], starting weight-based albuterol." Say it out loud.</div></div>
       <div style="border:2px solid var(--gray); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--ink);">CLAIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Nebulizer/MDI setup · dexamethasone · IV access if severe · monitoring — assign aloud.</div></div>
-      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Determine PASS severity first — it decides everything downstream. Dexamethasone up front, weight-based albuterol, escalate fast if severe.</div></div>
+      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue-tx);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Determine PASS severity first — it decides everything downstream. Dexamethasone up front, weight-based albuterol, escalate fast if severe.</div></div>
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
@@ -516,14 +516,14 @@
   <article id="p04" data-audience="peds">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red); font-size:16px; margin-right:8px;">04</span>Airway Obstruction (Choking)</h2>
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red-tx); font-size:16px; margin-right:8px;">04</span>Airway Obstruction (Choking)</h2>
         <span class="t-mono-r">FOREIGN BODY ASPIRATION</span>
       </div>
     </div>
     <div class="nca" style="padding:12px 14px 0;">
-      <div style="border:2px solid var(--sev-crit); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--red);">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"Choking — complete/partial obstruction, [age]." Say it out loud.</div></div>
+      <div style="border:2px solid var(--sev-crit); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--red-tx);">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"Choking — complete/partial obstruction, [age]." Say it out loud.</div></div>
       <div style="border:2px solid var(--gray); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--ink);">CLAIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">BLS maneuvers · airway equipment/Magill forceps ready · surgical airway backup — assign aloud.</div></div>
-      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Effective cough = don't intervene, watch closely. Ineffective/absent cough = act immediately, technique differs by age.</div></div>
+      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue-tx);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Effective cough = don't intervene, watch closely. Ineffective/absent cough = act immediately, technique differs by age.</div></div>
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
@@ -565,17 +565,17 @@
   <article id="p05" data-audience="peds">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red); font-size:16px; margin-right:8px;">05</span>Epiglottitis / Upper Airway Emergency</h2>
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red-tx); font-size:16px; margin-right:8px;">05</span>Epiglottitis / Upper Airway Emergency</h2>
         <span class="t-mono-r">DO NOT AGITATE · DO NOT EXAMINE THE AIRWAY</span>
       </div>
     </div>
     <div class="nca" style="padding:12px 14px 0;">
-      <div style="border:2px solid var(--sev-crit); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--red);">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"Possible epiglottitis — keeping the child calm with the parent, calling for airway backup now." Say it out loud.</div></div>
+      <div style="border:2px solid var(--sev-crit); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--red-tx);">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"Possible epiglottitis — keeping the child calm with the parent, calling for airway backup now." Say it out loud.</div></div>
       <div style="border:2px solid var(--gray); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--ink);">CLAIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Minimal-handling protocol · blow-by O₂ · transfer team call · surgical airway kit at bedside — assign aloud.</div></div>
-      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Disturb the least, prepare for the worst. Don't touch the airway or agitate the child — call for transport and an airway team in parallel.</div></div>
+      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue-tx);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Disturb the least, prepare for the worst. Don't touch the airway or agitate the child — call for transport and an airway team in parallel.</div></div>
     </div>
 
-    <div style="margin:14px 14px 0; border:2px solid var(--sev-crit); background:var(--card2); color:var(--red); padding:11px 14px; font-size:13.5px; line-height:1.4; font-weight:700;">
+    <div style="margin:14px 14px 0; border:2px solid var(--sev-crit); background:var(--card2); color:var(--red-tx); padding:11px 14px; font-size:13.5px; line-height:1.4; font-weight:700;">
       Do not lay the child flat. Do not place an IV. Do not examine the oropharynx with a tongue depressor. Do not force a mask onto the face. Any of these can precipitate sudden complete obstruction via a ball-valve effect.
     </div>
 
@@ -645,7 +645,7 @@
     <div class="nca" style="padding:12px 14px 0;">
       <div style="border:2px solid var(--gray); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--ink);">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"Bronchiolitis — supportive care, watching for respiratory failure." Say it out loud.</div></div>
       <div style="border:2px solid var(--gray); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--ink);">CLAIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Suction · oxygen/HFNC · hydration · intubation backup if apneic — assign aloud.</div></div>
-      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Supportive care is the treatment — bronchodilators/epi/steroids don't work here. Watch closely for apnea/respiratory failure, especially in young infants.</div></div>
+      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue-tx);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Supportive care is the treatment — bronchodilators/epi/steroids don't work here. Watch closely for apnea/respiratory failure, especially in young infants.</div></div>
     </div>
 
     <div class="t-localize">
@@ -693,17 +693,17 @@
   <article id="p07" data-audience="peds">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red); font-size:16px; margin-right:8px;">07</span>Diabetic Ketoacidosis (DKA)</h2>
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red-tx); font-size:16px; margin-right:8px;">07</span>Diabetic Ketoacidosis (DKA)</h2>
         <span class="t-mono-r">SLOW, STEADY CORRECTION · WATCH FOR CEREBRAL EDEMA</span>
       </div>
     </div>
     <div class="nca" style="padding:12px 14px 0;">
-      <div style="border:2px solid var(--sev-crit); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--red);">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"Suspected pediatric DKA — starting fluids, watching for cerebral edema." Say it out loud.</div></div>
+      <div style="border:2px solid var(--sev-crit); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--red-tx);">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"Suspected pediatric DKA — starting fluids, watching for cerebral edema." Say it out loud.</div></div>
       <div style="border:2px solid var(--gray); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--ink);">CLAIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">2 PIV access · fluids/insulin timing · hourly glucose/q2h labs · neuro checks — assign aloud.</div></div>
-      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Rehydrate first, start insulin only after the first bolus, correct slowly (50–100 mg/dL/hr glucose drop), and watch for cerebral edema the whole time.</div></div>
+      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue-tx);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Rehydrate first, start insulin only after the first bolus, correct slowly (50–100 mg/dL/hr glucose drop), and watch for cerebral edema the whole time.</div></div>
     </div>
 
-    <div style="margin:14px 14px 0; border:2px solid var(--sev-crit); background:var(--card2); color:var(--red); padding:11px 14px; font-size:13.5px; line-height:1.4; font-weight:700;">
+    <div style="margin:14px 14px 0; border:2px solid var(--sev-crit); background:var(--card2); color:var(--red-tx); padding:11px 14px; font-size:13.5px; line-height:1.4; font-weight:700;">
       Cerebral edema occurs in 0.3–0.9% of pediatric DKA with 21–24% mortality, and can appear before, during, or after treatment (typically within 12h). Watch for new headache, recurrent vomiting, altered mental status, urinary incontinence, or a Cushing triad (bradycardia, irregular respirations, hypertension) — treat empirically on high suspicion, don't wait for imaging.
     </div>
 
@@ -781,7 +781,7 @@
     <div class="nca" style="padding:12px 14px 0;">
       <div style="border:2px solid var(--gray); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--ink);">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"Altered mental status — checking glucose first." Say it out loud.</div></div>
       <div style="border:2px solid var(--gray); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--ink);">CLAIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Airway/GCS · glucose/dextrose · naloxone if suspected opioid · red-flag workup — assign aloud.</div></div>
-      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Airway/breathing/circulation, then glucose immediately. Work the differential fast — several causes (hypoglycemia, meningitis, abusive head trauma) are time-critical.</div></div>
+      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue-tx);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Airway/breathing/circulation, then glucose immediately. Work the differential fast — several causes (hypoglycemia, meningitis, abusive head trauma) are time-critical.</div></div>
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
@@ -842,7 +842,7 @@
     <div class="nca" style="padding:12px 14px 0;">
       <div style="border:2px solid var(--gray); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--ink);">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"Acute agitation — de-escalating first, low-stimulation space." Say it out loud.</div></div>
       <div style="border:2px solid var(--gray); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--ink);">CLAIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Verbal de-escalation lead · environment/family liaison · medication if needed · safety/monitoring — assign aloud.</div></div>
-      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Non-pharmacologic de-escalation is first-line, attempted before, during, and after any medication — never simply replaced by it. Restraint is a last resort.</div></div>
+      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue-tx);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Non-pharmacologic de-escalation is first-line, attempted before, during, and after any medication — never simply replaced by it. Restraint is a last resort.</div></div>
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
@@ -889,14 +889,14 @@
   <article id="p10" data-audience="peds">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red); font-size:16px; margin-right:8px;">10</span>Status Epilepticus</h2>
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red-tx); font-size:16px; margin-right:8px;">10</span>Status Epilepticus</h2>
         <span class="t-mono-r">CHILDREN &gt;1 MONTH · MAX 2 BENZO DOSES</span>
       </div>
     </div>
     <div class="nca" style="padding:12px 14px 0;">
-      <div style="border:2px solid var(--sev-crit); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--red);">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"Pediatric status epilepticus — starting the clock, benzo now." Say it out loud.</div></div>
+      <div style="border:2px solid var(--sev-crit); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--red-tx);">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"Pediatric status epilepticus — starting the clock, benzo now." Say it out loud.</div></div>
       <div style="border:2px solid var(--gray); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--ink);">CLAIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Airway/glucose · benzo push (max 2 doses) · second-line load · pediatric referral center call — assign aloud.</div></div>
-      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Benzodiazepine as early as possible — before you even check glucose. Never give more than 2 benzo doses; move to a second-line agent instead.</div></div>
+      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue-tx);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Benzodiazepine as early as possible — before you even check glucose. Never give more than 2 benzo doses; move to a second-line agent instead.</div></div>
     </div>
 
     <!-- ---- SEIZURE CLOCK / PHASE ENGINE ---- -->
@@ -976,17 +976,17 @@
   <article id="p11" data-audience="peds">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red); font-size:16px; margin-right:8px;">11</span>Neonatal / Young Infant Fever</h2>
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--red-tx); font-size:16px; margin-right:8px;">11</span>Neonatal / Young Infant Fever</h2>
         <span class="t-mono-r">≥38.0°C · TERM, WELL-APPEARING, 8–60 DAYS</span>
       </div>
     </div>
     <div class="nca" style="padding:12px 14px 0;">
-      <div style="border:2px solid var(--sev-crit); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--red);">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"Febrile infant, [X] days old — starting the age-based workup." Say it out loud.</div></div>
+      <div style="border:2px solid var(--sev-crit); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--red-tx);">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"Febrile infant, [X] days old — starting the age-based workup." Say it out loud.</div></div>
       <div style="border:2px solid var(--gray); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--ink);">CLAIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Cultures/UA · empiric antibiotics if indicated · transfer coordination · recorder — assign aloud.</div></div>
-      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Age band decides the workup. Any infant &lt;8 days or ill-appearing at any age gets the full workup regardless of these bands.</div></div>
+      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue-tx);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Age band decides the workup. Any infant &lt;8 days or ill-appearing at any age gets the full workup regardless of these bands.</div></div>
     </div>
 
-    <div style="margin:14px 14px 0; border:2px solid var(--sev-crit); background:var(--card2); color:var(--red); padding:11px 14px; font-size:13.5px; line-height:1.4; font-weight:700;">
+    <div style="margin:14px 14px 0; border:2px solid var(--sev-crit); background:var(--card2); color:var(--red-tx); padding:11px 14px; font-size:13.5px; line-height:1.4; font-weight:700;">
       This card covers well-appearing, term (≥37 weeks) infants 8–60 days old with fever ≥38.0°C (100.4°F) and no focal source. Infants &lt;8 days old, and any ill-appearing infant of any age, are outside this pathway — treat as high-risk: full workup, empiric antibiotics, admit.
     </div>
 
@@ -1040,14 +1040,14 @@
   <article id="p12" data-audience="peds">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--amber); font-size:16px; margin-right:8px;">12</span>Non-Accidental Trauma</h2>
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--amber-tx); font-size:16px; margin-right:8px;">12</span>Non-Accidental Trauma</h2>
         <span class="t-mono-r">SUSPECTED CHILD PHYSICAL ABUSE</span>
       </div>
     </div>
     <div class="nca" style="padding:12px 14px 0;">
       <div style="border:2px solid var(--sev-caution); background:var(--note-bg); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--note-tx);">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"This injury pattern is concerning for abuse — starting the standard workup and involving social work." Say it out loud.</div></div>
       <div style="border:2px solid var(--gray); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--ink);">CLAIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Exam/documentation · imaging orders · social work/CPS liaison · law enforcement if indicated — assign aloud.</div></div>
-      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"Those who don't cruise rarely bruise." Any bruising/injury in a non-mobile infant deserves a full workup, not reassurance — document objectively, report, and let a comprehensive workup rule things in or out.</div></div>
+      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue-tx);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"Those who don't cruise rarely bruise." Any bruising/injury in a non-mobile infant deserves a full workup, not reassurance — document objectively, report, and let a comprehensive workup rule things in or out.</div></div>
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
@@ -1092,14 +1092,14 @@
   <article id="p13" data-audience="peds">
     <div style="padding:0 14px;">
       <div style="display:flex; justify-content:space-between; align-items:baseline; gap:10px; flex-wrap:wrap;">
-        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--amber); font-size:16px; margin-right:8px;">13</span>Death of a Child in the ED</h2>
+        <h2 style="margin:0; font-size:22px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; color:var(--amber-tx); font-size:16px; margin-right:8px;">13</span>Death of a Child in the ED</h2>
         <span class="t-mono-r">NOTIFICATION · FAMILY PRESENCE · LOGISTICS</span>
       </div>
     </div>
     <div class="nca" style="padding:12px 14px 0;">
       <div style="border:2px solid var(--sev-caution); background:var(--note-bg); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--note-tx);">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"We need to notify the family — gathering the team and chaplaincy first." Say it out loud.</div></div>
       <div style="border:2px solid var(--gray); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--ink);">CLAIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Family notification lead · chaplaincy/social work · ME/OPO notification · staff debrief coordination — assign aloud.</div></div>
-      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Use the word "died," not "passed" or "didn't make it." Notify the medical examiner and organ-procurement organization for every death — these are not optional or family-permission-gated.</div></div>
+      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue-tx);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Use the word "died," not "passed" or "didn't make it." Notify the medical examiner and organ-procurement organization for every death — these are not optional or family-permission-gated.</div></div>
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
@@ -1158,7 +1158,7 @@
     <div class="nca" style="padding:12px 14px 0;">
       <div style="border:2px solid var(--gray); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--ink);">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"Procedural sedation for [procedure] — monitoring and airway equipment ready first." Say it out loud.</div></div>
       <div style="border:2px solid var(--gray); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--ink);">CLAIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Proceduralist · dedicated monitoring person (no other duties) · airway/rescue equipment ready — assign aloud.</div></div>
-      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Two-person minimum — one proceduralist, one monitoring only. Fasting time doesn't need to delay you; monitoring and a rescue plan do the safety work.</div></div>
+      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue-tx);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Two-person minimum — one proceduralist, one monitoring only. Fasting time doesn't need to delay you; monitoring and a rescue plan do the safety work.</div></div>
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
@@ -1223,7 +1223,7 @@
     <div class="nca" style="padding:12px 14px 0;">
       <div style="border:2px solid var(--gray); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--ink);">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">&quot;This looks like croup — barky cough, [no] stridor at rest.&quot; Say it out loud.</div></div>
       <div style="border:2px solid var(--gray); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--ink);">CLAIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Dexamethasone · nebulizer setup if stridor at rest · keep child calm with parent — assign aloud.</div></div>
-      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Dexamethasone for every croup. Stridor at rest → racemic epi and observe 3–4 h after the last neb. Agitation worsens everything.</div></div>
+      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue-tx);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Dexamethasone for every croup. Stridor at rest → racemic epi and observe 3–4 h after the last neb. Agitation worsens everything.</div></div>
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
