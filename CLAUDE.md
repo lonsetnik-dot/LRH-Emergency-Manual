@@ -3,27 +3,28 @@
 This repository is a set of **client-side, bedside emergency-department
 decision-support tools**.
 
-> ## THE BRANCH IS `lrh`. NOT `main`.
+> ## THE BRANCH IS `main`, AND NETLIFY MUST AGREE.
 >
-> **`lrh` is the trunk and the deploy branch** — the LRH reference
+> **`main` is the trunk and the deploy branch** — the LRH reference
 > implementation, localized to Littleton Regional Healthcare, and the live
 > bedside instrument at lrhemergencymanual.net. Branch from it, and open every
-> pull request against it.
+> pull request against it. It is the only branch; an `lrh` branch existed for a
+> while and was consolidated into `main` and deleted.
 >
-> **`main` is retired.** It is not deployed, not served, and not read. This
-> file used to say the opposite, and the cost was concrete: an entire session
-> of work was built, verified, reviewed and merged to `main` — where nothing
-> serves it — while the live manual sat 37 commits behind. Netlify's
-> production-branch setting is not visible from inside the repo, so nothing
-> contradicted the wrong sentence until a human noticed the site had not
-> changed. **If a doc and the deployment disagree, the deployment wins; go and
-> check which branch the site is actually built from before you trust a
-> sentence like this one.**
+> **THE REPO CANNOT TELL YOU IF THIS IS TRUE.** Which branch actually deploys
+> lives in Netlify — Project configuration → Build & deploy → Branches and
+> deploy contexts → *Production branch* — and nothing in these files is checked
+> against it. This sentence has been wrong before, and the cost was concrete: a
+> full session of work was built, verified, reviewed and merged to a branch
+> nothing served, while the live manual sat 37 commits behind, and no test
+> caught it because no test can. **If a doc and the deployment disagree, the
+> deployment wins.** If work you merged is not showing up on the live site,
+> check that Netlify field before you look anywhere else.
 
 `demo-build.mjs` produces a showroom copy of the same content (DEMO ribbon,
 `noindex`) from this same branch; it has no site attached at the moment.
 `cairnready.org` is a **separate set of sites in another repository** — not
-this one. **There is no generic trunk branch, and `lrh` must not be reverted
+this one. **There is no generic trunk branch, and `main` must not be reverted
 to a generic identity** — that would swap a hospital's live manual for a demo.
 Another hospital's edition is a new branch/fork that localizes
 `site.config.json` and the per-tool SITE CONFIG blocks. See `SITES.md`. Follow
@@ -248,6 +249,49 @@ Decorative glyphs are `aria-hidden` with no role or label. That is not a detail 
 a labeled decorative SVG shadows the real figure for any selector or screen
 reader looking for the drawing that carries the meaning.
 
+## Transcluded card sections (`{{PROC:tool#cNN|SECTION}}`)
+
+A live engine that walks somebody through a procedure the manual already has a
+card for **does not re-type that card.** It names the section and gets the card's
+own rows, substituted at build like `{{SITE.*}}`:
+
+```js
+l: {{PROC:procedures#c02|CLOSE THE HEART — PICK THE FASTEST THING THAT HOLDS}}
+```
+
+The token becomes a JSON array of `{do, why}` — the two tiers of the checklist
+row — so the consuming page renders them in **its own** visual language while the
+words have exactly one home. `tca/` is the first consumer; it borrows six
+sections from `procedures/` cards 02, 09, 10 and 15, the hysterotomy from
+`ob-neonatal/` card 10, and the debrief from `conversations/` card 04.
+
+This exists because the second copy already happened. CLAMSHELL EXTENSION, CLOSE
+THE HEART and HILAR TWIST were written into `procedures/` card 02 and then
+hand-typed again into `tca/` **the same day**. Nothing looked wrong; editing
+either one afterwards would have left the other saying the old thing, and no test
+could have told. Four things follow:
+
+- **Live markup does not travel.** A row's tap-to-log button writes into the
+  *card's* case timeline and its cross-links are relative to the card's folder;
+  both are wrong once the row is somewhere else, so they are dropped. What
+  transclusion moves is the text — which is why every transcluded sheet is paired
+  with a link to the full card, and why the glyph beside that link is derived
+  from the link rather than declared next to it.
+- **The build fails on a section that does not resolve**, and the error names the
+  headings that do exist. A renamed section is a silent content loss otherwise.
+- **A card is still the place to edit.** Change the card; the engine moves on the
+  next build. Never "fix" a transcluded row by pasting it into the engine.
+- **`verify_transclusion.mjs` compares the RENDERED text**, page against page —
+  the same thing `verify_procedure_icons.mjs` does for drawings — rather than
+  trusting that both went through the same build. It also builds a probe with a
+  bad token (`BUILD_OUT` sends that build to a temp directory so `dist/` is never
+  disturbed) and asserts it fails.
+
+Finger thoracostomy is the one gap: it is a *row* inside the chest-tube card's
+technique list, not a card, so `tca/`'s sheet for it stays hand-written and says
+so. A card of its own is worth having — three tools name the procedure and none
+of them owns it.
+
 ## The case shell's reveal behavior (`case-shell.js`)
 
 `case-shell.js` is the shared runtime for the case shell, injected at the marker
@@ -422,8 +466,8 @@ live file (not needed for pure documentation-only changes) — adjust it for
 whatever's actually pending (e.g. don't say "open a PR" if one's already
 open on this branch):
 
-1. **Commit & push** to a feature branch off `lrh` (never straight to
-   `lrh` — it is what lrhemergencymanual.net serves).
+1. **Commit & push** to a feature branch off `main` (never straight to
+   `main` — it is what lrhemergencymanual.net serves).
 2. **Test on the Netlify branch deploy** — pushing to any connected branch
    automatically builds a live, fully-working deploy at its own URL,
    completely separate from production. Find it on Netlify → Deploys → the
@@ -431,17 +475,41 @@ open on this branch):
    pre-merge test step: safe, live, and it doesn't require merging first. The
    URL persists and auto-updates on every new push to that branch, so it's
    worth bookmarking for the duration of the branch's life.
-3. **Once it checks out on the branch deploy, merge the PR** into `lrh` on
-   GitHub (compare URL pattern: `.../compare/lrh...<branch-name>`). Check the
+3. **Once it checks out on the branch deploy, merge the PR** into `main` on
+   GitHub (compare URL pattern: `.../compare/main...<branch-name>`). Check the
    base branch on the PR page before merging — GitHub may still default the
    base to another branch, and a PR merged into the wrong one looks exactly
    like success while changing nothing on the live site.
-4. **Netlify auto-builds `lrh`** → `build.mjs` → production
+4. **Netlify auto-builds `main`** → `build.mjs` → production
    (`lrhemergencymanual.net`). One more quick check on production closes the
    loop. If a change touches `site.config.json` or any `{{SITE.*}}` token, run
    `demo-build.mjs` too: it has its own substitution pass and its own failure
    check, and it published 363 raw `{{SITE.x}}` markers for a while because it
    had neither — even though no site is attached to that build today.
+
+**THE OFFLINE SHELL WILL SHOW YOU A STALE BRANCH DEPLOY.** This bit them
+once and it looks exactly like "the change was never made": a phone that had
+opened that preview URL before kept serving a build five commits old, with no
+warning on screen. The worker is cache-first by design (see **Offline shell**
+above), so the first load after a push renders the *previous* version. The
+"MANUAL UPDATED — reload when it is safe to" bar is what covers this — but it
+is `position:fixed; bottom:0`, and on a Netlify deploy preview that is exactly
+where Netlify's own "Collaborate / Log in" widget sits. So on the one URL used
+for testing, the staleness warning is the thing most likely to be hidden.
+
+Three consequences for how a test checklist is written:
+
+- **Name the version stamp as the first check.** Every tool's footer carries
+  `v<x.y.z> · last reviewed <date>`, so "the footer should read v1.2.1" is a
+  one-glance answer to "am I even looking at my change?" Bump the version in
+  the same commit as any user-visible change, or that check is worthless.
+- **Tell them how to force it.** Tap RELOAD on the update bar if it is visible;
+  otherwise reload twice (the first load installs the new worker, the second
+  is served by it), or open the preview in a **private tab** — service workers
+  do not persist there, which is the one reliable way to see a deploy cold.
+- **A screenshot that contradicts the diff is a caching question first.** Before
+  re-reading the code, ask which version the footer claims. Rendering the step
+  from the local `dist/` and comparing takes a minute and settles it.
 
 **Do not send Lon straight to the GitHub compare/PR page as the "test"
 step** — that page only renders a diff, it is not a live, testable site.

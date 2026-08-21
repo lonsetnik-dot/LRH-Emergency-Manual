@@ -1,6 +1,6 @@
 /* verify_shell_parity.mjs — the case shell exists in two files; keep them one.
  *
- *   design-system-live.css   → the six live engines (arrest, tca, airway,
+ *   design-system-live.css   → the live engines (arrest, airway,
  *                              neonatal, pph, dystocia)
  *   design-system-shell.css  → card tools that also need design-system.css's
  *                              card vocabulary (peds/ today)
@@ -107,7 +107,11 @@ for (const f of consumers) {
    locally. (ob-neonatal/ is deliberately absent: its in-card fields hold the
    NEONATE's weight under lrh-ob-weight — a different patient, per
    CASE-STATE.md — and are not this control.) */
-const weightTools = ['arrest/index.html', 'tca/index.html', 'neonatal/index.html',
+/* /tca/ is a direct port of its cognitive aid and no longer runs on the case
+   shell — no weight strip, no shared log control, its own self-contained flow.
+   Removed from these lists rather than left failing, so what remains means
+   something for the tools that DO share the shell. See verify_tca_flow.mjs. */
+const weightTools = ['arrest/index.html', 'neonatal/index.html',
                      'peds/index.html', 'codes/index.html'];
 for (const f of weightTools) {
   const html = readFileSync(f, 'utf8');

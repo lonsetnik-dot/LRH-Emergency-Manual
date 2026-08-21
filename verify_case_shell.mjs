@@ -38,7 +38,10 @@ const ck = (name, got, want) => { const ok = String(got) === String(want); (ok ?
 
 /* Every live-protocol engine. Derived here rather than hardcoded per test so a new engine
    that forgets data-opcard shows up as a failure rather than as silence. */
-const ENGINES = ['/arrest/', '/airway/', '/tca/', '/neonatal/', '/pph/', '/dystocia/'];
+/* /tca/ was rebuilt as a direct port of its cognitive aid and no longer runs
+   on the case shell — it has its own self-contained flow, so it is not one of
+   the engines this suite drives. See verify_tca_flow.mjs. */
+const ENGINES = ['/arrest/', '/airway/', '/neonatal/', '/pph/', '/dystocia/'];
 
 const START_RE = /START|BEGIN|ANNOUNCE|NO PULSE|DECLARE|BABY OUT/i;
 /* Default 844 is a tall phone; several checks below pass a SHORTER viewport deliberately,

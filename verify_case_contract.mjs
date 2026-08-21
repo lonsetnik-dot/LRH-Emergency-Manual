@@ -41,7 +41,10 @@ const TOOLS = [
   { id: 'codes',       path: '/codes/',       wIn: '#wtkg' },
   { id: 'peds',        path: '/peds/',        wIn: '#wtkg' },
   { id: 'arrest',      path: '/arrest/',      wIn: '#wIn'  },
-  { id: 'tca',         path: '/tca/',         wIn: '#wIn'  },
+  /* /tca/ left the shared case contract when it was rebuilt as a direct port
+     of its cognitive aid: no weight strip, no shared case keys, its own state.
+     Removed here rather than left failing, so the contract still means
+     something for the tools that DO implement it. */
   /* ob-neonatal and trauma read the case but write no adult weight of their
      own. ob-neonatal deliberately keeps the BABY's weight in its own
      lrh-ob-weight key rather than lrh-case-wtkg — two patients in the room,

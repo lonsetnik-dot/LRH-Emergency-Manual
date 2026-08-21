@@ -3,1247 +3,630 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="theme-color" content="#0D1420">
-<title>{{SITE.abbrev}} Traumatic Cardiac Arrest — Cognitive Aid</title>
-<meta name="description" content="Mobile cognitive aid for traumatic cardiac arrest (TCA): reversible-cause workstreams (hemorrhage, airway, chest decompression, tamponade, obstetric), sequential vs simultaneous team modes, weight-based fluid/TXA/calcium, and an event log. Personal aid, not hospital policy.">
+<title>Traumatic Cardiac Arrest &mdash; {{SITE.title}}</title>
+<meta name="description" content="Traumatic cardiac arrest cognitive aid: the decision to start, then the sequence one step at a time. Personal aid, not hospital policy.">
+<link rel="canonical" href="https://{{SITE.domain}}/tca/">
 <style>
-/* @design-system-live */
-/* ---- Shared live-protocol skeleton (tokens, .hdr/.card/.btn/.acc/.chip/etc.,
-   the due/dot motion) is injected from design-system-live.css at the marker
-   above (build.mjs, issue #73) — copied by hand from arrest/ until now, so
-   the two live-protocol screens stay visually and structurally identical
-   (CLAUDE.md rule 4). If you restyle one, restyle both.
-
-   SITE CONFIG for the clinical numbers lives in the <script> block below (the
-   JS `SITE` object), next to the logic that reads it.
-
-   TCA's own orange branding overrides the shared green accent right here —
-   a traumatic arrest should never look like a medical one at a glance — and
-   adds the purple/teal/orange category tokens the workstream cards use.
-   Genuinely TCA-specific chrome (the workstream rows: .wcard/.wrow/.wbox/
-   .wtext/.wlink; the print stylesheet) stays inline below. ---- */
-:root{
-  --purple:#9B7BD4; --teal:#3AA6A6; --orange:#E08A3C;
-  --accent:#E08A3C; --accentInk:#141E2B;
+/* ===== SITE CONFIG (site-specific — edit to localize) =====
+   Colors and type are the design language of the cognitive aid this tool is a
+   port of. The clinical values live in the script below: ARREST_WINDOW_MIN (the
+   arrest window in the first stop criterion) and PERFUSING_YES / PERFUSING_NO
+   (what counts as a reason to continue the resuscitation). */
+:root{--bg:#0D1420;--card:#161F2E;--card2:#1D2A3C;--ink:#EAF0F7;--ink2:#8FA0B5;
+      --line:rgba(255,255,255,.10);--accent:#2FA372;--accentInk:#fff;--red:#E5484D;
+      --gray:#5C6B7E;--blue:#4C8DDA;--green:#3DA35D;--amber:#F0B429;
+      --sans:'Source Sans 3',system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+      --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace}
+body[data-theme="light"]{--bg:#EFF2F5;--card:#FFFFFF;--card2:#F4F6F9;--ink:#141E2B;--ink2:#5A6A7D;
+      --line:rgba(15,35,60,.13);--accent:#00693E;--red:#C63238;--gray:#6B7A8D;--blue:#2F6FB5;
+      --green:#1F7F49;--amber:#B07E13}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg)}
+body{color:var(--ink);font-family:var(--sans);-webkit-font-smoothing:antialiased}
+a{color:var(--blue)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:.2}}
+.wrap{min-height:100vh;background:var(--bg)}
+.inner{max-width:680px;margin:0 auto;padding:0 14px 40px}
+.bar{position:sticky;top:0;z-index:30;background:var(--bg);padding:12px 0 10px;
+     display:flex;align-items:center;gap:10px;border-bottom:1px solid var(--line)}
+.kick{font-size:11px;font-weight:800;letter-spacing:.12em;color:var(--red)}
+.clock{font-family:var(--mono);font-size:26px;font-weight:700}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--red);animation:blink 1.4s infinite;display:inline-block}
+.phase{font-size:12px;color:var(--ink2);font-weight:600}
+.chip{background:var(--card);border:1px solid var(--line);color:var(--ink2);
+      font:700 11px var(--sans);letter-spacing:.08em;padding:9px 12px;border-radius:10px;cursor:pointer;min-height:38px}
+.card{margin-top:14px;background:var(--card);border:2px solid var(--line);border-radius:16px;padding:16px}
+.eyebrow{font-size:11px;font-weight:800;letter-spacing:.12em}
+.title{font-size:20px;font-weight:800;line-height:1.3;margin:8px 0 2px;text-wrap:pretty}
+.sub{font-size:14px;color:var(--ink2);line-height:1.45}
+.big{width:100%;border:none;border-radius:12px;color:#fff;font:800 17px var(--sans);
+     cursor:pointer;min-height:64px;margin-top:14px;padding:0 16px}
+.alt{width:100%;margin-top:8px;min-height:60px;border:1px solid var(--line);border-radius:12px;
+     background:var(--card2);color:var(--ink);font:800 16px var(--sans);cursor:pointer;text-align:left;padding:0 18px}
+.quiet{width:100%;margin-top:8px;min-height:52px;border:1px solid var(--line);border-radius:12px;
+       background:var(--card2);color:var(--ink2);font:700 14px var(--sans);cursor:pointer}
+.linkrow{display:flex;justify-content:space-between;align-items:center;gap:10px;width:100%;
+         min-height:54px;margin-top:10px;padding:0 14px;border:1px solid var(--line);border-radius:12px;
+         background:var(--card2);color:var(--ink);font:700 15px var(--sans);cursor:pointer;text-align:left}
+.stoprow{display:flex;align-items:center;gap:12px;text-align:left;width:100%;min-height:58px;
+         padding:10px 14px;border:1px solid var(--line);border-radius:12px;background:var(--card2);
+         color:var(--ink);font:700 15.5px var(--sans);cursor:pointer}
+.stoprow[aria-pressed="true"]{border-color:var(--red);background:rgba(229,72,77,.12)}
+.box{flex:none;width:26px;height:26px;border-radius:7px;border:2px solid var(--line);
+     display:inline-flex;align-items:center;justify-content:center;font:800 15px var(--sans);color:#fff}
+.stoprow[aria-pressed="true"] .box{border-color:var(--red);background:var(--red)}
+.num{display:flex;gap:10px;font-size:15px;line-height:1.4;margin-top:8px}
+.num>b{font-family:var(--mono);font-weight:700;color:var(--red);flex:none}
+/* The WHY tier of a transcluded checklist row (DESIGN-SYSTEM.md §6b). It is
+   shown only inside a procedure sheet — something you open deliberately, with
+   the intention of doing the procedure — and never on the step card, where the
+   only job is the next action. */
+.num i.why{display:block;font-style:normal;color:var(--ink2);font-size:13.5px;line-height:1.45;margin-top:3px}
+/* Shared procedure glyphs (design/ICONOGRAPHY.md). A clinician learns the
+   drawing from the card; the same drawing has to be on the row that opens it,
+   or the two artifacts teach two different things. */
+.pg{width:26px;height:26px;flex:none;color:var(--ink)}
+.pg-lg{width:46px;height:46px;flex:none;color:var(--ink)}
+.linkrow .pg{margin-right:2px}
+.from{font-size:12px;color:var(--ink2);margin-top:2px}
+.pill{background:var(--accent);color:var(--accentInk);border-radius:999px;padding:9px 18px;
+      font-size:14px;font-weight:800;letter-spacing:.06em}
+.sheet{position:fixed;inset:0;z-index:60;background:rgba(4,8,14,.72);display:flex;align-items:flex-end}
+.sheetin{background:var(--card);width:100%;max-height:86vh;overflow:auto;border-radius:18px 18px 0 0;padding:18px 16px 24px}
+.trail{font-family:var(--mono);font-size:12.5px;color:var(--ink2);display:flex;gap:10px;margin-top:6px}
+.disc{margin-top:22px;font-size:11.5px;line-height:1.5;color:var(--ink2);border-top:1px solid var(--line);padding-top:12px}
+/* ACCESSIBILITY.md: the running-case dot is the only animation on this page,
+   and it must hold still for anyone who asks the OS to stop motion. It still
+   reads as "running" because it stays solid red. */
+@media (prefers-reduced-motion: reduce){
+  .dot{animation:none}
+  *{transition:none !important;scroll-behavior:auto !important}
 }
-button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
-a{color:var(--blue)}  /* text-decoration:none removed: it would have
-     silently killed the underline idiom (DESIGN-SYSTEM.md §7) for this whole
-     tool the moment anyone wrote a sentence link here. tca/ carries no prose
-     links today, so nothing was visibly broken — which is exactly why it
-     would have gone unnoticed. */
-/* Category/section identity is a 4px left bar — never a filled header block, so
-   it never competes with red/amber status color (design language §3). */
-.wcard{margin-top:8px;background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
-.wrow{display:flex;gap:12px;align-items:flex-start;width:100%;background:none;border:none;border-top:1px solid var(--line);padding:14px;cursor:pointer;text-align:left;font:inherit;color:var(--ink);min-height:54px}
-.wbox{width:22px;height:22px;border-radius:6px;border:2px solid var(--line);background:transparent;color:#fff;font:700 13px var(--sans);display:flex;align-items:center;justify-content:center;flex:none;margin-top:1px}
-.wtext{font-size:14.5px;line-height:1.5}
-.wlink{display:inline-flex;align-items:center;gap:4px;min-height:40px;padding:0 14px;border:1px solid var(--line);border-radius:999px;background:var(--card2);font:800 12.5px var(--sans);letter-spacing:.03em;text-decoration:none;white-space:nowrap}
-@media print{
-  @page{margin:14mm}
-  html,body{background:#fff !important}
-  body{--bg:#fff;--card:#fff;--card2:#fff;--ink:#000;--ink2:#333;--line:#bbb;--accent:#00693E}
-  [data-noprint]{display:none !important}
-  .btn,.acch{min-height:0 !important}
-  .acc,.wcard,.card{break-inside:avoid;page-break-inside:avoid}
-}
+@media print{.bar,.chip,.big,.alt,.quiet,.linkrow{display:none}}
 </style>
 </head>
 <body data-theme="dark">
-<h1 class="sr-only">Traumatic Cardiac Arrest — Live Cognitive Aid</h1>
+<div class="wrap"><div class="inner">
 
-<!-- ============ CASE SHELL layer 1 — app bar (SHELL.md) ============
-     Same structure and ids as arrest/, the reference implementation. TCA keeps
-     its own orange accent identity: the tool square and plabel render in
-     --accent (orange), while the bar/pill/menus use the shared shell classes. -->
-<div class="shellbar" id="shellbar">
-  <a class="shellback shell-phone" id="backlink" href="../?from=tool" aria-label="Back to the manual">‹</a>
-  <a class="shellback shell-wide" id="backlinkwide" href="../?from=tool">MANUAL ›</a>
-  <button class="shelltool" id="toolbtn" type="button" aria-haspopup="true"><span class="shellsq" style="background:var(--accent)"></span>TCA<span class="shellcaret">▼</span></button>
-  <div class="shellbarmid">
-    <button class="shellpill" id="casepill" type="button" style="display:none" aria-label="Case clock — open the timeline"><span class="dot"></span><span class="shellpilltime" id="pillclock">0:00</span><span class="shellpilltag" id="pilltag">TCA</span></button>
-    <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:700;letter-spacing:.06em">READY</span>
+<div class="bar">
+  <div style="flex:1;min-width:0">
+    <div class="kick">TRAUMATIC CARDIAC ARREST</div>
+    <div style="display:flex;align-items:baseline;gap:8px">
+      <span class="clock" id="clock">0:00</span>
+      <span class="dot" id="dot" style="display:none"></span>
+      <span class="phase" id="phase">DECIDE</span>
+    </div>
   </div>
-  <span class="shell-wide" style="gap:6px;align-items:center">
-    <button class="ghost" id="tlbtnwide" type="button">TIMELINE</button>
-    <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20TCA" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
-    <button class="ghost shellreset" id="resetwide" type="button">RESET</button>
-  </span>
-  <button class="shellmore shell-phone" id="menubtn" type="button" aria-label="Menu">⋯</button>
+  <button class="chip" id="themebtn" type="button">LIGHT</button>
+  <button class="chip" id="resetbtn" type="button">RESET</button>
 </div>
 
-<!-- tool switcher: the six live engines + manual home, TCA marked current.
-     Plain links — cross-tool case state (weight, clock, log) survives
-     navigation per CASE-STATE.md, so switching tools mid-case is safe. -->
-<div class="shellmenu left" id="toolmenu" style="display:none">
-  <a class="shellmenurow" href="../arrest/"><span class="shellsq" style="background:var(--red)"></span><span style="flex:1">Arrest</span><span class="shellmenusub">CODE</span></a>
-  <a class="shellmenurow on" href="../tca/"><span class="shellsq" style="background:var(--accent)"></span><span style="flex:1">TCA</span><span class="shellmenusub">TCA</span></a>
-  <a class="shellmenurow" href="../airway/"><span class="shellsq" style="background:#2FA372"></span><span style="flex:1">Airway</span><span class="shellmenusub">RSI</span></a>
-  <a class="shellmenurow" href="../neonatal/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Neonatal</span><span class="shellmenusub">NRP</span></a>
-  <a class="shellmenurow" href="../pph/"><span class="shellsq" style="background:#E75480"></span><span style="flex:1">PPH</span><span class="shellmenusub">PPH</span></a>
-  <a class="shellmenurow" href="../dystocia/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Dystocia</span><span class="shellmenusub">OB</span></a>
-    <a class="shellmenurow" href="../peds/?from=tool"><span class="shellsq" style="background:var(--purple)"></span><span style="flex:1">Peds</span><span class="shellmenusub">PEDS</span></a>
-  <div class="shellmenudiv"></div>
-  <a class="shellmenurow" href="../?from=tool"><span class="shellsq" style="background:var(--gray)"></span><span style="flex:1">Manual home</span></a>
-</div>
+<h1 class="sr-only" style="position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)">Traumatic Cardiac Arrest</h1>
 
-<!-- ⋯ overflow (phone): timeline, feedback, then reset in red — the same
-     two-tap SURE? reset the wide button runs (SHELL.md layer 9). -->
-<div class="shellmenu right" id="moremenu" style="display:none">
-  <button class="shellmenurow" id="tlbtn" type="button">Case timeline</button>
-  <a class="shellmenurow" id="feedbackmenu" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20TCA">Feedback</a>
-  <div class="shellmenudiv"></div>
-  <button class="shellmenurow danger" id="resetbtn" type="button">Reset for next case</button>
-</div>
+<div id="screen"></div>
 
-<!-- ============ CASE SHELL layer 2 — cadence/actions strip ============
-     TCA has no rhythm/epi cadence and no metronome (SHELL.md layer 3 is absent
-     by design — a layer a tool doesn't need is absent entirely, and this tool
-     deliberately de-emphasizes conventional CPR). Its one cadence is the
-     conventional-resus reassessment window that starts at MARK ADDRESSED: on a
-     phone it renders as a chip here once running; ≥768px the two dock actions
-     render here instead, countdown embedded (SHELL.md layers 2/6). -->
-<div class="shellstrip" id="shellstrip" style="display:none">
-  <button class="shellchip shell-phone" id="chipreassess" type="button" style="display:none">REASSESS <span class="mono" id="chipreassessclock">10:00</span></button>
-  <button class="shelldockbtn scheme-amber shell-wide" id="stripaddr" type="button" style="flex:none"><span id="stripaddrlabel">CAUSES ADDRESSED ✓</span><span class="shelldockclock" id="stripaddrclock" style="display:none"></span></button>
-  <button class="shelldockbtn scheme-blue shell-wide" id="striplog" type="button" style="flex:none">LOG IT</button>
-</div>
+<div class="disc" id="disc"></div>
+</div></div>
 
-<!-- ============ CASE SHELL layer 4 — weight strip ============
-     Phone: collapsed 44px row, tap to expand. ≥768px: expanded until a weight
-     is confirmed (DONE ✓ / ESTIMATE), then a slim "tap to change" row. The
-     inputs and ESTIMATE are the pre-shell ones — same ids, same validation. -->
-<button class="shellweight" id="wtoggle" type="button">
-  <span class="k">WEIGHT</span>
-  <span class="v unset" id="wlabel">not set</span>
-  <span class="m" id="wmark">▼</span>
-</button>
-<div class="shellweightform" id="wform" style="display:none">
-  <input class="inp" id="wIn" inputmode="decimal" style="width:64px" aria-label="Weight in kg">
-  <span style="font-size:13px;color:var(--ink2)">kg &nbsp;·&nbsp; or age</span>
-  <input class="inp" id="aIn" inputmode="decimal" placeholder="age" style="width:52px;font-size:16px" aria-label="Age">
-  <select class="inp" id="aUnit" aria-label="Age unit" style="width:auto;font-size:16px;min-height:44px"><option value="mo">mo</option><option value="yr" selected>yr</option></select>
-  <button class="btn" id="estbtn" type="button" style="font:700 12px var(--sans);padding:9px 12px;border-radius:9px;min-height:38px">ESTIMATE KG</button>
-  <button class="ghost" id="wdone" type="button" style="min-height:38px;border-color:var(--green);color:var(--green)">DONE ✓</button>
-  <span id="wnote" style="font-size:13px;font-weight:700;color:var(--accent)">enter weight</span>
-  <span id="werr" style="display:none;flex-basis:100%;font-size:12.5px;font-weight:700;color:var(--red)"></span>
-</div>
-
-<div class="wrap">
-
-  <div class="plabel" id="plabel" style="margin-top:10px">TRM · TRAUMATIC CARDIAC ARREST</div>
-  <div id="caseclock" style="display:none"></div>
-
-  <!-- Pediatric-dosing bar + loud, reversible adult override (weight-routing
-       audit): TCA used the same <50 kg / <=12 y trigger as arrest but offered
-       no way out of it — a 45 kg frail adult silently got pediatric TXA and
-       calcium, with only the word "pediatric" in the weight note as the tell.
-       Same pattern as arrest's #pedsbanner/#overridebar. -->
-  <div id="pedsbar" class="card" style="display:none;gap:10px;align-items:center;margin-top:10px;border-color:var(--accent);padding:10px 12px">
-    <span style="width:14px;height:38px;border-radius:6px;background:var(--accent);flex:none"></span>
-    <div style="flex:1;font-size:13.5px;line-height:1.4" id="pedsbartext"></div>
-    <button class="ghost" id="dismisspeds" type="button" style="white-space:nowrap">ADULT — OVERRIDE</button>
-  </div>
-  <div id="overridebar" class="card" style="display:none;align-items:center;gap:10px;margin-top:10px;border-color:var(--amber);padding:10px 12px">
-    <div style="flex:1;font-size:13.5px;line-height:1.4"><b>Adult mode — overridden.</b> Pediatric criteria are met but this is being treated as an adult. TXA, calcium, and fluids below are adult doses.</div>
-    <button class="ghost" id="undooverride" type="button" style="white-space:nowrap">UNDO</button>
-  </div>
-
-  <!-- ============================ ENTRY / IDLE ============================ -->
-  <div id="idle">
-    <div class="card" style="margin-top:12px;padding:12px;border-color:var(--amber)">
-      <div class="sec" style="color:var(--amber)">BEFORE YOU START — IS THIS RESUSCITABLE?</div>
-      <div style="font-size:13.5px;line-height:1.5;margin-top:5px">
-        This aid is for a <b>witnessed arrest in a trauma patient</b>, or a pre-hospital arrest <b>&lt;<span id="soltxt">10</span> min</b> from trauma.
-        <b>Do not start</b> if there are injuries incompatible with life, or no signs of life for more than <span id="soltxt2">10</span> minutes.
-      </div>
-    </div>
-
-    <div class="card" style="margin-top:10px;padding:12px;border-color:var(--blue)">
-      <div class="sec" style="color:var(--blue)">FIRST — COULD THIS BE A MEDICAL ARREST?</div>
-      <div style="font-size:13.5px;line-height:1.5;margin-top:5px">
-        If you suspect a medical cause that came <i>before</i> the trauma (AMI, arrhythmia, seizure, stroke) — or the monitor shows <b>VF / pulseless VT</b> —
-        run the standard ALS algorithm and shock. TCA priorities are different.
-      </div>
-      <a class="btn" href="../arrest/" style="display:flex;align-items:center;justify-content:center;width:100%;min-height:52px;margin-top:10px;border-color:var(--blue);color:var(--blue);text-decoration:none;font:800 14px var(--sans)">OPEN CARDIAC ARREST / ALS AID →</a>
-    </div>
-
-    <div class="card" style="margin-top:10px;padding:11px 12px" id="pregidle">
-      <label style="display:flex;align-items:center;gap:12px;cursor:pointer;min-height:44px">
-        <span id="pregboxIdle" class="wbox" style="margin-top:0"></span>
-        <span style="font-size:14px;line-height:1.4"><b>Pregnant, uterus at or above the umbilicus</b> (about 20 weeks)?
-        <span style="color:var(--ink2)">— call OB + neonatal now; plan resuscitative hysterotomy within <span id="hystmin">5</span> min.</span></span>
-      </label>
-    </div>
-
-    <button id="startbtn" type="button" style="width:100%;margin-top:12px;min-height:96px;border:none;border-radius:16px;background:var(--red);color:#fff;font:800 21px var(--sans);letter-spacing:.03em;cursor:pointer;box-shadow:0 6px 24px rgba(229,72,77,.25)">
-      DECLARE &ldquo;TRAUMATIC CARDIAC ARREST&rdquo;
-      <div style="font-size:12.5px;font-weight:600;opacity:.9;margin-top:5px">Say it out loud — shared mental model. Starts the clock · activates trauma team + massive transfusion protocol</div>
-    </button>
-    <div style="margin-top:10px;font-size:13px;color:var(--ink2);text-align:center;line-height:1.5" id="activationline"></div>
-  </div>
-
-  <!-- ============ CASE SHELL layer 5.2 — ACTIVATE TELE-ED ============
-       TCA had no tele-ED control; this is the standard shell button (SHELL.md:
-       part of the shell contract, non-clinical, logs only). Face up from the
-       first screen, idle or running. One tap logs the request time and
-       collapses to a quiet confirmation row. Idempotent — never a dialog. -->
-  <button class="shelltele" id="telebtn" type="button" data-noprint="1">📞 ACTIVATE TELE-ED<span class="sub" id="telesub">one tap, the earlier the better — logs the request time</span></button>
-  <div class="shellteledone" id="teledone" style="display:none" data-noprint="1">📞 TELE-ED ACTIVATED AT <span class="mono" id="teleat">0:00</span> ✓</div>
-
-  <!-- ============ CASE SHELL layer 5.3 — DOSING, FACE UP ============
-       TCA's primary weight-routed rows — crystalloid, TXA, calcium — as shell
-       dose rows, never behind an accordion. Every number renders from SITE
-       config through the same peds/adult routing as the CIRCULATION workstream
-       inline text (adult TXA/calcium fixed, pediatric per-kg and capped);
-       unset weight renders "set weight", never a stale or default dose. The
-       BP target keeps its own box in the active screen below. -->
-  <div id="dosingblock">
-    <div class="sec" style="margin-top:14px;letter-spacing:.12em">DOSING — FACE UP</div>
-    <div id="doserows" style="display:grid;gap:8px;margin-top:8px"></div>
-  </div>
-
-  <!-- ============================== ACTIVE =============================== -->
-  <div id="active" style="display:none">
-
-    <!-- Reversible causes — the whole game. Correct these, not the monitor. -->
-    <div class="card" style="margin-top:12px;padding:12px;border:2px solid var(--amber)">
-      <div class="sec" style="color:var(--amber)">TREAT THE REVERSIBLE CAUSES — NOT THE MONITOR</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:8px;font-size:13px;line-height:1.4">
-        <div><b>Hypovolemia</b> <span style="color:var(--ink2)">— stop bleeding, give blood</span></div>
-        <div><b>Hypoxia</b> <span style="color:var(--ink2)">— airway + ventilate</span></div>
-        <div><b>Tension pneumothorax</b> <span style="color:var(--ink2)">— decompress both sides</span></div>
-        <div><b>Tamponade</b> <span style="color:var(--ink2)">— eFAST → thoracotomy</span></div>
-      </div>
-      <div id="cprnote" style="margin-top:9px;font-size:13px;line-height:1.5;padding:9px 10px;background:var(--card2);border-radius:10px"></div>
-    </div>
-
-    <!-- Pregnancy is often discovered DURING the resus (eFAST, exam). The idle-
-         screen flag is hidden once the code starts, which made the OBSTETRIC
-         workstream unreachable mid-case (weight-routing audit). Same toggle,
-         reachable while running. -->
-    <div class="card" style="margin-top:10px;padding:11px 12px" id="pregactive">
-      <label style="display:flex;align-items:center;gap:12px;cursor:pointer;min-height:44px">
-        <span id="pregboxActive" class="wbox" style="margin-top:0"></span>
-        <span style="font-size:14px;line-height:1.4"><b>Pregnant, uterus at or above the umbilicus?</b>
-        <span style="color:var(--ink2)">Flag it — adds the OBSTETRIC workstream below; call OB + neonatal.</span></span>
-      </label>
-    </div>
-
-    <div class="sec" id="worktitle" style="margin-top:16px;letter-spacing:.12em"></div>
-    <div id="worksteps" data-opcard></div>
-
-    <!-- computed doses / targets -->
-    <div class="sec" style="margin-top:18px;letter-spacing:.12em">BLOOD-PRESSURE TARGET</div>
-    <div class="card" style="margin-top:8px;overflow:hidden" id="dosebox"></div>
-
-    <!-- decision point -->
-    <div class="card" id="tenmin" data-opcard style="margin-top:14px;padding:12px">
-      <div style="display:flex;align-items:center;gap:10px">
-        <div style="flex:1">
-          <div class="sec">REVERSIBLE CAUSES ADDRESSED?</div>
-          <div style="font-size:12.5px;color:var(--ink2);margin-top:2px">Then continue conventional BLS / ALS &plusmn; compressions for <span id="convmin">10</span> min and reassess.</div>
-        </div>
-        <button id="addressedbtn" type="button" style="min-height:56px;border:none;border-radius:12px;background:var(--amber);color:#141E2B;font:800 13px var(--sans);padding:0 14px;cursor:pointer;white-space:nowrap">MARK ADDRESSED</button>
-      </div>
-      <div id="convstrip" style="display:none;margin-top:10px;padding:10px 12px;background:var(--card2);border-radius:10px">
-        <div style="display:flex;align-items:baseline;gap:12px">
-          <span class="mono" id="convclock" style="font-size:34px;font-weight:700">10:00</span>
-          <span style="font-size:12.5px;color:var(--ink2);line-height:1.35">conventional resus window<br>reassess for ROSC / cessation at 0:00</span>
-        </div>
-      </div>
-    </div>
-
-    <button id="roscbtn" type="button" style="width:100%;margin-top:12px;min-height:64px;border:2px solid var(--green);border-radius:14px;background:transparent;color:var(--green);font:800 18px var(--sans);letter-spacing:.04em;cursor:pointer">ROSC — PULSE RETURNED</button>
-
-    <button id="ceasebtn" type="button" style="width:100%;margin-top:8px;min-height:56px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink2);font:800 14px var(--sans);letter-spacing:.06em;cursor:pointer">CONSIDER CEASING RESUSCITATION</button>
-
-    <div id="ceasecard" class="card" style="display:none;margin-top:8px;padding:12px;border-color:var(--red)">
-      <div class="sec" style="color:var(--red)">CESSATION — BOTH SHOULD BE TRUE</div>
-      <div style="font-size:13.5px;line-height:1.55;margin-top:6px">
-        · No ROSC <b>after all reversible causes have been addressed</b><br>
-        · <b>No detectable cardiac activity on eFAST</b>
-      </div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px">
-        <button id="ceaseback" type="button" class="btn" style="min-height:56px;font:700 14px var(--sans)">KEEP GOING</button>
-        <button id="ceaseconfirm" type="button" style="min-height:56px;border:none;border-radius:12px;background:var(--red);color:#fff;font:800 14px var(--sans);cursor:pointer">CEASE &amp; DEBRIEF</button>
-      </div>
-    </div>
-
-    <div style="display:grid;grid-template-columns:1fr;gap:8px;margin-top:12px">
-      <button class="btn" id="logtoggle" type="button" style="min-height:48px;font:700 13px var(--sans)">LOG IT</button>
-    </div>
-    <div id="customrow" style="display:none;gap:8px;margin-top:8px">
-      <input id="customin" class="inp" style="flex:1;text-align:left;font-size:15px;font-weight:400;border-radius:10px;padding:12px" placeholder="e.g. left thoracostomy — gush of air, IO humeral head">
-      <button id="customlog" type="button" style="border:none;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG IT</button>
-    </div>
-    <div id="customwarn" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>
-    <div style="margin-top:10px;font-size:12.5px;color:var(--ink2)">Anything can be tapped at any time — the algorithm is a guide, not a lock.</div>
-  </div>
-
-  <!-- =============================== ROSC ================================ -->
-  <div id="rosc" style="display:none">
-    <div class="card" style="margin-top:14px;border:2px solid var(--green);border-radius:16px;padding:16px">
-      <div class="sec" style="color:var(--green)">ROSC — POST-RESUSCITATION CARE</div>
-      <div style="font-size:20px;font-weight:800;margin:4px 0 10px">Pulse returned at <span id="roscat" class="mono">0:00</span></div>
-      <div style="font-size:14.5px;line-height:1.6">
-        · Complete the primary survey · keep transfusing to clear targets<br>
-        · <b>Early damage-control surgery</b> — straight to the OR, or activate transfer to the trauma center<br>
-        · Blood pressure: aim <b>SBP <span id="rbp1">90</span></b> (MAP <span id="rmap1">50&ndash;60</span>); if head injury, <b>SBP <span id="rbp2">110</span></b> (MAP <span id="rmap2">80</span>)<br>
-        · Keep warm · treat coagulopathy · calcium in range · recheck the chest before ICC insertion
-      </div>
-      <button id="rearrestbtn" type="button" style="width:100%;margin-top:12px;min-height:60px;border:none;border-radius:12px;background:var(--red);color:#fff;font:800 17px var(--sans);cursor:pointer">RE-ARREST — RESUME</button>
-    </div>
-  </div>
-
-  <!-- ============================== CEASED =============================== -->
-  <div id="ceased" style="display:none">
-    <div class="card" style="margin-top:14px;padding:16px;border-color:var(--gray)">
-      <div class="sec">RESUSCITATION CEASED</div>
-      <div style="font-size:18px;font-weight:800;margin:4px 0 8px">Time of death <span id="deathwall" class="mono">--:--</span> <span style="font-size:13px;font-weight:600;color:var(--ink2)">(<span id="deathat" class="mono">0:00</span> of resuscitation)</span></div>
-      <div style="font-size:14px;line-height:1.6;color:var(--ink)">
-        Care for the team. A traumatic arrest is one of the hardest things a department does — the patient's appearance and the circumstances both weigh on people.
-        Run an <b>immediate check-in (&ldquo;hot debrief&rdquo;)</b> as soon as it is practical.
-      </div>
-      <a class="btn" href="../debrief/?from=home" style="display:flex;align-items:center;justify-content:center;width:100%;min-height:60px;margin-top:12px;border-color:var(--accent);color:var(--accent);text-decoration:none;font:800 15px var(--sans)">OPEN THE DEBRIEF TOOL →</a>
-    </div>
-  </div>
-
-  <div class="sec" style="margin-top:18px;letter-spacing:.12em">REFERENCE — TAP TO OPEN</div>
-  <div id="accordions"></div>
-
-  <div style="margin-top:16px;font-size:12px;color:var(--ink2);text-align:center;line-height:1.55">
-    Adapted for {{SITE.abbrev}} from the Royal Melbourne Hospital Trauma Service <i>Traumatic Cardiac Arrest Guideline</i> (TRM08.12, v3.0, 2023) and ERC/ANZCOR traumatic-arrest guidance. Verify doses and local roles before use.<br>
-    <span id="verstamp"></span> — personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment; thresholds are site-specific — verify locally.
-  </div>
-</div>
-
-<!-- ============ CASE SHELL layer 6 — pinned action dock (phone, running) ====
-     TCA maps TWO slots, not three (SHELL.md: fewer slots when a tool has no
-     natural third — it has no discrete drug button; TXA/calcium are checklist
-     tasks in the CIRCULATION workstream and stay there). amber = intervention
-     (CAUSES ADDRESSED ✓, which becomes the REASSESS countdown once tapped) and
-     blue = the LOG IT composer. The LOG ticker rides on top: newest event +
-     LOG ▲ → timeline. ≥768px there is no dock — the same two buttons live in
-     the strip (layer 2). -->
-<div class="shelldock" id="shelldock" style="display:none">
-  <button class="shellticker" id="ticker" type="button" style="display:none"><span class="tk" id="tickertext"></span><span class="lg">LOG ▲</span></button>
-  <div class="shelldockrow">
-    <button class="shelldockbtn scheme-amber" id="dockaddr" type="button"><span id="dockaddrlabel">CAUSES ADDRESSED ✓</span><span class="shelldockclock" id="dockaddrclock" style="display:none"></span></button>
-    <button class="shelldockbtn scheme-blue" id="docklog" type="button">LOG IT</button>
-  </div>
-</div>
-
-<!-- ============ CASE SHELL layer 8 — case timeline ============
-     Every action auto-logs with the case-clock stamp and a category color dot.
-     Bottom sheet on a phone; 320px right panel ≥768px. In-memory view of
-     S.events (replaces the old EVENT LOG accordion); the same entries also
-     reach the shared, PHI-guarded lrh-case-log through SS.addLog. -->
-<div class="shelltl" id="shelltl" style="display:none">
-  <div class="shelltlhead"><span class="t">CASE TIMELINE</span><button class="shellx" id="tlclose" type="button" aria-label="Close the timeline">✕</button></div>
-  <div class="shelltlbody" id="tlrows"></div>
-  <div class="shelltlfoot">device only · no identifiers · cleared on reset</div>
-</div>
-
-<!-- ============ CASE SHELL layer 9 — the cleared toast after RESET ============ -->
-<div class="shelltoast" id="shelltoast" style="display:none">
-  <span style="flex:1">Reset — weight, clocks, checks and the log are clean for a new case.</span>
-  <button class="shelltoastok" id="toastok" type="button">OK</button>
-</div>
+<div id="sheetwrap"></div>
 
 <script>
-(function(){
-'use strict';
+/* =============================================================================
+   Traumatic Cardiac Arrest — a direct port of the cognitive aid, and nothing
+   else. The decision to start comes first; then the sequence, one step on
+   screen at a time, because a clinician doing a procedure they may never have
+   done should not be reading past four steps they already did to find the one
+   they are on.
 
-/* =============================== SITE CONFIG ===============================
-   Everything an adopting ED would change lives here; the logic below reads
-   these and nothing else (CLAUDE.md rule 2). The source guideline is from a
-   major trauma center (RMH) — the SITE.local strings genericize its
-   site-specific calls (MEP, OPSTAT, RWH numbers, ROTEM) for a small rural
-   hospital. Edit SITE.local to adapt to your own site.
+   Deliberately self-contained (CLAUDE.md rule 1): inline CSS and JS, no
+   external dependencies, works offline.
 
-   MODE: 'sequential' models a rural / limited team working the reversible
-   causes in priority order; 'simultaneous' models a full trauma team working
-   them in parallel. The guideline makes resource availability the deciding
-   factor, so each site picks ONE model here at localization — see SITE.mode.
-
-   v0.2.1 (2026-08-15): rebuilt the chrome onto the case shell (SHELL.md) —
-   app bar + tool switcher, case-clock pill, weight strip, standard tele-ED
-   button, face-up dose rows, two-slot dock with the REASSESS cadence, shell
-   timeline (replacing the EVENT LOG accordion) and the reset toast. No
-   clinical value changed; every number still reads from this block.
+   NO PHI (rule 3). The event trail holds times and the labels below — never a
+   name, a number, or anything typed about a patient — and RESET clears it.
    ========================================================================== */
-var SITE = {
-  version: "0.2.2", lastReviewed: "2026-08-17",
-  /* TEAM MODEL — chosen ONCE per site at localization; NOT a bedside control.
-     'sequential'   = rural / limited team: reversible causes in priority order,
-                      conventional CPR is a secondary priority.
-     'simultaneous' = full trauma team: workstreams assigned and worked in
-                      parallel, CPR concurrent.
-     The originating site is a rural critical-access hospital → sequential. */
-  mode: "sequential",
-  noSignsOfLifeMin: 10,                  /* DNR if no signs of life beyond this */
-  cprPauseMaxMin: 2,                     /* pause CPR in progress for at most this */
-  conventionalResusMin: 10,              /* conventional BLS/ALS ± compressions window */
-  pregGestWeeks: 20,                     /* uterus at/above umbilicus ≈ this gestation */
-  hysterotomyByMin: 5,                   /* aim to deliver within this from arrest */
-  fluid: { crystalloidMlPerKg: 20, bloodRatio: "1:1:1" },
-  txa:  { adult: "1 g IV over 10 min, then 1 g over 8 h", pedsMgPerKg: 15, pedsMaxMg: 1000 },
-  /* Calcium: adults get an empiric fixed dose with transfusion; children are
-     weight-based. CaCl2 10% 20 mg/kg (max 1 g) or Ca gluconate 10% 50 mg/kg
-     (max 3 g). Target ionized calcium 1.1–1.3 mmol/L. */
-  cal:  { ionizedLow: 1.1, ionizedHigh: 1.3,
-          adultChlorideG: 1, adultGluconateG: 3,
-          pedsChlorideMgPerKg: 20, pedsChlorideMaxMg: 1000,
-          pedsGluconateMgPerKg: 50, pedsGluconateMaxMg: 3000 },
-  bp:   { sbp: 90, mapLow: 50, mapHigh: 60, tbiSbp: 110, tbiMap: 80 },
-  trigger: { maxKg: 50, maxAgeYrs: 12 }, /* weight-based (peds) dosing threshold */
-  /* ---- Site-specific strings — genericized from the RMH original ---------- */
-  local: {
-    activation: "Activate the trauma team and the massive transfusion protocol.",
-    surgeon:    "surgeon / OR — or activate transfer to the trauma center",
-    obCall:     "call OB + the neonatal team",
-    viscoelastic: "viscoelastic testing (TEG / ROTEM) if available"
-  }
-};
-/* Expose the site config for inspection and for the verify suites.
-   Read-only in practice: nothing in this file reads window.SITE, it reads
-   the local SITE. Two reasons it is worth one line:
-   1. The suites assert the UI against THIS config instead of against
-      hardcoded local numbers, so a fork that correctly localizes its
-      values keeps a green test run (issue #117). Tests that break on
-      correct localization teach an adopting site to ignore failures.
-   2. A champion localizing the traumatic cardiac arrest can read the live,
-      in-effect config from the browser console rather than by reading
-      source (issues #116/#118). */
-try{ window.SITE = SITE; }catch(e){}
+/* @proc-icons */
+var VERSION='1.2.1', REVIEWED='2026-08-21';
+/* The one localizable clinical number on this screen. */
+var ARREST_WINDOW_MIN=10;
 
-/* The five reversible-cause workstreams. Same data drives both modes; only the
-   presentation and framing differ. Colors follow the design tokens. The order
-   here is the sequential (rural) priority order: catastrophic hemorrhage
-   first, then <C>ABC, then the pump, then obstetric. */
-var WORK = [
- { id:'H', name:'HEMORRHAGE CONTROL', color:'var(--red)', aim:'Stop the external bleeding', tasks:[
-   'Compress external bleeding — firm direct pressure; do not remove impaled objects',
-   'Tourniquet 5–7 cm above uncontrolled limb bleeding — note the time',
-   'Pelvic binder at the greater trochanters for a suspected pelvic fracture',
-   'Splint long-bone fractures'
- ], links:[
-   {label:'Tourniquet', href:'../procedures/?from=home#c10'},
-   {label:'Pelvic binder', href:'../procedures/?from=home#c09'}
- ]},
- { id:'A', name:'AIRWAY', color:'var(--blue)', aim:'Open the airway and ventilate; protect the C-spine', tasks:[
-   'Open the airway — jaw thrust with manual in-line stabilization',
-   'Ventilate with BVM + high-flow oxygen; two-person seal',
-   'Supraglottic airway — i-gel — or ETT; front-of-neck access if needed',
-   'Confirm placement with waveform capnography'
- ], links:[
-   {label:'Pediatric airway sizes', href:'../peds/?from=tca#p16'}
- ]},
- { id:'B', name:'BREATHING', color:'var(--teal)', aim:'Decompress the chest', tasks:[
-   'Bilateral finger thoracostomies — start on the most affected side',
-   '4th intercostal space, anterior to the mid-axillary line; blunt-dissect to the pleura',
-   'Finger thoracostomy only — no chest tube now; place once ROSC returns'
- ]},
- { id:'V', name:'CIRCULATION — ACCESS & REPLACE', color:'var(--amber)', aim:'Get big access and replace with blood', tasks:[
-   'Access — AVA 3Xi / large-bore resuscitation line, or IO (humeral head first)',
-   'Crystalloid {crystalloid} — the max while waiting for blood',
-   'Massive transfusion — blood {ratio}, lead with blood products',
-   'Tranexamic acid — {txa}',
-   'Calcium — {calcium}; keep ionized {caLow}–{caHigh} mmol/L'
- ], links:[
-   {label:'AVA 3Xi / resus line', href:'../procedures/?from=home#c14'},
-   {label:'Massive transfusion', href:'../codes/?from=home#c12'}
- ]},
- { id:'C', name:'CARDIAC', color:'var(--purple)', aim:'Check the pump', tasks:[
-   'Cardiac ultrasound (eFAST) — look for tamponade and for any cardiac activity',
-   'Pericardial tamponade → resuscitative (ED) thoracotomy',
-   'Discuss other thoracotomy indications with the {surgeon} — e.g. aortic cross-clamp'
- ], links:[
-   {label:'Resuscitative thoracotomy', href:'../procedures/?from=home#c02'}
- ]},
- { id:'O', name:'OBSTETRIC', color:'var(--orange)', aim:'Maximize preload if pregnant', tasks:[
-   'Supine — manually displace the uterus to the left',
-   'Fundus at/above the umbilicus (~{gest} wk) → resuscitative hysterotomy, aim < {hyst} min',
-   'Call OB + the neonatal team early',
-   'Baby delivered → a second patient: neonatal resuscitation (NRP), own team + warmer'
- ], links:[
-   {label:'Resuscitative hysterotomy', href:'../ob-neonatal/?from=home#c10'},
-   {label:'Neonatal resuscitation (NRP)', href:'../neonatal/?from=home'}
- ]}
+/* WHAT COUNTS AS "IT IS WORKING" — the criterion for CONTINUING the
+   resuscitation is organized, perfusing cardiac activity: a heart that is
+   contracting AND producing output. Nothing else.
+
+   This is deliberately narrower than the "signs of life" list that decides
+   whether to open a chest in the first place. That list — pupils, an agonal
+   gasp, organized ECG — answers "was this patient recently alive"; this one
+   answers "is what I am doing working". The two got conflated on this screen,
+   which is how you end up continuing a traumatic resuscitation on a patient
+   with a flicker of pupil response and no cardiac output. In a rural ED with
+   no surgeon and no bypass there is nothing that outcome leads to.
+
+   Localizable (CLAUDE.md rule 2): a department that words its termination
+   criterion differently edits these two lists, not the logic. */
+var PERFUSING_YES=[
+  'Coordinated contraction — on ultrasound, or in the open chest',
+  'AND it is producing output — a pulse you can feel, or a BP you can measure'
+];
+var PERFUSING_NO=[
+  'Organized ECG with no output. That is PEA.',
+  'Fibrillation, or twitching that moves no blood.',
+  'Pupil response, an agonal gasp, a single movement.'
 ];
 
-/* ===== CASE-STATE shared contract (CASE-STATE.md) — same shape as arrest's SS.
-   TCA used to live entirely outside this contract (weight-routing audit): a
-   weight measured in peds/codes/arrest didn't carry in, TCA's events never
-   reached the manual-wide timeline the debrief tool reads, and its RESET —
-   visually identical to arrest's — cleared only this tool. Per CLAUDE.md,
-   tools share the CONTRACT, not the code: this is TCA's own copy. */
-var SS = {
-  get:function(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } },
-  set:function(k,v){ try{ localStorage.setItem(k,v); }catch(e){} },
-  del:function(k){ try{ localStorage.removeItem(k); }catch(e){} },
-  loadWeight:function(){
-    var w=parseFloat(SS.get('lrh-case-wtkg')); S.kg=(w>0&&w<300)?w:null;
-    var a=parseFloat(SS.get('lrh-case-ageyrs')); S.ageY=(a>=0&&a<130)?a:null;
-    S.override = SS.get('lrh-case-adultoverride')==='1';
-  },
-  saveWeight:function(src){
-    if(S.kg!==null){ SS.set('lrh-case-wtkg',String(S.kg)); SS.set('lrh-case-wtsrc',src||'measured'); SS.set('lrh-case-wtms',String(Date.now())); }
-    else { SS.del('lrh-case-wtkg'); SS.del('lrh-case-wtsrc'); SS.del('lrh-case-wtms'); }
-    if(S.ageY!==null) SS.set('lrh-case-ageyrs',String(S.ageY)); else SS.del('lrh-case-ageyrs');
-  },
-  saveOverride:function(){ if(S.override) SS.set('lrh-case-adultoverride','1'); else SS.del('lrh-case-adultoverride'); },
-  /* Shared timeline. Same PHI guard shape as every tool's addLog: refuse
-     weight-shaped labels and long digit runs. Tagged tool:'trauma' — the
-     timeline readers' TOOL_LABEL maps render that as TRAUMA. */
-  addLog:function(label){
-    if(/\d+(\.\d+)?\s*(kg|lb)/i.test(label)) return;
-    if(/\d{6,}/.test(label)) return;
-    var arr; try{ arr=JSON.parse(SS.get('lrh-case-log')||'[]'); }catch(e){ arr=[]; }
-    if(!Array.isArray(arr)) arr=[];
-    arr.push({ tMs:Date.now(), tool:'trauma', card:'tca', label:label });
-    SS.set('lrh-case-log', JSON.stringify(arr));
-  },
-  sweep:function(){ try{ for(var i=localStorage.length-1;i>=0;i--){ var k=localStorage.key(i);
-    if(k && k.indexOf('lrh-')===0 && k.indexOf('lrh-pref-')!==0) localStorage.removeItem(k); } }catch(e){} },
-  touchActive:function(){ SS.set('lrh-case-lastactive', String(Date.now())); },
-  /* First action of THIS case, anywhere in the manual (lrh-case-startms —
-     CASE-STATE.md). Only sets it if nothing has claimed it yet. */
-  getCaseStartMs:function(){ var v=SS.get('lrh-case-startms'); return v===null?null:(+v||null); },
-  markCaseStarted:function(){ if(SS.getCaseStartMs()===null) SS.set('lrh-case-startms', String(Date.now())); }
-};
+var STOPS=[
+  'Lost vitals before '+ARREST_WINDOW_MIN+' minutes ago?',
+  'Obvious non-survivable injury',
+  'Mass casualty incident',
+  'No surgical support for this'
+];
 
-var S = { theme:'dark', mode:SITE.mode, kg:null, ageY:null, override:false,
-          phase:'idle', codeStart:null, checked:{}, pregnant:false,
-          reversibleAddressed:false, addressedAt:null,
-          events:[], open:null, resetArm:false, showCustom:false,
-          roscAt:null, deathAt:null, deathWall:null, ceaseArm:false,
-          /* case shell (SHELL.md) UI state — in-memory only, no new persisted
-             keys. teleAt is the case-clock string on the confirmation row;
-             wOpen is the user's explicit open/close of the weight form
-             (null = follow the responsive default). */
-          teleAt:null, wOpen:null, wConfirmed:false,
-          toolMenuOpen:false, moreMenuOpen:false, tlOpen:false, toast:false };
+/* THE PROCEDURE SHEETS ARE NOT WRITTEN HERE.
+   Every sheet below whose rows come from a PROC transclusion token is the manual's
+   own card, transcluded at build (see build.mjs) — the same words, the same
+   order, the same two tiers, rendered in this tool's language. This tool used
+   to carry a second hand-typed copy of CLOSE THE HEART, CLAMSHELL EXTENSION and
+   HILAR TWIST, written the same day as the card's; editing one would have moved
+   the manual and left the engine saying the old thing, with nothing to catch it.
 
-var $ = function(id){ return document.getElementById(id); };
-/* A moment for the RECORD is a wall-clock time, not an elapsed one (issue #129).
-   The chart and the death certificate need "at what time", and nobody can
-   reconstruct that from a stopwatch afterwards. */
-function wallTime(ms){
-  var d = new Date(typeof ms==='number' ? ms : Date.now());
+   `href` points at the full card, because what transclusion moves is the text:
+   the card's tap-to-log buttons and cross-links stay on the card. The glyph is
+   worked out FROM that href (see glyph() below), so a row cannot link to one
+   card and draw another. `icon` is only for a sheet whose card lives outside
+   procedures/, where there is no card-to-glyph map to read. */
+var SHEETS={
+    hyst:{k:'PROCEDURE',t:'Resuscitative hysterotomy',icon:'hyst',
+      from:'OB &amp; Neonatal · card 10',href:'../ob-neonatal/?from=tca#c10',
+      l:[].concat({{PROC:ob-neonatal#c10|1 · IMMEDIATE (WITH CPR)}},
+                  {{PROC:ob-neonatal#c10|2 · THE INCISION}},
+                  {{PROC:ob-neonatal#c10|3 · DELIVERY & MATERNAL CARE}})},
+    airway:{k:'PROCEDURE',t:'SALAD — intubating a bloody airway',
+      from:'Procedures · card 15',href:'../procedures/?from=tca#c15',
+      l:{{PROC:procedures#c15|THE SEQUENCE}}},
+    /* FINGER THORACOSTOMY HAS NO CARD OF ITS OWN. It is one row inside the
+       chest-tube card's technique list ("in arrest this IS the complete
+       procedure"), so there is no section to transclude and this sheet stays
+       hand-written. The link goes to the chest-tube card, which is where a
+       clinician would look. A finger-thoracostomy card is worth having — three
+       tools name the procedure and none of them owns it — but writing one is a
+       clinical task, not a wiring task. */
+    finger:{k:'PROCEDURE',t:'Finger thoracostomy — bilateral',
+      from:'No card of its own — see Chest tube · card 01',href:'../procedures/?from=tca#c01',
+      l:[{do:'<b>Arm abducted. 5th intercostal space, anterior to mid axillary line, at nipple level.</b>',why:''},
+         {do:'<b>4–5 cm transverse incision through skin and subcutaneous tissue.</b>',why:''},
+         {do:'<b>Blunt dissect over the top of the rib, then push through the pleura.</b>',why:'Expect a rush of air or blood. Over the top of the rib keeps you off the neurovascular bundle.'},
+         {do:'<b>Sweep a finger 360° for lung, clot and diaphragm. Feel for a hole.</b>',why:''},
+         {do:'<b>Do the other side. Both sides, every time.</b>',why:'Before you conclude the chest is not the problem.'},
+         {do:'<b>Massive blood out on either side is a thoracotomy conversation.</b>',why:'Not a chest tube conversation — a chest tube does not fix the thing that is bleeding.'}]},
+    thor:{k:'PROCEDURE',t:'Resuscitative thoracotomy',
+      from:'Procedures · card 02',href:'../procedures/?from=tca#c02',
+      l:{{PROC:procedures#c02|SEQUENCE — STEP BY STEP}}},
+    clam:{k:'PROCEDURE',t:'Clamshell extension',
+      from:'Procedures · card 02',href:'../procedures/?from=tca#c02',
+      l:{{PROC:procedures#c02|CLAMSHELL EXTENSION — WHEN THE RIGHT CHEST IS BLEEDING}}},
+    cardiac:{k:'PROCEDURE',t:'Close the heart',
+      from:'Procedures · card 02',href:'../procedures/?from=tca#c02',
+      l:{{PROC:procedures#c02|CLOSE THE HEART — PICK THE FASTEST THING THAT HOLDS}}},
+    hilar:{k:'PROCEDURE',t:'Hilar twist — pulmonary laceration',
+      from:'Procedures · card 02',href:'../procedures/?from=tca#c02',
+      l:{{PROC:procedures#c02|HILAR TWIST — MASSIVE UNILATERAL LUNG BLEEDING}}},
+    tq:{k:'PROCEDURE',t:'Tourniquet application',
+      from:'Procedures · card 10',href:'../procedures/?from=tca#c10',
+      l:{{PROC:procedures#c10|TECHNIQUE — STEP BY STEP}}},
+    binder:{k:'PROCEDURE',t:'Pelvic binder application',
+      from:'Procedures · card 09',href:'../procedures/?from=tca#c09',
+      l:{{PROC:procedures#c09|TECHNIQUE — STEP BY STEP}}},
+    /* The debrief had its own five bullets here. It should not: the manual has
+       one debrief, in conversations/ card 04, and a team that debriefs a TCA the
+       same way it debriefs everything else is the point of having one. */
+    debrief:{k:'AFTER',t:'Team debrief',from:'Conversations · card 04',
+      href:'../conversations/?from=tca#c04',
+      l:[].concat({{PROC:conversations#c04|2 · STATE THE BASIC ASSUMPTION}},
+                  {{PROC:conversations#c04|3 · REVIEW THE CASE — WHAT DID YOU SEE?}},
+                  {{PROC:conversations#c04|4 · PLUS / DELTA / PLUS — ENABLED & INHIBITED}})},
+    /* No card owns "what to do in the ten minutes after a traumatic arrest gets
+       a pulse back" or "how this patient leaves the room", so these two stay
+       written here rather than pointing somewhere that does not exist. */
+    post:{k:'REFERENCE',t:'Post-ROSC care after TCA',
+      l:[{do:'<b>Keep the blood going.</b>',why:'Ongoing transfusion, 1:1:1, warmed.'},
+         {do:'<b>Correct the lethal triad — temperature, calcium, pH.</b>',why:'Check ionized calcium after every few units.'},
+         {do:'<b>Permissive hypotension until surgical control</b>, unless there is a head injury.',why:''},
+         {do:'<b>TXA if within 3 hours and not already given.</b>',why:''},
+         {do:'<b>Definitive imaging only if it does not delay the OR.</b>',why:''},
+         {do:'<b>Reassess the chest and the thoracostomies before you move.</b>',why:'Sedate and paralyze as needed for the move.'}]},
+    or:{k:'DISPOSITION',t:'Prepare for OR or transfer',
+      l:[{do:'<b>Call the surgeon back</b> — the injury, what you did, and what is holding.',why:''},
+         {do:'<b>Blood travels with the patient.</b>',why:'Confirm units, warmer and a pump before you leave the room.'},
+         {do:'<b>Cover the open chest, keep the retractor in, do not close.</b>',why:''},
+         {do:'<b>One named person owns the airway, one owns the transfusion</b>, for the move.',why:''},
+         {do:'<b>Transferring out: accepting surgeon on the phone, transport with blood.</b>',why:'Send the record you just built with them.'}]}};
+
+/* WHAT THE HYSTEROTOMY STEP CARD SHOWS: the cutting, sections 2 and 3 of the
+   card. Section 1 is the setup a TCA team is already doing — roles, uterine
+   displacement, the clock — and putting all fifteen rows on the operating card
+   is exactly the wall of text this manual exists to avoid. All three sections
+   are in the sheet, one tap away, and there is still only one source. */
+var HYST_STEPS=[].concat({{PROC:ob-neonatal#c10|2 · THE INCISION}},
+                         {{PROC:ob-neonatal#c10|3 · DELIVERY & MATERNAL CARE}});
+
+var S={phase:'decide',stops:[false,false,false,false],start:null,step:'say',
+       events:[],xDone:false,sheet:null,resetArm:false,stopAt:null,lifeAt:null,pregnant:null,hystDone:false,theme:'dark'};
+
+function $(id){ return document.getElementById(id); }
+function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+function fmt(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
+function clock(){ return S.start ? fmt((Date.now()-S.start)/1000) : '0:00'; }
+/* A time of death is a real time that gets written in a chart and said out
+   loud to a room — never "58 seconds after we started". The case trail below
+   stays elapsed, because that is what a debrief reasons about; only the moment
+   the resuscitation was called is absolute. */
+function wallClock(){
+  var d=new Date();
   return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
 }
-function fmt(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
-function clockNow(){ return S.codeStart ? fmt((Date.now()-S.codeStart)/1000) : '0:00'; }
-/* This tool's own clock (above) still drives every timing decision here —
-   never replaced. This is only a second, smaller readout: how long the whole
-   case has been running, wherever it started. */
-/* Only shown when it says something the clock above does not: that this case
-   was already running before this screen was opened. If THIS tool started
-   the case, the two numbers would be near-identical and just be a second,
-   confusing clock — so that case is suppressed. */
-function paintCaseClock(){
-  var ms = SS.getCaseStartMs(), el = $('caseclock');
-  var elsewhere = ms && (!S.codeStart || ms < S.codeStart - 1000);
-  if(elsewhere){ el.style.display=''; el.textContent = 'Case running '+fmt((Date.now()-ms)/1000)+' — started elsewhere'; }
-  else { el.style.display='none'; }
+function log(label){ S.events.unshift({t:clock(),label:label}); }
+/* Named toTop, not top: `top` is window.top and redeclaring it is a
+   SyntaxError that kills the whole script silently. */
+function toTop(){ try{ window.scrollTo(0,0); document.documentElement.scrollTop=0; }catch(e){} }
+/* When she is pregnant, every route to the signs-of-life question passes
+   through the hysterotomy first — including the routes that skipped the
+   thoracotomy entirely, because a hysterotomy is indicated in maternal arrest
+   whether or not a chest was opened. Enforced here rather than at each call
+   site: there are six ways to reach 'life' and any one of them left unchanged
+   would silently drop the procedure. */
+function go(step,label){
+  if(label) log(label);
+  if(step==='life' && S.pregnant && !S.hystDone){ S.hystDone=true; step='hyst'; }
+  S.step=step; paint(); toTop();
 }
 
-/* ---- PHI GUARD (CLAUDE.md rule 3) — the free-text log is the one place an
-   identifier could be typed. Entries live in memory only, never localStorage,
-   never sent; anything that looks like an identifier is refused with a reason
-   rather than silently scrubbed. Copied verbatim from arrest/index.html. */
-var PHI = [
-  {re:/\b\d{3}-?\d{2}-?\d{4}\b/, why:'looks like a social security number'},
-  {re:/\b(mrn|medical record|acct|account)\b/i, why:'mentions a record or account number'},
-  {re:/\b\d{6,}\b/, why:'contains a long number that could be an identifier'},
-  {re:/\b\d{1,2}\/\d{1,2}\/\d{2,4}\b/, why:'contains a date of birth style date'},
-  {re:/\b(dob|date of birth)\b/i, why:'mentions a date of birth'}
-];
-function phiReason(t){ for(var i=0;i<PHI.length;i++){ if(PHI[i].re.test(t)) return PHI[i].why; } return null; }
-/* Timeline category colors (SHELL.md layer 8) — the dot next to each event.
-   Semantic, matching the shell slots: amber intervention, purple drug, blue
-   assessment; red for phase changes, green for ROSC, gray for everything
-   operational. Plain hex (not var()) because the dot is painted into
-   generated HTML — same map as arrest's. */
-var EV = { red:'#E5484D', amber:'#F0B429', purple:'#9B7BD4', blue:'#4C8DDA',
-           green:'#3DA35D', teal:'#2FA372', gray:'#8FA0B5' };
-/* Events go to BOTH the in-tool log (memory, rendered by the shell timeline)
-   and the shared manual-wide timeline (lrh-case-log, PHI-guarded in
-   SS.addLog) — same as arrest. c is the category color dot; gray unstated. */
-function log(label, c){ S.events.unshift({ t: clockNow(), label: label, c: c||EV.gray }); SS.addLog(label); }
-/* Repaint an innerHTML target only when its content actually changed — never
-   reset scroll position or churn DOM that is being tapped (same helper as
-   arrest's). */
-function setHTML(el, h){ if(el._h!==h){ el._h=h; el.innerHTML=h; } }
-
-function kg(){ var k=S.kg; return (k>0 && k<300) ? k : null; }
-function autoPeds(){ var k=kg(); return (k!==null && k<SITE.trigger.maxKg) || (S.ageY!==null && S.ageY<=SITE.trigger.maxAgeYrs); }
-function isPeds(){ return autoPeds() && !S.override; }
-/* r() default precision aligned with arrest's copy (1 dp) — the two files
-   claim to be verbatim copies of each other's helpers; they now are. */
-function r(x,d){ var m=Math.pow(10,d===undefined?1:d); return Math.round(x*m)/m; }
-
-/* ---- Doses & targets — computed where a number helps, generic otherwise ---- */
-function doseModel(){
-  var k=kg(), p=isPeds();
-  /* Rounded and capped (weight-routing audit): the raw product rendered float
-     artifacts ("21.200000000000003 mL" at 1.06 kg) and no ceiling at all
-     (200 kg -> "4000 mL"). Display caps: 1 L/bolus pediatric (peds-tool
-     convention), 2 L/bolus adult. Clinically reviewed and accepted at the originating site
-     2026-08-12 (Lon Setnik); re-derive if adopting this file at another site. */
-  var mlCap = p ? 1000 : 2000;
-  var crystalloid = k!==null ? (Math.round(Math.min(SITE.fluid.crystalloidMlPerKg*k, mlCap))+' mL ('+SITE.fluid.crystalloidMlPerKg+' mL/kg, max '+(mlCap/1000)+' L/bolus)')
-                             : SITE.fluid.crystalloidMlPerKg+' mL/kg';
-  var txa;
-  if(p){
-    txa = k!==null ? (r(Math.min(SITE.txa.pedsMgPerKg*k, SITE.txa.pedsMaxMg))+' mg ('+SITE.txa.pedsMgPerKg+' mg/kg, max '+SITE.txa.pedsMaxMg+' mg)')
-                   : (SITE.txa.pedsMgPerKg+' mg/kg (max '+SITE.txa.pedsMaxMg+' mg)');
-  } else {
-    txa = SITE.txa.adult;
-  }
-  /* Calcium: weight-based in children (CaCl2 20 mg/kg max 1 g, or Ca gluconate
-     50 mg/kg max 3 g); adults get the empiric fixed dose with transfusion. */
-  var C=SITE.cal, calcium;
-  if(p){
-    calcium = k!==null
-      ? ('CaCl₂ '+Math.round(Math.min(C.pedsChlorideMgPerKg*k, C.pedsChlorideMaxMg))+' mg ('+C.pedsChlorideMgPerKg+' mg/kg) or Ca gluconate '+
-         Math.round(Math.min(C.pedsGluconateMgPerKg*k, C.pedsGluconateMaxMg))+' mg ('+C.pedsGluconateMgPerKg+' mg/kg)')
-      : ('CaCl₂ '+C.pedsChlorideMgPerKg+' mg/kg (max '+C.pedsChlorideMaxMg+' mg) or Ca gluconate '+C.pedsGluconateMgPerKg+' mg/kg (max '+C.pedsGluconateMaxMg+' mg)');
-  } else {
-    calcium = C.adultChlorideG+' g calcium chloride (or '+C.adultGluconateG+' g calcium gluconate) IV';
-  }
-  return { crystalloid:crystalloid, txa:txa, calcium:calcium,
-    blood:'Blood products '+SITE.fluid.bloodRatio+' — lead with blood, not crystalloid',
-    bp:'SBP '+SITE.bp.sbp+' (MAP '+SITE.bp.mapLow+'–'+SITE.bp.mapHigh+'); head injury SBP '+SITE.bp.tbiSbp+' (MAP '+SITE.bp.tbiMap+')' };
+function numbered(list){
+  var h=''; for(var i=0;i<list.length;i++){ h+='<div class="num"><b>'+(i+1)+'</b><span>'+list[i]+'</span></div>'; }
+  return h;
 }
-
-/* Fill the {token} placeholders in the workstream text from config + weight. */
-function fillTokens(t){
-  var dm=doseModel();
-  return t.replace('{ratio}', SITE.fluid.bloodRatio)
-          .replace('{crystalloid}', dm.crystalloid)
-          .replace('{txa}', dm.txa)
-          .replace('{calcium}', dm.calcium)
-          .replace('{caLow}', SITE.cal.ionizedLow).replace('{caHigh}', SITE.cal.ionizedHigh)
-          .replace('{surgeon}', SITE.local.surgeon)
-          .replace('{gest}', SITE.pregGestWeeks).replace('{hyst}', SITE.hysterotomyByMin);
-}
-
-/* ---- DOSING — FACE UP (SHELL.md layer 5.3) --------------------------------
-   The same peds/adult routing and the same caps as doseModel() above — one
-   config, two renderings (these rows and the CIRCULATION inline text). A long
-   fixed-string dose (adult TXA, calcium pairs) wraps rather than truncating:
-   the clinical string is quoted whole, never abbreviated. */
-function doseRow(nm, rl, vl, unset, wrap){
-  return '<div class="shelldose"><div style="min-width:0"><div class="nm">'+nm+'</div><div class="rl">'+rl+
-         '</div></div><div class="vl'+(unset?' unset':'')+'"'+(wrap?' style="white-space:normal;max-width:56%;font-size:14px"':'')+'>'+vl+'</div></div>';
-}
-function doseRowsHTML(){
-  var k=kg(), p=isPeds(), F=SITE.fluid, T=SITE.txa, C=SITE.cal;
-  var mlCap = p ? 1000 : 2000;   /* same display caps as doseModel() */
-  var h = doseRow('CRYSTALLOID BOLUS',
-      F.crystalloidMlPerKg+' mL/kg — the max while waiting for blood (max '+(mlCap/1000)+' L/bolus)',
-      k!==null ? Math.round(Math.min(F.crystalloidMlPerKg*k, mlCap))+' mL' : 'set weight', k===null);
-  if(p){
-    h += doseRow('TXA', T.pedsMgPerKg+' mg/kg, max '+T.pedsMaxMg+' mg — given early',
-        k!==null ? r(Math.min(T.pedsMgPerKg*k, T.pedsMaxMg))+' mg' : 'set weight', k===null);
-    h += doseRow('CALCIUM',
-        'CaCl₂ '+C.pedsChlorideMgPerKg+' mg/kg (max '+C.pedsChlorideMaxMg+' mg) or Ca gluconate '+
-        C.pedsGluconateMgPerKg+' mg/kg (max '+C.pedsGluconateMaxMg+' mg) · keep ionized '+C.ionizedLow+'–'+C.ionizedHigh+' mmol/L',
-        k!==null ? 'CaCl₂ '+Math.round(Math.min(C.pedsChlorideMgPerKg*k, C.pedsChlorideMaxMg))+' mg or Ca gluconate '+
-                   Math.round(Math.min(C.pedsGluconateMgPerKg*k, C.pedsGluconateMaxMg))+' mg'
-                 : 'set weight', k===null, k!==null);
-  } else {
-    h += doseRow('TXA', 'adult — fixed dose, given early', T.adult, false, true);
-    h += doseRow('CALCIUM', 'empiric with transfusion · keep ionized '+C.ionizedLow+'–'+C.ionizedHigh+' mmol/L',
-        C.adultChlorideG+' g calcium chloride (or '+C.adultGluconateG+' g calcium gluconate) IV', false, true);
+/* A transcluded row has two tiers. On a STEP CARD only the action is drawn:
+   the card is read one-handed by somebody who has already decided to do this,
+   and the reasoning is what makes a screen unreadable in a code. The WHY is
+   there in the sheet, which is opened on purpose. */
+function rows(list,withWhy){
+  var h='';
+  for(var i=0;i<list.length;i++){
+    h+='<div class="num"><b>'+(i+1)+'</b><span>'+list[i].do+
+       (withWhy&&list[i].why?'<i class="why">'+list[i].why+'</i>':'')+'</span></div>';
   }
   return h;
 }
-
-/* The conventional-resus reassessment cadence (SHELL.md layer 2): seconds left
-   in the SITE.conventionalResusMin window, or null when it isn't running. */
-function reassessRemain(){
-  if(!(S.phase==='active' && S.reversibleAddressed && S.addressedAt)) return null;
-  return SITE.conventionalResusMin*60 - (Date.now()-S.addressedAt)/1000;
+/* The glyph for a sheet, DERIVED FROM THE LINK. A sheet that opens a procedures
+   card shows that card's own glyph (design/ICONOGRAPHY.md), worked out from the
+   href rather than declared beside it \u2014 there is then no second place to keep in
+   step, and no way to point a row at one card while drawing another. Only a
+   sheet whose card lives elsewhere names an icon; a sheet with neither \u2014 the two
+   TCA-only reference sheets \u2014 gets none. */
+function glyph(id,cls){
+  var sh=SHEETS[id]; if(!sh) return '';
+  var m=(sh.href||'').match(/\/procedures\/[^#]*#(c\d+)$/);
+  var key = (m && PROC_ICONS.forCard(m[1])) || sh.icon;
+  if(!key) return '';
+  var svg = PROC_ICONS.glyph(key);
+  return svg ? svg.replace('<svg ','<svg class="'+(cls||'pg')+'" ') : '';
+}
+function linkRow(id,label){
+  return '<button class="linkrow" type="button" data-sheet="'+id+'">'+
+    '<span style="display:flex;align-items:center;gap:10px;min-width:0">'+glyph(id)+'<span>'+label+'</span></span>'+
+    '<span style="color:var(--ink2)">\u203a</span></button>';
+}
+function stepCard(color,n,head,title,sub,body,actions){
+  return '<div class="card" style="border-color:var('+color+')">'+
+    /* A step with no number is a conditional one (the hysterotomy) — it gets
+       its condition as a label instead of a position in the sequence. */
+    '<div class="eyebrow" style="color:var('+color+')">'+(/^\d+$/.test(n)?('STEP '+n+' \u00b7 '):(n?n+' \u00b7 ':''))+head+'</div>'+
+    '<div class="title">'+title+'</div>'+
+    (sub?'<div class="sub">'+sub+'</div>':'')+(body||'')+actions+'</div>';
+}
+/* act is either a destination step id plus the note to log ("dest|note"), or
+   one of the terminal actions the handler owns (lifeyes / lifeno). Keeping the
+   two distinguishable here is what stopped a renumber from silently pointing a
+   step's advance button back at itself. */
+function bigBtn(color,label,sub,act){
+  var attr;
+  if(act.indexOf('|')>-1){ var q=act.split('|'); attr='data-step="'+q[0]+'" data-note="'+q[1]+'"'; }
+  else attr='data-go="'+act+'"';
+  return '<button class="big" style="background:var('+color+');text-align:'+(sub?'left':'center')+'" '+attr+'>'+label+
+    (sub?'<div style="font-size:13px;font-weight:600;opacity:.85;margin-top:4px">'+sub+'</div>':'')+'</button>';
 }
 
-/* =============================== RENDER ==================================== */
-function renderWork(){
-  var seq = (S.mode==='sequential');
-  $('worktitle').textContent = seq ? 'WORK THE PRIORITIES IN ORDER — TAP EACH DONE' : 'ASSIGN EACH WORKSTREAM — WORK IN PARALLEL';
-  var h='';
-  for(var w=0; w<WORK.length; w++){
-    var it=WORK[w];
-    if(it.id==='O' && !S.pregnant) continue;      /* obstetric only when flagged */
-    var done=0, total=it.tasks.length;
-    for(var i=0;i<total;i++){ if(S.checked[it.id+i]) done++; }
-    var num = seq ? '<span class="mono" style="font-size:15px;font-weight:700;color:'+it.color+';flex:none;width:20px;text-align:center">'+(w+1)+'</span>' : '';
-    h+='<div class="wcard" style="border-left:4px solid '+it.color+'">'+
-       '<div style="display:flex;align-items:center;gap:10px;padding:13px 14px">'+num+
-         '<div style="flex:1;min-width:0">'+
-           '<div style="font:800 15px var(--sans);letter-spacing:.04em">'+it.name+'</div>'+
-           '<div style="font-size:12.5px;color:var(--ink2);margin-top:2px">'+it.aim+'</div>'+
-         '</div>'+
-         '<span class="mono" style="font-size:12px;color:var(--ink2);flex:none">'+done+'/'+total+'</span>'+
-       '</div>';
-    /* Links sit directly under the header (mid-box), highlighted — not buried
-       at the bottom past all the checkboxes. */
-    if(it.links && it.links.length){
-      h+='<div style="display:flex;flex-wrap:wrap;gap:8px;padding:0 14px 12px">';
-      for(var L=0; L<it.links.length; L++){
-        h+='<a href="'+it.links[L].href+'" class="wlink" style="border-color:'+it.color+';color:'+it.color+'">'+it.links[L].label+' &rsaquo;</a>';
-      }
-      h+='</div>';
-    }
-    for(var i=0;i<total;i++){
-      var key=it.id+i, on=!!S.checked[key], txt=fillTokens(it.tasks[i]);
-      h+='<button class="wrow" type="button" data-task="'+key+'">'+
-           '<span class="wbox" style="'+(on?'border-color:'+it.color+';background:'+it.color:'')+'">'+(on?'✓':'')+'</span>'+
-           '<span class="wtext" style="'+(on?'opacity:.5;text-decoration:line-through':'')+'">'+txt+'</span>'+
-         '</button>';
-    }
-    h+='</div>';
+function renderDecide(){
+  var rows='';
+  for(var i=0;i<STOPS.length;i++){
+    rows+='<button class="stoprow" type="button" data-stop="'+i+'" aria-pressed="'+(S.stops[i]?'true':'false')+'">'+
+          '<span class="box">'+(S.stops[i]?'\u2713':'')+'</span><span>'+STOPS[i]+'</span></button>';
   }
-  $('worksteps').innerHTML=h;
+  /* PREGNANCY IS NOT A STOP CRITERION — it is the opposite. It does not stop
+     the code; it adds two more people to the room and a procedure with a
+     four-minute clock. Asked here, separately and after the stop criteria, so
+     it is answered before anyone starts rather than discovered on the eFAST. */
+  var preg = '<div style="margin-top:14px;padding-top:14px;border-top:1px solid var(--line)">'+
+    '<div style="font-size:19px;font-weight:800;line-height:1.25;margin-bottom:8px">Pregnant?</div>'+
+    '<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">'+
+      '<button type="button" data-preg="1" style="min-height:58px;border-radius:12px;cursor:pointer;font:800 16px var(--sans);'+
+        (S.pregnant?'border:none;background:var(--amber);color:#141E2B':'border:1px solid var(--line);background:var(--card2);color:var(--ink)')+'">YES</button>'+
+      '<button type="button" data-preg="0" style="min-height:58px;border-radius:12px;cursor:pointer;font:800 16px var(--sans);'+
+        (S.pregnant===false?'border:none;background:var(--gray);color:#fff':'border:1px solid var(--line);background:var(--card2);color:var(--ink)')+'">NO</button>'+
+    '</div>'+
+    (S.pregnant ? '<div style="margin-top:10px;border:2px solid var(--amber);border-radius:12px;padding:12px;background:rgba(240,180,41,.10)">'+
+      '<div class="eyebrow" style="color:var(--amber)">ACTIVATE OB AND PEDIATRICS NOW</div>'+
+      '<div style="font-size:14.5px;line-height:1.5;margin-top:6px">Say it as two separate calls. '+
+      'The resuscitation below runs unchanged, and it ends with <b>resuscitative hysterotomy</b> \u2014 '+
+      'incision by 4 minutes of arrest, baby out by 5.</div></div>' : '')+
+    '</div>';
+
+  var any=S.stops.some(Boolean);
+  var out=any
+    ? '<div style="margin-top:12px;border:1px solid var(--red);border-radius:12px;padding:12px;font-size:14.5px;line-height:1.5">'+
+      'One or more stop criteria are checked. This patient is not a candidate for resuscitative thoracotomy \u2014 declare, support the family, and document.</div>'+
+      '<button class="big" style="background:var(--gray)" data-go="stophere">DO NOT START \u2014 DECLARE</button>'
+    : '<button class="big" style="background:var(--red);min-height:88px;font-size:21px;box-shadow:0 6px 24px rgba(229,72,77,.25)" data-go="proceed">PROCEED \u2014 START TCA'+
+      '<div style="font-size:13px;font-weight:600;opacity:.85;margin-top:4px">Starts the clock and the resuscitation sequence</div></button>';
+  return '<div class="card" style="border-color:var(--amber);padding:0;overflow:hidden">'+
+    '<div style="display:flex;justify-content:center;padding:14px 16px 0">'+
+      '<span style="background:var(--amber);color:#141E2B;font-size:12px;font-weight:800;letter-spacing:.12em;padding:9px 18px;border-radius:999px">DECIDE FIRST</span></div>'+
+    '<div style="padding:12px 16px 16px">'+
+      '<div style="font-size:22px;font-weight:800;line-height:1.25;margin:0 0 4px;text-wrap:pretty">Should I start a code on this trauma patient?</div>'+
+      '<div style="font-size:14px;color:var(--ink2);margin-bottom:12px">If <b style="color:var(--ink)">yes to any</b> of these, stop.</div>'+
+      '<div style="display:grid;gap:8px">'+rows+'</div>'+preg+out+
+    '</div></div>';
 }
 
-/* The weight-based fluid/med numbers now live inline in the CIRCULATION card.
-   This box carries the one thing that is a target rather than a task — the
-   resuscitation blood pressure, which also matters post-ROSC. */
-function renderDoses(){
-  var rows=[
-    ['BP target', 'SBP '+SITE.bp.sbp+' · MAP '+SITE.bp.mapLow+'–'+SITE.bp.mapHigh, 'permissive hypotension until bleeding is controlled', 'var(--green)'],
-    ['If head injury', 'SBP '+SITE.bp.tbiSbp+' · MAP '+SITE.bp.tbiMap, 'do not run low with a suspected TBI', 'var(--amber)']
-  ], h='';
-  for(var i=0;i<rows.length;i++){
-    h+='<div style="display:flex;gap:12px;align-items:baseline;padding:12px 14px;'+(i<rows.length-1?'border-bottom:1px solid var(--line)':'')+'">'+
-       '<span style="font-size:13.5px;font-weight:700;width:92px;flex:none">'+rows[i][0]+'</span>'+
-       '<span class="mono" style="font-size:14px;font-weight:700;color:'+rows[i][3]+';flex:1;min-width:0">'+rows[i][1]+'</span>'+
-       '</div>'+
-       '<div style="font-size:12px;color:var(--ink2);padding:0 14px 10px 118px;margin-top:-6px;'+(i<rows.length-1?'border-bottom:1px solid var(--line)':'')+'">'+rows[i][2]+'</div>';
+function renderStep(){
+  var st=S.step, h='';
+  if(st==='say'){
+    h=stepCard('--red','1','STATE IT OUT LOUD','\u201cThis is Traumatic Cardiac Arrest\u201d','',
+      '<div style="font-size:16px;font-weight:600;line-height:1.45;color:var(--ink);border-left:3px solid var(--red);padding-left:12px;margin-top:10px;text-wrap:pretty">'+
+      '\u201cWe are not doing normal ACLS, we are resuscitating with blood, looking for immediate reversible injuries, then we will stop if we can\u2019t find any\u201d</div>',
+      '<button class="big" style="background:var(--accent)" data-step="organize" data-note="Declared \u2014 not normal ACLS">SAID IT \u2014 LOG IT</button>');
+  } else if(st==='organize'){
+    /* ORGANIZE is roles only. Controlling the bleeding you can see is its own
+       step below it, because it is a thing somebody does with their hands, not
+       a thing the team agrees on. */
+    h='<div class="card" style="border-color:var(--accent)">'+
+      '<div class="eyebrow" style="color:var(--accent)">STEP 2 \u00b7 ORGANIZE</div>'+
+      '<div class="title">Get Organized</div>'+
+      '<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px">'+
+        '<span class="pill">ACCESS</span><span class="pill">AIRWAY</span><span class="pill">BLOOD/FLUIDS</span>'+
+        '<span class="pill">EQUIPMENT</span><span class="pill">WHAT ELSE?</span></div>'+
+      '<button class="big" style="background:var(--accent)" data-step="bleeding" data-note="Organized">GET ORGANIZED</button></div>';
+  } else if(st==='bleeding'){
+    h='<div class="card" style="border-color:var(--red)">'+
+      '<div class="eyebrow" style="color:var(--red)">STEP 3 \u00b7 CONTROL EXTERNAL BLEEDING</div>'+
+      '<div class="title">Stop what you can see</div>'+
+      '<div class="sub">Pressure, tourniquet, pelvic binder. Blood on the floor is blood you can still keep.</div>'+
+      '<button class="linkrow" type="button" data-x style="border-color:'+(S.xDone?'var(--red)':'var(--line)')+'">'+
+        '<span><span style="font-family:var(--mono);font-size:20px;font-weight:700">X</span> '+
+        (S.xDone?'Catastrophic hemorrhage controlled \u2713':'Catastrophic hemorrhage \u2014 control it now')+'</span></button>'+
+      linkRow('tq','Tourniquet card')+linkRow('binder','Pelvic binder card')+
+      '<button class="big" style="background:var(--red)" data-step="airway" data-note="External bleeding controlled">BLEEDING CONTROLLED \u2014 LOG IT</button></div>';
+  } else if(st==='airway'){
+    h=stepCard('--blue','4','ADVANCED AIRWAY','iGel or intubate',
+      'Fastest definitive airway wins. Do not pause the rest of the sequence for it.',
+      /* Pediatric tube sizes one tap from the airway step, per f4bfb4b —
+         every airway-controlling tool links them. A pediatric traumatic arrest
+         is exactly when nobody wants to be recalling sizes, and this tool now
+         also ends in a hysterotomy, which puts a neonate in the room. */
+      linkRow('airway','SALAD / intubation card')+
+      '<a class="linkrow" href="../peds/?from=tca#p16"><span>Pediatric airway sizes</span><span style="color:var(--ink2)">\u203a</span></a>',
+      '<button class="big" style="background:var(--blue)" data-step="fnt" data-note="Airway in">AIRWAY IN \u2014 LOG IT</button>');
+  } else if(st==='fnt'){
+    h=stepCard('--red','5','FINGER THORACOSTOMY','Both sides \u2014 5th ICS, anterior axillary line',
+      'Decompresses tension physiology and tells you what the chest holds.',
+      linkRow('finger','Finger thoracostomy card'),
+      '<button class="big" style="background:var(--red)" data-step="thor" data-note="Both thoracostomies done">BOTH SIDES DONE \u2014 LOG IT</button>');
+  } else if(st==='thor'){
+    h=stepCard('--red','6','CONSIDER OPEN THORACOTOMY','Left anterolateral, above rib 5',
+      /* "Signs of life" is the right phrase HERE and only here: it answers "was
+         this patient recently alive", which is what decides whether to open a
+         chest. Whether to CONTINUE is a different and narrower question —
+         PERFUSING_YES at the top of this file. Do not harmonize the two. */
+      'Penetrating torso injury with recent signs of life is the strongest indication.',
+      linkRow('thor','Resuscitative thoracotomy card'),
+      '<button class="big" style="background:var(--red);min-height:68px;font-size:18px" data-step="heart" data-note="Chest open">CHEST OPEN \u2014 LOG IT</button>'+
+      '<button class="quiet" type="button" data-step="life" data-note="Checking for perfusing cardiac activity">NOT INDICATED \u2014 SKIP TO THE PERFUSION CHECK</button>');
+  } else if(st==='heart'){
+    h=stepCard('--red','7','DELIVER THE HEART','Open the pericardium, deliver the heart','',
+      numbered(['Nick pericardium with scalpel',
+                'Longitudinal incision with scissors anterior to the phrenic nerve',
+                'Deliver the heart into your hands',
+                'Look at the heart for signs of injury']),
+      '<button class="big" style="background:var(--red);min-height:68px;font-size:18px" data-step="injured" data-note="Heart delivered">HEART DELIVERED \u2014 TIMESTAMP</button>');
+  } else if(st==='injured'){
+    h=stepCard('--amber','8','IS THE HEART INJURED?','Look at every surface','','',
+      bigBtn('--red','INJURED \u2014 CLOSE IT','Foley, staple, or pledgeted suture','close|Heart injured')+
+      '<button class="alt" type="button" data-step="other" data-note="Heart intact">HEART INTACT'+
+      '<div style="font-size:13px;font-weight:600;color:var(--ink2);margin-top:4px">Move on to other thoracic injury</div></button>');
+  } else if(st==='close'){
+    h=stepCard('--red','8','CLOSE THE HEART','Pick the fastest thing that holds','',
+      linkRow('cardiac','Cardiac repair card \u2014 foley \u00b7 staple \u00b7 pledgeted suture'),
+      '<button class="big" style="background:var(--accent)" data-step="other" data-note="Cardiac wound repaired">REPAIRED \u2014 LOG IT</button>'+
+      '<button class="quiet" type="button" data-step="life" data-note="Cardiac wound not repairable">NOT REPAIRABLE</button>');
+  } else if(st==='other'){
+    h=stepCard('--amber','9','ANY OTHER THORACIC INJURY YOU CAN REPAIR?','Pulmonary laceration, hilar bleeding, great vessel','',
+      linkRow('hilar','Hilar twist card'),
+      '<button class="big" style="background:var(--accent)" data-step="side" data-note="Other thoracic injury controlled">CONTROLLED \u2014 LOG IT</button>'+
+      '<button class="quiet" type="button" data-step="side" data-note="Nothing else repairable found">NOTHING REPAIRABLE FOUND</button>');
+  } else if(st==='side'){
+    h=stepCard('--amber','9','THE OTHER SIDE','Was there massive bleeding from the right?',
+      'Check the right thoracostomy and the right chest. Blood there is the reason to extend.','',
+      bigBtn('--red','YES \u2014 EXTEND TO CLAMSHELL','Cross the sternum, open the right chest','clam|Extending to clamshell')+
+      '<button class="alt" type="button" data-step="life" data-note="Right chest dry">NO \u2014 RIGHT CHEST DRY</button>');
+  } else if(st==='clam'){
+    /* The steps on screen ARE procedures/ card 02's clamshell and hilar-twist
+       sections, transcluded \u2014 actions only here, reasoning one tap away in the
+       sheet. Nothing on this screen is a second copy to keep in step. */
+    h=stepCard('--red','9','CLAMSHELL THORACOTOMY','Extend across \u2014 open both chests','',
+      rows(SHEETS.clam.l,false)+
+      '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line)">'+
+        '<div class="eyebrow" style="color:var(--ink2)">HILAR TWIST \u2014 RIGHT LUNG</div>'+
+        rows(SHEETS.hilar.l,false)+
+      '</div>'+linkRow('clam','Full clamshell card')+linkRow('hilar','Full hilar twist card'),
+      '<button class="big" style="background:var(--accent)" data-step="life" data-note="Checking for perfusing cardiac activity">CONTROLLED \u2014 LOG IT</button>'+
+      '<button class="quiet" type="button" data-step="life" data-note="Checking for perfusing cardiac activity">NOTHING REPAIRABLE</button>');
+  } else if(st==='hyst'){
+    /* The steps ARE ob-neonatal card 10, transcluded — the same clock, the same
+       incision, the same three cord clamps, because they are literally the same
+       rows. They cannot drift; there is only one copy.
+       Deliberately NOT numbered into the main sequence. It only appears when
+       she is pregnant, so numbering it would make "step 10" mean different
+       things for different patients — and the numbers are what somebody calls
+       across a room. It is labelled by the condition that summons it. */
+    h=stepCard('--amber','\u2014 PREGNANT','RESUSCITATIVE HYSTEROTOMY','Incision by 4 minutes of arrest, baby out by 5',
+      'It is done for the mother. Emptying the uterus is what lets her circulation work \u2014 the baby is the second reason, not the first.',
+      rows(HYST_STEPS,false)+linkRow('hyst','Full resuscitative hysterotomy card'),
+      '<button class="big" style="background:var(--amber);color:#141E2B" data-step="life" data-note="Hysterotomy \u2014 baby delivered">DELIVERED \u2014 LOG IT</button>');
+  } else if(st==='life'){
+    /* The two lists are drawn as a pair, and the NOT list is not an afterthought
+       \u2014 it is the whole point of the screen. Each of those three is something
+       that looks like life on a monitor and is not a reason to keep cutting. */
+    var yes='', no='';
+    for(var y=0;y<PERFUSING_YES.length;y++)
+      yes+='<div style="display:flex;gap:9px;margin-top:7px"><span style="color:var(--green);font-weight:800">\u2713</span>'+
+           '<span>'+PERFUSING_YES[y]+'</span></div>';
+    for(var n=0;n<PERFUSING_NO.length;n++)
+      no+='<div style="display:flex;gap:9px;margin-top:7px"><span style="color:var(--gray);font-weight:800">\u2715</span>'+
+          '<span style="color:var(--ink2)">'+PERFUSING_NO[n]+'</span></div>';
+    h=stepCard('--blue','10','KEEP GOING?','Is there organized, perfusing cardiac activity?','',
+      '<div style="font-size:14.5px;line-height:1.5;margin:10px 0 0">'+yes+'</div>'+
+      '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line)">'+
+        '<div class="eyebrow" style="color:var(--ink2)">NOT A REASON TO CONTINUE</div>'+
+        '<div style="font-size:14.5px;line-height:1.5">'+no+'</div></div>',
+      bigBtn('--green','YES \u2014 PERFUSING \u00b7 KEEP GOING','TXA \u00b7 calcium \u00b7 MTP \u00b7 post-ROSC care \u00b7 OR or transfer','lifeyes')+
+      bigBtn('--gray','NO CARDIAC OUTPUT','Terminate the resuscitation','lifeno'));
   }
-  $('dosebox').innerHTML=h;
+  return h+renderTrail();
 }
 
-var ACC = [
- {id:'causes', title:'REVERSIBLE CAUSES — WHY TCA IS DIFFERENT', body:function(){
-   return '<p>Preventable early trauma deaths are mostly <b>hemorrhage (~60%)</b>, <b>tension pneumothorax (~33%)</b>, '+
-     '<b>tamponade (~10%)</b> and <b>airway obstruction (~7%)</b>. Fix those and you fix the arrest.</p>'+
-     '<p>Immediate CPR and epinephrine <b>do not</b> improve survival in traumatic cardiac arrest and can get in the way of the '+
-     'treatments that do. Compressions are also of little use to an empty heart — they will not help until circulating volume is restored, '+
-     'and they may worsen bleeding and tamponade.</p>'+
-     '<p style="margin-bottom:0">So the priority is rapid correction of the <b>two H&rsquo;s &amp; two T&rsquo;s — Hypoxia, Hypovolemia, Tension &amp; Tamponade</b>. '+
-     'Hemorrhage control, volume replacement, airway management and chest decompression come <b>before</b> conventional CPR — unless a medical cause is suspected.</p>';
- }},
- {id:'seqsim', title:'SEQUENTIAL vs SIMULTANEOUS — HOW THIS SITE IS SET', body:function(){
-   var seq=(S.mode==='sequential');
-   return '<p>The reversible causes should ideally be corrected <b>at the same time</b>. Whether you can depends on how many hands you have — so each site is configured for <b>one</b> model at setup, not switched at the bedside.</p>'+
-     '<p><b>This aid is set to '+(seq?'SEQUENTIAL':'SIMULTANEOUS')+'</b> for {{SITE.abbrev}}. To change it for another site, set <code>SITE.mode</code> in the config block.</p>'+
-     '<p><b>Simultaneous (full trauma team):</b> assign hemorrhage, airway, breathing, cardiac and obstetric to separate people and work them in parallel. '+
-     'These priorities are met quickly and CPR can run concurrently.</p>'+
-     '<p><b>Sequential (rural / limited team):</b> one or two clinicians cannot do everything at once, so work the priorities in order — '+
-     'catastrophic hemorrhage, then airway, then chest decompression, then the pump. Conventional CPR is a <b>secondary</b> priority here: '+
-     'start compressions after the airway is managed and tamponade is corrected, and expect little benefit until volume is restored.</p>'+
-     '<p style="margin-bottom:0">If CPR is already in progress on arrival, <b>pause it for at most '+SITE.cprPauseMaxMin+' minutes</b> to correct the reversible causes.</p>';
- }},
- {id:'hem', title:'HEMORRHAGE CONTROL, ACCESS & REPLACE', body:function(){
-   var dm=doseModel();
-   return '<p><b>Control the external bleeding first.</b> Firm direct pressure with a hand or pad is the fastest, most effective method — do not remove impaled objects. '+
-     '<a href="../procedures/?from=home#c10">Tourniquet</a> only for life-threatening limb bleeding not controlled by pressure: 5–7 cm above the point, tighten until bleeding stops, note the time. '+
-     'A <a href="../procedures/?from=home#c09">pelvic binder</a> at the greater trochanters for suspected pelvic fracture; splint long bones.</p>'+
-     '<p><b>Access:</b> place <b>big</b> access early — an <a href="../procedures/?from=home#c14">AVA 3Xi / large-bore resuscitation line</a>, or two large-bore IVs. If the shocked state makes peripheral access slow, go to <b>IO — humeral head first</b> '+
-     '(faster flow than the tibia, and it avoids blood loss into the pelvic/splanchnic circulation).</p>'+
-     '<p><b>Replace with blood.</b> Crystalloid <b>'+dm.crystalloid+'</b> is the <b>max while waiting for blood</b> — switch to <a href="../codes/?from=home#c12">massive transfusion</a> as soon as it arrives, '+
-     'blood products <b>'+SITE.fluid.bloodRatio+'</b>, leading with blood. Keep <b>ionized calcium '+SITE.cal.ionizedLow+'–'+SITE.cal.ionizedHigh+' mmol/L</b> ('+dm.calcium+') and run '+SITE.local.viscoelastic+' early.</p>'+
-     '<p style="margin-bottom:0"><b>Tranexamic acid — '+dm.txa+'</b>, given early.</p>';
- }},
- {id:'chest', title:'CHEST — FINGER THORACOSTOMY', body:function(){
-   return '<p>TCA with suspected chest trauma not responding to airway and volume needs <b>bilateral finger thoracostomies</b> — start on the most affected side.</p>'+
-     '<p>Make a <b>3–4 cm incision at the 4th intercostal space, anterior to the mid-axillary line</b>, then blunt-dissect through to the pleura and sweep a finger into the pleural space.</p>'+
-     '<p style="margin-bottom:0"><b>Finger thoracostomy only — do not place a chest tube now</b> while the patient is on positive-pressure ventilation (BVM, i-gel or ETT). '+
-     'Insert the intercostal catheters and connect underwater seals <b>once ROSC is established</b>. See <a href="../procedures/?from=home#c01">Chest Tube</a> / <a href="../procedures/?from=home#c16">Pigtail</a>.</p>';
- }},
- {id:'edt', title:'CARDIAC — eFAST & ED THORACOTOMY', body:function(){
-   return '<p><b>Cardiac ultrasound (eFAST)</b> during the resuscitation answers two questions at once: is there a <b>tamponade</b>, and is there <b>any cardiac activity</b>.</p>'+
-     '<p><b>ED thoracotomy is for a reversible cause</b> — classically to release a pericardial tamponade in penetrating chest trauma with signs of life. '+
-     'Discuss every other indication (e.g. aortic cross-clamping) with the '+SITE.local.surgeon+'. See <a href="../procedures/?from=home#c02">Resuscitative Thoracotomy</a> for go/no-go criteria.</p>'+
-     '<p style="margin-bottom:0">No cardiac activity on eFAST, with no ROSC after the reversible causes are addressed, is one of the two cessation criteria.</p>';
- }},
- {id:'ob', title:'OBSTETRIC — PREGNANT TRAUMA ARREST', body:function(){
-   return '<p>A pregnant patient with the <b>uterus at or above the umbilicus (~'+SITE.pregGestWeeks+' weeks)</b> who arrests should be kept <b>supine with the uterus manually displaced to the left</b> to relieve aortocaval compression and maximize preload.</p>'+
-     '<p style="margin-bottom:0">Consider a <b>resuscitative hysterotomy</b> and, if needed, perform it <b>early — aim within '+SITE.hysterotomyByMin+' minutes</b> of the arrest. '+SITE.local.obCall.charAt(0).toUpperCase()+SITE.local.obCall.slice(1)+'. '+
-     'See <a href="../ob-neonatal/?from=home#c10">Resuscitative Hysterotomy</a>.</p>';
- }},
- {id:'rosc', title:'ROSC & POST-RESUS TARGETS', body:function(){
-   var dm=doseModel();
-   return '<p>Complete the primary survey and continue post-resuscitation care. Plan <b>early damage-control surgery</b> — straight to the OR, or activate transfer to the trauma center.</p>'+
-     '<p>Keep transfusing to clear targets: <b>'+dm.bp+'</b>. Keep the patient warm, treat coagulopathy, keep calcium in range.</p>'+
-     '<p style="margin-bottom:0">Recheck the chest — the intercostal catheters can now be inserted and the underwater seals connected.</p>';
- }},
- {id:'stop', title:'WHO NOT TO START · WHEN TO STOP', body:function(){
-   return '<p><b>Do not start</b> if there are injuries incompatible with life, or no signs of life for more than <b>'+SITE.noSignsOfLifeMin+' minutes</b>.</p>'+
-     '<p style="margin-bottom:0"><b>Cessation</b> — consider stopping when <b>both</b> are true: no ROSC after all reversible causes have been addressed, <b>and</b> no detectable cardiac activity on eFAST. Then run an immediate hot debrief.</p>';
- }},
- {id:'src', title:'SOURCES', body:function(){
-   return '<p>Adapted for {{SITE.abbrev}} from the <b>Royal Melbourne Hospital Trauma Service — Traumatic Cardiac Arrest Guideline (TRM08.12), v3.0, endorsed by the Advisory Committee on Trauma, 2023</b>, and its companion ED Thoracotomy Guideline (TRM04.02).</p>'+
-     '<p>Consistent with <b>ANZCOR Guideline 11.10 — Management of Cardiac Arrest due to Trauma</b> and the <b>European Resuscitation Council</b> traumatic-cardiac-arrest guidance; TXA per <b>CRASH-2</b>, calcium/coagulation per the <b>European trauma bleeding guideline (Spahn 2019)</b>.</p>'+
-     '<p style="margin-bottom:0">The site-specific calls in the original (MEP, OPSTAT, RWH numbers, ROTEM) have been genericized in the SITE CONFIG block. Verify every value, role and phone number against your own department before use.</p>';
- }}
- /* The old EVENT LOG accordion is retired — the case shell's timeline
-    (layer 8, #shelltl) is the one view of S.events now. */
-];
+function renderLive(){
+  return '<div class="card" style="border-color:var(--green)">'+
+    '<div class="eyebrow" style="color:var(--green)">PERFUSING \u2014 KEEP GOING</div>'+
+    '<div class="title">Confirmed at '+S.lifeAt+'</div>'+
+    '<button class="linkrow" type="button" data-log="TXA \u2014 1 g IV over 10 min, then 1 g over 8 h">'+
+      '<span>TXA \u2014 1 g IV over 10 min, then 1 g over 8 h</span><span style="color:var(--ink2)">LOG</span></button>'+
+    '<button class="linkrow" type="button" data-log="Calcium \u2014 1 g CaCl\u2082 IV">'+
+      '<span>Calcium \u2014 1 g CaCl\u2082 IV</span><span style="color:var(--ink2)">LOG</span></button>'+
+    '<button class="linkrow" type="button" data-log="MTP \u2014 keep the blood going, 1:1:1">'+
+      '<span>MTP \u2014 keep the blood going, 1:1:1</span><span style="color:var(--ink2)">LOG</span></button>'+
+    linkRow('post','Post-ROSC care card')+linkRow('or','Prepare for OR or transfer')+linkRow('debrief','Team debrief')+
+    '<button class="quiet" type="button" data-go="back">BACK TO THE SEQUENCE</button></div>'+renderTrail();
+}
 
-function renderAccordions(){
-  var h='';
-  for(var i=0;i<ACC.length;i++){
-    var a=ACC[i], open=(S.open===a.id);
-    h+='<div class="acc"><button class="acch" type="button" data-acc="'+a.id+'">'+a.title+
-       '<span style="color:var(--ink2)">'+(open?'−':'+')+'</span></button>'+
-       (open ? '<div class="accb">'+a.body()+'</div>' : '')+'</div>';
+function renderStopped(){
+  return '<div class="card" style="border-color:var(--gray)">'+
+    '<div class="eyebrow" style="color:var(--gray)">RESUSCITATION STOPPED</div>'+
+    '<div class="title">Time called: '+S.stopAt+'</div>'+
+    '<div style="font-size:14.5px;line-height:1.7;margin-top:10px">'+
+      '\u00b7 Say it out loud to the room, and thank them by name<br>'+
+      '\u00b7 Notify family \u00b7 medical examiner and organ procurement as applicable<br>'+
+      '\u00b7 Document the criteria that stopped the resuscitation<br>'+
+      '\u00b7 Debrief the team before they scatter</div>'+
+    linkRow('debrief','Team debrief')+'</div>'+renderTrail();
+}
+
+function renderTrail(){
+  if(!S.events.length) return '';
+  var h='<div class="card" style="border-color:var(--line)"><div class="eyebrow" style="color:var(--ink2)">DONE SO FAR</div>';
+  for(var i=0;i<S.events.length;i++){
+    h+='<div class="trail"><span style="color:var(--ink)">'+S.events[i].t+'</span><span>'+esc(S.events[i].label)+'</span></div>';
   }
-  $('accordions').innerHTML=h;
+  return h+'</div>';
 }
 
-function planLabel(){
-  if(S.phase==='active') return 'TRAUMATIC CARDIAC ARREST · '+(S.mode==='sequential'?'SEQUENTIAL':'SIMULTANEOUS');
-  if(S.phase==='rosc')   return 'TCA · ROSC — POST-RESUS CARE';
-  if(S.phase==='ceased') return 'TCA · RESUSCITATION CEASED';
-  return 'TRM · TRAUMATIC CARDIAC ARREST';
+function renderSheet(){
+  if(!S.sheet){ $('sheetwrap').innerHTML=''; return; }
+  var sh=SHEETS[S.sheet]; if(!sh){ $('sheetwrap').innerHTML=''; return; }
+  var g=glyph(S.sheet,'pg-lg');
+  var h='<div class="sheet" data-close><div class="sheetin">'+
+    '<div style="display:flex;align-items:center;gap:12px">'+g+
+      '<div style="min-width:0">'+
+        '<div class="eyebrow" style="color:var(--ink2)">'+sh.k+'</div>'+
+        '<div class="title" style="font-size:19px;margin:2px 0 0">'+sh.t+'</div>'+
+        /* WHERE THIS TEXT LIVES. These rows are the card's, not this tool's, and
+           saying so is what makes the link below an obvious next tap rather than
+           a duplicate. The two sheets with no card say nothing here. */
+        (sh.from?'<div class="from">'+sh.from+'</div>':'')+
+      '</div></div>'+
+    rows(sh.l,true);
+  if(sh.href) h+='<a class="linkrow" href="'+sh.href+'" style="margin-top:16px">'+
+    '<span>Open the full card</span><span style="color:var(--ink2)">›</span></a>';
+  h+='<button class="quiet" type="button" data-close style="margin-top:10px;min-height:56px">CLOSE</button></div></div>';
+  $('sheetwrap').innerHTML=h;
 }
 
 function paint(){
-  /* --accent is set per theme in CSS (orange = Trauma category); no JS override. */
-  paintCaseClock();
-  var running = (S.phase==='active');
-  $('plabel').textContent = planLabel();
-
-  /* ---- CASE SHELL chrome (SHELL.md) — same wiring as arrest's ---- */
-  var caseOn = S.phase!=='idle';
-  $('statusword').style.display = caseOn ? 'none' : '';
-  $('casepill').style.display = caseOn ? '' : 'none';
-  if(caseOn){
-    $('pillclock').textContent = clockNow();
-    $('pilltag').textContent = S.phase==='rosc' ? 'ROSC' : S.phase==='ceased' ? 'CEASED' : 'TCA';
-  }
-  var wide = window.matchMedia('(min-width:768px)').matches;
-  /* The strip has content on a phone only once the REASSESS cadence runs;
-     ≥768px it carries the two dock actions whenever the case is running. */
-  $('shellstrip').style.display = (running && (wide || S.reversibleAddressed)) ? 'flex' : 'none';
-  $('chipreassess').style.display = S.reversibleAddressed ? '' : 'none';
-  $('shelldock').style.display = running ? 'flex' : 'none';
-  document.body.classList.toggle('dockon', running);
-  $('toolmenu').style.display = S.toolMenuOpen ? '' : 'none';
-  $('moremenu').style.display = S.moreMenuOpen ? '' : 'none';
-  $('shelltoast').style.display = S.toast ? 'flex' : 'none';
-
-  /* Reset — one armed state, two entry points (⋯ menu row on a phone, the
-     inline red button ≥768px). Both are the same two-tap SURE? pattern. */
-  $('resetbtn').textContent = S.resetArm ? 'SURE? — tap again to clear' : 'Reset for next case';
-  $('resetwide').textContent = S.resetArm ? 'SURE?' : 'RESET';
-  $('resetwide').style.background = S.resetArm ? 'var(--red)' : '';
-  $('resetwide').style.color = S.resetArm ? '#fff' : '';
-
-  /* Team model is fixed per site at localization (SITE.mode) — no bedside toggle. */
-  var seq=(S.mode==='sequential');
-
-  /* Weight strip (layer 4): collapsed row ↔ the input form. Phone default is
-     collapsed; ≥768px it stays open until confirmed (DONE ✓ / ESTIMATE, or a
-     weight already set when the page opened). The user's own toggle wins. */
-  var k=kg();
-  $('wlabel').textContent = k!==null ? k+' kg' : 'not set';
-  $('wlabel').className = 'v '+(k!==null?'set':'unset');
-  var wOpen = S.wOpen!==null ? S.wOpen : (wide && !S.wConfirmed);
-  $('wform').style.display = wOpen ? 'flex' : 'none';
-  $('wmark').textContent = wOpen ? '▲' : (wide ? '✎ tap to change' : '▼');
-  $('wnote').textContent = k!==null ? (k+' kg · '+(isPeds()?'pediatric':'adult'))
-                         : (isPeds() ? 'pediatric by age — enter kg' : 'enter weight');
-
-  /* Tele-ED (layer 5.2): idempotent — the button collapses to a quiet
-     confirmation row once tapped, and never asks twice. */
-  $('telebtn').style.display = S.teleAt===null ? '' : 'none';
-  $('teledone').style.display = S.teleAt===null ? 'none' : '';
-  if(S.teleAt!==null) $('teleat').textContent = S.teleAt;
-
-  /* Dosing — face up (layer 5.3), while the case is idle or running. */
-  var doseOn = (S.phase==='idle' || running);
-  $('dosingblock').style.display = doseOn ? '' : 'none';
-  if(doseOn) setHTML($('doserows'), doseRowsHTML());
-
-  /* Timeline (layer 8). */
-  $('shelltl').style.display = S.tlOpen ? 'flex' : 'none';
-  if(S.tlOpen){
-    var th='';
-    if(!S.events.length) th='<div style="font-size:13.5px;color:var(--ink2);padding:10px 0">Nothing logged yet.</div>';
-    else for(var ti=0;ti<S.events.length;ti++){ var ev=S.events[ti];
-      th+='<div class="shelltlrow"><span class="tt">'+ev.t+'</span><span class="cdot" style="background:'+(ev.c||EV.gray)+
-          '"></span><span class="lbl">'+ev.label+'</span></div>'; }
-    setHTML($('tlrows'), th);
-  }
-  var showPeds = isPeds();
-  $('pedsbar').style.display = showPeds ? 'flex' : 'none';
-  if(showPeds){
-    $('pedsbartext').innerHTML = '<b>Pediatric dosing — '+(k!==null?k+' kg':'by age')+'.</b> TXA, calcium, and fluids below are weight-based. Small/frail adult? Override.';
-  }
-  $('overridebar').style.display = (autoPeds() && S.override) ? 'flex' : 'none';
-  $('pregboxActive').style.cssText = 'margin-top:0;'+(S.pregnant?'border-color:var(--orange);background:var(--orange);color:'+(S.theme==='dark'?'#141E2B':'#fff'):'');
-  $('pregboxActive').textContent = S.pregnant ? '✓' : '';
-
-  $('soltxt').textContent = SITE.noSignsOfLifeMin;
-  $('soltxt2').textContent = SITE.noSignsOfLifeMin;
-  $('hystmin').textContent = SITE.hysterotomyByMin;
-  $('convmin').textContent = SITE.conventionalResusMin;
-  $('rbp1').textContent=SITE.bp.sbp; $('rmap1').textContent=SITE.bp.mapLow+'–'+SITE.bp.mapHigh;
-  $('rbp2').textContent=SITE.bp.tbiSbp; $('rmap2').textContent=SITE.bp.tbiMap;
-  $('activationline').textContent = SITE.local.activation + (S.pregnant ? '  ·  ' + cap(SITE.local.obCall) + '.' : '');
-  $('pregboxIdle').style.cssText = 'margin-top:0;'+(S.pregnant?'border-color:var(--orange);background:var(--orange);color:'+(S.theme==='dark'?'#141E2B':'#fff'):'');
-  $('pregboxIdle').textContent = S.pregnant ? '✓' : '';
-
-  $('idle').style.display   = S.phase==='idle' ? '' : 'none';
-  $('active').style.display = running ? '' : 'none';
-  $('rosc').style.display   = S.phase==='rosc' ? '' : 'none';
-  $('ceased').style.display = S.phase==='ceased' ? '' : 'none';
-
-  if(running){
-    $('cprnote').innerHTML = seq
-      ? 'If CPR is already running, <b>pause it for up to '+SITE.cprPauseMaxMin+' min</b> to correct these. Start compressions only after the airway is managed and tamponade is corrected.'
-      : 'If CPR is already running, <b>pause it for up to '+SITE.cprPauseMaxMin+' min</b> to correct these. With a full team, compressions run concurrently.';
-    renderWork();
-    renderDoses();
-
-    $('addressedbtn').style.display = S.reversibleAddressed ? 'none' : '';
-    $('convstrip').style.display = S.reversibleAddressed ? '' : 'none';
-    paintReassess();
-    $('ceasecard').style.display = S.ceaseArm ? '' : 'none';
-    $('ceasebtn').style.display  = S.ceaseArm ? 'none' : '';
-    $('customrow').style.display = S.showCustom ? 'flex' : 'none';
-
-    /* ---- shell dock + strip (layers 2/6): the amber intervention slot is
-       CAUSES ADDRESSED ✓ until tapped, then it becomes the REASSESS cadence
-       button — timer and action one target, DUE NOW red at zero (painted by
-       paintReassess). The same labels drive the phone dock and the ≥768px
-       strip buttons — one home per width, never two behaviors. ---- */
-    var addrLbl = S.reversibleAddressed ? 'REASSESS' : 'CAUSES ADDRESSED ✓';
-    $('dockaddrlabel').textContent = addrLbl;
-    $('stripaddrlabel').textContent = addrLbl;
-    $('dockaddrclock').style.display = S.reversibleAddressed ? '' : 'none';
-    $('stripaddrclock').style.display = S.reversibleAddressed ? '' : 'none';
-
-    /* LOG ticker — newest event, one line, tap for the timeline. */
-    var hasEv = S.events.length>0;
-    $('ticker').style.display = hasEv ? 'flex' : 'none';
-    if(hasEv) $('tickertext').textContent = S.events[0].t+' · '+String(S.events[0].label).replace(/<[^>]*>/g,'');
-  }
-
-  if(S.phase==='rosc')   $('roscat').textContent = S.roscAt || clockNow();
-  if(S.phase==='ceased'){
-    $('deathat').textContent = S.deathAt || clockNow();
-    $('deathwall').textContent = S.deathWall || wallTime();
-  }
-
-  $('verstamp').textContent = 'v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · {{SITE.abbrev}}';
-  renderAccordions();
+  $('clock').textContent=clock();
+  $('dot').style.display = S.phase==='run' ? '' : 'none';
+  $('phase').textContent = S.phase==='decide'?'DECIDE':(S.phase==='run'?'RESUSCITATING':(S.phase==='live'?'PERFUSING':'STOPPED'));
+  $('themebtn').textContent = S.theme==='dark'?'LIGHT':'DARK';
+  $('resetbtn').textContent = S.resetArm?'SURE?':'RESET';
+  $('resetbtn').style.background = S.resetArm?'var(--red)':'var(--card)';
+  $('resetbtn').style.color = S.resetArm?'#fff':'var(--ink2)';
+  document.body.dataset.theme=S.theme;
+  var h='';
+  if(S.phase==='decide') h=renderDecide();
+  else if(S.phase==='run') h=renderStep();
+  else if(S.phase==='live') h=renderLive();
+  else h=renderStopped();
+  $('screen').innerHTML=h;
+  renderSheet();
+  $('disc').innerHTML='v'+VERSION+' \u00b7 last reviewed '+REVIEWED+' \u00b7 personal/unofficial aid \u2014 '+
+    'not part of the hospital IT system or EHR, and not a substitute for clinical judgment. '+
+    'Verify every value against local protocol. Nothing here is stored off this device.';
 }
 
-function cap(s){ return s.charAt(0).toUpperCase()+s.slice(1); }
 
-/* =============================== ACTIONS =================================== */
-function startTCA(){
-  S.codeStart = Date.now(); S.phase='active';
-  SS.markCaseStarted();
-  log('TRAUMATIC CARDIAC ARREST declared — '+(S.mode==='sequential'?'sequential / limited team':'simultaneous / full team'), EV.red);
-  log(SITE.local.activation, EV.amber);
-  if(S.pregnant) log('Pregnant ≥'+SITE.pregGestWeeks+' wk — OB + neonatal called, hysterotomy planned within '+SITE.hysterotomyByMin+' min', EV.amber);
-  /* Seed the timeline with a pre-case tele-ED activation (SHELL.md). */
-  if(S.teleAt!==null) log('Tele-ED already on the line', EV.blue);
-  paint();
-}
-function doReset(){
-  /* Manual-wide, same as arrest's RESET: the two buttons look identical, so
-     they now have the same blast radius (weight-routing audit — TCA's used to
-     clear only this tool while arrest's swept every tool's case state). */
-  SS.sweep();
-  S = { theme:S.theme, mode:S.mode, kg:null, ageY:null, override:false,
-        phase:'idle', codeStart:null, checked:{}, pregnant:false,
-        reversibleAddressed:false, addressedAt:null,
-        events:[], open:null, resetArm:false, showCustom:false,
-        roscAt:null, deathAt:null, deathWall:null, ceaseArm:false,
-        teleAt:null, wOpen:null, wConfirmed:false,
-        toolMenuOpen:false, moreMenuOpen:false, tlOpen:false,
-        /* the amber cleared toast (SHELL.md layer 9) — dismissed by OK */
-        toast:true };
-  $('wIn').value=''; $('aIn').value=''; $('customin').value='';
-  SS.touchActive();
-  paint();
-}
+document.addEventListener('click', function(e){
+  var t=e.target.closest ? e.target.closest('[data-stop]') : null;
+  if(t){ var i=+t.getAttribute('data-stop'); S.stops[i]=!S.stops[i]; paint(); return; }
+  var pr=e.target.closest ? e.target.closest('[data-preg]') : null;
+  if(pr){ S.pregnant = pr.getAttribute('data-preg')==='1'; paint(); return; }
+  if(e.target.closest && e.target.closest('[data-x]')){ S.xDone=!S.xDone;
+    if(S.xDone) log('Catastrophic hemorrhage controlled'); paint(); return; }
+  var sh=e.target.closest ? e.target.closest('[data-sheet]') : null;
+  if(sh){ S.sheet=sh.getAttribute('data-sheet'); paint(); return; }
+  if(e.target.closest && e.target.closest('[data-close]')){ S.sheet=null; paint(); return; }
+  var lg=e.target.closest ? e.target.closest('[data-log]') : null;
+  if(lg){ log(lg.getAttribute('data-log')); paint(); return; }
+  /* An advance carries its own destination and its own log line, so there is
+     no table to keep in step with the screens. Two buttons reach the same step
+     for different reasons (heart intact / cardiac wound repaired) and each
+     still records what actually happened. */
+  var st=e.target.closest ? e.target.closest('[data-step]') : null;
+  if(st){ go(st.getAttribute('data-step'), st.getAttribute('data-note')); return; }
+  var g=e.target.closest ? e.target.closest('[data-go]') : null;
+  if(!g) return;
+  var a=g.getAttribute('data-go');
+  if(a==='proceed'){ S.phase='run'; S.start=Date.now(); S.step='say'; log('TCA declared \u2014 clock started'); paint(); toTop(); return; }
+  if(a==='stophere'){ S.phase='stopped'; S.stopAt=wallClock(); log('Not a candidate \u2014 declared'); paint(); toTop(); return; }
+  if(a==='lifeyes'){ S.phase='live'; S.lifeAt=clock(); log('Organized, perfusing cardiac activity \u2014 keep going'); paint(); toTop(); return; }
+  if(a==='lifeno'){ S.phase='stopped'; S.stopAt=wallClock(); log('No cardiac output \u2014 resuscitation terminated at '+S.stopAt); paint(); toTop(); return; }
+  if(a==='back'){ S.phase='run'; S.step='life'; paint(); toTop(); return; }
+});
 
-function wire(){
-  /* Back link: default to the manual hub, but if we were opened from a specific
-     tool (?from=<slug>), route back there instead — same rule as arrest's. */
-  (function(){
-    var m=/[?&]from=([a-z-]+)/.exec(location.search||''); var f=m&&m[1];
-    if(!f||f==='home'||f==='tool') return;
-    var b=$('backlink'), bw=$('backlinkwide');
-    if(b) b.href='../'+f+'/?from=tool';
-    if(bw){ bw.href='../'+f+'/?from=tool'; bw.textContent=f.toUpperCase()+' ›'; }
-  })();
-  /* Two-tap SURE? reset, shared by both entry points (⋯ menu row on a phone,
-     inline red button ≥768px). The menu stays open while armed so the second
-     tap lands on the same control. */
-  function armReset(){
-    if(!S.resetArm){ S.resetArm=true; paint(); setTimeout(function(){ S.resetArm=false; paint(); },2500); return; }
-    doReset();
-  }
-  $('resetbtn').addEventListener('click', armReset);
-  $('resetwide').addEventListener('click', armReset);
-  $('toastok').addEventListener('click', function(){ S.toast=false; paint(); });
+$('themebtn').addEventListener('click', function(){ S.theme = S.theme==='dark'?'light':'dark'; paint(); });
+var ra;
+$('resetbtn').addEventListener('click', function(){
+  if(!S.resetArm){ S.resetArm=true; paint(); clearTimeout(ra); ra=setTimeout(function(){ S.resetArm=false; paint(); },2500); return; }
+  clearTimeout(ra);
+  S={phase:'decide',stops:[false,false,false,false],start:null,step:'say',events:[],xDone:false,
+     sheet:null,resetArm:false,stopAt:null,lifeAt:null,pregnant:null,hystDone:false,theme:S.theme};
+  paint(); toTop();
+});
 
-  /* ---- shell bar: tool switcher, ⋯ overflow, pill, timeline ---- */
-  $('toolbtn').addEventListener('click', function(e){
-    e.stopPropagation();
-    S.toolMenuOpen=!S.toolMenuOpen; S.moreMenuOpen=false; paint();
-  });
-  $('menubtn').addEventListener('click', function(e){
-    e.stopPropagation();
-    S.moreMenuOpen=!S.moreMenuOpen; S.toolMenuOpen=false; paint();
-  });
-  function openTL(){ S.tlOpen=true; S.moreMenuOpen=false; S.toolMenuOpen=false; paint(); }
-  $('casepill').addEventListener('click', openTL);
-  $('tlbtn').addEventListener('click', openTL);
-  $('tlbtnwide').addEventListener('click', function(){ S.tlOpen=!S.tlOpen; paint(); });
-  $('ticker').addEventListener('click', openTL);
-  $('tlclose').addEventListener('click', function(){ S.tlOpen=false; paint(); });
-  /* Tap anywhere else closes an open dropdown (never the timeline — that has
-     its own ✕). The reset row keeps the menu open while armed, handled above
-     by stopPropagation on the menu buttons. */
-  document.addEventListener('click', function(e){
-    if(!(S.toolMenuOpen||S.moreMenuOpen)) return;
-    if(e.target.closest && (e.target.closest('.shellmenu')||e.target.closest('#toolbtn')||e.target.closest('#menubtn'))) return;
-    S.toolMenuOpen=false; S.moreMenuOpen=false; paint();
-  });
+/* Config-driven verification (CLAUDE.md, issue #117): the sheet table names
+   which card each screen borrows from, so the suite asserts against THAT rather
+   than against a second list of card ids typed into a test. */
+try{ window.SHEETS = SHEETS; window.SITE = {arrestWindowMin:ARREST_WINDOW_MIN, stops:STOPS,
+     perfusingYes:PERFUSING_YES, perfusingNo:PERFUSING_NO}; }catch(e){}
 
-  /* ---- weight strip toggle (layer 4) ---- */
-  $('wtoggle').addEventListener('click', function(){
-    var visible = $('wform').style.display!=='none';
-    S.wOpen = !visible; paint();
-    if(S.wOpen) setTimeout(function(){ try{ $('wIn').focus(); }catch(e){} },30);
-  });
-  $('wdone').addEventListener('click', function(){ S.wConfirmed=true; S.wOpen=null; paint(); });
-
-  /* ---- tele-ED (layer 5.2): idempotent, logs the request time ---- */
-  $('telebtn').addEventListener('click', function(){
-    if(S.teleAt!==null) return;
-    S.teleAt = clockNow();
-    log('Tele-ED activated', EV.blue);
-    paint();
-  });
-
-  /* Weight/age handling — same contract as arrest's copy (weight-routing
-     audit): ONE validation band (0<kg<300) enforced loudly at write; wtsrc/
-     wtms only move on a genuine change; transient keystrokes don't delete the
-     shared weight; the adult override clears on a changed weight/age. */
-  function showWErr(msg){ var el=$('werr'); el.textContent=msg; el.style.display='block'; }
-  function clearWErr(){ var el=$('werr'); el.textContent=''; el.style.display='none'; }
-  var _ovClearT=null;
-  function scheduleOverrideClear(){
-    if(_ovClearT) clearTimeout(_ovClearT);
-    _ovClearT=setTimeout(function(){
-      if(S.override){ S.override=false; SS.saveOverride();
-        log('Adult override cleared — weight/age changed'); paint(); }
-    }, 800);
-  }
-  function commitKg(v, src){
-    if(v===S.kg){ paint(); return; }
-    S.kg=v; SS.saveWeight(src);
-    scheduleOverrideClear();
-    paint();
-  }
-  var _wClearT=null;
-  $('wIn').addEventListener('input', function(e){
-    clearWErr();
-    if(_wClearT){ clearTimeout(_wClearT); _wClearT=null; }
-    var raw=e.target.value, v=parseFloat(raw);
-    if(raw==='' || isNaN(v)){
-      _wClearT=setTimeout(function(){ if($('wIn').value===''||isNaN(parseFloat($('wIn').value))) commitKg(null,'measured'); }, 900);
-      return;
-    }
-    if(v<=0 || v>=300){ showWErr('CHECK WEIGHT — MUST BE ABOVE 0 AND BELOW 300 kg. NOT SAVED.'); return; }
-    commitKg(v,'measured');
-  });
-  $('wIn').addEventListener('blur', function(e){
-    if(e.target.value===''||isNaN(parseFloat(e.target.value))) commitKg(null,'measured');
-  });
-  function onAgeChanged(){
-    clearWErr();
-    var prev=S.ageY, v=parseFloat($('aIn').value);
-    if(isNaN(v)||v<0){ S.ageY=null; }
-    else { var u=$('aUnit')?$('aUnit').value:'yr'; var yrs=(u==='mo')?v/12:v;
-           S.ageY=(yrs>=0&&yrs<130)?Math.round(yrs*100)/100:null; }
-    if(S.ageY!==null) SS.set('lrh-case-ageyrs',String(S.ageY)); else SS.del('lrh-case-ageyrs');
-    if(S.ageY!==prev) scheduleOverrideClear();
-    paint();
-  }
-  $('aIn').addEventListener('input', onAgeChanged);
-  if($('aUnit')) $('aUnit').addEventListener('change', onAgeChanged);
-  $('estbtn').addEventListener('click', function(){
-    /* The manual's ONE age-to-weight formula (APLS bands, identical to peds/
-       and arrest/). Refuses beyond 12 y — the old min(2a+8,70) silently
-       flipped adolescents/adults into pediatric TXA and calcium. */
-    var v=parseFloat($('aIn').value);
-    if(isNaN(v)||v<0){ showWErr('ENTER A VALID AGE FIRST'); return; }
-    var u=$('aUnit')?$('aUnit').value:'yr';
-    var months=(u==='mo')?v:v*12, years=months/12;
-    if(years>12){ showWErr('AGE ESTIMATE VALID TO 12 y — USE A MEASURED WEIGHT'); return; }
-    var est;
-    if(months<12){ est=(0.5*months)+4; }
-    else if(years<=5){ est=(2*years)+8; }
-    else { est=(3*years)+7; }
-    est=Math.round(est*10)/10;
-    clearWErr();
-    $('wIn').value=String(est);
-    commitKg(est,'estimated');
-    S.wConfirmed=true; S.wOpen=null;   /* ESTIMATE confirms — the strip collapses */
-    log('Weight ESTIMATED from age — '+est+' kg (not measured)');
-  });
-  $('dismisspeds').addEventListener('click', function(){
-    S.override=true; SS.saveOverride();
-    log('Pediatric trigger overridden — treating as adult');
-    paint();
-  });
-  $('undooverride').addEventListener('click', function(){
-    S.override=false; SS.saveOverride();
-    log('Adult override undone — back to pediatric dosing');
-    paint();
-  });
-
-  function togglePreg(){
-    S.pregnant=!S.pregnant;
-    if(S.phase!=='idle') log(S.pregnant?'Flagged pregnant ≥'+SITE.pregGestWeeks+' wk':'Pregnancy flag removed');
-    paint();
-  }
-  $('pregidle').addEventListener('click', togglePreg);
-  $('pregactive').addEventListener('click', togglePreg);
-  $('startbtn').addEventListener('click', startTCA);
-
-  /* One action, several homes (SHELL.md): the in-card MARK ADDRESSED button,
-     the phone dock's amber slot and the ≥768px strip button all run the SAME
-     handler. Once addressed, the amber slot and the phone REASSESS chip are
-     the cadence — tapping them brings the reassess decision (ROSC / cease)
-     into view rather than logging anything new. */
-  function doAddressed(){
-    S.reversibleAddressed=true; S.addressedAt=Date.now();
-    log('Reversible causes addressed — conventional BLS/ALS ± compressions, reassess at '+SITE.conventionalResusMin+' min', EV.amber);
-    paint();
-  }
-  function showDecision(){ try{ $('tenmin').scrollIntoView({behavior:'smooth', block:'center'}); }catch(e){} }
-  $('addressedbtn').addEventListener('click', doAddressed);
-  function addrSlot(){ if(!S.reversibleAddressed) doAddressed(); else showDecision(); }
-  $('dockaddr').addEventListener('click', addrSlot);
-  $('stripaddr').addEventListener('click', addrSlot);
-  $('chipreassess').addEventListener('click', showDecision);
-  function openComposer(){
-    if(!S.showCustom){ S.showCustom=true; paint(); }
-    try{ $('customrow').scrollIntoView({behavior:'smooth', block:'center'}); }catch(e){}
-    setTimeout(function(){ try{ $('customin').focus(); }catch(e){} },30);
-  }
-  $('docklog').addEventListener('click', openComposer);
-  $('striplog').addEventListener('click', openComposer);
-
-  $('roscbtn').addEventListener('click', function(){
-    S.phase='rosc'; S.roscAt=clockNow(); S.ceaseArm=false;
-    log('ROSC — pulse returned; post-resuscitation care', EV.green); paint();
-  });
-  $('rearrestbtn').addEventListener('click', function(){
-    S.phase='active'; log('RE-ARREST — resuscitation resumed', EV.red); paint();
-  });
-  $('ceasebtn').addEventListener('click', function(){ S.ceaseArm=true; paint(); });
-  $('ceaseback').addEventListener('click', function(){ S.ceaseArm=false; paint(); });
-  $('ceaseconfirm').addEventListener('click', function(){
-    S.phase='ceased'; S.deathAt=clockNow(); S.deathWall=wallTime(); S.ceaseArm=false;
-    log('<b>Resuscitation ceased</b> — time of death '+S.deathWall+' ('+S.deathAt+' of resuscitation). No ROSC after reversible causes addressed, no cardiac activity on eFAST', EV.red); paint();
-  });
-
-  function toggleCustom(){ S.showCustom=!S.showCustom; paint();
-    if(S.showCustom) setTimeout(function(){ var el=$('customin'); if(el) el.focus(); },30); }
-  $('logtoggle').addEventListener('click', toggleCustom);
-  function submitCustom(){
-    var t=$('customin').value.trim(); if(!t) return;
-    var why=phiReason(t);
-    if(why){
-      $('customwarn').style.display='';
-      $('customwarn').textContent='Not logged — that text '+why+'. This aid never stores patient identifiers. Describe the event, not the patient.';
-      return;
-    }
-    $('customwarn').style.display='none';
-    log(t); $('customin').value=''; S.showCustom=false; paint();
-  }
-  $('customlog').addEventListener('click', submitCustom);
-  $('customin').addEventListener('keydown', function(e){ if(e.key==='Enter') submitCustom(); });
-
-  /* Delegated taps: workstream checkboxes + accordion headers. */
-  document.addEventListener('click', function(e){
-    var t=e.target.closest ? e.target.closest('[data-task]') : null;
-    if(t){
-      var key=t.getAttribute('data-task'), was=!!S.checked[key];
-      S.checked[key]=!was;
-      if(!was){ var lbl=t.querySelector('.wtext'); if(lbl) log((lbl.textContent||'').split(' — ')[0]); }
-      paint(); return;
-    }
-    var a=e.target.closest ? e.target.closest('[data-acc]') : null;
-    if(a){ var id=a.getAttribute('data-acc'); S.open = (S.open===id ? null : id); paint(); }
-  });
-}
-
-/* The REASSESS cadence readouts — the in-card conventional clock plus the
-   shell chip and the dock/strip clocks (SHELL.md: the countdown IS the
-   button; DUE NOW red at zero). Shared by paint() and tick(). */
-function paintReassess(){
-  var remain = reassessRemain();
-  if(remain===null) return;
-  var due = remain<=0, txt = due ? 'DUE NOW' : fmt(remain);
-  $('convclock').textContent = fmt(remain);
-  $('convclock').style.color = due ? 'var(--amber)' : 'var(--ink)';
-  $('chipreassessclock').textContent = txt;
-  $('chipreassess').classList.toggle('due', due);
-  $('dockaddrclock').textContent = txt;
-  $('dockaddrclock').classList.toggle('due', due);
-  $('stripaddrclock').textContent = txt;
-  $('stripaddrclock').classList.toggle('due', due);
-}
-
-/* Time-only heartbeat. The full paint() rebuilds the workstream and accordion
-   DOM, so running it on a 250 ms timer was destroying and recreating the very
-   rows being tapped — a tap that landed mid-rebuild was lost. paint() now runs
-   ONLY on state changes (user actions); this tick just advances the clocks
-   (the case pill and the REASSESS cadence included). */
-function tick(){
-  if(S.phase!=='idle') $('pillclock').textContent = clockNow();
-  paintCaseClock();
-  paintReassess();
-}
-
-/* Join the shared case: pick up a weight/age/override set in another tool, and
-   keep the manual-wide "last active" heartbeat fresh (WS2.5 contract). */
-SS.loadWeight();
-if(S.kg!==null){ $('wIn').value = String(S.kg); S.wConfirmed=true; }
-if(S.ageY!==null) $('aIn').value = String(S.ageY);
-try{ S.theme = document.body.dataset.theme==='light' ? 'light' : 'dark'; }catch(e){}
-SS.touchActive();
-document.addEventListener('click', SS.touchActive, true);
-wire();
+setInterval(function(){ if(S.phase==='run') $('clock').textContent=clock(); }, 500);
 paint();
-setInterval(tick, 250);
-})();
-</script>
-<script>
-/* Shared case-shell behavior (SHELL.md) — brings the operating card marked
-   data-opcard back into view when an action advances the protocol, so the next
-   step is never left above the top of the screen. Edited once, in case-shell.js. */
-/* @shell-js */
 </script>
 </body>
 </html>

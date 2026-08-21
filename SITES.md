@@ -8,7 +8,7 @@
 ## The model
 
 ```
-lrh  —  the LRH reference implementation, and the branch that DEPLOYS
+main  —  the LRH reference implementation, and the branch that DEPLOYS
 ├── site.config.json      LRH identity, real phone lines
 ├── <tool>/SITE CONFIG    LRH's validated clinical values
 │
@@ -19,8 +19,8 @@ lrh  —  the LRH reference implementation, and the branch that DEPLOYS
      site.config.json rewritten  + per-tool SITE CONFIG values validated
 ```
 
-**`lrh` is the trunk. Everything lands there, and landing there is live.**
-There is no separate generic branch, and `lrh` is not generic — the demo is a
+**`main` is the trunk. Everything lands there, and landing there is live.**
+There is no separate generic branch, and `main` is not generic — the demo is a
 *build* of the real thing rather than a fork of it. `demo-build.mjs` says so in
 its header: it serves "the same tool content as build.mjs's dist/ — the real
 reference implementation, nothing generic or fake", differing only by a DEMO
@@ -30,18 +30,19 @@ moment; when one is wanted, it comes from this same branch.
 `cairnready.org` is a **separate set of sites in a different repository**. It
 is named here only so nobody goes looking for it in this one.
 
-> ### `main` is retired — do not use it
+> ### The deploy branch is `main` — but verify it in Netlify
 >
-> This document used to name `main` as the reference implementation that
-> deploys to production. That was wrong, and the cost was concrete: a full
-> session of work was built, verified, reviewed and merged to `main`, where
-> nothing serves it, while the live manual sat 37 commits behind. The docs
-> were believed over the deployment, because nothing in the repo contradicted
-> them and Netlify's production-branch setting is not visible from here.
+> This document has named the wrong branch before, and the cost was concrete:
+> a full session of work was built, verified, reviewed and merged to a branch
+> nothing served, while the live manual sat 37 commits behind. The docs were
+> believed over the deployment, because nothing in the repo contradicts them —
+> Netlify's production-branch setting is not visible from here, and no verify
+> suite can reach it.
 >
-> If you are about to open a pull request, **check its base is `lrh`.** If a
-> future edition needs a generic identity, it is a new branch off `lrh` with
-> `site.config.json` rewritten — the same pathway as any other edition below.
+> So treat this line as a claim to check, not a fact: the deploy branch is
+> whatever **Netlify → Build & deploy → Branches → Production branch** says. It
+> should say `main`. If a future edition needs a generic identity, it is a new
+> branch off `main` with `site.config.json` rewritten.
 
 A **hospital edition** is a branch or fork that changes only the two
 localization layers below. It never rewrites logic, layout, or the verify
@@ -71,13 +72,13 @@ block at the top of its own file:
 ```
 
 These stay per-tool deliberately: a threshold belongs next to the logic that
-uses it and the citation for it. On `lrh` they hold LRH's validated values,
+uses it and the citation for it. On `main` they hold LRH's validated values,
 or national-guideline defaults where LRH has not diverged, or clearly flagged
 placeholders where nobody has decided yet. **Every one of them requires local
 clinical validation before another hospital's edition goes live** — see
 `LOCALIZING.md` and `LOCALIZATION-WORKSHEET.md` for the walk-through, and
 `inventory.js` for the third localized surface (the `LOCATIONS` block — the
-only part of the inventory a hospital rewrites; `lrh` ships LRH's layout as
+only part of the inventory a hospital rewrites; `main` ships LRH's layout as
 a worked example).
 
 ## What is deliberately NOT localized
