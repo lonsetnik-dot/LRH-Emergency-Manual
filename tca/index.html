@@ -333,7 +333,12 @@ function renderStep(){
   } else if(st==='airway'){
     h=stepCard('--blue','4','ADVANCED AIRWAY','iGel or intubate',
       'Fastest definitive airway wins. Do not pause the rest of the sequence for it.',
-      linkRow('airway','SALAD / intubation card'),
+      /* Pediatric tube sizes one tap from the airway step, per f4bfb4b —
+         every airway-controlling tool links them. A pediatric traumatic arrest
+         is exactly when nobody wants to be recalling sizes, and this tool now
+         also ends in a hysterotomy, which puts a neonate in the room. */
+      linkRow('airway','SALAD / intubation card')+
+      '<a class="linkrow" href="../peds/?from=tca#p16"><span>Pediatric airway sizes</span><span style="color:var(--ink2)">\u203a</span></a>',
       '<button class="big" style="background:var(--blue)" data-step="fnt" data-note="Airway in">AIRWAY IN \u2014 LOG IT</button>');
   } else if(st==='fnt'){
     h=stepCard('--red','5','FINGER THORACOSTOMY','Both sides \u2014 5th ICS, anterior axillary line',

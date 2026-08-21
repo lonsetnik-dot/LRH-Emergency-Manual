@@ -117,6 +117,23 @@ console.log('\n--- 4. what must not be softened');
      /inferior pulmonary ligament/i.test(clam), true);
 }
 
+/* ---- 3b. pediatric airway sizes, one tap from the airway step ----
+   From f4bfb4b, "Link pediatric airway sizes from every airway-controlling
+   tool": any tool that can take an airway puts pediatric tube sizes one tap
+   away. The port dropped it and verify_airway_sizes caught it. Asserted here
+   too, on the step a clinician is actually standing on, because that suite
+   checks the markup exists while this one checks it is reachable in the flow —
+   a link in a step nobody can get to is not one tap away. */
+await open(); await tap('proceed');
+for (const d of ['organize','bleeding','airway']) await step(d);
+{
+  const link = pg.locator('#screen a[href="../peds/?from=tca#p16"]');
+  ck('3b. the airway step is where we are', /ADVANCED AIRWAY/.test(await head()), true);
+  ck('3b. pediatric sizes are one tap from it', await link.count(), 1);
+  const box = await link.boundingBox();
+  ck('3b. and the link is a real tap target (>=44px)', box.height >= 44, true);
+}
+
 /* ---- 4b. PREGNANCY — not a stop, and not skippable ----
    Pregnancy does not stop the code; it adds two people to the room and a
    procedure with a four-minute clock. It is asked before anyone starts rather
