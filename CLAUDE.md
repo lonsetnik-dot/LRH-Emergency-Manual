@@ -141,13 +141,20 @@ unclear. If a request conflicts with a rule below, flag it before proceeding.
     would have left the other saying the old thing. Duplication is not a tidiness
     problem here — two versions of a procedure is two different instructions to
     somebody with their hands inside a chest.
-    **What enforces this today, and what does not.** Kit strings are held by
+    **What enforces this, and what it cannot see.** Kit strings are held by
     `verify_kit_consistency.mjs`, drawings by `verify_procedure_icons.mjs` and
-    `verify_vems.mjs`, borrowed card sections by `verify_transclusion.mjs`.
-    **Free prose is not held by anything** — the duplication above was found by a
-    person, not a run. Until a duplicate-prose scanner exists, this rule is
-    carried by the search in **Before you build** and by nothing else. Do not
-    read the green suite as evidence that nothing was retyped.
+    `verify_vems.mjs`, borrowed card sections by `verify_transclusion.mjs`, and
+    free prose by `verify_no_duplicate_prose.mjs` — a ratchet, per pair of tools,
+    over the *rendered* text of every page. A **new** pair fails; a pair that
+    grows fails; kit contents and anything in `.transclusion-manifest.json` are
+    not counted, or the finder for this rule would be loudest about the one
+    mechanism that satisfies it. Lower a budget whenever a sweep removes
+    duplication, and never raise one without writing in the file what was
+    duplicated and why it had to be.
+    **What it cannot see: two pages that say nearly the same thing differently.**
+    An exact duplicate is harmless today and dangerous later; a pair that has
+    already drifted is dangerous *now* and invisible to this check. A green run
+    means nothing was retyped verbatim — not that the manual agrees with itself.
 
 13. **A test you have not broken is not a test.** Every new assertion gets
     mutation-tested before delivery: break the behavior it claims to check,
@@ -408,6 +415,34 @@ Finger thoracostomy is the one gap: it is a *row* inside the chest-tube card's
 technique list, not a card, so `tca/`'s sheet for it stays hand-written and says
 so. A card of its own is worth having — three tools name the procedure and none
 of them owns it.
+
+### The sibling mechanism: `{{SHARE:<tool>|<id>}}`
+
+`{{PROC:…}}` moves checklist **rows** into a page that renders them itself, which
+is what a live engine needs. `{{SHARE:…}}` moves a block of **markup** between two
+static cards, which is what two cards covering the same emergency need. The owner
+marks the element `data-share="<id>"`; the borrower writes the token and gets its
+inner HTML. Consumers today:
+
+- `codes/` → `peds/` — the anaphylaxis **NAME / CLAIM / AIM** framing, which was
+  byte-identical on the adult and pediatric cards. The doses were never shared and
+  still differ correctly.
+- `codes/` → `ob-neonatal/` — the cart drawer-legend intro, its greyscale caption,
+  and the case-log PHI note. Each page keeps its **own wrapper**: the PHI note is
+  styled with fixed colors on one and theme variables on the other, and that
+  difference is real.
+
+**Live markup is refused, not stripped.** PROC drops a tap-to-log button because it
+is rebuilding rows from text; SHARE carries markup verbatim, so a `data-k`, an
+`id`, a `<button>` or a relative link **fails the build** — those belong to the page
+they are on, and an `#c12` link means a different card once it has moved.
+
+**Name the block by what it says, and check what you marked.** The first attempt at
+the anaphylaxis block marked the *first* `.nca` on the page — there are eighteen,
+one per card — and would have put **post-arrest** framing on the pediatric
+anaphylaxis card. Nothing about the build complained; `verify_no_duplicate_prose.mjs`
+caught it as an unexplained rise in a pair's count. Anchor on the text, not on the
+Nth element.
 
 ## The case shell's reveal behavior (`case-shell.js`)
 

@@ -39,3 +39,4 @@ dist-demo/
 guideline-watch-report.md
 guideline-watch-report.json
 guideline-watch-state.json
+.transclusion-manifest.json

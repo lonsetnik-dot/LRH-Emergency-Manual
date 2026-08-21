@@ -193,6 +193,51 @@ for (const [id, s] of onCards) {
 }
 ck('3. glyphs compared on screen, not just in config', compared > 3, true);
 
+/* ---- 3b. shared BLOCKS between two static cards ({{SHARE:tool|id}}) ---- */
+console.log("\n--- 3b. blocks shared between two cards");
+/* The sibling mechanism: PROC moves rows into a page that renders them, SHARE moves markup
+   between two static cards. Asserted the same way and for the same reason — compare the
+   RENDERED text on both pages, rather than trusting that both went through the build. */
+const SHARED = [
+  { id: "anaphylaxis-crm", owner: "/codes/", borrower: "/peds/",
+    must: ["This is anaphylaxis", "everything else is an adjunct"] },
+  { id: "cart-legend-intro", owner: "/codes/", borrower: "/ob-neonatal/",
+    must: ["Every drawer has a color and a shape"] },
+  { id: "cart-legend-shape", owner: "/codes/", borrower: "/ob-neonatal/",
+    must: ["SHAPE = DRAWER"] },
+  { id: "case-log-phi-note", owner: "/codes/", borrower: "/ob-neonatal/",
+    must: ["Times and events only", "no patient identifiers"] },
+];
+const pageText = new Map();
+async function textPage(path) {
+  if (pageText.has(path)) return pageText.get(path);
+  const p = await b.newPage({ viewport: { width: 390, height: 844 } });
+  await p.goto(BASE + path, { waitUntil: "networkidle" });
+  await p.waitForTimeout(250);
+  const t = norm(await p.evaluate(() => document.body.textContent || ""));
+  await p.close();
+  pageText.set(path, t);
+  return t;
+}
+for (const sh of SHARED) {
+  const own = await textPage(sh.owner), bor = await textPage(sh.borrower);
+  for (const phrase of sh.must) {
+    ck(`3b. ${sh.id}: "${phrase.slice(0, 34)}" is on ${sh.owner}`, same(own, phrase), true);
+    /* The borrower must SHOW it. A token that failed to resolve is a build failure, but a
+       token pointing at the wrong block resolves fine and puts the wrong words on a clinical
+       card — that happened once already: the first attempt marked the post-arrest block and
+       would have put post-arrest framing on the pediatric anaphylaxis card. */
+    ck(`3b. ${sh.id}: and reached ${sh.borrower}`, same(bor, phrase), true);
+  }
+}
+/* PHI note aside, these are clinical words on two cards. If the borrower ALSO still carries a
+   hand-typed copy, the mechanism has been added without the duplication being removed. */
+{
+  const src = await (await fetch(BASE + "/peds/")).text();
+  ck("3b. peds/ has no second hand-typed copy of the anaphylaxis framing",
+     (src.match(/This is anaphylaxis/g) || []).length, 1);
+}
+
 /* ---- 4. a section name that does not resolve must FAIL the build ---- */
 console.log('\n--- 4. it fails loudly, or it is not a guard');
 const probe = '_transclusion_probe';
