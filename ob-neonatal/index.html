@@ -321,9 +321,9 @@ try{
   <div style="position:sticky; top:calc(var(--sticky-h,54px) + env(safe-area-inset-top,0px)); z-index:4; padding:5px 18px 6px; background:var(--note-bg); border-top:2px solid var(--sev-caution); border-bottom:2px solid var(--sev-caution);">
     <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.1em; color:var(--amber);">TIME OF BIRTH — STAMP IT AS THE BABY DELIVERS</div>
     <div style="margin-top:6px; display:flex; gap:6px; align-items:stretch; flex-wrap:wrap;">
-      <input type="time" id="tob" step="60" style="flex:2; min-width:110px; min-height:44px; padding:4px 8px; border:2px solid var(--sev-caution); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px;">
+      <input type="time" id="tob" aria-label="Time of birth" step="60" style="flex:2; min-width:110px; min-height:44px; padding:4px 8px; border:2px solid var(--sev-caution); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px;">
       <button type="button" id="tobnow" style="min-height:44px; padding:0 14px; background:var(--sev-caution); color:var(--on-sev); border:2px solid var(--sev-caution); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">NOW</button>
-      <input type="number" id="babyweight" class="wt-sync" inputmode="decimal" step="0.1" min="0" placeholder="weight" style="flex:1; min-width:80px; min-height:44px; padding:4px 8px; border:2px solid var(--sev-caution); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px;">
+      <input type="number" id="babyweight" aria-label="Baby weight" class="wt-sync" inputmode="decimal" step="0.1" min="0" placeholder="weight" style="flex:1; min-width:80px; min-height:44px; padding:4px 8px; border:2px solid var(--sev-caution); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px;">
       <span style="align-self:center; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; color:var(--amber); white-space:nowrap;">kg or g</span>
     </div>
     <div class="wtecho" style="display:none; margin-top:5px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.04em; color:var(--amber); line-height:1.3;"></div>
@@ -352,11 +352,11 @@ try{
         <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.1em; color:var(--ink);">ASK THE MOTHER — QUICK</div>
         <div style="margin-top:8px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
           <span style="font-weight:700;">Weeks gestation</span>
-          <input type="number" id="gaweeks" class="ga-sync" inputmode="numeric" step="1" min="20" max="44" placeholder="wk" style="width:84px; min-height:44px; padding:6px 10px; border:2px solid var(--gray); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px;">
+          <input type="number" id="gaweeks" aria-label="Weeks gestation" class="ga-sync" inputmode="numeric" step="1" min="20" max="44" placeholder="wk" style="width:84px; min-height:44px; padding:6px 10px; border:2px solid var(--gray); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px;">
           <span style="font-size:12.5px; color:var(--ink2);">drives equipment sizes</span>
         </div>
         <div style="margin-top:10px; display:flex; flex-direction:column; gap:10px;">
-          <div><div style="font-size:12px; font-weight:700; margin-bottom:5px;">Number of babies</div><div style="display:flex; flex-wrap:wrap; gap:6px;"><button type="button" class="mchip" data-g="babies" data-single="1" style="min-height:36px;padding:5px 10px;background:var(--card);border:2px solid var(--gray);color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;">Singleton</button><button type="button" class="mchip" data-g="babies" data-single="1" style="min-height:36px;padding:5px 10px;background:var(--card);border:2px solid var(--gray);color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;">Multiple — team per baby</button></div><div id="multicue" style="display:none; margin-top:7px; padding:8px 11px; background:var(--card2); border:2px solid var(--sev-crit); color:var(--red); font-size:12.5px; font-weight:700; line-height:1.3;">Call a second resus team + a warmer / kit for EACH baby.</div></div>
+          <div><div style="font-size:12px; font-weight:700; margin-bottom:5px;">Number of babies</div><div style="display:flex; flex-wrap:wrap; gap:6px;"><button type="button" class="mchip" data-g="babies" data-single="1" style="min-height:36px;padding:5px 10px;background:var(--card);border:2px solid var(--gray);color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;">Singleton</button><button type="button" class="mchip" data-g="babies" data-single="1" style="min-height:36px;padding:5px 10px;background:var(--card);border:2px solid var(--gray);color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;">Multiple — team per baby</button></div><div id="multicue" aria-live="polite" aria-atomic="true" style="display:none; margin-top:7px; padding:8px 11px; background:var(--card2); border:2px solid var(--sev-crit); color:var(--red); font-size:12.5px; font-weight:700; line-height:1.3;">Call a second resus team + a warmer / kit for EACH baby.</div></div>
           <div><div style="font-size:12px; font-weight:700; margin-bottom:5px;">Prenatal care</div><div style="display:flex; flex-wrap:wrap; gap:6px;"><button type="button" class="mchip" data-g="pnc" data-single="1" style="min-height:36px;padding:5px 10px;background:var(--card);border:2px solid var(--gray);color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;">Yes</button><button type="button" class="mchip" data-g="pnc" data-single="1" style="min-height:36px;padding:5px 10px;background:var(--card);border:2px solid var(--gray);color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;">No</button><button type="button" class="mchip" data-g="pnc" data-single="1" style="min-height:36px;padding:5px 10px;background:var(--card);border:2px solid var(--gray);color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;">Unknown</button></div></div>
           <div><div style="font-size:12px; font-weight:700; margin-bottom:5px;">Complications (tap all that apply)</div><div style="display:flex; flex-wrap:wrap; gap:6px;"><button type="button" class="mchip" data-g="cx" style="min-height:36px;padding:5px 10px;background:var(--card);border:2px solid var(--gray);color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;">Pre-eclampsia / HTN</button><button type="button" class="mchip" data-g="cx" style="min-height:36px;padding:5px 10px;background:var(--card);border:2px solid var(--gray);color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;">Diabetes</button><button type="button" class="mchip" data-g="cx" style="min-height:36px;padding:5px 10px;background:var(--card);border:2px solid var(--gray);color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;">Bleeding / placenta</button><button type="button" class="mchip" data-g="cx" style="min-height:36px;padding:5px 10px;background:var(--card);border:2px solid var(--gray);color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;">Fever / infection</button></div></div>
           <div><div style="font-size:12px; font-weight:700; margin-bottom:5px;">Membranes / fluid <span style="font-weight:400; color:var(--ink2);">(note time ruptured)</span></div><div style="display:flex; flex-wrap:wrap; gap:6px;"><button type="button" class="mchip" data-g="fluid" data-single="1" style="min-height:36px;padding:5px 10px;background:var(--card);border:2px solid var(--gray);color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;">Clear</button><button type="button" class="mchip" data-g="fluid" data-single="1" style="min-height:36px;padding:5px 10px;background:var(--card);border:2px solid var(--gray);color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;">Meconium</button><button type="button" class="mchip" data-g="fluid" data-single="1" style="min-height:36px;padding:5px 10px;background:var(--card);border:2px solid var(--gray);color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;">Bloody</button></div></div>
@@ -441,8 +441,8 @@ try{
       <div style="padding:12px 14px 0; text-align:center;">
         <div style="font-size:22px; font-weight:800; letter-spacing:-0.01em; color:var(--teal); line-height:1.08;">DELAYED CORD CLAMPING</div>
         <div style="margin-top:5px; font-size:14px; line-height:1.35; color:var(--ink);">Baby skin-to-skin, dry, hat. Wait for the cord — <b>at least 60 s</b>, or until it stops pulsating.</div>
-        <div id="clamptimer" style="margin-top:12px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:52px; font-weight:700; line-height:1; color:var(--ink2);">0:00</div>
-        <div id="clampband" style="margin-top:3px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.08em; color:var(--ink2);">KEEP WAITING · AT LEAST 60 S</div>
+        <div id="clamptimer" role="timer" style="margin-top:12px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:52px; font-weight:700; line-height:1; color:var(--ink2);">0:00</div>
+        <div id="clampband" aria-live="polite" aria-atomic="true" style="margin-top:3px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.08em; color:var(--ink2);">KEEP WAITING · AT LEAST 60 S</div>
       </div>
       <div style="padding:0 14px 12px;"><figure style="margin:0; border:2px solid var(--gray); background:var(--card); display:flex; flex-direction:column;">
         <div style="background:var(--gray); color:var(--on-sev); padding:9px 12px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.12em;">FIG 1 · CORD — TWO CLAMPS, CUT BETWEEN</div>
@@ -526,12 +526,12 @@ try{
   <div style="margin:12px 18px 0; display:flex; align-items:center; gap:14px; flex-wrap:wrap; padding:9px 12px; background:var(--card2); border:2px solid var(--gray);">
     <div style="display:flex; align-items:center; gap:8px; flex:none;">
       <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.06em; color:var(--ink); white-space:nowrap;">WEIGHT</span>
-      <input type="number" id="babyweight-c04" class="wt-sync" inputmode="decimal" step="0.1" min="0" placeholder="kg" style="width:78px; min-height:44px; padding:4px 8px; border:2px solid var(--gray); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px;">
+      <input type="number" id="babyweight-c04" aria-label="Baby weight in kilograms" class="wt-sync" inputmode="decimal" step="0.1" min="0" placeholder="kg" style="width:78px; min-height:44px; padding:4px 8px; border:2px solid var(--gray); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px;">
       <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; color:var(--ink2); white-space:nowrap;">kg or g</span>
     </div>
     <div style="display:flex; align-items:center; gap:8px; flex:none;">
       <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.06em; color:var(--ink); white-space:nowrap;">OR WKS GESTATION</span>
-      <input type="number" id="gaweeks-c04" class="ga-sync" inputmode="numeric" step="1" min="20" max="44" placeholder="wk" style="width:64px; min-height:44px; padding:4px 8px; border:2px solid var(--gray); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px;">
+      <input type="number" id="gaweeks-c04" aria-label="Weeks gestation" class="ga-sync" inputmode="numeric" step="1" min="20" max="44" placeholder="wk" style="width:64px; min-height:44px; padding:4px 8px; border:2px solid var(--gray); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px;">
     </div>
   </div>
   <div class="eqpanel" style="margin:8px 18px 0;"></div>
@@ -1058,8 +1058,8 @@ try{
   <div class="console" style="margin:14px 18px 0; border:2px solid var(--sev-crit); background:var(--card);">
     <div style="padding:10px 14px; background:var(--card2);">
       <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--red);">TIME SINCE MATERNAL ARREST</div>
-      <div id="rhtime" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1; color:var(--ink);">0:00</div>
-      <div id="rhcue" style="margin-top:2px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.05em; color:var(--ink2);">TAP START AT ARREST RECOGNITION — CALL THE TIME EVERY MINUTE</div>
+      <div id="rhtime" role="timer" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1; color:var(--ink);">0:00</div>
+      <div id="rhcue" aria-live="polite" aria-atomic="true" style="margin-top:2px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.05em; color:var(--ink2);">TAP START AT ARREST RECOGNITION — CALL THE TIME EVERY MINUTE</div>
     </div>
     <div style="display:grid; grid-template-columns:1fr 1fr; gap:0; border-top:1px solid var(--line);">
       <button type="button" id="rhstart" class="cs-secondary" style="background:var(--sev-crit); color:var(--on-sev); border:none; border-right:1px solid var(--on-sev); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.08em; cursor:pointer;">START — ARREST NOW</button>
@@ -1928,8 +1928,8 @@ var SITE = {
   function wallStr(ms){ var d=new Date(ms); return pad(d.getHours())+':'+pad(d.getMinutes()); }
   function paint(){
     if(t0===null){
-      el.textContent='0:00'; el.style.color='#16324f';
-      cue.textContent='TAP START AT ARREST RECOGNITION — CALL THE TIME EVERY MINUTE'; cue.style.color='#5a6a78';
+      el.textContent='0:00'; el.style.color='var(--ink)';
+      cue.textContent='TAP START AT ARREST RECOGNITION — CALL THE TIME EVERY MINUTE'; cue.style.color='var(--ink2)';
       sb.textContent='START — ARREST NOW'; sb.style.background='#9b1c2e'; sb.style.color='#fffefb';
       if(bb){ bb.disabled=false; bb.style.opacity=''; bb.textContent='BABY OUT — LOG IT'; }
       if(bw) bw.textContent='not yet delivered';
@@ -1939,8 +1939,8 @@ var SITE = {
     sb.textContent='RUNNING'; sb.style.background='#fffefb'; sb.style.color='#9b1c2e';
     if(babyMs!==null){
       var sOut=Math.max(0,Math.floor((babyMs-t0)/1000));
-      el.textContent=fmt(sOut); el.style.color='#2f7a3f';
-      cue.textContent='BABY OUT AT +'+fmt(sOut)+' — CONTINUE MATERNAL ACLS'; cue.style.color='#2f7a3f';
+      el.textContent=fmt(sOut); el.style.color='var(--green)';
+      cue.textContent='BABY OUT AT +'+fmt(sOut)+' — CONTINUE MATERNAL ACLS'; cue.style.color='var(--green)';
       if(bb){ bb.disabled=true; bb.style.opacity='0.75'; bb.textContent='BABY OUT ✓'; }
       if(bw) bw.textContent=wallStr(babyMs)+' · +'+fmt(sOut)+' since arrest';
       if(nl) nl.style.display='flex';
@@ -1951,8 +1951,8 @@ var SITE = {
     var s=Math.max(0,Math.floor((Date.now()-t0)/1000));
     el.textContent=fmt(s);
     if(s<240){ el.style.color = s>=180 ? '#8a6d1f' : '#16324f'; cue.textContent='INCISION BY 4:00 · BABY OUT BY 5:00'; cue.style.color = s>=180 ? '#8a6d1f' : '#5a6a78'; }
-    else if(s<300){ el.style.color='#9b1c2e'; cue.textContent='CUT NOW — BABY OUT BY 5:00'; cue.style.color='#9b1c2e'; }
-    else { el.style.color='#9b1c2e'; cue.textContent='PAST 5:00 — DELIVER NOW. CPR NEVER STOPS.'; cue.style.color='#9b1c2e'; }
+    else if(s<300){ el.style.color='var(--red-tx)'; cue.textContent='CUT NOW — BABY OUT BY 5:00'; cue.style.color='var(--red-tx)'; }
+    else { el.style.color='var(--red-tx)'; cue.textContent='PAST 5:00 — DELIVER NOW. CPR NEVER STOPS.'; cue.style.color='var(--red-tx)'; }
   }
   function run(){ if(tick){ clearInterval(tick); tick=null; } if(t0!==null && babyMs===null) tick=setInterval(paint,1000); paint(); }
   sb.addEventListener('click', function(){
@@ -2424,8 +2424,8 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
          old amber "PAST 60 S" state would now scold someone for doing the right
          thing. */
       var goal=(SITE&&SITE.cordDeferSec)||60;
-      if(s<goal){ if(disp)disp.style.color='#5a6a78'; if(band){band.textContent='KEEP WAITING · AT LEAST '+goal+' S'; band.style.color='#8a8578';} }
-      else { if(disp)disp.style.color='#0e7c86'; if(band){band.textContent=goal+' S REACHED · OK TO CLAMP'; band.style.color='#0e7c86';} }
+      if(s<goal){ if(disp)disp.style.color='var(--ink2)'; if(band){band.textContent='KEEP WAITING · AT LEAST '+goal+' S'; band.style.color='var(--ink2)';} }
+      else { if(disp)disp.style.color='var(--teal)'; if(band){band.textContent=goal+' S REACHED · OK TO CLAMP'; band.style.color='var(--teal)';} }
     }
     function startTimer(startMs){
       if(clamped||startMs==null) return;
@@ -2434,8 +2434,8 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
     function showClamped(fromMs,atMs){
       clamped=true; if(tick){ clearInterval(tick); tick=null; }
       var s = (fromMs!=null) ? Math.max(0,Math.floor((atMs-fromMs)/1000)) : 0;
-      if(disp){ disp.textContent=fmt(s); disp.style.color='#0e7c86'; }
-      if(band){ band.textContent='CLAMPED AT +'+fmt(s); band.style.color='#0e7c86'; }
+      if(disp){ disp.textContent=fmt(s); disp.style.color='var(--teal)'; }
+      if(band){ band.textContent='CLAMPED AT +'+fmt(s); band.style.color='var(--teal)'; }
       if(cbtn){ cbtn.textContent='CLAMPED ✓'; cbtn.style.opacity='0.75'; cbtn.disabled=true; }
     }
 
@@ -2569,8 +2569,8 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
       try{ localStorage.removeItem('lrh-ob-birthms'); localStorage.removeItem('lrh-ob-clampms'); }catch(e){}
       /* Clear the in-memory clamp state + on-screen timer so the next case starts clean. */
       clamped=false; t0=null; if(tick){ clearInterval(tick); tick=null; }
-      if(disp){ disp.textContent='0:00'; disp.style.color='#5a6a78'; }
-      if(band){ band.textContent='KEEP WAITING · AT LEAST '+((SITE&&SITE.cordDeferSec)||60)+' S'; band.style.color='#8a8578'; }
+      if(disp){ disp.textContent='0:00'; disp.style.color='var(--ink2)'; }
+      if(band){ band.textContent='KEEP WAITING · AT LEAST '+((SITE&&SITE.cordDeferSec)||60)+' S'; band.style.color='var(--ink2)'; }
       if(cbtn){ cbtn.textContent='CORD IS CLAMPED'; cbtn.style.opacity=''; cbtn.disabled=false; }
       /* Un-highlight the 4-YES gate and re-collapse the delayed-clamp section. */
       yes={};
@@ -2879,6 +2879,26 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
 /* Shared case-shell behavior (case-shell.js): the WHY control that reveals the
    reasoning tier (.t-why) on every checklist row at once. Edited once, shared. */
 /* @shell-js */
+</script>
+<script>
+/* Live-region write guard (ACCESSIBILITY.md §7). Setting textContent to the value
+   it already holds still replaces the text node, and the engines below rewrite
+   their cue on every tick — so a screen reader would repeat the same sentence
+   once a second. Shadowing the setter on just the [aria-live] elements makes
+   those writes no-ops without touching a single call site. */
+(function(){
+  var d = Object.getOwnPropertyDescriptor(Node.prototype, 'textContent');
+  if (!d || !d.set) return;
+  Array.prototype.forEach.call(document.querySelectorAll('[aria-live]'), function(el){
+    try {
+      Object.defineProperty(el, 'textContent', {
+        configurable: true,
+        get: function(){ return d.get.call(this); },
+        set: function(v){ if (d.get.call(this) !== String(v)) d.set.call(this, v); }
+      });
+    } catch(e){}
+  });
+})();
 </script>
 </body>
 </html>

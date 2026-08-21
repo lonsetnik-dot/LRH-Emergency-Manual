@@ -8,14 +8,14 @@
    offline (CLAUDE.md rule 1). Edit the design ONCE here.
    =========================================================================== */
   body[data-theme]{ --bg:#0D1420; --card:#161F2E; --card2:#1D2A3C; --ink:#EAF0F7; --ink2:#8FA0B5; --line:rgba(255,255,255,.10); --accent:#2FA372;
-    --red:#E5484D; --amber:#F0B429; --blue:#4C8DDA; --green:#3DA35D; --gray:#5C6B7E; --purple:#9B7BD4; --teal:#3AA6A6; --orange:#E08A3C;
+    --red:#E5484D; --red-tx:#E96569; --amber:#F0B429; --blue:#4C8DDA; --green:#3DA35D; --gray:#5C6B7E; --purple:#9B7BD4; --teal:#3AA6A6; --orange:#E08A3C;
     /* Card-interior semantics (Phase 4). Severity fills are white-text bars that
        read on either ground, so they're constant across themes; note (LOCALIZE)
        tints and the checklist stamp vary per theme. --on-sev = text on a fill. */
     --sev-crit:#9b1c2e; --sev-caution:#8a6d1f; --sev-info:#2f62a8; --on-sev:#fffefb;
     --note-bg:rgba(240,180,41,.12); --note-tx:#f0cf7a; }
   body[data-theme="light"]{ --bg:#EFF2F5; --card:#FFFFFF; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D; --line:rgba(15,35,60,.13); --accent:#00693E;
-    --red:#C63238; --amber:#B07E13; --blue:#2F6FB5; --green:#1F7F49; --gray:#6B7A8D; --purple:#6C4FA3; --teal:#1F7E7E; --orange:#B4661F;
+    --red:#C63238; --red-tx:#C63238; --amber:#B07E13; --blue:#2F6FB5; --green:#1F7F49; --gray:#6B7A8D; --purple:#6C4FA3; --teal:#1F7E7E; --orange:#B4661F;
     --note-bg:#fdf3cf; --note-tx:#6b5410; }
   /* ---- Phase 3 — single sticky chrome bar (replaces the old .lrh-hdr strip +
      blue nav.bar + section-stripe). One row: back · section label · RESET ·
@@ -58,6 +58,13 @@
     border-radius:14px;padding:4px 6px 4px 14px;margin:0 2px 14px}
   .lrh-filter .ico{color:var(--ink2);font-size:16px;flex:none}
   .lrh-filter input{flex:1;background:none;border:none;color:var(--ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit;-webkit-appearance:none}
+  /* ---- Focus is a first-class state (ACCESSIBILITY.md §8). The input keeps its
+     own outline suppressed so the ring can sit on the rounded pill rather than
+     inside it; focus is never removed without a replacement. --accent clears 3:1
+     on --bg/--card/--card2 in both themes, so the ring reads wherever it lands. ---- */
+  .lrh-filter:focus-within{outline:2px solid var(--accent);outline-offset:2px;border-color:var(--accent)}
+  .hdr .ghost:focus-visible,.lrh-row:focus-visible,.logit:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+  .hdr .ghost.danger:focus-visible{outline-color:var(--red)}
   .lrh-filter input::-webkit-search-cancel-button{-webkit-appearance:none}
   .lrh-filter-empty{margin:0 2px 14px;padding:12px 14px;color:var(--ink2);font-size:.88rem;background:var(--card);
     border:1px solid var(--line);border-radius:14px}
