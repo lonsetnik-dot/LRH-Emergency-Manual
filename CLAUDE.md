@@ -487,6 +487,30 @@ open on this branch):
    check, and it published 363 raw `{{SITE.x}}` markers for a while because it
    had neither — even though no site is attached to that build today.
 
+**THE OFFLINE SHELL WILL SHOW YOU A STALE BRANCH DEPLOY.** This bit them
+once and it looks exactly like "the change was never made": a phone that had
+opened that preview URL before kept serving a build five commits old, with no
+warning on screen. The worker is cache-first by design (see **Offline shell**
+above), so the first load after a push renders the *previous* version. The
+"MANUAL UPDATED — reload when it is safe to" bar is what covers this — but it
+is `position:fixed; bottom:0`, and on a Netlify deploy preview that is exactly
+where Netlify's own "Collaborate / Log in" widget sits. So on the one URL used
+for testing, the staleness warning is the thing most likely to be hidden.
+
+Three consequences for how a test checklist is written:
+
+- **Name the version stamp as the first check.** Every tool's footer carries
+  `v<x.y.z> · last reviewed <date>`, so "the footer should read v1.2.1" is a
+  one-glance answer to "am I even looking at my change?" Bump the version in
+  the same commit as any user-visible change, or that check is worthless.
+- **Tell them how to force it.** Tap RELOAD on the update bar if it is visible;
+  otherwise reload twice (the first load installs the new worker, the second
+  is served by it), or open the preview in a **private tab** — service workers
+  do not persist there, which is the one reliable way to see a deploy cold.
+- **A screenshot that contradicts the diff is a caching question first.** Before
+  re-reading the code, ask which version the footer claims. Rendering the step
+  from the local `dist/` and comparing takes a minute and settles it.
+
 **Do not send Lon straight to the GitHub compare/PR page as the "test"
 step** — that page only renders a diff, it is not a live, testable site.
 Step 2 (the Netlify branch deploy) is the actual test environment, and it's

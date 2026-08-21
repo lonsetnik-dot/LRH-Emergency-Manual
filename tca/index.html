@@ -126,7 +126,7 @@ a{color:var(--blue)}
    name, a number, or anything typed about a patient — and RESET clears it.
    ========================================================================== */
 /* @proc-icons */
-var VERSION='1.2.0', REVIEWED='2026-08-21';
+var VERSION='1.2.1', REVIEWED='2026-08-21';
 /* The one localizable clinical number on this screen. */
 var ARREST_WINDOW_MIN=10;
 
@@ -402,7 +402,7 @@ function renderStep(){
       '<div class="sub">Pressure, tourniquet, pelvic binder. Blood on the floor is blood you can still keep.</div>'+
       '<button class="linkrow" type="button" data-x style="border-color:'+(S.xDone?'var(--red)':'var(--line)')+'">'+
         '<span><span style="font-family:var(--mono);font-size:20px;font-weight:700">X</span> '+
-        (S.xDone?'Catastrophic haemorrhage controlled \u2713':'Catastrophic haemorrhage \u2014 control it now')+'</span></button>'+
+        (S.xDone?'Catastrophic hemorrhage controlled \u2713':'Catastrophic hemorrhage \u2014 control it now')+'</span></button>'+
       linkRow('tq','Tourniquet card')+linkRow('binder','Pelvic binder card')+
       '<button class="big" style="background:var(--red)" data-step="airway" data-note="External bleeding controlled">BLEEDING CONTROLLED \u2014 LOG IT</button></div>';
   } else if(st==='airway'){
@@ -587,7 +587,7 @@ document.addEventListener('click', function(e){
   var pr=e.target.closest ? e.target.closest('[data-preg]') : null;
   if(pr){ S.pregnant = pr.getAttribute('data-preg')==='1'; paint(); return; }
   if(e.target.closest && e.target.closest('[data-x]')){ S.xDone=!S.xDone;
-    if(S.xDone) log('Catastrophic haemorrhage controlled'); paint(); return; }
+    if(S.xDone) log('Catastrophic hemorrhage controlled'); paint(); return; }
   var sh=e.target.closest ? e.target.closest('[data-sheet]') : null;
   if(sh){ S.sheet=sh.getAttribute('data-sheet'); paint(); return; }
   if(e.target.closest && e.target.closest('[data-close]')){ S.sheet=null; paint(); return; }
