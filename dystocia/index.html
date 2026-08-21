@@ -53,8 +53,8 @@
   <a class="shellback shell-wide" id="backlinkwide" href="../?from=tool">MANUAL ›</a>
   <button class="shelltool" id="toolbtn" type="button" aria-haspopup="true"><span class="shellsq" style="background:var(--blue)"></span>DYSTOCIA<span class="shellcaret">▼</span></button>
   <div class="shellbarmid">
-    <button class="shellpill" id="casepill" type="button" style="display:none" aria-label="Head-to-body interval — open the timeline"><span class="dot"></span><span class="shellpilltime" id="pillclock">0:00</span><span class="shellpilltag" id="pilltag">DYSTOCIA</span></button>
-    <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:700;letter-spacing:.06em">READY</span>
+    <button class="shellpill" id="casepill" type="button" style="display:none" aria-label="Head-to-body interval — open the timeline"><span class="dot"></span><span class="shellpilltime" id="pillclock" role="timer">0:00</span><span class="shellpilltag" id="pilltag">DYSTOCIA</span></button>
+    <span id="statusword" aria-live="polite" aria-atomic="true" style="font-size:12px;color:var(--ink2);font-weight:700;letter-spacing:.06em">READY</span>
   </div>
   <span class="shell-wide" style="gap:6px;align-items:center">
     <button class="ghost" id="tlbtnwide" type="button">TIMELINE</button>
@@ -103,7 +103,7 @@
 <div class="wrap">
 
   <div class="plabel" id="plabel" style="margin-top:10px">SHOULDER DYSTOCIA</div>
-  <div id="caseclock" style="display:none"></div>
+  <div id="caseclock" role="timer" style="display:none"></div>
 
   <div id="idle">
     <button id="startbtn" type="button" style="width:100%;margin-top:14px;min-height:104px;border:none;border-radius:16px;background:var(--red);color:#fff;font:800 21px var(--sans);letter-spacing:.03em;cursor:pointer;box-shadow:0 6px 24px rgba(229,72,77,.25)">
@@ -132,7 +132,7 @@
       <button class="btn" id="outbtn" type="button" style="min-height:52px;font:700 14px var(--sans);border-color:var(--green);color:var(--green)">BABY IS OUT</button>
     </div>
     <div id="customrow" style="display:none;gap:8px;margin-top:8px">
-      <input id="customin" style="flex:1;background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:12px;font-size:15px" placeholder="e.g. episiotomy for access">
+      <input id="customin" aria-label="Custom event to log" style="flex:1;background:var(--card2);border:1px solid var(--line);color:var(--ink);border-radius:10px;padding:12px;font-size:15px" placeholder="e.g. episiotomy for access">
       <button id="customlog" type="button" style="border:none;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG IT</button>
     </div>
     <div id="customwarn" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>
@@ -408,7 +408,7 @@ function ladderBox(){
 
 function hbiBox(){
   var s=since();
-  return '<div><div class="n" id="hbiclock">'+clk()+'</div></div><div class="t"><b>Head-to-body interval.</b> '+
+  return '<div><div class="n" id="hbiclock" role="timer">'+clk()+'</div></div><div class="t"><b>Head-to-body interval.</b> '+
     (s < 60 ? 'Call it out every '+SITE.callEverySec+' seconds.'
             : 'Say the elapsed time out loud on every rung — this is the number that goes in the record.')+
     '</div>';
@@ -690,6 +690,26 @@ setInterval(paint, 500);
    data-opcard back into view when an action advances the protocol, so the next
    step is never left above the top of the screen. Edited once, in case-shell.js. */
 /* @shell-js */
+</script>
+<script>
+/* Live-region write guard (ACCESSIBILITY.md §7). Setting textContent to the value
+   it already holds still replaces the text node, and the engines below rewrite
+   their cue on every tick — so a screen reader would repeat the same sentence
+   once a second. Shadowing the setter on just the [aria-live] elements makes
+   those writes no-ops without touching a single call site. */
+(function(){
+  var d = Object.getOwnPropertyDescriptor(Node.prototype, 'textContent');
+  if (!d || !d.set) return;
+  Array.prototype.forEach.call(document.querySelectorAll('[aria-live]'), function(el){
+    try {
+      Object.defineProperty(el, 'textContent', {
+        configurable: true,
+        get: function(){ return d.get.call(this); },
+        set: function(v){ if (d.get.call(this) !== String(v)) d.set.call(this, v); }
+      });
+    } catch(e){}
+  });
+})();
 </script>
 </body>
 </html>

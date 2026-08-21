@@ -32,8 +32,8 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
   <a class="shellback shell-wide" id="backlinkwide" href="../?from=tool">MANUAL ›</a>
   <button class="shelltool" id="toolbtn" type="button" aria-haspopup="true"><span class="shellsq" style="background:var(--red)"></span>ARREST<span class="shellcaret">▼</span></button>
   <div class="shellbarmid">
-    <button class="shellpill" id="casepill" type="button" style="display:none" aria-label="Case clock — open the timeline"><span class="dot"></span><span class="shellpilltime" id="pillclock">0:00</span><span class="shellpilltag" id="pilltag">CODE</span></button>
-    <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:700;letter-spacing:.06em">READY</span>
+    <button class="shellpill" id="casepill" type="button" style="display:none" aria-label="Case clock — open the timeline"><span class="dot"></span><span class="shellpilltime" id="pillclock" role="timer">0:00</span><span class="shellpilltag" id="pilltag">CODE</span></button>
+    <span id="statusword" aria-live="polite" aria-atomic="true" style="font-size:12px;color:var(--ink2);font-weight:700;letter-spacing:.06em">READY</span>
   </div>
   <span class="shell-wide" style="gap:6px;align-items:center">
     <button class="ghost" id="tlbtnwide" type="button">TIMELINE</button>
@@ -76,11 +76,11 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
      render here instead and the metronome group right-aligns beside them. -->
 <div class="shellstrip" id="shellstrip" style="display:none">
   <button class="shelldockbtn scheme-amber shell-wide" id="stripshock" type="button" style="flex:none"><span id="stripshocklabel">SHOCK</span></button>
-  <button class="shelldockbtn scheme-purple shell-wide" id="stripepi" type="button" style="flex:none"><span id="stripepilabel">EPI</span><span class="shelldockclock" id="stripepiclock">GIVE NOW</span></button>
-  <button class="shelldockbtn scheme-blue shell-wide" id="striprc" type="button" style="flex:none">RHYTHM ✓<span class="shelldockclock" id="striprcclock">2:00</span></button>
+  <button class="shelldockbtn scheme-purple shell-wide" id="stripepi" type="button" style="flex:none"><span id="stripepilabel">EPI</span><span class="shelldockclock" id="stripepiclock" role="timer">GIVE NOW</span></button>
+  <button class="shelldockbtn scheme-blue shell-wide" id="striprc" type="button" style="flex:none">RHYTHM ✓<span class="shelldockclock" id="striprcclock" role="timer">2:00</span></button>
   <div class="shellmetgroup" id="metgroup">
     <span class="shellmetdot" id="metdot"></span>
-    <span style="min-width:0"><span class="shellmetmode" id="metmode">30:2 · 110</span><br><span class="shellmetstatus" id="metstatus">compress</span></span>
+    <span style="min-width:0"><span class="shellmetmode" id="metmode">30:2 · 110</span><br><span class="shellmetstatus" id="metstatus" aria-live="polite" aria-atomic="true">compress</span></span>
     <span style="flex:1"></span>
     <button class="shellsmallchip" id="advchip" type="button">ADV AIRWAY</button>
     <button class="shellsmallchip" id="mutechip" type="button">MUTE</button>
@@ -119,7 +119,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
 <div class="wrap">
 
   <div class="plabel" id="plabel" style="margin-top:6px">01 · PULSELESS VF / VT</div>
-  <div id="caseclock" style="display:none"></div>
+  <div id="caseclock" role="timer" style="display:none"></div>
 
   <!-- NRP off-ramp: NRP is for the NEWLY BORN (transition period), so this is a
        loud, dismissible question — never a silent reroute. An ex-preemie can
@@ -222,7 +222,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
         <div class="sec" style="text-align:right">SHOCKS <span class="mono" id="shockn" style="font-size:20px;color:var(--red)">0</span></div>
       </div>
       <div style="display:flex;align-items:baseline;gap:14px;margin-top:2px">
-        <span class="mono" id="cycleclock" style="font-size:54px;font-weight:700;line-height:1">2:00</span>
+        <span class="mono" id="cycleclock" role="timer" style="font-size:54px;font-weight:700;line-height:1">2:00</span>
         <span id="modelabel" style="font-size:13px;color:var(--ink2);font-weight:600"></span>
       </div>
       <button id="duebtn" type="button" class="due" style="display:none;width:100%;min-height:64px;border:none;border-radius:12px;background:var(--amber);color:#141E2B;font:800 18px var(--sans);letter-spacing:.03em;cursor:pointer;margin-top:10px">RHYTHM CHECK DUE — WHAT DO YOU SEE?</button>
@@ -244,7 +244,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
         <button class="btn" id="logtoggle" type="button" style="min-height:52px;font:700 14px var(--sans)">LOG IT</button>
       </div>
       <div id="customrow" style="display:none;gap:8px;margin-top:8px">
-        <input id="customin" class="inp" style="flex:1;text-align:left;font-size:15px;font-weight:400;border-radius:10px;padding:12px" placeholder="e.g. IO placed right tibia, calcium given…">
+        <input id="customin" aria-label="Custom event to log" class="inp" style="flex:1;text-align:left;font-size:15px;font-weight:400;border-radius:10px;padding:12px" placeholder="e.g. IO placed right tibia, calcium given…">
         <button id="customlog" type="button" style="border:none;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG IT</button>
       </div>
       <div id="customwarn" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>
@@ -324,10 +324,10 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
         <div class="sec" style="text-align:right">BREATHS <span class="mono" id="breathn" style="font-size:20px;color:var(--blue)">0</span></div>
       </div>
       <div style="display:flex;align-items:baseline;gap:14px;margin-top:2px">
-        <span class="mono" id="ventclock" style="font-size:54px;font-weight:700;line-height:1">6</span>
+        <span class="mono" id="ventclock" role="timer" style="font-size:54px;font-weight:700;line-height:1">6</span>
         <span id="ventlabel" style="font-size:13px;color:var(--ink2);font-weight:600;line-height:1.35"></span>
       </div>
-      <div id="ventcue" style="margin-top:10px;min-height:66px;border-radius:12px;background:var(--card2);color:var(--ink2);font:800 22px var(--sans);display:flex;align-items:center;justify-content:center;letter-spacing:.08em">BREATHE</div>
+      <div id="ventcue" aria-live="polite" aria-atomic="true" style="margin-top:10px;min-height:66px;border-radius:12px;background:var(--card2);color:var(--ink2);font:800 22px var(--sans);display:flex;align-items:center;justify-content:center;letter-spacing:.08em">BREATHE</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px">
         <button class="btn" id="venttoggle" type="button" style="min-height:52px;font:700 14px var(--sans)">MUTE TONE</button>
         <button class="btn" id="pulsebtn" type="button" style="min-height:52px;font:700 14px var(--sans)">CHECK PULSE NOW</button>
@@ -387,7 +387,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
       <a class="btn" id="resplink" href="../airway/" style="min-height:48px;font:700 13px var(--sans);display:flex;align-items:center;justify-content:center;text-decoration:none;color:var(--blue);border-color:var(--blue)">CANNOT VENTILATE →</a>
     </div>
     <div id="customrow2" style="display:none;gap:8px;margin-top:8px">
-      <input id="customin2" class="inp" style="flex:1;text-align:left;font-size:15px;font-weight:400;border-radius:10px;padding:12px" placeholder="e.g. naloxone 0.4 mg IV, chest rising well">
+      <input id="customin2" aria-label="Custom event to log" class="inp" style="flex:1;text-align:left;font-size:15px;font-weight:400;border-radius:10px;padding:12px" placeholder="e.g. naloxone 0.4 mg IV, chest rising well">
       <button id="customlog2" type="button" style="border:none;background:var(--accent);color:var(--accentInk);font:800 14px var(--sans);padding:0 18px;cursor:pointer">LOG IT</button>
     </div>
     <div id="customwarn2" style="display:none;margin-top:6px;font-size:12.5px;color:var(--amber)"></div>
@@ -485,8 +485,8 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
   <button class="shellticker" id="ticker" type="button" style="display:none"><span class="tk" id="tickertext"></span><span class="lg">LOG ▲</span></button>
   <div class="shelldockrow">
     <button class="shelldockbtn scheme-amber" id="dockshock" type="button"><span id="dockshocklabel">SHOCK</span></button>
-    <button class="shelldockbtn scheme-purple" id="dockepi" type="button"><span id="dockepilabel">EPI</span><span class="shelldockclock" id="dockepiclock">GIVE NOW</span></button>
-    <button class="shelldockbtn scheme-blue" id="dockrc" type="button"><span>RHYTHM ✓</span><span class="shelldockclock" id="dockrcclock">2:00</span></button>
+    <button class="shelldockbtn scheme-purple" id="dockepi" type="button"><span id="dockepilabel">EPI</span><span class="shelldockclock" id="dockepiclock" role="timer">GIVE NOW</span></button>
+    <button class="shelldockbtn scheme-blue" id="dockrc" type="button"><span>RHYTHM ✓</span><span class="shelldockclock" id="dockrcclock" role="timer">2:00</span></button>
   </div>
 </div>
 
@@ -1908,6 +1908,26 @@ setInterval(paint, 200);
    data-opcard back into view when an action advances the protocol, so the next
    step is never left above the top of the screen. Edited once, in case-shell.js. */
 /* @shell-js */
+</script>
+<script>
+/* Live-region write guard (ACCESSIBILITY.md §7). Setting textContent to the value
+   it already holds still replaces the text node, and the engines below rewrite
+   their cue on every tick — so a screen reader would repeat the same sentence
+   once a second. Shadowing the setter on just the [aria-live] elements makes
+   those writes no-ops without touching a single call site. */
+(function(){
+  var d = Object.getOwnPropertyDescriptor(Node.prototype, 'textContent');
+  if (!d || !d.set) return;
+  Array.prototype.forEach.call(document.querySelectorAll('[aria-live]'), function(el){
+    try {
+      Object.defineProperty(el, 'textContent', {
+        configurable: true,
+        get: function(){ return d.get.call(this); },
+        set: function(v){ if (d.get.call(this) !== String(v)) d.set.call(this, v); }
+      });
+    } catch(e){}
+  });
+})();
 </script>
 </body>
 </html>

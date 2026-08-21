@@ -149,7 +149,7 @@
   <button class="shelltool" id="toolbtn" type="button" aria-haspopup="true"><span class="shellsq" id="toolsq" style="background:var(--purple)"></span>PEDS<span class="shellcaret">&#9660;</span></button>
   <button class="ghost whybtn" id="whybtn" type="button" aria-pressed="false" aria-label="Show the reasoning on every step">WHY +</button>
   <div class="shellbarmid">
-    <span id="statusword" style="font-size:12px;color:var(--ink2);font-weight:700;letter-spacing:.06em">READY</span>
+    <span id="statusword" aria-live="polite" aria-atomic="true" style="font-size:12px;color:var(--ink2);font-weight:700;letter-spacing:.06em">READY</span>
   </div>
   <span class="shell-wide" style="gap:6px;align-items:center">
     <button class="ghost" id="summarybtn" type="button">TIMELINE</button>
@@ -290,7 +290,7 @@
      shell contract is the chrome and the behavior, not the id spelling. -->
 <button class="shellweight" id="wtoggle" type="button">
   <span class="k">WEIGHT</span>
-  <span class="v unset" id="wtdisplay">not set</span>
+  <span class="v unset" id="wtdisplay" aria-live="polite" aria-atomic="true">not set</span>
   <span class="m" id="wmark">&#9660;</span>
 </button>
 <div class="shellweightform" id="wtbar" style="display:none">
@@ -399,8 +399,8 @@
         <div style="margin:10px 0 4px; border:2px solid var(--sev-crit);">
           <div style="padding:9px 12px; background:var(--card2);">
             <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--red);">SINCE LAST EPI DOSE</div>
-            <div id="pepclock" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:30px; font-weight:700; line-height:1.1; color:var(--red);">—</div>
-            <div id="pepcue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap each button when that dose is given — each is time-stamped to the case timeline.</div>
+            <div id="pepclock" role="timer" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:30px; font-weight:700; line-height:1.1; color:var(--red);">—</div>
+            <div id="pepcue" aria-live="polite" aria-atomic="true" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap each button when that dose is given — each is time-stamped to the case timeline.</div>
           </div>
           <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0; border-top:1px solid #fbeaec;">
             <button type="button" id="pep1" class="pepbtn" style="min-height:50px; background:var(--sev-crit); color:var(--on-sev); border:none; border-right:1px solid var(--on-sev); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; letter-spacing:0.04em; cursor:pointer;">EPI IM · DOSE 1</button>
@@ -901,8 +901,8 @@
     <!-- ---- SEIZURE CLOCK / PHASE ENGINE ---- -->
     <div style="margin:14px 14px 0; border:2px solid var(--gray);">
       <div style="padding:10px 14px; background:var(--card2);">
-        <div id="pseclock" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:38px; font-weight:700; line-height:1; color:var(--ink);">0:00</div>
-        <div id="psecue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap START at seizure onset (&gt;5 min continuous, or 2+ seizures without full recovery of consciousness = status epilepticus).</div>
+        <div id="pseclock" role="timer" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:38px; font-weight:700; line-height:1; color:var(--ink);">0:00</div>
+        <div id="psecue" aria-live="polite" aria-atomic="true" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap START at seizure onset (&gt;5 min continuous, or 2+ seizures without full recovery of consciousness = status epilepticus).</div>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
         <button type="button" id="psestart" style="min-height:52px; background:var(--gray); color:var(--on-sev); border:none; border-right:1px solid var(--on-sev); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">START SEIZURE CLOCK</button>
@@ -1980,14 +1980,14 @@ var PEDSAIR = (function(){
   }
   function paint(){
     if(t0===null){
-      clock.textContent='0:00'; clock.style.color='#16324f';
-      cue.textContent='CPR CYCLE — CHECK RHYTHM/PULSE AT 2:00'; cue.style.color='#5a6a78';
+      clock.textContent='0:00'; clock.style.color='var(--ink)';
+      cue.textContent='CPR CYCLE — CHECK RHYTHM/PULSE AT 2:00'; cue.style.color='var(--ink2)';
     } else {
       var s=Math.max(0,Math.floor((Date.now()-t0)/1000));
       clock.textContent=mmss(s);
-      if(s>=120){ clock.style.color='#9b1c2e'; cue.textContent='CHECK RHYTHM / PULSE NOW'; cue.style.color='#9b1c2e'; }
-      else if(s>=110){ clock.style.color='#8a6d1f'; cue.textContent='RHYTHM CHECK IN '+(120-s)+'s — GET READY'; cue.style.color='#8a6d1f'; }
-      else { clock.style.color='#16324f'; cue.textContent='CPR CYCLE — CHECK RHYTHM/PULSE AT 2:00'; cue.style.color='#5a6a78'; }
+      if(s>=120){ clock.style.color='var(--red-tx)'; cue.textContent='CHECK RHYTHM / PULSE NOW'; cue.style.color='var(--red-tx)'; }
+      else if(s>=110){ clock.style.color='var(--amber)'; cue.textContent='RHYTHM CHECK IN '+(120-s)+'s — GET READY'; cue.style.color='var(--amber)'; }
+      else { clock.style.color='var(--ink)'; cue.textContent='CPR CYCLE — CHECK RHYTHM/PULSE AT 2:00'; cue.style.color='var(--ink2)'; }
     }
     if(epiMs===null){ epicue.style.display='none'; }
     else {
@@ -2036,10 +2036,10 @@ var PEDSAIR = (function(){
   var PHASE_COLOR=['#16324f','#8a6d1f','#9b1c2e'];
   function paint(){
     if(t0===null){
-      clock.textContent='0:00'; clock.style.color='#16324f';
+      clock.textContent='0:00'; clock.style.color='var(--ink)';
       cue.textContent='Tap START at seizure onset (>5 min continuous, or 2+ seizures without full recovery of consciousness = status epilepticus).';
-      cue.style.color='#5a6a78';
-      ph.forEach(function(p){ if(p){ p.style.background='transparent'; p.style.color='#5a6a78'; p.style.fontWeight='400'; } });
+      cue.style.color='var(--ink2)';
+      ph.forEach(function(p){ if(p){ p.style.background='transparent'; p.style.color='var(--ink2)'; p.style.fontWeight='400'; } });
       return;
     }
     var s=Math.max(0,Math.floor((Date.now()-t0)/1000));
@@ -2051,7 +2051,7 @@ var PEDSAIR = (function(){
     ph.forEach(function(p,i){
       if(!p) return;
       if(i===idx){ p.style.background=PHASE_COLOR[idx]; p.style.color='#fffefb'; p.style.fontWeight='700'; }
-      else { p.style.background='transparent'; p.style.color='#5a6a78'; p.style.fontWeight='400'; }
+      else { p.style.background='transparent'; p.style.color='var(--ink2)'; p.style.fontWeight='400'; }
     });
   }
   startBtn.addEventListener('click', function(){
@@ -2096,16 +2096,16 @@ var PEDSAIR = (function(){
     });
     var t=lastDose();
     if(t===null){
-      clock.textContent='\u2014'; clock.style.color='#9b1c2e';
-      cue.textContent='Tap each button when that dose is given \u2014 each is time-stamped to the case timeline.'; cue.style.color='#5a6a78';
+      clock.textContent='\u2014'; clock.style.color='var(--red-tx)';
+      cue.textContent='Tap each button when that dose is given \u2014 each is time-stamped to the case timeline.'; cue.style.color='var(--ink2)';
       if(times.pepdrip) cue.textContent='Drip running since '+wall(times.pepdrip)+'.';
       return;
     }
     var s=Math.max(0,Math.floor((Date.now()-t)/1000));
     clock.textContent=Math.floor(s/60)+':'+pad(s%60);
     var drip=times.pepdrip ? ' \u00b7 Drip running since '+wall(times.pepdrip)+'.' : '';
-    if(s>=300){ clock.style.color='#9b1c2e'; cue.style.color='#9b1c2e'; cue.textContent='Repeat-dose window open (q5\u201315 min) if still symptomatic.'+drip; }
-    else { clock.style.color='#16324f'; cue.style.color='#5a6a78'; cue.textContent='Next-dose window opens at 5 min (q5\u201315 min).'+drip; }
+    if(s>=300){ clock.style.color='var(--red-tx)'; cue.style.color='var(--red-tx)'; cue.textContent='Repeat-dose window open (q5\u201315 min) if still symptomatic.'+drip; }
+    else { clock.style.color='var(--ink)'; cue.style.color='var(--ink2)'; cue.textContent='Next-dose window opens at 5 min (q5\u201315 min).'+drip; }
   }
   DEFS.forEach(function(d){
     var b=document.getElementById(d.id); if(!b) return;
@@ -2373,6 +2373,26 @@ var PEDSAIR = (function(){
 /* Shared case-shell behavior (case-shell.js): the WHY control that reveals the
    reasoning tier (.t-why) on every checklist row at once. Edited once, shared. */
 /* @shell-js */
+</script>
+<script>
+/* Live-region write guard (ACCESSIBILITY.md §7). Setting textContent to the value
+   it already holds still replaces the text node, and the engines below rewrite
+   their cue on every tick — so a screen reader would repeat the same sentence
+   once a second. Shadowing the setter on just the [aria-live] elements makes
+   those writes no-ops without touching a single call site. */
+(function(){
+  var d = Object.getOwnPropertyDescriptor(Node.prototype, 'textContent');
+  if (!d || !d.set) return;
+  Array.prototype.forEach.call(document.querySelectorAll('[aria-live]'), function(el){
+    try {
+      Object.defineProperty(el, 'textContent', {
+        configurable: true,
+        get: function(){ return d.get.call(this); },
+        set: function(v){ if (d.get.call(this) !== String(v)) d.set.call(this, v); }
+      });
+    } catch(e){}
+  });
+})();
 </script>
 </body>
 </html>

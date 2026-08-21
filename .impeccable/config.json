@@ -1,0 +1,29 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "overused-font",
+        "value": "helvetica",
+        "createdAt": "2026-08-21T16:12:44.213Z",
+        "reason": "system font stack, not a chosen face: Helvetica/Helvetica Neue is the macOS/iOS system face in a fallback chain. CLAUDE.md golden rule 1 requires self-contained offline files, so no webfont can be fetched; source comments explicitly forbid a fonts.googleapis.com <link>."
+      },
+      {
+        "rule": "overused-font",
+        "value": "roboto",
+        "createdAt": "2026-08-21T16:12:44.277Z",
+        "reason": "same stack, Android side: Roboto appears only inside -apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,... where it names the Android system face. Verified zero external font requests in the repo."
+      },
+      {
+        "rule": "side-tab",
+        "value": "*",
+        "files": [
+          "design-system.css"
+        ],
+        "createdAt": "2026-08-21T16:13:00.035Z",
+        "reason": "project category-color system, not decoration: .lrh-row's border-left carries var(--cc), assigned 132 times across the repo to map each tool/card row to one of 8 semantic category colors. Scoped to design-system.css so a genuine side-tab elsewhere still reports."
+      }
+    ]
+  }
+}

@@ -40,3 +40,6 @@ guideline-watch-report.md
 guideline-watch-report.json
 guideline-watch-state.json
 .transclusion-manifest.json
+
+# Impeccable design hook — local cache, not shared state.
+.impeccable/hook.cache.json

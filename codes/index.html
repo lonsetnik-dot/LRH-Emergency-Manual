@@ -368,7 +368,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
      the shell contract is the chrome and the behavior, not the id spelling. -->
 <button class="shellweight" id="wtoggle" type="button">
   <span class="k">WEIGHT</span>
-  <span class="v unset" id="wtdisplay">not set</span>
+  <span class="v unset" id="wtdisplay" aria-live="polite" aria-atomic="true">not set</span>
   <span class="m" id="wmark">&#9660;</span>
 </button>
 <div class="shellweightform" id="wtbar" style="display:none">
@@ -494,7 +494,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
          monitoring cares about real time elapsed, e.g. "how long have we been at this MAP." -->
     <div style="margin:14px 14px 0; border:2px solid var(--green);">
       <div style="padding:9px 14px; background:var(--card2); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--green);">TIME SINCE ROSC</div>
-      <div id="roscclock" style="padding:6px 14px 14px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:32px; font-weight:700; line-height:1.1; color:var(--green);">0:00</div>
+      <div id="roscclock" role="timer" style="padding:6px 14px 14px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:32px; font-weight:700; line-height:1.1; color:var(--green);">0:00</div>
       <div id="roscclockcue" style="padding:0 14px 12px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">ROSC not yet confirmed on this case — declared in the Arrest engine (ROSC / PULSE PRESENT).</div>
     </div>
 
@@ -570,8 +570,8 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
         <div style="text-align:right;"><div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2);">GIVEN</div><div id="brdoses" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:30px; font-weight:700; color:var(--ink);">0 mg</div></div>
       </div>
       <button type="button" id="brgive" style="width:100%; min-height:56px; background:var(--gray); color:var(--on-sev); border:2px solid var(--gray); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">GIVE ATROPINE 1 mg — LOG IT</button>
-      <div id="brcue" style="display:none; padding:11px 14px; font-size:13.5px; line-height:1.35; color:var(--ink); background:var(--note-bg); border-top:2px solid var(--sev-caution);"></div>
-      <div id="brmaxcue" style="display:none; padding:11px 14px; font-size:13.5px; line-height:1.35; color:var(--on-sev); background:var(--sev-crit); border-top:2px solid #7a1522;">MAX 3 mg REACHED — atropine won't help further. Move to pacing / dopamine / epinephrine now.</div>
+      <div id="brcue" aria-live="polite" aria-atomic="true" style="display:none; padding:11px 14px; font-size:13.5px; line-height:1.35; color:var(--ink); background:var(--note-bg); border-top:2px solid var(--sev-caution);"></div>
+      <div id="brmaxcue" aria-live="polite" aria-atomic="true" style="display:none; padding:11px 14px; font-size:13.5px; line-height:1.35; color:var(--on-sev); background:var(--sev-crit); border-top:2px solid #7a1522;">MAX 3 mg REACHED — atropine won't help further. Move to pacing / dopamine / epinephrine now.</div>
       <div style="padding:11px 14px; font-size:13px; line-height:1.35; color:var(--note-tx); background:var(--note-bg); border-top:2px solid var(--sev-caution);">⚠ Atropine is usually <b>ineffective</b> for Mobitz II 2nd-degree block or 3rd-degree (complete) block with a wide QRS/new bundle-branch block. <b>Do not delay pacing</b> for these rhythms — go straight to transcutaneous pacing.</div>
     </div>
 
@@ -632,8 +632,8 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
         <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2);">LAST KNOWN WELL</div>
         <div id="stlkwline" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; color:var(--ink); margin:1px 0 6px;">Not set</div>
         <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2);">TIME SINCE LAST KNOWN WELL</div>
-        <div id="stclock" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1.1; color:var(--ink);">0:00</div>
-        <div id="stcue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap NOW for witnessed onset, or enter hours-ago / a clock time below.</div>
+        <div id="stclock" role="timer" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1.1; color:var(--ink);">0:00</div>
+        <div id="stcue" aria-live="polite" aria-atomic="true" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap NOW for witnessed onset, or enter hours-ago / a clock time below.</div>
       </div>
       <div style="display:grid; grid-template-columns:2fr 1fr; gap:0;">
         <button type="button" id="ststart" class="cs-secondary" style="background:var(--gray); color:var(--on-sev); border:none; border-right:1px solid var(--on-sev); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">NOW (WITNESSED ONSET)</button>
@@ -652,10 +652,10 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
       <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:0; border-top:1px solid var(--line); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; text-align:center;">
         <div id="stwin-lytic" style="padding:9px 4px; color:var(--ink2);">≤4.5h<br>tPA/TNK window</div>
         <div id="stwin-thrombectomy" style="padding:9px 4px; color:var(--ink2); border-left:1px solid var(--line); border-right:1px solid var(--line);">≤24h (LVO)<br>thrombectomy window</div>
-        <div id="stwin-status" style="padding:9px 4px; color:var(--ink2);">status</div>
+        <div id="stwin-status" aria-live="polite" aria-atomic="true" style="padding:9px 4px; color:var(--ink2);">status</div>
       </div>
       <button type="button" id="sttnk" class="cs-secondary" style="width:100%; background:var(--gray); color:var(--on-sev); border:none; border-top:1px solid var(--on-sev); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">LYTIC (TNK) GIVEN — LOG IT</button>
-      <div id="sttnkcue" style="display:none; padding:11px 14px; font-size:13.5px; line-height:1.35; color:var(--ink); background:var(--note-bg); border-top:2px solid var(--sev-caution);"></div>
+      <div id="sttnkcue" aria-live="polite" aria-atomic="true" style="display:none; padding:11px 14px; font-size:13.5px; line-height:1.35; color:var(--ink); background:var(--note-bg); border-top:2px solid var(--sev-caution);"></div>
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">
@@ -810,8 +810,8 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
     <div style="margin:6px 14px 0; border:2px solid var(--gray);">
       <div style="padding:10px 14px; background:var(--card2);">
         <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2);">SEDATION / INDUCTION AGENT</div>
-        <div id="rsiinductclock" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1.1; color:var(--ink);">0:00</div>
-        <div id="rsiinductcue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap the agent as it is pushed — starts the clock and logs the drug and dose.</div>
+        <div id="rsiinductclock" role="timer" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1.1; color:var(--ink);">0:00</div>
+        <div id="rsiinductcue" aria-live="polite" aria-atomic="true" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap the agent as it is pushed — starts the clock and logs the drug and dose.</div>
       </div>
       <div class="drugpick" id="rsiinductpick"></div>
       <button type="button" id="rsiinductreset" class="cs-secondary" style="width:100%; background:var(--card); color:var(--ink); border:none; border-top:1px solid var(--line); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">UNDO — CLEAR THIS LANE</button>
@@ -819,8 +819,8 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
     <div style="margin:8px 14px 0; border:2px solid var(--sev-crit);">
       <div style="padding:10px 14px; background:var(--card2);">
         <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--red);">PARALYTIC</div>
-        <div id="rsiparalyticclock" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1.1; color:var(--red);">0:00</div>
-        <div id="rsiparalyticcue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap the paralytic as it is pushed — starts the clock and logs the drug and dose.</div>
+        <div id="rsiparalyticclock" role="timer" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1.1; color:var(--red);">0:00</div>
+        <div id="rsiparalyticcue" aria-live="polite" aria-atomic="true" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap the paralytic as it is pushed — starts the clock and logs the drug and dose.</div>
       </div>
       <div class="drugpick" id="rsiparalyticpick"></div>
       <button type="button" id="rsiparalyticreset" class="cs-secondary" style="width:100%; background:var(--card); color:var(--red); border:none; border-top:1px solid var(--line); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">UNDO — CLEAR THIS LANE</button>
@@ -844,7 +844,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
         <summary style="background:var(--gray); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">3 · POST-TUBE CONFIRMATION &amp; SAFETY</summary>
         <div class="console" style="padding:10px 12px 0;">
           <button type="button" id="c06etco2btn" class="cs-secondary" style="width:100%; background:var(--gray); color:var(--on-sev); border:2px solid var(--gray); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">CONFIRM ETCO₂ / TUBE PLACEMENT — TIME-STAMP</button>
-          <div id="c06etco2cue" style="padding:8px 2px 0; font-size:12.5px; line-height:1.35; color:var(--ink2);">Tap once waveform capnography confirms placement.</div>
+          <div id="c06etco2cue" aria-live="polite" aria-atomic="true" style="padding:8px 2px 0; font-size:12.5px; line-height:1.35; color:var(--ink2);">Tap once waveform capnography confirms placement.</div>
         </div>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="06-13" class="t-ck"><span><b>Confirm: breath sounds · tube depth secured · OG placed · CXR ordered and checked.</b></span></label></li>
@@ -870,8 +870,8 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
     <div style="margin:6px 14px 0; border:2px solid var(--purple);">
       <div style="padding:10px 14px; background:var(--card2);">
         <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--purple);">ANALGESIA — OPIOID, FIRST DOSE</div>
-        <div id="c06analgesiaclock" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1.1; color:var(--purple);">0:00</div>
-        <div id="c06analgesiacue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap the opioid as it is given — starts the clock and logs the drug and dose.</div>
+        <div id="c06analgesiaclock" role="timer" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1.1; color:var(--purple);">0:00</div>
+        <div id="c06analgesiacue" aria-live="polite" aria-atomic="true" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap the opioid as it is given — starts the clock and logs the drug and dose.</div>
       </div>
       <div class="drugpick" id="c06analgesiapick"></div>
       <button type="button" id="c06analgesiareset" class="cs-secondary" style="width:100%; background:var(--card); color:var(--ink); border:none; border-top:1px solid var(--line); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">UNDO — CLEAR THIS LANE</button>
@@ -879,8 +879,8 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
     <div style="margin:8px 14px 0; border:2px solid var(--blue);">
       <div style="padding:10px 14px; background:var(--card2);">
         <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--blue);">SEDATION — FIRST DOSE / INFUSION START</div>
-        <div id="c06sedationclock" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1.1; color:var(--blue);">0:00</div>
-        <div id="c06sedationcue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap the sedative as it is started — starts the clock and logs the drug and dose.</div>
+        <div id="c06sedationclock" role="timer" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1.1; color:var(--blue);">0:00</div>
+        <div id="c06sedationcue" aria-live="polite" aria-atomic="true" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap the sedative as it is started — starts the clock and logs the drug and dose.</div>
       </div>
       <div class="drugpick" id="c06sedationpick"></div>
       <button type="button" id="c06sedationreset" class="cs-secondary" style="width:100%; background:var(--card); color:var(--ink); border:none; border-top:1px solid var(--line); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">UNDO — CLEAR THIS LANE</button>
@@ -978,7 +978,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
         <div style="text-align:right;"><div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2);">DOSES</div><div id="anadoses" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:30px; font-weight:700; color:var(--red);">0</div></div>
       </div>
       <button type="button" id="anagive" style="width:100%; min-height:60px; background:var(--sev-crit); color:var(--on-sev); border:2px solid var(--sev-crit); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:15px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">GIVE EPI IM — LOG IT</button>
-      <div id="anacue" style="padding:11px 14px; font-size:13.5px; line-height:1.35; color:var(--ink); background:var(--note-bg); border-top:2px solid var(--sev-caution); display:none;"></div>
+      <div id="anacue" aria-live="polite" aria-atomic="true" style="padding:11px 14px; font-size:13.5px; line-height:1.35; color:var(--ink); background:var(--note-bg); border-top:2px solid var(--sev-caution); display:none;"></div>
     </div>
 
     <!-- ---- EPI ESCALATION LADDER: IM -> IV PUSH-DOSE -> DRIP ---- -->
@@ -993,7 +993,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
         </div>
       </div>
       <button type="button" id="anaivgive" style="width:100%; min-height:52px; background:var(--sev-caution); color:var(--on-sev); border:none; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">EPI IV PUSH GIVEN — LOG IT</button>
-      <div id="anaivcue" style="display:none; padding:10px 14px; font-size:13px; line-height:1.35; color:var(--ink); background:var(--card); border-top:1px solid var(--line);"></div>
+      <div id="anaivcue" aria-live="polite" aria-atomic="true" style="display:none; padding:10px 14px; font-size:13px; line-height:1.35; color:var(--ink); background:var(--card); border-top:1px solid var(--line);"></div>
     </div>
     <div style="margin:8px 14px 0; border:2px solid var(--sev-crit);">
       <div style="padding:10px 14px; background:var(--card2);">
@@ -1069,8 +1069,8 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
     <div style="margin:14px 14px 0; border:2px solid var(--gray);">
       <div style="padding:10px 14px; background:var(--card2);">
         <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2);">TRANEXAMIC ACID (TXA) — TIME SINCE INJURY</div>
-        <div id="txaclock" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:38px; font-weight:700; line-height:1.1; color:var(--ink);">0:00</div>
-        <div id="txacue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap START at the time of injury.</div>
+        <div id="txaclock" role="timer" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:38px; font-weight:700; line-height:1.1; color:var(--ink);">0:00</div>
+        <div id="txacue" aria-live="polite" aria-atomic="true" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap START at the time of injury.</div>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
         <button type="button" id="txastart" style="min-height:52px; background:var(--gray); color:var(--on-sev); border:none; border-right:1px solid var(--on-sev); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">START (INJURY = NOW)</button>
@@ -1242,8 +1242,8 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
     <div class="console" style="margin:14px 14px 0; border:2px solid var(--sev-crit);">
       <div style="padding:10px 14px; background:var(--card2);">
         <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2);">TIME SINCE MTP ACTIVATION</div>
-        <div id="mtpclock" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1.1; color:var(--ink);">0:00</div>
-        <div id="mtpcue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap START when MTP is activated.</div>
+        <div id="mtpclock" role="timer" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1.1; color:var(--ink);">0:00</div>
+        <div id="mtpcue" aria-live="polite" aria-atomic="true" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap START when MTP is activated.</div>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
         <button type="button" id="mtpstart" class="cs-secondary" style="background:var(--sev-crit); color:var(--on-sev); border:none; border-right:1px solid var(--on-sev); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">START (ACTIVATED NOW)</button>
@@ -1294,7 +1294,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
         </div>
       </div>
       <div id="mtpcalcue" style="display:none; padding:11px 14px; font-size:13.5px; line-height:1.35; color:var(--ink); background:var(--note-bg); border-top:2px solid var(--sev-caution);">
-        <div id="mtpcalstatus" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.04em; margin-bottom:6px;"></div>
+        <div id="mtpcalstatus" aria-live="polite" aria-atomic="true" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.04em; margin-bottom:6px;"></div>
         <div>Every <b>4 units PRBC</b>: give <b>calcium</b> (gluconate 2 g peripheral or chloride 1 g central) — citrate in banked blood chelates calcium and worsens coagulopathy. <b>Recheck labs now:</b> ionized calcium, coags/INR, fibrinogen, CBC, ABG. Consider checking (not empirically dosing) <b>magnesium</b> — evidence on massive-transfusion magnesium is mixed, some data show it rises rather than falls, so check the level rather than assume it's low.</div>
       </div>
       <div style="padding:9px 14px; border-top:1px solid var(--line); background:var(--note-bg); font-size:12.5px; line-height:1.35; color:var(--note-tx);">PLATELETS — <b>often unavailable at {{SITE.abbrev}}.</b> If your blood bank has them on hand, they're still part of a balanced pack; tally them here without slowing PRBC/plasma/cryo while waiting.</div>
@@ -1374,8 +1374,8 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
     <!-- ---- SEIZURE CLOCK / PHASE ENGINE ---- -->
     <div class="console" style="margin:14px 14px 0; border:2px solid var(--gray);">
       <div style="padding:10px 14px; background:var(--card2);">
-        <div id="seclock" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1; color:var(--ink);">0:00</div>
-        <div id="secue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap START at seizure onset (≥5 min continuous, or ≥2 seizures without return to baseline = status epilepticus).</div>
+        <div id="seclock" role="timer" class="cs-numeric" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-weight:700; line-height:1; color:var(--ink);">0:00</div>
+        <div id="secue" aria-live="polite" aria-atomic="true" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:12px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap START at seizure onset (≥5 min continuous, or ≥2 seizures without return to baseline = status epilepticus).</div>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
         <button type="button" id="sestart" class="cs-secondary" style="background:var(--gray); color:var(--on-sev); border:none; border-right:1px solid var(--on-sev); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">START SEIZURE CLOCK</button>
@@ -1766,8 +1766,8 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
     <div style="margin:14px 14px 0; border:2px solid var(--sev-crit);">
       <div style="padding:10px 14px; background:var(--card2);">
         <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--red);">FONA TIMER</div>
-        <div id="fonaclock" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:38px; font-weight:700; line-height:1.1; color:var(--red);">0:00</div>
-        <div id="fonacue" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap DECLARE CICO to start the clock.</div>
+        <div id="fonaclock" role="timer" style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:38px; font-weight:700; line-height:1.1; color:var(--red);">0:00</div>
+        <div id="fonacue" aria-live="polite" aria-atomic="true" style="margin-top:2px; font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.04em; color:var(--ink2);">Tap DECLARE CICO to start the clock.</div>
       </div>
       <div style="display:grid; grid-template-columns:1fr 1fr; gap:0;">
         <button type="button" id="fonacico" style="min-height:52px; background:var(--sev-crit); color:var(--on-sev); border:none; border-right:1px solid var(--on-sev); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">DECLARE CICO</button>
@@ -2026,9 +2026,9 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
     <div class="console" style="margin:14px 14px 0; border:2px solid var(--gray);">
       <div style="padding:9px 14px; background:var(--card2); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.08em; color:var(--ink2);">TIME STAMPS — device-local, no patient info</div>
       <button type="button" id="stmid" class="cs-secondary" style="width:100%; background:var(--gray); color:var(--on-sev); border:none; border-top:1px solid var(--on-sev); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">STEMI IDENTIFIED — LOG IT</button>
-      <div id="stmidcue" style="display:none; padding:9px 14px; font-size:12.5px; line-height:1.3; color:var(--ink); background:var(--card2); border-top:1px solid var(--line);"></div>
+      <div id="stmidcue" aria-live="polite" aria-atomic="true" style="display:none; padding:9px 14px; font-size:12.5px; line-height:1.3; color:var(--ink); background:var(--card2); border-top:1px solid var(--line);"></div>
       <button type="button" id="sttnk21" class="cs-secondary" style="width:100%; background:var(--sev-crit); color:var(--on-sev); border:none; border-top:1px solid var(--on-sev); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:13px; font-weight:700; letter-spacing:0.06em; cursor:pointer;">TNK DELIVERED — LOG IT</button>
-      <div id="sttnk21cue" style="display:none; padding:9px 14px; font-size:12.5px; line-height:1.3; color:var(--ink); background:var(--card2); border-top:1px solid var(--line);"></div>
+      <div id="sttnk21cue" aria-live="polite" aria-atomic="true" style="display:none; padding:9px 14px; font-size:12.5px; line-height:1.3; color:var(--ink); background:var(--card2); border-top:1px solid var(--line);"></div>
       <div id="stemiXferBox" class="t-div"></div>
     </div>
 
@@ -2061,7 +2061,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
         <summary style="background:var(--sev-crit); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">TENECTEPLASE (TNK) — WEIGHT-BASED BOLUS</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="21-15" class="t-ck t-ck-crit"><span><b>Read the TNK band off the table — do not compute it. Single IV bolus over 5 s.</b><i class="t-why" data-ref><60 kg → 30 mg · 60–<70 kg → 35 mg · 70–<80 kg → 40 mg · 80–<90 kg → 45 mg · ≥90 kg → 50 mg, which is also the absolute maximum single dose.</i></span></label></li>
-          <li class="t-div"><label id="tnkbandrow" style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer; background:var(--card2);"><input type="checkbox" data-k="21-16" class="t-ck t-ck-crit"><span id="tnkbandcue" style="font-weight:700;">Enter weight above to highlight the applicable band.</span></label></li>
+          <li class="t-div"><label id="tnkbandrow" style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer; background:var(--card2);"><input type="checkbox" data-k="21-16" class="t-ck t-ck-crit"><span id="tnkbandcue" aria-live="polite" aria-atomic="true" style="font-weight:700;">Enter weight above to highlight the applicable band.</span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="21-17" class="t-ck t-ck-crit"><span><b>Age ≥75 half-dose is NOT the label — only if your protocol says so.</b><i class="t-why" data-ref>A STREAM-derived pharmaco-invasive practice pattern used at some centers to reduce ICH risk in the elderly. Not a blanket guideline requirement; do not assume it applies.</i></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="21-18" class="t-ck t-ck-crit"><span><b>Work the inclusion/exclusion checklist first. Document decision and consent.</b><i class="t-why">On the STEMI/Chest Pain Box, before giving it — the same discipline as the Stroke card's lytic checklist.</i></span></label></li>
         </ul>
@@ -2697,7 +2697,7 @@ try{ var _hh=location.hash||''; if(_hh==='#c01'||_hh==='#c02'){ location.replace
         <summary style="background:var(--sev-crit); color:var(--on-sev); padding:10px 12px; font-size:14px; font-weight:700; letter-spacing:0.03em; cursor:pointer; list-style:none;">1 &middot; WHAT KIND OF SHOCK IS THIS?</summary>
         <div style="padding:4px 12px 12px;">
           <div class="console"><div id="prsPick" class="prs-pick" role="group" aria-label="Choose the indication"></div></div>
-          <p id="prsWtCue" style="font-size:12.5px; line-height:1.4; color:var(--ink2); margin:8px 0 0;"></p>
+          <p id="prsWtCue" aria-live="polite" aria-atomic="true" style="font-size:12.5px; line-height:1.4; color:var(--ink2); margin:8px 0 0;"></p>
         </div>
       </details>
 
@@ -3638,19 +3638,19 @@ window.__cardNav=CardNav;
   function clearInputs(){ agoInput.value=''; atInput.value=''; }
   function paint(){
     if(t0===null){
-      clock.textContent='0:00'; clock.style.color='#16324f';
+      clock.textContent='0:00'; clock.style.color='var(--ink)';
       lkwLine.textContent='Not set';
       cue.textContent='Tap NOW for witnessed onset, or enter hours-ago / a clock time below.';
-      winStatus.textContent='status'; winStatus.style.color='#5a6a78'; winLytic.style.color='#5a6a78'; winThromb.style.color='#5a6a78';
+      winStatus.textContent='status'; winStatus.style.color='var(--ink2)'; winLytic.style.color='var(--ink2)'; winThromb.style.color='var(--ink2)';
       return;
     }
     var s=Math.max(0,Math.floor((Date.now()-t0)/1000));
     clock.textContent=hhmm(s);
     lkwLine.textContent=wall(new Date(t0))+' ('+hhmm(s)+' ago)';
     var hrs=s/3600;
-    if(hrs<=4.5){ clock.style.color='#2f7a3f'; cue.textContent='Within the tPA/TNK window (≤4.5h) — confirm no exclusions.'; }
-    else if(hrs<=24){ clock.style.color='#8a6d1f'; cue.textContent='Past the lytic window — thrombectomy may still be an option if LVO + favorable imaging (≤24h).'; }
-    else { clock.style.color='#9b1c2e'; cue.textContent='Past standard treatment windows for lytic/thrombectomy.'; }
+    if(hrs<=4.5){ clock.style.color='var(--green)'; cue.textContent='Within the tPA/TNK window (≤4.5h) — confirm no exclusions.'; }
+    else if(hrs<=24){ clock.style.color='var(--amber)'; cue.textContent='Past the lytic window — thrombectomy may still be an option if LVO + favorable imaging (≤24h).'; }
+    else { clock.style.color='var(--red-tx)'; cue.textContent='Past standard treatment windows for lytic/thrombectomy.'; }
     winLytic.style.color = hrs<=4.5 ? '#2f7a3f' : '#9b1c2e';
     winThromb.style.color = hrs<=24 ? '#2f7a3f' : '#9b1c2e';
     winStatus.textContent = hrs<=4.5 ? 'LYTIC OK' : (hrs<=24 ? 'LYTIC CLOSED' : 'BOTH CLOSED');
@@ -5027,7 +5027,7 @@ var AUDIENCE = (function(){
     if(t===null){
       btn.textContent='CONFIRM ETCO₂ / TUBE PLACEMENT — TIME-STAMP';
       btn.style.background='#16324f'; btn.style.borderColor='#16324f'; btn.style.color='#fffefb';
-      cue.textContent='Tap once waveform capnography confirms placement.'; cue.style.color='#5a6a78';
+      cue.textContent='Tap once waveform capnography confirms placement.'; cue.style.color='var(--ink2)';
       return;
     }
     var when=wall(new Date(t));
@@ -5035,7 +5035,7 @@ var AUDIENCE = (function(){
     if(window.__rsiInductT0){ var mins=Math.round((t-window.__rsiInductT0)/60000*10)/10; extra=' — '+mins+' min after the induction agent was pushed'; }
     btn.textContent='✓ ETCO₂ CONFIRMED AT '+when;
     btn.style.background='#e8f5e9'; btn.style.borderColor='#2f7a3f'; btn.style.color='#2f7a3f';
-    cue.textContent='Logged to the case timeline'+extra+'.'; cue.style.color='#2f7a3f';
+    cue.textContent='Logged to the case timeline'+extra+'.'; cue.style.color='var(--green)';
   }
   btn.addEventListener('click', function(){
     if(t!==null) return; // idempotent — CLEAR/RESET is the only way to re-arm
@@ -5132,11 +5132,11 @@ var AUDIENCE = (function(){
   function mmss(sec){ return Math.floor(sec/60)+':'+pad(sec%60); }
   function save(){ try{ if(t0) localStorage.setItem(K,String(t0)); else localStorage.removeItem(K); }catch(e){} }
   function paint(){
-    if(t0===null){ clock.textContent='0:00'; clock.style.color='#16324f'; cue.textContent='Tap START at the time of injury.'; cue.style.color='#5a6a78'; return; }
+    if(t0===null){ clock.textContent='0:00'; clock.style.color='var(--ink)'; cue.textContent='Tap START at the time of injury.'; cue.style.color='var(--ink2)'; return; }
     var s=Math.max(0,Math.floor((Date.now()-t0)/1000));
     clock.textContent=mmss(s);
-    if(s<=3*3600){ clock.style.color='#2f7a3f'; cue.textContent='Within the 3-hour window — TXA indicated if otherwise appropriate.'; cue.style.color='#2f7a3f'; }
-    else { clock.style.color='#9b1c2e'; cue.textContent='Past 3 hours since injury — CRASH-2 showed no benefit / possible harm. Do not give TXA.'; cue.style.color='#9b1c2e'; }
+    if(s<=3*3600){ clock.style.color='var(--green)'; cue.textContent='Within the 3-hour window — TXA indicated if otherwise appropriate.'; cue.style.color='var(--green)'; }
+    else { clock.style.color='var(--red-tx)'; cue.textContent='Past 3 hours since injury — CRASH-2 showed no benefit / possible harm. Do not give TXA.'; cue.style.color='var(--red-tx)'; }
   }
   startBtn.addEventListener('click', function(){ t0=Date.now(); save(); if(tick) clearInterval(tick); tick=setInterval(paint,1000); paint(); });
   resetBtn.addEventListener('click', function(){ t0=null; save(); if(tick){ clearInterval(tick); tick=null; } paint(); });
@@ -5158,12 +5158,12 @@ var AUDIENCE = (function(){
   function mmss(sec){ return Math.floor(sec/60)+':'+pad(sec%60); }
   function save(){ CASESTATE.setClock('mtp', t0); }
   function paint(){
-    if(t0===null){ clock.textContent='0:00'; clock.style.color='#16324f'; cue.textContent='Tap START when MTP is activated.'; cue.style.color='#5a6a78'; return; }
+    if(t0===null){ clock.textContent='0:00'; clock.style.color='var(--ink)'; cue.textContent='Tap START when MTP is activated.'; cue.style.color='var(--ink2)'; return; }
     var s=Math.max(0,Math.floor((Date.now()-t0)/1000));
     clock.textContent=mmss(s);
-    clock.style.color='#9b1c2e';
+    clock.style.color='var(--red-tx)';
     cue.textContent='Running — every product and reminder below is logged with a time stamp.';
-    cue.style.color='#5a6a78';
+    cue.style.color='var(--ink2)';
   }
   startBtn.addEventListener('click', function(){
     t0=Date.now(); save(); if(tick) clearInterval(tick); tick=setInterval(paint,1000); paint();
@@ -5197,14 +5197,14 @@ var AUDIENCE = (function(){
     if(due){
       calcue.style.background = '#fdf3cf';
       calcue.style.borderTop  = '3px solid #8a6d1f';
-      if(calstatus){ calstatus.style.color='#8a6d1f';
+      if(calstatus){ calstatus.style.color='var(--amber)';
         calstatus.textContent='⚠ CALCIUM DUE NOW — ' + prbc + ' UNITS PRBC'; }
     } else {
       // Between doses: stay on screen (the dose text is the only place it appears) but read
       // as standing reference rather than an active prompt.
       calcue.style.background = '#fbf7ea';
       calcue.style.borderTop  = '1px solid #eadfbf';
-      if(calstatus){ calstatus.style.color='#8a8578';
+      if(calstatus){ calstatus.style.color='var(--ink2)';
         calstatus.textContent='LAST DUE AT ' + (prbc - (prbc % 4)) + ' · NEXT AT ' + (prbc + (4 - (prbc % 4))) + ' UNITS'; }
     }
     // Brief high-contrast flash so units 8 and 12 signal as loudly as unit 4 did.
@@ -5274,10 +5274,10 @@ var AUDIENCE = (function(){
   var PHASE_COLOR=['#16324f','#8a6d1f','#9b1c2e','#9b1c2e'];
   function paint(){
     if(t0===null){
-      clock.textContent='0:00'; clock.style.color='#16324f';
+      clock.textContent='0:00'; clock.style.color='var(--ink)';
       cue.textContent="Tap START at seizure onset (≥5 min continuous, or ≥2 seizures without return to baseline = status epilepticus).";
-      cue.style.color='#5a6a78';
-      ph.forEach(function(p){ if(p){ p.style.background='transparent'; p.style.color='#5a6a78'; p.style.fontWeight='400'; } });
+      cue.style.color='var(--ink2)';
+      ph.forEach(function(p){ if(p){ p.style.background='transparent'; p.style.color='var(--ink2)'; p.style.fontWeight='400'; } });
       return;
     }
     var s=Math.max(0,Math.floor((Date.now()-t0)/1000));
@@ -5289,7 +5289,7 @@ var AUDIENCE = (function(){
     ph.forEach(function(p,i){
       if(!p) return;
       if(i===idx){ p.style.background=PHASE_COLOR[idx]; p.style.color='#fffefb'; p.style.fontWeight='700'; }
-      else { p.style.background='transparent'; p.style.color='#5a6a78'; p.style.fontWeight='400'; }
+      else { p.style.background='transparent'; p.style.color='var(--ink2)'; p.style.fontWeight='400'; }
     });
   }
   startBtn.addEventListener('click', function(){
@@ -5329,7 +5329,7 @@ var AUDIENCE = (function(){
   }
   function paint(){
     if(t0===null){
-      clock.textContent='0:00'; clock.style.color='#9b1c2e';
+      clock.textContent='0:00'; clock.style.color='var(--red-tx)';
       cue.textContent='Tap DECLARE CICO to start the clock.';
       paintRow();
       return;
@@ -5337,12 +5337,12 @@ var AUDIENCE = (function(){
     if(t1===null){
       var s=Math.max(0,Math.floor((Date.now()-t0)/1000));
       clock.textContent=mmss(s);
-      clock.style.color='#9b1c2e';
+      clock.style.color='var(--red-tx)';
       cue.textContent='CICO declared — clock running. Check step 8 (or tap CONFIRM ETCO₂) the moment you see a sustained waveform.';
     } else {
       var s=Math.max(0,Math.floor((t1-t0)/1000));
       clock.textContent=mmss(s);
-      clock.style.color='#2f7a3f';
+      clock.style.color='var(--green)';
       cue.textContent='Airway secured '+mmss(s)+' after CICO was declared (ETCO₂ confirmed).';
     }
     paintRow();
@@ -5638,6 +5638,26 @@ var AUDIENCE = (function(){
 /* Shared case-shell behavior (case-shell.js): the WHY control that reveals the
    reasoning tier (.t-why) on every checklist row at once. Edited once, shared. */
 /* @shell-js */
+</script>
+<script>
+/* Live-region write guard (ACCESSIBILITY.md §7). Setting textContent to the value
+   it already holds still replaces the text node, and the engines below rewrite
+   their cue on every tick — so a screen reader would repeat the same sentence
+   once a second. Shadowing the setter on just the [aria-live] elements makes
+   those writes no-ops without touching a single call site. */
+(function(){
+  var d = Object.getOwnPropertyDescriptor(Node.prototype, 'textContent');
+  if (!d || !d.set) return;
+  Array.prototype.forEach.call(document.querySelectorAll('[aria-live]'), function(el){
+    try {
+      Object.defineProperty(el, 'textContent', {
+        configurable: true,
+        get: function(){ return d.get.call(this); },
+        set: function(v){ if (d.get.call(this) !== String(v)) d.set.call(this, v); }
+      });
+    } catch(e){}
+  });
+})();
 </script>
 </body>
 </html>
