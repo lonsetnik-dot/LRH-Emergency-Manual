@@ -1506,8 +1506,12 @@ var SITE = {
        landing on the plain menu (no #cNN deep link already taking the user to a card). */
     function focusFilter(){ if(location.hash) return; var f=document.getElementById('menuFilter'); if(f) f.focus(); }
     try{
-      var params=new URLSearchParams(location.search);
-      if(params.get('from')==='home'){ if(s.parentNode) s.parentNode.removeChild(s); focusFilter(); return; }
+      /* ANY ?from= MEANS THE READER CAME FROM INSIDE THE MANUAL, where this gate was
+         already shown and accepted. Ten tools used to spell that nine different ways —
+         from=home, from=tool, from=(home|tool), an exact params.get('from')==='home' —
+         so a link out of a live engine (?from=tca, ?from=arrest) put a consent screen in
+         front of a clinician mid-code. Issue #211. Do not narrow this again. */
+      if(/(^|[?&])from=/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); focusFilter(); return; }
     }catch(e){}
     function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); focusFilter(); }
     b.addEventListener('click', go, false);

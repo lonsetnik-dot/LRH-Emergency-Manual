@@ -120,7 +120,12 @@ var SITE = {
     b.addEventListener('click', go, false);
     b.addEventListener('touchend', go, false);
     /* handlers attach first so a parse failure can never leave the splash stuck */
-    try{ if(/(^|[?&])from=home(&|$)/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); } }catch(err){}
+         /* ANY ?from= MEANS THE READER CAME FROM INSIDE THE MANUAL, where this gate was
+         already shown and accepted. Ten tools used to spell that nine different ways —
+         from=home, from=tool, from=(home|tool), an exact params.get('from')==='home' —
+         so a link out of a live engine (?from=tca, ?from=arrest) put a consent screen in
+         front of a clinician mid-code. Issue #211. Do not narrow this again. */
+    try{ if(/(^|[?&])from=/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); } }catch(err){}
   }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
 })();
