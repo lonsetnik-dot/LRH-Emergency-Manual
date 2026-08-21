@@ -87,6 +87,7 @@ a{color:var(--blue)}
 </style>
 </head>
 <body data-theme="dark">
+<script>/* @theme-boot */</script>
 <div class="wrap"><div class="inner">
 
 <div class="bar">
@@ -98,7 +99,6 @@ a{color:var(--blue)}
       <span class="phase" id="phase">DECIDE</span>
     </div>
   </div>
-  <button class="chip" id="themebtn" type="button">LIGHT</button>
   <button class="chip" id="resetbtn" type="button">RESET</button>
 </div>
 
@@ -242,7 +242,7 @@ var HYST_STEPS=[].concat({{PROC:ob-neonatal#c10|2 · THE INCISION}},
                          {{PROC:ob-neonatal#c10|3 · DELIVERY & MATERNAL CARE}});
 
 var S={phase:'decide',stops:[false,false,false,false],start:null,step:'say',
-       events:[],xDone:false,sheet:null,resetArm:false,stopAt:null,lifeAt:null,pregnant:null,hystDone:false,theme:'dark'};
+       events:[],xDone:false,sheet:null,resetArm:false,stopAt:null,lifeAt:null,pregnant:null,hystDone:false,theme:(document.body.dataset.theme==='light'?'light':'dark')};
 
 function $(id){ return document.getElementById(id); }
 function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
@@ -558,7 +558,6 @@ function paint(){
   $('clock').textContent=clock();
   $('dot').style.display = S.phase==='run' ? '' : 'none';
   $('phase').textContent = S.phase==='decide'?'DECIDE':(S.phase==='run'?'RESUSCITATING':(S.phase==='live'?'PERFUSING':'STOPPED'));
-  $('themebtn').textContent = S.theme==='dark'?'LIGHT':'DARK';
   $('resetbtn').textContent = S.resetArm?'SURE?':'RESET';
   $('resetbtn').style.background = S.resetArm?'var(--red)':'var(--card)';
   $('resetbtn').style.color = S.resetArm?'#fff':'var(--ink2)';
@@ -604,7 +603,6 @@ document.addEventListener('click', function(e){
   if(a==='back'){ S.phase='run'; S.step='life'; paint(); toTop(); return; }
 });
 
-$('themebtn').addEventListener('click', function(){ S.theme = S.theme==='dark'?'light':'dark'; paint(); });
 var ra;
 $('resetbtn').addEventListener('click', function(){
   if(!S.resetArm){ S.resetArm=true; paint(); clearTimeout(ra); ra=setTimeout(function(){ S.resetArm=false; paint(); },2500); return; }

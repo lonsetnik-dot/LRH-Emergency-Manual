@@ -43,6 +43,11 @@ const MARKER_PROCICONS = '/* @proc-icons */';
    like the sheets above so all six engines share one implementation. */
 const SHELLJS = readFileSync('case-shell.js', 'utf8').trim();
 const MARKER_SHELLJS = '/* @shell-js */';
+/* The one place the manual's light/dark preference is read. The LIGHT/DARK
+   control lives only on the landing page; every other page reads the stored
+   choice through this, before paint. */
+const THEMEBOOT = readFileSync('theme-boot.js', 'utf8').trim();
+const MARKER_THEME = '/* @theme-boot */';
 /* The upstream guideline registry, shared by sources/ (the freshness page) and
    read outside the browser by check_guidelines.mjs — see GUIDELINE-WATCH.md. */
 const GDL = readFileSync('guidelines.js', 'utf8').trim();
@@ -274,7 +279,7 @@ function applySite(text, file) {
 // something no clinician opens. Read them from the repo, not the site.
 const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'dist-demo', '.github', 'cairn', 'design']);
 const SKIP_ROOT_FILES = new Set([
-  'design-system.css', 'design-system-live.css', 'inventory.js', 'equipment-icons.js', 'procedure-icons.js', 'guidelines.js', 'case-shell.js', 'build.mjs', 'run-tests.sh', 'netlify.toml',
+  'design-system.css', 'design-system-live.css', 'inventory.js', 'equipment-icons.js', 'procedure-icons.js', 'guidelines.js', 'case-shell.js', 'theme-boot.js', 'build.mjs', 'run-tests.sh', 'netlify.toml',
   'package.json', 'package-lock.json', 'shot.mjs', '.gitignore',
   'sw-template.js', 'sw-register.js',   // build inputs — emitted as dist/sw.js / inlined
   'site.config.json',                   // build input — substituted into every page
@@ -295,7 +300,7 @@ function walk(src, dst, atRoot) {
     if (statSync(s).isDirectory()) walk(s, d, false);
     else if (name.endsWith('.html')) {
       const html = readFileSync(s, 'utf8');
-      writeFileSync(d, applySite(applyShare(applyProc(injectSW(html.split(MARKER).join(CSS).split(MARKER_LIVE).join(CSS_LIVE).split(MARKER_SHELL).join(CSS_SHELL).split(MARKER_INV).join(INV).split(MARKER_ICONS).join(ICONS).split(MARKER_PROCICONS).join(PROCICONS).split(MARKER_SHELLJS).join(SHELLJS).split(MARKER_GDL).join(GDL)), s), s), s));
+      writeFileSync(d, applySite(applyShare(applyProc(injectSW(html.split(MARKER).join(CSS).split(MARKER_LIVE).join(CSS_LIVE).split(MARKER_SHELL).join(CSS_SHELL).split(MARKER_INV).join(INV).split(MARKER_ICONS).join(ICONS).split(MARKER_PROCICONS).join(PROCICONS).split(MARKER_SHELLJS).join(SHELLJS).split(MARKER_GDL).join(GDL).split(MARKER_THEME).join(THEMEBOOT)), s), s), s));
     } else if (name.endsWith('.webmanifest')) {
       writeFileSync(d, applySite(readFileSync(s, 'utf8'), s));
     } else copyFileSync(s, d);
