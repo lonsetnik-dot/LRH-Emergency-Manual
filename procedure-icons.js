@@ -56,6 +56,12 @@ var PROC_ICONS = (function () {
   var ribs = ink('M5 16 Q24 9 43 16') + ink('M5 27 Q24 20 43 27') + ink('M5 38 Q24 31 43 38');
   G.chest = ribs + red('M45 45 L31 31', 4.6) + red('M31 31 L18 18', 4, '4 3');
   G.pigtail = ribs + red('M45 45 L33 33', 2) + red('M33 33 L27 27', 2, '3.5 3') + red('M27 27 Q21 22 25 17 Q29 12 32 18 Q33 22 28 21', 2, '3.5 3');
+  /* Finger thoracostomy — the same rib base as chest tube and pigtail (§2, "same base, honest
+     difference"), and the difference is the whole point of the procedure: there is NO TUBE. The
+     one red idea is the opening itself plus the 360° sweep that confirms you are intrapleural.
+     Dashed, because the sweep is under the skin. Drawn so the step in tca/ that says "no tube,
+     no drain" is not illustrated with a tube. */
+  G.finger = ribs + red('M20 30 L32 30', 4.6) + red('M26 30 m -7 0 a 7 6.5 0 1 0 14 0 a 7 6.5 0 1 0 -14 0', 1.8, '3.5 3');
   G.thora = ink('M12 16 Q28 8 44 16') + ink('M12 27 Q28 19 44 27') + ink('M12 38 Q28 30 44 38') + ink2('M5 5 L5 26 Q5 34 11 38', 2.2) + ink2('M5 12 L12 15 M5 22 L12 26', 1.5) + red('M14 33 Q28 25 42 33', 3);
   G.burr = ink('M42 26 Q42 5 25 5 Q9 5 9 20 L9 24 L5 30 L9 31 L9 36 Q9 40 15 40 L18 40 L18 44') + ink('M33 27 Q36 29 33 32') + rc(30, 20, 3.6, 2.2) + rc(18, 12, 3.6, 2.2) + rc(38, 12, 3.6, 2.2);
   G.canth = ink('M6 24 Q24 8 42 24 Q24 40 6 24 Z') + ic(24, 24, 5) + red('M40 24 L46 19') + red('M40 24 L46 29');

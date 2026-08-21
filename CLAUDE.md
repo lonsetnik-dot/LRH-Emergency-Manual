@@ -411,10 +411,24 @@ could have told. Four things follow:
   bad token (`BUILD_OUT` sends that build to a temp directory so `dist/` is never
   disturbed) and asserts it fails.
 
-Finger thoracostomy is the one gap: it is a *row* inside the chest-tube card's
-technique list, not a card, so `tca/`'s sheet for it stays hand-written and says
-so. A card of its own is worth having — three tools name the procedure and none
-of them owns it.
+Finger thoracostomy used to be the one gap — a *row* inside the chest-tube card,
+so `tca/`'s sheet for it stayed hand-written. It is now a named section of card
+01, which was **renamed to "Chest Tube / Finger Thoracostomy"** to say what it
+covers. Three things about how, because the shape will come up again:
+
+- **The card anchor did not change.** Four laminated cart labels carry QR codes
+  encoding `procedures/?from=home#c01`. A new card would have needed a new anchor
+  and every printed label would still point at the tube. The section got its own
+  anchor (`#c01-finger`) *underneath* the card's.
+- **Neither user was made to scroll past the other.** The card serves an elective
+  tube (has time, needs the 13-item kit) and a traumatic arrest (has seconds,
+  needs none of it). Rather than reorder for one of them, the one with a clock
+  gets a jump row at the top and the section sits after INDICATIONS.
+- **A card covering two procedures carries two glyphs.** `finger` shares the rib
+  base with `chest` and `pigtail` and differs by its one red idea — the opening
+  and the sweep, not a tube — because illustrating a no-tube procedure with a
+  tube teaches the wrong thing. `verify_procedure_icons.mjs` enumerates that
+  exception in its `ALSO` map rather than allowing extra glyphs generally.
 
 ### The sibling mechanism: `{{SHARE:<tool>|<id>}}`
 
@@ -710,7 +724,8 @@ test it" is not sufficient close-out for a deliverable.
   again** — the interval is continuous, and `verify_ob_engines.mjs` asserts it.
   Card 07 stays as the reference view.
 - `peds/` — Pediatric Emergencies.
-- `procedures/` — Rare, high-stakes procedure checklists (chest tube,
+- `procedures/` — Rare, high-stakes procedure checklists (chest tube / finger
+  thoracostomy,
   thoracotomy, burr hole, canthotomy, CVC, TVP, tourniquet, JADA, etc.).
 - `trauma/` — Trauma activation and resuscitation pathways.
 - `clinical-pathways/` — Diagnostic and workup pathways: Chest Pain / HEART,

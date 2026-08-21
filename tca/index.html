@@ -183,21 +183,13 @@ var SHEETS={
     airway:{k:'PROCEDURE',t:'SALAD — intubating a bloody airway',
       from:'Procedures · card 15',href:'../procedures/?from=tca#c15',
       l:{{PROC:procedures#c15|THE SEQUENCE}}},
-    /* FINGER THORACOSTOMY HAS NO CARD OF ITS OWN. It is one row inside the
-       chest-tube card's technique list ("in arrest this IS the complete
-       procedure"), so there is no section to transclude and this sheet stays
-       hand-written. The link goes to the chest-tube card, which is where a
-       clinician would look. A finger-thoracostomy card is worth having — three
-       tools name the procedure and none of them owns it — but writing one is a
-       clinical task, not a wiring task. */
-    finger:{k:'PROCEDURE',t:'Finger thoracostomy — bilateral',
-      from:'No card of its own — see Chest tube · card 01',href:'../procedures/?from=tca#c01',
-      l:[{do:'<b>Arm abducted. 5th intercostal space, anterior to mid axillary line, at nipple level.</b>',why:''},
-         {do:'<b>4–5 cm transverse incision through skin and subcutaneous tissue.</b>',why:''},
-         {do:'<b>Blunt dissect over the top of the rib, then push through the pleura.</b>',why:'Expect a rush of air or blood. Over the top of the rib keeps you off the neurovascular bundle.'},
-         {do:'<b>Sweep a finger 360° for lung, clot and diaphragm. Feel for a hole.</b>',why:''},
-         {do:'<b>Do the other side. Both sides, every time.</b>',why:'Before you conclude the chest is not the problem.'},
-         {do:'<b>Massive blood out on either side is a thoracotomy conversation.</b>',why:'Not a chest tube conversation — a chest tube does not fix the thing that is bleeding.'}]},
+    /* Finger thoracostomy now has a home: it is a named section of the chest-tube card,
+       which was renamed to say so. Its rows are that section, transcluded. The card ANCHOR
+       stayed #c01 because four laminated cart labels carry QR codes encoding it; the section
+       has its own anchor underneath. */
+    finger:{k:'PROCEDURE',t:'Finger thoracostomy — bilateral',icon:'finger',
+      from:'Procedures · card 01',href:'../procedures/?from=tca#c01-finger',
+      l:{{PROC:procedures#c01|FINGER THORACOSTOMY — IN ARREST THIS IS THE WHOLE PROCEDURE}}},
     thor:{k:'PROCEDURE',t:'Resuscitative thoracotomy',
       from:'Procedures · card 02',href:'../procedures/?from=tca#c02',
       l:{{PROC:procedures#c02|SEQUENCE — STEP BY STEP}}},
@@ -304,6 +296,9 @@ function rows(list,withWhy){
    TCA-only reference sheets \u2014 gets none. */
 function glyph(id,cls){
   var sh=SHEETS[id]; if(!sh) return '';
+  /* Anchored to END of string, so a SECTION anchor (#c01-finger) does not resolve to its
+     card's glyph. Finger thoracostomy shares the rib base with the chest tube and differs by
+     its one red idea — the opening, not a tube — which is the whole point of the step. */
   var m=(sh.href||'').match(/\/procedures\/[^#]*#(c\d+)$/);
   var key = (m && PROC_ICONS.forCard(m[1])) || sh.icon;
   if(!key) return '';
