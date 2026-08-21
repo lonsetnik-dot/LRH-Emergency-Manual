@@ -379,7 +379,12 @@ var SITE = { version: "0.1", lastReviewed: "2026-08-12" };
   function go(e){ if(e&&e.cancelable) e.preventDefault(); if(s.parentNode) s.parentNode.removeChild(s); }
   b.addEventListener('click', go, false);
   b.addEventListener('touchend', go, false);
-  try{ if(/(^|[?&])from=(home|tool)(&|$)/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); } }catch(err){}
+       /* ANY ?from= MEANS THE READER CAME FROM INSIDE THE MANUAL, where this gate was
+         already shown and accepted. Ten tools used to spell that nine different ways —
+         from=home, from=tool, from=(home|tool), an exact params.get('from')==='home' —
+         so a link out of a live engine (?from=tca, ?from=arrest) put a consent screen in
+         front of a clinician mid-code. Issue #211. Do not narrow this again. */
+  try{ if(/(^|[?&])from=/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); } }catch(err){}
 })();
 /* BACK button — returns to the previous card/tool when there is history. */
 (function(){

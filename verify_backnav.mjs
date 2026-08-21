@@ -98,6 +98,57 @@ ok('3. peds/#p16 deep link lands with the card in view', await pg.evaluate(() =>
 }));
 ck('3. no splash is covering it', await pg.evaluate(() => !!document.getElementById('betasplash')), false);
 
+/* ---- the beta gate must not stand between an engine and a card (issue #211) ----
+   Every card tool shows a one-time 'not for clinical use' splash. Arriving from inside the
+   manual is supposed to skip it, because the reader already accepted it wherever they came in.
+   Ten tools spelled that rule nine different ways — from=home, from=tool, from=(home|tool), an
+   exact params.get — so a link out of a live engine (?from=tca) put a CONSENT SCREEN in front
+   of a clinician mid-code, over the card they had just tapped for.
+
+   Asserted both directions: any ?from= skips it, and a cold arrival still shows it. Without
+   the second half the rule could be satisfied by deleting the gate. */
+console.log('\n--- the beta gate');
+const GATED = ['/', '/procedures/', '/codes/', '/ob-neonatal/', '/trauma/',
+               '/conversations/', '/vems/', '/simulations/', '/posters/', '/peds/'];
+const splashVisible = async () => pg.evaluate(() => {
+  const el = document.getElementById('betasplash');
+  return !!el && !!(el.offsetWidth || el.offsetHeight || el.getClientRects().length);
+});
+for (const t of GATED) {
+  /* ?from=tca is a real link out of a real engine, and it is the one that used to be blocked. */
+  await pg.goto(BASE + t + '?from=tca', { waitUntil: 'domcontentloaded' });
+  await pg.waitForTimeout(220);
+  ck('gate: ' + t + ' lets an engine link straight through', await splashVisible(), false);
+}
+for (const t of GATED) {
+  await pg.goto(BASE + t, { waitUntil: 'domcontentloaded' });
+  await pg.waitForTimeout(220);
+  ck('gate: ' + t + ' still shows it on a cold arrival', await splashVisible(), true);
+}
+
+/* ---- search has to match what a clinician types (issue #174) ----
+   Read from the page's own alias table rather than a second list here, but the INVARIANT is
+   written out: a multi-word query must not depend on word order, and an abbreviation must
+   reach the thing it abbreviates. */
+console.log('\n--- search');
+await pg.goto(BASE + '/?from=tool', { waitUntil: 'domcontentloaded' });
+await pg.waitForTimeout(250);
+const results = async (t) => pg.evaluate((term) => {
+  const el = document.getElementById('q');
+  el.value = term; el.dispatchEvent(new Event('input', { bubbles: true }));
+  const links = [...document.querySelectorAll('a')].filter(a => a.closest('#results,#searchresults,.results,[role=listbox]'));
+  return { n: links.length, top: (links[0] || {}).textContent || '' };
+}, t);
+ck('search: two words in either order find the same card',
+   (await results('chest tube')).n > 0 && (await results('tube chest')).n > 0, true);
+ck('search: an abbreviation reaches what it abbreviates (peds dka)',
+   /Pediatric Diabetic Ketoacidosis/i.test((await results('peds dka')).top), true);
+ck('search: and ranks the abbreviated word into the title (peds)',
+   /Pediatric/i.test((await results('peds')).top), true);
+ck('search: tq finds the tourniquet card', /Tourniquet/i.test((await results('tq')).top), true);
+ck('search: cric finds front of neck access', /Front of Neck/i.test((await results('cric')).top), true);
+/* A short alias must not match inside a longer word, or the list stops being worth reading. */
+ck('search: a nonsense query still finds nothing', (await results('zzqq')).n, 0);
 ck('zero console/page errors while navigating', errs.length, 0);
 
 await b.close();

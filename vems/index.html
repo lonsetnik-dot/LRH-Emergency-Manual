@@ -1272,7 +1272,12 @@ Array.prototype.forEach.call(document.querySelectorAll('[data-print]'), function
 var sp=$('betasplash'), go=$('betago');
 function drop(){ if(sp && sp.parentNode) sp.parentNode.removeChild(sp); }
 if(go) go.addEventListener('click', drop);
-try{ if(/(^|[?&])from=(home|tool)(&|$)/.test(location.search)) drop(); }catch(err){}
+     /* ANY ?from= MEANS THE READER CAME FROM INSIDE THE MANUAL, where this gate was
+         already shown and accepted. Ten tools used to spell that nine different ways —
+         from=home, from=tool, from=(home|tool), an exact params.get('from')==='home' —
+         so a link out of a live engine (?from=tca, ?from=arrest) put a consent screen in
+         front of a clinician mid-code. Issue #211. Do not narrow this again. */
+try{ if(/(^|[?&])from=/.test(location.search)) drop(); }catch(err){}
 
 })();
 </script>

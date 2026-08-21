@@ -1866,7 +1866,12 @@ var SITE = {
     // was already shown, so skip this one and jump to any deep-linked card.
     // Direct / bookmarked / home-screen visits still see the splash.
     try {
-      if(/(^|[?&])from=home(&|$)/.test(location.search)){
+      /* ANY ?from= MEANS THE READER CAME FROM INSIDE THE MANUAL, where this gate was
+         already shown and accepted. Ten tools used to spell that nine different ways —
+         from=home, from=tool, from=(home|tool), an exact params.get('from')==='home' —
+         so a link out of a live engine (?from=tca, ?from=arrest) put a consent screen in
+         front of a clinician mid-code. Issue #211. Do not narrow this again. */
+      if(/(^|[?&])from=/.test(location.search)){
         go();
         if(location.hash){ var t=document.getElementById(location.hash.slice(1)); if(t){ t.scrollIntoView(); } }
         return;

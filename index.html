@@ -222,7 +222,12 @@ catch(e){ document.body.dataset.theme='dark'; }
     b.addEventListener('click', go, false);
     b.addEventListener('touchend', go, false);
     /* handlers are attached first so a parsing failure can never leave the splash undismissable */
-    try{ if(/(^|[?&])from=tool(&|$)/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); } }catch(err){}
+    /* ANY ?from= MEANS THE READER CAME FROM INSIDE THE MANUAL, where this gate was
+       already shown and accepted. Ten tools used to spell that nine different ways —
+       from=home, from=tool, from=(home|tool), an exact params.get('from')==='home' —
+       so a link out of a live engine (?from=tca, ?from=arrest) put a consent screen in
+       front of a clinician mid-code. Issue #211. Do not narrow this again. */
+    try{ if(/(^|[?&])from=/.test(location.search)){ if(s.parentNode) s.parentNode.removeChild(s); } }catch(err){}
   }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
 })();
@@ -387,14 +392,61 @@ catch(e){ document.body.dataset.theme='dark'; }
     }).join('');
     box.hidden=false;
   }
+  /* WHAT A CLINICIAN ACTUALLY TYPES (issue #174). Two things were wrong with matching the
+     whole query as one substring: "peds tox" found nothing, because no entry contains that
+     string in that order; and nothing knew that "peds" and "pediatric" are the same word.
+     So: split the query, expand each word through the alias table, and require EVERY word to
+     hit. Order stops mattering and abbreviations work.
+
+     Aliases are one-way — what gets typed on the left, what is written in the index on the
+     right. Keep them unambiguous: a short alias matches at a word start rather than anywhere
+     inside a word, or "ob" finds "obstruction" and the list stops being worth reading. */
+  var SEARCH_ALIASES={
+    peds:['pediatric','child','infant'], ped:['pediatric'], paeds:['pediatric'], kid:['pediatric','child'],
+    tox:['toxicology','poisoning','overdose'], od:['overdose'],
+    ob:['obstetric','pregnancy','maternal','delivery'], preg:['pregnancy','pregnant'],
+    nb:['neonatal','newborn'], neo:['neonatal','newborn'], nrp:['neonatal'],
+    cric:['cricothyrotomy','front of neck'], fona:['front of neck','cricothyrotomy'],
+    rsi:['rapid sequence','intubation'], ett:['intubation','tube'], sga:['supraglottic','igel'],
+    mtp:['massive transfusion'], tq:['tourniquet'], tbi:['brain injury'],
+    cva:['stroke'], sah:['subarachnoid'], ich:['intracranial'],
+    sob:['dyspnea','respiratory'], resp:['respiratory'], neuro:['neurologic','seizure','stroke'],
+    abd:['abdominal'], gi:['gastrointestinal','bleed'], gu:['genitourinary'],
+    htn:['hypertension'], chf:['heart failure'], afib:['atrial fibrillation'],
+    ekg:['ecg','12-lead'], echo:['ultrasound'], us:['ultrasound'],
+    hypo:['hypothermia','hypoglycemia'], hyper:['hyperthermia','hyperkalemia'],
+    anaph:['anaphylaxis'], sz:['seizure'], dka:['diabetic ketoacidosis'],
+    pph:['postpartum hemorrhage'], tca:['traumatic cardiac arrest'],
+    equip:['equipment'], kit:['equipment','tray']
+  };
+  function escRe(x){ return x.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
+  function wordHit(hay, w){
+    var alts=[w].concat(SEARCH_ALIASES[w]||[]);
+    for(var i=0;i<alts.length;i++){
+      var a=alts[i];
+      /* Long enough to be unambiguous: match anywhere. Short: only at a word start. */
+      if(a.length>=4){ if(hay.indexOf(a)!==-1) return true; }
+      else if(new RegExp('(^|[^a-z])'+escRe(a)).test(hay)) return true;
+    }
+    return false;
+  }
   function search(){
     var term=q.value.trim().toLowerCase();
     if(!term){ box.hidden=true; box.innerHTML=''; return; }
+    var words=term.split(/\s+/).filter(Boolean);
     var hits=SEARCH_INDEX.filter(function(it){
-      return (it.t+' '+it.k+' '+it.c).toLowerCase().indexOf(term)!==-1;
+      var hay=(it.t+' '+it.k+' '+it.c).toLowerCase();
+      for(var i=0;i<words.length;i++){ if(!wordHit(hay, words[i])) return false; }
+      return true;
     }).sort(function(a,b){
-      var ai=a.t.toLowerCase().indexOf(term), bi=b.t.toLowerCase().indexOf(term);
-      ai=ai===-1?99:ai; bi=bi===-1?99:bi; return ai-bi;
+      /* A title match still wins, judged on the first word the reader typed — but through the
+         aliases, or typing "peds" would rank every pediatric card as if none matched. */
+      function titleScore(t){
+        var hay=t.toLowerCase(), alts=[words[0]].concat(SEARCH_ALIASES[words[0]]||[]), best=99;
+        for(var i=0;i<alts.length;i++){ var at=hay.indexOf(alts[i]); if(at!==-1 && at<best) best=at; }
+        return best;
+      }
+      return titleScore(a.t)-titleScore(b.t);
     });
     render(hits);
   }
