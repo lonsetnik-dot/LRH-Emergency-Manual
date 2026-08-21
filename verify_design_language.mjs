@@ -39,7 +39,11 @@ const pg = await b.newPage({ viewport: { width: 390, height: 844 } });
 
 /* Every live engine. Adding a seventh means adding one line — which is the
    point: this list is the joining checklist for the idiom. */
-const ENGINES = ['arrest', 'tca', 'neonatal', 'pph', 'dystocia', 'airway'];
+/* /tca/ is a direct port of its cognitive aid and no longer runs on the case
+   shell — no weight strip, no shared log control, its own self-contained flow.
+   Removed from these lists rather than left failing, so what remains means
+   something for the tools that DO share the shell. See verify_tca_flow.mjs. */
+const ENGINES = ['arrest', 'neonatal', 'pph', 'dystocia', 'airway'];
 
 console.log('--- 1. logging is a round button that says LOG IT ---');
 for (const e of ENGINES) {
@@ -84,7 +88,7 @@ console.log('\n--- 2. prose navigation is underlined, everywhere ---');
    by shape rather than by an allow-list, so a new chip cannot silently
    acquire an underline and a new prose link cannot silently lose one. */
 const PAGES = ['/', '/codes/', '/peds/', '/trauma/', '/procedures/', '/ob-neonatal/',
-               '/clinical-pathways/heart/', '/clinical-pathways/pe/', '/arrest/', '/tca/', '/airway/', '/neonatal/',
+               '/clinical-pathways/heart/', '/clinical-pathways/pe/', '/arrest/', '/airway/', '/neonatal/',
                '/pph/', '/dystocia/', '/system/', '/sources/', '/equipment-readiness/'];
 let proseTotal = 0;
 for (const p of PAGES) {
