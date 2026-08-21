@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="theme-color" content="#005596">
 <title>Resuscitative Thoracotomy — Wall Poster · {{SITE.title}}</title>
-<meta name="description" content="Printable letter-portrait wall poster: clamshell resuscitative thoracotomy — ten phases from decide to signs of life, with the equipment and the key numbers.">
+<meta name="description" content="Printable letter-portrait wall poster: clamshell resuscitative thoracotomy — ten phases from decide to the perfusion check, with the equipment and the key numbers.">
 <link rel="canonical" href="https://{{SITE.domain}}/posters/thoracotomy/">
 <style>
   /* ===== SITE CONFIG (site-specific — accent + text edits to localize go here) ===== */
@@ -52,7 +52,12 @@
      The number and the ACTION carry the first; the detail line carries the second. Everything
      that is not one of those two jobs belongs on the card, which the QR reaches. */
   ol.phases { list-style:none; margin:5pt 0 0; padding:0; counter-reset:ph; }
-  ol.phases li { counter-increment:ph; position:relative; padding:0 0 0 32pt; margin:0 0 4.2pt;
+  /* 3.6pt, not 4.2pt: phase 10 gained the line that says what "keep going"
+     actually means (contraction AND output), which cost exactly one wrapped
+     line — 15px on a sheet that had 14px of spare. The whitespace paid for it
+     rather than the sentence. Re-run verify_poster_pages.mjs after any edit
+     here; it is 6px from a second sheet. */
+  ol.phases li { counter-increment:ph; position:relative; padding:0 0 0 32pt; margin:0 0 3.6pt;
                  break-inside:avoid; page-break-inside:avoid; }
   ol.phases li::before { content:counter(ph); position:absolute; left:0; top:-1.5pt; width:25pt;
                  text-align:right; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
@@ -107,7 +112,14 @@
     <li><div class="act">Close the heart</div><div class="det">Finger first. Then Foley 16 Fr (5&ndash;10 mL, clamp the port) &middot; staples &middot; pledgeted 3-0. <b>Under a coronary, never through.</b></div></li>
     <li><div class="act">Cross over if the right bleeds</div><div class="det">Blood on the <b>right</b> is the reason &mdash; a hard view on the left is not. Mirror it, split the sternum, <b>clamp BOTH mammaries</b>.</div></li>
     <li><div class="act">Aorta &middot; hilum</div><div class="det">Compress the descending aorta against the spine. Bleeding lung &rarr; divide the pulmonary ligament, twist the hilum 180&deg;.</div></li>
-    <li><div class="act">Signs of life?</div><div class="det"><b>Yes</b> &rarr; blood, TXA, calcium, OR or transfer; mammary bleeding <b>will</b> start. <b>No</b> &rarr; stop, note the time, debrief.</div></li>
+    <!-- PERFUSION, NOT "SIGNS OF LIFE". The indication box at the top of this
+         poster uses signs of life correctly — it answers "was this patient
+         recently alive", which is what decides whether to open a chest. This
+         phase asks whether to KEEP GOING, and there the criterion is narrower:
+         contraction that produces output. A pupil response with no cardiac
+         output is not a reason to continue in a hospital with no surgeon.
+         Matches /tca/ step 10 (PERFUSING_YES / PERFUSING_NO). -->
+    <li><div class="act">Perfusing?</div><div class="det"><b>Contraction AND output</b> &mdash; pulse or BP. Not PEA, not a pupil. <b>Yes</b> &rarr; blood, TXA, calcium, OR or transfer; mammary bleeding <b>will</b> start. <b>No</b> &rarr; stop, note the time, debrief.</div></li>
   </ol>
 
   <div class="band">

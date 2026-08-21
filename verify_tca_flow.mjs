@@ -98,7 +98,7 @@ for (const d of ['organize','bleeding','airway','fnt','thor','heart','injured','
 }
 /* No step may advance to itself. */
 const selfLoop = await pg.evaluate(() => 'checked at each render');
-ck('3. the full path reaches the signs-of-life step', /SIGNS OF LIFE/.test(walked[walked.length - 1]), true);
+ck('3. the full path reaches the perfusion check', /KEEP GOING/.test(walked[walked.length - 1]), true);
 ck('3. and passes through the clamshell', walked.some(h => /CLAMSHELL/.test(h)), true);
 
 /* ---- 4. the two transitions that carry clinical weight ---- */
@@ -167,7 +167,7 @@ await open();
   ck('4b. and carries the four-minute clock',
      /by 4 minutes/.test(await pg.textContent('#screen')), true);
   await step('life');
-  ck('4b. and then continues to signs of life', /SIGNS OF LIFE/.test(await head()), true);
+  ck('4b. and then continues to the perfusion check', /KEEP GOING/.test(await head()), true);
 }
 /* Not pregnant goes straight there — the step must not appear for everyone. */
 await open();
@@ -175,25 +175,60 @@ await pg.click('[data-preg="0"]'); await pg.waitForTimeout(150);
 await tap('proceed');
 for (const d of ['organize','bleeding','airway','fnt','thor']) await step(d);
 await step('life');
-ck('4b. not pregnant goes straight to signs of life', /SIGNS OF LIFE/.test(await head()), true);
+ck('4b. not pregnant goes straight to the perfusion check', /KEEP GOING/.test(await head()), true);
 
 /* ---- 5. both endings ---- */
 console.log('\n--- 5. the endings');
-/* Already on the signs-of-life screen from the not-pregnant route above. This
+/* Already on the perfusion-check screen from the not-pregnant route above. This
    used to advance to it a second time, which stopped working the moment that
    route landed here directly — a suite that walks the graph must not also
    assume where it starts. */
-ck('5. signs of life are listed where the question is asked',
-   /cardiac motion/i.test(await pg.textContent('#screen')), true);
+const lifeText = await pg.textContent('#screen');
+
+/* THE CRITERION FOR CONTINUING IS PERFUSION, AND ONLY PERFUSION. The screen used
+   to list the "signs of life" set that decides whether to OPEN a chest —
+   cardiac motion, organized ECG, pupillary response, spontaneous movement — as
+   though it also decided whether to KEEP GOING. It does not. A pupil response
+   with no cardiac output is not a reason to continue a traumatic resuscitation
+   in a hospital with no surgeon; the question here is whether the heart is
+   contracting AND producing output.
+
+   Read from the page's own config (CLAUDE.md, issue #117), so a department that
+   words its termination criterion differently stays green — but the CLINICAL
+   INVARIANT is written out: perfusion is required, and the three lookalikes are
+   named on screen as NOT reasons to continue. A fork must not be able to
+   localize that distinction away. */
+const crit = await pg.evaluate(() => window.SITE || {});
+ck('5. the page exposes its continuation criterion', Array.isArray(crit.perfusingYes), true);
+for (const line of crit.perfusingYes || [])
+  ck(`5. on screen: ${line.slice(0, 42)}…`, lifeText.includes(line), true);
+for (const line of crit.perfusingNo || [])
+  ck(`5. and ruled out: ${line.slice(0, 42)}…`, lifeText.includes(line), true);
+ck('5. the question asked is perfusion, not signs of life',
+   /PERFUSING CARDIAC ACTIVITY/i.test(lifeText) && !/pupillary response/i.test(lifeText), true);
+/* The three that look like life on a monitor. Written out rather than read from
+   config: a fork may reword them, but it must not drop the idea. */
+ck('5. PEA is named as not enough', /\bPEA\b/.test(lifeText), true);
+ck('5. so is fibrillation that moves no blood', /fibrillation/i.test(lifeText), true);
+ck('5. so is a pupil response', /pupil/i.test(lifeText), true);
+/* Contraction alone is not the criterion — a heart can move its walls and move
+   no blood. Read from the YES list ALONE: an earlier version of this check
+   tested the whole screen and passed on a page whose YES list had been reduced
+   to "cardiac motion", because the NOT list happens to contain the word
+   "output". A check that the mutation cannot fail is not a check. */
+const yesAll = (crit.perfusingYes || []).join(' ¶ ');
+ck('5. the continue criterion names contraction', /contract|cardiac motion|motion/i.test(yesAll), true);
+ck('5. and requires output WITH it, not instead of it',
+   /\bAND\b/.test(yesAll) && /(pulse|BP|blood pressure|output|perfus)/i.test(yesAll), true);
 await tap('lifeyes');
-ck('5. signs of life continues the case', await phase(), 'SIGNS OF LIFE');
+ck('5. perfusion continues the case', await phase(), 'PERFUSING');
 ck('5. and offers what to do next', /TXA|MTP/.test(await pg.textContent('#screen')), true);
 await open(); await tap('proceed');
-/* Straight down the no-thoracotomy route: NOT INDICATED skips to signs of life. */
+/* Straight down the no-thoracotomy route: NOT INDICATED skips to the perfusion check. */
 for (const d of ['organize','bleeding','airway','fnt','thor']) await step(d);
 await step('life');
 await tap('lifeno');
-ck('5. no signs of life stops the resuscitation', await phase(), 'STOPPED');
+ck("5. no cardiac output stops the resuscitation", await phase(), "STOPPED");
 /* A time of death is a real time that gets written in a chart and said out
    loud to a room. "0:58 into the case" is not that. Asserted as a wall clock,
    because elapsed is what it used to show and it read as plausible. */

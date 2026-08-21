@@ -10,8 +10,9 @@
 <style>
 /* ===== SITE CONFIG (site-specific — edit to localize) =====
    Colors and type are the design language of the cognitive aid this tool is a
-   port of. The one clinical number on this screen is the arrest window in the
-   first stop criterion; it is ARREST_WINDOW_MIN in the script below. */
+   port of. The clinical values live in the script below: ARREST_WINDOW_MIN (the
+   arrest window in the first stop criterion) and PERFUSING_YES / PERFUSING_NO
+   (what counts as a reason to continue the resuscitation). */
 :root{--bg:#0D1420;--card:#161F2E;--card2:#1D2A3C;--ink:#EAF0F7;--ink2:#8FA0B5;
       --line:rgba(255,255,255,.10);--accent:#2FA372;--accentInk:#fff;--red:#E5484D;
       --gray:#5C6B7E;--blue:#4C8DDA;--green:#3DA35D;--amber:#F0B429;
@@ -125,9 +126,33 @@ a{color:var(--blue)}
    name, a number, or anything typed about a patient — and RESET clears it.
    ========================================================================== */
 /* @proc-icons */
-var VERSION='1.1.0', REVIEWED='2026-08-21';
+var VERSION='1.2.0', REVIEWED='2026-08-21';
 /* The one localizable clinical number on this screen. */
 var ARREST_WINDOW_MIN=10;
+
+/* WHAT COUNTS AS "IT IS WORKING" — the criterion for CONTINUING the
+   resuscitation is organized, perfusing cardiac activity: a heart that is
+   contracting AND producing output. Nothing else.
+
+   This is deliberately narrower than the "signs of life" list that decides
+   whether to open a chest in the first place. That list — pupils, an agonal
+   gasp, organized ECG — answers "was this patient recently alive"; this one
+   answers "is what I am doing working". The two got conflated on this screen,
+   which is how you end up continuing a traumatic resuscitation on a patient
+   with a flicker of pupil response and no cardiac output. In a rural ED with
+   no surgeon and no bypass there is nothing that outcome leads to.
+
+   Localizable (CLAUDE.md rule 2): a department that words its termination
+   criterion differently edits these two lists, not the logic. */
+var PERFUSING_YES=[
+  'Coordinated contraction — on ultrasound, or in the open chest',
+  'AND it is producing output — a pulse you can feel, or a BP you can measure'
+];
+var PERFUSING_NO=[
+  'Organized ECG with no output. That is PEA.',
+  'Fibrillation, or twitching that moves no blood.',
+  'Pupil response, an agonal gasp, a single movement.'
+];
 
 var STOPS=[
   'Lost vitals before '+ARREST_WINDOW_MIN+' minutes ago?',
@@ -397,10 +422,14 @@ function renderStep(){
       '<button class="big" style="background:var(--red)" data-step="thor" data-note="Both thoracostomies done">BOTH SIDES DONE \u2014 LOG IT</button>');
   } else if(st==='thor'){
     h=stepCard('--red','6','CONSIDER OPEN THORACOTOMY','Left anterolateral, above rib 5',
+      /* "Signs of life" is the right phrase HERE and only here: it answers "was
+         this patient recently alive", which is what decides whether to open a
+         chest. Whether to CONTINUE is a different and narrower question —
+         PERFUSING_YES at the top of this file. Do not harmonize the two. */
       'Penetrating torso injury with recent signs of life is the strongest indication.',
       linkRow('thor','Resuscitative thoracotomy card'),
       '<button class="big" style="background:var(--red);min-height:68px;font-size:18px" data-step="heart" data-note="Chest open">CHEST OPEN \u2014 LOG IT</button>'+
-      '<button class="quiet" type="button" data-step="life" data-note="Checking for signs of life">NOT INDICATED \u2014 SKIP TO SIGNS OF LIFE</button>');
+      '<button class="quiet" type="button" data-step="life" data-note="Checking for perfusing cardiac activity">NOT INDICATED \u2014 SKIP TO THE PERFUSION CHECK</button>');
   } else if(st==='heart'){
     h=stepCard('--red','7','DELIVER THE HEART','Open the pericardium, deliver the heart','',
       numbered(['Nick pericardium with scalpel',
@@ -438,8 +467,8 @@ function renderStep(){
         '<div class="eyebrow" style="color:var(--ink2)">HILAR TWIST \u2014 RIGHT LUNG</div>'+
         rows(SHEETS.hilar.l,false)+
       '</div>'+linkRow('clam','Full clamshell card')+linkRow('hilar','Full hilar twist card'),
-      '<button class="big" style="background:var(--accent)" data-step="life" data-note="Checking for signs of life">CONTROLLED \u2014 LOG IT</button>'+
-      '<button class="quiet" type="button" data-step="life" data-note="Checking for signs of life">NOTHING REPAIRABLE</button>');
+      '<button class="big" style="background:var(--accent)" data-step="life" data-note="Checking for perfusing cardiac activity">CONTROLLED \u2014 LOG IT</button>'+
+      '<button class="quiet" type="button" data-step="life" data-note="Checking for perfusing cardiac activity">NOTHING REPAIRABLE</button>');
   } else if(st==='hyst'){
     /* The steps ARE ob-neonatal card 10, transcluded — the same clock, the same
        incision, the same three cord clamps, because they are literally the same
@@ -453,18 +482,30 @@ function renderStep(){
       rows(HYST_STEPS,false)+linkRow('hyst','Full resuscitative hysterotomy card'),
       '<button class="big" style="background:var(--amber);color:#141E2B" data-step="life" data-note="Hysterotomy \u2014 baby delivered">DELIVERED \u2014 LOG IT</button>');
   } else if(st==='life'){
-    h=stepCard('--blue','10','DO YOU HAVE SIGNS OF LIFE?','','',
-      '<div style="font-size:14.5px;line-height:1.55;color:var(--ink);margin:8px 0 12px">'+
-      'Cardiac motion \u00b7 palpable pulse or measurable BP \u00b7 organized ECG activity \u00b7 pupillary response \u00b7 spontaneous movement or respiratory effort.</div>',
-      bigBtn('--green','YES \u2014 SIGNS OF LIFE','TXA \u00b7 calcium \u00b7 MTP \u00b7 post-ROSC care \u00b7 OR or transfer','lifeyes')+
-      bigBtn('--gray','NO SIGNS OF LIFE','Terminate the resuscitation','lifeno'));
+    /* The two lists are drawn as a pair, and the NOT list is not an afterthought
+       \u2014 it is the whole point of the screen. Each of those three is something
+       that looks like life on a monitor and is not a reason to keep cutting. */
+    var yes='', no='';
+    for(var y=0;y<PERFUSING_YES.length;y++)
+      yes+='<div style="display:flex;gap:9px;margin-top:7px"><span style="color:var(--green);font-weight:800">\u2713</span>'+
+           '<span>'+PERFUSING_YES[y]+'</span></div>';
+    for(var n=0;n<PERFUSING_NO.length;n++)
+      no+='<div style="display:flex;gap:9px;margin-top:7px"><span style="color:var(--gray);font-weight:800">\u2715</span>'+
+          '<span style="color:var(--ink2)">'+PERFUSING_NO[n]+'</span></div>';
+    h=stepCard('--blue','10','KEEP GOING?','Is there organized, perfusing cardiac activity?','',
+      '<div style="font-size:14.5px;line-height:1.5;margin:10px 0 0">'+yes+'</div>'+
+      '<div style="margin-top:14px;padding-top:12px;border-top:1px solid var(--line)">'+
+        '<div class="eyebrow" style="color:var(--ink2)">NOT A REASON TO CONTINUE</div>'+
+        '<div style="font-size:14.5px;line-height:1.5">'+no+'</div></div>',
+      bigBtn('--green','YES \u2014 PERFUSING \u00b7 KEEP GOING','TXA \u00b7 calcium \u00b7 MTP \u00b7 post-ROSC care \u00b7 OR or transfer','lifeyes')+
+      bigBtn('--gray','NO CARDIAC OUTPUT','Terminate the resuscitation','lifeno'));
   }
   return h+renderTrail();
 }
 
 function renderLive(){
   return '<div class="card" style="border-color:var(--green)">'+
-    '<div class="eyebrow" style="color:var(--green)">SIGNS OF LIFE \u2014 KEEP GOING</div>'+
+    '<div class="eyebrow" style="color:var(--green)">PERFUSING \u2014 KEEP GOING</div>'+
     '<div class="title">Confirmed at '+S.lifeAt+'</div>'+
     '<button class="linkrow" type="button" data-log="TXA \u2014 1 g IV over 10 min, then 1 g over 8 h">'+
       '<span>TXA \u2014 1 g IV over 10 min, then 1 g over 8 h</span><span style="color:var(--ink2)">LOG</span></button>'+
@@ -521,7 +562,7 @@ function renderSheet(){
 function paint(){
   $('clock').textContent=clock();
   $('dot').style.display = S.phase==='run' ? '' : 'none';
-  $('phase').textContent = S.phase==='decide'?'DECIDE':(S.phase==='run'?'RESUSCITATING':(S.phase==='live'?'SIGNS OF LIFE':'STOPPED'));
+  $('phase').textContent = S.phase==='decide'?'DECIDE':(S.phase==='run'?'RESUSCITATING':(S.phase==='live'?'PERFUSING':'STOPPED'));
   $('themebtn').textContent = S.theme==='dark'?'LIGHT':'DARK';
   $('resetbtn').textContent = S.resetArm?'SURE?':'RESET';
   $('resetbtn').style.background = S.resetArm?'var(--red)':'var(--card)';
@@ -563,8 +604,8 @@ document.addEventListener('click', function(e){
   var a=g.getAttribute('data-go');
   if(a==='proceed'){ S.phase='run'; S.start=Date.now(); S.step='say'; log('TCA declared \u2014 clock started'); paint(); toTop(); return; }
   if(a==='stophere'){ S.phase='stopped'; S.stopAt=wallClock(); log('Not a candidate \u2014 declared'); paint(); toTop(); return; }
-  if(a==='lifeyes'){ S.phase='live'; S.lifeAt=clock(); log('Signs of life \u2014 keep going'); paint(); toTop(); return; }
-  if(a==='lifeno'){ S.phase='stopped'; S.stopAt=wallClock(); log('No signs of life \u2014 resuscitation terminated at '+S.stopAt); paint(); toTop(); return; }
+  if(a==='lifeyes'){ S.phase='live'; S.lifeAt=clock(); log('Organized, perfusing cardiac activity \u2014 keep going'); paint(); toTop(); return; }
+  if(a==='lifeno'){ S.phase='stopped'; S.stopAt=wallClock(); log('No cardiac output \u2014 resuscitation terminated at '+S.stopAt); paint(); toTop(); return; }
   if(a==='back'){ S.phase='run'; S.step='life'; paint(); toTop(); return; }
 });
 
@@ -581,7 +622,8 @@ $('resetbtn').addEventListener('click', function(){
 /* Config-driven verification (CLAUDE.md, issue #117): the sheet table names
    which card each screen borrows from, so the suite asserts against THAT rather
    than against a second list of card ids typed into a test. */
-try{ window.SHEETS = SHEETS; }catch(e){}
+try{ window.SHEETS = SHEETS; window.SITE = {arrestWindowMin:ARREST_WINDOW_MIN, stops:STOPS,
+     perfusingYes:PERFUSING_YES, perfusingNo:PERFUSING_NO}; }catch(e){}
 
 setInterval(function(){ if(S.phase==='run') $('clock').textContent=clock(); }, 500);
 paint();
