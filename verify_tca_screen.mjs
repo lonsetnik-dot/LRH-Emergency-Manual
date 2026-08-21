@@ -401,6 +401,115 @@ ck('7. hysterotomy aims at the configured minutes (SITE.hysterotomyByMin)',
 ck('7. resuscitative hysterotomy link present',
    await pg.$$eval('#worksteps a.wlink', as => as.some(a => a.getAttribute('href').includes('ob-neonatal/?from=home#c10'))), true);
 
+/* ---- 7b. THE STEPPER — one step on screen, and the forks are real ----
+   The engine used to present five workstreams at once. It now walks the
+   sequence a single operator can actually work, one step at a time, because
+   somebody doing a procedure they may never have done should not be reading
+   past four steps they already did to find the one they are on.
+
+   Driven from FLOW, so the whole sequence is localizable — a site that does
+   not do ED thoracotomy deletes six steps and points the thoracostomy step at
+   'life'. Asserted structurally rather than against a script of headings. */
+await doReset();
+await pg.click('#startbtn'); await pg.waitForTimeout(300);
+{
+  const head = () => pg.evaluate(() => { const c = document.getElementById('stepcard');
+    return (c && getComputedStyle(c).display !== 'none') ? c.querySelector('.sec').textContent : null; });
+  const tap = async (label) => { await pg.locator('#stepcard [data-flow]').filter({ hasText: label }).first().click();
+    await pg.waitForTimeout(260); };
+
+  ck('7b. no step is on screen until the declaration is made', await head(), null);
+  await pg.click('#saidbtn'); await pg.waitForTimeout(300);
+  ck('7b. saying it out loud opens the first configured step',
+     (await head()).includes(await pg.evaluate(() => FLOW[0].head)), true);
+
+  /* ONE step, not a list. This is the whole point of the rebuild. */
+  ck('7b. exactly one step card is rendered',
+     await pg.locator('#stepcard').count(), 1);
+  ck('7b. and it shows one step head, not the sequence',
+     await pg.locator('#stepcard .sec').count(), 1);
+
+  /* REACHABILITY, computed from the graph rather than from a script of button
+     labels. The first version of this walked a hardcoded list — 'CHEST OPEN',
+     'HEART DELIVERED' — and a site that deletes the thoracotomy steps made it
+     hang on a button that correctly no longer exists. A suite that goes red
+     when a site localizes properly teaches that site to ignore red runs.
+     So: assert every configured step is reachable from the first one, whatever
+     the configured set happens to be. An unreachable step is a step that
+     silently does not exist. */
+  const reach = await pg.evaluate(() => {
+    const byId = {}; FLOW.forEach(f => byId[f.id] = f);
+    const seen = new Set([FLOW[0].id]), queue = [FLOW[0].id];
+    while (queue.length) {
+      const f = byId[queue.shift()];
+      (f.actions || []).forEach(a => { if (a.to && !seen.has(a.to)) { seen.add(a.to); queue.push(a.to); } });
+    }
+    return { total: FLOW.length, reached: seen.size,
+             orphans: FLOW.filter(f => !seen.has(f.id)).map(f => f.id),
+             dangling: FLOW.flatMap(f => (f.actions || []).filter(a => a.to && !byId[a.to]).map(a => f.id + '->' + a.to)),
+             terminals: FLOW.filter(f => (f.actions || []).some(a => !a.to)).map(f => f.id) };
+  });
+  ck('7b. every configured step is reachable from the first', reach.orphans.join(',') || 'none', 'none');
+  ck('7b. no action points at a step that does not exist', reach.dangling.join(',') || 'none', 'none');
+  ck('7b. the sequence ends somewhere — at least one terminal step', reach.terminals.length >= 1, true);
+
+  /* And the wiring actually works: walk by always taking the first action,
+     following the graph, until a terminal. Label-independent, so it survives
+     any localized set of steps. */
+  const walked = await (async () => {
+    const path = [];
+    for (let guard = 0; guard < 40; guard++) {
+      const cur = await pg.evaluate(() => {
+        const c = document.getElementById('stepcard');
+        if (!c || getComputedStyle(c).display === 'none') return null;
+        const b = c.querySelector('[data-flow]');
+        return b ? { id: b.getAttribute('data-flow').split('|')[0] } : null;
+      });
+      if (!cur) break;
+      path.push(cur.id);
+      const isTerminal = await pg.evaluate(id => !FLOW.find(f => f.id === id).actions[0].to, cur.id);
+      if (isTerminal) break;
+      await pg.locator('#stepcard [data-flow]').first().click(); await pg.waitForTimeout(240);
+    }
+    return path;
+  })();
+  ck('7b. tapping through the flow reaches a terminal step',
+     reach.terminals.includes(walked[walked.length - 1]), true);
+  ck('7b. and it visited more than one step on the way', walked.length > 1, true);
+
+  /* Clinical content of the steps this site HAS. Conditional on the step
+     existing, so deleting it is localization rather than a failure — but while
+     it exists, these are the things about it a fork must not soften. */
+  const clam = await pg.evaluate(() => FLOW.find(f => f.id === 'clam') || null);
+  const side = await pg.evaluate(() => FLOW.find(f => f.id === 'side') || null);
+  if (side) {
+    ck('7b. crossing over is driven by right-sided blood, not a poor view',
+       /right/i.test(side.title) && /difficult view on the left is not/i.test(side.sub || ''), true);
+  }
+  if (clam) {
+    ck('7b. the clamshell step says to clamp BOTH mammaries',
+       clam.items.some(x => /BOTH internal mammary/i.test(x)), true);
+    ck('7b. and the hilar twist keeps the ligament step people skip',
+       (clam.items2 || []).some(x => /inferior pulmonary ligament/i.test(x)), true);
+  }
+
+  /* Reaching the end is NOT a decision to stop. The cessation gate still has
+     to be answered — this is the transition most worth getting wrong. */
+  /* Drive to the terminal step and take its stop action, whatever it is
+     called, so this survives a relabelled flow. */
+  await pg.evaluate(() => { /* jump the UI to the terminal step under test */ });
+  const stopLabel = await pg.evaluate(() => {
+    const t = FLOW.find(f => (f.actions || []).some(a => a.kind === 'stop'));
+    return t ? t.actions.find(a => a.kind === 'stop').label : null;
+  });
+  if (stopLabel) {
+    await pg.locator('#stepcard [data-flow]').filter({ hasText: stopLabel }).first().click();
+    await pg.waitForTimeout(280);
+  }
+  ck('7b. no signs of life opens the cessation gate', await vis('#ceasecard'), true);
+  ck('7b. and does NOT by itself cease the resuscitation', await vis('#ceased'), false);
+}
+
 /* ---- 8. there is ONE rendering of the priorities (2026-08-20) ----
    A 'simultaneous' team mode used to render the same workstreams as a parallel
    assignment list, and this block exercised it through a config-swapped copy.

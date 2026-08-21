@@ -245,6 +245,13 @@ a{color:var(--blue)}  /* text-decoration:none removed: it would have
       <button type="button" id="saidbtn" style="width:100%;margin-top:13px;min-height:64px;border:none;border-radius:12px;background:var(--green);color:#fff;font:800 17px var(--sans);letter-spacing:.02em;cursor:pointer">SAID IT — LOG IT</button>
     </div>
 
+    <!-- ===================== THE STEP (2026-08-20) =====================
+         One step at a time, from FLOW. This is the operating card now: the
+         workstream list below is reference, kept because it carries the
+         weight-routed doses and the full priority set a second pair of hands
+         can work from. -->
+    <div class="card" id="stepcard" data-opcard style="display:none;margin-top:12px;padding:15px;border:2px solid var(--red);border-radius:16px"></div>
+
     <!-- Reversible causes — the whole game. Correct these, not the monitor. -->
     <div class="card" style="margin-top:12px;padding:12px;border:2px solid var(--amber)">
       <div class="sec" style="color:var(--amber)">TREAT THE REVERSIBLE CAUSES — NOT THE MONITOR</div>
@@ -499,6 +506,107 @@ var SITE = {
       in-effect config from the browser console rather than by reading
       source (issues #116/#118). */
 try{ window.SITE = SITE; }catch(e){}
+
+/* ============================ THE FLOW ===================================
+   One step on screen at a time, in the order a single operator can actually
+   work them. This is the shape of the cognitive aid this engine was rebuilt
+   against, and it is a GRAPH rather than a list because three of the steps
+   fork: the heart is injured or it is not, the right chest is bleeding or it
+   is not, there are signs of life or there are not.
+
+   `next` is a step id, never an index, so inserting a step cannot silently
+   re-route a fork. `items` are the numbered sub-steps for a procedure the
+   reader may never have done; `link` opens the full card for the one they
+   want to read properly. Every action lands on the timeline with its time,
+   because the debrief argues about exactly these moments.
+
+   Localizable as a whole: a site that does not do ED thoracotomy deletes
+   thor/heart/close/other/side/clam and points fnt.next at 'life'. =========== */
+var FLOW = [
+ { id:'organize', n:'2', color:'var(--accent)', head:'ORGANIZE',
+   title:'Get organized', sub:'Roles out loud, and stop the bleeding you can see.',
+   items:['Catastrophic external hemorrhage — pressure, tourniquet, pelvic binder',
+          'Name who has ACCESS, AIRWAY, BLOOD — say the names',
+          'Blood in the room before you need it'],
+   links:[{label:'Tourniquet', href:'../procedures/?from=home#c10'},
+          {label:'Pelvic binder', href:'../procedures/?from=home#c09'}],
+   actions:[{label:'ORGANIZED — LOG IT', kind:'go', to:'airway'}] },
+
+ { id:'airway', n:'3', color:'var(--blue)', head:'ADVANCED AIRWAY',
+   title:'iGel or intubate',
+   sub:'Fastest definitive airway wins. Do not pause the rest of the sequence for it.',
+   links:[{label:'SALAD / intubation card', href:'../procedures/?from=home#c15'}],
+   actions:[{label:'AIRWAY IN — LOG IT', kind:'go', to:'fnt'}] },
+
+ { id:'fnt', n:'4', color:'var(--red)', head:'FINGER THORACOSTOMY',
+   title:'Both sides — 5th ICS, anterior axillary line',
+   sub:'Decompresses tension physiology and tells you what the chest holds.',
+   actions:[{label:'BOTH SIDES DONE — LOG IT', kind:'go', to:'thor'}] },
+
+ { id:'thor', n:'5', color:'var(--red)', head:'CONSIDER OPEN THORACOTOMY',
+   title:'Left anterolateral, above rib 5',
+   sub:'Penetrating torso injury with recent signs of life is the strongest indication.',
+   links:[{label:'Resuscitative thoracotomy card', href:'../procedures/?from=home#c02'}],
+   actions:[{label:'CHEST OPEN — LOG IT', kind:'go', to:'heart'},
+            {label:'NOT INDICATED — SKIP TO SIGNS OF LIFE', kind:'quiet', to:'life'}] },
+
+ { id:'heart', n:'6', color:'var(--red)', head:'DELIVER THE HEART',
+   title:'Open the pericardium, deliver the heart',
+   items:['Nick the pericardium with the scalpel',
+          'Longitudinal incision with scissors, ANTERIOR to the phrenic nerve',
+          'Deliver the heart into your hands',
+          'Look at every surface for the wound'],
+   actions:[{label:'HEART DELIVERED — TIMESTAMP', kind:'go', to:'injured'}] },
+
+ { id:'injured', n:'7', color:'var(--amber)', head:'IS THE HEART INJURED?',
+   title:'Look at every surface',
+   actions:[{label:'INJURED — CLOSE IT', kind:'go', to:'close'},
+            {label:'INTACT', kind:'alt', to:'other'}] },
+
+ { id:'close', n:'7', color:'var(--red)', head:'CLOSE THE HEART',
+   title:'Pick the fastest thing that holds',
+   sub:'Finger first — it buys you the time to choose the rest.',
+   links:[{label:'Cardiac repair — Foley, staples, pledgeted suture', href:'../procedures/?from=home#c02'}],
+   actions:[{label:'REPAIRED — LOG IT', kind:'go', to:'other'},
+            {label:'NOT REPAIRABLE', kind:'quiet', to:'life'}] },
+
+ { id:'other', n:'8', color:'var(--amber)', head:'ANY OTHER THORACIC INJURY YOU CAN REPAIR?',
+   title:'Pulmonary laceration, hilar bleeding, great vessel',
+   actions:[{label:'CONTROLLED — LOG IT', kind:'go', to:'side'},
+            {label:'NOTHING REPAIRABLE', kind:'quiet', to:'side'}] },
+
+ { id:'side', n:'8', color:'var(--amber)', head:'THE OTHER SIDE',
+   title:'Was there massive bleeding from the right?',
+   sub:'Check the right thoracostomy and the right chest. Blood there is the reason to extend — a difficult view on the left is not.',
+   actions:[{label:'YES — EXTEND TO CLAMSHELL', kind:'go', to:'clam'},
+            {label:'NO', kind:'alt', to:'life'}] },
+
+ { id:'clam', n:'8', color:'var(--red)', head:'CLAMSHELL THORACOTOMY',
+   title:'Extend across — open both chests',
+   items:['Mirror the incision on the right — same 5th ICS, sternum to the table',
+          'Divide the sternum transversely — heavy shears or a Lebsche knife',
+          'Lift the anterior chest wall up like a book',
+          'Clamp BOTH internal mammary arteries — they are dry until you have a pressure, then they bleed hard',
+          'Pack, then find the source: hilum, great vessels, lung'],
+   sub2:'HILAR TWIST — the bleeding lung',
+   items2:['Divide the inferior pulmonary ligament — the lung will not rotate without it',
+           'Rotate the lung 180\u00b0 around the hilum',
+           'Bleeding and ventilation to that lung both stop — NOTE THE TIME, it is ischemic from now',
+           'Alternative: clamp the whole hilum, or compress it in your hand'],
+   actions:[{label:'CONTROLLED — LOG IT', kind:'go', to:'life'},
+            {label:'NOTHING REPAIRABLE', kind:'quiet', to:'life'}] },
+
+ { id:'life', n:'9', color:'var(--blue)', head:'DO YOU HAVE SIGNS OF LIFE?',
+   title:'Any one of them counts', signs:true,
+   actions:[{label:'YES — SIGNS OF LIFE', kind:'good', to:null},
+            {label:'NO SIGNS OF LIFE', kind:'stop', to:null}] }
+];
+
+/* Exposed for the same two reasons SITE is (issue #117): the suite asserts the
+   sequence against the real thing instead of a re-typed copy, so a site that
+   deletes the thoracotomy steps keeps a green run; and a champion localizing
+   the flow can read it from the console rather than from source. */
+try{ window.FLOW = FLOW; }catch(e){}
 
 /* The five reversible-cause workstreams. Same data drives both modes; only the
    presentation and framing differ. Colors follow the design tokens. The order
@@ -796,6 +904,67 @@ function renderSay(){
   var t=$('sayscript'); if(t) t.textContent = '\u201c' + SITE.declare.script + '\u201d';
 }
 
+/* ======================= THE STEPPER =====================================
+   Renders exactly ONE step from FLOW. Everything else in the sequence is
+   deliberately not on screen: the reason a stepper beats a list here is that
+   a clinician doing a procedure they may never have done should not be
+   reading past four steps they already did to find the one they are on.
+
+   Advance is always an explicit tap on a labelled action, never a timer and
+   never inferred from a checkbox, because every one of these transitions is a
+   claim about what happened to a patient and lands on the timeline as one. */
+function stepById(id){ for(var i=0;i<FLOW.length;i++){ if(FLOW[i].id===id) return FLOW[i]; } return null; }
+
+function renderStep(){
+  var host=$('stepcard'); if(!host) return;
+  var st=stepById(S.step);
+  if(!st){ host.style.display='none'; host.innerHTML=''; return; }
+  host.style.display='';
+  host.style.borderColor=st.color;
+  var h='<div class="sec" style="color:'+st.color+'">STEP '+st.n+' \u00b7 '+st.head+'</div>'+
+        '<div style="font:800 19px var(--sans);line-height:1.3;margin:7px 0 '+(st.sub?'3px':'9px')+'">'+st.title+'</div>';
+  if(st.sub) h+='<div style="font-size:13.5px;color:var(--ink2);line-height:1.45;margin-bottom:9px">'+st.sub+'</div>';
+  if(st.items) h+=numbered(st.items, st.color);
+  if(st.sub2){
+    h+='<div style="margin-top:13px;padding-top:11px;border-top:1px solid var(--line)">'+
+       '<div class="sec" style="color:var(--ink2)">'+st.sub2+'</div>'+numbered(st.items2, st.color)+'</div>';
+  }
+  /* The signs-of-life list belongs ON the step that asks the question — the
+     one moment in the case when somebody has to answer it under pressure. */
+  if(st.signs){
+    var li=''; for(var q=0;q<SITE.signsOfLife.length;q++){ li+='\u00b7 '+SITE.signsOfLife[q]+'<br>'; }
+    h+='<div style="font-size:14px;line-height:1.6;margin:2px 0 4px">'+li+'</div>';
+  }
+  if(st.links){
+    for(var L=0;L<st.links.length;L++){
+      h+='<a href="'+st.links[L].href+'" class="wlink" style="display:flex;align-items:center;justify-content:space-between;'+
+         'margin-top:8px;padding:13px 14px;border-color:var(--line);color:var(--ink);min-height:48px">'+
+         '<span>'+st.links[L].label+'</span><span style="color:var(--ink2)">\u203a</span></a>';
+    }
+  }
+  for(var a=0;a<st.actions.length;a++){
+    var A=st.actions[a], sty;
+    if(A.kind==='go')        sty='border:none;background:'+st.color+';color:#fff;font-weight:800;font-size:17px;min-height:64px';
+    else if(A.kind==='good') sty='border:none;background:var(--green);color:#fff;font-weight:800;font-size:17px;min-height:68px';
+    else if(A.kind==='stop') sty='border:none;background:var(--gray);color:#fff;font-weight:800;font-size:17px;min-height:68px';
+    else if(A.kind==='alt')  sty='border:1px solid var(--line);background:var(--card2);color:var(--ink);font-weight:800;font-size:16px;min-height:60px';
+    else                     sty='border:1px solid var(--line);background:var(--card2);color:var(--ink2);font-weight:700;font-size:14px;min-height:52px';
+    h+='<button type="button" data-flow="'+st.id+'|'+a+'" style="width:100%;margin-top:8px;border-radius:12px;cursor:pointer;'+
+       'font-family:var(--sans);letter-spacing:.02em;'+sty+'">'+A.label+'</button>';
+  }
+  host.innerHTML=h;
+}
+
+function numbered(list, color){
+  var h='<div style="display:grid;gap:8px;margin-top:9px">';
+  for(var i=0;i<list.length;i++){
+    h+='<div style="display:flex;gap:11px;font-size:15px;line-height:1.45">'+
+       '<span class="mono" style="font-weight:700;color:'+color+';flex:none">'+(i+1)+'</span>'+
+       '<span>'+list[i]+'</span></div>';
+  }
+  return h+'</div>';
+}
+
 function renderWork(){
   $('worktitle').textContent = 'WORK THE PRIORITIES IN ORDER — TAP EACH DONE';
   var h='';
@@ -936,7 +1105,7 @@ function planLabel(){
 
 function paint(){
   if(S.phase==='idle') renderGate();
-  if(S.phase!=='idle') renderSay();
+  if(S.phase!=='idle'){ renderSay(); renderStep(); }
   /* --accent is set per theme in CSS (orange = Trauma category); no JS override. */
   paintCaseClock();
   var running = (S.phase==='active');
@@ -1314,12 +1483,34 @@ function wire(){
     var g=e.target.closest ? e.target.closest('[data-stop]') : null;
     if(g){ var gi=g.getAttribute('data-stop'); S.stop[gi]=!S.stop[gi]; paint(); return; }
     if(e.target.closest && e.target.closest('#saidbtn')){
-      S.said=true; log('Declared traumatic cardiac arrest to the room'); paint(); return;
+      S.said=true; S.step=FLOW[0].id;
+      log('Declared traumatic cardiac arrest to the room'); paint(); return;
     }
     if(e.target.closest && e.target.closest('#declarebtn')){
       /* Deliberately does NOT start a case or a clock. Nothing to time and
          nothing to log against a patient — the decision was not to begin. */
       S.declared=true; paint(); return;
+    }
+    var f=e.target.closest ? e.target.closest('[data-flow]') : null;
+    if(f){
+      var parts=f.getAttribute('data-flow').split('|');
+      var st=stepById(parts[0]); if(!st) return;
+      var A=st.actions[+parts[1]];
+      /* Every transition is a claim about what happened to a patient, so it
+         lands on the timeline with its time before the screen changes. */
+      log(st.head + ' \u2014 ' + A.label.replace(/ \u2014 LOG IT| \u2014 TIMESTAMP/,''),
+          A.kind==='stop' ? EV.red : (A.kind==='good' ? EV.green : null));
+      /* Signs of life present is ROSC: hand off to the phase the engine
+         already has, rather than inventing a second post-arrest screen. */
+      if(A.kind==='good'){
+        S.step=null; S.phase='rosc'; S.roscAt=clockNow(); S.ceaseArm=false;
+        log('ROSC — pulse returned; post-resuscitation care', EV.green); paint(); return;
+      }
+      /* No signs of life opens the cessation gate — it does NOT cease. The
+         gate still asks for its two criteria and still needs a confirm tap;
+         reaching the end of the sequence is not by itself a decision to stop. */
+      if(A.kind==='stop'){ S.step=null; S.ceaseArm=true; paint(); return; }
+      S.step = A.to; paint(); return;
     }
     var t=e.target.closest ? e.target.closest('[data-task]') : null;
     if(t){
