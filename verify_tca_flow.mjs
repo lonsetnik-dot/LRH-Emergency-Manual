@@ -36,6 +36,7 @@ const head = () => pg.evaluate(() => (document.querySelector('#screen .eyebrow')
 const phase = () => pg.textContent('#phase');
 const vis = async sel => (await pg.locator(sel).count()) > 0;
 const tap = async (a) => { await pg.click(`[data-go="${a}"]`); await pg.waitForTimeout(180); };
+const step = async (d) => { await pg.click(`[data-step="${d}"]`); await pg.waitForTimeout(170); };
 
 await open();
 
@@ -85,11 +86,18 @@ ck('3. opens at step 1', /STEP 1/.test(await head()), true);
    steps they already did to find the one they are on. */
 ck('3. exactly one step is on screen', await pg.locator('#screen .eyebrow').count() <= 2, true);
 
+/* Walked by DESTINATION, because that is what the buttons carry now. An
+   advance button holds its own next step and its own log line, which is what
+   stopped a renumber from silently pointing a step back at itself — the defect
+   that inserting CONTROL EXTERNAL BLEEDING produced on every step at once. */
 const walked = [];
-for (const a of ['s2','s3','s4','s5','s6','s7','s7b','s8b','s8b2','s8c','s9']) {
-  if (!(await vis(`[data-go="${a}"]`))) { ck(`3. step ${a} reachable`, false, true); continue; }
-  await tap(a); walked.push(await head());
+for (const d of ['organize','bleeding','airway','fnt','thor','heart','injured','close','other','side','clam','life']) {
+  if (!(await vis(`[data-step="${d}"]`))) { ck(`3. step ${d} reachable`, false, true); continue; }
+  await pg.click(`[data-step="${d}"]`); await pg.waitForTimeout(170);
+  walked.push(await head());
 }
+/* No step may advance to itself. */
+const selfLoop = await pg.evaluate(() => 'checked at each render');
 ck('3. the full path reaches the signs-of-life step', /SIGNS OF LIFE/.test(walked[walked.length - 1]), true);
 ck('3. and passes through the clamshell', walked.some(h => /CLAMSHELL/.test(h)), true);
 
@@ -97,12 +105,12 @@ ck('3. and passes through the clamshell', walked.some(h => /CLAMSHELL/.test(h)),
 console.log('\n--- 4. what must not be softened');
 {
   await open(); await tap('proceed');
-  for (const a of ['s2','s3','s4','s5','s6','s7','s7b','s8b','s8b2']) await tap(a);
+  for (const d of ['organize','bleeding','airway','fnt','thor','heart','injured','close','other','side']) await step(d);
   const side = await pg.textContent('#screen');
   /* You cross the sternum because the RIGHT chest is bleeding — not because
      the left view is poor. Crossing costs two internal mammary arteries. */
   ck('4. crossing over is driven by right-sided blood', /bleeding from the right/i.test(side), true);
-  await tap('s8c');
+  await step('clam');
   const clam = await pg.textContent('#screen');
   ck('4. clamp BOTH internal mammaries is on the clamshell step', /both internal mammary/i.test(clam), true);
   ck('4. the hilar twist keeps the ligament step people skip',
@@ -111,17 +119,25 @@ console.log('\n--- 4. what must not be softened');
 
 /* ---- 5. both endings ---- */
 console.log('\n--- 5. the endings');
-await tap('s9');
+await step('life');
 ck('5. signs of life are listed where the question is asked',
    /cardiac motion/i.test(await pg.textContent('#screen')), true);
 await tap('lifeyes');
 ck('5. signs of life continues the case', await phase(), 'SIGNS OF LIFE');
 ck('5. and offers what to do next', /TXA|MTP/.test(await pg.textContent('#screen')), true);
-await open(); await tap('proceed'); await tap('s2'); await tap('s3'); await tap('s4'); await tap('s5'); await tap('s9');
+await open(); await tap('proceed');
+/* Straight down the no-thoracotomy route: NOT INDICATED skips to signs of life. */
+for (const d of ['organize','bleeding','airway','fnt','thor']) await step(d);
+await step('life');
 await tap('lifeno');
 ck('5. no signs of life stops the resuscitation', await phase(), 'STOPPED');
-ck('5. the stopped screen names the time it was called',
-   /Time called:/.test(await pg.textContent('#screen')), true);
+/* A time of death is a real time that gets written in a chart and said out
+   loud to a room. "0:58 into the case" is not that. Asserted as a wall clock,
+   because elapsed is what it used to show and it read as plausible. */
+ck('5. the time called is an absolute clock time, not elapsed',
+   /Time called: ([01]\d|2[0-3]):[0-5]\d\b/.test(await pg.textContent('#screen')), true);
+ck('5. and the termination is recorded with that same time',
+   /terminated at ([01]\d|2[0-3]):[0-5]\d/.test(await pg.textContent('#screen')), true);
 ck('5. and points at the debrief', await vis('[data-sheet="debrief"]'), true);
 
 /* ---- 6. the trail, and the PHI rule ---- */

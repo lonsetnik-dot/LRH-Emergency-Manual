@@ -194,13 +194,21 @@ var SHEETS={
       'One named person owns the airway and one owns the transfusion for the move.',
       'If transferring out: accepting surgeon on the phone, transport with blood, and send the record you just built.']}};
 
-var S={phase:'decide',stops:[false,false,false,false],start:null,step:1,
+var S={phase:'decide',stops:[false,false,false,false],start:null,step:'say',
        events:[],xDone:false,sheet:null,resetArm:false,stopAt:null,lifeAt:null,theme:'dark'};
 
 function $(id){ return document.getElementById(id); }
 function esc(t){ return String(t).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
 function fmt(s){ s=Math.max(0,Math.floor(s)); return Math.floor(s/60)+':'+String(s%60).padStart(2,'0'); }
 function clock(){ return S.start ? fmt((Date.now()-S.start)/1000) : '0:00'; }
+/* A time of death is a real time that gets written in a chart and said out
+   loud to a room — never "58 seconds after we started". The case trail below
+   stays elapsed, because that is what a debrief reasons about; only the moment
+   the resuscitation was called is absolute. */
+function wallClock(){
+  var d=new Date();
+  return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
+}
 function log(label){ S.events.unshift({t:clock(),label:label}); }
 /* Named toTop, not top: `top` is window.top and redeclaring it is a
    SyntaxError that kills the whole script silently. */
@@ -220,8 +228,15 @@ function stepCard(color,n,head,title,sub,body,actions){
     '<div class="title">'+title+'</div>'+
     (sub?'<div class="sub">'+sub+'</div>':'')+(body||'')+actions+'</div>';
 }
+/* act is either a destination step id plus the note to log ("dest|note"), or
+   one of the terminal actions the handler owns (lifeyes / lifeno). Keeping the
+   two distinguishable here is what stopped a renumber from silently pointing a
+   step's advance button back at itself. */
 function bigBtn(color,label,sub,act){
-  return '<button class="big" style="background:var('+color+');text-align:'+(sub?'left':'center')+'" data-go="'+act+'">'+label+
+  var attr;
+  if(act.indexOf('|')>-1){ var q=act.split('|'); attr='data-step="'+q[0]+'" data-note="'+q[1]+'"'; }
+  else attr='data-go="'+act+'"';
+  return '<button class="big" style="background:var('+color+');text-align:'+(sub?'left':'center')+'" '+attr+'>'+label+
     (sub?'<div style="font-size:13px;font-weight:600;opacity:.85;margin-top:4px">'+sub+'</div>':'')+'</button>';
 }
 
@@ -250,68 +265,77 @@ function renderDecide(){
 
 function renderStep(){
   var st=S.step, h='';
-  if(st===1){
+  if(st==='say'){
     h=stepCard('--red','1','STATE IT OUT LOUD','\u201cThis is Traumatic Cardiac Arrest\u201d','',
       '<div style="font-size:16px;font-weight:600;line-height:1.45;color:var(--ink);border-left:3px solid var(--red);padding-left:12px;margin-top:10px;text-wrap:pretty">'+
       '\u201cWe are not doing normal ACLS, we are resuscitating with blood, looking for immediate reversible injuries, then we will stop if we can\u2019t find any\u201d</div>',
-      '<button class="big" style="background:var(--accent)" data-go="s2">SAID IT \u2014 LOG IT</button>');
-  } else if(st===2){
+      '<button class="big" style="background:var(--accent)" data-step="organize" data-note="Declared \u2014 not normal ACLS">SAID IT \u2014 LOG IT</button>');
+  } else if(st==='organize'){
+    /* ORGANIZE is roles only. Controlling the bleeding you can see is its own
+       step below it, because it is a thing somebody does with their hands, not
+       a thing the team agrees on. */
     h='<div class="card" style="border-color:var(--accent)">'+
       '<div class="eyebrow" style="color:var(--accent)">STEP 2 \u00b7 ORGANIZE</div>'+
       '<div class="title">Get Organized</div>'+
-      '<button class="linkrow" type="button" data-x style="border-color:'+(S.xDone?'var(--accent)':'var(--line)')+'">'+
+      '<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:14px">'+
+        '<span class="pill">ACCESS</span><span class="pill">AIRWAY</span><span class="pill">BLOOD/FLUIDS</span>'+
+        '<span class="pill">EQUIPMENT</span><span class="pill">WHAT ELSE?</span></div>'+
+      '<button class="big" style="background:var(--accent)" data-step="bleeding" data-note="Organized">GET ORGANIZED</button></div>';
+  } else if(st==='bleeding'){
+    h='<div class="card" style="border-color:var(--red)">'+
+      '<div class="eyebrow" style="color:var(--red)">STEP 3 \u00b7 CONTROL EXTERNAL BLEEDING</div>'+
+      '<div class="title">Stop what you can see</div>'+
+      '<div class="sub">Pressure, tourniquet, pelvic binder. Blood on the floor is blood you can still keep.</div>'+
+      '<button class="linkrow" type="button" data-x style="border-color:'+(S.xDone?'var(--red)':'var(--line)')+'">'+
         '<span><span style="font-family:var(--mono);font-size:20px;font-weight:700">X</span> '+
         (S.xDone?'Catastrophic haemorrhage controlled \u2713':'Catastrophic haemorrhage \u2014 control it now')+'</span></button>'+
       linkRow('tq','Tourniquet card')+linkRow('binder','Pelvic binder card')+
-      '<button class="big" style="background:var(--accent)" data-go="s3">GET ORGANIZED</button>'+
-      '<div style="display:flex;flex-wrap:wrap;justify-content:center;gap:8px;margin-top:12px">'+
-        '<span class="pill">ACCESS</span><span class="pill">AIRWAY</span><span class="pill">BLOOD/FLUIDS</span>'+
-        '<span class="pill">EQUIPMENT</span><span class="pill">WHAT ELSE?</span></div></div>';
-  } else if(st===3){
-    h=stepCard('--blue','3','ADVANCED AIRWAY','iGel or intubate',
+      '<button class="big" style="background:var(--red)" data-step="airway" data-note="External bleeding controlled">BLEEDING CONTROLLED \u2014 LOG IT</button></div>';
+  } else if(st==='airway'){
+    h=stepCard('--blue','4','ADVANCED AIRWAY','iGel or intubate',
       'Fastest definitive airway wins. Do not pause the rest of the sequence for it.',
       linkRow('airway','SALAD / intubation card'),
-      '<button class="big" style="background:var(--blue)" data-go="s4">AIRWAY IN \u2014 LOG IT</button>');
-  } else if(st===4){
-    h=stepCard('--red','4','FINGER THORACOSTOMY','Both sides \u2014 5th ICS, anterior axillary line',
+      '<button class="big" style="background:var(--blue)" data-step="fnt" data-note="Airway in">AIRWAY IN \u2014 LOG IT</button>');
+  } else if(st==='fnt'){
+    h=stepCard('--red','5','FINGER THORACOSTOMY','Both sides \u2014 5th ICS, anterior axillary line',
       'Decompresses tension physiology and tells you what the chest holds.',
       linkRow('finger','Finger thoracostomy card'),
-      '<button class="big" style="background:var(--red)" data-go="s5">BOTH SIDES DONE \u2014 LOG IT</button>');
-  } else if(st===5){
-    h=stepCard('--red','5','CONSIDER OPEN THORACOTOMY','Left anterolateral, above rib 5',
+      '<button class="big" style="background:var(--red)" data-step="thor" data-note="Both thoracostomies done">BOTH SIDES DONE \u2014 LOG IT</button>');
+  } else if(st==='thor'){
+    h=stepCard('--red','6','CONSIDER OPEN THORACOTOMY','Left anterolateral, above rib 5',
       'Penetrating torso injury with recent signs of life is the strongest indication.',
       linkRow('thor','Resuscitative thoracotomy card'),
-      '<button class="big" style="background:var(--red);min-height:68px;font-size:18px" data-go="s6">CHEST OPEN \u2014 LOG IT</button>'+
-      '<button class="quiet" type="button" data-go="s9">NOT INDICATED \u2014 SKIP TO SIGNS OF LIFE</button>');
-  } else if(st===6){
-    h=stepCard('--red','6','DELIVER THE HEART','Open the pericardium, deliver the heart','',
+      '<button class="big" style="background:var(--red);min-height:68px;font-size:18px" data-step="heart" data-note="Chest open">CHEST OPEN \u2014 LOG IT</button>'+
+      '<button class="quiet" type="button" data-step="life" data-note="Checking for signs of life">NOT INDICATED \u2014 SKIP TO SIGNS OF LIFE</button>');
+  } else if(st==='heart'){
+    h=stepCard('--red','7','DELIVER THE HEART','Open the pericardium, deliver the heart','',
       numbered(['Nick pericardium with scalpel',
                 'Longitudinal incision with scissors anterior to the phrenic nerve',
                 'Deliver the heart into your hands',
                 'Look at the heart for signs of injury']),
-      '<button class="big" style="background:var(--red);min-height:68px;font-size:18px" data-go="s7">HEART DELIVERED \u2014 TIMESTAMP</button>');
-  } else if(st===7){
-    h=stepCard('--amber','7','IS THE HEART INJURED?','Look at every surface','','',
-      bigBtn('--red','INJURED \u2014 CLOSE IT','Foley, staple, or pledgeted suture','s7b')+
-      '<button class="alt" type="button" data-go="s8">HEART INTACT'+
+      '<button class="big" style="background:var(--red);min-height:68px;font-size:18px" data-step="injured" data-note="Heart delivered">HEART DELIVERED \u2014 TIMESTAMP</button>');
+  } else if(st==='injured'){
+    h=stepCard('--amber','8','IS THE HEART INJURED?','Look at every surface','','',
+      bigBtn('--red','INJURED \u2014 CLOSE IT','Foley, staple, or pledgeted suture','close|Heart injured')+
+      '<button class="alt" type="button" data-step="other" data-note="Heart intact">HEART INTACT'+
       '<div style="font-size:13px;font-weight:600;color:var(--ink2);margin-top:4px">Move on to other thoracic injury</div></button>');
-  } else if(st===8){
-    h=stepCard('--red','7','CLOSE THE HEART','Pick the fastest thing that holds','',
+  } else if(st==='close'){
+    h=stepCard('--red','8','CLOSE THE HEART','Pick the fastest thing that holds','',
       linkRow('cardiac','Cardiac repair card \u2014 foley \u00b7 staple \u00b7 pledgeted suture'),
-      '<button class="big" style="background:var(--accent)" data-go="s8b">REPAIRED \u2014 LOG IT</button>'+
-      '<button class="quiet" type="button" data-go="s9">NOT REPAIRABLE</button>');
-  } else if(st===9){
-    h=stepCard('--amber','8','ANY OTHER THORACIC INJURY YOU CAN REPAIR?','Pulmonary laceration, hilar bleeding, great vessel','',
+      '<button class="big" style="background:var(--accent)" data-step="other" data-note="Cardiac wound repaired">REPAIRED \u2014 LOG IT</button>'+
+      '<button class="quiet" type="button" data-step="life" data-note="Cardiac wound not repairable">NOT REPAIRABLE</button>');
+  } else if(st==='other'){
+    h=stepCard('--amber','9','ANY OTHER THORACIC INJURY YOU CAN REPAIR?','Pulmonary laceration, hilar bleeding, great vessel','',
       linkRow('hilar','Hilar twist card'),
-      '<button class="big" style="background:var(--accent)" data-go="s8b2">CONTROLLED \u2014 LOG IT</button>'+
-      '<button class="quiet" type="button" data-go="s8b2">NOTHING REPAIRABLE FOUND</button>');
-  } else if(st===10){
-    h=stepCard('--amber','8','THE OTHER SIDE','Was there massive bleeding from the right?',
+      '<button class="big" style="background:var(--accent)" data-step="side" data-note="Other thoracic injury controlled">CONTROLLED \u2014 LOG IT</button>'+
+      '<button class="quiet" type="button" data-step="side" data-note="Nothing else repairable found">NOTHING REPAIRABLE FOUND</button>');
+  } else if(st==='side'){
+    h=stepCard('--amber','9','THE OTHER SIDE','Was there massive bleeding from the right?',
       'Check the right thoracostomy and the right chest. Blood there is the reason to extend.','',
-      bigBtn('--red','YES \u2014 EXTEND TO CLAMSHELL','Cross the sternum, open the right chest','s8c')+
-      '<button class="alt" type="button" data-go="s9">NO \u2014 RIGHT CHEST DRY</button>');
-  } else if(st===11){
-    h=stepCard('--red','8','CLAMSHELL THORACOTOMY','Extend across \u2014 open both chests','',
+      bigBtn('--red','YES \u2014 EXTEND TO CLAMSHELL','Cross the sternum, open the right chest','clam|Extending to clamshell')+
+      '<button class="alt" type="button" data-step="life" data-note="Right chest dry">NO \u2014 RIGHT CHEST DRY</button>');
+  } else if(st==='clam'){
+    h=stepCard('--red','9','CLAMSHELL THORACOTOMY','Extend across \u2014 open both chests','',
       numbered(['Mirror the incision on the right \u2014 same 5th ICS, sternum to the table',
                 'Divide the sternum transversely with heavy shears or a Lebsche knife',
                 'Lift the anterior chest wall up like a book \u2014 both pleural cavities open',
@@ -324,10 +348,10 @@ function renderStep(){
                   'Bleeding and ventilation to that lung both stop \u2014 note the time, it is ischaemic from now',
                   'Alternative: clamp the whole hilum, or compress it in your hand'])+
       '</div>'+linkRow('hilar','Full hilar twist card'),
-      '<button class="big" style="background:var(--accent)" data-go="s9">CONTROLLED \u2014 LOG IT</button>'+
-      '<button class="quiet" type="button" data-go="s9">NOTHING REPAIRABLE</button>');
-  } else if(st===12){
-    h=stepCard('--blue','9','DO YOU HAVE SIGNS OF LIFE?','','',
+      '<button class="big" style="background:var(--accent)" data-step="life" data-note="Checking for signs of life">CONTROLLED \u2014 LOG IT</button>'+
+      '<button class="quiet" type="button" data-step="life" data-note="Checking for signs of life">NOTHING REPAIRABLE</button>');
+  } else if(st==='life'){
+    h=stepCard('--blue','10','DO YOU HAVE SIGNS OF LIFE?','','',
       '<div style="font-size:14.5px;line-height:1.55;color:var(--ink);margin:8px 0 12px">'+
       'Cardiac motion \u00b7 palpable pulse or measurable BP \u00b7 organized ECG activity \u00b7 pupillary response \u00b7 spontaneous movement or respiratory effort.</div>',
       bigBtn('--green','YES \u2014 SIGNS OF LIFE','TXA \u00b7 calcium \u00b7 MTP \u00b7 post-ROSC care \u00b7 OR or transfer','lifeyes')+
@@ -403,11 +427,6 @@ function paint(){
     'Verify every value against local protocol. Nothing here is stored off this device.';
 }
 
-var STEPMAP={s2:2,s3:3,s4:4,s5:5,s6:6,s7:7,s7b:8,s8:9,s8b:9,s8b2:10,s8c:11,s9:12};
-var LABELS={s2:'Declared \u2014 not normal ACLS',s3:'Organized',s4:'Airway in',s5:'Both thoracostomies done',
-            s6:'Chest open',s7:'Heart delivered',s7b:'Heart injured',s8:'Heart intact',
-            s8b:'Cardiac wound repaired',s8b2:'Other thoracic injury addressed',s8c:'Extending to clamshell',
-            s9:'Checking for signs of life'};
 
 document.addEventListener('click', function(e){
   var t=e.target.closest ? e.target.closest('[data-stop]') : null;
@@ -419,15 +438,20 @@ document.addEventListener('click', function(e){
   if(e.target.closest && e.target.closest('[data-close]')){ S.sheet=null; paint(); return; }
   var lg=e.target.closest ? e.target.closest('[data-log]') : null;
   if(lg){ log(lg.getAttribute('data-log')); paint(); return; }
+  /* An advance carries its own destination and its own log line, so there is
+     no table to keep in step with the screens. Two buttons reach the same step
+     for different reasons (heart intact / cardiac wound repaired) and each
+     still records what actually happened. */
+  var st=e.target.closest ? e.target.closest('[data-step]') : null;
+  if(st){ go(st.getAttribute('data-step'), st.getAttribute('data-note')); return; }
   var g=e.target.closest ? e.target.closest('[data-go]') : null;
   if(!g) return;
   var a=g.getAttribute('data-go');
-  if(a==='proceed'){ S.phase='run'; S.start=Date.now(); S.step=1; log('TCA declared \u2014 clock started'); paint(); toTop(); return; }
-  if(a==='stophere'){ S.phase='stopped'; S.stopAt=clock(); log('Not a candidate \u2014 declared'); paint(); toTop(); return; }
+  if(a==='proceed'){ S.phase='run'; S.start=Date.now(); S.step='say'; log('TCA declared \u2014 clock started'); paint(); toTop(); return; }
+  if(a==='stophere'){ S.phase='stopped'; S.stopAt=wallClock(); log('Not a candidate \u2014 declared'); paint(); toTop(); return; }
   if(a==='lifeyes'){ S.phase='live'; S.lifeAt=clock(); log('Signs of life \u2014 keep going'); paint(); toTop(); return; }
-  if(a==='lifeno'){ S.phase='stopped'; S.stopAt=clock(); log('No signs of life \u2014 resuscitation terminated'); paint(); toTop(); return; }
-  if(a==='back'){ S.phase='run'; S.step=12; paint(); toTop(); return; }
-  if(STEPMAP[a]) go(STEPMAP[a], LABELS[a]);
+  if(a==='lifeno'){ S.phase='stopped'; S.stopAt=wallClock(); log('No signs of life \u2014 resuscitation terminated at '+S.stopAt); paint(); toTop(); return; }
+  if(a==='back'){ S.phase='run'; S.step='life'; paint(); toTop(); return; }
 });
 
 $('themebtn').addEventListener('click', function(){ S.theme = S.theme==='dark'?'light':'dark'; paint(); });
@@ -435,7 +459,7 @@ var ra;
 $('resetbtn').addEventListener('click', function(){
   if(!S.resetArm){ S.resetArm=true; paint(); clearTimeout(ra); ra=setTimeout(function(){ S.resetArm=false; paint(); },2500); return; }
   clearTimeout(ra);
-  S={phase:'decide',stops:[false,false,false,false],start:null,step:1,events:[],xDone:false,
+  S={phase:'decide',stops:[false,false,false,false],start:null,step:'say',events:[],xDone:false,
      sheet:null,resetArm:false,stopAt:null,lifeAt:null,theme:S.theme};
   paint(); toTop();
 });
