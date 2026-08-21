@@ -383,9 +383,10 @@
       </div>
     </div>
     <div class="nca" style="padding:12px 14px 0;">
-      <div style="border:2px solid var(--sev-crit); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--red);">NAME</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">"This is anaphylaxis — epi IM now." Say it out loud.</div></div>
-      <div style="border:2px solid var(--gray); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--ink);">CLAIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">Epi/IM injection · airway watch · IV fluids · antihistamine/steroid adjuncts — assign aloud.</div></div>
-      <div style="border:2px solid var(--blue); background:var(--card2); padding:9px 9px;"><div style="font-family:'IBM Plex Mono',ui-monospace,monospace; font-size:11.5px; font-weight:700; letter-spacing:0.08em; color:var(--blue);">AIM</div><div style="margin-top:4px; font-size:13px; line-height:1.25;">IM epinephrine immediately — everything else is an adjunct. Watch the airway if there's angioedema/stridor.</div></div>
+      <!-- SHARED (golden rule 12): the NAME / CLAIM / AIM framing is written once, on the
+           adult anaphylaxis card in codes/, and pulled in here at build. Edit it THERE.
+           The doses on this card are pediatric and are not shared. -->
+      {{SHARE:codes|anaphylaxis-crm}}
     </div>
 
     <div class="steps" style="padding:14px 14px 0;">

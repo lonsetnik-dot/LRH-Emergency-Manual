@@ -117,6 +117,7 @@ function rowText(html) {
     .trim();
 }
 
+const transcluded = [];
 const procCache = new Map();
 function procSections(tool, card, file) {
   const key = tool + '#' + card;
@@ -180,8 +181,68 @@ function applyProc(text, file) {
       console.error(`build FAILED: ${file} transcludes ${tool}#${card} section "${heading.trim()}" but it has no rows`);
       process.exit(1);
     }
+    /* Recorded so tools_dupscan.mjs can tell BORROWED text from RETYPED text. Without
+       it, every transclusion reads as a duplicate and the finder for golden rule 12
+       would be loudest about the one mechanism that satisfies it. */
+    for (const r of rows) transcluded.push({ from: `${tool}#${card}`, into: file, do: r.do, why: r.why });
     // Emitted into a <script>: escape < so a row can never close the element.
     return JSON.stringify(rows).replace(/</g, '\\u003c');
+  });
+}
+
+/* ---- Shared blocks: {{SHARE:<tool>|<id>}} ---------------------------------
+   The sibling of {{PROC:…}} above, for the other shape the problem takes. PROC
+   moves checklist ROWS into a page that renders them itself, which is what a
+   live engine needs. This moves a block of MARKUP between two static cards,
+   which is what two cards covering the same emergency need — the anaphylaxis
+   NAME / CLAIM / AIM framing was byte-identical on the adult card and the
+   pediatric one, and the cart legend on two tools that carry a cart.
+
+   The owning page marks the element `data-share="<id>"`; the borrowing page
+   writes `{{SHARE:codes|anaphylaxis-crm}}` and gets its inner HTML.
+
+   LIVE MARKUP IS REFUSED, not stripped. A checkbox key, an element id, a
+   tap-to-log button or a relative link is *wrong* once it is on another page —
+   ids collide, `#c12` points at a card that may not exist there, and a log
+   button writes into the wrong tool's timeline. PROC drops them silently
+   because it is rebuilding rows from text; here the markup travels verbatim, so
+   the only safe answer is to fail and make somebody move the hook out of the
+   shared block deliberately. */
+const SHARE_RE = /\{\{SHARE:([a-z][a-z0-9-]*)\|([A-Za-z0-9_-]+)\}\}/g;
+const LIVE_IN_SHARE = /\sdata-k=|<button|\sid=|\sdata-logevent|href="[.#]/;
+const shareCache = new Map();
+function shareBlocks(tool, file) {
+  if (shareCache.has(tool)) return shareCache.get(tool);
+  let src;
+  try { src = readFileSync(join(tool, 'index.html'), 'utf8'); }
+  catch { console.error(`build FAILED: ${file} shares from ${tool}, which does not exist`); process.exit(1); }
+  const out = new Map();
+  const RE = /<([a-z]+)\b[^>]*\sdata-share="([A-Za-z0-9_-]+)"[^>]*>/gi;
+  let m;
+  while ((m = RE.exec(src))) {
+    const end = closeAt(src, m[1], m.index + m[0].length);
+    if (end < 0) continue;
+    out.set(m[2], src.slice(m.index + m[0].length, end));
+  }
+  shareCache.set(tool, out);
+  return out;
+}
+function applyShare(text, file) {
+  return text.replace(SHARE_RE, (m, tool, id) => {
+    const blocks = shareBlocks(tool, file);
+    const html = blocks.get(id);
+    if (html === undefined) {
+      console.error(`build FAILED: ${file} wants ${tool}'s shared block "${id}", which does not exist.`);
+      console.error(`  data-share ids in ${tool}/index.html: ${[...blocks.keys()].join(', ') || '(none)'}`);
+      process.exit(1);
+    }
+    if (LIVE_IN_SHARE.test(html)) {
+      console.error(`build FAILED: ${tool}'s shared block "${id}" carries live markup, which cannot travel.`);
+      console.error('  A data-k, an id, a button or a relative link belongs to the page it is on.');
+      process.exit(1);
+    }
+    transcluded.push({ from: `${tool}@${id}`, into: file, do: rowText(html), why: '' });
+    return html;
   });
 }
 
@@ -217,6 +278,7 @@ const SKIP_ROOT_FILES = new Set([
   'package.json', 'package-lock.json', 'shot.mjs', '.gitignore',
   'sw-template.js', 'sw-register.js',   // build inputs — emitted as dist/sw.js / inlined
   'site.config.json',                   // build input — substituted into every page
+  '.transclusion-manifest.json',     // build OUTPUT for dev tooling — never published
 ]);
 const SKIP_ROOT_EXT = ['.mjs', '.py', '.md'];  // verify scripts, generators, docs
 
@@ -233,7 +295,7 @@ function walk(src, dst, atRoot) {
     if (statSync(s).isDirectory()) walk(s, d, false);
     else if (name.endsWith('.html')) {
       const html = readFileSync(s, 'utf8');
-      writeFileSync(d, applySite(applyProc(injectSW(html.split(MARKER).join(CSS).split(MARKER_LIVE).join(CSS_LIVE).split(MARKER_SHELL).join(CSS_SHELL).split(MARKER_INV).join(INV).split(MARKER_ICONS).join(ICONS).split(MARKER_PROCICONS).join(PROCICONS).split(MARKER_SHELLJS).join(SHELLJS).split(MARKER_GDL).join(GDL)), s), s));
+      writeFileSync(d, applySite(applyShare(applyProc(injectSW(html.split(MARKER).join(CSS).split(MARKER_LIVE).join(CSS_LIVE).split(MARKER_SHELL).join(CSS_SHELL).split(MARKER_INV).join(INV).split(MARKER_ICONS).join(ICONS).split(MARKER_PROCICONS).join(PROCICONS).split(MARKER_SHELLJS).join(SHELLJS).split(MARKER_GDL).join(GDL)), s), s), s));
     } else if (name.endsWith('.webmanifest')) {
       writeFileSync(d, applySite(readFileSync(s, 'utf8'), s));
     } else copyFileSync(s, d);
@@ -355,8 +417,8 @@ let leftover = 0;
     else if (name.endsWith('.html') && (readFileSync(p, 'utf8').includes(MARKER) || readFileSync(p, 'utf8').includes(MARKER_LIVE) || readFileSync(p, 'utf8').includes(MARKER_INV) || readFileSync(p, 'utf8').includes(MARKER_ICONS) || readFileSync(p, 'utf8').includes(MARKER_SHELL) || readFileSync(p, 'utf8').includes(MARKER_PROCICONS) || readFileSync(p, 'utf8').includes(MARKER_SHELLJS) || readFileSync(p, 'utf8').includes(MARKER_GDL))) {
       console.error('!! un-injected marker left in', p); leftover++;
     }
-    else if (/\.(html|webmanifest)$/.test(name) && /\{\{(SITE\.|PROC:)/.test(readFileSync(p, 'utf8'))) {
-      console.error('!! un-substituted {{SITE.*}} / {{PROC:...}} token left in', p); leftover++;
+    else if (/\.(html|webmanifest)$/.test(name) && /\{\{(SITE\.|PROC:|SHARE:)/.test(readFileSync(p, 'utf8'))) {
+      console.error('!! un-substituted {{SITE.*}} / {{PROC:…}} / {{SHARE:…}} token left in', p); leftover++;
     }
   }
 })(OUT);
@@ -378,6 +440,10 @@ if (unregistered.length) {
   console.error('build FAILED: page(s) without the offline registration:', unregistered.join(', '));
   process.exit(1);
 }
+
+/* Not written into ${OUT}: the manifest is dev tooling, and anything inside dist/ is
+   published AND precached by the offline worker. */
+writeFileSync(".transclusion-manifest.json", JSON.stringify(transcluded, null, 1));
 
 console.log(`built ${OUT}/  (design-system.css inlined where marked)`);
 console.log(`offline shell: ${sw.count} assets precached as ${sw.cache}`);

@@ -128,11 +128,132 @@ unclear. If a request conflicts with a rule below, flag it before proceeding.
     backfilled date. `verify_guidelines.mjs` fails when a clinical tool has no
     source row and no written exemption. See **Keeping content current** below.
 
+12. **Content has exactly one home.** Before writing any clinical sentence, kit
+    string, glyph or threshold, **search the repo for it.** If it already
+    exists: transclude it (`{{PROC:…}}`), inject it (`inventory.js`, the icon
+    sets), or link to it. If it genuinely must appear in two places and no
+    mechanism exists, **build the mechanism or flag the gap — never paste.**
+    A card is the home; live engines borrow. Never "fix" a borrowed row in the
+    engine that borrowed it.
+    The scar: CLOSE THE HEART, CLAMSHELL EXTENSION and HILAR TWIST were written
+    into `procedures/` card 02 and then hand-typed into `tca/` **the same day,
+    by the same author, hours apart.** Nothing looked wrong; editing either copy
+    would have left the other saying the old thing. Duplication is not a tidiness
+    problem here — two versions of a procedure is two different instructions to
+    somebody with their hands inside a chest.
+    **What enforces this, and what it cannot see.** Kit strings are held by
+    `verify_kit_consistency.mjs`, drawings by `verify_procedure_icons.mjs` and
+    `verify_vems.mjs`, borrowed card sections by `verify_transclusion.mjs`, and
+    free prose by `verify_no_duplicate_prose.mjs` — a ratchet, per pair of tools,
+    over the *rendered* text of every page. A **new** pair fails; a pair that
+    grows fails; kit contents and anything in `.transclusion-manifest.json` are
+    not counted, or the finder for this rule would be loudest about the one
+    mechanism that satisfies it. Lower a budget whenever a sweep removes
+    duplication, and never raise one without writing in the file what was
+    duplicated and why it had to be.
+    **What it cannot see: two pages that say nearly the same thing differently.**
+    An exact duplicate is harmless today and dangerous later; a pair that has
+    already drifted is dangerous *now* and invisible to this check. A green run
+    means nothing was retyped verbatim — not that the manual agrees with itself.
+
+13. **A test you have not broken is not a test.** Every new assertion gets
+    mutation-tested before delivery: break the behavior it claims to check,
+    watch it go red, restore it. And **never scope a check by the field it is
+    checking** — derive membership from content (a link, a rendered element),
+    never from an optional wiring field, or deleting the field takes the subject
+    out of the check as well as out of the product.
+    The scar: three checks written in one session passed against a page that had
+    been deliberately broken — one scoped itself to the wiring it was verifying,
+    one looped over sheets that declared an optional card id, and one matched the
+    word "output" inside the list of things that do **not** count as output.
+
+14. **When Lon supplies an artifact, port it.** If you are handed a file, a
+    design or a model, the deliverable is *that thing* working in this repo —
+    same words, same flow, same colors. Anything you would add, rename, reorder
+    or improve is a **proposal made before building**, not a discovery made
+    afterwards. Deviating and then explaining is the expensive order.
+    The scar: a 1,660-line TCA "engine" built instead of the aid that was
+    uploaded, then five further commits grafting the real aid onto it, then the
+    whole thing deleted. Two sessions to arrive back at the supplied file.
+
+15. **A medical conflict is a STOP, not a note.** If content you are about to
+    write or change disagrees with an upstream recommendation, **or with
+    anything else in this manual**, do not resolve it and do not pick the
+    plausible option. **Stop and ask, with the options laid out as a choice that
+    can be answered in one tap** (`AskUserQuestion`), each option saying plainly
+    what it means clinically and what would change on screen.
+
+    This is the one place blocking is right. Ordinary ambiguity — wording,
+    layout, naming, how to structure a build step — is a judgment call to make
+    and mention. A disagreement about **what a clinician should do to a patient**
+    is not, and no amount of confident prose from an AI substitutes for the
+    physician whose name the manual carries. Both directions count:
+
+    - **Against an upstream body** — the manual says one thing, the cited
+      guideline says another, or the edition in `guidelines.js` has moved.
+    - **Against itself** — a card, a poster, a label, an engine and a simulation
+      disagree. Now that engines transclude cards (rule 12), a conflict between
+      two screens is often a conflict inside one source, which is worse.
+
+    While waiting: finish everything that does **not** depend on the answer, and
+    say clearly what is parked on it. Afterwards: record the decision where the
+    next person will look — the commit message, and `guidelines.js` when an
+    upstream body is involved. A `reconciled` flag or a `lastVerified` date moves
+    on a clinician's sign-off, never on the strength of the argument that
+    produced it.
+    The scar: `/tca/` step 10 asked "do you have signs of life?" and listed
+    pupillary response and organized ECG — the criteria for deciding whether to
+    *open* a chest, presented as the criteria for deciding whether to *keep
+    going*. It was written confidently, it read plausibly, it survived a full
+    green suite, and it was caught by a clinician reading the screen. The same
+    conflation was on the thoracotomy wall poster.
+
+## Before you build
+
+Four things, in this order, before writing code. Every one of them is cheaper
+than the rework it prevents.
+
+1. **Search for what already exists.** Grep the distinctive phrase you are about
+   to write. Check `inventory.js` for the item, both icon registries for the
+   drawing, `guidelines.js` for the source, and the card folders for the
+   procedure. Rule 12 is unenforceable if this step is skipped, because you
+   cannot reuse what you did not know was there.
+2. **State the shape and wait**, for anything past one card or roughly a hundred
+   lines. Three lines is enough: what it will be, what it replaces, what it
+   leaves alone. A yes costs one message; rule 14's scar cost two sessions.
+3. **Name what you cannot verify.** The repo cannot tell you which branch
+   Netlify serves, whether a deploy is live, or what a clinician meant. Say so
+   in the same breath as the claim, rather than inferring and sounding certain.
+   A whole session was merged to a branch nothing served because a doc sounded
+   confident.
+4. **Version-stamp anything user-visible**, in the same commit. The footer stamp
+   is what makes "am I even looking at my change?" a one-glance question.
+
+## Tempo — running the harness
+
+The suite is slow enough that how it is run matters.
+
+- **Affected suites while iterating, one full run before push.** Re-running all
+  35 for a docs edit buys nothing and costs ten minutes.
+- **Do not `pkill` by pattern.** `pkill -f run-tests.sh` matches the wrapper the
+  command is running inside and kills the shell, which reports as a mystery exit
+  code. Use `TaskStop`, or a distinct port.
+- **Do not override `PORT` to dodge a busy socket.** `verify_offline.mjs` starts
+  its own server on it so it can stop it mid-run, and it will collide with the
+  harness's — a green codebase then reports a failed suite.
+- **A failing suite and a failing assertion are different news.** Say which:
+  "2,344 assertions passed; one suite crashed on a port collision" is the honest
+  form, and it is not the same as a red check.
+
 ## Adding a new tool
 
+0. Run **Before you build** above — search first, state the shape, wait.
 1. Create a folder `<tool>/` with `index.html`, copying an existing tool as the
    skeleton so the shared header/CSS/disclaimer come along.
 2. Fill in the SITE CONFIG block and the tool's logic; cite every threshold.
+   Any procedure that already has a card is **transcluded, not retyped** — see
+   golden rule 12. Any value that disagrees with a guideline or with another
+   part of the manual **stops here and gets asked** — golden rule 15.
 3. Add a card to the landing page (`index.html`) linking to `<tool>/`.
 4. Add a `SEARCH_INDEX` entry for the tool (and for each of its cards) in the
    landing page's `index.html` — see golden rule 9.
@@ -147,6 +268,8 @@ Same obligations as a new tool, minus the new folder — easy to forget the
 search-index step since it lives in a different file than the one you're
 editing:
 
+0. Run **Before you build** above. A new card is the most common place a
+   sentence gets written for the second time — golden rule 12.
 1. Copy an existing card's structure inside the tool's `index.html`; add a
    menu tile if the tool has one.
 2. Add a `SEARCH_INDEX` entry in the landing page's `index.html` pointing to
@@ -155,7 +278,8 @@ editing:
 4. Add the card to its source's `dependents` in `guidelines.js`, or add a row
    if it cites a body not in the registry yet — see golden rule 11.
 5. Cite every clinical value; verify the logic; stamp version + last-reviewed
-   date on the tool file the card lives in.
+   date on the tool file the card lives in. If a value conflicts with an
+   existing card, poster, label or engine, **stop and ask** — golden rule 15.
 
 ## Offline shell (issue #120)
 
@@ -287,10 +411,52 @@ could have told. Four things follow:
   bad token (`BUILD_OUT` sends that build to a temp directory so `dist/` is never
   disturbed) and asserts it fails.
 
-Finger thoracostomy is the one gap: it is a *row* inside the chest-tube card's
-technique list, not a card, so `tca/`'s sheet for it stays hand-written and says
-so. A card of its own is worth having — three tools name the procedure and none
-of them owns it.
+Finger thoracostomy used to be the one gap — a *row* inside the chest-tube card,
+so `tca/`'s sheet for it stayed hand-written. It is now a named section of card
+01, which was **renamed to "Chest Tube / Finger Thoracostomy"** to say what it
+covers. Three things about how, because the shape will come up again:
+
+- **The card anchor did not change.** Four laminated cart labels carry QR codes
+  encoding `procedures/?from=home#c01`. A new card would have needed a new anchor
+  and every printed label would still point at the tube. The section got its own
+  anchor (`#c01-finger`) *underneath* the card's.
+- **Neither user was made to scroll past the other.** The card serves an elective
+  tube (has time, needs the 13-item kit) and a traumatic arrest (has seconds,
+  needs none of it). Rather than reorder for one of them, the one with a clock
+  gets a jump row at the top and the section sits after INDICATIONS.
+- **A card covering two procedures carries two glyphs.** `finger` shares the rib
+  base with `chest` and `pigtail` and differs by its one red idea — the opening
+  and the sweep, not a tube — because illustrating a no-tube procedure with a
+  tube teaches the wrong thing. `verify_procedure_icons.mjs` enumerates that
+  exception in its `ALSO` map rather than allowing extra glyphs generally.
+
+### The sibling mechanism: `{{SHARE:<tool>|<id>}}`
+
+`{{PROC:…}}` moves checklist **rows** into a page that renders them itself, which
+is what a live engine needs. `{{SHARE:…}}` moves a block of **markup** between two
+static cards, which is what two cards covering the same emergency need. The owner
+marks the element `data-share="<id>"`; the borrower writes the token and gets its
+inner HTML. Consumers today:
+
+- `codes/` → `peds/` — the anaphylaxis **NAME / CLAIM / AIM** framing, which was
+  byte-identical on the adult and pediatric cards. The doses were never shared and
+  still differ correctly.
+- `codes/` → `ob-neonatal/` — the cart drawer-legend intro, its greyscale caption,
+  and the case-log PHI note. Each page keeps its **own wrapper**: the PHI note is
+  styled with fixed colors on one and theme variables on the other, and that
+  difference is real.
+
+**Live markup is refused, not stripped.** PROC drops a tap-to-log button because it
+is rebuilding rows from text; SHARE carries markup verbatim, so a `data-k`, an
+`id`, a `<button>` or a relative link **fails the build** — those belong to the page
+they are on, and an `#c12` link means a different card once it has moved.
+
+**Name the block by what it says, and check what you marked.** The first attempt at
+the anaphylaxis block marked the *first* `.nca` on the page — there are eighteen,
+one per card — and would have put **post-arrest** framing on the pediatric
+anaphylaxis card. Nothing about the build complained; `verify_no_duplicate_prose.mjs`
+caught it as an unexplained rise in a pair's count. Anchor on the text, not on the
+Nth element.
 
 ## The case shell's reveal behavior (`case-shell.js`)
 
@@ -558,7 +724,8 @@ test it" is not sufficient close-out for a deliverable.
   again** — the interval is continuous, and `verify_ob_engines.mjs` asserts it.
   Card 07 stays as the reference view.
 - `peds/` — Pediatric Emergencies.
-- `procedures/` — Rare, high-stakes procedure checklists (chest tube,
+- `procedures/` — Rare, high-stakes procedure checklists (chest tube / finger
+  thoracostomy,
   thoracotomy, burr hole, canthotomy, CVC, TVP, tourniquet, JADA, etc.).
 - `trauma/` — Trauma activation and resuscitation pathways.
 - `clinical-pathways/` — Diagnostic and workup pathways: Chest Pain / HEART,

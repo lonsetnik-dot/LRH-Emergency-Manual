@@ -68,10 +68,20 @@ ck('1. the card->figure map covers the procedure cards', Object.keys(cardMap).le
    page; it does not say it rendered on the right card. Anchoring the insert on a CSS class four
    cards did not carry put escharotomy's glyph on the canthotomy heading and thoracotomy's on
    transvenous pacing — a wrong picture over a right title, which is worse than no picture. */
-ck('1. each card carries its OWN glyph and only that one',
+/* A card may carry a SECOND procedure's glyph only when it covers that procedure — card 01 is
+   "Chest Tube / Finger Thoracostomy" and its arrest jump row is drawn with the finger glyph,
+   because illustrating a no-tube procedure with a tube is exactly the mis-teaching this suite
+   exists to stop. Enumerated rather than allowed generally: an unlisted extra glyph is still
+   the escharotomy-on-the-canthotomy-heading defect. */
+const ALSO = { c01: ['finger'] };
+ck('1. each card carries its OWN glyph, plus only the ones it covers',
   Object.entries(cardMap)
-    .filter(([card, key]) => (proc.inCard[card] || []).join(',') !== key)
-    .map(([card, key]) => card + '=' + ((proc.inCard[card] || []).join(',') || 'none') + '(want ' + key + ')')
+    .filter(([card, key]) => {
+      const got = proc.inCard[card] || [];
+      const allowed = new Set([key, ...(ALSO[card] || [])]);
+      return !got.includes(key) || got.some(k => !allowed.has(k));
+    })
+    .map(([card, key]) => card + '=' + ((proc.inCard[card] || []).join(',') || 'none') + '(want ' + key + (ALSO[card] ? ' +' + ALSO[card].join(',') : '') + ')')
     .join(' ') || 'none', 'none');
 ck('1. no glyph landed on an unmapped card',
   Object.entries(proc.inCard)
