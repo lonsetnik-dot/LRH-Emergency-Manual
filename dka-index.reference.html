@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<meta name="theme-color" content="#0D1420" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#EFF2F5" media="(prefers-color-scheme: light)">
+<title>Adult DKA / HHS &middot; {{SITE.title}}</title>
+<style>
+  /* @design-system */
+  /* Page-local: none. This page is entirely the shared vocabulary.
+     It previously carried 24 lines of its own layout, its own .sec/.kbar
+     components, and a third breakpoint. */
+</style>
+</head>
+<body data-page="protocol">
+
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="cairn-back" viewBox="0 0 48 48">
+    <path d="M13 12 L4 24 L13 36" fill="none" stroke="currentColor"
+          stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="31" y="8"  width="13" height="8" rx="4"   fill="currentColor"/>
+    <rect x="27" y="19" width="20" height="8" rx="4"   fill="currentColor"/>
+    <rect x="23" y="30" width="26" height="9" rx="4.5" fill="currentColor" opacity=".75"/>
+  </symbol>
+</svg>
+
+<div class="chrome">
+  <div class="bar">
+    <a class="back" id="backlink" href="../?from=tool" aria-label="Back to pathways">
+      <svg class="cairn" aria-hidden="true" focusable="false"><use href="#cairn-back"></use></svg>
+    </a>
+    <button type="button" class="bar-title" id="toolmenu" aria-haspopup="menu" aria-expanded="false">
+      <span class="t">Adult DKA / HHS</span>
+    </button>
+    <button type="button" class="bar-more" id="printbtn" aria-label="Print this page" data-noprint>&#9113;</button>
+    <button type="button" class="bar-more" id="morebtn" aria-haspopup="menu" aria-expanded="false" aria-label="More actions">&#8943;</button>
+  </div>
+  <div class="strip">
+    <a class="chip" href="#s1">FLUIDS</a>
+    <a class="chip" href="#s2">POTASSIUM</a>
+    <a class="chip" href="#s3">INSULIN</a>
+  </div>
+</div>
+
+<main id="top">
+  <div class="wrap wrap-live">
+
+    <div class="pagehead">
+      <h1>Adult DKA / HHS</h1>
+    </div>
+
+    <div class="note">
+      <b>Overview, not an order set.</b> Your DKA protocol wins where this disagrees.
+    </div>
+
+    <div class="steps">
+
+      <details open class="card" id="s1">
+        <summary class="card-title card-title-crit">Confirm &amp; start fluids</summary>
+        <div class="card-body">
+          <ul class="checklist">
+            <li class="check"><span><b>CONFIRM</b> DKA &mdash; glucose &gt; 250, pH &lt; 7.3 or HCO<sub>3</sub> &lt; 18, ketones present.</span></li>
+            <li class="check"><span><b>SUSPECT</b> HHS instead &mdash; glucose often &gt; 600, minimal ketosis, osmolality &gt; 320.</span></li>
+            <li class="check"><span><b>GIVE</b> 1 L balanced crystalloid (LR) &mdash; first hour.</span></li>
+            <li class="check"><span><b>TITRATE</b> 250&ndash;500 mL/h to perfusion.</span></li>
+            <li class="check"><span><b>FIND</b> the trigger &mdash; infection, ischemia, missed insulin, pump failure.</span></li>
+          </ul>
+        </div>
+      </details>
+
+      <details open class="card" id="s2">
+        <summary class="card-title card-title-caution">Potassium rules</summary>
+        <div class="card-body">
+          <ul class="checklist">
+            <li class="check"><span>K &lt; 3.3 &rarr; <b>HOLD</b> insulin. <b>REPLACE</b> potassium first, 20&ndash;40 mEq/h with monitoring.</span></li>
+            <li class="check"><span>K 3.3&ndash;5.2 &rarr; <b>ADD</b> 20&ndash;30 mEq potassium per litre. <b>START</b> insulin.</span></li>
+            <li class="check"><span>K &gt; 5.2 &rarr; <b>START</b> insulin, no potassium yet. <b>RECHECK</b> K every 2 h.</span></li>
+          </ul>
+          <div class="note note-crit">Insulin before the potassium is known is the error that kills.</div>
+        </div>
+      </details>
+
+      <details open class="card" id="s3">
+        <summary class="card-title">Insulin &amp; the finish line</summary>
+        <div class="card-body">
+          <ul class="checklist">
+            <li class="check"><span><b>START</b> regular insulin 0.1 u/kg/h IV infusion. Bolus optional.</span></li>
+            <li class="check"><span><b>TITRATE</b> to a glucose fall of 50&ndash;75 mg/dL/h.</span></li>
+            <li class="check"><span>Glucose &lt; 250 &rarr; <b>ADD</b> D5 to the fluids. <b>DO NOT</b> stop the insulin.</span></li>
+            <li class="check"><span><b>STOP</b> only once the gap is closed and the patient is eating.</span></li>
+            <li class="check"><span><b>OVERLAP</b> subcutaneous long-acting by 2 h.</span></li>
+            <li class="check"><span>HHS &rarr; <b>CORRECT</b> slower. <b>REPLACE</b> a bigger fluid debt. <b>SUSPECT</b> thrombosis.</span></li>
+            <li class="check"><span>Headache or altered mental status during treatment &rarr; <b>SUSPECT</b> cerebral edema.</span></li>
+          </ul>
+        </div>
+      </details>
+
+    </div>
+
+    <div class="pagefoot">
+      <span class="verstamp"></span>
+      <span><b>Sources:</b> ADA/EASD consensus on the management of hyperglycemic crises in adults (Diabetes Care 2024) and the preceding ADA consensus statement (Diabetes Care 2009;32:1335); SQuID protocol context (Ann Emerg Med 2023) for mild DKA. &mdash; Personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.</span>
+      <a href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20DKA%20pathway">FEEDBACK</a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+/* ===== SITE CONFIG (site-specific — edit to localize) ===== */
+var SITE = { version:"0.2.0", lastReviewed:"2026-08-18", reviewedBy:"Lon Setnik" };
+(function(){
+  document.querySelectorAll('.verstamp').forEach(function(el){
+    el.textContent = 'v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · '+SITE.reviewedBy;
+  });
+
+  document.getElementById('printbtn').addEventListener('click', function(){ window.print(); });
+
+  var more = document.getElementById('morebtn');
+  more.addEventListener('click', function(){
+    var open = more.getAttribute('aria-expanded') === 'true';
+    more.setAttribute('aria-expanded', String(!open));
+    more.textContent = open ? '⋯' : '✕';
+  });
+
+  /* Back control honors ?from=<tool> (verify_backnav.mjs). Cards 28 and 31 were
+     retired from /codes/ and their anchors redirect here with from=codes, so a
+     reader who scanned a printed QR is one tap from where they came from. These
+     pages sit one level deeper than a top-level tool, hence ../../. */
+  var el = document.getElementById('backlink');
+  var m = /[?&]from=([a-z-]+)/.exec(location.search || '');
+  var from = m ? m[1] : '';
+  if (el && from && from !== 'tool' && from !== 'home') {
+    el.setAttribute('href', '../../' + from + '/?from=tool');
+    el.setAttribute('aria-label', 'Back to ' + from);
+  }
+})();
+</script>
+</body>
+</html>

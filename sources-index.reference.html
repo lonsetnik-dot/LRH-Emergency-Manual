@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="theme-color" content="#0D1420" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#EFF2F5" media="(prefers-color-scheme: light)">
+<title>{{SITE.abbrev}} Guideline Sources</title>
+<meta name="apple-mobile-web-app-title" content="Sources">
+<meta name="description" content="Every upstream guideline the manual is written against, the edition each tool follows, when a human last checked it, and which cards move if it changes.">
+<link rel="canonical" href="https://{{SITE.domain}}/sources/">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{{SITE.title}}">
+<meta property="og:title" content="Guideline sources &amp; freshness">
+<meta property="og:description" content="Which guideline each tool follows, which edition, when it was last checked, and what moves if it changes.">
+<meta property="og:url" content="https://{{SITE.domain}}/sources/">
+<meta name="twitter:card" content="summary">
+<style>
+  /* @design-system */
+
+  /* ---------------------------------------------------------------------
+     Page-local: provenance presentation only. Every value below is a token
+     or a named step — no raw hex, no raw px, no third breakpoint.
+     Nine declarations. This file previously carried 47 lines.
+     --------------------------------------------------------------------- */
+  .tally { display:grid; grid-template-columns:repeat(auto-fit,minmax(120px,1fr)); gap:var(--sp-2); }
+  .tally .n { font-size:26px; font-weight:800; line-height:1.05; }
+  .src .deps { display:flex; flex-wrap:wrap; gap:var(--sp-1); margin-top:var(--sp-2); }
+  .src .cite { font-size:12.5px; color:var(--ink2); line-height:1.4; margin:var(--sp-2) 0 0;
+               padding-left:var(--sp-2); border-left:1px solid var(--line); }
+</style>
+</head>
+<body data-page="reference">
+
+<!-- The cairn back mark. One composite glyph on the 0 0 48 48 grid, inheriting
+     ICONOGRAPHY.md's "survives at 16px" rule. currentColor throughout, base
+     stone differentiated by opacity rather than a second hex, so it follows the
+     theme and prints black on white. Replaces three different Unicode arrows
+     across 40 occurrences. In production this is injected at a build marker,
+     never pasted per page. -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="cairn-back" viewBox="0 0 48 48">
+    <path d="M13 12 L4 24 L13 36" fill="none" stroke="currentColor"
+          stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+    <rect x="31" y="8"  width="13" height="8" rx="4"   fill="currentColor"/>
+    <rect x="27" y="19" width="20" height="8" rx="4"   fill="currentColor"/>
+    <rect x="23" y="30" width="26" height="9" rx="4.5" fill="currentColor" opacity=".75"/>
+  </symbol>
+</svg>
+
+<div class="chrome">
+  <div class="bar">
+    <a class="back" href="../?from=tool" aria-label="Back to the manual">
+      <svg class="cairn" aria-hidden="true" focusable="false"><use href="#cairn-back"></use></svg>
+    </a>
+    <!-- Decision 6: eyebrows are deleted. "{{SITE.abbrev}} · EMERGENCY DEPARTMENT"
+         was a decorative kicker, not a breadcrumb — it named the department on a
+         page inside that department's own manual, above a heading that carries
+         its own weight. The crumb slot remains structural and is used where a
+         page has real ancestry to show. Declared in content-exceptions.json. -->
+    <button type="button" class="bar-title" id="toolmenu" aria-haspopup="menu" aria-expanded="false">
+      <span class="t">Guideline sources</span>
+    </button>
+    <button type="button" class="bar-more" id="printbtn" aria-label="Print this page" data-noprint>&#9113;</button>
+    <button type="button" class="bar-more" id="morebtn" aria-haspopup="menu" aria-expanded="false" aria-label="More actions">&#8943;</button>
+  </div>
+  <div class="strip">
+    <a class="chip" href="#tally">FRESHNESS</a>
+    <a class="chip" href="#bysource">BY SOURCE</a>
+    <a class="chip" href="#bytool">BY TOOL</a>
+    <a class="chip" href="#how">HOW IT WORKS</a>
+  </div>
+</div>
+
+<main id="top">
+  <div class="wrap">
+
+    <div class="pagehead">
+      <h1>Guideline sources</h1>
+      <p class="lede">Which guideline each tool follows, which edition, and what moves if it changes.</p>
+    </div>
+
+    <div class="note">
+      &#9888; <b>Provenance, not clinical content.</b> A green chip means the edition was checked on that date &mdash; not that the content is correct. Never a substitute for reading the guideline.
+    </div>
+
+    <div class="steps">
+
+      <details open class="card" id="tally">
+        <summary class="card-title card-title-info">Freshness</summary>
+        <div class="card-body">
+          <p class="card-sub" id="tally-lead"></p>
+          <div class="tally" id="tally-body"></div>
+        </div>
+      </details>
+
+      <details open class="card" id="bysource">
+        <summary class="card-title">By source</summary>
+        <div class="card-body">
+          <div class="filter">
+            <span class="ico" aria-hidden="true">&#8981;</span>
+            <input type="search" id="q" autocomplete="off" spellcheck="false" placeholder="Filter&hellip; e.g. NRP, airway, ACOG, trauma" aria-label="Filter sources">
+          </div>
+          <div class="filter-empty" id="q-empty" hidden>No match &mdash; try a body (&ldquo;DAS&rdquo;), a tool (&ldquo;pph&rdquo;) or a topic (&ldquo;stroke&rdquo;).</div>
+          <div id="src-body"></div>
+        </div>
+      </details>
+
+      <details class="card" id="bytool">
+        <summary class="card-title">By tool</summary>
+        <div class="card-body">
+          <p class="card-sub">The guidelines each tool answers to. A new source needs a row in <span class="mono">guidelines.js</span> first.</p>
+          <div id="tool-body"></div>
+        </div>
+      </details>
+
+      <details class="card" id="how">
+        <summary class="card-title card-title-caution">How this stays current</summary>
+        <div class="card-body">
+          <ul class="checklist">
+            <li class="check"><span><b>Monthly crawl.</b> PubMed search plus a fingerprint of each body&rsquo;s index page. A move opens an issue naming the affected cards.</span></li>
+            <li class="check"><span><b>Review interval.</b> 180 days for high-impact sources, 365 for the rest. Passing it lists the source whether or not anything was detected.</span></li>
+            <li class="check"><span><b>A quiet month means no change detected</b> &mdash; never <i>nothing changed</i>. The crawler shortens the notice; the calendar guarantees the look.</span></li>
+          </ul>
+          <p class="card-sub" style="margin:var(--sp-3) 0 0">Process: <span class="mono">GUIDELINE-WATCH.md</span></p>
+        </div>
+      </details>
+
+    </div>
+
+    <div class="pagefoot">
+      <span class="verstamp"></span>
+      <span>&mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Editions and review dates are recorded by hand and can lag reality; thresholds are assay- and site-specific &mdash; verify locally against the guideline itself.</span>
+      <a href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Guideline%20Sources">FEEDBACK</a>
+    </div>
+
+  </div>
+</main>
+
+<script>
+/* @guidelines */
+</script>
+<script>
+/* ===== SITE CONFIG (site-specific — edit to localize) =====
+   The content of this page is guidelines.js — the registry a fork inherits and
+   then re-dates as its own clinicians review each source. Only presentation
+   lives here. There is no localStorage and no state: this page reads. */
+var SITE = {
+  version: "0.2.0",
+  lastReviewed: "2026-08-13",
+  site: "{{SITE.abbrev}}",
+  /* Windows used for the chips. dueWindow is how many days before the review
+     interval expires a source starts showing DUE SOON, so a review can be
+     scheduled rather than discovered late. */
+  dueWindow: 30
+};
+try{ window.SITE = SITE; }catch(e){}
+
+(function(){
+  "use strict";
+  document.querySelectorAll('.verstamp').forEach(function(el){
+    el.textContent = 'v'+SITE.version+' · last reviewed '+SITE.lastReviewed+' · '+SITE.site;
+  });
+
+  function esc(x){ var d=document.createElement('div'); d.textContent=x==null?'':x; return d.innerHTML; }
+
+  /* Today, local, as YYYY-MM-DD. The page states freshness relative to the day
+     it is opened — a printed copy carries the date it was printed. */
+  var today = (function(){
+    var d = new Date();
+    function p(n){ return (n<10?'0':'')+n; }
+    return d.getFullYear()+'-'+p(d.getMonth()+1)+'-'+p(d.getDate());
+  })();
+
+  var STATUS = {
+    never:   { chip:'pill-none', label:'NEVER VERIFIED' },
+    overdue: { chip:'pill-crit', label:'OVERDUE' },
+    due:     { chip:'pill-warn', label:'DUE SOON' },
+    current: { chip:'pill-ok',   label:'CURRENT' }
+  };
+
+  var sorted = gdlSort(GDL_SOURCES, today);
+
+  /* ---------- tally ---------- */
+  (function(){
+    var n = { never:0, overdue:0, due:0, current:0 };
+    GDL_SOURCES.forEach(function(s){ n[gdlStatus(s, today)]++; });
+    var unrec = GDL_SOURCES.filter(function(s){ return s.reconciled === false; }).length;
+    document.getElementById('tally-body').innerHTML =
+      [['never','NEVER VERIFIED'],['overdue','OVERDUE'],['due','DUE SOON'],['current','CURRENT']]
+      .map(function(p){
+        return '<div class="card" style="padding:var(--sp-3)"><div class="n">'+n[p[0]]+'</div>'
+             + '<div class="section-label">'+p[1]+'</div></div>';
+      }).join('');
+    document.getElementById('tally-lead').innerHTML =
+      GDL_SOURCES.length+' upstream sources, as of '+esc(today)+'.'
+      + (unrec ? ' <b>'+unrec+'</b> of them '+(unrec===1?'carries':'carry')
+                 +' content knowingly not yet reconciled to the edition named — see the red note below.' : '');
+  })();
+
+  /* ---------- by source ---------- */
+  function renderSource(s){
+    var st = gdlStatus(s, today), meta = STATUS[st];
+    var age = s.lastVerified ? gdlDaysBetween(s.lastVerified, today) : null;
+
+    var chips = '<span class="pill '+meta.chip+'">'+meta.label+'</span> '
+      + '<span class="pill">'+s.impact.toUpperCase()+' IMPACT</span>'
+      + (s.reconciled === false ? ' <span class="pill pill-crit">NOT RECONCILED</span>' : '');
+
+    var verified = s.lastVerified
+      ? '<b>'+esc(s.lastVerified)+'</b> ('+age+' days ago; interval '+s.reviewEvery+' days)'
+      : '<b>never</b> — no check recorded through this process';
+
+    var deps = s.dependents.map(function(d){
+      var href = '../'+d.replace('#', '#');
+      return '<a class="chip" href="'+esc(href)+'">'+esc(d)+'</a>';
+    }).join('');
+
+    return '<div class="src check" data-k="'+esc((s.body+' '+s.title+' '+s.edition+' '+s.dependents.join(' ')+' '+s.citation).toLowerCase())+'">'
+      + '<div style="flex:1;min-width:0">'
+      + '<span class="section-label" style="color:var(--teal-tx)">'+esc(s.body)+'</span>'
+      + '<h3 class="row-title" style="margin:2px 0 var(--sp-2)">'+esc(s.title)+'</h3>'
+      + '<div>'+chips+'</div>'
+      + '<p class="row-sub">Manual is written against: <b>'+esc(s.edition)+'</b><br>'
+      +   'Source last checked: '+verified+'<br>'
+      +   'Dependent content last reviewed: <b>'+esc(s.citedSince)+'</b></p>'
+      + (s.reconciled === false && s.reconcileNote
+          ? '<div class="note note-crit" style="margin:var(--sp-2) 0 0"><b>KNOWN GAP.</b> '+esc(s.reconcileNote)+'</div>' : '')
+      + '<div class="deps">'+deps+'</div>'
+      + '<p class="cite">'+esc(s.citation)+'<br>'
+      +   '<a href="'+esc(s.url)+'" rel="noopener noreferrer" target="_blank">'+esc(s.url)+'</a></p>'
+      + '<p class="row-sub"><b>Publication cadence.</b> '+esc(s.cadence)+'</p>'
+      + '</div></div>';
+  }
+  document.getElementById('src-body').innerHTML = sorted.map(renderSource).join('');
+
+  /* ---------- filter ---------- */
+  var q = document.getElementById('q'), qEmpty = document.getElementById('q-empty');
+  q.addEventListener('input', function(){
+    var term = q.value.trim().toLowerCase(), hits = 0;
+    document.querySelectorAll('#src-body .src').forEach(function(el){
+      var show = !term || el.getAttribute('data-k').indexOf(term) >= 0;
+      el.hidden = !show; if (show) hits++;
+    });
+    qEmpty.hidden = !(term && !hits);
+  });
+
+  /* ---------- by tool ---------- */
+  (function(){
+    var paths = {};
+    GDL_SOURCES.forEach(function(s){
+      s.dependents.forEach(function(d){
+        var p = d.split('#')[0];
+        (paths[p] = paths[p] || []).push(s);
+      });
+    });
+    document.getElementById('tool-body').innerHTML = Object.keys(paths).sort().map(function(p){
+      var list = gdlSort(paths[p], today).map(function(s){
+        var st = gdlStatus(s, today);
+        return '<span class="pill '+STATUS[st].chip+'">'+esc(s.body)+'</span>';
+      }).join(' ');
+      /* A row, not an inline link: this is a list of destinations, so each one
+         carries the 44px operational target rather than an 18px text baseline. */
+      return '<a class="row" style="margin-bottom:var(--sp-2)" href="../'+esc(p)+'">'
+        + '<span style="flex:1;min-width:0"><span class="mono row-title">'+esc(p)+'</span>'
+        + '<span class="row-sub">'+list+'</span></span></a>';
+    }).join('');
+  })();
+
+  /* ---------- print: one implementation, listener not inline onclick ------- */
+  document.getElementById('printbtn').addEventListener('click', function(){ window.print(); });
+
+  /* ---------- overflow menu: aria-expanded is exposed, not implied ---------- */
+  var more = document.getElementById('morebtn');
+  more.addEventListener('click', function(){
+    var open = more.getAttribute('aria-expanded') === 'true';
+    more.setAttribute('aria-expanded', String(!open));
+    more.textContent = open ? '⋯' : '✕';
+  });
+})();
+</script>
+</body>
+</html>
