@@ -465,3 +465,413 @@ main { max-width:1400px; margin:0 auto; padding-bottom:56px; }
   .card, .row, .figure, .check, [data-print-block] { break-inside:avoid; }
   a { color:inherit; text-decoration:underline; }
 }
+
+
+/* ===========================================================================
+   8. LEGACY VOCABULARY — v0.1's classes, kept alive while pages migrate.
+
+   REDESIGN-BRIEF.md Phase 0 step 1: the v0.2.0 base sheet is "added alongside
+   the three existing sheets, WHICH KEEP WORKING." v0.2.0 arrived as a
+   replacement instead, and dropped 74 selectors that the eighteen pages
+   carrying /* @design-system *​/ still use — 1,785 .t-ck checklist rows, 1,501
+   .t-div dividers, 577 .t-head card headings, 293 .t-box callouts, 146
+   .lrh-row index rows, the .hdr app bar itself, and the whole body[data-theme]
+   theme mechanism. Every one of those pages rendered unstyled, and four verify
+   suites went red, until this section was restored. See FINDINGS.md [F-01].
+
+   THIS BLOCK ONLY SHRINKS. A page that migrates to the v0.2.0 vocabulary above
+   stops using these classes; when the last consumer of a rule is gone, the rule
+   goes with it. By the end of Phase 5 this section should be empty and the file
+   ends at section 7. Nothing new is ever added here.
+
+   Nothing below was rewritten. It is v0.1 verbatim, so this restoration cannot
+   have changed how any unmigrated page looks — which is the only property that
+   makes it safe to land without reviewing eighteen pages by eye.
+   =========================================================================== */
+
+/* ---- 8a. The theme bridge -------------------------------------------------
+   theme-boot.js writes data-theme on <body> before first paint, and the
+   LIGHT/DARK control on the landing page is what sets it. v0.2.0 moved
+   selection to prefers-color-scheme and deleted these two selectors, so on
+   every card tool the stored preference stopped being read — a clinician who
+   chose light on a dark-OS phone got light in the five live engines (which
+   still read the attribute, from design-system-live.css) and dark in the
+   eighteen card tools. Two screens in one case disagreeing about the palette
+   is exactly the hazard DESIGN.md §7 forbids, and §7 is explicit that the
+   switch to prefers-color-scheme "cannot be done a page at a time" — it is
+   Phase 5b, in one atomic commit across every page.
+
+   So the media query above stays as the no-JS default, and these two rules put
+   the stored preference back on top of it. They are more specific than :root,
+   so an explicit choice always beats the device.
+
+   The light values here are the same 35 declarations as the media query above.
+   That is a duplication, and rule 12 says build the mechanism rather than paste:
+   verify_tokens.mjs asserts the two blocks declare identical values, and fails
+   if they ever drift. Both are deleted together in Phase 5b.
+   --------------------------------------------------------------------------- */
+body[data-theme="light"] {
+  --bg:#EFF2F5; --card:#FFFFFF; --card2:#F4F6F9;
+  --ink:#141E2B; --ink2:#5A6A7D; --line:rgba(15,35,60,.13);
+  --accent:#00693E;
+
+  --red:#C63238; --amber:#B07E13; --blue:#2F6FB5; --green:#1F7F49;
+  --gray:#6B7A8D; --purple:#6C4FA3; --teal:#1F7E7E; --orange:#B4661F;
+
+  --red-tx:#C63238; --amber-tx:#906710; --blue-tx:#2F6FB5; --green-tx:#1F7E49;
+  --gray-tx:#626F81; --purple-tx:#6C4FA3; --teal-tx:#1E7A7A;
+
+  --tint-crit:#fbeaec; --tint-warn:#f8f2e2; --tint-info:#e9eff6;
+  --tint-ok:#e4f2f3; --tint-neutral:#e3e9f0;
+  --on-tint-crit:#9b1c2e; --on-tint-warn:#6b5410; --on-tint-info:#1b4e8a;
+  --on-tint-ok:#1a6b45; --on-tint-neutral:#4d5a6b;
+
+  --note-bg:#fdf3cf; --note-tx:#6b5410; --surface-warn:#FDF3CF;
+  --focus:#0B5FA5; --focus-danger:#A3121B;
+
+  --shadow-menu:0 16px 40px rgba(15,35,60,.18);
+  --shadow-sheet:0 -16px 40px rgba(15,35,60,.18);
+  --shadow-toast:0 12px 30px rgba(15,35,60,.20);
+}
+
+/* And the other direction: a stored DARK preference on a light-OS device.
+   Without this the media query above would win and the stored choice would
+   be ignored in exactly one configuration — the hardest kind to notice.
+   Only the tokens the light block overrides appear here; everything else
+   in :root is theme-independent and must not be restated. */
+body[data-theme="dark"] {
+  --bg:#0D1420; --card:#161F2E; --card2:#1D2A3C;
+  --ink:#EAF0F7; --ink2:#8FA0B5; --line:rgba(255,255,255,.10);
+  --accent:#2FA372; --red:#E5484D; --amber:#F0B429;
+  --blue:#4C8DDA; --green:#3DA35D; --gray:#5C6B7E;
+  --purple:#9B7BD4; --teal:#3AA6A6; --orange:#E08A3C;
+  --red-tx:#E96569; --amber-tx:#F0B429; --blue-tx:#5492DC;
+  --green-tx:#3DA35D; --gray-tx:#8291A3; --purple-tx:#AC91DE;
+  --teal-tx:#3AA6A6; --tint-crit:rgba(229,72,77,.16); --tint-warn:rgba(240,180,41,.14);
+  --tint-info:rgba(76,141,218,.16); --tint-ok:rgba(58,166,166,.16); --tint-neutral:rgba(255,255,255,.07);
+  --on-tint-crit:#F08A8D; --on-tint-warn:#F0CF7A; --on-tint-info:#8FBBEA;
+  --on-tint-ok:#6FD49A; --on-tint-neutral:#C3CDD9; --note-bg:rgba(240,180,41,.12);
+  --note-tx:#f0cf7a; --surface-warn:#3B2F12; --focus:#7FD1FF;
+  --focus-danger:#FF9AA0; --shadow-menu:0 16px 40px rgba(0,0,0,.5); --shadow-sheet:0 -16px 40px rgba(0,0,0,.5);
+  --shadow-toast:0 12px 30px rgba(0,0,0,.45);
+}
+
+/* ---- 8b. The card-interior and chrome vocabulary, v0.1 verbatim ---- */
+
+/* ---- Phase 3 — single sticky chrome bar (replaces the old .lrh-hdr strip +
+     blue nav.bar + section-stripe). One row: back · section label · RESET ·
+     theme, matching arrest/, airway/ and procedures/. ---- */
+  .hdr{position:sticky;top:0;z-index:30;display:flex;align-items:center;gap:10px;
+    padding:calc(9px + env(safe-area-inset-top,0px)) 14px 9px;background:var(--bg);
+    border-bottom:1px solid var(--line)}
+
+.hdr .plabel{flex:1;min-width:0;font-size:12px;font-weight:800;letter-spacing:.12em;color:var(--accent);
+    white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+
+.hdr .ghost{background:var(--card);border:1px solid var(--line);color:var(--ink2);
+    font:700 11px "Helvetica Neue",Helvetica,Arial,sans-serif;letter-spacing:.08em;padding:9px 12px;
+    border-radius:10px;cursor:pointer;min-height:38px;white-space:nowrap;text-decoration:none;
+    display:inline-flex;align-items:center;gap:4px}
+
+.hdr .ghost:hover,.hdr .ghost:focus-visible{color:var(--ink);border-color:var(--accent)}
+
+/* The case clock in the bar. Monospace so the digits do not jitter every second,
+     and tabular width so the bar does not reflow as it goes from 9:59 to 10:00. */
+  .hdr .hdrclock{font-family:"IBM Plex Mono","SF Mono",ui-monospace,Menlo,monospace;
+    font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink);
+    white-space:nowrap;padding:0 2px}
+
+.hdr .hdrclock[hidden]{display:none}
+
+/* The page footer. FEEDBACK used to sit in the bar, competing for the one row a
+     clinician looks at mid-case with the controls that matter there — the clock,
+     the timeline and RESET (issue #219: "leave open spaces for attention"). It is
+     not an emergency affordance; it belongs at the bottom of the page, where
+     somebody who wants to write in is already looking. Screen only: a printed
+     card should not carry a mailto: link. */
+  /* .pagefoot was here in v0.1; section 6 above defines it on the spacing
+     scale and that definition is the one that must win. Dropped. */
+
+.hdr .ghost.danger{color:var(--red-tx)}
+
+.hdr .ghost.danger:hover,.hdr .ghost.danger:focus-visible{color:var(--red-tx);border-color:var(--red)}
+
+/* Bare links had no rule at all, so any link a card author did not style
+     fell back to the UA default #0000EE — 1.8:1 on --card in dark. Component
+     rules (.lrh-row, .logit, .shelltele) all set their own colour and win on
+     specificity, so this only catches the ones nobody styled. */
+  /* a{color:var(--blue-tx)} was here; section 2 above declares it. Dropped. */
+
+/* ---- step 2 — the card-selection menu is this tool's "category index"
+     (DESIGN_LANGUAGE.md section 5): same themed-wrapper/row pattern as the
+     home hub, clinical-pathways index, codes/index.html, and peds/index.html.
+     Card content below the menu (article#c01 etc.) is untouched — step 3/4
+     scope. */
+  .lrh-menuwrap{background:var(--bg);padding:8px 14px 26px}
+
+.lrh-menuwrap .inner{max-width:1400px;margin:0 auto}
+
+.lrh-startnew-btn{margin-top:10px;min-height:44px;padding:0 16px;background:var(--card2);
+    color:var(--ink);border:2px solid var(--line);font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+    font-size:12px;font-weight:700;letter-spacing:.08em;cursor:pointer;border-radius:10px}
+
+.lrh-startnew-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+.lrh-mono{font-family:ui-monospace,"SF Mono",Menlo,"JetBrains Mono",monospace}
+
+.lrh-row{display:flex;align-items:center;gap:12px;text-decoration:none;color:var(--ink);
+    background:var(--card);border:1px solid var(--line);border-left:4px solid var(--cc,var(--accent));
+    border-radius:12px;padding:14px;min-height:56px;cursor:pointer}
+
+.lrh-row .n{display:none;font-size:15px;font-weight:700;color:var(--cc,var(--accent));flex:none;width:24px}
+
+.lrh-row .t{font-size:16.5px;font-weight:700;line-height:1.25}
+
+.lrh-row .spacer{flex:1}
+
+.lrh-row .tag{font-size:10.5px;font-weight:700;letter-spacing:.06em;color:var(--ink2);white-space:nowrap;flex:none}
+
+.lrh-row:hover, .lrh-row:focus-visible{color:var(--ink)}
+
+.lrh-filter{display:flex;gap:8px;align-items:center;background:var(--card);border:1px solid var(--line);
+    border-radius:14px;padding:4px 6px 4px 14px;margin:0 2px 14px}
+
+.lrh-filter .ico{color:var(--ink2);font-size:16px;flex:none}
+
+.lrh-filter input{flex:1;background:none;border:none;color:var(--ink);padding:13px 4px;font-size:16px;outline:none;font-family:inherit;-webkit-appearance:none}
+
+/* ---- Focus is a first-class state (ACCESSIBILITY.md §8). The input keeps its
+     own outline suppressed so the ring can sit on the rounded pill rather than
+     inside it; focus is never removed without a replacement. --accent clears 3:1
+     on --bg/--card/--card2 in both themes, so the ring reads wherever it lands. ---- */
+  .lrh-filter:focus-within{outline:2px solid var(--accent);outline-offset:2px;border-color:var(--accent)}
+
+.hdr .ghost:focus-visible,.lrh-row:focus-visible,.logit:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+
+.hdr .ghost.danger:focus-visible{outline-color:var(--red)}
+
+.lrh-filter input::-webkit-search-cancel-button{-webkit-appearance:none}
+
+.lrh-filter-empty{margin:0 2px 14px;padding:12px 14px;color:var(--ink2);font-size:.88rem;background:var(--card);
+    border:1px solid var(--line);border-radius:14px}
+
+.lrh-filter-empty[hidden]{display:none}
+
+/* ===== Phase 4 — card-interior component classes. The card bodies were
+     legacy inline-hardcoded colors (authored before the token system); these
+     token-based classes replace the repeated inline styles so the content is
+     theme-aware and a fork re-skins in one place. ===== */
+  /* A value that has not been folded into its action line yet (issue #216). data-ref was
+     always the exception where a real number lived in the second tier; with the tier gone
+     these are SHOWN, never hidden, until each one is merged into the action above it. */
+  .t-why[data-ref]{display:block;margin-top:4px;font-size:13px;line-height:1.45;color:var(--ink2);font-style:normal}
+
+.t-ck{width:20px;height:20px;margin:2px 0 0;accent-color:var(--accent);flex:none}
+
+.t-div{border-top:1px solid var(--line)}
+
+/* 320px reflow (ACCESSIBILITY.md §4) — clinical prose is full of long
+     unbreakable tokens: "JVD/crackles/edema/hepatomegaly", drug names joined by
+     slashes, URLs, "sepsis-associated". One of them pushed /codes/ 6px past a
+     320px viewport, which is a page-level horizontal scroll on the narrowest
+     phone this manual supports. Breaking inside a word is ugly; a checklist a
+     clinician has to scroll sideways to read is worse. Scoped to the checklist
+     row's text span, which is where the prose lives, so it cannot reflow a
+     dose, a table, or a figure. */
+  .t-div label > span{overflow-wrap:anywhere}
+
+/* Rounded corners on every interior panel, to match the bar/menu radius.
+     overflow:hidden clips the colored header fill to the rounded top corners. */
+  .t-box-crit,.t-box-caution,.t-box-info,.t-box-neutral{border-radius:12px;overflow:hidden}
+
+.t-box-crit{border:2px solid var(--sev-crit)}
+
+.t-box-caution{border:2px solid var(--sev-caution)}
+
+.t-box-info{border:2px solid var(--sev-info)}
+
+.t-box-neutral{border:2px solid var(--gray)}
+
+.t-head{color:var(--on-sev);padding:10px 12px;font-size:14px;font-weight:700;letter-spacing:.03em;cursor:pointer;list-style:none}
+
+.t-head-crit{background:var(--sev-crit)}
+
+.t-head-caution{background:var(--sev-caution)}
+
+.t-head-info{background:var(--sev-info)}
+
+.t-head-neutral{background:var(--sev-neutral)}
+
+/* Used by simulations/, conversations/, procedures/ and equipment-readiness/,
+     which each reached for var(--green)/var(--teal) — the bright accents, which
+     leave white at 3.16:1 and 2.90:1. equipment-readiness/ had no rule at all, so
+     its white heading sat straight on --bg. Same shape as the other fills. */
+  .t-head-green{background:var(--sev-ok)}
+
+.t-head-teal{background:var(--sev-teal)}
+
+.t-sub{padding:16px 14px 6px;font-size:12.5px;line-height:1.4;color:var(--ink2)}
+
+.t-foot{padding:0 14px 20px;font-size:12px;color:var(--ink2)}
+
+.t-note2{margin-top:2px;font-size:12.5px;color:var(--ink2)}
+
+.t-mono-r{font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;font-size:11px;letter-spacing:.08em;color:var(--ink2);text-align:right}
+
+.t-mono-n{font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;color:var(--ink);font-size:16px;margin-right:8px}
+
+/* ---- Two-tier checklist rows: the ACTION is always on screen, the reasoning is one
+     tap away. An emergency manual is read by someone who cannot read — glancing, mid-task,
+     with their hands busy. The rows carried the action and its justification in one
+     paragraph (median 133 characters, 596 of them over 200), so the thing to DO was buried
+     in the thing to KNOW.
+
+     The .t-why tier was removed in issue #216. What remains below is the pending-value
+     rule: a row whose number has not been folded into its action yet is SHOWN, never hidden.
+     disagreements, edge cases. Hidden by default, revealed for the whole tool by the WHY
+     control in the header, and ALWAYS printed — a printed card is a reference read at a
+     desk, not a screen read during a code, and it should carry everything.
+
+     Nothing is deleted by this. If a value is needed to perform the step it belongs in the
+     action, not in here; verify_checklist_clarity.mjs enforces that. ---- */
+
+  .t-localize{margin:14px 14px 0;border:2px solid var(--sev-caution);background:var(--note-bg);color:var(--note-tx);padding:11px 14px;font-size:13px;line-height:1.4;border-radius:12px}
+
+/* Sign-off bar — what replaces "DRAFT — NOT CLINICALLY REVIEWED" once a clinician has
+     actually reviewed a card (crash-card review, 2026-08-17/18). Deliberately NOT a silent
+     deletion: the honest answer to "when did anyone last check this is still true" is a date
+     and a name, the same distinction guidelines.js draws between lastVerified:null and a real
+     date. Calm styling — hairline border, no warning glyph — so it reads as provenance rather
+     than an alarm, while reusing the note-bg/note-tx pair whose contrast verify_accessibility
+     already checks in both themes. */
+  .reviewedbar{margin:14px 14px 0;border:1px solid var(--line);background:var(--note-bg);color:var(--note-tx);padding:10px 14px;font-size:12.5px;line-height:1.45;border-radius:12px}
+
+.reviewedbar a{color:var(--note-tx)}
+
+.t-notebtn{flex:none;min-height:32px;padding:0 10px;background:none;border:1px solid var(--note-tx);color:var(--note-tx);font:inherit;font-weight:700;letter-spacing:.04em;cursor:pointer}
+
+/* ---- Issue #107: the square boxes inside the rounded ones ----------------
+     The card shells and the .t-box-* panels above are rounded rectangles, but
+     across codes/, peds/ and ob-neonatal/ roughly seventy interior blocks are
+     written with an inline `border:2px solid var(--…)` and no radius, so they
+     render as hard-cornered boxes sitting inside rounded ones. That is what Lon
+     is seeing.
+
+     Matching the inline pattern rather than hand-editing seventy declarations
+     is deliberate: the alternative is editing them all now and editing every
+     new one forever, and the next person writing a callout will reach for the
+     same inline border. Nothing here fights the inline style — inline sets the
+     border, never the radius, so this rule has nothing to override.
+
+     Scoped inside .steps and article, which is where the on-screen card body
+     lives. That keeps it away from the print artifacts: a laminated drawer
+     label or a VEMS equipment card is guillotined square, and a rounded corner
+     on paper would be wrong. */
+  .steps [style*="border:2px solid"], article [style*="border:2px solid"], #cart [style*="border:2px solid"],
+  .steps [style*="border: 2px solid"], article [style*="border: 2px solid"], #cart [style*="border: 2px solid"],
+  .steps [style*="border:2px dashed"], article [style*="border:2px dashed"], #cart [style*="border:2px dashed"],
+  .steps [style*="border: 2px dashed"], article [style*="border: 2px dashed"], #cart [style*="border: 2px dashed"]{
+    border-radius:12px}
+
+/* A <details> whose <summary> carries a colored fill needs the clip, or the
+     header's background paints over the rounded top corners. */
+  .steps details[style*="border:2px solid"], article details[style*="border:2px solid"], #cart details[style*="border:2px solid"],
+  .steps details[style*="border: 2px solid"], article details[style*="border: 2px solid"], #cart details[style*="border: 2px solid"]{
+    overflow:hidden}
+
+/* ---- Issue #71: a link to a procedure is underlined --------------------
+     The card tools set text-decoration:none broadly for the menu rows and the
+     drawer badges, which swept up genuine prose links with them. A link INTO
+     the procedures tool is a link to a procedure wherever it is written, so it
+     is underlined here rather than at each of the ~30 call sites.
+     The companion half of #71 — logging is a round button saying "LOG IT" —
+     lives in design-system-live.css, because every logging control in the
+     manual is in one of the six live engines.
+
+     ONE DELIBERATE EXCEPTION. A few procedure links are written as bordered
+     chips that set text-decoration:none inline. Inline wins over this rule, so
+     they keep the chip look — and that is correct rather than a miss: a
+     bordered pill is already unmistakably a navigation control, and an
+     underline inside one reads as a rendering fault. The underline is for
+     PROSE links, where a reader otherwise cannot tell "this records something"
+     from "this takes you somewhere". verify_design_language.mjs pins both
+     halves so neither drifts. */
+  /* ---- Prose navigation is UNDERLINED. Everywhere, not just procedure links.
+     (Revised 2026-08-18 on the clinician's direction; supersedes the narrower
+     rule that underlined only a[href*="procedures/"].)
+
+     The distinction a reader must make mid-code is NAVIGATE vs RECORD, not
+     "procedure link vs other link" — nobody triaging a sentence asks which
+     tool the destination lives in. Color alone was carrying that job for
+     cross-tool and in-card links, which also fails WCAG 1.4.1 (use of color)
+     and is invisible in the manual's high-contrast dark ground.
+
+     So: any link inside card/reference CONTENT is underlined, and every
+     chrome control and every logging pill explicitly is not. Those two rules
+     together are what make the underline mean something — the idiom is
+     "underline = this takes you somewhere", and its opposite is the round
+     LOG IT pill (DESIGN-SYSTEM.md §7), never a bare link.
+
+     Bordered chips that set text-decoration:none inline keep the chip look:
+     inline wins, and a pill is already unmistakably a navigation control. ---- */
+  article a, .steps a, .nca a, .t-sub a, .t-note2 a, .t-localize a, .accb a,
+  .lrh-idx-sub a, .t-foot a{
+    text-decoration:underline; text-underline-offset:2px; text-decoration-thickness:1.5px}
+
+/* ---- LOG IT pill (issue #71 idiom; DESIGN-SYSTEM.md §7) ------------------
+     RECORDS an event with the time it was tapped. Deliberately unmistakable
+     as a control rather than prose: filled, bordered, mono, never underlined.
+     Sits inline at the end of the checklist item it belongs to, so the thing
+     being recorded and the control that records it are the same sentence —
+     a clinician mid-procedure should not have to hunt a panel.
+     .logged is the after state: the wall time it recorded rides ON the
+     button, which is the confirmation the person who pressed it needs. */
+  /* Every logging control is a pill, not just the .logit ones. The rule that
+     was here matched [data-log] only — an attribute no tool actually uses —
+     so the 29 real data-logevent controls in the card tools rendered as 12px
+     rectangles and DESIGN-SYSTEM.md §7's "the pill shape means this is now
+     in the record" was true nowhere a clinician logs a drug. */
+  /* article [data-logevent] matches the blanket rounded-cards rule above
+     ([style*="border:2px solid"], 0-1-1) — these buttons carry an inline
+     2px border, so a bare [data-logevent] at 0-1-0 loses to it and the pill
+     came out a 12px rectangle. Same specificity, declared later, wins. */
+  article [data-log],article [data-logevent],[data-log],[data-logevent]{border-radius:999px}
+
+.logit{display:inline-flex; align-items:center; gap:6px; min-height:36px; margin:6px 0 0;
+    padding:6px 12px; border-radius:999px; background:var(--card2); color:var(--ink);
+    border:1.5px solid var(--ink2); cursor:pointer; white-space:nowrap;
+    font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace;
+    font-size:11.5px; font-weight:700; letter-spacing:0.06em; text-decoration:none}
+
+.logit:hover,.logit:focus-visible{border-color:var(--accent); color:var(--accent)}
+
+.logit.logged{background:rgba(61,163,93,.16); border-color:var(--green); color:var(--green-tx)}
+
+.logit .logstamp{font-weight:800}
+
+/* A critical step's pill reads red until it is recorded, because the missing
+     time on these is the one a debrief asks about. */
+  .logit.crit{border-color:var(--red); color:var(--red-tx)}
+
+.logit.crit.logged{border-color:var(--green); color:var(--green-tx)}
+/* ---- 8c. The underline idiom's other half --------------------------------
+   Restored from v0.1. The rule above (article a, .steps a, …) underlines prose
+   links; this one says what is NOT prose. Without it the browser's own default
+   underlines every menu row and back link, and verify_design_language.mjs went
+   red on eight pages — the idiom "underline means this takes you somewhere"
+   stops carrying information the moment a control wears one too.
+   .btn and .chip are v0.2.0 classes and already set this; they are named here
+   because the v0.1 rule named them and this section is verbatim. ---- */
+.lrh-row, .shellmenurow, .ghost, .logit, .btn, .shellback, .shelltool,
+.lrh-startnew-btn, .chip, .shellweight, .acch { text-decoration:none }
+
+/* ---- 8d. Print, for the legacy chrome ------------------------------------
+   Section 7 hides .chrome / .filter / .pagefoot — the v0.2.0 names. The
+   eighteen unmigrated pages wear .hdr, .lrh-filter and .lrh-menuwrap instead,
+   and a poster or a card printed from one of them would otherwise carry a
+   sticky app bar and a search box onto the paper. ---- */
+@media print {
+  .hdr, .lrh-filter, .lrh-filter-empty, .lrh-menuwrap, .reviewedbar { display:none !important }
+  .logit { display:none }
+  .lrh-row, .t-ck, .t-box-crit, .t-box-caution, .t-box-info, .t-box-neutral { break-inside:avoid }
+}

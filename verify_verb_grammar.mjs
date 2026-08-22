@@ -16,6 +16,7 @@
      7  a logged row is written in the past tense
 
    Usage: node verify_verb_grammar.mjs <file|dir> [...]
+          node verify_verb_grammar.mjs            (dist/, gated to migrated pages)
    =========================================================================== */
 
 import { readFileSync, readdirSync, statSync } from 'node:fs';
@@ -128,6 +129,8 @@ function checkFile(file, html, fail) {
 }
 
 /* --- run ------------------------------------------------------------------ */
+function statSyncSafe(p) { try { return statSync(p); } catch { return null; } }
+
 function walk(p, out = []) {
   if (statSync(p).isDirectory()) {
     for (const n of readdirSync(p)) if (n !== '.git' && n !== 'node_modules') walk(join(p, n), out);
@@ -135,11 +138,62 @@ function walk(p, out = []) {
   return out;
 }
 
-const targets = process.argv.slice(2).flatMap(p => walk(p));
-if (!targets.length) { console.error('usage: verify_verb_grammar.mjs <file|dir> [...]'); process.exit(2); }
+/* --- what gets scanned ----------------------------------------------------
+
+   With explicit arguments this scans exactly what it is given, unchanged.
+
+   With none — which is how run-tests.sh invokes every verify_*.mjs — it scans
+   the built dist/, GATED TO MIGRATED PAGES. That gate matters in both
+   directions and neither is obvious:
+
+   1. Without it, the suite exited 2 asking for arguments and the harness
+      reported `!! FAILED` on a healthy repo. (FINDINGS.md [F-05].)
+   2. With a naive "scan everything" it would have been WORSE than failing: it
+      matches <li class="check">, the v0.2.0 row, and today every row in the
+      manual is a .t-ck. Zero rows found, zero problems, "PASSED" — a suite
+      that cannot fail, printing green over 1,785 unexamined rows.
+
+   So membership is derived from the rendered markup rather than declared: a
+   page is in scope once it carries the new checklist container or a new row.
+   A page that has the container and no rows FAILS, because that is a migration
+   that dropped its content. And the gate's width is printed on every run, so
+   "0 of 39" is visible rather than implied — REDESIGN-BRIEF.md's "land them
+   gated to migrated paths, and widen the gate as pages migrate."
+   -------------------------------------------------------------------------- */
+const explicit = process.argv.slice(2);
+const MIGRATED = /class="checklist"|<li class="check"/;
+let gated = false, scanned = 0;
+let targets;
+if (explicit.length) {
+  targets = explicit.flatMap(p => walk(p));
+  if (!targets.length) { console.error('usage: verify_verb_grammar.mjs <file|dir> [...]'); process.exit(2); }
+} else {
+  if (!statSyncSafe('dist')) {
+    console.error('verb grammar: dist/ is missing. Run node build.mjs first.');
+    process.exit(1);
+  }
+  gated = true;
+  const all = walk('dist');
+  scanned = all.length;
+  targets = all.filter(f => MIGRATED.test(readFileSync(f, 'utf8')));
+  console.log(`verb grammar: ${targets.length} of ${scanned} built page(s) carry the v0.2.0 checklist vocabulary.`);
+  if (!targets.length) {
+    console.log('GATE OPEN, NOTHING INSIDE IT — no page has migrated yet, so this suite');
+    console.log('asserts nothing today. It bites the first page that grows a .checklist.');
+    process.exit(0);
+  }
+}
 
 const problems = [];
-for (const f of targets) checkFile(f, readFileSync(f, 'utf8'), m => problems.push(m));
+for (const f of targets) {
+  const html = readFileSync(f, 'utf8');
+  /* A page that declares the container and renders no rows is a migration that
+     lost its content — the one failure mode a row-by-row scan cannot see,
+     because it has no rows to look at. */
+  if (/class="checklist"/.test(html) && !rows(html).length)
+    problems.push(`${f}: has a .checklist container and zero .check rows — the rows were lost in migration.`);
+  checkFile(f, html, m => problems.push(m));
+}
 
 console.log(`verb grammar: ${targets.length} file(s), ${targets.reduce((n,f)=>n+rows(readFileSync(f,'utf8')).length,0)} row(s)`);
 if (problems.length) {
