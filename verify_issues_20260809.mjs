@@ -56,7 +56,11 @@ ck('menu tile reaches it', await codes.locator('a[href="#c24"]').count() > 0, tr
 {
   const t = await textOf(codes, '#c24');
   ck('bleeding lung DOWN', /Bleeding lung DOWN/i.test(t), true);
-  ck('ETT >= 8.0 and the reason', /ETT\s*≥8\.0 mm/i.test(t) && /bronchoscope has to fit/i.test(t), true);
+  /* The reason used to be a sentence in the WHY tier ("a bronchoscope has to fit down it").
+     Issue #216 removed that tier; the reason survives on the card as a pitfall ("a 7.0 tube —
+     now nobody can bronchoscope or place a blocker"), so the assertion follows it there rather
+     than freezing prose that no longer exists. Delete either half and this still fails. */
+  ck('ETT >= 8.0 and the reason', /ETT\s*≥8\.0 mm/i.test(t) && /bronchoscope/i.test(t), true);
   /* These assert the CLAIM, not the sentence — same fix already made on card 26 below. The
      clarity pass rewrote these rows into a short action plus a hidden reason; the facts are
      unchanged, so an assertion tied to the old wording reported a paraphrase as a clinical
@@ -64,7 +68,13 @@ ck('menu tile reaches it', await codes.locator('a[href="#c24"]').count() > 0, tr
   // LRH stocks no blocker and no DLT — the card must say the big ETT IS the isolation technique
   ck('no-blocker reality stated',
      /no blocker or double-lumen tube/i.test(t) && /single ETT[^.]*IS the technique/i.test(t), true);
-  ck('blind mainstem success rates', /95%/.test(t) && /73%/.test(t), true);
+  /* The 95% / 73% blind-placement figures were deleted as statistics: neither number changes
+     what the hand does, and both sides of the maneuver are on the card. What must survive is
+     that the card gives a DIFFERENT maneuver per side — blind advance to the right, bougie to
+     the left — because doing the right-sided one on a left-lung bleed ventilates the blood. */
+  ck('a maneuver per side, not one blind advance',
+     /LEFT lung bleeding[^.]*right mainstem/i.test(t) &&
+     /RIGHT lung bleeding[^.]*bougie/i.test(t), true);
   ck('nebulized TXA 500 mg', /Nebulized TXA 500 mg/i.test(t), true);
   ck('IV TXA 1 g over 10 min', /1 g over 10 min/i.test(t), true);
   ck('does not intubate the effective cougher',
@@ -84,7 +94,7 @@ ck('card 25 exists', await codes.locator('#c25').count(), 1);
   ck('cartilage not bony bridge', /soft cartilag/i.test(t) && /not the bony bridge/i.test(t), true);
   ck('pressure-duration disagreement shown', /≥10 min/.test(t) && /15–20 min/.test(t) && /≥20 min/.test(t), true);
   ck('never cauterize both septal sides',
-     /never both sides at once/i.test(t) && /both sides of the septum/i.test(t), true);
+     /never both sides of the septum at once/i.test(t) && /two weeks between sides/i.test(t), true);
   ck('Rapid Rhino sterile water 30 s, air only',
      /sterile water 30 s/i.test(t) && /inflate with air/i.test(t), true);
   ck('Foley volumes and the 15 mL ceiling', /5–7 mL/.test(t) && /max(?:imum)? 15 mL/i.test(t), true);
@@ -148,15 +158,25 @@ console.log('--- #34 pigtail chest tube');
 ck('procedures card 16 exists', await proc.locator('#c16').count(), 1);
 {
   const t = await textOf(proc, '#c16');
-  ck('triangle of safety borders', /lateral edge of pectoralis major/i.test(t) && /latissimus dorsi/i.test(t), true);
+  /* The borders have exactly one home on this card: the caption under the triangle figure
+     (golden rule 12). They were ALSO in the row's WHY tier until #216 removed it, and the
+     first instinct on seeing this go red was to type them into the row — which would have put
+     the same anatomy on the card twice, in two editable places. The assertion follows the
+     caption instead. Delete the borders from it and this fails. */
+  ck('triangle of safety borders',
+     /border pectoralis major/i.test(t) && /latissimus dorsi/i.test(t)
+     && /5th intercostal space at nipple level/i.test(t), true);
   ck('over the upper border of the rib', /over the upper border of the rib below/i.test(t), true);
   ck('one stocked size, 14 Fr, stated plainly', /This site stocks one size: 14 Fr/.test(t), true);
   ck('lidocaine ceiling', /3 mg\/kg/.test(t) && /250 mg/.test(t), true);
   // LRH resolved this: hemothorax is a chest tube. P-CAT stays as the reason the question exists.
   ck('hemothorax routed to a chest tube',
      /hemothorax is a chest tube, not a pigtail/i.test(t) && /28–32 Fr/.test(t) && /P-CAT/.test(t), true);
+  /* Both depths are still offered; the phrase "two published options for depth" was the WHY
+     tier's framing and went with it in #216. What matters clinically is that the row does not
+     narrow to one number — the short wire is what lets the catheter be steered apically. */
   ck('wire depth given as two options',
-     /options for depth/i.test(t) && /15–20 cm/.test(t) && /clear the needle/i.test(t), true);
+     /15–20 cm/.test(t) && /(?:just past|clear) the needle/i.test(t), true);
   ck('never clamp a bubbling drain', /Never clamp a bubbling drain/i.test(t), true);
   ck('1.5 L then clamp', /1\.5 L/.test(t), true);
   ck('CXR after every insertion', /(?:CXR|chest radiograph) for every patient/i.test(t), true);

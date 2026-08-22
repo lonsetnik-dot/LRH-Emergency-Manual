@@ -15,7 +15,7 @@
  *      simplification, it is a trap — this suite counts a row that hides a dose-shaped
  *      value from its own action as a failure, whatever its length.
  *
- * Nothing is deleted by the pass: .t-why holds everything demoted, one toggle reveals all
+ * The WHY tier was removed in issue #216: a row is now one line, the action, and any value
  * of it, and print always includes it because a printed card is read at a desk.
  *
  *     node build.mjs && python3 -m http.server 8123 --directory dist
@@ -58,9 +58,33 @@ const ACTION_MAX = 110;
    sharps lists, the AVA 3Xi kit, the DuCanto suction pair) under the same byte-identity
    contract, and the chest-tube antibiotic row, which is rendered from SITE.abx and carries
    both the drug and "never delay decompression for it" — demoting either half would be the
-   wrong trade. */
+   wrong trade.
+
+   ── RE-BASELINED 2026-08-22, issue #216 ────────────────────────────────────────────────
+   The numbers above (5 / 5 / 1 / 0 / 2) measured a manual in which a row had TWO tiers: a
+   short action, and a .t-why underneath it holding the dose, the band table, the second
+   published option. Issue #216 removed that tier. Everything a step cannot be performed
+   without had to move INTO the action — so a row that carries an enoxaparin band table or a
+   burn %TBSA rule is now long, and it is long BY DESIGN. Lengthening those rows is the
+   deliverable, not a regression, and holding the old numbers would have made the honest
+   outcome of #216 read as a red run.
+
+   So this is a re-baseline, not a raise: the counts below are what the manual measures on
+   the day the WHY tier came out, and the ratchet resumes from here. The same rule applies —
+   lower them, never raise them.
+
+   Four rows were split rather than counted, because a LIST of alternatives is strictly
+   better one-per-row at the bedside and splitting changes no clinical content: the electrical
+   storm doses (c26, 276 chars → 5 rows), the stroke BP target and its two drugs (c04), the
+   TNK-angioedema drugs and the airway trigger (c04), and the enoxaparin bands (c21).
+
+   What is left is not prose that can be shortened. It is dose tables (RSI, eclampsia,
+   storm), kit contents under the byte-identity contract, scoring definitions (Sgarbossa,
+   MESS, Canadian CT head, rule of nines) and criteria lists — rows where every clause is a
+   value someone acts on. An editor who gets one of these under 110 characters has almost
+   certainly deleted something. Check what came out before lowering a number here. */
 const BUDGET = {
-  '/codes/': 5, '/procedures/': 5, '/trauma/': 1, '/peds/': 0, '/ob-neonatal/': 2,
+  '/codes/': 23, '/procedures/': 11, '/trauma/': 7, '/peds/': 1, '/ob-neonatal/': 3,
 };
 
 const TOOLS = Object.keys(BUDGET);
@@ -163,42 +187,34 @@ for (const tool of TOOLS) {
     .filter(e => !e.getAttribute('data-perkg')).length);
   ck(`2c. ${tool} every live dose still carries its per-kg rule`, deadDoses, 0);
 
-  /* 3. The reasoning is out of the way until asked for. */
-  const whyVisible = await pg.evaluate(() =>
-    [...document.querySelectorAll('.t-why')].filter(el => getComputedStyle(el).display !== 'none').length);
-  ck(`3. ${tool} reasoning is hidden by default`, whyVisible, 0);
+  /* 3. THE WHY TIER IS GONE (issue #216) and must not creep back. A row is one line: the
+        action. Anything that was pure rationale was deleted; anything that was a VALUE was
+        folded into the action, so a .t-why left on the page is either a regression or a row
+        still waiting to be folded — and either way it must be VISIBLE, never hidden behind
+        something a clinician has to find. */
+  ck(`3. ${tool} has no WHY control`, await pg.locator('#whybtn').count(), 0);
+  const hiddenWhy = await pg.evaluate(() =>
+    [...document.querySelectorAll('.t-why')].filter(el => getComputedStyle(el).display === 'none').length);
+  ck(`3. ${tool} no reasoning tier is hidden on the page`, hiddenWhy, 0);
+  /* The pending folds carry a real clinical value and are counted, not tolerated silently. */
+  const pending = await pg.evaluate(() => document.querySelectorAll('.t-why[data-ref]').length);
+  if (pending) console.log(`       ${pending} row(s) still carry a value awaiting a fold into the action`);
 
-  const hasBtn = await pg.locator('#whybtn').count();
-  ck(`3. ${tool} offers the WHY control`, hasBtn, 1);
-  if (hasBtn && rows.some(r => r.hasWhy)) {
-    await pg.click('#whybtn');
-    await pg.waitForTimeout(250);
-    const shown = await pg.evaluate(() =>
-      [...document.querySelectorAll('.t-why')].filter(el => getComputedStyle(el).display !== 'none').length);
-    ck(`3. ${tool} WHY reveals every reason at once`, shown > 0 && shown === await pg.evaluate(() => document.querySelectorAll('.t-why').length), true);
-    /* It is a preference, not case state: it must survive a reload. */
-    await pg.reload({ waitUntil: 'networkidle' });
-    await pg.waitForTimeout(300);
-    ck(`3. ${tool} the choice is remembered`,
-       await pg.evaluate(() => document.body.classList.contains('showwhy')), true);
-    await pg.click('#whybtn');
-    await pg.waitForTimeout(200);
-  }
   allRows = allRows.concat(rows.map(r => ({ ...r, tool })));
   await pg.close();
 }
 
-/* 4. Print carries everything — a printed card is a reference read at a desk, not a screen
-      read during a code, so nothing should be missing from it. */
+/* 4. Print carries everything a screen does. It used to be the place the hidden reasoning
+      surfaced; with the tier gone, what matters is that the action lines themselves print. */
 {
   const pg = await b.newPage({ viewport: { width: 390, height: 844 } });
   await pg.goto(BASE + '/codes/?from=home', { waitUntil: 'networkidle' });
   await pg.waitForTimeout(300);
   await pg.emulateMedia({ media: 'print' });
   await pg.waitForTimeout(200);
-  const hiddenInPrint = await pg.evaluate(() =>
-    [...document.querySelectorAll('.t-why')].filter(el => getComputedStyle(el).display === 'none').length);
-  ck('4. print shows the reasoning even with WHY off', hiddenInPrint, 0);
+  const printedRows = await pg.evaluate(() =>
+    [...document.querySelectorAll('label > span')].filter(el => getComputedStyle(el).display !== 'none').length);
+  ck('4. the checklist rows print', printedRows > 100, true);
   await pg.close();
 }
 

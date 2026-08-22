@@ -71,17 +71,14 @@
 <!-- tool switcher: the six live engines + manual home, PPH marked current.
      Plain links — cross-tool case state (clock, log) survives navigation per
      CASE-STATE.md, so switching tools mid-case is safe by design. -->
-<div class="shellmenu left" id="toolmenu" style="display:none">
-  <a class="shellmenurow" href="../arrest/"><span class="shellsq" style="background:var(--red)"></span><span style="flex:1">Arrest</span><span class="shellmenusub">CODE</span></a>
-  <a class="shellmenurow" href="../tca/"><span class="shellsq" style="background:#E08A3C"></span><span style="flex:1">TCA</span><span class="shellmenusub">TCA</span></a>
-  <a class="shellmenurow" href="../airway/"><span class="shellsq" style="background:#2FA372"></span><span style="flex:1">Airway</span><span class="shellmenusub">RSI</span></a>
-  <a class="shellmenurow" href="../neonatal/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Neonatal</span><span class="shellmenusub">NRP</span></a>
-  <a class="shellmenurow on" href="../pph/"><span class="shellsq" style="background:#E75480"></span><span style="flex:1">PPH</span><span class="shellmenusub">PPH</span></a>
-  <a class="shellmenurow" href="../dystocia/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Dystocia</span><span class="shellmenusub">OB</span></a>
-    <a class="shellmenurow" href="../peds/?from=tool"><span class="shellsq" style="background:var(--purple)"></span><span style="flex:1">Peds</span><span class="shellmenusub">PEDS</span></a>
-  <div class="shellmenudiv"></div>
-  <a class="shellmenurow" href="../?from=tool"><span class="shellsq" style="background:var(--gray)"></span><span style="flex:1">Manual home</span></a>
-</div>
+<!-- Tool switcher (SHELL.md layer 1). The list and the row markup live once, in
+     tool-switcher.js, injected at the marker below — see that file's header for
+     the four ways the seven hand-written copies had already drifted. -->
+<div class="shellmenu left" id="toolmenu" style="display:none"></div>
+<script>
+/* @tool-switcher */
+mountToolSwitcher('pph');
+</script>
 
 <!-- ⋯ overflow (phone): timeline, feedback, then reset in red — the same
      two-tap SURE? reset the wide button runs (SHELL.md layer 9). -->
@@ -233,7 +230,7 @@
    changed; every number still reads from this block.
    ========================================================================== */
 var SITE = {
-  version:"0.1.1", lastReviewed:"2026-08-15", site:"{{SITE.abbrev}}",
+  version:"0.1.2", lastReviewed:"2026-08-15", site:"{{SITE.abbrev}}",
 
   review:{
     on:true,

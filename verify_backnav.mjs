@@ -73,7 +73,11 @@ for (const j of JOURNEYS) {
 console.log('\n--- 2. the in-page back control names where you came from ---');
 /* The shell tools rewrite their back control from ?from=<tool>. A reader who
    hopped mid-code should be offered the tool they left, not the index. */
-for (const [from, tool] of [['arrest', '/peds/'], ['trauma', '/peds/'], ['codes', '/peds/'], ['peds', '/neonatal/']]) {
+/* /codes/ joined this list when it took the shell bar (issue #219). It is the
+   one that matters most: 38 cards, and the tool a clinician is likeliest to
+   arrive at mid-case from somewhere else. */
+for (const [from, tool] of [['arrest', '/peds/'], ['trauma', '/peds/'], ['codes', '/peds/'],
+                            ['peds', '/neonatal/'], ['peds', '/codes/'], ['arrest', '/codes/']]) {
   await pg.goto(BASE + tool + '?from=' + from, { waitUntil: 'domcontentloaded' });
   await pg.waitForTimeout(450);
   const back = await pg.evaluate(() => {

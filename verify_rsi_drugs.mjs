@@ -309,6 +309,13 @@ ck('7. UNDO un-marks the drug', await pg.evaluate(l =>
 await fresh();
 await setWeight(UNDER_KG);
 for (const lane of LANES) await tapDrug(lane.id, dosed(lane.key)[0].label);
+/* Under the case shell (SHELL.md layer 9) RESET is inline in the bar only at
+   ≥768px; on a phone it is the red row in the bar's ⋯ menu. This suite runs at
+   phone width, so it opens the menu first — the taps a clinician makes — rather
+   than clicking a control that is display:none. */
+if (!(await pg.locator('#resetbtn').isVisible().catch(() => false)) && await pg.locator('#menubtn').count()) {
+  await pg.click('#menubtn'); await pg.waitForTimeout(200);
+}
 await pg.click('#resetbtn');
 await pg.waitForTimeout(250);
 ck('8. RESET asks before it wipes the case', await pg.locator('#resetmodal').isVisible(), true);

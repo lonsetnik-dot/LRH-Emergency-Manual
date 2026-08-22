@@ -27,9 +27,18 @@ A layer a tool doesn't need is absent entirely, never left empty.
 
 ### 1. App bar — one row, 56px (60px ≥768px), never wraps
 - **Left:** back control (`‹` phone / `MANUAL ›` breadcrumb ≥768px) +
-  **tool name as dropdown** — tap opens the tool switcher (the six live
-  engines + manual home; each row = 9px color square in that tool's accent,
-  name, count/tag). Replaces separate MANUAL/BACK buttons.
+  **tool name as dropdown** — tap opens the tool switcher (every tool that
+  wears this bar + manual home; each row = 9px color square in that tool's
+  accent, name, count/tag). Replaces separate MANUAL/BACK buttons.
+  **The switcher's list is `tool-switcher.js`, injected at
+  `/* @tool-switcher */`, and a new tool is ONE ROW there** — never a sweep
+  through every page that carries the bar. It was hand-written per page until
+  2026-08-22, and the seven copies had already disagreed four ways: `tca/` had
+  no switcher at all, `peds/` hoisted itself to the top of its own list while
+  the engines kept the fixed order, `peds/` carried `?from=` and the engines
+  did not, and Neonatal and Dystocia drew the same colored square. Order is
+  fixed and identical everywhere; the current tool is marked in place, never
+  moved — "third row down" is the whole value of a switcher during a code.
 - **Center:** empty when idle. While a case runs, the **master case clock
   pill** owns the center: red-bordered pill, mono digits, tag (`CODE` /
   `NRP` / `APNEA` / per tool). Tapping it opens the timeline.
@@ -221,11 +230,19 @@ applicable layers) → reference pages (bar only). Each migration maps the
 tool's existing timers/actions into the slots above; **clinical content
 and validated values do not change.**
 
-Done so far: arrest, tca, airway, neonatal, pph, dystocia (engines);
+Done so far: arrest, airway, neonatal, pph, dystocia (engines);
 **peds** (first card tool — layers 1, 4, 8, 9; `verify_peds_shell.mjs`
 asserts it against arrest's live DOM rather than against re-typed numbers,
 so the two cannot drift apart). Still on the old chrome: `codes`,
 `ob-neonatal`, `trauma`, `procedures`, `clinical-pathways`.
+
+**`tca/` is NOT on this shell, and that line said it was until 2026-08-22.**
+It carries its own bar — kick line, mono clock, phase word, RESET chip —
+because the tool is a port of an aid Lon supplied, kept as supplied
+(CLAUDE.md rule 14, whose scar is a 1,660-line engine built instead of that
+aid). It appears in the switcher as a destination and it writes the shared
+case-start marker, but it hosts no switcher of its own. Porting it is a
+decision about that artifact, not a chrome sweep; do not do it silently.
 
 Two decisions made during the peds port, worth reusing for the rest:
 

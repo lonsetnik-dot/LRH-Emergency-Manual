@@ -18,7 +18,7 @@
 
    lrh-pref-theme is a PREFERENCE, not case state: it survives RESET FOR NEXT
    CASE, because ambient lighting is not a fact about this patient. It shares
-   the lrh-pref- namespace with lrh-pref-why. See CASE-STATE.md.
+   the lrh-pref- namespace. See CASE-STATE.md.
    =========================================================================== */
 (function () {
   try {

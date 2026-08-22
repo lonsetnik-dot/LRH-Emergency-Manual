@@ -96,6 +96,18 @@ for (const [path, labels] of Object.entries(MUST_LOG)) {
      /\d{1,2}:\d{2}/.test(await pg.locator(`[data-logevent="${first}"]`).first().textContent()));
 }
 
+/* Open the case timeline by whichever control this width actually offers. */
+async function openTimeline(page) {
+  if (await page.locator('#summarybtn').isVisible().catch(() => false)) {
+    await page.click('#summarybtn'); return;
+  }
+  if (await page.locator('#menubtn').count()) {
+    await page.click('#menubtn'); await page.waitForTimeout(200);
+    await page.click('#tlbtn'); return;
+  }
+  throw new Error('no reachable TIMELINE control');
+}
+
 /* 1c. cross-tool: the whole point of a shared log.
    Re-log one procedures event first — the per-tool loop above clears
    localStorage on entry, so by now only the last tool's entry survives. */
@@ -107,7 +119,11 @@ await pg.locator('[data-logevent="LATERAL CANTHOTOMY CUT"]').first().click();
 await pg.waitForTimeout(200);
 await pg.goto(BASE + '/codes/?from=home', { waitUntil: 'networkidle' });
 await pg.waitForTimeout(300);
-await pg.click('#summarybtn'); await pg.waitForTimeout(400);
+/* On a case-shell tool the TIMELINE button is inline in the bar only at ≥768px;
+   on a phone it lives behind the bar's ⋯ menu (SHELL.md layer 1/8). This suite
+   runs at phone width, so it takes the phone route — the same taps a clinician
+   makes — rather than clicking a control that is display:none. */
+await openTimeline(pg); await pg.waitForTimeout(400);
 const tl = await pg.evaluate(() => document.getElementById('summarybody').innerText);
 ok('a procedures event appears in codes\' CASE TIMELINE', /LATERAL CANTHOTOMY CUT/.test(tl));
 ok('a trauma event appears in codes\' CASE TIMELINE', /BLOOD STARTED/.test(tl));

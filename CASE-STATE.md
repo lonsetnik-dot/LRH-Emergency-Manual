@@ -22,7 +22,7 @@ Every key here is device-local and PHI-free — see the PHI guard note under
 | `lrh-case-wtms` | epoch ms (string) | codes, peds | codes, peds | Added by WS10.1. Written/cleared in the exact same place as `lrh-case-wtkg` (each tool's own `save()`), and only when the *value* actually changes — not on every keystroke that reparses to the same number, and not on load. Powers the WS10.2 two-state weight strip (below): the strip's confidence decays with elapsed manual-wide inactivity (`lrh-case-lastactive`), not with this timestamp directly, but this is the timestamp the strip's "ENTERED HH:MM · N MIN AGO" text itself displays. |
 | `lrh-case-ageyrs` | number (string) | codes | codes | Patient age in years, entered alongside weight in codes' weight bar. Added by the arrest-card merge (codes card 01 now covers both adult ACLS and pediatric PALS in one interface) so the pediatric-mode trigger can read age as well as weight — see `lrh-case-adultoverride` below. Not yet written by peds (peds' own age-based weight *estimate* stays a one-shot calculation, not a persisted age). |
 | `lrh-case-adultoverride` | `'1'` \| absent | codes | codes | The "no, this is an adult" override on codes' merged arrest card (card 01). Weight/age below the pediatric trigger (`SITE.arrestTrigger` in `codes/index.html`: weight < 50 kg OR age ≤ 12 y) normally switches that card into weight-based PALS dosing; this key, when `'1'`, forces it back to adult ACLS dosing even though the trigger is met — a deliberate, reversible, always-visible override (tapping it again clears the key), because weight alone can't reliably distinguish a small child from a small/frail adult. Absent = not overridden (the default). Namespaced under `lrh-case-` on purpose so RESET FOR NEXT CASE and the inactivity auto-clear both already sweep it with no extra code. |
-| `lrh-case-startms` | epoch ms (string) | codes | codes | First action of the case. **Gap:** only codes writes this today (it's a direct rename of codes' pre-existing `codeStartMs`). ob-neonatal and peds don't have an equally unambiguous "the case just began" hook yet — wiring them in is future work, not WS0. |
+| `lrh-case-startms` | epoch ms (string) | codes, **trauma**, **tca** | codes, **trauma** | First action of the case, in ANY tool — set once, never overwritten until RESET. `codes` writes it (a direct rename of its pre-existing `codeStartMs`); as of 2026-08-22 `trauma/` writes it on the first checkbox or tap-to-log of a trauma activation and READS it to paint the clock in its bar, and `tca/` writes it when TCA is declared. That last one is write-only on purpose: tca/'s own clock is time since TCA was declared, and the arrest window, every logged event and the debrief are measured against it, so adopting an earlier marker would silently redefine all three. The point of the shared marker is that a resuscitation which starts as a traumatic arrest and continues in the trauma bay reads as ONE interval, not two clocks from zero. ob-neonatal and peds still have no equally unambiguous "the case just began" hook. |
 | `lrh-case-clocks` | `{ name: epochMs }` | codes, ob, peds | codes, ob, peds | One shared namespace. See **Clock names** below for what's live and who uses each. |
 | `lrh-case-counts` | `{ name: int }` | codes, peds | codes, peds | One shared namespace. See **Count names** below. |
 | `lrh-case-checks` | `{ "<tool>:<data-k>": true }` | codes, ob, peds, trauma, **procedures** | codes, ob, peds, trauma, procedures | One map, every tool's checkboxes. The `<tool>:` prefix is applied at the storage layer only (in each tool's `CASESTATE.setChecked`/`isChecked`) — **no card's HTML `data-k` attribute was renamed**, so two tools' own numbering (codes' `"01-1"`, ob's `"02-0-0"`, peds' `"p01-1"`, trauma's `"c01-1"`) can never collide in the shared map even though they collide in principle. As of WS2.1, all four tools' checkboxes are keyed and persisted; every `input[type=checkbox]` in the repo now carries a `data-k`. Trauma's `CASESTATE` module is deliberately partial — checks only, no weight/clocks/log yet (those are WS7 scope, see the note at the end of this file). |
@@ -112,6 +112,13 @@ candidate to reconsider in a later workstream, not a bug.
 
 **ob-neonatal**
 - `lrh-ob-weight`, `lrh-ob-ga` — the **neonate's** estimated weight/gestational age, used for equipment sizing (Merck/NRP tables). A different patient and a different purpose than `lrh-case-wtkg` — do not conflate.
+- `lrh-ob-gadays` — the DAYS half of the gestational age (issue #171), 0–6.
+  Gestational age is said and written as weeks plus days, and the tool used to
+  take only the weeks, so what a clinician was told had to be rounded before it
+  could be entered. It is display-only **by design**: every equipment band in
+  `ob-neonatal/` is a whole-week threshold (<28, <34, <38), so 34+0 and 34+6 size
+  identically. Kept in its own key rather than folded into `lrh-ob-ga` precisely
+  so nothing reading that key can mistake it for a fractional week.
 - `lrh-ob-birthms`, `lrh-ob-clampms` — birth time and cord-clamp time. Deferred from WS0 migration (see Clock names above).
 - `lrh-ob-sdround`, `lrh-ob-sdroundstart` — shoulder dystocia re-run counter and its own start time. `lrh-case-clocks.dystocia` covers the main clock; these are re-run-specific bookkeeping.
 - `lrh-ob-hrcycle` — neonatal HR-band timer state, `{n0, dur, band}` — doesn't fit the single-timestamp clock shape.
@@ -307,7 +314,10 @@ the core override-clear already makes safe.
 
 ## Known, accepted scope gaps (see the notes above for reasoning)
 
-- `lrh-case-startms` only wired into codes.
+- `lrh-case-startms` is written by codes, trauma and tca, and read by codes and trauma.
+  ob-neonatal and peds still do not write it — neither has one unambiguous moment that
+  means "the case began", and inventing one would start the manual-wide clock on a page
+  visit rather than on an action.
 - `lrh-pref-mute` only wired into codes.
 
 ## trauma/ and procedures/ joined the log (2026-08-18)

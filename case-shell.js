@@ -336,46 +336,7 @@ var CASE_SHELL = (function () {
     }
   }
 
-  /* =========================================================================
-     WHY toggle — the second half of the two-tier checklist row (design-system.css
-     .t-why). One control per tool shows or hides every row's reasoning at once.
-
-     A per-row disclosure was the obvious design and the wrong one: it puts a second
-     tap target inside a label whose whole job is one big checkbox, and it makes the
-     clinician decide, row by row, whether they are about to need the explanation.
-     One switch, remembered per device, asks that question once.
-
-     Default is OFF — terse. lrh-pref-why is a PREFERENCE, not case state: it
-     survives RESET FOR NEXT CASE, because how much detail this reader wants is not
-     a fact about this patient. See CASE-STATE.md. */
-  var WHY_KEY = 'lrh-pref-why';
-
-  function applyWhy(on) {
-    try { document.body.classList.toggle('showwhy', !!on); } catch (e) {}
-    var btn = document.getElementById('whybtn');
-    if (btn) {
-      btn.setAttribute('aria-pressed', on ? 'true' : 'false');
-      btn.textContent = on ? 'WHY \u2212' : 'WHY +';
-      btn.setAttribute('aria-label', on ? 'Hide the reasoning on every step' : 'Show the reasoning on every step');
-    }
-  }
-
-  function startWhy() {
-    var btn = document.getElementById('whybtn');
-    /* The rows exist on pages with no button yet, and the button may exist on a page
-       with no rows; neither is an error, and neither should throw. */
-    var on = false;
-    try { on = localStorage.getItem(WHY_KEY) === '1'; } catch (e) {}
-    applyWhy(on);
-    if (!btn) return;
-    btn.addEventListener('click', function () {
-      on = !on;
-      try { localStorage.setItem(WHY_KEY, on ? '1' : '0'); } catch (e) {}
-      applyWhy(on);
-    });
-  }
-
-  function boot() { start(); startWhy(); }
+  function boot() { start(); }
 
   if (document.readyState === 'loading') {
     document.addEventListener('DOMContentLoaded', boot, false);
