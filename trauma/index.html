@@ -88,7 +88,15 @@
   <a class="ghost" href="../?from=tool" id="backlink">◀ MANUAL</a>
   <div class="plabel">TRAUMA</div>
   <span class="hdrclock" id="traumaclock" role="timer" aria-label="Time since trauma activation" hidden>0:00</span>
-  <button class="ghost" id="summarybtn" type="button">TIMELINE</button>
+  <!-- NO TIMELINE BUTTON HERE, deliberately. One was added with the clock and it
+       did nothing: trauma/ WRITES to the shared case log (BLOOD STARTED, TXA GIVEN)
+       but has never carried the CASE TIMELINE modal that codes/, peds/ and
+       ob-neonatal/ have, so the control opened nothing. A dead button in a
+       resuscitation tool is worse than a missing one — it costs a tap and an
+       expectation at the moment neither is spare.
+       The modal is ~85 lines of markup and behavior, duplicated three times
+       already; giving it to trauma/ and procedures/ is the extraction that should
+       happen (the same shape as tool-switcher.js), not a fourth paste. -->
   <button class="ghost danger" id="resetbtn" type="button">RESET</button>
 </div>
 <script>
