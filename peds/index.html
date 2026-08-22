@@ -163,17 +163,14 @@
      shell, + manual home. Plain links: cross-tool case state (weight, clock,
      log) survives navigation per CASE-STATE.md, so switching mid-case is safe
      by design. -->
-<div class="shellmenu left" id="toolmenu" style="display:none">
-  <a class="shellmenurow on" href="../peds/?from=tool"><span class="shellsq" style="background:var(--purple)"></span><span style="flex:1">Peds</span><span class="shellmenusub">PEDS</span></a>
-  <a class="shellmenurow" href="../arrest/?from=peds"><span class="shellsq" style="background:var(--red)"></span><span style="flex:1">Arrest</span><span class="shellmenusub">CODE</span></a>
-  <a class="shellmenurow" href="../tca/?from=peds"><span class="shellsq" style="background:#E08A3C"></span><span style="flex:1">TCA</span><span class="shellmenusub">TCA</span></a>
-  <a class="shellmenurow" href="../airway/?from=peds"><span class="shellsq" style="background:#2FA372"></span><span style="flex:1">Airway</span><span class="shellmenusub">RSI</span></a>
-  <a class="shellmenurow" href="../neonatal/?from=peds"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Neonatal</span><span class="shellmenusub">NRP</span></a>
-  <a class="shellmenurow" href="../pph/?from=peds"><span class="shellsq" style="background:#E75480"></span><span style="flex:1">PPH</span><span class="shellmenusub">PPH</span></a>
-  <a class="shellmenurow" href="../dystocia/?from=peds"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Dystocia</span><span class="shellmenusub">OB</span></a>
-  <div class="shellmenudiv"></div>
-  <a class="shellmenurow" href="../?from=tool"><span class="shellsq" style="background:var(--gray)"></span><span style="flex:1">Manual home</span></a>
-</div>
+<!-- Tool switcher (SHELL.md layer 1). The list and the row markup live once, in
+     tool-switcher.js, injected at the marker below — see that file's header for
+     the four ways the seven hand-written copies had already drifted. -->
+<div class="shellmenu left" id="toolmenu" style="display:none"></div>
+<script>
+/* @tool-switcher */
+mountToolSwitcher('peds');
+</script>
 
 <!-- ⋯ overflow (phone): the same three items the wide bar shows inline.
      RESET keeps peds' existing modal confirm (WS2.4) rather than the engines'
@@ -1298,7 +1295,7 @@
 <script>
 /* ===== SITE CONFIG (site-specific — edit to localize) ===== */
 var SITE = {
-  version: "1.6",
+  version: "1.7",
   lastReviewed: "2026-08-17",
   /* WS10.2 — minutes of manual-wide inactivity (lrh-case-lastactive) before the weight
      strip appends an "ENTERED HH:MM · N MIN AGO" line and ambers its border. Purely

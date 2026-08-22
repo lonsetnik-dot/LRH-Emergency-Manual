@@ -119,7 +119,17 @@ const BUDGET = {
      not copies, so most of each poster is its own text — but these sentences were retyped
      verbatim and will drift. Whether posters may compress at all, or should transclude and
      take the length, is an open design question (see PROJECT notes / issue). */
-  "posters+procedures": 12,
+  "posters+procedures": 13,
+  /* 12 → 13 on 2026-08-22, and the extra one is NOT newly written. "Consult the burns service
+     before cutting whenever time permits." has been on the escharotomy poster and on
+     procedures/ card 12 the whole time. It was invisible to this scanner because the card's
+     row carried a .t-why immediately after it, and .t-why is an inline <i> — textContent ran
+     the two together as "…time permits.The Alfred STAR reference is explicit…", which is not
+     a sentence the poster contains. Issue #216 removed that tier, the sentence split cleanly,
+     and a duplication that was always there showed up.
+     Worth keeping in mind generally: this scanner reads RENDERED text, so any markup that
+     concatenates without whitespace can mask a retyped sentence. A green run has never meant
+     more than "nothing matched", and it means slightly less than it looks. */
   /* codes+peds was 3 — the anaphylaxis NAME / CLAIM / AIM block, byte-identical on the adult
      card and the pediatric one. It now lives once, in codes/, and peds/ pulls it in with
      {{SHARE:codes|anaphylaxis-crm}}. The doses were never shared and still differ correctly. */
@@ -142,7 +152,7 @@ const BUDGET = {
   "dystocia+pph": 1,
 };
 
-const hits = [...seen.entries()].filter(([, m]) => m.size > 1).map(([s, m]) => ({ s, tools: [...m.keys()] }));
+const hits = [...seen.entries()].filter(([, m]) => m.size > 1).map(([s, m]) => ({ s, tools: [...m.keys()], urls: [...m.values()].flatMap(x => [...x]) }));
 /* Shared chrome — the disclaimer, the back link, the search prompt — is on every page by design
    and is injected, not retyped. Split it out rather than burying the real findings under it. */
 const CHROME_AT = +(process.env.CHROME_AT || 5);
@@ -157,23 +167,31 @@ console.log(`scanned ${pages.length} pages · ${seen.size} distinct sentences of
 console.log(`${redirects.length} redirect stub(s) skipped: ${redirects.join(", ") || "none"}`);
 console.log(`${chrome.length} shared-chrome sentence(s) (${CHROME_AT}+ tools), not counted\n`);
 
-/* Count by pair, then hold each pair against its budget. */
+/* Count by pair, then hold each pair against its budget.
+
+   DUPALL=1 prints EVERY sentence in every pair, with the pages it was found on, instead of
+   the first four of an over-budget pair. A count that rises by one tells you a sentence was
+   retyped but not which; the way to find it is to run DUPALL against this build and against
+   the last green one (git worktree + BUILD_OUT + a second port) and diff the two lists. That
+   is how the escharotomy line below was identified, and it took three attempts without it. */
+const ALL = !!process.env.DUPALL;
 const byPair = new Map();
 for (const h of real) {
   const k = h.tools.slice().sort().join("+");
   if (!byPair.has(k)) byPair.set(k, []);
-  byPair.get(k).push(h.s);
+  byPair.get(k).push(h.s + (ALL ? "   @@ " + h.urls.join(" ") : ""));
 }
+const list4 = list => list.slice(0, ALL ? 99 : 4).forEach(s2 => console.log(`       ${s2.slice(0, ALL ? 400 : 120)}`));
 for (const [k, list] of [...byPair.entries()].sort((a, b) => b[1].length - a[1].length)) {
   const budget = BUDGET[k];
   if (budget === undefined) {
     /* A pair nobody has written down is the whole point: something was just retyped. */
     ck(`NEW duplication between ${k}`, list.length + " sentence(s)", "0 — transclude it, or add it to BUDGET with a reason");
-    for (const s2 of list.slice(0, 4)) console.log(`       ${s2.slice(0, 120)}`);
+    list4(list);
     continue;
   }
   ck(`${k} within budget (${list.length}/${budget})`, list.length <= budget, true);
-  if (list.length > budget) for (const s2 of list.slice(0, 4)) console.log(`       ${s2.slice(0, 120)}`);
+  if (ALL || list.length > budget) list4(list);
   if (list.length < budget) console.log(`       budget is loose by ${budget - list.length} — lower it`);
 }
 /* A budget entry with nothing behind it means the duplication is gone and the number should

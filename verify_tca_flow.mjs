@@ -247,8 +247,21 @@ ck('6. the trail recorded the walk', await pg.locator('.trail').count() > 3, tru
    or a date of birth can reach it. */
 ck('6. no free-text input exists on the page',
    await pg.locator('input[type=text],textarea,[contenteditable]').count(), 0);
-ck('6. nothing is persisted off the device',
-   await pg.evaluate(() => { try { return Object.keys(localStorage).length; } catch (e) { return 'blocked'; } }), 0);
+/* This used to assert localStorage was EMPTY. As of 2026-08-22 tca/ writes
+   exactly one key — lrh-case-startms, the manual's shared case-start marker, so
+   a traumatic arrest that continues in the trauma bay reads as one interval
+   rather than two clocks from zero (CASE-STATE.md). "Zero keys" would now be a
+   test that fails for the feature, so what is asserted instead is the thing
+   actually worth protecting: WHICH key, and that its value is a timestamp and
+   nothing else. Add a second key here and this goes red. */
+const stored = await pg.evaluate(() => {
+  try { const o = {}; for (const k of Object.keys(localStorage)) o[k] = localStorage.getItem(k); return o; }
+  catch (e) { return 'blocked'; }
+});
+ck('6. exactly one key is persisted, and it is the shared case-start marker',
+   Object.keys(stored).join(','), 'lrh-case-startms');
+ck('6. and its value is a bare timestamp, nothing about a patient',
+   /^\d{10,}$/.test(stored['lrh-case-startms'] || ''), true);
 
 /* ---- 7. RESET clears the case ---- */
 console.log('\n--- 7. reset');
@@ -259,6 +272,10 @@ ck('7. and returns to the decision', await phase(), 'DECIDE');
 ck('7. with the trail cleared', await pg.locator('.trail').count(), 0);
 ck('7. and the stop criteria cleared',
    await pg.evaluate(() => [...document.querySelectorAll('[data-stop]')].every(x => x.getAttribute('aria-pressed') === 'false')), true);
+/* The one persisted key goes with the case. Left behind, the trauma bay's clock
+   would keep counting from a resuscitation this tool has already dropped. */
+ck('7. and the shared case-start marker is gone',
+   await pg.evaluate(() => { try { return localStorage.getItem('lrh-case-startms'); } catch (e) { return 'blocked'; } }), null);
 
 console.log('\n--- 8. clean run');
 ck('8. no page or console errors across the whole run', errs.length, 0);

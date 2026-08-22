@@ -464,6 +464,14 @@ Nth element.
 `/* @shell-js */` exactly like `design-system.css` and `inventory.js`. Consumers: all six
 live-protocol engines (`arrest/`, `airway/`, `tca/`, `neonatal/`, `pph/`, `dystocia/`).
 
+**The bar's tool switcher is `tool-switcher.js`, marker `/* @tool-switcher */`** — the same
+mechanism, for the list of tools the dropdown offers. **Adding a tool is one row in that
+file**, never a sweep through every page that carries the bar. It was hand-written per page
+until 2026-08-22, and by then the seven copies disagreed four ways: one engine had no
+switcher at all, one page hoisted itself to the top of its own list, one carried `?from=`
+and the rest did not, and two tools drew the same colored square. None of that was visible
+from inside any single file — which is the whole argument for the mechanism.
+
 It exists because **the next step was off the top of the screen.** A clinician scrolls down
 to read the ladder, taps the action it just told them to take, and the operating card — now
 showing the next step — is a thousand pixels above the viewport. Measured on every engine

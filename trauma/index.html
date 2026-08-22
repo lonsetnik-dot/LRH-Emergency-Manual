@@ -85,11 +85,11 @@
 </div>
 <div id="stickytop">
 <div class="hdr">
-  <a class="ghost" href="../?from=tool">◀ MANUAL</a>
-  <button class="ghost" id="backbtn" type="button" style="display:none">◀ BACK</button>
+  <a class="ghost" href="../?from=tool" id="backlink">◀ MANUAL</a>
   <div class="plabel">TRAUMA</div>
+  <span class="hdrclock" id="traumaclock" role="timer" aria-label="Time since trauma activation" hidden>0:00</span>
+  <button class="ghost" id="summarybtn" type="button">TIMELINE</button>
   <button class="ghost danger" id="resetbtn" type="button">RESET</button>
-  <a class="ghost" id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Trauma" style="text-decoration:none;display:inline-flex;align-items:center;white-space:nowrap">FEEDBACK</a>
 </div>
 <script>
 /* ---- Measure the real sticky-header height into --sticky-h, live ----
@@ -333,7 +333,7 @@
         <summary class="t-head t-head-crit">PRIMARY SURVEY · &lt;C&gt;ABCDE</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-14" class="t-ck"><span><b>&lt;C&gt; Catastrophic hemorrhage — pressure, packing, <a href="../procedures/?from=home#c10">tourniquet</a>, <a href="../procedures/?from=home#c09">pelvic binder</a>.</b></span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-15" class="t-ck"><span><b>A · Airway — in-line stabilization, jaw thrust, suction. GCS &le;8 → definitive airway.</b></span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-15" class="t-ck"><span><b>A · Airway — in-line stabilization, jaw thrust, suction. GCS &le;8 → definitive airway. Child? <a href="../peds/?from=trauma#p16">Sizes → peds card 16</a>.</b></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-16" class="t-ck"><span><b>B · Breathing — expose the chest, both sides. Tension → finger thoracostomy now.</b></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-17" class="t-ck"><span><b>C · Circulation — two large-bore lines, eFAST + pelvis, blood not crystalloid (<a href="../codes/?from=home#c12">MTP</a>), TXA 1 g within 3 h.<div style="display:flex; gap:8px; flex-wrap:wrap;"><button type="button" class="logit crit" data-logevent="BLOOD STARTED" data-logcard="02">BLOOD STARTED &mdash; LOG IT</button><button type="button" class="logit crit" data-logevent="TXA GIVEN" data-logcard="02">TXA GIVEN &mdash; LOG IT</button></div></b></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c02-18" class="t-ck"><span><b>D · Disability — GCS, pupils, focal signs, glucose.</b></span></label></li>
@@ -553,7 +553,7 @@
       <details class="t-box-caution">
         <summary class="t-head t-head-caution">AIRWAY &amp; INHALATION INJURY</summary>
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c05-8" class="t-ck"><span><b>Soot, singed nasal hair, hoarseness, stridor, carbonaceous sputum → intubate early.</b></span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c05-8" class="t-ck"><span><b>Soot, singed nasal hair, hoarseness, stridor, carbonaceous sputum → intubate early. Child? <a href="../peds/?from=trauma#p16">Sizes → peds card 16</a>.</b></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="c05-9" class="t-ck"><span><b>CO: co-oximetry, 100% NRB. Cyanide: hydroxocobalamin 5 g IV over 15 min, repeat once.</b></span></label></li>
         </ul>
       </details>
@@ -910,12 +910,16 @@
     <div class="t-foot"><span class="verstamp"></span> &mdash; personal/unofficial aid, not part of the hospital IT system/EHR, not a substitute for clinical judgment. Verify all values locally.</div>
   </article>
 
+<footer class="pagefoot">
+  <span>{{SITE.title}} &mdash; personal, unofficial reference.</span>
+  <a id="feedbacklink" href="mailto:{{SITE.feedbackEmail}}?subject={{SITE.abbrev}}%20Emergency%20Manual%20feedback%20%E2%80%94%20Trauma">FEEDBACK</a>
+</footer>
 </main>
 
 <script>
 /* ===== SITE CONFIG (site-specific — edit these to localize for your site/device) ===== */
 var SITE = {
-  version: "0.97",
+  version: "0.98",
   lastReviewed: "2026-08-18",
   /* Transfer/consult numbers. One source of truth (CLAUDE.md rule 2) — the
      BIG card renders every transfer-center line from here as a tap-to-
@@ -1025,17 +1029,11 @@ var SITE = {
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
 })();
 
-/* ---- BACK button: returns to the previous card/tool (browser history). Shows
-   only once there is somewhere to go back to — a within-page card jump or an
-   arrival from another tool. ---- */
-(function(){
-  var b=document.getElementById('backbtn');
-  if(!b) return;
-  function maybeShow(){ if(history.length>1) b.style.display='inline-flex'; }
-  window.addEventListener('hashchange', maybeShow, false);
-  maybeShow();
-  b.addEventListener('click', function(){ history.back(); }, false);
-})();
+/* The BACK button that used to live here is gone with the bar rebuild (issue
+   #219). It was a plain history.back(), shown whenever history.length > 1 — which
+   is true on a fresh tab that has only ever loaded this page, so it appeared
+   offering to go back to nothing. The browser's own back gesture does the same
+   job correctly, and the row it occupied now carries the case clock. */
 
 /* ===== CASE-STATE shared contract — see /CASE-STATE.md at the repo root =====
    Per CLAUDE.md: tools share the CONTRACT, not the CODE — this is trauma's own,
@@ -1052,12 +1050,17 @@ var CASESTATE = (function(){
   function wr(k, v){ try{ localStorage.setItem(k, JSON.stringify(v)); }catch(e){} }
   function rdRaw(k){ try{ return localStorage.getItem(k); }catch(e){ return null; } }
   function wrRaw(k, v){ try{ localStorage.setItem(k, v); }catch(e){} }
+  function rm(k){ try{ localStorage.removeItem(k); }catch(e){} }
 
   /* trauma writes no clocks of its own yet (WS7: "shared weight engine + sticky clock ...
      Peds -> Codes, Trauma, OB" is still future work) but still needs to READ the shared
      lrh-case-clocks so its own inactivity guard (WS2.5, below) can suppress a clear while
      a clock is running in another tool. */
   function getClocks(){ return rd('lrh-case-clocks', {}); }
+  function getStartMs(){ var v=rdRaw('lrh-case-startms'); return v===null?null:(+v||null); }
+  /* first action of the case, in ANY tool — set once, never overwritten until RESET */
+  function markCaseStarted(){ if(getStartMs()===null) wrRaw('lrh-case-startms', String(Date.now())); }
+  function clearStartMs(){ rm('lrh-case-startms'); }
   function anyClockRunning(){ return Object.keys(getClocks()).length>0; }
   function touchActive(){ wrRaw('lrh-case-lastactive', String(Date.now())); }
   function getLastActive(){ var v=rdRaw('lrh-case-lastactive'); return v===null?0:(+v||0); }
@@ -1110,6 +1113,7 @@ var CASESTATE = (function(){
   return {
     getChecks:getChecks, setChecked:setChecked, isChecked:isChecked, clearToolChecks:clearToolChecks,
     getClocks:getClocks, anyClockRunning:anyClockRunning, touchActive:touchActive, getLastActive:getLastActive,
+    getStartMs:getStartMs, markCaseStarted:markCaseStarted, clearStartMs:clearStartMs,
     addLog:addLog, getLog:getLog, clearToolLog:clearToolLog, isSafeLabel:isSafeLabel
   };
 })();
@@ -1280,6 +1284,67 @@ var CASESTATE = (function(){
 /* Shared case-shell behavior (case-shell.js). The WHY control it used to carry was
    removed in issue #216 — a checklist row is one line, the action. */
 /* @shell-js */
+</script>
+
+<script>
+/* ---- TRAUMA CASE CLOCK (Lon, 2026-08-22) --------------------------------
+   The number a trauma resuscitation is argued about afterwards is how long it
+   has been since activation, and this page did not show it anywhere.
+
+   It starts on the FIRST interaction — the first checkbox or the first LOG IT
+   tap — because that is when the team actually began, and asking someone to
+   press START as well is asking them to do bookkeeping during a Level 1.
+
+   It reads the SHARED case-start marker (lrh-case-startms via CASESTATE), not a
+   page-local variable, so it survives a reload and is still running when the
+   reader comes back from a procedure card. RESET clears it with everything else.
+
+   /tca/ writes the same marker, so a resuscitation that begins as a traumatic
+   arrest and continues here shows ONE interval rather than two clocks starting
+   from zero. tca/ is a self-contained port with no CASESTATE (it carries the
+   marker alone, deliberately — see the note in that file). */
+(function(){
+  var el = document.getElementById('traumaclock');
+  if (!el) return;
+
+
+  function fmt(ms){
+    var s = Math.max(0, Math.floor(ms/1000));
+    var m = Math.floor(s/60);
+    return m + ':' + String(s%60).padStart(2,'0');
+  }
+  /* The SHARED case-start marker (lrh-case-startms), not a trauma-only clock: it is
+     already defined as "first action of the case, in ANY tool — set once, never
+     overwritten until RESET". A clinician who starts in codes/ and comes here sees one
+     continuous interval rather than a second clock starting from zero. */
+  function t0(){
+    try { return CASESTATE.getStartMs(); } catch(e) { return null; }
+  }
+  function paint(){
+    var t = t0();
+    if (t === null) { el.hidden = true; return; }
+    el.hidden = false;
+    el.textContent = fmt(Date.now() - t);
+  }
+  function startOnce(){
+    if (t0() !== null) return;
+    try { CASESTATE.markCaseStarted(); } catch(e) { return; }
+    paint();
+  }
+  /* Any real interaction with the checklist starts it. Deliberately broad and
+     deliberately once: a second tap must never restart the clock, because the
+     interval is continuous and restarting it would erase how long this has
+     taken. */
+  document.addEventListener('change', function(ev){
+    if (ev.target && ev.target.type === 'checkbox') startOnce();
+  }, true);
+  document.addEventListener('click', function(ev){
+    if (ev.target && ev.target.closest && ev.target.closest('[data-logevent]')) startOnce();
+  }, true);
+
+  paint();
+  setInterval(paint, 1000);
+})();
 </script>
 </body>
 </html>

@@ -52,17 +52,14 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
      cross-tool case state (clock, log) survives navigation per CASE-STATE.md,
      so switching tools mid-case is safe by design. Airway is the current tool
      here, marked with its own accent square. -->
-<div class="shellmenu left" id="toolmenu" style="display:none">
-  <a class="shellmenurow" href="../arrest/"><span class="shellsq" style="background:var(--red)"></span><span style="flex:1">Arrest</span><span class="shellmenusub">CODE</span></a>
-  <a class="shellmenurow" href="../tca/"><span class="shellsq" style="background:#E08A3C"></span><span style="flex:1">TCA</span><span class="shellmenusub">TCA</span></a>
-  <a class="shellmenurow on" href="../airway/"><span class="shellsq" style="background:#2FA372"></span><span style="flex:1">Airway</span><span class="shellmenusub">RSI</span></a>
-  <a class="shellmenurow" href="../neonatal/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Neonatal</span><span class="shellmenusub">NRP</span></a>
-  <a class="shellmenurow" href="../pph/"><span class="shellsq" style="background:#E75480"></span><span style="flex:1">PPH</span><span class="shellmenusub">PPH</span></a>
-  <a class="shellmenurow" href="../dystocia/"><span class="shellsq" style="background:var(--blue)"></span><span style="flex:1">Dystocia</span><span class="shellmenusub">OB</span></a>
-    <a class="shellmenurow" href="../peds/?from=tool"><span class="shellsq" style="background:var(--purple)"></span><span style="flex:1">Peds</span><span class="shellmenusub">PEDS</span></a>
-  <div class="shellmenudiv"></div>
-  <a class="shellmenurow" href="../?from=tool"><span class="shellsq" style="background:var(--gray)"></span><span style="flex:1">Manual home</span></a>
-</div>
+<!-- Tool switcher (SHELL.md layer 1). The list and the row markup live once, in
+     tool-switcher.js, injected at the marker below — see that file's header for
+     the four ways the seven hand-written copies had already drifted. -->
+<div class="shellmenu left" id="toolmenu" style="display:none"></div>
+<script>
+/* @tool-switcher */
+mountToolSwitcher('airway');
+</script>
 
 <!-- ⋯ overflow (phone): timeline, feedback, then reset in red — the same
      two-tap SURE? reset the wide button runs (SHELL.md layer 9). -->
@@ -243,7 +240,7 @@ button{-webkit-tap-highlight-color:rgba(255,255,255,.12)}
    none was added — the DESAT action logs the event with no number.
    ========================================================================== */
 var DAS = {
-  version:"0.2.2", lastReviewed:"2026-08-17",
+  version:"0.2.3", lastReviewed:"2026-08-17",
   attempts:{ planA:3, planASenior:1, planB:3, planBviaSAD:1, planC:3 },
   preox:{ eto2:"0.9", headUp:"30°", hfno:"30 L/min" },
   rsi:{ roc:"1.2 mg/kg", sux:"1.5 mg/kg" },

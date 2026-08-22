@@ -58,10 +58,13 @@ a{color:var(--blue-tx)}
 .stoprow[aria-pressed="true"] .box{border-color:var(--red);background:var(--red)}
 .num{display:flex;gap:10px;font-size:15px;line-height:1.4;margin-top:8px}
 .num>b{font-family:var(--mono);font-weight:700;color:var(--red-tx);flex:none}
-/* The WHY tier of a transcluded checklist row (DESIGN-SYSTEM.md §6b). It is
-   shown only inside a procedure sheet — something you open deliberately, with
-   the intention of doing the procedure — and never on the step card, where the
-   only job is the next action. */
+/* The `why` half of a transcluded {do, why} row. Issue #216 removed the WHY
+   tier from every checklist in the manual — a row is one line, the action — and
+   this is the one deliberate exception: a PROCEDURE SHEET is not a checklist
+   glanced at mid-task, it is something you open on purpose because you are
+   about to do a procedure you may never have done. So the reasoning renders
+   here, always visible, never behind a control. It is never on the step card,
+   where the only job is the next action. */
 .num i.why{display:block;font-style:normal;color:var(--ink2);font-size:13.5px;line-height:1.45;margin-top:3px}
 /* Shared procedure glyphs (design/ICONOGRAPHY.md). A clinician learns the
    drawing from the card; the same drawing has to be on the row that opens it,
@@ -124,9 +127,15 @@ a{color:var(--blue-tx)}
 
    NO PHI (rule 3). The event trail holds times and the labels below — never a
    name, a number, or anything typed about a patient — and RESET clears it.
+
+   State is in memory, with ONE exception: declaring TCA stamps the manual's
+   shared case-start marker (lrh-case-startms) so the trauma bay reads one
+   continuous interval rather than a second clock from zero. See markCaseStarted()
+   below for why that is write-only, and why nothing else about CASE-STATE.md
+   is imported here.
    ========================================================================== */
 /* @proc-icons */
-var VERSION='1.2.1', REVIEWED='2026-08-21';
+var VERSION='1.3.0', REVIEWED='2026-08-21';
 /* The one localizable clinical number on this screen. */
 var ARREST_WINDOW_MIN=10;
 
@@ -257,6 +266,23 @@ function wallClock(){
   return String(d.getHours()).padStart(2,'0')+':'+String(d.getMinutes()).padStart(2,'0');
 }
 function log(label){ S.events.unshift({t:clock(),label:label}); }
+/* The ONE piece of shared state this tool touches. lrh-case-startms is the manual's
+   cross-tool case-start marker (CASE-STATE.md): "the first action of the case, in ANY
+   tool — set once, never overwritten until RESET". A traumatic arrest that survives to
+   the trauma bay has to read as ONE interval over there, not a second clock starting
+   from zero, so declaring TCA stamps it.
+
+   WRITE ONLY, never read. This tool's own clock is time since TCA was declared, and the
+   arrest window, every logged event and the debrief are all measured against that;
+   adopting an earlier marker would silently redefine all of them. Nothing else about
+   CASESTATE is imported — tca/ stays a self-contained port (CLAUDE.md rule 14), and this
+   marker carries a millisecond and nothing about a patient. */
+function markCaseStarted(){
+  try { if (!localStorage.getItem('lrh-case-startms')) localStorage.setItem('lrh-case-startms', String(Date.now())); } catch(e){}
+}
+function clearCaseStarted(){
+  try { localStorage.removeItem('lrh-case-startms'); } catch(e){}
+}
 /* Named toTop, not top: `top` is window.top and redeclaring it is a
    SyntaxError that kills the whole script silently. */
 function toTop(){ try{ window.scrollTo(0,0); document.documentElement.scrollTop=0; }catch(e){} }
@@ -596,7 +622,7 @@ document.addEventListener('click', function(e){
   var g=e.target.closest ? e.target.closest('[data-go]') : null;
   if(!g) return;
   var a=g.getAttribute('data-go');
-  if(a==='proceed'){ S.phase='run'; S.start=Date.now(); S.step='say'; log('TCA declared \u2014 clock started'); paint(); toTop(); return; }
+  if(a==='proceed'){ S.phase='run'; S.start=Date.now(); S.step='say'; markCaseStarted(); log('TCA declared \u2014 clock started'); paint(); toTop(); return; }
   if(a==='stophere'){ S.phase='stopped'; S.stopAt=wallClock(); log('Not a candidate \u2014 declared'); paint(); toTop(); return; }
   if(a==='lifeyes'){ S.phase='live'; S.lifeAt=clock(); log('Organized, perfusing cardiac activity \u2014 keep going'); paint(); toTop(); return; }
   if(a==='lifeno'){ S.phase='stopped'; S.stopAt=wallClock(); log('No cardiac output \u2014 resuscitation terminated at '+S.stopAt); paint(); toTop(); return; }
@@ -609,6 +635,9 @@ $('resetbtn').addEventListener('click', function(){
   clearTimeout(ra);
   S={phase:'decide',stops:[false,false,false,false],start:null,step:'say',events:[],xDone:false,
      sheet:null,resetArm:false,stopAt:null,lifeAt:null,pregnant:null,hystDone:false,theme:S.theme};
+  /* RESET here ends the case, so it clears the shared marker too — otherwise the trauma
+     bay's clock would keep counting from a resuscitation this tool has already dropped. */
+  clearCaseStarted();
   paint(); toTop();
 });
 

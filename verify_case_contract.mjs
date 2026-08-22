@@ -176,7 +176,11 @@ console.log('\n--- 5. reset blast radius ---');
    real gap (feedback/theme consolidation issue), now fixed to sweep the same
    as arrest/tca. Not in TOOLS above (they write no shared adult weight), so
    listed here directly rather than reshaping the weight-contract tool list. */
-const RESETTABLE = TOOLS.filter(t => ['codes', 'peds', 'arrest', 'tca'].includes(t.id)).concat([
+/* 'tca' is deliberately NOT in this list, and was named in it for a while while
+   matching nothing — it is not in TOOLS, so the filter silently dropped it. tca/
+   holds no shared case state and its RESET sweeps nothing manual-wide; the ONE
+   shared key it touches is asserted on its own, below section 5. */
+const RESETTABLE = TOOLS.filter(t => ['codes', 'peds', 'arrest'].includes(t.id)).concat([
   { id: 'neonatal', path: '/neonatal/' },
   { id: 'pph', path: '/pph/' },
   { id: 'dystocia', path: '/dystocia/' },
@@ -220,6 +224,43 @@ for (const t of RESETTABLE) {
   /* Absent is fine. Present-and-stale is not. */
   const hb = after[HEARTBEAT];
   ck(`5. [${t.id}] RESET leaves no STALE inactivity stamp`, hb === undefined || Number(hb) > STALE, true);
+}
+
+/* ---- 5b. tca/ AND THE SHARED CASE-START MARKER ----
+   tca/ is a self-contained port (CLAUDE.md rule 14) and touches exactly one shared
+   key: lrh-case-startms, so that a resuscitation which begins as a traumatic arrest
+   and continues in the trauma bay reads as ONE interval rather than two clocks from
+   zero. Three things have to hold, and each one is a different way to get it wrong:
+     · declaring TCA stamps the marker (otherwise trauma/'s clock starts late),
+     · it does NOT overwrite a marker an earlier tool already set (the contract is
+       "first action of the case, set once" — overwriting would erase the interval),
+     · RESET here clears it (otherwise the trauma bay counts a case tca has dropped).
+   Note it is WRITE-ONLY: tca's own clock stays time-since-TCA-declared, because the
+   arrest window, every logged event and the debrief are measured against that. */
+console.log('\n--- 5b. tca and lrh-case-startms ---');
+{
+  const t = { id: 'tca', path: '/tca/' };
+  await open(t);
+  await pg.evaluate(() => { try { localStorage.clear(); } catch (e) {} });
+  await open(t);
+  await pg.click('[data-go="proceed"]'); await pg.waitForTimeout(200);
+  const stamped = await pg.evaluate(() => localStorage.getItem('lrh-case-startms'));
+  ck('5b. declaring TCA stamps the shared case-start marker', stamped !== null && Number(stamped) > 0, true);
+
+  /* An earlier tool already started the case: the marker must survive untouched. */
+  const EARLIER = String(Date.now() - 300000);
+  await open(t);
+  await seed({ 'lrh-case-startms': EARLIER });
+  await open(t);
+  await pg.click('[data-go="proceed"]'); await pg.waitForTimeout(200);
+  ck('5b. it never overwrites a marker set earlier in the case',
+     await pg.evaluate(() => localStorage.getItem('lrh-case-startms')), EARLIER);
+
+  /* RESET is two taps here (SURE?), the live engines' idiom. */
+  await pg.click('#resetbtn'); await pg.waitForTimeout(200);
+  await pg.click('#resetbtn'); await pg.waitForTimeout(300);
+  ck('5b. RESET clears it',
+     await pg.evaluate(() => localStorage.getItem('lrh-case-startms')), null);
 }
 
 /* ---- 6. THE PHI GUARD IS THE SAME GUARD EVERYWHERE ----

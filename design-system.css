@@ -51,6 +51,26 @@
     border-radius:10px;cursor:pointer;min-height:38px;white-space:nowrap;text-decoration:none;
     display:inline-flex;align-items:center;gap:4px}
   .hdr .ghost:hover,.hdr .ghost:focus-visible{color:var(--ink);border-color:var(--accent)}
+  /* The case clock in the bar. Monospace so the digits do not jitter every second,
+     and tabular width so the bar does not reflow as it goes from 9:59 to 10:00. */
+  .hdr .hdrclock{font-family:"IBM Plex Mono","SF Mono",ui-monospace,Menlo,monospace;
+    font-size:15px;font-weight:700;font-variant-numeric:tabular-nums;color:var(--ink);
+    white-space:nowrap;padding:0 2px}
+  .hdr .hdrclock[hidden]{display:none}
+  /* The page footer. FEEDBACK used to sit in the bar, competing for the one row a
+     clinician looks at mid-case with the controls that matter there — the clock,
+     the timeline and RESET (issue #219: "leave open spaces for attention"). It is
+     not an emergency affordance; it belongs at the bottom of the page, where
+     somebody who wants to write in is already looking. Screen only: a printed
+     card should not carry a mailto: link. */
+  .pagefoot{margin:26px auto 34px;padding:14px 16px 0;border-top:1px solid var(--line);
+    display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;justify-content:space-between;
+    font-size:12px;line-height:1.5;color:var(--ink2)}
+  .pagefoot a{color:var(--ink2);font-weight:700;letter-spacing:.06em;text-decoration:none;
+    border:1px solid var(--line);border-radius:10px;padding:9px 12px;min-height:38px;
+    display:inline-flex;align-items:center}
+  .pagefoot a:hover,.pagefoot a:focus-visible{color:var(--ink);border-color:var(--accent)}
+  @media print{ .pagefoot{display:none} }
   .hdr .ghost.danger{color:var(--red-tx)}
   .hdr .ghost.danger:hover,.hdr .ghost.danger:focus-visible{color:var(--red-tx);border-color:var(--red)}
   /* Bare links had no rule at all, so any link a card author did not style
