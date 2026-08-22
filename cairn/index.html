@@ -11,6 +11,50 @@
 <meta property="og:description" content="Open-source, offline-first bedside cognitive aids for rural emergency departments.">
 <meta property="og:url" content="https://cairnready.org/">
 <style>
+/* ===========================================================================
+   Cairn is the public site, not a bedside tool: no LIGHT/DARK control, it
+   follows the reader's system setting.
+
+   Only the page chrome moves. #preview's interior and the #case-* rules are a
+   picture of the manual's dark UI — a screenshot does not invert when you
+   change your OS theme, and if it did it would stop depicting the product.
+
+   Dark values are the manual's own (--bg #0D1420, --card #161F2E) so the site
+   and the thing it markets read as one family. The dark BANDS invert their
+   role: against a light page they are heavy navy blocks, so against a dark
+   page they lift instead — otherwise the light/dark/light rhythm of the page
+   flattens into one sheet.
+   =========================================================================== */
+:root{
+  --c-page:#f6f7f6; --c-surface:#ffffff; --c-surface-2:oklch(0.94 0.02 250);
+  --c-band:oklch(0.3 0.05 250); --c-band-2:oklch(0.95 0.015 250);
+  --c-ink:oklch(0.24 0.015 160); --c-ink-2:var(--c-ink-2); --c-ink-3:var(--c-ink-3);
+  --c-rule:oklch(0.9 0.01 160); --c-rule-soft:oklch(0.85 0.01 160);
+  --c-brand:#005596; --c-brand-hover:#004478;
+  --c-link:#005596; --c-link-hover:#003a66;
+  --c-on-band:#ffffff; --c-on-band-2:oklch(0.85 0.01 160); --c-on-band-3:oklch(0.72 0.02 160);
+  --c-tint-blue:oklch(0.955 0.012 250); --c-rule-blue:oklch(0.88 0.02 250);
+  --c-outline:oklch(0.6 0.05 250); --c-outline-hover:oklch(0.42 0.09 250);
+  --c-band-3:oklch(0.25 0.04 250);
+  --c-nav:rgba(246,247,246,0.92);
+}
+@media (prefers-color-scheme: dark){
+  :root{
+    --c-page:#0D1420; --c-surface:#161F2E; --c-surface-2:#1D2A3C;
+    --c-band:#16233A; --c-band-2:#1A2740;
+    --c-ink:#EAF0F7; --c-ink-2:#C3CDD9; --c-ink-3:#8FA0B5;
+    --c-rule:rgba(255,255,255,0.14); --c-rule-soft:rgba(255,255,255,0.09);
+    --c-brand:#2F74AD; --c-brand-hover:#3E88C6;
+    --c-link:#7DB1E0; --c-link-hover:#A8CBEE;
+    --c-on-band:#EAF0F7; --c-on-band-2:#C3CDD9; --c-on-band-3:#9AA9BC;
+    --c-tint-blue:#111A2B; --c-rule-blue:rgba(125,177,224,0.30);
+    --c-outline:#4E7FB0; --c-outline-hover:#7DB1E0;
+    --c-band-3:#101A2C;
+    --c-nav:rgba(13,20,32,0.92);
+  }
+}
+</style>
+<style>
 /* latin-ext */
 @font-face {
   font-family: 'Atkinson Hyperlegible';
@@ -74,18 +118,18 @@
 @font-face { font-family: 'Bitter'; font-style: normal; font-weight: 800; font-display: swap; src: url("fonts/5a42923c.woff2") format('woff2'); unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD; }
 
 html { scroll-behavior: smooth; }
-body { margin: 0; background: #f6f7f6; color: oklch(0.24 0.015 160); font-family: 'Atkinson Hyperlegible', sans-serif; }
-a { color: #005596; text-decoration: none; }
-a:hover { color: #003a66; text-decoration: underline; }
+body { margin: 0; background: var(--c-page); color: var(--c-ink); font-family: 'Atkinson Hyperlegible', sans-serif; }
+a { color:var(--c-link); text-decoration: none; }
+a:hover { color: var(--c-link-hover); text-decoration: underline; }
 input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
 
-.btn-blue { background: #005596; color: #fff; border: none; border-radius: 8px; font-weight: 700; text-decoration: none; display: inline-block; cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif; }
-.btn-blue:hover, .btn-blue:focus-visible { background: #004478; color: #fff; text-decoration: none; }
-.btn-outline { border: 1.5px solid oklch(0.6 0.05 250); color: oklch(0.3 0.05 250); border-radius: 8px; font-weight: 700; text-decoration: none; display: inline-block; background: none; cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif; }
-.btn-outline:hover, .btn-outline:focus-visible { border-color: oklch(0.42 0.09 250); text-decoration: none; }
+.btn-blue { background: var(--c-brand); color: #fff; border: none; border-radius: 8px; font-weight: 700; text-decoration: none; display: inline-block; cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif; }
+.btn-blue:hover, .btn-blue:focus-visible { background: var(--c-brand-hover); color: #fff; text-decoration: none; }
+.btn-outline { border: 1.5px solid var(--c-outline); color: var(--c-link); border-radius: 8px; font-weight: 700; text-decoration: none; display: inline-block; background: none; cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif; }
+.btn-outline:hover, .btn-outline:focus-visible { border-color: var(--c-outline-hover); text-decoration: none; }
 
-.faq-q { width: 100%; text-align: left; background: none; border: none; padding: 18px 22px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 16.5px; font-weight: 700; color: oklch(0.24 0.015 160); cursor: pointer; display: flex; justify-content: space-between; gap: 16px; align-items: center; }
-.faq-a { margin: 0; padding: 0 22px 20px; font-size: 15.5px; line-height: 1.65; color: oklch(0.4 0.02 160); }
+.faq-q { width: 100%; text-align: left; background: none; border: none; padding: 18px 22px; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 16.5px; font-weight: 700; color: var(--c-ink); cursor: pointer; display: flex; justify-content: space-between; gap: 16px; align-items: center; }
+.faq-a { margin: 0; padding: 0 22px 20px; font-size: 15.5px; line-height: 1.65; color: var(--c-ink-3); }
 .faq-a[hidden] { display: none; }
 
 .case-chip { min-height: 42px; padding: 0 15px; border-radius: 999px; cursor: pointer; font-family: 'Atkinson Hyperlegible', sans-serif; font-size: 13.5px; font-weight: 700; display: inline-flex; align-items: center; gap: 8px; white-space: nowrap; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.3); color: #dce6f2; }
@@ -126,36 +170,36 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
 </head>
 <body>
 <div style="min-width: 320px">
-  <nav style="position: sticky; top: 0; z-index: 50; background: rgba(246,247,246,0.92); backdrop-filter: blur(8px); border-bottom: 1px solid oklch(0.9 0.01 160); padding: 0 32px">
+  <nav style="position: sticky; top: 0; z-index: 50; background: var(--c-nav); backdrop-filter: blur(8px); border-bottom: 1px solid var(--c-rule); padding: 0 32px">
     <div style="max-width: 1100px; margin: 0 auto; display: flex; align-items: center; gap: 28px; height: 64px">
       <a href="https://lrhemergencymanual.net/" target="_blank" rel="noopener noreferrer" style="display: flex; align-items: center; gap: 10px; text-decoration: none">
-        <svg width="26" height="30" viewBox="0 0 26 30" aria-hidden="true"><rect x="7" y="1" width="12" height="7" rx="3.5" fill="#005596"></rect><rect x="4" y="11" width="18" height="7" rx="3.5" fill="#005596"></rect><rect x="1" y="21" width="24" height="8" rx="4" fill="#003a66"></rect></svg>
-        <span style="font-family: Bitter, serif; font-weight: 800; font-size: 22px; color: oklch(0.24 0.015 160)">Cairn</span>
+        <svg width="26" height="30" viewBox="0 0 26 30" aria-hidden="true"><rect x="7" y="1" width="12" height="7" rx="3.5" fill="#005596"></rect><rect x="4" y="11" width="18" height="7" rx="3.5" fill="#005596"></rect><rect x="1" y="21" width="24" height="8" rx="4" fill="var(--c-link-hover)"></rect></svg>
+        <span style="font-family: Bitter, serif; font-weight: 800; font-size: 22px; color: var(--c-ink)">Cairn</span>
       </a>
       <div style="flex: 1"></div>
       <div class="nav-links" style="display: flex; gap: 22px; align-items: center; font-size: 15px">
-        <a href="#preview" style="color: oklch(0.35 0.02 160)">Walk a case</a>
-        <a href="#inside" style="color: oklch(0.35 0.02 160)">What's inside</a>
-        <a href="#how" style="color: oklch(0.35 0.02 160)">How it works</a>
-        <a href="#evidence" style="color: oklch(0.35 0.02 160)">Evidence</a>
-        <a href="#faq" style="color: oklch(0.35 0.02 160)">FAQ</a>
+        <a href="#preview" style="color: var(--c-ink-2)">Walk a case</a>
+        <a href="#inside" style="color: var(--c-ink-2)">What's inside</a>
+        <a href="#how" style="color: var(--c-ink-2)">How it works</a>
+        <a href="#evidence" style="color: var(--c-ink-2)">Evidence</a>
+        <a href="#faq" style="color: var(--c-ink-2)">FAQ</a>
         <a href="#join" class="btn-blue" style="padding: 9px 18px">Join the network</a>
       </div>
     </div>
   </nav>
 
-  <header id="top" style="padding: 88px 32px 72px; background: linear-gradient(180deg, #f6f7f6 0%, oklch(0.955 0.012 250) 100%)">
+  <header id="top" style="padding: 88px 32px 72px; background: linear-gradient(180deg, var(--c-page) 0%, var(--c-tint-blue) 100%)">
     <div class="hero-grid" style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1.4fr 1fr; gap: 64px; align-items: center">
       <div>
-        <div style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color: #005596; border: 1px solid oklch(0.8 0.05 250); border-radius: 999px; padding: 5px 14px; margin-bottom: 24px">Open source &middot; cairnready.org</div>
+        <div style="display: inline-flex; align-items: center; gap: 8px; font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; color:var(--c-link); border: 1px solid var(--c-outline); border-radius: 999px; padding: 5px 14px; margin-bottom: 24px">Open source &middot; cairnready.org</div>
         <h1 style="font-family: Bitter, serif; font-weight: 800; font-size: 54px; line-height: 1.08; margin: 0 0 22px; text-wrap: balance">Ready for the rare, in every rural ED.</h1>
-        <p style="font-size: 21px; line-height: 1.5; color: oklch(0.32 0.02 160); margin: 0 0 20px; max-width: 540px">Your department sees the once-in-three-years case too. Cairn is the open-source system that gets you ready for it — and it is free.</p>
-        <ul style="list-style: none; margin: 0 0 24px; padding: 0; display: flex; flex-direction: column; gap: 9px; max-width: 540px; font-size: 16.5px; line-height: 1.5; color: oklch(0.38 0.02 160)">
-          <li style="display: flex; gap: 11px"><span style="color: #005596; font-weight: 700">&rarr;</span><span>An interactive manual and team cognitive aids that run the clock, the doses and the checklist with you</span></li>
-          <li style="display: flex; gap: 11px"><span style="color: #005596; font-weight: 700">&rarr;</span><span>Kit lists, readiness audits and printable drawer labels for the carts you actually have</span></li>
-          <li style="display: flex; gap: 11px"><span style="color: #005596; font-weight: 700">&rarr;</span><span>Simulations you can run with a pillow and fifteen minutes — no sim lab</span></li>
+        <p style="font-size: 21px; line-height: 1.5; color: var(--c-ink-2); margin: 0 0 20px; max-width: 540px">Your department sees the once-in-three-years case too. Cairn is the open-source system that gets you ready for it — and it is free.</p>
+        <ul style="list-style: none; margin: 0 0 24px; padding: 0; display: flex; flex-direction: column; gap: 9px; max-width: 540px; font-size: 16.5px; line-height: 1.5; color: var(--c-ink-2)">
+          <li style="display: flex; gap: 11px"><span style="color:var(--c-link); font-weight: 700">&rarr;</span><span>An interactive manual and team cognitive aids that run the clock, the doses and the checklist with you</span></li>
+          <li style="display: flex; gap: 11px"><span style="color:var(--c-link); font-weight: 700">&rarr;</span><span>Kit lists, readiness audits and printable drawer labels for the carts you actually have</span></li>
+          <li style="display: flex; gap: 11px"><span style="color:var(--c-link); font-weight: 700">&rarr;</span><span>Simulations you can run with a pillow and fifteen minutes — no sim lab</span></li>
         </ul>
-        <p style="font-size: 16px; line-height: 1.6; color: oklch(0.45 0.02 160); margin: 0 0 32px; max-width: 540px">One local champion takes a branch, keeps what fits, swaps in your doses and phone numbers, and practices with the team. Then shares what they learned back.</p>
+        <p style="font-size: 16px; line-height: 1.6; color: var(--c-ink-3); margin: 0 0 32px; max-width: 540px">One local champion takes a branch, keeps what fits, swaps in your doses and phone numbers, and practices with the team. Then shares what they learned back.</p>
         <div style="display: flex; gap: 14px; flex-wrap: wrap">
           <a href="#preview" class="btn-blue" style="padding: 14px 26px; font-size: 16px">Explore the manual</a>
           <a href="#join" class="btn-outline" style="padding: 14px 26px; font-size: 16px">Join the network</a>
@@ -163,32 +207,32 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
       </div>
       <div style="display: flex; flex-direction: column; gap: 18px; align-items: center">
         <svg width="210" height="200" viewBox="0 0 210 200" aria-label="A cairn of four stones, from the base up: kits, support, training, readiness">
-          <ellipse cx="105" cy="186" rx="88" ry="9" fill="oklch(0.9 0.01 250)"></ellipse>
-          <rect x="8" y="140" width="194" height="42" rx="21" fill="#003a66"></rect>
+          <ellipse cx="105" cy="186" rx="88" ry="9" fill="var(--c-rule-blue)"></ellipse>
+          <rect x="8" y="140" width="194" height="42" rx="21" fill="var(--c-link-hover)"></rect>
           <text x="105" y="167" text-anchor="middle" fill="#ffffff" font-family="'Atkinson Hyperlegible', sans-serif" font-size="15" font-weight="700" letter-spacing="1.1">EQUIPMENT LISTS</text>
-          <rect x="24" y="94" width="162" height="40" rx="20" fill="#004478"></rect>
+          <rect x="24" y="94" width="162" height="40" rx="20" fill="var(--c-brand-hover)"></rect>
           <text x="105" y="120" text-anchor="middle" fill="#ffffff" font-family="'Atkinson Hyperlegible', sans-serif" font-size="15" font-weight="700" letter-spacing="1.1">COGNITIVE AIDS</text>
           <rect x="47" y="50" width="116" height="38" rx="19" fill="#005596"></rect>
           <text x="105" y="75" text-anchor="middle" fill="#ffffff" font-family="'Atkinson Hyperlegible', sans-serif" font-size="15" font-weight="700" letter-spacing="1.3">TRAINING</text>
           <rect x="66" y="8" width="78" height="36" rx="18" fill="#2f74ad"></rect>
           <text x="105" y="32" text-anchor="middle" fill="#ffffff" font-family="'Atkinson Hyperlegible', sans-serif" font-size="15" font-weight="700" letter-spacing="1.3">READY</text>
         </svg>
-        <div style="max-width: 320px; display: flex; flex-direction: column; gap: 12px; font-size: 14.5px; line-height: 1.55; color: oklch(0.42 0.02 160)">
+        <div style="max-width: 320px; display: flex; flex-direction: column; gap: 12px; font-size: 14.5px; line-height: 1.55; color: var(--c-ink-3)">
           <p style="margin: 0; font-style: italic">A cairn is a stack of stones left by those who walked the trail before you — so you can find the way in bad weather.</p>
-          <p style="margin: 0">From the ground up: <strong style="color: oklch(0.28 0.02 160)">equipment lists</strong> — the right kit, where you can find it. <strong style="color: oklch(0.28 0.02 160)">Cognitive aids</strong> that run the clock and the checklist with you. <strong style="color: oklch(0.28 0.02 160)">Training</strong> built into the tools themselves. <strong style="color: oklch(0.28 0.02 160)">Ready</strong> at the top.</p>
+          <p style="margin: 0">From the ground up: <strong style="color: var(--c-ink)">equipment lists</strong> — the right kit, where you can find it. <strong style="color: var(--c-ink)">Cognitive aids</strong> that run the clock and the checklist with you. <strong style="color: var(--c-ink)">Training</strong> built into the tools themselves. <strong style="color: var(--c-ink)">Ready</strong> at the top.</p>
           <p style="margin: 0">Add a stone if you can. It becomes part of the trail for whoever comes next.</p>
         </div>
       </div>
     </div>
   </header>
 
-  <section id="preview" style="padding: 80px 32px; background: oklch(0.3 0.05 250)">
+  <section id="preview" style="padding: 80px 32px; background: var(--c-band)">
     <div style="max-width: 1100px; margin: 0 auto">
       <div style="display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; margin-bottom: 8px">
         <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 34px; color: #fff; margin: 0">Walk one case</h2>
         <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: oklch(0.78 0.07 250)">Maternal cardiac arrest &middot; 34 weeks</span>
       </div>
-      <p style="color: oklch(0.82 0.01 160); font-size: 16px; max-width: 700px; margin: 0 0 28px; line-height: 1.6">One patient becomes two. ACLS, then a resuscitative hysterotomy, then a newborn to resuscitate — three protocols in six minutes, on one screen, in one continuous case. Step through what the team actually sees.</p>
+      <p style="color: var(--c-rule); font-size: 16px; max-width: 700px; margin: 0 0 28px; line-height: 1.6">One patient becomes two. ACLS, then a resuscitative hysterotomy, then a newborn to resuscitate — three protocols in six minutes, on one screen, in one continuous case. Step through what the team actually sees.</p>
 
       <div id="case-chips" style="display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 20px"></div>
 
@@ -218,48 +262,48 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
   <section id="inside" style="padding: 88px 32px">
     <div style="max-width: 1100px; margin: 0 auto">
       <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 34px; margin: 0 0 12px">What's inside a branch</h2>
-      <p style="font-size: 17px; color: oklch(0.42 0.02 160); max-width: 620px; margin: 0 0 44px; line-height: 1.6">One repository, plain static files, no build step. Take all of it or just the pieces your department needs.</p>
+      <p style="font-size: 17px; color: var(--c-ink-3); max-width: 620px; margin: 0 0 44px; line-height: 1.6">One repository, plain static files, no build step. Take all of it or just the pieces your department needs.</p>
 
-      <div style="border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; background: #fff; padding: 26px 28px; margin-bottom: 26px">
+      <div style="border: 1px solid var(--c-rule); border-radius: 12px; background: var(--c-surface); padding: 26px 28px; margin-bottom: 26px">
         <div style="display: flex; align-items: baseline; gap: 14px; flex-wrap: wrap; margin-bottom: 4px">
           <h3 style="font-family: Bitter, serif; font-size: 20px; font-weight: 700; margin: 0">Kit glyphs</h3>
-          <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: #005596">print-ready &middot; drawer faces, stock strips, wall posters</span>
+          <span style="font-size: 13px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color:var(--c-link)">print-ready &middot; drawer faces, stock strips, wall posters</span>
         </div>
-        <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0 0 22px; max-width: 660px">Anatomy in ink, the one action in red — never more than one red idea per figure. Related procedures share a base drawing and differ only by that idea: the hysterotomy's vertical midline cut and the C-section's transverse one sit on the same uterus. The same glyph rides the drawer label, the poster and the live card, so the cart and the screen agree.</p>
+        <p style="font-size: 15px; line-height: 1.55; color: var(--c-ink-3); margin: 0 0 22px; max-width: 660px">Anatomy in ink, the one action in red — never more than one red idea per figure. Related procedures share a base drawing and differ only by that idea: the hysterotomy's vertical midline cut and the C-section's transverse one sit on the same uterus. The same glyph rides the drawer label, the poster and the live card, so the cart and the screen agree.</p>
         <div class="glyph-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 18px">
           <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
-            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #fdfdfc">
+            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid var(--c-rule); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--c-surface)">
               <svg width="62" height="62" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M15 11 Q24 3 33 11 Q41 20 33 30 Q28 36 26 40 L22 40 Q20 36 15 30 Q7 20 15 11 Z" stroke="#16324f" stroke-width="2.2"></path>
                 <path d="M24 13 L24 31" stroke="#c0392b" stroke-width="2.8"></path>
               </svg>
             </div>
-            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: oklch(0.3 0.02 160); line-height: 1.3">Resuscitative hysterotomy</span>
-            <span style="font-size: 11.5px; text-align: center; color: oklch(0.52 0.02 160)">OB cart &middot; drawer 5</span>
+            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: var(--c-ink-2); line-height: 1.3">Resuscitative hysterotomy</span>
+            <span style="font-size: 11.5px; text-align: center; color: var(--c-ink-3)">OB cart &middot; drawer 5</span>
           </div>
           <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
-            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #fdfdfc">
+            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid var(--c-rule); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--c-surface)">
               <svg width="62" height="62" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M15 11 Q24 3 33 11 Q41 20 33 30 Q28 36 26 40 L22 40 Q20 36 15 30 Q7 20 15 11 Z" stroke="#16324f" stroke-width="2.2"></path>
                 <path d="M24 45 L24 25" stroke="#c0392b" stroke-width="2.4"></path>
                 <path d="M24 15.5 a4.5 4.5 0 1 0 0.1 0" stroke="#c0392b" stroke-width="2.4"></path>
               </svg>
             </div>
-            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: oklch(0.3 0.02 160); line-height: 1.3">JADA &mdash; PPH</span>
-            <span style="font-size: 11.5px; text-align: center; color: oklch(0.52 0.02 160)">OB cart &middot; drawer 3</span>
+            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: var(--c-ink-2); line-height: 1.3">JADA &mdash; PPH</span>
+            <span style="font-size: 11.5px; text-align: center; color: var(--c-ink-3)">OB cart &middot; drawer 3</span>
           </div>
           <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
-            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #fdfdfc">
+            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid var(--c-rule); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--c-surface)">
               <svg width="62" height="62" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M15 11 Q24 3 33 11 Q41 20 33 30 Q28 36 26 40 L22 40 Q20 36 15 30 Q7 20 15 11 Z" stroke="#16324f" stroke-width="2.2"></path>
                 <path d="M16 30 L32 30" stroke="#c0392b" stroke-width="2.8"></path>
               </svg>
             </div>
-            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: oklch(0.3 0.02 160); line-height: 1.3">ED C-section</span>
-            <span style="font-size: 11.5px; text-align: center; color: oklch(0.52 0.02 160)">OB cart &middot; drawer 5</span>
+            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: var(--c-ink-2); line-height: 1.3">ED C-section</span>
+            <span style="font-size: 11.5px; text-align: center; color: var(--c-ink-3)">OB cart &middot; drawer 5</span>
           </div>
           <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
-            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #fdfdfc">
+            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid var(--c-rule); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--c-surface)">
               <svg width="62" height="62" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M5 16 Q24 9 43 16" stroke="#16324f" stroke-width="2.2"></path>
                 <path d="M5 27 Q24 20 43 27" stroke="#16324f" stroke-width="2.2"></path>
@@ -268,11 +312,11 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
                 <path d="M31 31 L18 18" stroke="#c0392b" stroke-width="4" stroke-dasharray="4 3"></path>
               </svg>
             </div>
-            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: oklch(0.3 0.02 160); line-height: 1.3">Chest tube</span>
-            <span style="font-size: 11.5px; text-align: center; color: oklch(0.52 0.02 160)">Trauma cart</span>
+            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: var(--c-ink-2); line-height: 1.3">Chest tube</span>
+            <span style="font-size: 11.5px; text-align: center; color: var(--c-ink-3)">Trauma cart</span>
           </div>
           <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
-            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #fdfdfc">
+            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid var(--c-rule); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--c-surface)">
               <svg width="62" height="62" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M34 5 Q28 8 28 14 L28 21" stroke="#16324f" stroke-width="2.2"></path>
                 <path d="M16 5 L16 21 Q16 27 10 30" stroke="#16324f" stroke-width="2.2"></path>
@@ -283,11 +327,11 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
                 <path d="M14 7 L18 2" stroke="#c0392b" stroke-width="1.8"></path>
               </svg>
             </div>
-            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: oklch(0.3 0.02 160); line-height: 1.3">Resus line</span>
-            <span style="font-size: 11.5px; text-align: center; color: oklch(0.52 0.02 160)">Resus bay</span>
+            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: var(--c-ink-2); line-height: 1.3">Resus line</span>
+            <span style="font-size: 11.5px; text-align: center; color: var(--c-ink-3)">Resus bay</span>
           </div>
           <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
-            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #fdfdfc">
+            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid var(--c-rule); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--c-surface)">
               <svg width="62" height="62" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M42 26 Q42 5 25 5 Q9 5 9 20 L9 24 L5 30 L9 31 Q11 32 9 33" stroke="#16324f" stroke-width="2.2"></path>
                 <path d="M33 27 Q36 29 33 32" stroke="#16324f" stroke-width="2.2"></path>
@@ -298,11 +342,11 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
                 <path d="M2 29 Q14 26 21 32 Q26 36 26 46" stroke="#c0392b" stroke-width="2.6"></path>
               </svg>
             </div>
-            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: oklch(0.3 0.02 160); line-height: 1.3">RSI</span>
-            <span style="font-size: 11.5px; text-align: center; color: oklch(0.52 0.02 160)">Airway cart</span>
+            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: var(--c-ink-2); line-height: 1.3">RSI</span>
+            <span style="font-size: 11.5px; text-align: center; color: var(--c-ink-3)">Airway cart</span>
           </div>
           <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
-            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #fdfdfc">
+            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid var(--c-rule); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--c-surface)">
               <svg width="62" height="62" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M14 6 L14 42" stroke="#16324f" stroke-width="2.2"></path>
                 <path d="M28 6 L28 42" stroke="#16324f" stroke-width="2.2"></path>
@@ -310,11 +354,11 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
                 <path d="M44 6 Q36 10 31 17 Q25 25 23 34 L23 42" stroke="#c0392b" stroke-width="2.8"></path>
               </svg>
             </div>
-            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: oklch(0.3 0.02 160); line-height: 1.3">FONA</span>
-            <span style="font-size: 11.5px; text-align: center; color: oklch(0.52 0.02 160)">Airway cart &middot; drawer 4</span>
+            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: var(--c-ink-2); line-height: 1.3">FONA</span>
+            <span style="font-size: 11.5px; text-align: center; color: var(--c-ink-3)">Airway cart &middot; drawer 4</span>
           </div>
           <div style="display: flex; flex-direction: column; align-items: center; gap: 8px">
-            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: #fdfdfc">
+            <div style="width: 100%; aspect-ratio: 1.15; border: 1px solid var(--c-rule); border-radius: 12px; display: flex; align-items: center; justify-content: center; background: var(--c-surface)">
               <svg width="62" height="62" viewBox="0 0 48 48" fill="none" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
                 <path d="M18 4 Q16 24 18 44" stroke="#16324f" stroke-width="2.2"></path>
                 <path d="M32 4 Q34 24 32 44" stroke="#16324f" stroke-width="2.2"></path>
@@ -323,111 +367,111 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
                 <path d="M25 19 L44 11" stroke="#c0392b" stroke-width="3"></path>
               </svg>
             </div>
-            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: oklch(0.3 0.02 160); line-height: 1.3">Tourniquet</span>
-            <span style="font-size: 11.5px; text-align: center; color: oklch(0.52 0.02 160)">Trauma cart</span>
+            <span style="font-size: 12.5px; font-weight: 700; text-align: center; color: var(--c-ink-2); line-height: 1.3">Tourniquet</span>
+            <span style="font-size: 11.5px; text-align: center; color: var(--c-ink-3)">Trauma cart</span>
           </div>
         </div>
       </div>
 
       <div class="feature-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px">
-        <div style="background: #fff; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; padding: 26px 24px">
-          <div style="width: 40px; height: 40px; border-radius: 9px; background: oklch(0.94 0.02 250); display: flex; align-items: center; justify-content: center; margin-bottom: 16px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #005596; display: block"></span></div>
+        <div style="background: var(--c-surface); border: 1px solid var(--c-rule); border-radius: 12px; padding: 26px 24px">
+          <div style="width: 40px; height: 40px; border-radius: 9px; background: var(--c-surface-2); display: flex; align-items: center; justify-content: center; margin-bottom: 16px"><span style="width: 14px; height: 14px; border-radius: 4px; background: var(--c-brand); display: block"></span></div>
           <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Interactive emergency manual</h3>
-          <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">Live, checkable cognitive aids for codes, pediatric, OB and neonatal emergencies, trauma, and rare procedures — timers and dosing engines, not PDFs.</p>
+          <p style="font-size: 15px; line-height: 1.55; color: var(--c-ink-3); margin: 0">Live, checkable cognitive aids for codes, pediatric, OB and neonatal emergencies, trauma, and rare procedures — timers and dosing engines, not PDFs.</p>
         </div>
-        <div style="background: #fff; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; padding: 26px 24px">
-          <div style="width: 40px; height: 40px; border-radius: 9px; background: oklch(0.94 0.02 250); display: flex; align-items: center; justify-content: center; margin-bottom: 16px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #005596; display: block"></span></div>
+        <div style="background: var(--c-surface); border: 1px solid var(--c-rule); border-radius: 12px; padding: 26px 24px">
+          <div style="width: 40px; height: 40px; border-radius: 9px; background: var(--c-surface-2); display: flex; align-items: center; justify-content: center; margin-bottom: 16px"><span style="width: 14px; height: 14px; border-radius: 4px; background: var(--c-brand); display: block"></span></div>
           <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Team cognitive aids</h3>
-          <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">Aids for the whole team, including the hard conversations: consultant calls, code status, breaking bad news, and the post-event debrief.</p>
+          <p style="font-size: 15px; line-height: 1.55; color: var(--c-ink-3); margin: 0">Aids for the whole team, including the hard conversations: consultant calls, code status, breaking bad news, and the post-event debrief.</p>
         </div>
-        <div style="background: #fff; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; padding: 26px 24px">
-          <div style="width: 40px; height: 40px; border-radius: 9px; background: oklch(0.94 0.02 250); display: flex; align-items: center; justify-content: center; margin-bottom: 16px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #005596; display: block"></span></div>
+        <div style="background: var(--c-surface); border: 1px solid var(--c-rule); border-radius: 12px; padding: 26px 24px">
+          <div style="width: 40px; height: 40px; border-radius: 9px; background: var(--c-surface-2); display: flex; align-items: center; justify-content: center; margin-bottom: 16px"><span style="width: 14px; height: 14px; border-radius: 4px; background: var(--c-brand); display: block"></span></div>
           <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Equipment kit lists &amp; audits</h3>
-          <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">Every kit, item, and size — searchable, scored against seven national equipment standards, with gap-recording you can export as findings.</p>
+          <p style="font-size: 15px; line-height: 1.55; color: var(--c-ink-3); margin: 0">Every kit, item, and size — searchable, scored against seven national equipment standards, with gap-recording you can export as findings.</p>
         </div>
-        <div style="background: #fff; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; padding: 26px 24px">
-          <div style="width: 40px; height: 40px; border-radius: 9px; background: oklch(0.94 0.02 250); display: flex; align-items: center; justify-content: center; margin-bottom: 16px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #005596; display: block"></span></div>
+        <div style="background: var(--c-surface); border: 1px solid var(--c-rule); border-radius: 12px; padding: 26px 24px">
+          <div style="width: 40px; height: 40px; border-radius: 9px; background: var(--c-surface-2); display: flex; align-items: center; justify-content: center; margin-bottom: 16px"><span style="width: 14px; height: 14px; border-radius: 4px; background: var(--c-brand); display: block"></span></div>
           <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Kit indicators &amp; labels</h3>
-          <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">Print-ready drawer faces, stock strips, and kit cards. Color finds the drawer; words and pictograms name it; QR codes close the loop to the live card.</p>
+          <p style="font-size: 15px; line-height: 1.55; color: var(--c-ink-3); margin: 0">Print-ready drawer faces, stock strips, and kit cards. Color finds the drawer; words and pictograms name it; QR codes close the loop to the live card.</p>
         </div>
-        <div style="background: #fff; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; padding: 26px 24px">
-          <div style="width: 40px; height: 40px; border-radius: 9px; background: oklch(0.94 0.02 250); display: flex; align-items: center; justify-content: center; margin-bottom: 16px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #005596; display: block"></span></div>
+        <div style="background: var(--c-surface); border: 1px solid var(--c-rule); border-radius: 12px; padding: 26px 24px">
+          <div style="width: 40px; height: 40px; border-radius: 9px; background: var(--c-surface-2); display: flex; align-items: center; justify-content: center; margin-bottom: 16px"><span style="width: 14px; height: 14px; border-radius: 4px; background: var(--c-brand); display: block"></span></div>
           <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Simulations &amp; VEMS kit</h3>
-          <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">Pillow-patient drills that chain real workflows, plus a laminatable visual-simulation deck. A table and fifteen minutes — no mannequin, no sim lab.</p>
+          <p style="font-size: 15px; line-height: 1.55; color: var(--c-ink-3); margin: 0">Pillow-patient drills that chain real workflows, plus a laminatable visual-simulation deck. A table and fifteen minutes — no mannequin, no sim lab.</p>
         </div>
-        <div style="background: #fff; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; padding: 26px 24px">
-          <div style="width: 40px; height: 40px; border-radius: 9px; background: oklch(0.94 0.02 250); display: flex; align-items: center; justify-content: center; margin-bottom: 16px"><span style="width: 14px; height: 14px; border-radius: 4px; background: #005596; display: block"></span></div>
+        <div style="background: var(--c-surface); border: 1px solid var(--c-rule); border-radius: 12px; padding: 26px 24px">
+          <div style="width: 40px; height: 40px; border-radius: 9px; background: var(--c-surface-2); display: flex; align-items: center; justify-content: center; margin-bottom: 16px"><span style="width: 14px; height: 14px; border-radius: 4px; background: var(--c-brand); display: block"></span></div>
           <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Infographics &amp; provenance</h3>
-          <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">Wall posters for the resus bay, plus a provenance record for every tool: source guideline, edition, and the date a human last checked it.</p>
+          <p style="font-size: 15px; line-height: 1.55; color: var(--c-ink-3); margin: 0">Wall posters for the resus bay, plus a provenance record for every tool: source guideline, edition, and the date a human last checked it.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <section id="how" style="padding: 88px 32px; background: #fff; border-top: 1px solid oklch(0.92 0.005 160); border-bottom: 1px solid oklch(0.92 0.005 160)">
+  <section id="how" style="padding: 88px 32px; background: var(--c-surface); border-top: 1px solid var(--c-surface-2); border-bottom: 1px solid var(--c-surface-2)">
     <div style="max-width: 1100px; margin: 0 auto">
       <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 34px; margin: 0 0 12px">How a department adopts it</h2>
-      <p style="font-size: 17px; color: oklch(0.42 0.02 160); max-width: 640px; margin: 0 0 44px; line-height: 1.6">It starts with one local physician champion. No developers required — the mechanical steps are the kind an AI assistant does for you.</p>
+      <p style="font-size: 17px; color: var(--c-ink-3); max-width: 640px; margin: 0 0 44px; line-height: 1.6">It starts with one local physician champion. No developers required — the mechanical steps are the kind an AI assistant does for you.</p>
       <div class="steps-grid" style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px">
-        <div style="position: relative; padding: 24px 22px 26px; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; background: #f6f7f6">
-          <div style="font-family: Bitter, serif; font-weight: 800; font-size: 15px; color: #005596; margin-bottom: 10px">01</div>
+        <div style="position: relative; padding: 24px 22px 26px; border: 1px solid var(--c-rule); border-radius: 12px; background: var(--c-page)">
+          <div style="font-family: Bitter, serif; font-weight: 800; font-size: 15px; color:var(--c-link); margin-bottom: 10px">01</div>
           <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Take a branch</h3>
-          <p style="font-size: 14.5px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">Reach out and we'll hand you the repository. Fork it into your own copy — independent history, your hosting, your control. Free static hosting publishes it automatically.</p>
+          <p style="font-size: 14.5px; line-height: 1.55; color: var(--c-ink-3); margin: 0">Reach out and we'll hand you the repository. Fork it into your own copy — independent history, your hosting, your control. Free static hosting publishes it automatically.</p>
         </div>
-        <div style="position: relative; padding: 24px 22px 26px; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; background: #f6f7f6">
-          <div style="font-family: Bitter, serif; font-weight: 800; font-size: 15px; color: #005596; margin-bottom: 10px">02</div>
+        <div style="position: relative; padding: 24px 22px 26px; border: 1px solid var(--c-rule); border-radius: 12px; background: var(--c-page)">
+          <div style="font-family: Bitter, serif; font-weight: 800; font-size: 15px; color:var(--c-link); margin-bottom: 10px">02</div>
           <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Localize it</h3>
-          <p style="font-size: 14.5px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">Keep the parts that fit your ED. Edit the marked config blocks — your doses, assays, phone numbers, cart layout — then validate every value clinically.</p>
+          <p style="font-size: 14.5px; line-height: 1.55; color: var(--c-ink-3); margin: 0">Keep the parts that fit your ED. Edit the marked config blocks — your doses, assays, phone numbers, cart layout — then validate every value clinically.</p>
         </div>
-        <div style="position: relative; padding: 24px 22px 26px; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; background: #f6f7f6">
-          <div style="font-family: Bitter, serif; font-weight: 800; font-size: 15px; color: #005596; margin-bottom: 10px">03</div>
+        <div style="position: relative; padding: 24px 22px 26px; border: 1px solid var(--c-rule); border-radius: 12px; background: var(--c-page)">
+          <div style="font-family: Bitter, serif; font-weight: 800; font-size: 15px; color:var(--c-link); margin-bottom: 10px">03</div>
           <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Practice with it</h3>
-          <p style="font-size: 14.5px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">Run the simulations with your real team and real carts. New hires find the equipment; what they can't find feeds your readiness audit.</p>
+          <p style="font-size: 14.5px; line-height: 1.55; color: var(--c-ink-3); margin: 0">Run the simulations with your real team and real carts. New hires find the equipment; what they can't find feeds your readiness audit.</p>
         </div>
-        <div style="position: relative; padding: 24px 22px 26px; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; background: #f6f7f6">
-          <div style="font-family: Bitter, serif; font-weight: 800; font-size: 15px; color: #005596; margin-bottom: 10px">04</div>
+        <div style="position: relative; padding: 24px 22px 26px; border: 1px solid var(--c-rule); border-radius: 12px; background: var(--c-page)">
+          <div style="font-family: Bitter, serif; font-weight: 800; font-size: 15px; color:var(--c-link); margin-bottom: 10px">04</div>
           <h3 style="font-family: Bitter, serif; font-size: 19px; font-weight: 700; margin: 0 0 8px">Share it back</h3>
-          <p style="font-size: 14.5px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 0">A better checklist, a clearer label, a gap in coverage — contribute it upstream so the next department starts further up the trail.</p>
+          <p style="font-size: 14.5px; line-height: 1.55; color: var(--c-ink-3); margin: 0">A better checklist, a clearer label, a gap in coverage — contribute it upstream so the next department starts further up the trail.</p>
         </div>
       </div>
-      <p style="margin: 36px 0 0; font-size: 16px; line-height: 1.6; color: oklch(0.4 0.02 160); max-width: 720px">The loop closes on itself: simulations double as orientation walks, what the new hire can't find feeds the equipment readiness audit, and the audit tells you which kit indicators to print next. Practice and preparedness are the same activity.</p>
+      <p style="margin: 36px 0 0; font-size: 16px; line-height: 1.6; color: var(--c-ink-3); max-width: 720px">The loop closes on itself: simulations double as orientation walks, what the new hire can't find feeds the equipment readiness audit, and the audit tells you which kit indicators to print next. Practice and preparedness are the same activity.</p>
     </div>
   </section>
 
   <section id="evidence" style="padding: 88px 32px">
     <div style="max-width: 1100px; margin: 0 auto">
       <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 34px; margin: 0 0 12px">Why cognitive aids, why rural</h2>
-      <p style="font-size: 17px; color: oklch(0.42 0.02 160); max-width: 660px; margin: 0 0 40px; line-height: 1.6">A rural ED sees everything an urban trauma center sees — just rarely. When the once-in-three-years case arrives, recall under stress is not a plan. Checklists and practiced teams are.</p>
+      <p style="font-size: 17px; color: var(--c-ink-3); max-width: 660px; margin: 0 0 40px; line-height: 1.6">A rural ED sees everything an urban trauma center sees — just rarely. When the once-in-three-years case arrives, recall under stress is not a plan. Checklists and practiced teams are.</p>
       <div class="stats-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-bottom: 36px">
-        <div style="background: #fff; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; padding: 28px 24px">
-          <div style="font-family: Bitter, serif; font-weight: 800; font-size: 42px; color: #005596; line-height: 1">6% vs 23%</div>
-          <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 12px 0 0">Critical management steps missed in simulated operating-room crises with checklists versus without them.<sup>1</sup></p>
+        <div style="background: var(--c-surface); border: 1px solid var(--c-rule); border-radius: 12px; padding: 28px 24px">
+          <div style="font-family: Bitter, serif; font-weight: 800; font-size: 42px; color:var(--c-link); line-height: 1">6% vs 23%</div>
+          <p style="font-size: 15px; line-height: 1.55; color: var(--c-ink-3); margin: 12px 0 0">Critical management steps missed in simulated operating-room crises with checklists versus without them.<sup>1</sup></p>
         </div>
-        <div style="background: #fff; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; padding: 28px 24px">
-          <div style="font-family: Bitter, serif; font-weight: 800; font-size: 42px; color: #005596; line-height: 1">~1 in 5</div>
-          <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 12px 0 0">Americans live in rural areas, served by emergency departments that are typically low-volume and far from tertiary backup.<sup>2</sup></p>
+        <div style="background: var(--c-surface); border: 1px solid var(--c-rule); border-radius: 12px; padding: 28px 24px">
+          <div style="font-family: Bitter, serif; font-weight: 800; font-size: 42px; color:var(--c-link); line-height: 1">~1 in 5</div>
+          <p style="font-size: 15px; line-height: 1.55; color: var(--c-ink-3); margin: 12px 0 0">Americans live in rural areas, served by emergency departments that are typically low-volume and far from tertiary backup.<sup>2</sup></p>
         </div>
-        <div style="background: #fff; border: 1px solid oklch(0.9 0.01 160); border-radius: 12px; padding: 28px 24px">
-          <div style="font-family: Bitter, serif; font-weight: 800; font-size: 42px; color: #005596; line-height: 1">190+</div>
-          <p style="font-size: 15px; line-height: 1.55; color: oklch(0.42 0.02 160); margin: 12px 0 0">Rural hospitals closed or converted away from inpatient care since 2005 — the departments that remain carry more, with less.<sup>3</sup></p>
+        <div style="background: var(--c-surface); border: 1px solid var(--c-rule); border-radius: 12px; padding: 28px 24px">
+          <div style="font-family: Bitter, serif; font-weight: 800; font-size: 42px; color:var(--c-link); line-height: 1">190+</div>
+          <p style="font-size: 15px; line-height: 1.55; color: var(--c-ink-3); margin: 12px 0 0">Rural hospitals closed or converted away from inpatient care since 2005 — the departments that remain carry more, with less.<sup>3</sup></p>
         </div>
       </div>
-      <div style="font-size: 13.5px; line-height: 1.7; color: oklch(0.5 0.02 160); max-width: 760px">
+      <div style="font-size: 13.5px; line-height: 1.7; color: var(--c-ink-3); max-width: 760px">
         <p style="margin: 0">1. Arriaga AF, et al. Simulation-based trial of surgical-crisis checklists. <em>N Engl J Med.</em> 2013;368:246-53. &nbsp; 2. US Census Bureau, 2020 Census urban&ndash;rural classification. &nbsp; 3. UNC Cecil G. Sheps Center for Health Services Research, Rural Hospital Closures tracker. See also Goldhaber-Fiebert SN, Howard SK. Implementing emergency manuals. <em>Anesth Analg.</em> 2013;117:1149-61.</p>
       </div>
     </div>
   </section>
 
-  <section id="governance" style="padding: 72px 32px; background: oklch(0.95 0.015 250)">
+  <section id="governance" style="padding: 72px 32px; background: var(--c-band-2)">
     <div class="two-col" style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start">
       <div>
         <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 30px; margin: 0 0 14px">Open source, openly governed</h2>
-        <p style="font-size: 16px; line-height: 1.65; color: oklch(0.38 0.02 160); margin: 0 0 14px">Everything lives in one repository under a permissive license: the manual, the cognitive aids, the kit lists, the label and poster templates, the simulation scripts, and the guideline-provenance records that say which source each tool is written against and when a human last checked it.</p>
-        <p style="font-size: 16px; line-height: 1.65; color: oklch(0.38 0.02 160); margin: 0">Adoption starts with an introduction: reach out, and we hand you the repository along with the people who maintain it. From there it's a fork — your copy, your hosting, your clinical validation. No patient data, ever, by design.</p>
+        <p style="font-size: 16px; line-height: 1.65; color: var(--c-ink-2); margin: 0 0 14px">Everything lives in one repository under a permissive license: the manual, the cognitive aids, the kit lists, the label and poster templates, the simulation scripts, and the guideline-provenance records that say which source each tool is written against and when a human last checked it.</p>
+        <p style="font-size: 16px; line-height: 1.65; color: var(--c-ink-2); margin: 0">Adoption starts with an introduction: reach out, and we hand you the repository along with the people who maintain it. From there it's a fork — your copy, your hosting, your clinical validation. No patient data, ever, by design.</p>
       </div>
-      <div style="background: #fff; border: 1px solid oklch(0.88 0.02 250); border-radius: 12px; padding: 28px">
+      <div style="background: var(--c-surface); border: 1px solid var(--c-rule-blue); border-radius: 12px; padding: 28px">
         <h3 style="font-family: Bitter, serif; font-size: 20px; font-weight: 700; margin: 0 0 10px">Governance is being built</h3>
-        <p style="font-size: 15.5px; line-height: 1.6; color: oklch(0.4 0.02 160); margin: 0 0 18px">Clinical review panel, co-maintainers, contribution pathways — the structures are forming now, and early voices shape them. If you want a say in how a shared rural readiness commons is run, this is the moment.</p>
+        <p style="font-size: 15.5px; line-height: 1.6; color: var(--c-ink-3); margin: 0 0 18px">Clinical review panel, co-maintainers, contribution pathways — the structures are forming now, and early voices shape them. If you want a say in how a shared rural readiness commons is run, this is the moment.</p>
         <a href="#join" class="btn-blue" style="padding: 11px 22px; font-size: 15px">Tell us you're interested</a>
       </div>
     </div>
@@ -440,29 +484,29 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
     </div>
   </section>
 
-  <section id="join" style="padding: 88px 32px; background: oklch(0.3 0.05 250)">
+  <section id="join" style="padding: 88px 32px; background: var(--c-band)">
     <div class="two-col" style="max-width: 1100px; margin: 0 auto; display: grid; grid-template-columns: 1fr 1fr; gap: 56px; align-items: start">
       <div>
         <h2 style="font-family: Bitter, serif; font-weight: 800; font-size: 34px; color: #fff; margin: 0 0 14px">Join the network</h2>
-        <p style="font-size: 16.5px; line-height: 1.65; color: oklch(0.85 0.01 160); margin: 0 0 14px">Be the physician champion for your department — or just follow along while you decide. We'll connect you with the branch, the localization worksheet, and the people who have already walked the trail.</p>
-        <p style="font-size: 15px; line-height: 1.6; color: oklch(0.72 0.02 160); margin: 0">Prefer to work at your own pace? Say so in the note — we'll send you the repository and the localization worksheet and leave you to it.</p>
+        <p style="font-size: 16.5px; line-height: 1.65; color: var(--c-on-band-2); margin: 0 0 14px">Be the physician champion for your department — or just follow along while you decide. We'll connect you with the branch, the localization worksheet, and the people who have already walked the trail.</p>
+        <p style="font-size: 15px; line-height: 1.6; color: var(--c-on-band-3); margin: 0">Prefer to work at your own pace? Say so in the note — we'll send you the repository and the localization worksheet and leave you to it.</p>
       </div>
-      <div style="background: #fff; border-radius: 12px; padding: 30px">
+      <div style="background: var(--c-surface); border-radius: 12px; padding: 30px">
         <form name="join" method="POST" data-netlify="true" id="join-form" style="display: flex; flex-direction: column; gap: 16px">
           <input type="hidden" name="form-name" value="join">
           <div class="form-two-col" style="display: grid; grid-template-columns: 1fr 1fr; gap: 14px">
-            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 700; color: oklch(0.35 0.02 160)">Name
-              <input required type="text" name="name" style="border: 1px solid oklch(0.85 0.01 160); border-radius: 7px; padding: 10px 12px; font-size: 15px">
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 700; color: var(--c-ink-2)">Name
+              <input required type="text" name="name" style="border: 1px solid var(--c-rule-soft); border-radius: 7px; padding: 10px 12px; font-size: 15px">
             </label>
-            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 700; color: oklch(0.35 0.02 160)">Email
-              <input required type="email" name="email" style="border: 1px solid oklch(0.85 0.01 160); border-radius: 7px; padding: 10px 12px; font-size: 15px">
+            <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 700; color: var(--c-ink-2)">Email
+              <input required type="email" name="email" style="border: 1px solid var(--c-rule-soft); border-radius: 7px; padding: 10px 12px; font-size: 15px">
             </label>
           </div>
-          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 700; color: oklch(0.35 0.02 160)">Hospital / emergency department
-            <input type="text" name="site" style="border: 1px solid oklch(0.85 0.01 160); border-radius: 7px; padding: 10px 12px; font-size: 15px">
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 700; color: var(--c-ink-2)">Hospital / emergency department
+            <input type="text" name="site" style="border: 1px solid var(--c-rule-soft); border-radius: 7px; padding: 10px 12px; font-size: 15px">
           </label>
-          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 700; color: oklch(0.35 0.02 160)">Role
-            <select name="role" style="border: 1px solid oklch(0.85 0.01 160); border-radius: 7px; padding: 10px 12px; font-size: 15px; background: #fff">
+          <label style="display: flex; flex-direction: column; gap: 6px; font-size: 13.5px; font-weight: 700; color: var(--c-ink-2)">Role
+            <select name="role" style="border: 1px solid var(--c-rule-soft); border-radius: 7px; padding: 10px 12px; font-size: 15px; background: var(--c-surface)">
               <option>Physician</option>
               <option>Nurse</option>
               <option>APP (PA / NP)</option>
@@ -471,33 +515,33 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
               <option>Other</option>
             </select>
           </label>
-          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14.5px; color: oklch(0.35 0.02 160)">
+          <div style="display: flex; flex-direction: column; gap: 8px; font-size: 14.5px; color: var(--c-ink-2)">
             <span style="font-size: 13.5px; font-weight: 700">I'm interested in&hellip;</span>
             <label style="display: flex; gap: 10px; align-items: center"><input type="checkbox" name="i1" style="accent-color: #005596"> Becoming a champion for my ED</label>
             <label style="display: flex; gap: 10px; align-items: center"><input type="checkbox" name="i2" style="accent-color: #005596"> Contributing content or review</label>
             <label style="display: flex; gap: 10px; align-items: center"><input type="checkbox" name="i3" style="accent-color: #005596"> Helping shape governance</label>
           </div>
           <button type="submit" class="btn-blue" style="width: 100%; padding: 13px; font-size: 16px">Count me in</button>
-          <p style="margin: 0; font-size: 12.5px; line-height: 1.5; color: oklch(0.55 0.02 160)">We use this only to reply and connect you with the network — never sold, never shared, deleted on request.</p>
+          <p style="margin: 0; font-size: 12.5px; line-height: 1.5; color: var(--c-ink-3)">We use this only to reply and connect you with the network — never sold, never shared, deleted on request.</p>
         </form>
         <div id="join-thanks" hidden style="text-align: center; padding: 30px 10px">
-          <svg width="44" height="52" viewBox="0 0 26 30" aria-hidden="true" style="margin-bottom: 14px"><rect x="7" y="1" width="12" height="7" rx="3.5" fill="#005596"></rect><rect x="4" y="11" width="18" height="7" rx="3.5" fill="#005596"></rect><rect x="1" y="21" width="24" height="8" rx="4" fill="#003a66"></rect></svg>
+          <svg width="44" height="52" viewBox="0 0 26 30" aria-hidden="true" style="margin-bottom: 14px"><rect x="7" y="1" width="12" height="7" rx="3.5" fill="#005596"></rect><rect x="4" y="11" width="18" height="7" rx="3.5" fill="#005596"></rect><rect x="1" y="21" width="24" height="8" rx="4" fill="var(--c-link-hover)"></rect></svg>
           <h3 style="font-family: Bitter, serif; font-size: 22px; font-weight: 700; margin: 0 0 8px">Another stone on the cairn.</h3>
-          <p style="font-size: 15.5px; line-height: 1.6; color: oklch(0.4 0.02 160); margin: 0">Thanks &mdash; we'll be in touch with the repository, the localization guide, and an introduction to the network.</p>
+          <p style="font-size: 15.5px; line-height: 1.6; color: var(--c-ink-3); margin: 0">Thanks &mdash; we'll be in touch with the repository, the localization guide, and an introduction to the network.</p>
         </div>
       </div>
     </div>
   </section>
 
-  <footer style="padding: 44px 32px 56px; background: oklch(0.25 0.04 250)">
+  <footer style="padding: 44px 32px 56px; background: var(--c-band-3)">
     <div style="max-width: 1100px; margin: 0 auto; display: flex; flex-direction: column; gap: 18px">
       <div style="display: flex; align-items: center; gap: 10px">
         <svg width="20" height="24" viewBox="0 0 26 30" aria-hidden="true"><rect x="7" y="1" width="12" height="7" rx="3.5" fill="#5f93c0"></rect><rect x="4" y="11" width="18" height="7" rx="3.5" fill="#5f93c0"></rect><rect x="1" y="21" width="24" height="8" rx="4" fill="#5f93c0"></rect></svg>
         <span style="font-family: Bitter, serif; font-weight: 700; font-size: 17px; color: #fff">Cairn</span>
-        <span style="color: oklch(0.6 0.02 160); font-size: 14px">&middot; cairnready.org &middot; open source</span>
+        <span style="color: var(--c-on-band-3); font-size: 14px">&middot; cairnready.org &middot; open source</span>
       </div>
-      <p style="margin: 0; font-size: 13.5px; line-height: 1.7; color: oklch(0.68 0.02 160); max-width: 820px">Cairn is a cognitive aid, not a source of truth you inherit unverified. It is not part of any hospital IT system or EHR, not a substitute for clinical judgment, and not an FDA-cleared device. Every adopting site is responsible for validating all content — every dose, threshold, and protocol — against its own assays, formulary, equipment, and medical direction before clinical use. No patient data is stored or transmitted, by design.</p>
-      <p style="margin: 0; font-size: 13px; color: oklch(0.55 0.02 160)">Built in the open by rural emergency clinicians, for each other.</p>
+      <p style="margin: 0; font-size: 13.5px; line-height: 1.7; color: var(--c-on-band-2); max-width: 820px">Cairn is a cognitive aid, not a source of truth you inherit unverified. It is not part of any hospital IT system or EHR, not a substitute for clinical judgment, and not an FDA-cleared device. Every adopting site is responsible for validating all content — every dose, threshold, and protocol — against its own assays, formulary, equipment, and medical direction before clinical use. No patient data is stored or transmitted, by design.</p>
+      <p style="margin: 0; font-size: 13px; color: var(--c-on-band-3)">Built in the open by rural emergency clinicians, for each other.</p>
     </div>
   </footer>
 </div>
@@ -591,7 +635,7 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
   var step = 0;
 
   function stepChipStyle(on) {
-    return 'min-height:42px;padding:0 15px;border-radius:999px;cursor:pointer;font-family:\'Atkinson Hyperlegible\',sans-serif;font-size:13.5px;font-weight:700;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;' + (on ? 'background:#fff;border:none;color:oklch(0.3 0.05 250)' : 'background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.3);color:#dce6f2');
+    return 'min-height:42px;padding:0 15px;border-radius:999px;cursor:pointer;font-family:\'Atkinson Hyperlegible\',sans-serif;font-size:13.5px;font-weight:700;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;' + (on ? 'background:var(--c-surface);border:none;color:var(--c-band)' : 'background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.3);color:#dce6f2');
   }
 
   function renderChips() {
@@ -685,8 +729,8 @@ input, select { font-family: 'Atkinson Hyperlegible', sans-serif; }
     var el = document.getElementById('faq-list');
     el.innerHTML = FAQS.map(function (f, i) {
       var open = i === faqOpen;
-      return '<div style="background:#fff;border:1px solid oklch(0.9 0.01 160);border-radius:10px;overflow:hidden">' +
-        '<button type="button" class="faq-q" data-i="' + i + '"><span>' + esc(f.q) + '</span><span style="color:#005596;font-size:20px;flex-shrink:0">' + (open ? '–' : '+') + '</span></button>' +
+      return '<div style="background:var(--c-surface);border:1px solid var(--c-rule);border-radius:10px;overflow:hidden">' +
+        '<button type="button" class="faq-q" data-i="' + i + '"><span>' + esc(f.q) + '</span><span style="color:var(--c-link);font-size:20px;flex-shrink:0">' + (open ? '–' : '+') + '</span></button>' +
         '<p class="faq-a"' + (open ? '' : ' hidden') + '>' + esc(f.a) + '</p></div>';
     }).join('');
     Array.prototype.forEach.call(el.querySelectorAll('.faq-q'), function (b) {
