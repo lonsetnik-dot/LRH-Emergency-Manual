@@ -96,12 +96,12 @@ await skew(CFG.apgar.at[0] * 60000 + 2000 + (SNOOZE * 1000) + 2000);
 ok('#212 and the prompt returns after the snooze', await sheetUp());
 
 /* Recording it clears the DUE marker — otherwise the reminder is permanent noise. */
-await pg.evaluate(() => {
-  document.querySelectorAll('[data-ap]').forEach(el => {
-    if (el.getAttribute('data-apv') === '2' ) el.click();
-  });
-});
-await pg.waitForTimeout(300);
+/* One row at a time: the sheet re-renders on every pick, so a single evaluate
+   that clicks all five hits detached nodes after the first. */
+for (let i = 0; i < CFG.apgar.rows.length; i++) {
+  await pg.click(`[data-ap="${i}"][data-apv="2"]`);
+  await pg.waitForTimeout(120);
+}
 await pg.click('#apgarsave'); await pg.waitForTimeout(400);
 const after = await pg.evaluate(() => (document.getElementById('donesum') || {}).innerText || '');
 ok('#212 recording the score clears DUE', !/DUE/i.test(after), after);
@@ -162,9 +162,6 @@ await pg.dispatchEvent('#babyweight', 'input');
 await pg.waitForTimeout(500);
 ok('#170 an implausible weight keeps the form open',
    await pg.locator('#birthform').isVisible());
-await pg.fill('#babyweight', '3.2');
-await pg.dispatchEvent('#babyweight', 'input');
-await pg.waitForTimeout(500);
 
 /* #171 — days exist, are bounded 0–6, and CHANGE NO SIZE. That last clause is
    the invariant: every band in this tool is a whole-week threshold, so a days
@@ -180,10 +177,12 @@ const sizesFor = async (wk, d) => {
   return pg.evaluate(() => (document.querySelector('.eqpanel') || {}).innerText || '');
 };
 /* Clear the weight first: with a weight entered the panel sizes by weight and
-   the gestation would not be exercised at all. */
+   the gestation would not be exercised at all. The banner is still open here —
+   the implausible weight above is what keeps it open — so the field is reachable. */
 await pg.fill('#babyweight', '');
 await pg.dispatchEvent('#babyweight', 'input');
 await pg.waitForTimeout(300);
+ok('#170 clearing the weight leaves the form open', await pg.locator('#birthform').isVisible());
 const at34_0 = await sizesFor(34, 0);
 const at34_6 = await sizesFor(34, 6);
 ok('#171 34+0 and 34+6 size identically', at34_0 === at34_6 && at34_0.length > 0);

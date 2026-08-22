@@ -224,10 +224,21 @@ await skew(nextMin * 60 * 1000 + 2000);
 ck(`4. a score under ${CFG.apgar.repeatIfBelow} re-raises it at ${nextMin} min`,
    await pg.locator('#apgarwrap').count(), 1);
 ck(`4. and it is labelled ${nextMin} minutes`, lit('APGAR AT ' + nextMin).test(await txt('#apgarwrap')), true);
-/* Dismissing must not lose the mark. */
-await tap('#apgarlater', 700);
-ck('4. NOT NOW re-raises rather than losing the score', await pg.locator('#apgarwrap').count(), 1);
+/* Dismissing must ACTUALLY DISMISS, and must not lose the mark either (issue
+   #212). This assertion used to read "NOT NOW re-raises rather than losing the
+   score", and it passed against the defect: the handler set apgarDone back to
+   false, so the sheet came back on the very next tick and there was no way to
+   close it at all mid-resuscitation. Both halves are asserted now — it closes,
+   the outstanding mark stays face up as DUE, and it returns after the configured
+   snooze. verify_issues_20260822.mjs covers the same ground from the issue's
+   side; this one keeps the engine's own suite honest about it. */
+await tap('#apgarlater', 900);
+ck('4. NOT NOW closes the prompt', await pg.locator('#apgarwrap').count(), 0);
+ck('4. …and the mark stays face up as DUE', /DUE/i.test(await txt('#donesum')), true);
+await skew((nextMin * 60 * 1000 + 2000) + (CFG.apgar.snoozeSec * 1000) + 2000);
+ck('4. …and it comes back on its own after the snooze', await pg.locator('#apgarwrap').count(), 1);
 await scoreApgar(2);
+ck('4. recording it clears DUE', /DUE/i.test(await txt('#donesum')), false);
 
 /* ---- 4s. the HR CHECK cadence + picker (SHELL.md layers 2/6/7) ----
    The countdown RIDES the action button on both widths (layer 2, 2026-08-15
