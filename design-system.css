@@ -100,6 +100,10 @@
      legacy inline-hardcoded colors (authored before the token system); these
      token-based classes replace the repeated inline styles so the content is
      theme-aware and a fork re-skins in one place. ===== */
+  /* A value that has not been folded into its action line yet (issue #216). data-ref was
+     always the exception where a real number lived in the second tier; with the tier gone
+     these are SHOWN, never hidden, until each one is merged into the action above it. */
+  .t-why[data-ref]{display:block;margin-top:4px;font-size:13px;line-height:1.45;color:var(--ink2);font-style:normal}
   .t-ck{width:20px;height:20px;margin:2px 0 0;accent-color:var(--accent);flex:none}
   .t-div{border-top:1px solid var(--line)}
   /* 320px reflow (ACCESSIBILITY.md §4) — clinical prose is full of long
@@ -147,10 +151,6 @@
 
      Nothing is deleted by this. If a value is needed to perform the step it belongs in the
      action, not in here; verify_checklist_clarity.mjs enforces that. ---- */
-  .t-why{display:none;margin-top:5px;font-size:13px;line-height:1.45;color:var(--ink2);font-style:normal}
-  body.showwhy .t-why{display:block}
-  @media print{.t-why{display:block !important}}
-  .whybtn[aria-pressed="true"]{background:var(--card2);color:var(--ink);border-color:var(--ink2)}
 
   .t-localize{margin:14px 14px 0;border:2px solid var(--sev-caution);background:var(--note-bg);color:var(--note-tx);padding:11px 14px;font-size:13px;line-height:1.4;border-radius:12px}
   /* Sign-off bar — what replaces "DRAFT — NOT CLINICALLY REVIEWED" once a clinician has
