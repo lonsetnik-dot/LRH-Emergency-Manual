@@ -37,9 +37,19 @@ const ck = (name, got, want) => {
 };
 
 /* Representative page set: every tool family + the landing page. */
+/* Every published route, not a sample. The old 17-page list left /vems/,
+   /labels/ and /debrief/ shipping with no <h1> and /posters/chest-tube/ with
+   two, green the whole time — a check is only worth what it visits. The
+   posters are paper and are listed too: they are still published pages, and
+   the zoom, lang, title and h1 rules apply to them exactly as written. */
 const PAGES = ['/', '/codes/', '/peds/', '/arrest/', '/airway/', '/tca/', '/trauma/',
   '/neonatal/', '/pph/', '/dystocia/', '/procedures/', '/ob-neonatal/',
-  '/clinical-pathways/heart/', '/clinical-pathways/pe/', '/equipment-readiness/', '/simulations/', '/sources/'];
+  '/clinical-pathways/heart/', '/clinical-pathways/pe/', '/equipment-readiness/', '/simulations/', '/sources/',
+  '/vems/', '/labels/', '/system/', '/conversations/', '/debrief/', '/posters/',
+  '/clinical-pathways/', '/clinical-pathways/dka/', '/clinical-pathways/sepsis/',
+  '/posters/chest-tube/', '/posters/cvc/', '/posters/blakemore/', '/posters/burr-hole/',
+  '/posters/canthotomy/', '/posters/escharotomy/', '/posters/hysterotomy/',
+  '/posters/thoracotomy/', '/posters/tvp/', '/posters/ava3xi/'];
 
 /* ---- static checks over every built page (1, 6) --------------------------- */
 const DIST = 'dist';

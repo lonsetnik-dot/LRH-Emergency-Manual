@@ -34,7 +34,8 @@
   --red-tx:#E96569; --gray-tx:#8291A3; --blue-tx:#5492DC; --green-tx:#3DA35D;
   --amber-tx:#F0B429; --teal-tx:#3AA6A6;
   --sev-caution:#8a6d1f; --note-bg:rgba(240,180,41,.12); --note-tx:#f0cf7a;
-    --sev-ok:#1a6b45; --sev-teal:#1a6a6a;
+--tint-crit:rgba(229,72,77,.16); --tint-warn:rgba(240,180,41,.14); --tint-info:rgba(76,141,218,.16); --tint-ok:rgba(58,166,166,.16); --tint-neutral:rgba(255,255,255,.07);
+    --sev-ok:#1a6b45; --sev-teal:#1a6a6a; --sev-neutral:#4d5a6b;
   --purple:#9B7BD4; /* the shell's drug-action slot (SHELL.md layer 6); promoted from tca's local block */
   --accent:#2FA372; --accentInk:#fff;
   --sans:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,"Helvetica Neue",Arial,sans-serif;
@@ -56,6 +57,7 @@ body[data-theme="light"]{
   --amber-tx:#906710; --teal-tx:#1E7A7A;
   --purple:#6C4FA3; --accent:#00693E; --accentInk:#fff;
   --sev-caution:#8a6d1f; --note-bg:#fdf3cf; --note-tx:#6b5410;
+--tint-crit:#fbeaec; --tint-warn:#f8f2e2; --tint-info:#e9eff6; --tint-ok:#e4f2f3; --tint-neutral:#e3e9f0;
 }
   /* Bare links had no rule at all, so any link a card author did not style
      fell back to the UA default #0000EE — 1.8:1 on --card in dark. Component
