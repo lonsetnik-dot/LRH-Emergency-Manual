@@ -77,8 +77,18 @@ function themeTokens(block) {
   for (const m of block.matchAll(/--(bg|card|card2|ink|ink2|accent):\s*(#[0-9a-fA-F]{6})/g)) out[m[1]] = m[2];
   return out;
 }
-const rootBlock  = dsCss.match(/body\[data-theme\]\s*\{[^}]*\}/s)?.[0] ?? '';
-const lightBlock = dsCss.match(/body\[data-theme="light"\]\s*\{[^}]*\}/s)?.[0] ?? '';
+/* v0.2.0 moved theme selection off body[data-theme] and onto the device: the
+   dark palette is :root, and one @media (prefers-color-scheme: light) block
+   redefines the same names. Parse THOSE. The regexes below matched the v0.1
+   shape and, once the sheet changed under them, returned '' for both themes —
+   which is why check 7 went red rather than quietly measuring nothing. Keep the
+   "defines the shared tokens" assertion AHEAD of the `continue`, or an empty
+   block reads as a pass and the only automated 4.5:1 guard in the repo becomes
+   a green lie. (design-system.css §8a also declares body[data-theme="light"]
+   as a bridge for the stored preference; it is asserted identical to the media
+   block by verify_tokens.mjs, so parsing either gives the same answer.) */
+const rootBlock  = dsCss.match(/^:root \{[^}]*\}/ms)?.[0] ?? '';
+const lightBlock = dsCss.match(/@media \(prefers-color-scheme: light\)\s*\{\s*:root\s*\{[^}]*\}/s)?.[0] ?? '';
 const lum = h => { const c = [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16) / 255)
   .map(v => v <= 0.03928 ? v / 12.92 : ((v + 0.055) / 1.055) ** 2.4);
   return 0.2126 * c[0] + 0.7152 * c[1] + 0.0722 * c[2]; };
