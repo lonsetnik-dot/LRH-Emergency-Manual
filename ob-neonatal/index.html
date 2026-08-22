@@ -2351,7 +2351,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   }
   function render(){
     var m=build();
-    if(!m.ev.length){ body.innerHTML='<div style="color:#5a6a78; padding:16px 0; text-align:center;">Nothing logged yet — set the time of birth and work the case.</div>'; return ''; }
+    if(!m.ev.length){ body.innerHTML='<div style="color:var(--ink2); padding:16px 0; text-align:center;">Nothing logged yet — set the time of birth and work the case.</div>'; return ''; }
     var rows='', text='{{SITE.title}} — case timeline, all tools (times only, no identifiers)\n';
     if(m.birth) text+='Born: '+m.birth+'\n';
     text+='\n';
@@ -2360,7 +2360,7 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
       rows+='<div style="display:grid; grid-template-columns:52px 44px 56px 1fr; gap:8px; padding:8px 0; border-top:1px solid #edf0f3; align-items:baseline;">'
         +'<span style="font-family:ui-monospace,Menlo,monospace; font-weight:700;">'+w+'</span>'
         +'<span style="font-family:ui-monospace,Menlo,monospace; color:#5a6a78; font-size:12.5px;">'+el+'</span>'
-        +'<span style="font-family:ui-monospace,Menlo,monospace; color:#5a6a78; font-size:11px; letter-spacing:0.04em;">'+tag+'</span>'
+        +'<span style="font-family:ui-monospace,Menlo,monospace; color:var(--ink2); font-size:11px; letter-spacing:0.04em;">'+tag+'</span>'
         +'<span>'+e.label+'</span></div>';
       text+=w+'  '+(el||'   ')+'  ['+tag+']  '+e.label+'\n';
     });

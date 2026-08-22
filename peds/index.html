@@ -2149,11 +2149,11 @@ var PEDSAIR = (function(){
   function render(){
     var ev=CASESTATE.getLog().filter(function(e){ return e.label; })
       .sort(function(a,b){ return (a.tMs||0)-(b.tMs||0); });
-    if(!ev.length){ body.innerHTML='<div style="color:#5a6a78; padding:16px 0; text-align:center;">Nothing logged yet.</div>'; return ''; }
+    if(!ev.length){ body.innerHTML='<div style="color:var(--ink2); padding:16px 0; text-align:center;">Nothing logged yet.</div>'; return ''; }
     var rows='', text='{{SITE.title}} — case timeline, all tools (times only, no identifiers, no weight)\n\n';
     ev.forEach(function(e){
       var w=wallFromMs(e.tMs), tag=TOOL_LABEL[e.tool]||String(e.tool||'').toUpperCase();
-      rows+='<div style="display:grid; grid-template-columns:52px 62px 1fr; gap:8px; padding:8px 0; border-top:1px solid #edf0f3; align-items:baseline;"><span style="font-family:ui-monospace,Menlo,monospace; font-weight:700;">'+w+'</span><span style="font-family:ui-monospace,Menlo,monospace; color:#5a6a78; font-size:11px; letter-spacing:0.04em;">'+tag+'</span><span>'+e.label+'</span></div>';
+      rows+='<div style="display:grid; grid-template-columns:52px 62px 1fr; gap:8px; padding:8px 0; border-top:1px solid #edf0f3; align-items:baseline;"><span style="font-family:ui-monospace,Menlo,monospace; font-weight:700;">'+w+'</span><span style="font-family:ui-monospace,Menlo,monospace; color:var(--ink2); font-size:11px; letter-spacing:0.04em;">'+tag+'</span><span>'+e.label+'</span></div>';
       text+=w+'  ['+tag+']  '+e.label+'\n';
     });
     body.innerHTML=rows;
