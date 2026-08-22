@@ -285,8 +285,14 @@ function applySite(text, file) {
 // shipping ~90 kB of prototype would cost every clinician's cache for
 // something no clinician opens. Read them from the repo, not the site.
 const SKIP_DIRS = new Set(['node_modules', '.git', 'dist', 'dist-demo', '.github', 'cairn', 'design']);
+/* Build INPUTS: every one of these is injected inline at a marker, so publishing the file too
+   ships a second copy nobody loads and precaches it into every clinician's cache. design-system-
+   shell.css had been going out that way; tool-switcher.js would have joined it. */
 const SKIP_ROOT_FILES = new Set([
-  'design-system.css', 'design-system-live.css', 'inventory.js', 'equipment-icons.js', 'procedure-icons.js', 'guidelines.js', 'case-shell.js', 'theme-boot.js', 'build.mjs', 'run-tests.sh', 'netlify.toml',
+  'design-system.css', 'design-system-live.css', 'design-system-shell.css',
+  'inventory.js', 'equipment-icons.js', 'procedure-icons.js', 'guidelines.js',
+  'case-shell.js', 'tool-switcher.js', 'theme-boot.js',
+  'build.mjs', 'run-tests.sh', 'netlify.toml',
   'package.json', 'package-lock.json', 'shot.mjs', '.gitignore',
   'sw-template.js', 'sw-register.js',   // build inputs — emitted as dist/sw.js / inlined
   'site.config.json',                   // build input — substituted into every page

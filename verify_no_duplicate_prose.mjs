@@ -18,7 +18,8 @@
  *
  * What it CANNOT see: two pages that say nearly the same thing DIFFERENTLY. Exact duplicates
  * are harmless today and dangerous later; a pair that has already drifted is dangerous now and
- * invisible here. Do not read a green run as "the manual agrees with itself."
+ * invisible here. That gap is now covered by verify_near_duplicate_prose.mjs (issue #209), which
+ * shares this file's corpus. The two run together and neither one's silence means much alone.
  *
  *     node build.mjs && python3 -m http.server 8123 --directory dist
  *     node verify_no_duplicate_prose.mjs [minWords]
@@ -26,87 +27,18 @@
 let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch { ({ chromium } = await import('/home/claude/.npm-global/lib/node_modules/playwright/index.mjs')); }
-import { readdirSync, statSync, readFileSync } from 'node:fs';
-import { join, relative, sep } from 'node:path';
+import { collect } from './prose-corpus.mjs';
 
 const BASE = (process.env.BASE || 'http://localhost:8123').replace(/\/$/, '');
 const MIN_WORDS = +(process.argv[2] || 8);
 
-/* Every published page, as the URL a clinician would open. */
-const pages = [];
-(function scan(dir) {
-  for (const name of readdirSync(dir)) {
-    const p = join(dir, name);
-    if (statSync(p).isDirectory()) { scan(p); continue; }
-    if (name === 'index.html') pages.push('/' + relative('dist', dir).split(sep).join('/') + (dir === 'dist' ? '' : '/'));
-  }
-})('dist');
-
-/* Compared with the spaces taken out. A rendered page runs adjacent elements together
-   ("NAME\"This is anaphylaxis…"), while the manifest records the same block with a gap where
-   each tag was. Same sentence, two spacings — and matching on the spacing left three lines
-   looking duplicated after they had been given one home. */
-const key = s => norm(s).replace(/\s+/g, "");
-
-function norm(s) {
-  return String(s).replace(/\s+/g, ' ').replace(/[‐-―]/g, '-')
-    .replace(/[‘’]/g, "'").replace(/[“”]/g, '"').trim();
-}
-/* Sentences already sanctioned as living in two places:
-   - kit contents (verify_kit_consistency.mjs owns them, and they MUST match byte for byte)
-   - anything transcluded at build (build.mjs resolved it FROM the other page on purpose) */
-const sanctioned = new Set();
-try {
-  const inv = readFileSync('inventory.js', 'utf8');
-  for (const m of inv.matchAll(/contents\s*:\s*\[([\s\S]*?)\]/g))
-    for (const s of m[1].matchAll(/"([^"]+)"/g)) sanctioned.add(key(s[1]));
-} catch { /* no inventory */ }
-let manifest = [];
-try { manifest = JSON.parse(readFileSync('.transclusion-manifest.json', 'utf8')); } catch { /* not built yet */ }
-/* Split manifest entries the SAME way page text is split. A {{SHARE:…}} block is recorded as
-   one string but renders as several sentences, so matching whole-entry against per-sentence
-   sanctioned nothing at all — the three anaphylaxis lines stayed "duplicated" after they had
-   been given a single home. Sanction the pieces, not the record. */
-const SENT = /(?<=[.!?])\s+|\n+/;
-for (const row of manifest)
-  for (const part of [row.do, row.why])
-    for (const s2 of String(part || "").split(SENT)) { const n = key(s2.replace(/<[^>]+>/g, " ")); if (n) sanctioned.add(n); }
-
-/* A "tool" is the folder, because that is the unit content belongs to. Two cards in the same
-   file repeating a line is a different (and much more visible) problem than two tools doing it. */
-const toolOf = url => (url.split('/')[1] || 'landing');
-
 const b = await chromium.launch(process.env.PW_CHROME ? { executablePath: process.env.PW_CHROME } : {});
 const pg = await b.newPage({ viewport: { width: 390, height: 844 } });
-const seen = new Map();   /* sentence -> Map(tool -> Set(url)) */
-
-const redirects = [];
-for (const url of pages) {
-  await pg.goto(BASE + url, { waitUntil: 'domcontentloaded' });
-  await pg.waitForTimeout(120);
-  /* A redirect stub renders the page it points AT. Scanning it attributes every sentence of
-     the real page to the stub folder, which reported the whole of conversations/ as duplicated
-     into debrief/ — 24 findings, none of them real. Skip anything that moved. */
-  if (new URL(pg.url()).pathname !== url) { redirects.push(url + ' -> ' + new URL(pg.url()).pathname); continue; }
-  /* textContent, not innerText: collapsed <details> and hidden .t-why rows are exactly where a
-     retyped sentence hides, and innerText would drop every one of them. */
-  const text = await pg.evaluate(() => {
-    const kill = ['script', 'style', 'noscript', 'svg', 'head'];
-    const doc = document.body.cloneNode(true);
-    doc.querySelectorAll(kill.join(',')).forEach(n => n.remove());
-    return doc.textContent || '';
-  });
-  for (let s of text.split(/(?<=[.!?])\s+|\n+/)) {
-    s = norm(s);
-    if (s.split(/\s+/).length < MIN_WORDS) continue;
-    if (sanctioned.has(key(s))) continue;
-    if (!seen.has(s)) seen.set(s, new Map());
-    const m = seen.get(s);
-    const t = toolOf(url);
-    if (!m.has(t)) m.set(t, new Set());
-    m.get(t).add(url);
-  }
-}
+/* The corpus — which pages count, how a sentence is split and normalized, which duplicates are
+   sanctioned, which redirect stubs to skip — lives in prose-corpus.mjs and is shared with
+   verify_near_duplicate_prose.mjs. A rule-12 finder that was itself a copy-paste of another
+   rule-12 finder would be a poor advertisement for the rule. */
+const { seen, redirects, pages } = await collect(pg, BASE, { minWords: MIN_WORDS });
 await b.close();
 
 /* ---- the ratchet ----------------------------------------------------------
@@ -135,7 +67,14 @@ const BUDGET = {
      {{SHARE:codes|anaphylaxis-crm}}. The doses were never shared and still differ correctly. */
   /* Cart-label context lines — kit PROSE around the kit CONTENTS. inventory.js owns the
      contents strings and a suite holds them; these sentences sit just outside that. */
-  "labels+procedures": 4,
+  "labels+procedures": 17,
+  /* 4 → 17 on 2026-08-22, and NOT because anything was newly written. The corpus used to read a
+     page as one textContent string, which runs adjacent elements together with no separator —
+     so a checklist of forty rows arrived as ONE sentence ("…an air leak.Never clamp a bubbling
+     drain - you have built…") and every row in it was invisible to this scanner. Block
+     boundaries are sentence boundaries now, and thirteen label/card sentences that had been
+     duplicated all along became visible at once. Sobering, given the row this whole rule exists
+     for is a checklist row. */
   /* codes+ob-neonatal was 4 — the drawer-legend explainer, the greyscale caption and the
      case-log PHI note, on the two tools that carry a cart legend. All three now live once in
      codes/ and are pulled in with {{SHARE:codes|…}}. Each page keeps its own wrapper: the PHI
@@ -150,6 +89,15 @@ const BUDGET = {
   "dystocia+neonatal": 1,
   /* Two engines that happen to carry the same version stamp and disclaimer line. */
   "dystocia+pph": 1,
+  /* Both pages RENDER the readiness rows from inventory.js — item name, size, drawer location,
+     status — so the row text is identical by construction. That is the single-source mechanism
+     working, and it is named here rather than "fixed". The corpus already drops rows that are
+     almost entirely inventory vocabulary; these are the ones where the renderer's own chrome
+     dilutes the ratio enough to survive it. */
+  "equipment-readiness+simulations": 26,
+  /* A navigation label, "OPEN › CODES · FRONT OF NECK ACCESS (FONA)", on the sim script and on
+     the VEMS run sheet. Both point at the same card; the string is the pointer. */
+  "simulations+vems": 1,
 };
 
 const hits = [...seen.entries()].filter(([, m]) => m.size > 1).map(([s, m]) => ({ s, tools: [...m.keys()], urls: [...m.values()].flatMap(x => [...x]) }));

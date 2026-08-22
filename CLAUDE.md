@@ -151,10 +151,23 @@ unclear. If a request conflicts with a rule below, flag it before proceeding.
     mechanism that satisfies it. Lower a budget whenever a sweep removes
     duplication, and never raise one without writing in the file what was
     duplicated and why it had to be.
-    **What it cannot see: two pages that say nearly the same thing differently.**
-    An exact duplicate is harmless today and dangerous later; a pair that has
-    already drifted is dangerous *now* and invisible to this check. A green run
-    means nothing was retyped verbatim — not that the manual agrees with itself.
+    **A pair that has already drifted** — the same sentence with a word moved —
+    is dangerous *now*, and the exact-match finder cannot see it at all. That is
+    `verify_near_duplicate_prose.mjs` (issue #209): the same corpus, scored by
+    word-set and character-trigram overlap, clustered so a template with eight
+    spellings is one finding rather than sixteen pairs, and ratcheted the same way.
+    Both suites share `prose-corpus.mjs` — a rule-12 finder that was itself a
+    copy-paste of another rule-12 finder would be a poor advertisement for the rule.
+    Writing it exposed something worth knowing: the corpus read each page as one
+    `textContent` string, and adjacent elements run together with no separator, so
+    **a checklist of forty rows arrived as one sentence and every row in it was
+    invisible to both scanners.** Block boundaries are sentence boundaries now.
+    Thirteen label/card duplications that had been there all along appeared the
+    moment that changed — in a manual whose founding scar is a duplicated
+    checklist row.
+    Neither suite can see two sentences that mean the same thing in different
+    words. A green run means no pair *looks* like a fork of another; it has never
+    meant the manual agrees with itself.
 
 13. **A test you have not broken is not a test.** Every new assertion gets
     mutation-tested before delivery: break the behavior it claims to check,
