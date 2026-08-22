@@ -32,12 +32,20 @@
      the dark one — so a status pill reads in both. */
     --on-tint-ok:#6FD49A; --on-tint-crit:#F08A8D; --on-tint-warn:#F0CF7A; --on-tint-info:#8FBBEA; --on-tint-neutral:#C3CDD9;
     --sev-ok:#1a6b45; --sev-teal:#1a6a6a; --sev-neutral:#4d5a6b;
-    --note-bg:rgba(240,180,41,.12); --note-tx:#f0cf7a; }
+    --note-bg:rgba(240,180,41,.12); --note-tx:#f0cf7a;
+  /* A SOLID amber surface, for a banner that is the thing on screen you must not
+     miss. --note-bg is a 12% wash of amber over the page ground, which composites
+     to a dark olive in this theme rather than reading as yellow at all — the
+     birth-time banner in ob-neonatal/ was reported as transparent and hard to
+     read for exactly that reason (issue #170). Both --ink and --amber-tx clear
+     4.5:1 on this. */
+    --surface-warn:#3B2F12; }
   body[data-theme="light"]{ --bg:#EFF2F5; --card:#FFFFFF; --card2:#F4F6F9; --ink:#141E2B; --ink2:#5A6A7D; --line:rgba(15,35,60,.13); --accent:#00693E;
     --red:#C63238; --red-tx:#C63238; --amber:#B07E13; --amber-tx:#906710; --blue:#2F6FB5; --blue-tx:#2F6FB5; --green:#1F7F49; --green-tx:#1F7E49; --gray:#6B7A8D; --gray-tx:#626F81; --purple:#6C4FA3; --purple-tx:#6C4FA3; --teal:#1F7E7E; --teal-tx:#1E7A7A; --orange:#B4661F;
     --tint-crit:#fbeaec; --tint-warn:#f8f2e2; --tint-info:#e9eff6; --tint-ok:#e4f2f3; --tint-neutral:#e3e9f0;
     --on-tint-ok:#1a6b45; --on-tint-crit:#9b1c2e; --on-tint-warn:#6b5410; --on-tint-info:#1b4e8a; --on-tint-neutral:#4d5a6b;
-    --note-bg:#fdf3cf; --note-tx:#6b5410; }
+    --note-bg:#fdf3cf; --note-tx:#6b5410;
+    --surface-warn:#FDF3CF; }
   /* ---- Phase 3 — single sticky chrome bar (replaces the old .lrh-hdr strip +
      blue nav.bar + section-stripe). One row: back · section label · RESET ·
      theme, matching arrest/, airway/ and procedures/. ---- */

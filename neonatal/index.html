@@ -330,7 +330,7 @@ mountToolSwitcher('neonatal');
    this block, and the review banner behavior is untouched.
    ========================================================================== */
 var SITE = {
-  version:"0.3.3", lastReviewed:"2026-08-17",
+  version:"0.3.4", lastReviewed:"2026-08-17",
   site:"{{SITE.abbrev}}",
 
   /* The banner is config, not prose, so a site can turn it off in one place once
@@ -415,6 +415,12 @@ var SITE = {
   apgar:{
     at:[1, 5],
     repeatEveryMin:5, repeatUntilMin:20, repeatIfBelow:7,
+    /* NOT NOW snoozes the prompt for this long instead of cancelling it (issue
+       #212). It is a pacing choice, not a clinical threshold — how often a
+       resuscitation may be interrupted by a mark that still has to be recorded —
+       so it lives here where a site can change it. Do not set it to 0: that is
+       the behavior the issue was filed about. */
+    snoozeSec:90,
     rows:[
       { k:'A', n:'Appearance', o:['Blue or pale all over','Body pink, extremities blue','Pink all over'] },
       { k:'P', n:'Pulse',      o:['Absent','Under 100','100 or over'] },
@@ -508,7 +514,7 @@ try{ window.SITE = SITE; }catch(e){}
 
 var S = { theme:(document.body.dataset.theme==='light'?'light':'dark'), phase:'idle', birth:null, kg:null, ga:null, gaWk:null, gaD:null,
           step:'initial', ppvOn:false, compressions:false, epiDoses:0,
-          lastAssess:null, apgarDone:{}, apgarScores:{}, apgarOpen:null, apgarPick:{}, events:[], open:null, resetArm:false,
+          lastAssess:null, apgarDone:{}, apgarScores:{}, apgarOpen:null, apgarPick:{}, apgarSnooze:{}, events:[], open:null, resetArm:false,
           stableAt:null, showCustom:false,
           /* case shell (SHELL.md) UI state — in-memory only, no new persisted
              keys. cycleAnchor is the start of the current cycle (the HR CHECK
@@ -561,6 +567,11 @@ function paintDoneSum(){
   Object.keys(S.apgarScores).map(Number).sort(function(a,b){return a-b;}).forEach(function(m){
     parts.push('Apgar '+m+"'="+S.apgarScores[m]);
   });
+  /* A mark that was dismissed with NOT NOW is still owed, and says so here until
+     it is recorded (issue #212). This is what makes snoozing safe: the sheet
+     stops covering the pathway, and the outstanding mark stays face up in the
+     sticky header instead of depending on the prompt coming back. */
+  apgarPending().forEach(function(m){ parts.push('Apgar '+m+"' DUE"); });
   if(S.compressions) parts.push('compressions started');
   if(S.epiDoses) parts.push('epi ×'+S.epiDoses);
   if(parts.length){ el.style.display=''; el.textContent=parts.join(' · '); }
@@ -1284,15 +1295,38 @@ function apgarDue(){
 
 /* Apgar prompts fire off the birth clock. This is the whole reason the birth
    time is stamped rather than remembered: the engine raises the calculator on
-   its own at the minute it is due, rather than hoping someone notices. */
+   its own at the minute it is due, rather than hoping someone notices.
+
+   NOT NOW snoozes, it does not cancel (issue #212). The first version set
+   apgarDone[min] back to false, which handed the mark straight back to this
+   function on the very next tick — so the sheet reappeared within a second and
+   there was no way to dismiss it at all while running a resuscitation. Cancelling
+   outright is not the answer either: an Apgar reconstructed afterwards is the
+   failure this screen exists to stop. So it comes back once the snooze expires,
+   and until then it stays visible as a DUE marker in the heads-up line. */
+function apgarPending(){
+  var out = [];
+  apgarDue().forEach(function(x){
+    if(typeof S.apgarScores[x] !== 'number' && S.apgarDone[x]) out.push(x);
+  });
+  return out;
+}
 function checkApgar(){
   if(!S.birth) return;
-  var m = since()/60;
+  var m = since()/60, now = Date.now();
   apgarDue().forEach(function(x){
     if(m >= x && !S.apgarDone[x]){
       S.apgarDone[x] = true;
       if(S.apgarOpen === null){ S.apgarOpen = x; S.apgarPick = {}; }
       log('<b>'+x+'-minute mark</b> — Apgar due', EV.blue);
+      return;
+    }
+    /* Snoozed and still unscored: raise it again once the snooze is up, and only
+       when nothing else owns the screen. */
+    var until = S.apgarSnooze[x];
+    if(until && now >= until && typeof S.apgarScores[x] !== 'number'){
+      delete S.apgarSnooze[x];
+      if(S.apgarOpen === null){ S.apgarOpen = x; S.apgarPick = {}; }
     }
   });
 }
@@ -1309,7 +1343,15 @@ function apgarSheet(){
   var h='<div id="apgarwrap" style="position:fixed;inset:0;z-index:9000;background:rgba(6,10,16,.62);display:flex;align-items:flex-end;justify-content:center">'+
     '<div style="width:100%;max-width:560px;max-height:92vh;overflow:auto;background:var(--card);'+
     'border-top:3px solid var(--accent);border-radius:16px 16px 0 0;padding:14px 14px calc(14px + env(safe-area-inset-bottom,0px))">'+
-    '<div style="display:flex;align-items:baseline;gap:10px"><div class="sec" style="color:var(--accent);flex:1">'+
+    /* NOT NOW is the FIRST thing in the sheet, centered and red (issue #212).
+       It was a quiet grey line at the bottom, under five scoring rows — below the
+       fold on a phone, which meant the way out of a modal covering a running
+       resuscitation was the one control you had to scroll to find. */
+    '<button class="btn" id="apgarlater" type="button" style="width:100%;min-height:52px;'+
+    'display:flex;align-items:center;justify-content:center;text-align:center;'+
+    'border:2px solid var(--red);color:var(--red);background:transparent;'+
+    'font:800 14px var(--sans);letter-spacing:.04em">\u2715 NOT NOW \u2014 KEEP RUNNING</button>'+
+    '<div style="display:flex;align-items:baseline;gap:10px;margin-top:12px"><div class="sec" style="color:var(--accent);flex:1">'+
     'APGAR AT '+min+' MINUTE'+(min===1?'':'S')+'</div>'+
     '<div class="mono" style="font-size:26px;font-weight:800;color:'+(complete && total<SITE.apgar.repeatIfBelow?'var(--red)':'var(--ink)')+'">'+
     (answered?total:'—')+'<span style="font-size:14px;color:var(--ink2)">/10</span></div></div>';
@@ -1333,7 +1375,6 @@ function apgarSheet(){
   h+='<button class="btn" id="apgarsave" type="button" style="width:100%;min-height:58px;margin-top:12px;'+
      (complete?'background:var(--accent);color:var(--accentInk);border:none;':'')+'font:800 15px var(--sans)"'+
      (complete?'':' disabled')+'>'+(complete?'RECORD '+total+'/10':'ANSWER ALL FIVE')+'</button>'+
-     '<button class="btn" id="apgarlater" type="button" style="width:100%;min-height:48px;margin-top:8px;font:700 13px var(--sans);color:var(--ink2)">NOT NOW — KEEP RUNNING</button>'+
      '</div></div>';
   return h;
 }
@@ -1408,7 +1449,7 @@ function armReset(){
   CS.sweep();
   S={ theme:S.theme, phase:'idle', birth:null, kg:null, ga:null, gaWk:null, gaD:null,
       step:'initial', ppvOn:false, compressions:false, epiDoses:0, lastAssess:null,
-      apgarDone:{}, apgarScores:{}, apgarOpen:null, apgarPick:{}, events:[], open:null,
+      apgarDone:{}, apgarScores:{}, apgarOpen:null, apgarPick:{}, apgarSnooze:{}, events:[], open:null,
       resetArm:false, stableAt:null, showCustom:false,
       teleAt:null, wOpen:null, wConfirmed:false, pkOpen:false, hrOpenAt:null,
       cycleAnchor:null, toolMenuOpen:false, moreMenuOpen:false, tlOpen:false, toast:true };
@@ -1485,10 +1526,12 @@ document.addEventListener('click', function(e){
     paint(); return;
   }
   if(id==='apgarlater'){
-    /* Dismissing does not lose the mark — it is re-raised on the next paint if
-       it is still unscored, because an unrecorded Apgar is the thing this
-       feature exists to prevent. */
-    S.apgarDone[S.apgarOpen]=false;
+    /* Dismissing does not lose the mark, but it does have to actually dismiss it
+       (issue #212). It is snoozed for SITE.apgar.snoozeSec, stays listed as DUE
+       in the heads-up line the whole time, and comes back on its own — rather
+       than reappearing on the next tick, which is what setting apgarDone back to
+       false used to do. */
+    S.apgarSnooze[S.apgarOpen] = Date.now() + SITE.apgar.snoozeSec * 1000;
     S.apgarOpen=null; S.apgarPick={};
     paint(); return;
   }

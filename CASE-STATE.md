@@ -112,6 +112,13 @@ candidate to reconsider in a later workstream, not a bug.
 
 **ob-neonatal**
 - `lrh-ob-weight`, `lrh-ob-ga` — the **neonate's** estimated weight/gestational age, used for equipment sizing (Merck/NRP tables). A different patient and a different purpose than `lrh-case-wtkg` — do not conflate.
+- `lrh-ob-gadays` — the DAYS half of the gestational age (issue #171), 0–6.
+  Gestational age is said and written as weeks plus days, and the tool used to
+  take only the weeks, so what a clinician was told had to be rounded before it
+  could be entered. It is display-only **by design**: every equipment band in
+  `ob-neonatal/` is a whole-week threshold (<28, <34, <38), so 34+0 and 34+6 size
+  identically. Kept in its own key rather than folded into `lrh-ob-ga` precisely
+  so nothing reading that key can mistake it for a fractional week.
 - `lrh-ob-birthms`, `lrh-ob-clampms` — birth time and cord-clamp time. Deferred from WS0 migration (see Clock names above).
 - `lrh-ob-sdround`, `lrh-ob-sdroundstart` — shoulder dystocia re-run counter and its own start time. `lrh-case-clocks.dystocia` covers the main clock; these are re-run-specific bookkeeping.
 - `lrh-ob-hrcycle` — neonatal HR-band timer state, `{n0, dur, band}` — doesn't fit the single-timestamp clock shape.

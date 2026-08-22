@@ -25,6 +25,17 @@ let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch { ({ chromium } = await import('/home/claude/.npm-global/lib/node_modules/playwright/index.mjs')); }
 
+import { readFileSync } from 'node:fs';
+
+/* The switcher's list lives once, in tool-switcher.js, and is injected at build
+   (SHELL.md layer 1). Read the expected row count FROM that file: the count was
+   typed as 8 here and in verify_neonatal_screen.mjs, and both went red the moment
+   a tool joined the list — a suite that turns red for a correct change teaches
+   its readers that red is normal. verify_tool_switcher.mjs owns the real checks;
+   these two just confirm each page's bar is wired to the shared list. */
+const SWITCHER_ROWS = [...readFileSync('tool-switcher.js', 'utf8')
+  .matchAll(/\{\s*id:\s*'([a-z-]+)'/g)].length + 1;   /* + manual home */
+
 const BASE = (process.env.BASE || 'http://localhost:8123').replace(/\/$/, '');
 const b = await chromium.launch(process.env.PW_CHROME ? { executablePath: process.env.PW_CHROME } : {});
 console.log('testing against ' + BASE + '\n');
@@ -93,10 +104,12 @@ ck('P3. it routes the newborn elsewhere and asks who stays with her',
    /neonatal resuscitation/i.test(pscope) && /who is staying with her/i.test(pscope), true);
 
 /* Case shell chrome (SHELL.md) — the pieces this tool maps. */
-ck('P3s. the tool switcher lists the six engines + peds + manual home',
-   await pg.locator('#toolmenu .shellmenurow').count(), 8);
+ck('P3s. the switcher lists every tool in tool-switcher.js + manual home',
+   await pg.locator('#toolmenu .shellmenurow').count(), SWITCHER_ROWS);
+/* Every switcher link now carries ?from=<current tool>, so the back control on
+   whatever you land on returns here rather than to the manual index. */
 ck('P3s. PPH is the marked current tool',
-   await pg.getAttribute('#toolmenu .shellmenurow.on', 'href'), '../pph/');
+   await pg.getAttribute('#toolmenu .shellmenurow.on', 'href'), '../pph/?from=pph');
 ck('P3s. the tele button keeps this tool\'s own tele-NICU wording',
    /TELE-NICU/i.test(await txt('#telebtn')), true);
 
@@ -213,10 +226,12 @@ ck('D3. it says to work the maneuvers in order', /in order/i.test(dscope), true)
 ck('D3. it hands off to neonatal resuscitation', /neonatal resuscitation/i.test(dscope), true);
 
 /* Case shell chrome (SHELL.md) — the pieces this tool maps. */
-ck('D3s. the tool switcher lists the six engines + peds + manual home',
-   await pg.locator('#toolmenu .shellmenurow').count(), 8);
+ck('D3s. the switcher lists every tool in tool-switcher.js + manual home',
+   await pg.locator('#toolmenu .shellmenurow').count(), SWITCHER_ROWS);
+/* Every switcher link now carries ?from=<current tool>, so the back control on
+   whatever you land on returns here rather than to the manual index. */
 ck('D3s. Dystocia is the marked current tool',
-   await pg.getAttribute('#toolmenu .shellmenurow.on', 'href'), '../dystocia/');
+   await pg.getAttribute('#toolmenu .shellmenurow.on', 'href'), '../dystocia/?from=dystocia');
 ck('D3s. the tele button keeps this tool\'s own tele-NICU wording',
    /TELE-NICU/i.test(await txt('#telebtn')), true);
 

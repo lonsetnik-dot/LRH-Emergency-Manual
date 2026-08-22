@@ -318,7 +318,21 @@ try{
     <h2 style="margin:7px 0 0; font-size:26px; line-height:1.12; letter-spacing:-0.015em; color:var(--ink);">Imminent normal delivery</h2>
     <div style="display:flex; flex-wrap:wrap; align-items:center; gap:6px; margin-top:11px;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.14em; color:var(--ink2);">CART</span><a href="#d6" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:var(--card2); border:1px solid var(--green); text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:var(--green); flex:none;"><span style="display:flex; flex-direction:column; gap:2.7px;"><span style="display:block; width:12.6px; height:2.7px; background:var(--card);"></span><span style="display:block; width:12.6px; height:2.7px; background:var(--card);"></span></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:var(--green-tx);">6 · VAGINAL DELIVERY</span></a><a href="#d1" style="display:inline-flex; align-items:center; gap:7px; padding:4px 9px 4px 4px; background:var(--card2); border:1px solid var(--teal); text-decoration:none;"><span style="display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px; background:var(--teal); flex:none;"><span style="display:block; width:9.9px; height:9.9px; border:2.16px solid var(--on-sev); border-radius:50%; box-sizing:border-box;"></span></span><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; letter-spacing:0.06em; color:var(--teal-tx);">1 · AIRWAY / BREATHING</span></a></div>
   </header>
-  <div style="position:sticky; top:calc(var(--sticky-h,54px) + env(safe-area-inset-top,0px)); z-index:4; padding:5px 18px 6px; background:var(--note-bg); border-top:2px solid var(--sev-caution); border-bottom:2px solid var(--sev-caution);">
+  <!-- BIRTH BANNER (issue #170). Was a full-bleed strip on --note-bg — a 12%
+       amber wash that composites to dark olive rather than reading as yellow, with
+       square edges no other resuscitation surface has. It is now a rounded card on
+       the SOLID --surface-warn, and it COLLAPSES once the two things it exists to
+       capture are captured, the same way the shared weight strip does (SHELL.md
+       layer 4): a slim yellow row absorbed into the top of the page, with the
+       Apgar marks still face up underneath, because those are what the birth time
+       was stamped for. Tapping the row opens it again. -->
+  <div style="position:sticky; top:calc(var(--sticky-h,54px) + env(safe-area-inset-top,0px)); z-index:4; padding:8px 14px 10px; background:var(--bg);">
+   <div id="birthcard" style="background:var(--surface-warn); border:2px solid var(--sev-caution); border-radius:14px; padding:10px 12px;">
+    <button type="button" id="birthtoggle" style="display:none; width:100%; min-height:44px; align-items:center; gap:10px; padding:0 2px; background:none; border:none; cursor:pointer; text-align:left; font:inherit;">
+      <span id="birthsummary" style="flex:1; min-width:0; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:14px; font-weight:700; letter-spacing:0.04em; color:var(--ink); white-space:nowrap; overflow:hidden; text-overflow:ellipsis;"></span>
+      <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11.5px; font-weight:700; color:var(--amber-tx); white-space:nowrap;">&#9998; TAP TO CHANGE</span>
+    </button>
+    <div id="birthform">
     <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.1em; color:var(--amber-tx);">TIME OF BIRTH — STAMP IT AS THE BABY DELIVERS</div>
     <div style="margin-top:6px; display:flex; gap:6px; align-items:stretch; flex-wrap:wrap;">
       <input type="time" id="tob" aria-label="Time of birth" step="60" style="flex:2; min-width:110px; min-height:44px; padding:4px 8px; border:2px solid var(--sev-caution); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px;">
@@ -327,8 +341,10 @@ try{
       <span style="align-self:center; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12px; font-weight:700; color:var(--amber-tx); white-space:nowrap;">kg or g</span>
     </div>
     <div class="wtecho" style="display:none; margin-top:5px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.04em; color:var(--amber-tx); line-height:1.3;"></div>
+    </div>
     <div id="tobmarks" style="margin-top:5px; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:12.5px; font-weight:700; letter-spacing:0.04em; color:var(--amber-tx); line-height:1.3;">Set the time — the 1 and 5 minute marks appear here.</div>
     <div data-loglane="02" style="margin-top:8px; display:flex; gap:6px; align-items:center; overflow-x:auto; -webkit-overflow-scrolling:touch; min-height:28px; scrollbar-width:none;"><span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:10.5px; letter-spacing:0.08em; color:var(--amber-tx); opacity:0.7; white-space:nowrap;">NOTHING LOGGED YET</span></div>
+   </div>
   </div>
 
   <div class="nca" style="padding:0 18px;">
@@ -351,9 +367,11 @@ try{
       <div style="margin:11px 14px 0; padding:11px 12px; background:var(--card2); border:2px solid var(--gray);">
         <div style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.1em; color:var(--ink);">ASK THE MOTHER — QUICK</div>
         <div style="margin-top:8px; display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
-          <span style="font-weight:700;">Weeks gestation</span>
-          <input type="number" id="gaweeks" aria-label="Weeks gestation" class="ga-sync" inputmode="numeric" step="1" min="20" max="44" placeholder="wk" style="width:84px; min-height:44px; padding:6px 10px; border:2px solid var(--gray); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px;">
-          <span style="font-size:12.5px; color:var(--ink2);">drives equipment sizes</span>
+          <span style="font-weight:700;">Gestation</span>
+          <input type="number" id="gaweeks" aria-label="Weeks gestation" class="ga-sync" inputmode="numeric" step="1" min="20" max="44" placeholder="wk" style="width:76px; min-height:44px; padding:6px 10px; border:2px solid var(--gray); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px;">
+          <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px; font-weight:700; color:var(--ink2);">+</span>
+          <input type="number" id="gadays" aria-label="Days gestation, 0 to 6" class="gad-sync" inputmode="numeric" step="1" min="0" max="6" placeholder="d" style="width:60px; min-height:44px; padding:6px 10px; border:2px solid var(--gray); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:18px;">
+          <span class="gaecho" style="font-size:12.5px; color:var(--ink2);">weeks + days — weeks drive equipment sizes</span>
         </div>
         <div style="margin-top:10px; display:flex; flex-direction:column; gap:10px;">
           <div><div style="font-size:12px; font-weight:700; margin-bottom:5px;">Number of babies</div><div style="display:flex; flex-wrap:wrap; gap:6px;"><button type="button" class="mchip" data-g="babies" data-single="1" style="min-height:36px;padding:5px 10px;background:var(--card);border:2px solid var(--gray);color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;">Singleton</button><button type="button" class="mchip" data-g="babies" data-single="1" style="min-height:36px;padding:5px 10px;background:var(--card);border:2px solid var(--gray);color:var(--ink);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer;">Multiple — team per baby</button></div><div id="multicue" aria-live="polite" aria-atomic="true" style="display:none; margin-top:7px; padding:8px 11px; background:var(--card2); border:2px solid var(--sev-crit); color:var(--red-tx); font-size:12.5px; font-weight:700; line-height:1.3;">Call a second resus team + a warmer / kit for EACH baby.</div></div>
@@ -531,7 +549,7 @@ try{
     </div>
     <div style="display:flex; align-items:center; gap:8px; flex:none;">
       <span style="font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:11px; font-weight:700; letter-spacing:0.06em; color:var(--ink); white-space:nowrap;">OR WKS GESTATION</span>
-      <input type="number" id="gaweeks-c04" aria-label="Weeks gestation" class="ga-sync" inputmode="numeric" step="1" min="20" max="44" placeholder="wk" style="width:64px; min-height:44px; padding:4px 8px; border:2px solid var(--gray); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px;">
+      <input type="number" id="gaweeks-c04" aria-label="Weeks gestation" class="ga-sync" inputmode="numeric" step="1" min="20" max="44" placeholder="wk" style="width:64px; min-height:44px; padding:4px 8px; border:2px solid var(--gray); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px;"><span style="align-self:center; font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px; font-weight:700; color:var(--ink2);">+</span><input type="number" id="gadays-c04" aria-label="Days gestation, 0 to 6" class="gad-sync" inputmode="numeric" step="1" min="0" max="6" placeholder="d" style="width:52px; min-height:44px; padding:4px 8px; border:2px solid var(--gray); background:var(--card); color:var(--ink); font-family:'IBM Plex Mono','SF Mono',ui-monospace,Menlo,monospace; font-size:16px;">
     </div>
   </div>
   <div class="eqpanel" style="margin:8px 18px 0;"></div>
@@ -1835,7 +1853,7 @@ var CASESTATE = (function(){
 <script>
 /* ===== SITE CONFIG (site-specific — edit to localize) ===== */
 var SITE = {
-  version: "1.16", lastReviewed: "2026-08-17",
+  version: "1.17", lastReviewed: "2026-08-17",
   /* DEFERRED CORD CLAMPING (issue #140). Was "30–60 s" here while the live
      engine at /neonatal/ said "at least 60 s" — two screens a clinician can
      open in the same delivery, giving different numbers. The 2025 AHA/AAP
@@ -2587,6 +2605,15 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
   /* Equipment + code-dose engine. Weight (birth banner) preferred over gestation
      (PREPARE). Device-local, no identifiers. Sizes: Merck/NRP. */
   var WK='lrh-ob-weight', GK='lrh-ob-ga';
+  /* Days of gestation (issue #171). Gestational age is said and written as weeks
+     PLUS days — "she's 34 and 2" — and the tool only accepted the weeks, so what
+     a clinician was told had to be rounded before it could be typed in.
+     DAYS CHANGE NOTHING THAT IS COMPUTED, and that is deliberate, not an
+     oversight: every equipment band here is a whole-week threshold (<28, <34,
+     <38), so 34+0 and 34+6 size identically and the days can only ever be the
+     part already inside the week. Kept as its own key so it can never be mistaken
+     for a fractional week by anything reading GK. */
+  var GDK='lrh-ob-gadays';
   /* ---- SITE-EDITABLE sizing ladder (one entry per band: <1 / <2 / <3 / ≥3 kg,
      or by dates <28 / <34 / <38 / ≥38 wk). An adopting ED edits these to its
      stock; calc() below only ever indexes into them. Exposed on window so the
@@ -2758,13 +2785,27 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
       });
       return els;
     }
-    var wEls=wireSync('wt-sync', WK), gEls=wireSync('ga-sync', GK);
+    var wEls=wireSync('wt-sync', WK), gEls=wireSync('ga-sync', GK), gdEls=wireSync('gad-sync', GDK);
+    /* The echo restates what was entered in the notation it was heard in, so a
+       mistyped 4 in the days box is visible as "34+4" rather than sitting there
+       silently. Out-of-range days say so instead of being quietly dropped. */
+    function paintGaEcho(){
+      var wk=num(GK), d=num(GDK), txt='weeks + days — weeks drive equipment sizes';
+      if(d!==null && (d<0 || d>6)) txt='⚠ DAYS ARE 0–6 — '+d+' entered. Anything more is another week.';
+      else if(wk!==null) txt='= '+wk+(d!==null?('+'+d):'+0')+' weeks · sizes follow the WEEKS';
+      var els=document.querySelectorAll('.gaecho');
+      for(var i=0;i<els.length;i++) els[i].textContent=txt;
+    }
+    Array.prototype.forEach.call(document.querySelectorAll('.ga-sync,.gad-sync'), function(el){
+      el.addEventListener('input', paintGaEcho);
+    });
+    paintGaEcho();
     /* The twin/triplet warning in html() reads the Multiple chip's state, so a
        chip toggle needs a repaint too (chip handlers run first; defer a tick). */
     Array.prototype.forEach.call(document.querySelectorAll('.mchip[data-g="babies"]'), function(b){
       b.addEventListener('click', function(){ setTimeout(render,0); });
     });
-    var rb=document.getElementById('resetbtn'); if(rb) rb.addEventListener('click', function(){ try{ localStorage.removeItem(WK); localStorage.removeItem(GK); }catch(e){} Array.prototype.forEach.call(wEls, function(el){ el.value=''; }); Array.prototype.forEach.call(gEls, function(el){ el.value=''; }); render(); });
+    var rb=document.getElementById('resetbtn'); if(rb) rb.addEventListener('click', function(){ try{ localStorage.removeItem(WK); localStorage.removeItem(GK); localStorage.removeItem(GDK); }catch(e){} Array.prototype.forEach.call(wEls, function(el){ el.value=''; }); Array.prototype.forEach.call(gEls, function(el){ el.value=''; }); Array.prototype.forEach.call(gdEls, function(el){ el.value=''; }); paintGaEcho(); render(); });
     render();
   }
   if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
@@ -2898,6 +2939,67 @@ if ('serviceWorker' in navigator && location.protocol === 'https:') {
       });
     } catch(e){}
   });
+})();
+</script>
+<script>
+/* ---- BIRTH BANNER collapse (issue #170) ----------------------------------
+   The banner exists to capture two things: the time of birth and the baby's
+   weight. Once it has both, the entry controls are dead weight at the top of a
+   page somebody is scrolling during a resuscitation — so it collapses to a slim
+   yellow row stating what was captured, the same shape the shared weight strip
+   takes once a weight is confirmed (SHELL.md layer 4).
+
+   THE APGAR MARKS DO NOT COLLAPSE WITH IT. They are the reason the time was
+   stamped, and hiding "1 MIN 03:43 · 5 MIN 03:47" behind a tap would undo the
+   point of the feature. Only the header line and the inputs fold away.
+
+   It also refuses to collapse over a PROBLEM: if the weight echo is a warning
+   (an implausible number, or grams and dates that disagree), the form stays open
+   with the warning visible. A tidy banner that has hidden a bad weight is worse
+   than an untidy one.
+
+   Reads the weight text the equipment engine already computed rather than
+   re-deriving kg-vs-grams here — that conversion has exactly one home. */
+(function(){
+  function boot(){
+    var card=document.getElementById('birthcard');
+    if(!card) return;
+    var form=document.getElementById('birthform'), tog=document.getElementById('birthtoggle'),
+        sum=document.getElementById('birthsummary'),
+        tob=document.getElementById('tob'), wt=document.getElementById('babyweight');
+    if(!form||!tog||!sum||!tob||!wt) return;
+    var userOpen=false;
+
+    function weightText(){
+      var e=document.querySelector('.wtecho');
+      if(!e || e.style.display==='none') return null;
+      var t=(e.textContent||'').trim();
+      if(t.charAt(0)!=='=') return null;              /* a warning, or nothing */
+      return t.replace(/^=\s*/,'').split(' · ')[0];
+    }
+    function paint(){
+      var w=weightText();
+      var ready = !!(tob.value) && !!w;
+      var collapsed = ready && !userOpen;
+      form.style.display = collapsed ? 'none' : '';
+      tog.style.display  = collapsed ? 'flex' : 'none';
+      if(collapsed) sum.textContent = 'BORN ' + tob.value + '  ·  ' + w;
+    }
+    tog.addEventListener('click', function(){ userOpen=true; paint();
+      setTimeout(function(){ try{ tob.focus(); }catch(e){} }, 30); });
+    /* Editing either field re-arms the collapse, so finishing a correction folds
+       the banner away again without a second tap. */
+    ['input','change'].forEach(function(ev){
+      tob.addEventListener(ev, function(){ userOpen=false; setTimeout(paint,0); });
+      wt.addEventListener(ev, function(){ userOpen=false; setTimeout(paint,0); });
+    });
+    var nb=document.getElementById('tobnow');
+    if(nb) nb.addEventListener('click', function(){ userOpen=false; setTimeout(paint,0); });
+    var rb=document.getElementById('resetbtn');
+    if(rb) rb.addEventListener('click', function(){ userOpen=false; setTimeout(paint,0); });
+    setTimeout(paint,0);
+  }
+  if(document.readyState==='loading'){ document.addEventListener('DOMContentLoaded', boot, false); } else { boot(); }
 })();
 </script>
 </body>

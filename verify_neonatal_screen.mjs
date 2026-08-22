@@ -24,6 +24,8 @@ let chromium;
 try { ({ chromium } = await import('playwright')); }
 catch { ({ chromium } = await import('/home/claude/.npm-global/lib/node_modules/playwright/index.mjs')); }
 
+import { readFileSync } from 'node:fs';
+
 const BASE = (process.env.BASE || 'http://localhost:8123').replace(/\/$/, '');
 const b = await chromium.launch(process.env.PW_CHROME ? { executablePath: process.env.PW_CHROME } : {});
 console.log('testing against ' + BASE + '\n');
@@ -93,8 +95,16 @@ ck('1. dark theme is the default', await pg.evaluate(() => document.body.dataset
 /* ---- 1s. the case shell bar (SHELL.md layer 1) ---- */
 ck('1s. the tool button names the tool', /NEONATAL/.test(await txt('#toolbtn')), true);
 await tap('#toolbtn');
-ck('1s. the switcher lists the six engines + peds + manual home',
-   await pg.locator('#toolmenu .shellmenurow').count(), 8);
+/* The switcher's list is tool-switcher.js, injected at build (SHELL.md layer 1),
+   so the count comes FROM that file rather than being typed here — a hand-typed
+   8 went red the moment a tool was added, which teaches the next editor that a
+   red run is normal. verify_tool_switcher.mjs owns the deeper checks (same list
+   on every page, source order, distinct colours, live destinations); this one
+   just confirms the bar on THIS page is wired to it. */
+const SWITCHER_ROWS = [...readFileSync('tool-switcher.js', 'utf8')
+  .matchAll(/\{\s*id:\s*'([a-z-]+)'/g)].length + 1;   /* + manual home */
+ck('1s. the switcher lists every tool in tool-switcher.js + manual home',
+   await pg.locator('#toolmenu .shellmenurow').count(), SWITCHER_ROWS);
 ck('1s. neonatal is marked as the current tool',
    /neonatal/i.test(await pg.locator('#toolmenu .shellmenurow.on').getAttribute('href')), true);
 await pg.click('#foot'); await pg.waitForTimeout(200);
