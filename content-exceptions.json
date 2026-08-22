@@ -1,0 +1,17 @@
+[
+  {
+    "bucket": "config",
+    "lost": "version=0.1",
+    "added": "version=0.2.0",
+    "reason": "Design-system version stamp. Every page migrated onto the v0.2.0 vocabulary reports it, so migration progress is visible in the artifact itself rather than tracked in a document. Not a clinical value.",
+    "declaredBy": "redesign sweep",
+    "date": "2026-08-22"
+  },
+  {
+    "bucket": "prose",
+    "lost": "{{SITE.abbrev}} \u00b7 EMERGENCY DEPARTMENT",
+    "reason": "Decision 6 \u2014 eyebrows are deleted. This was a decorative kicker naming the department on a page inside that department's own manual, above a heading that already carries its weight. Impeccable's skill-ban-eyebrow-on-every-section is the one ban no brief earns back. Not clinical content; carries no information a clinician acts on.",
+    "declaredBy": "redesign sweep",
+    "date": "2026-08-22"
+  }
+]

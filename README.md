@@ -1,64 +1,57 @@
-# CairnReady — Emergency Department Cognitive Aids
+# Redesign starter kit
 
-Static, client-side, offline-capable bedside decision-support tools for
-emergency departments: resuscitation codes, rare procedures, OB/neonatal
-emergencies, trauma, pediatric references, equipment readiness, drills, and
-more. **cairnready.org** is the project's explainer page; the generic manual
-itself runs at **demo.cairnready.org** (linked from the explainer).
+Working artifacts, proven against `sources/`. Drop these into the repo root
+(except the reference page) before starting the run.
 
-**This is the generic edition.** It is not localized to any hospital: identity
-strings come from `site.config.json`, clinical values are national-guideline
-defaults or clearly flagged placeholders, and every page carries a
-"localize before clinical use" note. Nothing here replaces clinical judgment,
-and nothing here is part of any hospital IT system / EHR.
+| File | Goes to | What it is |
+|---|---|---|
+| `design-system.css` | repo root | The base layer, v0.2.0. Tokens, two-row bar, primitives, focus, print. Replaces the three existing sheets' base half. |
+| `verify_verb_grammar.mjs` | repo root | Enforces the verb lexicon, row grammar, one-control-per-row, no displayed card numbers, and speakability. Mutation-tested: 8/8 injected violations caught. |
+| `verify_content_invariance.mjs` | repo root | The check that makes an unattended rewrite safe. Two modes — restyle (prose blocking) and `--distill` (prose reported to `CUTS.md`). |
+| `content-exceptions.json` | repo root | Declared-exception format, with two real entries as the model. |
+| `sources-index.reference.html` | keep as reference | `sources/index.html` rewritten. Worked example of every primitive. |
+| `dka-index.reference.html` | keep as reference | `clinical-pathways/dka/` rewritten verb-first, cut 35%. Worked example of step rows, branch rows, and a clinical page with zero page-local CSS. |
+| `row-grammar.reference.html` | keep as reference | The three row types on one card, including inline links with no card numbers. |
+| `example-dka.png`, `example-row-grammar.png` | reference | What both look like rendered on a phone. |
 
-## How the multi-site model works
+## Using the check
 
-See `SITES.md` for the full picture. In one paragraph: this repository is the
-**generic trunk**. A hospital adopts it by making its own branch or fork and
-then localizing two layers — `site.config.json` (name, domain, transfer/phone
-lines; substituted into every page at build) and the marked
-`SITE CONFIG` block at the top of each tool (clinical thresholds, assay names,
-cart locations). The first two hospital editions (Littleton Regional Healthcare,
-plus a second pilot site) are the test cases for that pathway. The original
-LRH-localized manual lives in this repository's history and at
-`lrhemergencymanual.net` until its rebuilt edition ships.
+```bash
+# before touching anything
+node verify_content_invariance.mjs snapshot . content-before.json
 
-## Structure
+# ... rewrite ...
 
-```
-index.html            landing page + site search        ->  /
-<tool>/index.html     one self-contained tool per folder ->  /<tool>/
-site.config.json      site identity — the one file a hospital edits first
-build.mjs             build: inject shared CSS/JS, substitute {{SITE.*}}, emit dist/
-design-system*.css    shared design language, injected at build
-inventory.js          equipment inventory (CATALOG+STANDARDS generic; LOCATIONS = example)
-guidelines.js         upstream guideline registry (editions, review dates)
-procedure-icons.js    procedure glyph set, injected at build (design/ICONOGRAPHY.md)
-equipment-icons.js    equipment glyph set, injected at build
-design/               design specs + prototypes         ->  not published
-verify_*.mjs          the safety harness — run `bash run-tests.sh`
-netlify.toml          Netlify config (builds with node build.mjs, publishes dist/)
+node verify_content_invariance.mjs snapshot . content-after.json
+node verify_content_invariance.mjs compare content-before.json content-after.json
+# and for the text-reduction pass:
+node verify_content_invariance.mjs compare content-before.json content-after.json --distill
 ```
 
-Every tool is a single self-contained `index.html` in its own folder — inline
-CSS/JS, no external dependencies, works offline (a generated service worker
-precaches the whole site). Operating rules for contributors and AI assistants
-are in `CLAUDE.md`; the reasoning behind them is in `PROJECT.md`.
+The cairn back mark lives inline in the reference page as an SVG `<symbol>`.
+In production it is injected at a build marker, never pasted per page.
 
-`design/` is the one folder that is not a tool and not built: it holds the
-design-system specs and the HTML prototypes they were drawn in. `build.mjs`
-skips it, so none of it reaches `dist/` or the offline cache. See
-`design/README.md` for what has been built from it and what has not.
 
-## Develop
+## Page kinds
 
-```
-node build.mjs        # build dist/
-bash run-tests.sh     # build + full verify suite against dist/
+Every page declares what it is:
+
+```html
+<body data-page="protocol">   <!-- read aloud, verb-first grammar enforced -->
+<body data-page="reference">  <!-- provenance, indexes, explainers -->
 ```
 
-## Deploy
+Speakability, card-number and one-control-per-row rules apply to both. The
+verb-first rule applies only to protocol pages — forcing a verb onto an
+explanatory row produces worse writing, not better.
 
-Connected to Netlify via continuous deployment: every push builds `dist/` and
-publishes automatically. Git is the source of truth — no drag-and-drop deploys.
+## Running the suites
+
+```bash
+node verify_verb_grammar.mjs .          # grammar, across every page
+node verify_content_invariance.mjs snapshot . content-before.json
+# ... rewrite ...
+node verify_content_invariance.mjs snapshot . content-after.json
+node verify_content_invariance.mjs compare content-before.json content-after.json
+node verify_content_invariance.mjs compare content-before.json content-after.json --distill
+```
