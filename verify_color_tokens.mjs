@@ -13,6 +13,17 @@
  * onto the shared design system is what exposed five of them: its JS still wrote
  * light-theme hex after its card interiors went dark.
  *
+ * WHAT THIS FILE CANNOT SEE, and where that went wrong again (issue #221). It
+ * matches `el.style.color = '#hex'` — one SYNTAX of the mistake. codes/'s RESET
+ * confirmation was written as `modal.innerHTML = '<div style="background:#fffefb…'`
+ * and rendered its warning text and CANCEL button at 1.14:1 in the dark theme:
+ * white on white, in the dialog that guards wiping the case. Same literal, same
+ * failure, invisible to the regex below. The dialog is also BUILT ON FIRST TAP,
+ * so no scanner that walks the DOM as loaded contained it either.
+ * verify_dialog_contrast.mjs covers that class by driving the controls and
+ * measuring the rendered pixel, which does not care how the colour got there.
+ * Keep both: this one is cheap and runs without a browser.
+ *
  * So: no published page may assign a literal colour to .style.color at runtime.
  * A literal BACKGROUND is allowed only when the same statement also sets a
  * literal colour — that is the constant-pair pattern (the always-dark #wtbar,

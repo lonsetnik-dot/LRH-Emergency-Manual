@@ -605,7 +605,23 @@ Two rules when writing or editing a suite:
 
 Prove both directions before delivering: the suite passes with LRH's config,
 still passes with several values changed to a plausible fork's, and **fails**
-when the page's logic is mutated with the config left alone. Converting the
+when the page's logic is mutated with the config left alone.
+
+**A control that is BUILT WHEN TAPPED is invisible to every scanner that walks
+the page as loaded.** The RESET confirmation and the pediatric-weight dialog are
+created by JS and appended on first use, so no suite in the repo had ever looked
+at either — and in the dark theme both rendered their body text and their
+non-destructive button at 1.14:1, white on white. What was on screen was a red
+header, a red CLEAR CASE button, and a blank panel between them: in the dialog
+that guards wiping the case, the only legible control was the one that wipes it.
+`verify_color_tokens.mjs` exists for exactly this class of bug and still missed
+it, because it matches `el.style.color = '#hex'` and this was written as
+`modal.innerHTML = '<div style="background:#fffefb…'` — the same literal in
+another syntax. `verify_dialog_contrast.mjs` **drives the controls** instead:
+it taps RESET, opens the timeline, enters a pediatric weight derived from the
+tool's own threshold, and measures the rendered contrast in both themes. When you
+add a dialog, add it there; a check shaped around a syntax stops working the
+moment somebody writes the mistake another way. Converting the
 airway suite this way is what surfaced that `/airway/` read its config for the
 ladder's behavior but printed hand-typed numbers on screen — a localized site
 would have got a screen that contradicted itself.
