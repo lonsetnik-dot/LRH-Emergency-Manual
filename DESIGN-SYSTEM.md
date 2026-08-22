@@ -137,52 +137,31 @@ failure mode — the number for cross-reference, the word for certainty, the pic
 
 ---
 
-## 6b. A checklist row has two tiers: the ACTION and the WHY
+## 6b. A checklist row is ONE LINE: the action
 
-A checklist row is glanced at, mid-task, by someone whose hands are busy. Before this
-was enforced, the manual's 1330 rows had a median action of 133 characters and 596 ran
-past 200 — the thing to *do* was buried inside the thing to *know*.
+A checklist row is glanced at, mid-task, by someone whose hands are busy. It carries the
+action and nothing else.
 
-Every row is now written as two tiers:
+It used to carry two tiers, with the reasoning in an `<i class="t-why">` revealed by a WHY
+control in the banner. **Issue #216 removed both.** 764 rows of rationale were deleted; the
+rows whose second tier held a real clinical VALUE had that value folded into the action.
 
 ```html
-<span><b>ACTION — what to do, in one line</b><i class="t-why">why it is that, what
-the trial found, the alternative, the thing that bites</i></span>
+<span><b>Pantoprazole 80 mg IV bolus, then 8 mg/hr. Never let it delay blood or source control.</b></span>
 ```
 
-`.t-why` is `display:none` until the reader taps the one WHY control in the tool's
-header, and it is **always shown in print**, because a printed card is a reference read
-at a desk rather than a screen read during a code. The choice is a preference
-(`lrh-pref-why`), so it survives a RESET and a reload. Nothing is ever deleted by
-shortening a row — it moves down a tier.
+Three rules follow, and the first is the one everything else serves:
 
-Three rules, and the second is the one that matters:
+- **Everything the step needs is on the line**, because there is nowhere else. A row that
+  reads too long with its number in it is doing two jobs and wants splitting, not hiding.
+- **Delete statistics unless they are necessary for the action.** How often a maneuver works,
+  a trial's mortality split, a prevalence — none of it changes what the hands do. A percentage
+  stays only when it is the threshold you act on: `MESS ≥7`, `NIHSS ≥6`, `discordant STE ≥25%`.
+- **A source disagreement worth keeping is a NOTE, not a row.** A checkbox-free `<li>` at the
+  end of the section, in `--ink2`. It is not an instruction and must not look like one.
 
-- **The action fits in one glance.** 110 characters, measured on the rendered row with
-  the WHY tier and any tap-to-log button removed — a button's caption is a control, not
-  a line of the step.
-- **The action stands alone.** If the step cannot be performed without a number, that
-  number is in the action, never only behind the WHY. Hiding a dose is not
-  simplification, it is a trap. `verify_checklist_clarity.mjs` fails a row that hides a
-  dose-shaped value from its own action, whatever its length, and `tools_clarify.mjs`
-  refuses to write one.
-- **`data-ref` is the one sanctioned way to hide a number**, and it has to be a decision
-  someone made per row: a superseded trial range, an alternative target, a source that
-  disagrees, a citation's own course length. Never a default.
-
-Some rows legitimately stay long, and they are worth recognizing so nobody spends a pass
-trying to shorten them: a **kit-contents row** is a packing list under the byte-identity
-contract with the poster, the cart label and `inventory.js` (see `INVENTORY-DESIGN.md`);
-a **dose table** carries several live weight-computed doses on one line; a **criteria
-list** — the Canadian CT Head Rule's seven findings, three antihypertensive regimens —
-is entirely made of values someone acts on. The budget in
-`verify_checklist_clarity.mjs` names the ones that remain and why.
-
-Rows rendered from config get their tiers in config, not in the renderer, so a fork that
-localizes a ladder localizes the reasoning with it: a `SITE.withdrawal` rung accepts
-`{do, why}` as well as a plain string.
-
----
+`verify_checklist_clarity.mjs` asserts the inverse of what it used to: no WHY control exists,
+and no reasoning tier is hidden anywhere. A tier that came back would fail the run.
 
 ## 7. Logging an event vs linking to a procedure (issue #71)
 

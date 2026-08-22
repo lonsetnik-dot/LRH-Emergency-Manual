@@ -1012,7 +1012,7 @@
         <ul style="margin:0; padding:4px 12px 12px; list-style:none;">
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p11-4" class="t-ck"><span><b>Ampicillin + gentamicin. Add acyclovir if there are HSV risk factors.</b></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p11-5" class="t-ck"><span><b>Ampicillin (meningitis dosing):</b> ≤7 days old — 100 mg/kg/dose IV q8h; &gt;7 days old — 75 mg/kg/dose IV q6h.</span></label></li>
-          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p11-6" class="t-ck"><span><b>Gentamicin interval: ask pharmacy or NICU. Do not use a fixed bedside number.</b><i class="t-why" data-ref>Roughly 4–5 mg/kg per dose, but the interval runs q24h to q48h depending on gestational and postnatal age. The smallest and most premature infants are where a printed number does harm.</i></span></label></li>
+          <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p11-6" class="t-ck"><span><b>Gentamicin interval: ask pharmacy or NICU. Do not use a fixed bedside number.</b></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p11-7" class="t-ck"><span><b>🚫 No ceftriaxone in neonates. Never with IV calcium.</b></span></label></li>
           <li class="t-div"><label style="display:grid; grid-template-columns:22px 1fr; gap:12px; align-items:start; min-height:44px; padding:11px 0; cursor:pointer;"><input type="checkbox" data-k="p11-8" class="t-ck"><span><b>29&ndash;60 days going home (e.g. UTI): ceftriaxone, or oral cephalexin or cefixime.</b></span></label></li>
         </ul>
@@ -2370,8 +2370,8 @@ var PEDSAIR = (function(){
 })();
 </script>
 <script>
-/* Shared case-shell behavior (case-shell.js): the WHY control that reveals the
-   reasoning tier (.t-why) on every checklist row at once. Edited once, shared. */
+/* Shared case-shell behavior (case-shell.js). The WHY control it used to carry was
+   removed in issue #216 — a checklist row is one line, the action. */
 /* @shell-js */
 </script>
 <script>

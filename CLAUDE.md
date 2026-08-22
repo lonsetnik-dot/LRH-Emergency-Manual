@@ -516,30 +516,41 @@ Four rules, and every one of them was written after a real defect:
 screen below the bar; the step did not change → the page was not scrolled.** Note that
 "was not scrolled" cannot be a raw `scrollY` comparison, for the clamping reason above.
 
-## Checklist rows: ACTION on screen, WHY behind a tap
+## Checklist rows: ONE LINE, the action
 
-Every checklist row in the manual is two tiers — `<b>ACTION</b><i class="t-why">reasoning</i>`
-— because a row is read mid-task by someone whose hands are busy. `.t-why` is hidden until
-the tool's one WHY control is tapped, always shown in print, and remembered as a preference
-(`lrh-pref-why`). Full rationale and the writing rules are in `DESIGN-SYSTEM.md` §6b.
+A checklist row is a single line — the action. It used to be two tiers, with the reasoning
+behind a WHY control in the banner; **issue #216 removed both.** 764 rows of rationale were
+deleted, and the rows whose second tier held a real clinical VALUE had that value folded into
+the action instead. There is no hidden tier and no control to reveal one.
 
-Three things to know before editing or adding a row:
+`verify_checklist_clarity.mjs` now asserts the inverse of what it used to: no WHY control
+exists, and no reasoning tier is hidden anywhere on the page. A tier that came back would
+fail the run.
 
-- **The action must stand alone.** A number the step cannot be performed without belongs in
-  the action, never only behind the WHY. `verify_checklist_clarity.mjs` fails a row that
-  hides a dose-shaped value from its own action, and `tools_clarify.mjs` refuses to write
-  one. `data-ref` is the only sanctioned way to hide a number, per row, on purpose.
+Four things to know before editing or adding a row:
+
+- **Everything the step needs is on the line.** There is nowhere else to put it. If a row
+  needs a number, the number is in the action; if it reads too long with the number, the row
+  is doing two jobs and wants splitting, not hiding.
+- **Delete statistics unless they are necessary for the action.** How often a maneuver works,
+  a trial's mortality split, a prevalence — none of it changes what the hands do, and all of
+  it is words between the clinician and the step. A percentage stays only when it is the
+  threshold you act on (`MESS ≥7`, `NIHSS ≥6`, `discordant STE ≥25%`).
+- **Where a source disagreement is worth keeping, it is a note, not a row.** `codes/` has no
+  PITFALLS section, so a documented disagreement goes in the checkbox-free `<li>` that
+  `procedures/` already uses. It is not an instruction and must not look like one.
 - **Do not rewrite a kit-contents row for readability.** Those strings are byte-identical
   across the card, the poster, the cart label and `inventory.js`; rewording one is a
   different task, done to all four at once. Several rows stay over the length target for
   exactly this reason, and the suite's budget block names them.
-- **A row rendered from config gets its tiers in config.** A `SITE.withdrawal` rung accepts
-  `{do, why}`, so a fork that localizes its ladder localizes the reasoning with it.
+- **A row rendered from config still carries its own numbers.** A `SITE.withdrawal` rung
+  accepts `{do, why}`; the `why` half is no longer rendered, so a fork localizing its ladder
+  puts everything the rung needs in `do`.
 
-`tools_clarify.mjs` is the dev-only helper that applies these rewrites; it refuses rather
-than warns whenever a replacement would drop live markup (a `.wdose` span, a tap-to-log
-button, a cross-card link, any `data-*` hook), because every one of those failures is
-invisible on screen afterwards.
+`tools_clarify.mjs` is the dev-only helper for rewriting a row; it refuses rather than warns
+whenever a replacement would drop live markup (a `.wdose` span, a tap-to-log button, a
+cross-card link, any `data-*` hook), because every one of those failures is invisible on
+screen afterwards.
 
 ## Config-driven verification (issue #117)
 

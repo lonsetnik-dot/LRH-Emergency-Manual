@@ -144,7 +144,8 @@
      paragraph (median 133 characters, 596 of them over 200), so the thing to DO was buried
      in the thing to KNOW.
 
-     .t-why is everything that is not the action: rationale, provenance, source
+     The .t-why tier was removed in issue #216. What remains below is the pending-value
+     rule: a row whose number has not been folded into its action yet is SHOWN, never hidden.
      disagreements, edge cases. Hidden by default, revealed for the whole tool by the WHY
      control in the header, and ALWAYS printed — a printed card is a reference read at a
      desk, not a screen read during a code, and it should carry everything.
